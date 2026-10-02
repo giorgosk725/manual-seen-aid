@@ -228,3 +228,21 @@ describe("buscador", () => {
     expect(indice().filter((e) => e.tipo === "texto")).toHaveLength(parrafos.length);
   });
 });
+
+describe("marcado en línea", () => {
+  it("una negrita puede contener un asterisco literal (dosis con asterisco de la Figura 3)", async () => {
+    const { trocear } = await import("./marcado");
+    expect(trocear("puede considerarse **0,15 UI/kg\\* como dosis total de rescate**, no")).toEqual(
+      [
+        { t: "puede considerarse " },
+        { t: "0,15 UI/kg* como dosis total de rescate", b: true },
+        { t: ", no" },
+      ],
+    );
+    expect(trocear("Si no existe plan específico: **0,1 UI/kg\\*** de insulina")).toEqual([
+      { t: "Si no existe plan específico: " },
+      { t: "0,1 UI/kg*", b: true },
+      { t: " de insulina" },
+    ]);
+  });
+});
