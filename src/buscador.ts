@@ -11,6 +11,7 @@ import {
   idDeBloque,
 } from "./contenido";
 import { href } from "./rutas";
+import { plano } from "./marcado";
 
 export interface Entrada {
   id: string;
@@ -21,7 +22,7 @@ export interface Entrada {
   ruta: string;
 }
 
-const sinMarcado = (s: string) => s.replace(/\*\*?([^*]+)\*\*?/g, "$1").replace(/\\\*/g, "*");
+const sinMarcado = (s: string) => plano(s);
 
 export const normalizar = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 

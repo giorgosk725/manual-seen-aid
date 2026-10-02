@@ -9,10 +9,20 @@ export interface Ruta {
   detalle?: string;
 }
 
+/* Un «%» mal formado (p. ej. un enlace reescrito por una app de mensajería) no debe romper la
+   app: se devuelve el segmento tal cual. */
+function decodificar(s: string) {
+  try {
+    return decodeURIComponent(s);
+  } catch {
+    return s;
+  }
+}
+
 export function parseHash(hash: string): Ruta {
   const limpio = (hash || "").replace(/^#\/?/, "").replace(/\/+$/, "");
   if (!limpio) return { seccion: "" };
-  const [seccion, sub, detalle] = limpio.split("/").map((s) => decodeURIComponent(s));
+  const [seccion, sub, detalle] = limpio.split("/").map(decodificar);
   return { seccion: seccion || "", sub: sub || undefined, detalle: detalle || undefined };
 }
 
@@ -24,9 +34,37 @@ export const href = (seccion: string, sub?: string, detalle?: string) =>
     .map((x) => encodeURIComponent(x).replace(/%3A/g, ":"))
     .join("/");
 
-export function navegar(seccion: string, sub?: string, detalle?: string) {
-  window.location.hash = href(seccion, sub, detalle);
+/* Navegación «nueva» (enlace o botón que lleva a otra pantalla): la Shell sube al principio.
+   Sin esta marca (Atrás/Adelante, URL escrita) se restaura la posición guardada. */
+let navegacionNueva = false;
+export const marcarNavegacionNueva = () => {
+  navegacionNueva = true;
+};
+export const consumirNavegacionNueva = () => {
+  const v = navegacionNueva;
+  navegacionNueva = false;
+  return v;
+};
+
+export function navegar(
+  seccion: string,
+  sub?: string,
+  detalle?: string,
+  { reemplazar = false }: { reemplazar?: boolean } = {},
+) {
+  const destino = href(seccion, sub, detalle);
+  if (reemplazar) {
+    // Elegir una opción dentro de la misma pantalla (tramo, paso, sistema): no apila historial.
+    window.location.replace(destino);
+  } else {
+    marcarNavegacionNueva();
+    window.location.hash = destino;
+  }
 }
+
+/* Selección dentro de una pantalla: actualiza la URL (enlazable) sin crear una entrada nueva. */
+export const elegirRuta = (seccion: string, sub?: string, detalle?: string) =>
+  navegar(seccion, sub, detalle, { reemplazar: true });
 
 export function useRuta(): Ruta {
   const [ruta, setRuta] = useState<Ruta>(() =>

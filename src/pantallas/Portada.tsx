@@ -14,7 +14,7 @@ import {
   Table2,
 } from "lucide-react";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
-import { APARTADOS, CAPITULO, INFO } from "../contenido";
+import { APARTADOS, CAPITULO, INFO, algoritmoDelCapitulo } from "../contenido";
 import { CAMBIOS, PENDIENTES, VERSION_APP } from "../contenido/cambios";
 import { href } from "../rutas";
 import { Revelar } from "../ui";
@@ -102,10 +102,6 @@ export function Portada() {
               Consultar en dos toques
             </a>
           </div>
-          <p className="mt-5 text-xs text-white/60">
-            Texto literal del capítulo (maquetación del {fecha(ultimoCap.fecha)}), con la página de
-            origen en cada bloque. Material educativo; no es producto sanitario.
-          </p>
         </div>
       </section>
 
@@ -241,7 +237,9 @@ export function Portada() {
                     <span className="block text-sm font-extrabold" style={{ color: h.ink }}>
                       {s.name}
                     </span>
-                    <span className="block truncate text-[11px] text-slate-500">{s.algo}</span>
+                    <span className="block truncate text-[11px] text-slate-500">
+                      {algoritmoDelCapitulo(c)}
+                    </span>
                   </span>
                 </a>
               </li>

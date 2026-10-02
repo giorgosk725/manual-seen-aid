@@ -47,7 +47,7 @@ describe("apartados", () => {
         // Las páginas no retroceden dentro de un apartado (orden de lectura).
         expect(b.p).toBeGreaterThanOrEqual(anterior);
         anterior = b.p;
-        if (b.t === "p" && b.p2) expect(b.p2).toBe(b.p + 1);
+        if ((b.t === "p" || b.t === "lista") && b.p2) expect(b.p2).toBe(b.p + 1);
       }
     }
   });
@@ -276,5 +276,17 @@ describe("cifras del apartado y ampliación", () => {
     for (const c of CRITERIOS) for (const f of c.src) expect(FUENTES[f], f).toBeTruthy();
     const todo = JSON.stringify(SISTEMAS_AMPLIACION);
     expect(todo).not.toMatch(/\bDT[12]\b|mg\/dL|mmol\/L|\bAIT\b/);
+  });
+});
+
+describe("cabeceras de sistema: solo texto del capítulo", () => {
+  it("el algoritmo de cada sistema sale de la Tabla 1", async () => {
+    const { algoritmoDelCapitulo } = await import("./contenido");
+    expect([0, 1, 2, 3].map(algoritmoDelCapitulo)).toEqual([
+      "SmartGuard: algoritmo de tipo PID + lógica difusa",
+      "Control-IQ: algoritmo de tipo MPC",
+      "CamAPS FX: algoritmo de tipo MPC adaptativo",
+      "SmartAdjust: algoritmo de tipo MPC",
+    ]);
   });
 });

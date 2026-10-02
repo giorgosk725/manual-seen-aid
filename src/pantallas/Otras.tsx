@@ -32,6 +32,15 @@ export function Buscar({ inicial }: { inicial?: string }) {
   useEffect(() => {
     if (inicial != null) setQ(inicial);
   }, [inicial]);
+  // Lo escrito se guarda en la URL (sin apilar historial): al volver con Atrás desde un
+  // resultado, la búsqueda sigue ahí y el enlace se puede compartir.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const destino = href("buscar", q || undefined);
+      if (window.location.hash !== destino) window.location.replace(destino);
+    }, 400);
+    return () => clearTimeout(t);
+  }, [q]);
   const res = useMemo(() => (q.trim().length >= 2 ? buscar(q, 60) : []), [q]);
   return (
     <div>
@@ -78,7 +87,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
               <p className="mt-1 text-sm text-slate-800">
                 {marcar(r.fragmento, q).map((t, i) =>
                   t.hit ? (
-                    <mark key={i} className="rounded bg-sky-100 px-0.5">
+                    <mark key={i} className="resaltado">
                       {t.t}
                     </mark>
                   ) : (
@@ -139,9 +148,9 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
                     href={r.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-sky-800 hover:underline"
+                    className="mt-1 inline-flex max-w-full items-center gap-1 text-xs font-semibold text-sky-800 hover:underline"
                   >
-                    {r.url.replace(/^https?:\/\//, "")}{" "}
+                    <span className="min-w-0 break-all">{r.url.replace(/^https?:\/\//, "")}</span>{" "}
                     <ExternalLink size={12} aria-hidden="true" />
                   </a>
                 ) : (

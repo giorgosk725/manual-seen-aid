@@ -4,11 +4,10 @@
    - Revisar la descarga: la Tabla 5 paso a paso (8 pasos), con el patrón relacionado.
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
-import { useState } from "react";
 import { ArrowRight, Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque } from "../contenido";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
-import { href, navegar } from "../rutas";
+import { elegirRuta, href } from "../rutas";
 import { CabeceraEditorial, PaginaBadge, Segmented } from "../ui";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
@@ -212,7 +211,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                     type="button"
                     aria-pressed={on}
                     onClick={() =>
-                      navegar(
+                      elegirRuta(
                         "consultar",
                         "situacion",
                         on ? undefined : s.id + (sistema ? ":" + sistema : ""),
@@ -227,7 +226,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                   >
                     {on && <Check size={14} aria-hidden="true" />}
                     <span className="flex-1">{s.etiqueta}</span>
-                    <span className={`text-[11px] ${on ? "text-white/80" : "text-slate-400"}`}>
+                    <span className={`text-[11px] ${on ? "text-white/80" : "text-slate-500"}`}>
                       T{s.tabla.slice(1)}
                     </span>
                   </button>
@@ -267,12 +266,16 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                           type="button"
                           aria-pressed={on}
                           onClick={() =>
-                            navegar("consultar", "situacion", sit.id + (on ? "" : ":" + SIS_IDS[c]))
+                            elegirRuta(
+                              "consultar",
+                              "situacion",
+                              sit.id + (on ? "" : ":" + SIS_IDS[c]),
+                            )
                           }
                           className="hover-lift ease-brand flex items-center gap-2 rounded-xl border p-2 text-left text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
                           style={
                             on
-                              ? { background: h.strong, borderColor: h.strong, color: "#fff" }
+                              ? { background: h.ink, borderColor: h.ink, color: "#fff" }
                               : { background: h.soft, borderColor: `${h.strong}40`, color: h.ink }
                           }
                         >
@@ -312,7 +315,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                     className="rounded-xl p-3 text-base text-slate-800"
                     style={{ background: "#f1f5f9" }}
                   >
-                    <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-500">
+                    <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-600">
                       Todos los sistemas
                     </span>
                     <Lineas>{fila.celdas[0]}</Lineas>
@@ -354,7 +357,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                   <dl className="grid gap-2 sm:grid-cols-2">
                     {tabla.columnas.map((nombre, c) => (
                       <div key={c} className="rounded-xl p-3" style={{ background: "#f1f5f9" }}>
-                        <dt className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
+                        <dt className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-600">
                           {nombre}
                         </dt>
                         <dd className="text-base text-slate-800">
@@ -425,7 +428,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
   const n = Math.min(8, Math.max(1, Number(paso) || 1));
   const fila = t.filas[n - 1];
   const patrones = parrafosConLead(PATRON_DEL_PASO[n] || []);
-  const ir = (k: number) => navegar("consultar", "descarga", String(k));
+  const ir = (k: number) => elegirRuta("consultar", "descarga", String(k));
   return (
     <div>
       <CabeceraEditorial titulo="Revisar la descarga" hex={hex} level={1}>
@@ -443,7 +446,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                 type="button"
                 aria-current={on ? "step" : undefined}
                 onClick={() => ir(i + 1)}
-                className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "border border-slate-300 bg-white text-slate-600 hover:border-slate-500"}`}
+                className={`flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "border border-slate-300 bg-white text-slate-600 hover:border-slate-500"}`}
                 style={
                   on
                     ? { background: `linear-gradient(135deg, ${hex.strong}, ${hex.strong2})` }
@@ -465,7 +468,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
       >
         <div className="flex items-start justify-between gap-2">
           <h2 className="text-lg font-extrabold text-slate-900">
-            <span className="mr-2 tabular-nums" style={{ color: `${hex.strong}80` }}>
+            <span className="mr-2 tabular-nums" style={{ color: hex.strong }}>
               {n}.
             </span>
             {fila.celdas[0]}
@@ -587,9 +590,8 @@ export function Interrupcion({ tramo }: { tramo?: string }) {
     .slice(inicio + 1, fin)
     .map((b, k) => ({ b, ancla: idDeBloque(b, inicio + 1 + k) }))
     .filter((x) => x.b.t === "p") as { b: Extract<Bloque, { t: "p" }>; ancla: string }[];
-  const [sel, setSel] = useState(
-    tramo && TRAMOS_INTERRUPCION.some((t) => t.id === tramo) ? tramo : "breve",
-  );
+  // El tramo vive en la URL (Atrás/Adelante y enlaces lo respetan).
+  const sel = tramo && TRAMOS_INTERRUPCION.some((t) => t.id === tramo) ? tramo : "breve";
   const actual = TRAMOS_INTERRUPCION.find((t) => t.id === sel)!;
   const p = parrafos[actual.parrafo];
   return (
@@ -606,8 +608,7 @@ export function Interrupcion({ tramo }: { tramo?: string }) {
           wrap
           value={sel}
           onChange={(v) => {
-            setSel(v);
-            navegar("consultar", "interrupcion", v);
+            elegirRuta("consultar", "interrupcion", v);
           }}
           options={TRAMOS_INTERRUPCION.map((t) => ({ id: t.id, label: t.titulo }))}
         />

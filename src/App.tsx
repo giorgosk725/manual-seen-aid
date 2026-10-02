@@ -8,6 +8,7 @@ import { Apartado } from "./pantallas/Apartado";
 import { Figura3Pantalla, Glosario, HubConsultar, Infografia, Tablas } from "./pantallas/Consultar";
 import { Bibliografia, Buscar, Cambios, Mas, Sobre, Test } from "./pantallas/Otras";
 import { FichaSistema, HubSistemas } from "./pantallas/Sistemas";
+import { sistemaPorId } from "./ampliacion";
 import { Interrupcion, RevisarDescarga, SituacionSistema } from "./pantallas/Recorridos";
 import { TABLAS } from "./contenido";
 
@@ -100,7 +101,7 @@ export default function App() {
     }
     case "sistemas":
       pantalla = ruta.sub ? <FichaSistema id={ruta.sub} /> : <HubSistemas />;
-      titulo = "Sistemas";
+      titulo = sistemaPorId(ruta.sub)?.name ?? "Sistemas";
       break;
     case "buscar":
       pantalla = <Buscar inicial={ruta.sub} />;

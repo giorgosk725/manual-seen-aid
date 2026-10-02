@@ -4,7 +4,14 @@
    técnica, parámetros, sets de infusión, insulinas), fuera del capítulo y con sus fuentes. */
 import { useMemo, useRef } from "react";
 import { ArrowRight, BookOpen, Check, ExternalLink, Minus, X } from "lucide-react";
-import { APARTADOS, TABLAS, idDeBloque, type Bloque } from "../contenido";
+import {
+  APARTADOS,
+  TABLAS,
+  algoritmoDelCapitulo,
+  fichasDelCapitulo,
+  idDeBloque,
+  type Bloque,
+} from "../contenido";
 import {
   COMPAT_INSULINA,
   CRITERIOS,
@@ -85,13 +92,13 @@ export function HubSistemas() {
                   <span className="block text-base font-extrabold" style={{ color: h.ink }}>
                     {s.name}
                   </span>
-                  <span className="block text-xs text-slate-500">{s.algo}</span>
+                  <span className="block text-xs text-slate-500">{algoritmoDelCapitulo(c)}</span>
                   <span className="mt-1.5 block text-sm text-slate-700">
                     <Lineas>{TABLAS.T1.filas[0].celdas[c]}</Lineas>
                   </span>
                   <span
                     className="mt-2 inline-flex items-center gap-1 text-xs font-semibold"
-                    style={{ color: h.strong }}
+                    style={{ color: h.ink }}
                   >
                     Ver ficha <ArrowRight size={12} aria-hidden="true" />
                   </span>
@@ -378,16 +385,14 @@ export function FichaSistema({ id }: { id?: string }) {
           <h1 className="text-3xl font-black tracking-tight" style={{ color: h.ink }}>
             {s.name}
           </h1>
-          <p className="mt-1 text-sm text-slate-600">{s.algo}</p>
+          <p className="mt-1 text-sm text-slate-600">
+            {algoritmoDelCapitulo(c)} <span className="pagina-badge">· Tabla 1, p. 3</span>
+          </p>
           <dl className="mt-3 grid grid-cols-3 gap-2">
-            {[
-              ["Edad", s.tags.pedsAge],
-              ["Control desde el móvil", s.tags.movil],
-              ["Sin tubo", s.tags.sintubo],
-            ].map(([k, v]) => (
+            {fichasDelCapitulo(c).map(({ k, v }) => (
               <div key={k} className="rounded-xl p-2.5" style={{ background: h.soft }}>
                 <dt className="text-[11px] text-slate-600">{k}</dt>
-                <dd className="text-sm font-extrabold" style={{ color: h.ink }}>
+                <dd className="text-sm font-bold leading-snug" style={{ color: h.ink }}>
                   {v}
                 </dd>
               </div>

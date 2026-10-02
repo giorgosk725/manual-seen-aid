@@ -10,6 +10,7 @@ export { FIGURAS, F1, F2, INFO } from "./figuras";
 export { FIGURA3 } from "./figura3";
 export { BIBLIOGRAFIA } from "./bibliografia";
 export { GLOSARIO } from "./glosario";
+export { algoritmoDelCapitulo, fichasDelCapitulo } from "./resumen-sistema";
 
 /* Datos de la obra (portada de la app y «Sobre esta versión»). */
 export const CAPITULO = {

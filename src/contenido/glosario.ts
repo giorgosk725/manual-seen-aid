@@ -24,13 +24,17 @@ export const GLOSARIO: Sigla[] = [
   {
     sigla: "EASD",
     desarrollo:
-      "European Association for the Study of Diabetes (Asociación Europea para el Estudio de la Diabetes)",
-    pagina: 19,
+      "European Association for the Study of Diabetes (en la p. 19, «Asociación Europea para el Estudio de la Diabetes»)",
+    pagina: 24,
   },
   { sigla: "ECG", desarrollo: "electrocardiograma", pagina: 22 },
   { sigla: "FDA", desarrollo: "Food and Drug Administration", pagina: 4 },
   { sigla: "FDG", desarrollo: "fluorodesoxiglucosa", pagina: 21 },
-  { sigla: "FSI", desarrollo: "factor de sensibilidad a la insulina", pagina: 8 },
+  {
+    sigla: "FSI",
+    desarrollo: "factor de sensibilidad a la insulina (abreviaturas de la Figura 3)",
+    pagina: 8,
+  },
   { sigla: "GMI", desarrollo: "indicador de gestión de la glucosa", pagina: 4 },
   { sigla: "HbA1c", desarrollo: "hemoglobina glucosilada", pagina: 4 },
   { sigla: "HC", desarrollo: "hidratos de carbono", pagina: 4 },
@@ -40,8 +44,8 @@ export const GLOSARIO: Sigla[] = [
   {
     sigla: "ISPAD",
     desarrollo:
-      "International Society for Pediatric and Adolescent Diabetes (Sociedad Internacional de Diabetes Pediátrica y del Adolescente)",
-    pagina: 19,
+      "International Society for Pediatric and Adolescent Diabetes (en la p. 19, «Sociedad Internacional de Diabetes Pediátrica y del Adolescente»)",
+    pagina: 25,
   },
   {
     sigla: "JBDS-IP",

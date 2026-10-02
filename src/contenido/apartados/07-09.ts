@@ -23,6 +23,7 @@ export const A07: Apartado = {
     {
       t: "lista",
       p: 6,
+      p2: 7,
       intro: "Los contenidos mínimos incluyen:",
       items: [
         "Componentes del sistema; bases de ISCI y MCG.",
@@ -358,6 +359,7 @@ export const A09: Apartado = {
     {
       t: "lista",
       p: 16,
+      p2: 17,
       intro:
         "**Errores que conviene evitar.** Conviene prestar atención a tres errores recurrentes:",
       items: [

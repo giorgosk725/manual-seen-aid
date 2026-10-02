@@ -8,13 +8,25 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.2.0";
+export const VERSION_APP = "0.2.1";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-02",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — el capítulo, más manejable`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — auditoría extensa`,
+    detalle: [
+      "Fidelidad comprobada frente al PDF: 144 de 144 párrafos y listas, 216 de 216 celdas de tabla, las 10 referencias y las 49 cifras por apartado. Corregidas las páginas de dos listas que saltan de página y las de EASD e ISPAD en el glosario.",
+      "Las cabeceras de cada sistema (ficha, portada e índice) salen ahora de la Tabla 1 del capítulo; la ampliación del autor solo se ve dentro de su bloque rotulado.",
+      "Impresión: el título del apartado y la cabecera de la ficha ya salen en papel, el modo nocturno se imprime en negro y las tablas salen como tabla.",
+      "Navegación: elegir un tramo, paso o sistema ya no sube al principio ni llena el historial; Atrás conserva la posición y la búsqueda; los enlaces a una referencia llegan a ella.",
+      "Accesibilidad y móvil: contraste corregido en cuatro elementos, sin desbordes de 360 a 1440 px y botones de paso de 44 px.",
+    ],
+  },
+  {
+    fecha: "2026-10-02",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.2.0 — el capítulo, más manejable",
     detalle: [
       "Sistemas: una ficha por sistema con su foto oficial; primero lo que dice el capítulo (sus columnas de las Tablas 1, 3 y 4 y los párrafos que lo nombran, con página) y, aparte y rotulada, la «Ampliación del autor» (ficha técnica, parámetros que mueven el automático, sets de infusión, insulinas compatibles) con sus fuentes.",
       "Recorridos de consulta construidos solo con el texto del capítulo: «Situación y sistema» (Tablas 4 y 6), «Revisar la descarga» (Tabla 5 en ocho pasos) e «Interrupción del sistema» (línea de tiempo).",

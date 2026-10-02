@@ -282,7 +282,7 @@ export function TablaVista({
                   className="tap-44 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                   style={
                     on
-                      ? { background: hex.strong, borderColor: hex.strong, color: "#fff" }
+                      ? { background: hex.ink, borderColor: hex.ink, color: "#fff" }
                       : { background: hex.soft, borderColor: `${hex.strong}40`, color: hex.ink }
                   }
                 >
@@ -334,10 +334,10 @@ export function TablaVista({
         <Fichas tabla={tabla} columnas={todas} filas={[fila]} />
       ) : (
         <>
-          <div className="hidden md:block">
+          <div className="vista-tabla hidden md:block">
             <TablaHTML tabla={tabla} columnas={columnas} />
           </div>
-          <div className="md:hidden">
+          <div className="vista-fichas md:hidden">
             <Fichas tabla={tabla} columnas={columnas} />
           </div>
         </>

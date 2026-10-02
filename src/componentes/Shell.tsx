@@ -1,6 +1,6 @@
 /* Shell: barra superior, barra lateral de escritorio (índice del capítulo + consultar),
    barra inferior móvil (5 destinos), paleta de búsqueda (Ctrl K) y aviso de versión nueva. */
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import {
   AArrowDown,
   AArrowUp,
@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { APARTADOS, CAPITULO } from "../contenido";
 import { DESTINOS } from "../nav";
-import { href, useRuta, type Ruta } from "../rutas";
+import { consumirNavegacionNueva, href, marcarNavegacionNueva, useRuta, type Ruta } from "../rutas";
 import { TAMANOS, useNocturno, useTamanoLetra } from "../prefs";
 import { Modal } from "../ui";
 import { buscar, marcar } from "../buscador";
@@ -91,7 +91,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
                   <div className="mt-0.5 text-sm text-slate-800">
                     {marcar(r.fragmento, q).map((t, i) =>
                       t.hit ? (
-                        <mark key={i} className="rounded bg-sky-100 px-0.5">
+                        <mark key={i} className="resaltado">
                           {t.t}
                         </mark>
                       ) : (
@@ -340,7 +340,7 @@ function Cajon({ open, onClose, ruta }: { open: boolean; onClose: () => void; ru
                 aria-current={ruta.sub === a.slug ? "page" : undefined}
                 className={`flex gap-2 rounded-lg px-2 py-2 text-sm transition hover:bg-slate-50 ${ruta.sub === a.slug ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700"}`}
               >
-                <span className="w-5 shrink-0 tabular-nums text-slate-400">{a.n}</span>
+                <span className="w-5 shrink-0 tabular-nums text-slate-500">{a.n}</span>
                 {a.titulo}
               </a>
             </li>
@@ -360,23 +360,61 @@ export function Shell({ children, titulo }: { children: ReactNode; titulo?: stri
   const mainRef = useRef<HTMLElement>(null);
   const abrirPaleta = useCallback(() => setPaleta(true), []);
   const cerrarPaleta = useCallback(() => setPaleta(false), []);
+  const cerrarCajon = useCallback(() => setCajon(false), []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setPaleta((p) => !p);
+        // Con otro diálogo abierto (el índice) no se apila un segundo modal.
+        setPaleta((p) => (!p && document.querySelector('[role="dialog"]') ? p : !p));
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Al cambiar de pantalla: arriba del todo (salvo enlace profundo a un bloque) y título.
+  // Un clic en un enlace interno es una navegación nueva (sube arriba); Atrás/Adelante no.
   useEffect(() => {
-    if (!ruta.detalle || ruta.seccion !== "capitulo") window.scrollTo({ top: 0 });
+    const onClick = (e: MouseEvent) => {
+      const a = (e.target as Element | null)?.closest?.('a[href^="#/"]');
+      if (a) marcarNavegacionNueva();
+    };
+    document.addEventListener("click", onClick, true);
+    return () => document.removeEventListener("click", onClick, true);
+  }, []);
+
+  // Posición de scroll por pantalla, para restaurarla al volver con Atrás.
+  const posiciones = useRef(new Map<string, number>());
+  const pantallaActual = useRef("");
+  useEffect(() => {
+    const onScroll = () => posiciones.current.set(pantallaActual.current, window.scrollY);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // En Buscar, el texto escrito viaja en la URL: no es otra pantalla.
+  const subPantalla = ruta.seccion === "buscar" ? "" : (ruta.sub ?? "");
+  const clavePantalla = `${ruta.seccion}/${subPantalla}`;
+
+  // Al cambiar de pantalla (no al elegir una opción dentro de ella): arriba del todo, salvo
+  // enlace profundo (un bloque del capítulo, una referencia) o vuelta atrás (se restaura).
+  // useLayoutEffect: corre antes que los efectos de los hijos, que hacen su propio scroll.
+  useLayoutEffect(() => {
+    pantallaActual.current = clavePantalla;
+    const nueva = consumirNavegacionNueva();
+    const destinoProfundo =
+      (ruta.seccion === "capitulo" && !!ruta.detalle) ||
+      (ruta.seccion === "bibliografia" && !!ruta.sub);
+    if (destinoProfundo) return;
+    const guardada = posiciones.current.get(clavePantalla);
+    window.scrollTo({ top: !nueva && guardada != null ? guardada : 0 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clavePantalla]);
+
+  useEffect(() => {
     document.title = titulo ? `${titulo} · Manual SEEN · AID` : "Manual SEEN · AID";
-  }, [ruta.seccion, ruta.sub, ruta.detalle, titulo]);
+  }, [titulo]);
 
   const enLectura = ruta.seccion === "capitulo" && !!ruta.sub;
   const cat =
@@ -466,14 +504,14 @@ export function Shell({ children, titulo }: { children: ReactNode; titulo?: stri
         }}
       >
         <div
-          key={`${ruta.seccion}/${ruta.sub ?? ""}`}
+          key={clavePantalla}
           className="pantalla-in mx-auto max-w-5xl px-3 pb-24 pt-4 sm:px-5 md:pb-10"
         >
           {children}
         </div>
       </main>
       <Inferior ruta={ruta} />
-      <Cajon open={cajon} onClose={() => setCajon(false)} ruta={ruta} />
+      <Cajon open={cajon} onClose={cerrarCajon} ruta={ruta} />
       <Paleta open={paleta} onClose={cerrarPaleta} />
       <AvisoVersion />
     </div>

@@ -50,6 +50,17 @@ export function imprimirRegion(getRegion, win = typeof window !== "undefined" ? 
   } catch {
     /* el navegador puede bloquearlo (iframe, permisos): se limpia igual */
   }
-  win.setTimeout(limpiar, 1000);
+  // Algunos navegadores (móviles) no bloquean en print() ni lanzan afterprint: se limpia al
+  // salir del modo impresión o, como red de seguridad, en la siguiente interacción. Un
+  // temporizador fijo cortaba la vista previa a la mitad.
+  const mq = typeof win.matchMedia === "function" ? win.matchMedia("print") : null;
+  const alCambiar = (e) => {
+    if (!e.matches) limpiar();
+  };
+  mq?.addEventListener?.("change", alCambiar);
+  win.setTimeout(() => {
+    win.addEventListener("pointerdown", limpiar, { once: true });
+    win.addEventListener("focus", limpiar, { once: true });
+  }, 500);
   return limpiar;
 }

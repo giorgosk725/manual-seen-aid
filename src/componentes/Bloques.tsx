@@ -26,6 +26,7 @@ function Ancla({ id, slug }: { id: string; slug: string }) {
 
 function Marco({
   id,
+  ancla,
   slug,
   p,
   p2,
@@ -33,6 +34,7 @@ function Marco({
   ancho,
 }: {
   id: string;
+  ancla: string;
   slug: string;
   p: number;
   p2?: number;
@@ -41,7 +43,7 @@ function Marco({
 }) {
   return (
     <div id={id} className={`group relative scroll-mt-24 ${ancho ? "" : "prosa"}`}>
-      <Ancla id={id} slug={slug} />
+      <Ancla id={ancla} slug={slug} />
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">{children}</div>
         <div className="shrink-0 pt-1 lg:absolute lg:-right-16 lg:top-0 lg:pt-1.5">
@@ -52,12 +54,27 @@ function Marco({
   );
 }
 
-function BloqueVista({ b, i, slug }: { b: Bloque; i: number; slug: string }) {
-  const id = idDeBloque(b, i);
+function BloqueVista({
+  b,
+  i,
+  slug,
+  prefijo,
+  nivelSub,
+}: {
+  b: Bloque;
+  i: number;
+  slug: string;
+  prefijo?: string;
+  nivelSub: 2 | 3;
+}) {
+  const ancla = idDeBloque(b, i);
+  // En «Capítulo entero» varios apartados conviven en la página: ids con prefijo.
+  const id = prefijo ? `${prefijo}-${ancla}` : ancla;
+  const Sub = nivelSub === 3 ? "h3" : "h2";
   switch (b.t) {
     case "p":
       return (
-        <Marco id={id} slug={slug} p={b.p} p2={b.p2}>
+        <Marco id={id} ancla={ancla} slug={slug} p={b.p} p2={b.p2}>
           <p className="bloque-papel">
             {b.lead && <strong>{b.lead} </strong>}
             <Texto>{b.texto}</Texto>
@@ -66,13 +83,13 @@ function BloqueVista({ b, i, slug }: { b: Bloque; i: number; slug: string }) {
       );
     case "h3":
       return (
-        <Marco id={id} slug={slug} p={b.p}>
-          <h2 className="mt-6 text-xl font-extrabold tracking-tight text-slate-900">{b.texto}</h2>
+        <Marco id={id} ancla={ancla} slug={slug} p={b.p}>
+          <Sub className="mt-6 text-xl font-extrabold tracking-tight text-slate-900">{b.texto}</Sub>
         </Marco>
       );
     case "lista":
       return (
-        <Marco id={id} slug={slug} p={b.p}>
+        <Marco id={id} ancla={ancla} slug={slug} p={b.p} p2={b.p2}>
           <div className="bloque-papel">
             {b.intro && (
               <p>
@@ -109,7 +126,17 @@ function BloqueVista({ b, i, slug }: { b: Bloque; i: number; slug: string }) {
   }
 }
 
-export function Bloques({ apartado, destacado }: { apartado: Apartado; destacado?: string }) {
+export function Bloques({
+  apartado,
+  destacado,
+  prefijo,
+  nivelSub = 2,
+}: {
+  apartado: Apartado;
+  destacado?: string;
+  prefijo?: string;
+  nivelSub?: 2 | 3;
+}) {
   // Enlace profundo a un bloque: se desplaza hasta él y lo destella.
   useEffect(() => {
     if (!destacado) return;
@@ -123,7 +150,14 @@ export function Bloques({ apartado, destacado }: { apartado: Apartado; destacado
   return (
     <div className="space-y-5">
       {apartado.bloques.map((b, i) => (
-        <BloqueVista key={i} b={b} i={i} slug={apartado.slug} />
+        <BloqueVista
+          key={i}
+          b={b}
+          i={i}
+          slug={apartado.slug}
+          prefijo={prefijo}
+          nivelSub={nivelSub}
+        />
       ))}
     </div>
   );

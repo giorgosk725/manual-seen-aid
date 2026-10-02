@@ -21,7 +21,7 @@ import { FIGURA3, type PasoTramo, type Tramo, type TramoFigura3 } from "../conte
 import { Texto } from "../texto";
 import { PaginaBadge } from "../ui";
 import { TRAMO_HEX } from "../tokens";
-import { href, navegar } from "../rutas";
+import { elegirRuta, href } from "../rutas";
 import { ImagenFigura } from "./FiguraVista";
 import { INFO_F3 } from "./figura3-imagen";
 
@@ -224,7 +224,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
   useEffect(() => setTramo(valido), [valido]);
   const elegir = (t: Tramo | null) => {
     setTramo(t);
-    navegar("consultar", "figura-3", t ?? undefined);
+    elegirRuta("consultar", "figura-3", t ?? undefined);
   };
   const actual = tramo ? FIGURA3.tramos.find((t) => t.clave === tramo)! : null;
   return (
@@ -268,7 +268,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
                   style={
                     on
                       ? {
-                          background: `linear-gradient(135deg, ${hex.strong}, ${hex.ink})`,
+                          background: hex.ink,
                           borderColor: hex.strong,
                         }
                       : {

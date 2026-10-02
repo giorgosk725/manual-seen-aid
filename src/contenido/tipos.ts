@@ -16,7 +16,8 @@ export type Bloque =
   /* Subapartado (título de segundo nivel del capítulo). `id` = ancla de la ruta. */
   | { t: "h3"; p: number; texto: string; id: string }
   /* Lista con viñetas (p. ej. los contenidos mínimos del PEET). */
-  | { t: "lista"; p: number; items: string[]; intro?: string }
+  /* `p2` = página en la que termina cuando la lista salta de página. */
+  | { t: "lista"; p: number; p2?: number; items: string[]; intro?: string }
   | { t: "tabla"; p: number; id: TablaId }
   | { t: "figura"; p: number; id: FiguraId };
 

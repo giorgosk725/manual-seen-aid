@@ -537,63 +537,88 @@ main .note-soft {
   html.night [style*="; color:"]:not([style*="background"]):not([style*="var(--cat"]) {
     filter: brightness(2.1);
   }
-  /* Tintas «ink»/«strong» en línea: mapa explícito hex→rgb (así las serializa el
+  /* Los selectores casan «color:» al principio del estilo o tras «; », nunca dentro de
+     «border-color:» (que aclaraba el texto blanco de botones con borde de color).
+     Tintas «ink»/«strong» en línea: mapa explícito hex→rgb (así las serializa el
      navegador) a su equivalente claro del mismo matiz. Se aplica también cuando el
      elemento lleva su propio fondo «papel» en línea (chips de Atajos, tarjetas de los
      hubs): ese fondo ya se oscurece con las reglas de arriba. Sustituye al brillo por
      filtro, que apagaba los chips morados e índigo. */
-  html.night [style*="color: rgb(0, 75, 135)"],
-  html.night [style*="color: rgb(0, 58, 107)"],
-  html.night [style*="color: rgb(31, 78, 121)"],
-  html.night [style*="color: rgb(21, 50, 79)"] {
+  html.night [style^="color: rgb(0, 75, 135)"],
+  html.night [style*="; color: rgb(0, 75, 135)"],
+  html.night [style^="color: rgb(0, 58, 107)"],
+  html.night [style*="; color: rgb(0, 58, 107)"],
+  html.night [style^="color: rgb(31, 78, 121)"],
+  html.night [style*="; color: rgb(31, 78, 121)"],
+  html.night [style^="color: rgb(21, 50, 79)"],
+  html.night [style*="; color: rgb(21, 50, 79)"] {
     color: #93c5fd !important;
     filter: none !important;
   }
-  html.night [style*="color: rgb(82, 45, 128)"],
-  html.night [style*="color: rgb(63, 35, 99)"],
-  html.night [style*="color: rgb(111, 79, 189)"],
-  html.night [style*="color: rgb(93, 64, 163)"],
-  html.night [style*="color: rgb(76, 47, 143)"] {
+  html.night [style^="color: rgb(82, 45, 128)"],
+  html.night [style*="; color: rgb(82, 45, 128)"],
+  html.night [style^="color: rgb(63, 35, 99)"],
+  html.night [style*="; color: rgb(63, 35, 99)"],
+  html.night [style^="color: rgb(111, 79, 189)"],
+  html.night [style*="; color: rgb(111, 79, 189)"],
+  html.night [style^="color: rgb(93, 64, 163)"],
+  html.night [style*="; color: rgb(93, 64, 163)"],
+  html.night [style^="color: rgb(76, 47, 143)"],
+  html.night [style*="; color: rgb(76, 47, 143)"] {
     color: #c4b5fd !important;
     filter: none !important;
   }
-  html.night [style*="color: rgb(14, 140, 119)"],
-  html.night [style*="color: rgb(4, 107, 91)"],
-  html.night [style*="color: rgb(17, 94, 89)"] {
+  html.night [style^="color: rgb(14, 140, 119)"],
+  html.night [style*="; color: rgb(14, 140, 119)"],
+  html.night [style^="color: rgb(4, 107, 91)"],
+  html.night [style*="; color: rgb(4, 107, 91)"],
+  html.night [style^="color: rgb(17, 94, 89)"],
+  html.night [style*="; color: rgb(17, 94, 89)"] {
     color: #5eead4 !important;
     filter: none !important;
   }
-  html.night [style*="color: rgb(224, 83, 0)"],
-  html.night [style*="color: rgb(168, 63, 0)"] {
+  html.night [style^="color: rgb(224, 83, 0)"],
+  html.night [style*="; color: rgb(224, 83, 0)"],
+  html.night [style^="color: rgb(168, 63, 0)"],
+  html.night [style*="; color: rgb(168, 63, 0)"] {
     color: #fdba74 !important;
     filter: none !important;
   }
-  html.night [style*="color: rgb(15, 122, 88)"],
-  html.night [style*="color: rgb(12, 100, 72)"],
-  html.night [style*="color: rgb(11, 85, 64)"],
+  html.night [style^="color: rgb(15, 122, 88)"],
+  html.night [style*="; color: rgb(15, 122, 88)"],
+  html.night [style^="color: rgb(12, 100, 72)"],
+  html.night [style*="; color: rgb(12, 100, 72)"],
+  html.night [style^="color: rgb(11, 85, 64)"],
+  html.night [style*="; color: rgb(11, 85, 64)"],
   /* Verde 700 de las etiquetas de las escalas (Hipoglucemia y Ejercicio): sobre el fondo
      oscuro da 2,91:1, así que en nocturno se sustituye por el verde claro. */
-  html.night [style*="color: rgb(21, 128, 61)"],
+  html.night [style^="color: rgb(21, 128, 61)"],
+  html.night [style*="; color: rgb(21, 128, 61)"],
   /* Tinta del título de ToneCard «emerald» (Población mayor, Metodología). */
-  html.night [style*="color: rgb(6, 95, 70)"] {
+  html.night [style^="color: rgb(6, 95, 70)"],
+  html.night [style*="; color: rgb(6, 95, 70)"] {
     color: #6ee7b7 !important;
     filter: none !important;
   }
   /* Tintas del título de ToneCard: amber, red, sky y slate. Explícitas en vez del brillo por
      filtro, que no cambia el color calculado (axe lo medía como fallo aunque se viera bien). */
-  html.night [style*="color: rgb(146, 64, 14)"] {
+  html.night [style^="color: rgb(146, 64, 14)"],
+  html.night [style*="; color: rgb(146, 64, 14)"] {
     color: #fcd34d !important;
     filter: none !important;
   }
-  html.night [style*="color: rgb(153, 27, 27)"] {
+  html.night [style^="color: rgb(153, 27, 27)"],
+  html.night [style*="; color: rgb(153, 27, 27)"] {
     color: #fca5a5 !important;
     filter: none !important;
   }
-  html.night [style*="color: rgb(7, 89, 133)"] {
+  html.night [style^="color: rgb(7, 89, 133)"],
+  html.night [style*="; color: rgb(7, 89, 133)"] {
     color: #7dd3fc !important;
     filter: none !important;
   }
-  html.night [style*="color: rgb(51, 65, 85)"] {
+  html.night [style^="color: rgb(51, 65, 85)"],
+  html.night [style*="; color: rgb(51, 65, 85)"] {
     color: #cbd5e1 !important;
     filter: none !important;
   }
@@ -614,41 +639,61 @@ main .note-soft {
   html.night .bg-violet-50 {
     background-color: #241a3a;
   }
-  html.night [style*="color: rgb(81, 77, 191)"],
-  html.night [style*="color: rgb(67, 64, 166)"],
-  html.night [style*="color: rgb(52, 48, 147)"],
-  html.night [style*="color: rgb(79, 70, 229)"],
-  html.night [style*="color: rgb(67, 56, 202)"],
-  html.night [style*="color: rgb(55, 48, 163)"] {
+  html.night [style^="color: rgb(81, 77, 191)"],
+  html.night [style*="; color: rgb(81, 77, 191)"],
+  html.night [style^="color: rgb(67, 64, 166)"],
+  html.night [style*="; color: rgb(67, 64, 166)"],
+  html.night [style^="color: rgb(52, 48, 147)"],
+  html.night [style*="; color: rgb(52, 48, 147)"],
+  html.night [style^="color: rgb(79, 70, 229)"],
+  html.night [style*="; color: rgb(79, 70, 229)"],
+  html.night [style^="color: rgb(67, 56, 202)"],
+  html.night [style*="; color: rgb(67, 56, 202)"],
+  html.night [style^="color: rgb(55, 48, 163)"],
+  html.night [style*="; color: rgb(55, 48, 163)"] {
     color: #a5b4fc !important;
     filter: none !important;
   }
-  html.night [style*="color: rgb(189, 61, 109)"],
-  html.night [style*="color: rgb(163, 47, 89)"],
-  html.night [style*="color: rgb(135, 38, 76)"] {
+  html.night [style^="color: rgb(189, 61, 109)"],
+  html.night [style*="; color: rgb(189, 61, 109)"],
+  html.night [style^="color: rgb(163, 47, 89)"],
+  html.night [style*="; color: rgb(163, 47, 89)"],
+  html.night [style^="color: rgb(135, 38, 76)"],
+  html.night [style*="; color: rgb(135, 38, 76)"] {
     color: #f9a8d4 !important;
     filter: none !important;
   }
-  html.night [style*="color: rgb(100, 116, 139)"],
-  html.night [style*="color: rgb(71, 85, 105)"],
-  html.night [style*="color: rgb(51, 65, 85)"] {
+  html.night [style^="color: rgb(100, 116, 139)"],
+  html.night [style*="; color: rgb(100, 116, 139)"],
+  html.night [style^="color: rgb(71, 85, 105)"],
+  html.night [style*="; color: rgb(71, 85, 105)"],
+  html.night [style^="color: rgb(51, 65, 85)"],
+  html.night [style*="; color: rgb(51, 65, 85)"] {
     color: #cbd5e1 !important;
     filter: none !important;
   }
-  html.night [style*="color: rgb(47, 147, 196)"],
-  html.night [style*="color: rgb(31, 106, 143)"],
-  html.night [style*="color: rgb(7, 89, 133)"] {
+  html.night [style^="color: rgb(47, 147, 196)"],
+  html.night [style*="; color: rgb(47, 147, 196)"],
+  html.night [style^="color: rgb(31, 106, 143)"],
+  html.night [style*="; color: rgb(31, 106, 143)"],
+  html.night [style^="color: rgb(7, 89, 133)"],
+  html.night [style*="; color: rgb(7, 89, 133)"] {
     color: #7dd3fc !important;
     filter: none !important;
   }
-  html.night [style*="color: rgb(146, 64, 14)"],
-  html.night [style*="color: rgb(180, 83, 9)"] {
+  html.night [style^="color: rgb(146, 64, 14)"],
+  html.night [style*="; color: rgb(146, 64, 14)"],
+  html.night [style^="color: rgb(180, 83, 9)"],
+  html.night [style*="; color: rgb(180, 83, 9)"] {
     color: #fcd34d !important;
     filter: none !important;
   }
-  html.night [style*="color: rgb(153, 27, 27)"],
-  html.night [style*="color: rgb(185, 28, 28)"],
-  html.night [style*="color: rgb(220, 38, 38)"] {
+  html.night [style^="color: rgb(153, 27, 27)"],
+  html.night [style*="; color: rgb(153, 27, 27)"],
+  html.night [style^="color: rgb(185, 28, 28)"],
+  html.night [style*="; color: rgb(185, 28, 28)"],
+  html.night [style^="color: rgb(220, 38, 38)"],
+  html.night [style*="; color: rgb(220, 38, 38)"] {
     color: #fca5a5 !important;
     filter: none !important;
   }
@@ -701,9 +746,11 @@ main .note-soft {
   html.night {
     background: #fff;
   }
-  aside,
-  header,
-  nav,
+  /* Solo el cromo de la app (barra lateral, cabecera fija, barra inferior): las <header> y
+     <nav> del contenido (título del apartado, cabecera de la ficha) sí se imprimen. */
+  .barra-lateral,
+  .cabecera,
+  nav[aria-label="Barra inferior"],
   .no-print,
   [data-print="hide"] {
     display: none !important;
@@ -777,21 +824,6 @@ main .note-soft {
   html.imprimiendo .imprimible tr {
     break-inside: avoid;
   }
-  /* Apaisado por defecto (la hoja de una pagina y la comparativa son anchas). Las
-     regiones marcadas `papel-vertical` (inventario de alarmas, ficha de sistema:
-     listas largas y estrechas) piden pagina vertical con `page:`; donde el
-     navegador no lo admita, salen apaisadas, que tambien valen. */
-  @page {
-    size: A4 landscape;
-    margin: 8mm;
-  }
-  @page vertical {
-    size: A4 portrait;
-    margin: 10mm;
-  }
-  html.imprimiendo .papel-vertical {
-    page: vertical;
-  }
 }
 
 /* ===========================================================================
@@ -826,11 +858,14 @@ html[data-letra="2"] .prosa {
   font-weight: 700;
   color: #0f172a;
 }
-html.night .prosa {
-  color: #d5dde8;
-}
-html.night .prosa strong {
-  color: #f1f5f9;
+/* Solo en pantalla: en papel el texto es siempre negro sobre blanco. */
+@media screen {
+  html.night .prosa {
+    color: #d5dde8;
+  }
+  html.night .prosa strong {
+    color: #f1f5f9;
+  }
 }
 
 /* Insignia de página de origen: discreta, pegada al margen derecho en escritorio. */
@@ -859,14 +894,32 @@ html.night .pagina-badge {
   z-index: 1;
   background: #f8fafc;
 }
-html.night .tabla-capitulo tbody th {
-  background: #16213a;
+@media screen {
+  html.night .tabla-capitulo tbody th {
+    background: #16213a;
+  }
 }
 .tabla-capitulo tbody tr:nth-child(even) td {
   background: rgba(241, 245, 249, 0.6);
 }
-html.night .tabla-capitulo tbody tr:nth-child(even) td {
-  background: rgba(30, 41, 59, 0.5);
+@media screen {
+  html.night .tabla-capitulo tbody tr:nth-child(even) td {
+    background: rgba(30, 41, 59, 0.5);
+  }
+}
+
+/* Resaltado de la búsqueda (contraste AA en día y en nocturno). */
+.resaltado {
+  background: #fef08a;
+  color: #0f172a;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+@media screen {
+  html.night .resaltado {
+    background: #854d0e;
+    color: #fef9c3;
+  }
 }
 /* Dentro de la pantalla de lectura la cabecera se pega bajo la barra superior (56 px). */
 .tabla-scroll {
@@ -949,11 +1002,13 @@ html.night .tabla-capitulo tbody tr:nth-child(even) td {
 /* Tintas de los tramos ámbar y naranja de la Figura 3 (TRAMO_HEX.ink y TONO de las figuras):
    sobre superficie oscura se sustituyen por su tono claro, como las demás tintas en línea. */
 @media screen {
-  html.night [style*="color: rgb(154, 52, 18)"] {
+  html.night [style^="color: rgb(154, 52, 18)"],
+  html.night [style*="; color: rgb(154, 52, 18)"] {
     color: #fdba74 !important;
     filter: none !important;
   }
-  html.night [style*="color: rgb(133, 77, 14)"] {
+  html.night [style^="color: rgb(133, 77, 14)"],
+  html.night [style*="; color: rgb(133, 77, 14)"] {
     color: #fcd34d !important;
     filter: none !important;
   }
@@ -1023,10 +1078,25 @@ html.night .cabecera {
     max-height: none;
     overflow: visible;
   }
-  .tabla-capitulo thead th {
+  .tabla-capitulo thead th,
+  .tabla-capitulo tbody th {
     position: static;
     background: #e2e8f0 !important;
     color: #000 !important;
+  }
+  .tabla-capitulo {
+    font-size: 9pt;
+  }
+  /* En papel, las tablas siempre como tabla (la página A4 queda por debajo de md). */
+  .vista-tabla {
+    display: block !important;
+  }
+  .vista-fichas {
+    display: none !important;
+  }
+  .fade-right-scroll {
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
   }
   .revelar {
     opacity: 1 !important;

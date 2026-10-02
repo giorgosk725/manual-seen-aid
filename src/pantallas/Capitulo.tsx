@@ -122,10 +122,12 @@ export function CapituloEntero() {
         {APARTADOS.map((a) => (
           <article key={a.slug} id={`todo-${a.slug}`} className="bloque-papel">
             <h2 className="mb-4 text-2xl font-black tracking-tight text-slate-900">
-              <span className="mr-2 tabular-nums text-slate-400">{a.n}.</span>
+              <span className="mr-2 tabular-nums text-slate-500">{a.n}.</span>
               {a.titulo}
             </h2>
-            <Bloques apartado={a} />
+            <div className="lg:pr-16">
+              <Bloques apartado={a} prefijo={a.slug} nivelSub={3} />
+            </div>
           </article>
         ))}
       </div>

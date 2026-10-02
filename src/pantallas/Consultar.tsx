@@ -1,5 +1,5 @@
 /* Consultar: hub + tablas (filtrables) + Figura 3 (recorrido) + infografía (mapa) + glosario. */
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Table2 } from "lucide-react";
 import { GLOSARIO, INFO, LISTA_TABLAS, TABLAS, apartadoDeTabla, type TablaId } from "../contenido";
 import { DESTINOS } from "../nav";
@@ -288,6 +288,8 @@ export function Infografia() {
 
 export function Glosario({ sigla }: { sigla?: string }) {
   const [q, setQ] = useState(sigla ?? "");
+  // La sigla de la URL (desde la búsqueda o con Atrás) manda sobre el filtro.
+  useEffect(() => setQ(sigla ?? ""), [sigla]);
   const lista = useMemo(() => {
     const n = normalizar(q.trim());
     if (!n) return GLOSARIO;
@@ -333,10 +335,10 @@ export function Glosario({ sigla }: { sigla?: string }) {
             </dd>
           </div>
         ))}
-        {lista.length === 0 && (
-          <p className="text-sm text-slate-600">Ninguna sigla del capítulo coincide.</p>
-        )}
       </dl>
+      {lista.length === 0 && (
+        <p className="text-sm text-slate-600">Ninguna sigla del capítulo coincide.</p>
+      )}
     </div>
   );
 }
