@@ -134,10 +134,18 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
                   >
                     doi.org/{r.doi} <ExternalLink size={12} aria-hidden="true" />
                   </a>
+                ) : r.url ? (
+                  <a
+                    href={r.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-sky-800 hover:underline"
+                  >
+                    {r.url.replace(/^https?:\/\//, "")}{" "}
+                    <ExternalLink size={12} aria-hidden="true" />
+                  </a>
                 ) : (
-                  <span className="mt-1 block text-xs text-slate-500">
-                    Sin DOI (guía de la Sociedad Española de Diabetes).
-                  </span>
+                  <span className="mt-1 block text-xs text-slate-500">Sin DOI ni enlace.</span>
                 )}
               </div>
             </div>

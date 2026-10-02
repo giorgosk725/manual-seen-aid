@@ -116,6 +116,8 @@ export interface Referencia {
   /* Cita literal del capítulo (con la corrección editorial 10/11 aplicada en la 6). */
   cita: string;
   doi?: string;
+  /* Enlace directo cuando la referencia no tiene DOI (p. ej. el PDF de la guía SED). */
+  url?: string;
 }
 
 /* ---------- Glosario de siglas ---------- */

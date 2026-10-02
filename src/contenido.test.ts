@@ -183,6 +183,8 @@ describe("convenciones de escritura", () => {
     expect(BIBLIOGRAFIA).toHaveLength(10);
     expect(BIBLIOGRAFIA.filter((r) => r.doi)).toHaveLength(9);
     for (const r of BIBLIOGRAFIA) if (r.doi) expect(r.cita).toContain(r.doi);
+    // La guía SED (sin DOI) enlaza al PDF de la SED.
+    expect(BIBLIOGRAFIA.find((r) => r.n === 2)?.url).toMatch(/^https:\/\/www\.sediabetes\.org\//);
   });
   it("el glosario no repite siglas y todas llevan página", () => {
     expect(new Set(GLOSARIO.map((g) => g.sigla)).size).toBe(GLOSARIO.length);

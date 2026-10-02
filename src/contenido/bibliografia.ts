@@ -12,6 +12,7 @@ export const BIBLIOGRAFIA: Referencia[] = [
   {
     n: 2,
     cita: "Beato Víbora PI, coordinadora. Guía de uso de sistemas de asa cerrada 2026. 3.ª ed. revisada y actualizada. Grupo de Trabajo de Tecnologías Aplicadas a la Diabetes, Sociedad Española de Diabetes; 2026.",
+    url: "https://www.sediabetes.org/wp-content/uploads/GTTAD_GUIA_SAC_2026_vF1.pdf",
   },
   {
     n: 3,
