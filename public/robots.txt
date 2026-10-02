@@ -1,0 +1,3 @@
+# Despliegue de pruebas, pendiente del permiso de la SEEN: no indexar.
+User-agent: *
+Disallow: /

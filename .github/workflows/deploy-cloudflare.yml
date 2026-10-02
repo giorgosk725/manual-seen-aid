@@ -1,0 +1,50 @@
+name: Deploy (Cloudflare Pages)
+
+# Publica https://manual-seen-aid.pages.dev con cada push a main, solo si pasan las mismas
+# puertas que la CI. Necesita el secreto CLOUDFLARE_API_TOKEN (permiso «Cloudflare Pages: Edit»).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-cloudflare
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - name: Comprobar la clave de Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error title=Falta la clave de Cloudflare::Añade el secreto CLOUDFLARE_API_TOKEN (token con permiso «Cloudflare Pages: Edit») en Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Puertas de calidad (las mismas que la CI)
+        run: |
+          npm run lint
+          npm run format:check
+          npm run typecheck
+          npm test
+      - name: Build
+        run: npm run build
+      - name: Publicar en Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 48acd6a4debc742bccd81b84be547379
+          wranglerVersion: "4.86.0"
+          command: pages deploy dist --project-name=manual-seen-aid --branch=main --commit-dirty=true

@@ -1,0 +1,81 @@
+# AGENTS.md — Manual SEEN · AID
+
+Onboarding for coding agents. Read this fully before changing anything. If a rule here conflicts
+with a "default" instinct, this wins.
+
+> The app is in **Spanish** (Castilian). All user-facing text, comments and content stay in
+> Spanish. This file is in English for the agent's benefit.
+
+## 0. What this project is
+
+A **static, installable, offline-first web app** that makes ONE book chapter usable: «Tratamiento
+insulínico del paciente con diabetes mellitus tipo 1: automatización de la insulinoterapia»
+(author: Georgios Kyriakos; Manual SEEN, Sociedad Española de Endocrinología y Nutrición; typeset by
+ec-europe). Readers are senior endocrinologists who READ it, LOOK THINGS UP in clinic (on the phone)
+and SEE when it changed. The SEEN may link or host it next to the chapter.
+
+It is **not** the `asistente-aid` console and does not compete with it. No calculators.
+
+## 1. CRITICAL RULES
+
+1. **Single source = the chapter.** Every word of content in `src/contenido/` is literal text of the
+   final typeset PDF (30-9-2026, 25 pages) with the 11 editorial corrections applied
+   (`docs/CORRECCIONES.md`). Each block carries its source page. **Never invent content, never
+   import text from other sources, never "improve" the author's wording.** Figures that are images
+   in the PDF are transcribed box by box.
+2. **Educational, no clinical data.** No calculators, no patient inputs, no storage of anything
+   clinical. The only persisted things are reader preferences (night mode, font size) in
+   `localStorage` via `src/prefs.ts`. This keeps the SEEN free of regulatory filing.
+3. **Layer separation.**
+   - Content → `src/contenido/` only (typed by `tipos.ts`; `index.ts` re-exports). One file per
+     range of sections, plus `tablas.ts`, `figuras.ts`, `figura3.ts`, `bibliografia.ts`,
+     `glosario.ts`, `cambios.ts`, `test.ts`.
+   - UI primitives → `src/ui.tsx`; design tokens → `src/tokens.ts`; routing → `src/rutas.ts`
+     (hash routes, three levels `#/seccion/sub/detalle`); search → `src/buscador.ts`.
+   - Screens → `src/pantallas/`; shared pieces → `src/componentes/`; `src/App.tsx` is only the
+     router; `src/componentes/Shell.tsx` only the chrome.
+4. **Writing conventions (mandatory):** Castilian Spanish; `mg/dl`, `mmol/l` lowercase; `UI` for
+   insulin units; **«DM1»/«DM2»**, never «DT1»/«DT2» (the chapter's own literal text wins where it
+   says «diabetes tipo 2» spelled out); **«duración de la insulina activa»**, never «AIT».
+   `src/contenido.test.ts` enforces these.
+5. **Unknowns stay visible.** Pending items (SEEN permission and hosting, the author's quiz
+   questions, source files of the infographic and figures) live in `src/contenido/cambios.ts`
+   (`PENDIENTES`) and are shown in «Qué ha cambiado» and «Sobre esta versión». Do not fill them
+   with guesses.
+6. **Reuse, don't fork.** UI language comes from `asistente-aid` (tokens, index.css utilities,
+   night mode via `html.night`, print-a-region via `imprimir.js`, hash routing, folded
+   inventories, quality gates). Do NOT copy its clinical data or its sources registry.
+
+## 2. Quality gates (all must pass before a push)
+
+```bash
+npm run typecheck
+npm test            # Vitest: content integrity, screens, jest-axe
+npm run lint
+npm run format:check
+npm run build
+npm run test:e2e    # Playwright: desktop, mobile 393 px, night mode with axe
+```
+
+CI (`.github/workflows/ci.yml`) runs the same. Deploy to Cloudflare Pages (`manual-seen-aid`)
+on push to main (`deploy-cloudflare.yml`, needs `CLOUDFLARE_API_TOKEN`).
+
+## 3. How to update the chapter text
+
+1. Get the new PDF. Extract with PyMuPDF (`fitz`), read `/Annots` for editorial notes.
+2. Edit the matching file in `src/contenido/`, keep pages correct, apply corrections.
+3. Add an entry to `CAMBIOS` in `src/contenido/cambios.ts` (ISO date, `ambito: "capitulo"`).
+4. Update `docs/CORRECCIONES.md` and the assertions in `src/contenido.test.ts` if a correction
+   changes.
+5. Bump `VERSION_APP` and add an `ambito: "app"` entry when the app itself changes.
+
+## 4. Adding images, infographics or animations
+
+- Images go in `public/figuras/` (or `public/media/`) and are referenced from the content's
+  `imagen: { src, alt, nota }` (see `tipos.ts` → `Figura`). The transcription stays the primary
+  content; the image is a collapsible «Ver la figura original».
+- Animations: only via CSS classes under `prefers-reduced-motion: no-preference` in
+  `src/index.css` (`.revelar`, `.pantalla-in`, `.paso-in`, `.aurora`, `.pulso`, `.hover-lift`).
+  Never JS-driven motion that ignores the reduced-motion preference.
+- Interactive pieces (like `Figura3Vista.tsx`) are built from the content's typed data; they
+  must not carry text of their own.

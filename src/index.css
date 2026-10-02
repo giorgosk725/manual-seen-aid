@@ -1,0 +1,1035 @@
+/* Inter Variable (subconjunto latino, eje de peso 100–900). Vendorizado de
+   @fontsource-variable/inter@5.2.8 (files/inter-latin-wght-normal.woff2) para
+   garantizar disponibilidad OFFLINE (PWA) con un único fichero de 48 kB. Vite
+   resuelve y versiona la URL respetando `base`, y workbox la precachea (glob woff2).
+   En el artefacto (que no incluye CSS) la tipografía degrada a la pila de sistema
+   declarada en tailwind.config.js. */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("./assets/fonts/inter-latin-wght.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* App de tema claro: `color-scheme: light` fuerza que el navegador pinte los controles
+     nativos (select, checkbox), las barras de scroll y el lienzo en claro aunque el SO
+     esté en modo oscuro. Fondo sólido para que no se cuele el lienzo oscuro del navegador.
+     El modo nocturno (html.night, más abajo) cambia color-scheme a dark y remapea solo el
+     «papel»; el color de señalización clínica se conserva tal cual. */
+  html {
+    color-scheme: light;
+    background-color: #f5f7f9;
+  }
+
+  /* Tipografía base 2026: Inter (con fallback de sistema moderno) + suavizado.
+     El color/escala se mantienen; solo cambia la familia y el render del texto. */
+  body {
+    font-family: theme("fontFamily.sans");
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+@layer utilities {
+  /* Sombra «flotante» suave del rediseño 2026. Utilidad propia (no es core Tailwind):
+     en la app se compila desde index.css; si el artefacto se sirve en un host sin
+     esta hoja, la tarjeta degrada con elegancia (conserva borde y fondo). */
+  .shadow-soft {
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+  }
+  /* Hover de elevación de la casa: la MISMA geometría de sombra que shadow-soft,
+     más profunda — la tarjeta «se levanta» en vez de cambiar de material (antes el
+     hover saltaba a shadow-md de Tailwind, otra familia de sombra). */
+  .hover-lift:hover {
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.1);
+  }
+  /* Curva de movimiento única de la casa (la misma de animate-in/loop-draw) para
+     transiciones de hover: una sola personalidad de movimiento en toda la portada. */
+  .ease-brand {
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    transition-duration: 200ms;
+  }
+  /* Desvanecido a la derecha como pista de scroll horizontal (tabla comparativa).
+     SOLO por debajo de lg: ahí la tabla (~720px con 4 sistemas) desborda de verdad. En
+     escritorio cabe entera y el degradado se leía como un defecto —sobre todo desde que
+     la fila de encabezado es oscura, donde el desvanecido canta. */
+  @media (max-width: 1023px) {
+    .fade-right-scroll {
+      -webkit-mask-image: linear-gradient(90deg, #000 92%, transparent 100%);
+      mask-image: linear-gradient(90deg, #000 92%, transparent 100%);
+    }
+  }
+  /* Un icono nunca se encoge: en una fila flex estrecha (móvil) el navegador reducía el
+     SVG en vez de partir el texto de al lado, y quedaban iconos de 5-9 px (revisión en
+     móvil del 2026-09-28: «+» de «Añadir al cuaderno», cabeceras de Programar...).
+     `.lucide` = iconos de lucide-react; `.icono` = los propios de src/icons.tsx. */
+  .lucide,
+  .icono {
+    flex-shrink: 0;
+  }
+  /* Área táctil ~44px para controles pequeños (chips, «Quitar») sin crecer el dibujo:
+     un ::after invisible extiende la zona clicable 5px por cada lado. */
+  .tap-44 {
+    position: relative;
+  }
+  .tap-44::after {
+    content: "";
+    position: absolute;
+    inset: -5px;
+  }
+}
+
+/* Tarjetas de sección dentro de un apartado: cuerpo blanco con un ACENTO superior del
+   color de la categoría (línea de 3px, vía sombra interior que respeta el redondeo) +
+   la sombra flotante. Regla SIN capa para ganar a `.shadow-soft`; solo afecta a las
+   tarjetas de los módulos (bg-white + shadow-soft), no a las del hub (fondo en línea).
+   El color por categoría se concentra en el título (chip) y este acento. */
+main .bg-white.shadow-soft {
+  /* Lenguaje de la portada: borde NEUTRO (el color vive en el acento superior,
+     el título y los iconos, no en el perímetro). */
+  border-color: #e5ebf1;
+  box-shadow:
+    inset 0 3px 0 0 var(--cat, #1f4e79),
+    0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+/* Cajas de nota informativa: tinte suave de la categoría activa. Mantienen
+   `bg-slate-50` como respaldo (artefacto sin esta hoja). No usar en avisos clínicos
+   (rojo/ámbar semánticos), que conservan su color propio. */
+main .note-soft {
+  background-color: var(--cat-soft, #f8fafc);
+}
+
+/* Microinteracciones 2026: aparición suave del contenido al navegar y un «pop» de
+   feedback. TODO va bajo `prefers-reduced-motion: no-preference`, así que quien tenga
+   activado el movimiento reducido NO ve ninguna animación (las clases no existen y el
+   elemento se muestra normal). Offline y sin coste de bundle (CSS). */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes ac-fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .animate-in {
+    animation: ac-fade-in-up 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes ac-pop {
+    0% {
+      transform: scale(0.7);
+    }
+    55% {
+      transform: scale(1.18);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  .animate-pop {
+    animation: ac-pop 0.32s ease;
+  }
+  /* Narrativa del logo (OuroLogo): los nodos del asa aparecen siguiendo el frente de
+     trazado del aro (delays en línea 0.3/0.5/0.7 s) y la cabeza hace «pop» cuando el
+     asa se cierra (la mordida). En movimiento reducido las clases no existen → logo
+     completo y estático desde el primer frame. */
+  @keyframes ac-loop-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .loop-fade {
+    opacity: 0;
+    animation: ac-loop-fade 0.35s ease forwards;
+  }
+  .head-pop {
+    animation: ac-pop 0.32s cubic-bezier(0.16, 1, 0.3, 1) 0.9s both;
+    transform-origin: 62px 20px;
+  }
+  /* Firma de marca: el lazo del ouroboros del hero se «traza» una vez al cargar la
+     portada (el asa que se cierra). Cada círculo declara su longitud en `--loop-len`
+     (circunferencia) y se dibuja animando el desfase del trazo. Solo con movimiento
+     permitido; en reducido el círculo se ve completo sin animación. */
+  @keyframes ac-loop-draw {
+    from {
+      stroke-dashoffset: var(--loop-len, 540);
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  .loop-draw {
+    stroke-dasharray: var(--loop-len, 540);
+    animation: ac-loop-draw 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  /* «Gota» que orbita el asa de realimentación del diagrama de Fundamentos: recorre
+     en bucle la misma curva de retorno (bomba → cuerpo → sensor) para sugerir el ciclo
+     continuo. El trazado se duplica aquí a propósito (el SVG no expone su `d` a CSS);
+     si cambia el path del retorno en modules/biblioteca/fundamentos.jsx, actualizar
+     también este. Solo con
+     movimiento permitido; en reducido la gota queda quieta en el inicio del recorrido. */
+  @keyframes ac-loop-orbit {
+    from {
+      offset-distance: 0%;
+    }
+    to {
+      offset-distance: 100%;
+    }
+  }
+  .loop-orbit {
+    offset-path: path("M440 88 C440 140, 440 152, 400 152 L120 152 C80 152, 80 140, 80 88");
+    offset-rotate: 0deg;
+    animation: ac-loop-orbit 5.5s linear infinite;
+  }
+}
+
+/* «Documento a 2 columnas»: contenido largo de secciones independientes (p. ej.
+   Referencia) que en pantallas anchas fluye a 2 columnas equilibradas para aprovechar
+   el ancho, reducir el scroll y acortar la longitud de línea (mejor lectura). Cada
+   tarjeta evita partirse entre columnas. Degrada a 1 columna en móvil y donde no haya
+   esta hoja (artefacto). */
+.doc-2col > * {
+  margin-bottom: 1rem;
+  break-inside: avoid;
+}
+@media (min-width: 1024px) {
+  .doc-2col {
+    columns: 2;
+    column-gap: 1rem;
+  }
+}
+
+/* ---------- Modo nocturno ----------
+   Tema oscuro por CAPA DE VARIABLES, no por inversión de color (la inversión volvía
+   pastel las cabeceras de categoría, celeste la barra lateral y negro sobre negro las
+   tarjetas; y el filtro se recalculaba en cada repintado). Aquí se remapean solo las
+   utilidades de color «de papel» que se repiten por toda la app (fondo, superficie,
+   borde, texto y los tonos de aviso) a una paleta oscura diseñada, y se deja INTACTO
+   lo que da identidad y señal clínica: barra lateral azul marino, cabeceras de
+   categoría, colores por sistema, botones de acción, fotos, ilustraciones y gráficos.
+   Solo en pantalla: la impresión sigue en claro. */
+@media screen {
+  html.night {
+    color-scheme: dark;
+    background-color: #0b1220;
+  }
+  html.night .min-h-screen.bg-slate-50,
+  html.night .lienzo {
+    background-color: #0b1220;
+  }
+  /* Superficies */
+  html.night .bg-white {
+    background-color: #1e293b;
+  }
+  html.night .bg-slate-50 {
+    background-color: #162032;
+  }
+  html.night .bg-slate-100 {
+    background-color: #263449;
+  }
+  html.night .bg-slate-200 {
+    background-color: #334155;
+  }
+  html.night .bg-slate-300 {
+    background-color: #475569;
+  }
+  html.night .bg-slate-800 {
+    background-color: #e2e8f0;
+    color: #0f172a;
+  }
+  html.night .hover\:bg-slate-50:hover,
+  html.night .hover\:bg-white:hover {
+    background-color: #263449;
+  }
+  html.night .hover\:bg-slate-100:hover {
+    background-color: #334155;
+  }
+  /* Texto */
+  html.night .text-slate-900 {
+    color: #f1f5f9;
+  }
+  html.night .text-slate-800 {
+    color: #e2e8f0;
+  }
+  html.night .text-slate-700 {
+    color: #cbd5e1;
+  }
+  html.night .text-slate-600 {
+    color: #b3bfcf;
+  }
+  html.night .text-slate-500 {
+    color: #94a3b8;
+  }
+  html.night .text-slate-400 {
+    color: #7d8ba0;
+  }
+  html.night .text-slate-300 {
+    color: #64748b;
+  }
+  html.night .hover\:text-slate-900:hover,
+  html.night .hover\:text-slate-800:hover,
+  html.night .hover\:text-slate-700:hover,
+  html.night .hover\:text-slate-600:hover {
+    color: #f8fafc;
+  }
+  /* Bordes y separadores */
+  html.night .border-slate-50,
+  html.night .border-slate-100 {
+    border-color: #263449;
+  }
+  html.night .border-slate-200 {
+    border-color: #334155;
+  }
+  html.night .border-slate-300 {
+    border-color: #475569;
+  }
+  html.night .border-slate-400 {
+    border-color: #64748b;
+  }
+  html.night .hover\:border-slate-300:hover,
+  html.night .hover\:border-slate-400:hover {
+    border-color: #7d8ba0;
+  }
+  html.night .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #334155;
+  }
+  html.night .shadow-soft {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+  html.night .hover-lift:hover {
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+  }
+  /* Controles nativos */
+  html.night input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  html.night select,
+  html.night textarea {
+    background-color: #0f172a;
+    color: #e2e8f0;
+    border-color: #475569;
+  }
+  html.night input::placeholder,
+  html.night textarea::placeholder,
+  html.night .placeholder\:text-slate-300::placeholder {
+    color: #64748b;
+  }
+  /* Tinte de la categoría activa (Result «flat», etiquetas): mezcla del color de
+     categoría con la superficie, en vez del pastel claro del modo día. */
+  html.night main,
+  html.night [style*="--cat-soft"] {
+    --cat-soft: color-mix(in srgb, var(--cat, #64748b) 22%, #1e293b) !important;
+  }
+  /* Tonos de aviso (ToneCard, chips, avisos en línea) */
+  html.night .bg-amber-50 {
+    background-color: #2b220c;
+  }
+  html.night .bg-amber-100 {
+    background-color: #3b2f10;
+  }
+  html.night .border-amber-200,
+  html.night .border-amber-300 {
+    border-color: #6b4f12;
+  }
+  html.night .text-amber-900,
+  html.night .text-amber-800 {
+    color: #fde68a;
+  }
+  html.night .text-amber-700,
+  html.night .text-amber-600 {
+    color: #fbbf24;
+  }
+  html.night .bg-red-50 {
+    background-color: #2f1416;
+  }
+  html.night .bg-red-100 {
+    background-color: #3f1a1d;
+  }
+  html.night .border-red-200,
+  html.night .border-red-300 {
+    border-color: #7f2a30;
+  }
+  html.night .text-red-900,
+  html.night .text-red-800 {
+    color: #fecaca;
+  }
+  html.night .text-red-700 {
+    color: #fca5a5;
+  }
+  /* Campo con un valor imposible (PositiveWarn: ratio, factor o dosis en cero o en negativo).
+     El borde rojo tiene que ganarle al borde neutro que el nocturno da a los controles
+     nativos, que va con más especificidad; si no, en nocturno el campo no se marcaba. */
+  html.night input.border-red-400,
+  html.night .border-red-400 {
+    /* !important: la regla de los controles nativos de arriba lleva tres :not() y gana por
+       especificidad; sin esto, en nocturno el campo marcado salía con el borde neutro. */
+    border-color: #f87171 !important;
+  }
+  html.night .bg-emerald-50 {
+    background-color: #0f2a22;
+  }
+  html.night .bg-emerald-100 {
+    background-color: #14382d;
+  }
+  html.night .border-emerald-200,
+  html.night .border-emerald-300 {
+    border-color: #1f6b52;
+  }
+  html.night .text-emerald-900,
+  html.night .text-emerald-800 {
+    color: #a7f3d0;
+  }
+  html.night .text-emerald-700 {
+    color: #6ee7b7;
+  }
+  html.night .bg-sky-50 {
+    background-color: #0c2436;
+  }
+  html.night .bg-sky-100 {
+    background-color: #103049;
+  }
+  html.night .border-sky-200,
+  html.night .border-sky-300 {
+    border-color: #1e5a80;
+  }
+  html.night .text-sky-900,
+  html.night .text-sky-800 {
+    color: #bae6fd;
+  }
+  html.night .bg-indigo-50 {
+    background-color: #1c1f3a;
+  }
+  html.night .border-indigo-200 {
+    border-color: #3f4590;
+  }
+  html.night .text-indigo-900,
+  html.night .text-indigo-800 {
+    color: #c7d2fe;
+  }
+  html.night .bg-violet-50 {
+    background-color: #241b3a;
+  }
+  html.night .border-violet-200 {
+    border-color: #5b3f9a;
+  }
+  html.night .text-violet-900,
+  html.night .text-violet-800 {
+    color: #ddd6fe;
+  }
+  html.night .bg-rose-50 {
+    background-color: #2f1420;
+  }
+  html.night .text-rose-900,
+  html.night .text-rose-800 {
+    color: #fecdd3;
+  }
+  /* --- Superficies y tintes definidos EN LÍNEA (tarjetas de los hubs, tintes por sistema) ---
+     El navegador serializa los estilos en línea en rgb(): los selectores de atributo van
+     con esa forma. Los valores con var() se conservan como se escribieron (hex). */
+  html.night {
+    --cat: #64748b;
+    --cat-soft: #1e293b;
+    --cat-ink: #cbd5e1;
+  }
+  html.night main,
+  html.night [style*="--cat-ink"] {
+    --cat-ink: color-mix(in srgb, var(--cat, #94a3b8) 55%, #ffffff) !important;
+  }
+  /* Tarjetas «papel»: fondo blanco o degradado que termina en blanco. */
+  html.night [style*="background: rgb(255, 255, 255)"]:not([style*="clip"]),
+  html.night [style*="rgb(255, 255, 255) 5"]:not([style*="clip"]),
+  html.night [style*="rgb(255, 255, 255) 6"]:not([style*="clip"]),
+  html.night [style*="rgb(255, 255, 255) 7"]:not([style*="clip"]),
+  html.night [style*="#ffffff 5"]:not([style*="clip"]),
+  html.night [style*="#ffffff 6"]:not([style*="clip"]),
+  html.night [style*="#ffffff 7"]:not([style*="clip"]) {
+    background: #1e293b !important;
+  }
+  html.night [style*="background: rgb(226, 232, 240)"] {
+    background: #334155 !important;
+  }
+  html.night [style*="rgba(255, 255, 255, 0.75)"] {
+    background: rgba(30, 41, 59, 0.85) !important;
+  }
+  /* Tintes «soft» por sistema y categoría (ACCENT_HEX, CATEGORY_HEX, BRAND, FORMACION):
+     fondo oscuro del mismo matiz y texto claro (el color «ink» en línea no se lee). */
+  html.night [style*="background: rgb(238, 244, 249)"] {
+    background: #172a3f !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(242, 238, 248)"] {
+    background: #241d38 !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(232, 247, 243)"] {
+    background: #12302b !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(252, 239, 231)"] {
+    background: #33211a !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(238, 243, 248)"] {
+    background: #1a2a3d !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(237, 245, 250)"] {
+    background: #17293a !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(238, 245, 241)"] {
+    background: #14302a !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(239, 240, 247)"] {
+    background: #1f2040 !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(244, 242, 249)"] {
+    background: #24203a !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(250, 241, 245)"] {
+    background: #34202a !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(238, 242, 255)"] {
+    background: #1e2140 !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(241, 245, 249)"],
+  html.night [style*="background: rgb(248, 250, 252)"] {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+  }
+  /* Píldoras de aviso con su tinte en línea (red-50, amber-50, emerald-50): mismo fondo
+     oscuro que su clase equivalente, para que la tinta clara del texto se lea. El color
+     sigue señalando (rojo = urgencia, ámbar = precaución). */
+  html.night [style*="background: rgb(254, 242, 242)"] {
+    background: #2f1416 !important;
+  }
+  html.night [style*="background: rgb(255, 251, 235)"],
+  html.night [style*="background: rgb(254, 243, 199)"] {
+    background: #2b220c !important;
+  }
+  html.night [style*="background: rgb(236, 253, 245)"],
+  html.night [style*="background: rgb(240, 253, 244)"] {
+    background: #0f2a22 !important;
+  }
+  /* Texto con color «ink» en línea (solo color, sin fondo en el mismo elemento): las tintas
+     son oscuras por diseño y sobre superficie oscura no se leen; se aclaran con brillo.
+     Se excluyen las variables de categoría (ya remapeadas) y «border-color». */
+  html.night [style^="color:"]:not([style*="background"]):not([style*="var(--cat"]),
+  html.night [style*="; color:"]:not([style*="background"]):not([style*="var(--cat"]) {
+    filter: brightness(2.1);
+  }
+  /* Tintas «ink»/«strong» en línea: mapa explícito hex→rgb (así las serializa el
+     navegador) a su equivalente claro del mismo matiz. Se aplica también cuando el
+     elemento lleva su propio fondo «papel» en línea (chips de Atajos, tarjetas de los
+     hubs): ese fondo ya se oscurece con las reglas de arriba. Sustituye al brillo por
+     filtro, que apagaba los chips morados e índigo. */
+  html.night [style*="color: rgb(0, 75, 135)"],
+  html.night [style*="color: rgb(0, 58, 107)"],
+  html.night [style*="color: rgb(31, 78, 121)"],
+  html.night [style*="color: rgb(21, 50, 79)"] {
+    color: #93c5fd !important;
+    filter: none !important;
+  }
+  html.night [style*="color: rgb(82, 45, 128)"],
+  html.night [style*="color: rgb(63, 35, 99)"],
+  html.night [style*="color: rgb(111, 79, 189)"],
+  html.night [style*="color: rgb(93, 64, 163)"],
+  html.night [style*="color: rgb(76, 47, 143)"] {
+    color: #c4b5fd !important;
+    filter: none !important;
+  }
+  html.night [style*="color: rgb(14, 140, 119)"],
+  html.night [style*="color: rgb(4, 107, 91)"],
+  html.night [style*="color: rgb(17, 94, 89)"] {
+    color: #5eead4 !important;
+    filter: none !important;
+  }
+  html.night [style*="color: rgb(224, 83, 0)"],
+  html.night [style*="color: rgb(168, 63, 0)"] {
+    color: #fdba74 !important;
+    filter: none !important;
+  }
+  html.night [style*="color: rgb(15, 122, 88)"],
+  html.night [style*="color: rgb(12, 100, 72)"],
+  html.night [style*="color: rgb(11, 85, 64)"],
+  /* Verde 700 de las etiquetas de las escalas (Hipoglucemia y Ejercicio): sobre el fondo
+     oscuro da 2,91:1, así que en nocturno se sustituye por el verde claro. */
+  html.night [style*="color: rgb(21, 128, 61)"],
+  /* Tinta del título de ToneCard «emerald» (Población mayor, Metodología). */
+  html.night [style*="color: rgb(6, 95, 70)"] {
+    color: #6ee7b7 !important;
+    filter: none !important;
+  }
+  /* Tintas del título de ToneCard: amber, red, sky y slate. Explícitas en vez del brillo por
+     filtro, que no cambia el color calculado (axe lo medía como fallo aunque se viera bien). */
+  html.night [style*="color: rgb(146, 64, 14)"] {
+    color: #fcd34d !important;
+    filter: none !important;
+  }
+  html.night [style*="color: rgb(153, 27, 27)"] {
+    color: #fca5a5 !important;
+    filter: none !important;
+  }
+  html.night [style*="color: rgb(7, 89, 133)"] {
+    color: #7dd3fc !important;
+    filter: none !important;
+  }
+  html.night [style*="color: rgb(51, 65, 85)"] {
+    color: #cbd5e1 !important;
+    filter: none !important;
+  }
+  /* Chips de sistema de la tabla comparativa (ACCENT.text sobre ACCENT.soft): los fondos 50
+     ya se oscurecen arriba; el texto 700 se aclara al 300 del mismo matiz. */
+  html.night .text-blue-700 {
+    color: #93c5fd;
+  }
+  html.night .text-violet-700 {
+    color: #c4b5fd;
+  }
+  html.night .text-teal-700 {
+    color: #5eead4;
+  }
+  html.night .text-orange-700 {
+    color: #fdba74;
+  }
+  html.night .bg-violet-50 {
+    background-color: #241a3a;
+  }
+  html.night [style*="color: rgb(81, 77, 191)"],
+  html.night [style*="color: rgb(67, 64, 166)"],
+  html.night [style*="color: rgb(52, 48, 147)"],
+  html.night [style*="color: rgb(79, 70, 229)"],
+  html.night [style*="color: rgb(67, 56, 202)"],
+  html.night [style*="color: rgb(55, 48, 163)"] {
+    color: #a5b4fc !important;
+    filter: none !important;
+  }
+  html.night [style*="color: rgb(189, 61, 109)"],
+  html.night [style*="color: rgb(163, 47, 89)"],
+  html.night [style*="color: rgb(135, 38, 76)"] {
+    color: #f9a8d4 !important;
+    filter: none !important;
+  }
+  html.night [style*="color: rgb(100, 116, 139)"],
+  html.night [style*="color: rgb(71, 85, 105)"],
+  html.night [style*="color: rgb(51, 65, 85)"] {
+    color: #cbd5e1 !important;
+    filter: none !important;
+  }
+  html.night [style*="color: rgb(47, 147, 196)"],
+  html.night [style*="color: rgb(31, 106, 143)"],
+  html.night [style*="color: rgb(7, 89, 133)"] {
+    color: #7dd3fc !important;
+    filter: none !important;
+  }
+  html.night [style*="color: rgb(146, 64, 14)"],
+  html.night [style*="color: rgb(180, 83, 9)"] {
+    color: #fcd34d !important;
+    filter: none !important;
+  }
+  html.night [style*="color: rgb(153, 27, 27)"],
+  html.night [style*="color: rgb(185, 28, 28)"],
+  html.night [style*="color: rgb(220, 38, 38)"] {
+    color: #fca5a5 !important;
+    filter: none !important;
+  }
+  /* Variables de categoría más claras para el texto (Label, Result, títulos de tarjeta). */
+  html.night main,
+  html.night [style*="--cat-ink"] {
+    --cat-ink: color-mix(in srgb, var(--cat, #94a3b8) 45%, #ffffff) !important;
+  }
+  /* Clases de tinte por sistema (tokens SYSTEM.soft) y sus textos. */
+  html.night .bg-blue-50 {
+    background-color: #172a3f;
+  }
+  html.night .bg-teal-50 {
+    background-color: #12302b;
+  }
+  html.night .bg-orange-50 {
+    background-color: #33211a;
+  }
+  html.night .text-blue-900,
+  html.night .text-blue-800 {
+    color: #bfdbfe;
+  }
+  html.night .text-teal-900,
+  html.night .text-teal-800 {
+    color: #99f6e4;
+  }
+  html.night .text-orange-900,
+  html.night .text-orange-800 {
+    color: #fed7aa;
+  }
+  html.night .border-blue-200 {
+    border-color: #1e4a7a;
+  }
+  html.night .border-teal-200 {
+    border-color: #1f6b5c;
+  }
+  html.night .border-orange-200 {
+    border-color: #7a3f1a;
+  }
+}
+
+/* ---------- Impresión ----------
+   Solo el contenido: fuera navegación, cabeceras móviles, botones flotantes y sombras.
+   `.print-only` deja un bloque pensado para papel (p. ej. el cuaderno completo). */
+.print-only {
+  display: none;
+}
+@media print {
+  html,
+  html.night {
+    background: #fff;
+  }
+  aside,
+  header,
+  nav,
+  .no-print,
+  [data-print="hide"] {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  .shadow-soft {
+    box-shadow: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Imprimir UNA REGION (src/imprimir.js): la pagina de una hoja, la tabla
+   comparativa, el inventario de alarmas o la ficha de un sistema. La region se
+   marca con `.imprimible` y la impresion se lanza desde su boton, que pone
+   `imprimiendo` en <html>: asi imprimir cualquier otra pantalla (Ctrl+P) sigue
+   saliendo como siempre. `visibility` en vez de `display:none` para no
+   recalcular el layout de lo que se imprime.
+   --------------------------------------------------------------------------- */
+/* Lo que SOLO existe en papel (p. ej. la comparativa con sus siete temas
+   seguidos, que en pantalla se ve tema a tema). */
+.solo-impresion {
+  display: none;
+}
+@media print {
+  html.imprimiendo,
+  html.imprimiendo body {
+    background: #fff;
+  }
+  html.imprimiendo body * {
+    visibility: hidden;
+  }
+  html.imprimiendo .imprimible,
+  html.imprimiendo .imprimible * {
+    visibility: visible;
+  }
+  html.imprimiendo .solo-impresion {
+    display: block;
+  }
+  /* Controles que viven DENTRO de la region pero no tienen sentido en papel
+     (el propio boton de imprimir, filtros…). */
+  html.imprimiendo .no-imprimir,
+  html.imprimiendo .no-imprimir * {
+    display: none !important;
+  }
+  html.imprimiendo .imprimible {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+  }
+  /* Los fondos de color de las cabeceras son informacion (numeran los bloques,
+     identifican el sistema): hay que imprimirlos. */
+  html.imprimiendo .imprimible * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  /* Las tablas largas repiten su cabecera en cada pagina. */
+  html.imprimiendo .imprimible thead {
+    display: table-header-group;
+  }
+  html.imprimiendo .imprimible tr {
+    break-inside: avoid;
+  }
+  /* Apaisado por defecto (la hoja de una pagina y la comparativa son anchas). Las
+     regiones marcadas `papel-vertical` (inventario de alarmas, ficha de sistema:
+     listas largas y estrechas) piden pagina vertical con `page:`; donde el
+     navegador no lo admita, salen apaisadas, que tambien valen. */
+  @page {
+    size: A4 landscape;
+    margin: 8mm;
+  }
+  @page vertical {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+  html.imprimiendo .papel-vertical {
+    page: vertical;
+  }
+}
+
+/* ===========================================================================
+   Manual SEEN · AID — capa propia: lectura larga, tablas, recorrido y transiciones.
+   =========================================================================== */
+
+/* Columna de lectura: 65–75 caracteres por línea, tipografía de lectura larga.
+   El tamaño lo gobierna `html[data-letra]` (preferencia del lector, src/prefs.ts). */
+.prosa {
+  max-width: 70ch;
+  font-size: 1.0625rem; /* 17 px */
+  line-height: 1.7;
+  color: #1e293b;
+  text-wrap: pretty;
+}
+html[data-letra="-1"] .prosa {
+  font-size: 0.9375rem;
+}
+html[data-letra="1"] .prosa {
+  font-size: 1.1875rem;
+}
+html[data-letra="2"] .prosa {
+  font-size: 1.3125rem;
+  line-height: 1.75;
+}
+.prosa p + p,
+.prosa ul + p,
+.prosa p + ul {
+  margin-top: 1.1em;
+}
+.prosa strong {
+  font-weight: 700;
+  color: #0f172a;
+}
+html.night .prosa {
+  color: #d5dde8;
+}
+html.night .prosa strong {
+  color: #f1f5f9;
+}
+
+/* Insignia de página de origen: discreta, pegada al margen derecho en escritorio. */
+.pagina-badge {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #475569;
+  white-space: nowrap;
+}
+html.night .pagina-badge {
+  color: #94a3b8;
+}
+
+/* Tablas del capítulo: cabecera pegada al hacer scroll, filas con línea capilar. */
+.tabla-capitulo thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #15324f;
+  color: #fff;
+}
+.tabla-capitulo tbody th {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: #f8fafc;
+}
+html.night .tabla-capitulo tbody th {
+  background: #16213a;
+}
+.tabla-capitulo tbody tr:nth-child(even) td {
+  background: rgba(241, 245, 249, 0.6);
+}
+html.night .tabla-capitulo tbody tr:nth-child(even) td {
+  background: rgba(30, 41, 59, 0.5);
+}
+/* Dentro de la pantalla de lectura la cabecera se pega bajo la barra superior (56 px). */
+.tabla-scroll {
+  max-height: 70vh;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* Aparición al entrar en pantalla (IntersectionObserver en ui.tsx). Solo con movimiento. */
+@media (prefers-reduced-motion: no-preference) {
+  .revelar {
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .revelar.visto {
+    opacity: 1;
+    transform: none;
+  }
+  /* Cambio de pantalla: el contenido nuevo entra con un fundido corto. */
+  @keyframes ms-pantalla {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .pantalla-in {
+    animation: ms-pantalla 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  /* Pasos del recorrido de la Figura 3: entran escalonados. */
+  .paso-in {
+    animation: ms-pantalla 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+  /* Barra de progreso de lectura. */
+  .progreso {
+    transition: transform 120ms linear;
+  }
+  /* Auroras del hero: deriva lenta. */
+  @keyframes ms-aurora {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(2%, -3%, 0) scale(1.06);
+    }
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+  .aurora {
+    animation: ms-aurora 14s ease-in-out infinite;
+  }
+  /* Pulso del nodo activo de la infografía. */
+  @keyframes ms-pulso {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.35);
+    }
+    50% {
+      box-shadow: 0 0 0 10px rgba(56, 189, 248, 0);
+    }
+  }
+  .pulso {
+    animation: ms-pulso 2.4s ease-out infinite;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .revelar {
+    opacity: 1;
+  }
+}
+
+/* Tintas de los tramos ámbar y naranja de la Figura 3 (TRAMO_HEX.ink y TONO de las figuras):
+   sobre superficie oscura se sustituyen por su tono claro, como las demás tintas en línea. */
+@media screen {
+  html.night [style*="color: rgb(154, 52, 18)"] {
+    color: #fdba74 !important;
+    filter: none !important;
+  }
+  html.night [style*="color: rgb(133, 77, 14)"] {
+    color: #fcd34d !important;
+    filter: none !important;
+  }
+  /* Lavados de los tramos (soft→blanco en línea) a su equivalente oscuro del mismo matiz. */
+  html.night [style*="rgb(255, 247, 237)"] {
+    background: #2b1a10 !important;
+  }
+  html.night [style*="rgb(255, 251, 235)"] {
+    background: #2b220c !important;
+  }
+}
+
+/* Trama de puntos del hero (receta 1), con máscara que se desvanece. */
+.trama {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1.4px);
+  background-size: 18px 18px;
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent 85%);
+  mask-image: linear-gradient(180deg, #000, transparent 85%);
+}
+
+/* Cabecera translúcida: blanco en día, pizarra oscura en nocturno (las clases con opacidad
+   de Tailwind no las remapea el nocturno). */
+.cabecera {
+  background: rgba(255, 255, 255, 0.9);
+}
+html.night .cabecera {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+/* Barra lateral de escritorio (receta 8). */
+.barra-lateral {
+  background: linear-gradient(180deg, #0d2438, #15324f);
+}
+
+/* Resaltado del bloque enlazado (#/capitulo/slug/b12): un destello corto. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes ms-destello {
+    0% {
+      background-color: rgba(125, 211, 252, 0.35);
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+  .destello {
+    animation: ms-destello 1.8s ease-out both;
+    border-radius: 6px;
+  }
+}
+
+/* Impresión de la lectura: columna completa, sin cromo, insignias de página visibles. */
+@media print {
+  .prosa {
+    max-width: none;
+    font-size: 11pt;
+    line-height: 1.45;
+    color: #000;
+  }
+  .tabla-scroll {
+    max-height: none;
+    overflow: visible;
+  }
+  .tabla-capitulo thead th {
+    position: static;
+    background: #e2e8f0 !important;
+    color: #000 !important;
+  }
+  .revelar {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .bloque-papel {
+    break-inside: avoid;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 14mm;
+  }
+}
