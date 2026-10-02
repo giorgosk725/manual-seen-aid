@@ -22,6 +22,17 @@ import { Modal } from "../ui";
 import { buscar, marcar } from "../buscador";
 import { CATEGORIA_HEX } from "../tokens";
 
+/* Destinos que viven bajo #/consultar/<id>. */
+const SUB_CONSULTAR = [
+  "tablas",
+  "figura-3",
+  "infografia",
+  "glosario",
+  "situacion",
+  "descarga",
+  "interrupcion",
+];
+
 function activo(ruta: Ruta, seccion: string, sub?: string) {
   if (ruta.seccion !== seccion) return false;
   return sub ? ruta.sub === sub : true;
@@ -157,13 +168,11 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
         {ids.map((id) => {
           const d = DESTINOS.find((x) => x.id === id)!;
           const on =
-            (id === "capitulo" && enCapitulo) ||
-            (id === "tablas" && activo(ruta, "consultar", "tablas")) ||
-            (id === "figura-3" && activo(ruta, "consultar", "figura-3")) ||
-            (id === "infografia" && activo(ruta, "consultar", "infografia")) ||
-            (id === "glosario" && activo(ruta, "consultar", "glosario")) ||
-            (!["capitulo", "tablas", "figura-3", "infografia", "glosario"].includes(id) &&
-              activo(ruta, id));
+            id === "capitulo"
+              ? enCapitulo
+              : SUB_CONSULTAR.includes(id)
+                ? activo(ruta, "consultar", id)
+                : activo(ruta, id);
           const I = d.icono;
           return (
             <li key={id}>
@@ -225,7 +234,16 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
       </button>
       <nav aria-label="Navegación principal">
         {grupo("Leer", ["capitulo"])}
-        {grupo("Consultar", ["tablas", "figura-3", "infografia", "glosario"])}
+        {grupo("Consultar", [
+          "sistemas",
+          "situacion",
+          "figura-3",
+          "descarga",
+          "interrupcion",
+          "tablas",
+          "infografia",
+          "glosario",
+        ])}
         {grupo("Confiar", ["bibliografia", "cambios", "sobre"])}
         {grupo("Aprender", ["test"])}
       </nav>

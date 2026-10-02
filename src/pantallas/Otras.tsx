@@ -247,6 +247,16 @@ export function Sobre() {
           traído de otras fuentes; las figuras, que en el PDF son imágenes, están transcritas caja a
           caja.
         </p>
+        <h2 className="mt-5 text-base font-extrabold text-slate-900">
+          Dos capas, siempre separadas
+        </h2>
+        <p className="mt-2 text-sm">
+          Todo lo que viene del capítulo se muestra como texto literal con su página. La única
+          excepción, rotulada en ámbar como «Ampliación del autor · fuera del capítulo», es la ficha
+          técnica de cada sistema (indicación, algoritmo, equipo, parámetros, sets de infusión,
+          insulinas): material propio del autor, validado en su proyecto asistente-aid, con sus
+          fuentes al pie. No forma parte del Manual SEEN.
+        </p>
         <h2 className="mt-5 text-base font-extrabold text-slate-900">Qué no es</h2>
         <p className="mt-2 text-sm">
           Material educativo para profesionales. No es un producto sanitario, no contiene

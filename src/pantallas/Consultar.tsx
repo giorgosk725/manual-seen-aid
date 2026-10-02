@@ -15,7 +15,17 @@ import { normalizar } from "../buscador";
 const hex = CATEGORIA_HEX.consultar;
 
 export function HubConsultar() {
-  const ids = ["tablas", "figura-3", "infografia", "glosario", "buscar"];
+  const ids = [
+    "sistemas",
+    "situacion",
+    "figura-3",
+    "descarga",
+    "interrupcion",
+    "tablas",
+    "infografia",
+    "glosario",
+    "buscar",
+  ];
   return (
     <div>
       <CabeceraEditorial titulo="Consultar" hex={hex} level={1}>

@@ -10,6 +10,7 @@ import type { Tabla } from "../contenido";
 import { Lineas, Texto } from "../texto";
 import { Enlace, PaginaBadge } from "../ui";
 import { BRAND_ACCENT, SISTEMA_HEX } from "../tokens";
+import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion";
 import { href } from "../rutas";
 
 const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
@@ -93,7 +94,18 @@ function TablaHTML({ tabla, columnas }: { tabla: Tabla; columnas: number[] }) {
                     : undefined
                 }
               >
-                {tabla.columnas[c]}
+                {tabla.porSistema ? (
+                  <span className="flex items-center gap-2">
+                    <img
+                      src={FOTO_SISTEMA[ORDEN_SISTEMAS[c]]}
+                      alt=""
+                      className="h-7 w-7 rounded-md bg-white object-cover"
+                    />
+                    {tabla.columnas[c]}
+                  </span>
+                ) : (
+                  tabla.columnas[c]
+                )}
               </th>
             ))}
           </tr>

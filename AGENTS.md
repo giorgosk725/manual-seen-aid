@@ -46,6 +46,15 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
    night mode via `html.night`, print-a-region via `imprimir.js`, hash routing, folded
    inventories, quality gates). Do NOT copy its clinical data or its sources registry.
 
+7. **The one exception, and how it is kept apart.** `src/ampliacion/` holds the AUTHOR'S OWN
+   validated data from asistente-aid (system technical sheets, infusion sets, insulin
+   compatibility, choice criteria) with its typed sources (`fuentes.ts`). It is NOT chapter
+   text: the UI always shows it under the amber «Ampliación del autor · fuera del capítulo»
+   label, below the literal chapter layer, never mixed with it. To refresh it, re-run the
+   extraction from asistente-aid (`src/data`) — do not hand-edit clinical values here.
+   `src/contenido/cifras.ts` («Cifras del apartado») is NOT an exception: every figure there is a
+   literal value from the chapter with its page, and the test checks pages and anchors.
+
 ## 2. Quality gates (all must pass before a push)
 
 ```bash

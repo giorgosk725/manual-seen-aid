@@ -8,13 +8,24 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.1.0";
+export const VERSION_APP = "0.2.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-02",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — primera versión`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — el capítulo, más manejable`,
+    detalle: [
+      "Sistemas: una ficha por sistema con su foto oficial; primero lo que dice el capítulo (sus columnas de las Tablas 1, 3 y 4 y los párrafos que lo nombran, con página) y, aparte y rotulada, la «Ampliación del autor» (ficha técnica, parámetros que mueven el automático, sets de infusión, insulinas compatibles) con sus fuentes.",
+      "Recorridos de consulta construidos solo con el texto del capítulo: «Situación y sistema» (Tablas 4 y 6), «Revisar la descarga» (Tabla 5 en ocho pasos) e «Interrupción del sistema» (línea de tiempo).",
+      "«Cifras del apartado»: los umbrales y tiempos que da cada apartado, de un vistazo y con su página; índice lateral fijo en pantallas grandes.",
+      "Figura 1 como diagrama animado; fotos de los sistemas en las cabeceras de las tablas comparativas.",
+    ],
+  },
+  {
+    fecha: "2026-10-02",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.1.0 — primera versión",
     detalle: [
       "Capítulo completo transcrito y navegable por apartados, con la página de origen en cada bloque.",
       "Tabla 1 (sistemas), Tabla 3 (parámetros) y Tabla 4 (situaciones) filtrables por sistema; Tabla 6 (exploraciones) filtrable por procedimiento.",

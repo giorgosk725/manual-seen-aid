@@ -20,7 +20,8 @@ export const href = (seccion: string, sub?: string, detalle?: string) =>
   "#/" +
   [seccion, sub, detalle]
     .filter((x): x is string => !!x)
-    .map((x) => encodeURIComponent(x))
+    // Los dos puntos («situacion:sistema», «T1:omnipod-5») se dejan legibles en la URL.
+    .map((x) => encodeURIComponent(x).replace(/%3A/g, ":"))
     .join("/");
 
 export function navegar(seccion: string, sub?: string, detalle?: string) {

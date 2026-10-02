@@ -7,6 +7,8 @@ import { CapituloEntero, IndiceCapitulo } from "./pantallas/Capitulo";
 import { Apartado } from "./pantallas/Apartado";
 import { Figura3Pantalla, Glosario, HubConsultar, Infografia, Tablas } from "./pantallas/Consultar";
 import { Bibliografia, Buscar, Cambios, Mas, Sobre, Test } from "./pantallas/Otras";
+import { FichaSistema, HubSistemas } from "./pantallas/Sistemas";
+import { Interrupcion, RevisarDescarga, SituacionSistema } from "./pantallas/Recorridos";
 import { TABLAS } from "./contenido";
 
 function NoEncontrada() {
@@ -62,6 +64,23 @@ export default function App() {
           titulo = t ? `Tabla ${t.numero}` : "Tablas";
           break;
         }
+        case "situacion":
+          pantalla = (
+            <SituacionSistema
+              situacion={ruta.detalle?.split(":")[0]}
+              sistema={ruta.detalle?.split(":")[1]}
+            />
+          );
+          titulo = "Situación y sistema";
+          break;
+        case "descarga":
+          pantalla = <RevisarDescarga paso={ruta.detalle} />;
+          titulo = "Revisar la descarga";
+          break;
+        case "interrupcion":
+          pantalla = <Interrupcion tramo={ruta.detalle} />;
+          titulo = "Interrupción del sistema";
+          break;
         case "figura-3":
           pantalla = <Figura3Pantalla tramo={ruta.detalle} />;
           titulo = "Cetonemia paso a paso";
@@ -79,6 +98,10 @@ export default function App() {
       }
       break;
     }
+    case "sistemas":
+      pantalla = ruta.sub ? <FichaSistema id={ruta.sub} /> : <HubSistemas />;
+      titulo = "Sistemas";
+      break;
     case "buscar":
       pantalla = <Buscar inicial={ruta.sub} />;
       titulo = "Buscar";

@@ -966,6 +966,13 @@ html.night .tabla-capitulo tbody tr:nth-child(even) td {
   }
 }
 
+/* Señal que recorre el asa de la Figura 1 (SMIL no respeta prefers-reduced-motion: se oculta). */
+@media (prefers-reduced-motion: reduce) {
+  .f1-senal {
+    display: none;
+  }
+}
+
 /* Trama de puntos del hero (receta 1), con máscara que se desvanece. */
 .trama {
   background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1.4px);

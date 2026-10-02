@@ -246,3 +246,33 @@ describe("marcado en línea", () => {
     ]);
   });
 });
+
+describe("cifras del apartado y ampliación", () => {
+  it("cada cifra apunta a una página del apartado y a un ancla existente", async () => {
+    const { CIFRAS } = await import("./contenido/cifras");
+    for (const [slug, lista] of Object.entries(CIFRAS)) {
+      const a = APARTADOS.find((x) => x.slug === slug)!;
+      expect(a, slug).toBeTruthy();
+      for (const c of lista) {
+        expect(c.p).toBeGreaterThanOrEqual(a.paginas[0]);
+        expect(c.p).toBeLessThanOrEqual(a.paginas[1]);
+        if (c.ancla)
+          expect(
+            a.bloques.some((b) => b.t === "h3" && b.id === c.ancla),
+            c.ancla,
+          ).toBe(true);
+      }
+    }
+  });
+  it("la ampliación tiene los cuatro sistemas en el orden de las tablas y todas sus fuentes registradas", async () => {
+    const { SISTEMAS_AMPLIACION, ORDEN_SISTEMAS, FUENTES, CRITERIOS } =
+      await import("./ampliacion");
+    expect(SISTEMAS_AMPLIACION.map((s) => s.id)).toEqual(ORDEN_SISTEMAS);
+    expect(SISTEMAS_AMPLIACION.map((s) => s.name)).toEqual(TABLAS.T1.columnas);
+    for (const s of SISTEMAS_AMPLIACION)
+      for (const f of s.sources) expect(FUENTES[f], f).toBeTruthy();
+    for (const c of CRITERIOS) for (const f of c.src) expect(FUENTES[f], f).toBeTruthy();
+    const todo = JSON.stringify(SISTEMAS_AMPLIACION);
+    expect(todo).not.toMatch(/\bDT[12]\b|mg\/dL|mmol\/L|\bAIT\b/);
+  });
+});

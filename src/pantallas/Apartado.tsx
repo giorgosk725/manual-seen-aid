@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { APARTADOS, subapartados, type Apartado as TApartado } from "../contenido";
+import { CIFRAS } from "../contenido/cifras";
 import { href } from "../rutas";
 import { BotonImprimir } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
@@ -37,6 +38,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
   const prev = APARTADOS[i - 1];
   const next = APARTADOS[i + 1];
   const subs = subapartados(apartado);
+  const cifras = CIFRAS[apartado.slug] || [];
   const hex = CATEGORIA_HEX.leer;
 
   return (
@@ -113,8 +115,60 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         )}
       </header>
 
-      <div className="lg:pr-16">
-        <Bloques apartado={apartado} destacado={destacado} />
+      {cifras.length > 0 && (
+        <section aria-labelledby="cifras" className="mb-6">
+          <h2 id="cifras" className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500">
+            Cifras del apartado · tal como las da el capítulo
+          </h2>
+          <ul className="grid grid-cols-2 gap-2 md:grid-cols-3">
+            {cifras.map((c, i) => (
+              <li key={i}>
+                <a
+                  href={href("capitulo", apartado.slug, c.ancla)}
+                  className="hover-lift ease-brand flex h-full flex-col rounded-xl p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  style={{ background: hex.soft }}
+                >
+                  <span
+                    className="text-lg font-extrabold leading-tight tabular-nums"
+                    style={{ color: hex.ink }}
+                  >
+                    {c.valor}
+                  </span>
+                  <span className="mt-1 text-xs leading-snug text-slate-700">{c.etiqueta}</span>
+                  <span className="pagina-badge mt-auto pt-1.5">p. {c.p}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_13rem] xl:gap-10">
+        <div className="lg:pr-16">
+          <Bloques apartado={apartado} destacado={destacado} />
+        </div>
+        {subs.length > 0 && (
+          <aside className="no-imprimir hidden xl:block">
+            <nav aria-label="Índice del apartado" className="sticky top-20">
+              <div className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500">
+                En este apartado
+              </div>
+              <ol className="space-y-1 border-l-2 pl-3" style={{ borderColor: "#e5ebf1" }}>
+                {subs.map((s) => (
+                  <li key={s.id}>
+                    <a
+                      href={href("capitulo", apartado.slug, s.id)}
+                      aria-current={destacado === s.id ? "location" : undefined}
+                      className={`block rounded px-1 py-0.5 text-sm leading-snug hover:text-slate-900 ${destacado === s.id ? "font-semibold text-slate-900" : "text-slate-600"}`}
+                    >
+                      {s.texto}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </aside>
+        )}
       </div>
 
       <nav

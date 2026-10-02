@@ -76,4 +76,28 @@ test.describe("Recorrido básico (escritorio)", () => {
     const doi = page.getByRole("link", { name: /doi\.org\/10\.2337\/dci26-0122/ });
     await expect(doi).toHaveAttribute("href", "https://doi.org/10.2337/dci26-0122");
   });
+
+  test("Sistemas: la ficha muestra la foto, el capítulo y la ampliación; Situación filtra por sistema", async ({
+    page,
+  }) => {
+    await page.goto("/#/sistemas");
+    await page
+      .getByRole("link", { name: /myLoop CamAPS/ })
+      .first()
+      .click();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("myLoop CamAPS");
+    await expect(page.getByRole("img", { name: /Foto oficial de myLoop CamAPS/ })).toBeVisible();
+    await expect(page.getByText("Ampliación del autor · fuera del capítulo")).toBeVisible();
+    await page.goto("/#/consultar/situacion");
+    await page.getByRole("button", { name: /Resonancia magnética/ }).click();
+    await expect(page.getByText(/retirar también el set si la cánula es metálica/)).toBeVisible();
+    await page.getByRole("button", { name: /Ejercicio aeróbico planificado/ }).click();
+    await page
+      .getByRole("group", { name: "Sistema" })
+      .getByRole("button", { name: /Omnipod 5/ })
+      .click();
+    await expect(page).toHaveURL(/situacion\/ejercicio-aerobico:omnipod-5/);
+    await expect(page.getByText(/Función Actividad, objetivo 150 mg\/dl/)).toBeVisible();
+    await expect(page.getByText(/Modo Ease-off/)).toHaveCount(0);
+  });
 });

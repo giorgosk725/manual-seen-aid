@@ -28,6 +28,15 @@ de nada clínico.
   (estructura lista; dos preguntas de ejemplo marcadas como provisionales, las definitivas las escribirá el
   autor).
 
+- **Sistemas y recorridos (0.2.0).** Una ficha por sistema con su foto oficial: primero «Lo que dice el
+  capítulo» (sus columnas de las Tablas 1, 3 y 4 y los párrafos que lo nombran, literales y con página) y,
+  aparte y rotulada en ámbar, la **«Ampliación del autor · fuera del capítulo»** (ficha técnica, parámetros
+  que mueven el automático, sets de infusión, insulinas compatibles) con sus fuentes (`src/ampliacion/`,
+  extraída del proyecto asistente-aid del mismo autor). Recorridos construidos solo con el texto del
+  capítulo: «Situación y sistema» (Tablas 4 y 6), «Revisar la descarga» (Tabla 5 en ocho pasos) e
+  «Interrupción del sistema» (línea de tiempo). «Cifras del apartado» (`src/contenido/cifras.ts`): los
+  umbrales de cada apartado de un vistazo. Figura 1 como diagrama animado.
+
 ## Fuente única
 
 El PDF final maquetado del 30-9-2026 (ec-europe, 25 páginas) con sus 11 correcciones editoriales anotadas,
@@ -55,9 +64,10 @@ de tres niveles, Cloudflare Pages.
 
 ```
 src/
-  contenido/        texto literal del capítulo (apartados, tablas, figuras, figura3, bibliografía, glosario, cambios, test)
+  contenido/        texto literal del capítulo (apartados, tablas, figuras, figura3, bibliografía, glosario, cifras, cambios, test)
+  ampliacion/       AMPLIACIÓN DEL AUTOR, fuera del capítulo: fichas de sistemas, sets, insulinas, criterios y sus fuentes
   componentes/      Shell (cromo), Bloques, TablaVista, FiguraVista, Figura3Vista
-  pantallas/        Portada, Capitulo (índice y entero), Apartado, Consultar (tablas, figura 3, infografía, glosario), Otras
+  pantallas/        Portada, Capitulo, Apartado, Consultar (tablas, figura 3, infografía, glosario), Sistemas, Recorridos, Otras
   ui.tsx tokens.ts index.css rutas.ts prefs.ts buscador.ts texto.tsx imprimir.js
 e2e/                Playwright (smoke, movil, nocturno) + axe
 docs/CORRECCIONES.md

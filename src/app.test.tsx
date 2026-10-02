@@ -94,6 +94,34 @@ describe("App", () => {
     );
   });
 
+  it("la ficha de un sistema separa el capítulo de la ampliación del autor", async () => {
+    render(<App />);
+    await ir("#/sistemas/op5");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Omnipod 5");
+    expect(screen.getByRole("heading", { name: /Lo que dice el capítulo/ })).toBeInTheDocument();
+    expect(screen.getByText(/Ampliación del autor · fuera del capítulo/)).toBeInTheDocument();
+    expect(screen.getAllByText(/sin peso mínimo; DTD ≥ 5 UI\/día/).length).toBeGreaterThan(0);
+  });
+
+  it("Situación y sistema muestra la celda literal de la Tabla 4", async () => {
+    render(<App />);
+    await ir("#/consultar/situacion/comida-grasa:control-iq");
+    expect(
+      screen.getByText(/bolo extendido \(hasta 2 h; Control-IQ\+: de 15 min a 8 h\)/),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/Función comida de absorción lenta/)).not.toBeInTheDocument();
+  });
+
+  it("Revisar la descarga abre el paso 8 y enlaza a la Figura 3", async () => {
+    render(<App />);
+    await ir("#/consultar/descarga/8");
+    expect(screen.getByRole("heading", { level: 2, name: /Bandera roja/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Aplicar la Figura 3/ })).toHaveAttribute(
+      "href",
+      "#/consultar/figura-3",
+    );
+  });
+
   it("el modo nocturno se activa y se guarda", async () => {
     render(<App />);
     await userEvent.click(screen.getByRole("button", { name: "Modo nocturno" }));

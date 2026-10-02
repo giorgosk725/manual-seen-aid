@@ -8,6 +8,7 @@ import { PaginaBadge } from "../ui";
 import { TablaVista } from "./TablaVista";
 import { FiguraVista } from "./FiguraVista";
 import { Figura3Lectura } from "./Figura3Vista";
+import { Figura1Animada } from "./Figura1Animada";
 import { href } from "../rutas";
 
 function Ancla({ id, slug }: { id: string; slug: string }) {
@@ -97,6 +98,11 @@ function BloqueVista({ b, i, slug }: { b: Bloque; i: number; slug: string }) {
     case "figura":
       return (
         <div id={id} className="scroll-mt-24 lg:-mr-16">
+          {b.id === "F1" && (
+            <div className="mb-4">
+              <Figura1Animada />
+            </div>
+          )}
           {b.id === "F3" ? <Figura3Lectura /> : <FiguraVista figura={FIGURAS[b.id]!} />}
         </div>
       );

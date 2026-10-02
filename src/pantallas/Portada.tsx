@@ -4,17 +4,21 @@
 import {
   ArrowRight,
   BookOpen,
+  Clock3,
   Droplets,
   LayoutGrid,
+  ListChecks,
+  Route,
   Search,
   SpellCheck,
   Table2,
 } from "lucide-react";
+import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
 import { APARTADOS, CAPITULO, INFO } from "../contenido";
 import { CAMBIOS, PENDIENTES, VERSION_APP } from "../contenido/cambios";
 import { href } from "../rutas";
 import { Revelar } from "../ui";
-import { CATEGORIA_HEX, HERO_GRADIENT } from "../tokens";
+import { CATEGORIA_HEX, HERO_GRADIENT, SISTEMA_HEX } from "../tokens";
 import { Texto } from "../texto";
 
 /* Cada bloque de la infografía lleva al apartado que lo desarrolla. */
@@ -185,7 +189,7 @@ export function Portada() {
         </ol>
       </section>
 
-      <section aria-labelledby="consulta">
+      <section aria-labelledby="sistemas-portada">
         <div className="mb-3 flex items-end gap-3">
           <span
             aria-hidden="true"
@@ -193,6 +197,67 @@ export function Portada() {
             style={{ color: `${CATEGORIA_HEX.consultar.strong}2e` }}
           >
             02
+          </span>
+          <div className="flex-1">
+            <h2
+              id="sistemas-portada"
+              className="text-base font-extrabold tracking-tight"
+              style={{ color: CATEGORIA_HEX.consultar.ink }}
+            >
+              Los cuatro sistemas
+            </h2>
+            <p className="text-xs text-slate-500">
+              Lo que dice el capítulo de cada uno y, aparte, la ficha ampliada del autor.
+            </p>
+            <div
+              aria-hidden="true"
+              className="mt-1.5 h-px w-full"
+              style={{
+                background: `linear-gradient(90deg, ${CATEGORIA_HEX.consultar.strong}30, transparent)`,
+              }}
+            />
+          </div>
+        </div>
+        <ul className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+          {ORDEN_SISTEMAS.map((id, c) => {
+            const s = SISTEMAS_AMPLIACION[c];
+            const h = SISTEMA_HEX[c];
+            return (
+              <li key={id}>
+                <a
+                  href={href("sistemas", id)}
+                  className="hover-lift ease-brand flex h-full flex-col overflow-hidden rounded-2xl border bg-white shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  style={{ borderColor: "#e5ebf1" }}
+                >
+                  <span className="block aspect-[4/3] w-full overflow-hidden bg-white">
+                    <img
+                      src={FOTO_SISTEMA[id]}
+                      alt=""
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </span>
+                  <span className="block border-t px-3 py-2" style={{ borderColor: "#e5ebf1" }}>
+                    <span className="block text-sm font-extrabold" style={{ color: h.ink }}>
+                      {s.name}
+                    </span>
+                    <span className="block truncate text-[11px] text-slate-500">{s.algo}</span>
+                  </span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <section aria-labelledby="consulta">
+        <div className="mb-3 flex items-end gap-3">
+          <span
+            aria-hidden="true"
+            className="pointer-events-none text-3xl font-black leading-none"
+            style={{ color: `${CATEGORIA_HEX.consultar.strong}2e` }}
+          >
+            03
           </span>
           <div className="flex-1">
             <h2
@@ -211,19 +276,37 @@ export function Portada() {
             />
           </div>
         </div>
-        <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+        <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
           {[
             {
-              href: href("consultar", "tablas", "T1"),
-              icono: Table2,
-              t: "Sistemas",
-              s: "Tabla 1 por sistema",
+              href: href("consultar", "situacion"),
+              icono: Route,
+              t: "Situación y sistema",
+              s: "Qué hacer, Tablas 4 y 6",
             },
             {
               href: href("consultar", "figura-3"),
               icono: Droplets,
               t: "Cetonemia",
               s: "Figura 3 paso a paso",
+            },
+            {
+              href: href("consultar", "descarga", "1"),
+              icono: ListChecks,
+              t: "Revisar la descarga",
+              s: "Tabla 5 en ocho pasos",
+            },
+            {
+              href: href("consultar", "interrupcion"),
+              icono: Clock3,
+              t: "Interrupción",
+              s: "Cuánto dura y qué hacer",
+            },
+            {
+              href: href("consultar", "tablas", "T1"),
+              icono: Table2,
+              t: "Tablas",
+              s: "Las seis, filtrables",
             },
             {
               href: href("consultar", "tablas", "T6"),

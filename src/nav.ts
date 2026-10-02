@@ -1,7 +1,9 @@
 /* Destinos de la navegación: cada concepto tiene un único hogar y una única etiqueta. */
 import {
   BookOpen,
+  Clock3,
   Columns3,
+  Cpu,
   Droplets,
   FlaskConical,
   GraduationCap,
@@ -9,7 +11,9 @@ import {
   Info,
   LayoutGrid,
   Library,
+  ListChecks,
   ListTree,
+  Route,
   Search,
   SpellCheck,
   Table2,
@@ -29,6 +33,43 @@ export interface Destino {
 }
 
 export const DESTINOS: Destino[] = [
+  {
+    id: "sistemas",
+    etiqueta: "Sistemas",
+    href: href("sistemas"),
+    icono: Cpu,
+    cat: "consultar",
+    descripcion:
+      "Los cuatro sistemas con foto: lo que dice el capítulo de cada uno y la ficha ampliada del autor.",
+  },
+  {
+    id: "situacion",
+    etiqueta: "Situación y sistema",
+    corto: "Situación",
+    href: href("consultar", "situacion"),
+    icono: Route,
+    cat: "consultar",
+    descripcion:
+      "Elige la situación (ejercicio, enfermedad, exploración…) y el sistema: la conducta exacta.",
+  },
+  {
+    id: "descarga",
+    etiqueta: "Revisar la descarga",
+    corto: "Descarga",
+    href: href("consultar", "descarga", "1"),
+    icono: ListChecks,
+    cat: "consultar",
+    descripcion: "La Tabla 5 en ocho pasos, con el patrón del capítulo que corresponde a cada uno.",
+  },
+  {
+    id: "interrupcion",
+    etiqueta: "Interrupción del sistema",
+    corto: "Interrupción",
+    href: href("consultar", "interrupcion"),
+    icono: Clock3,
+    cat: "consultar",
+    descripcion: "Cuánto va a durar la interrupción y qué dice el capítulo para ese caso.",
+  },
   {
     id: "capitulo",
     etiqueta: "Índice del capítulo",
