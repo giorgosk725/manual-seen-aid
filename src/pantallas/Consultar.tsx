@@ -1,15 +1,7 @@
 /* Consultar: hub + tablas (filtrables) + Figura 3 (recorrido) + infografía (mapa) + glosario. */
 import { useMemo, useRef, useState } from "react";
 import { ArrowRight, Table2 } from "lucide-react";
-import {
-  APARTADOS,
-  GLOSARIO,
-  INFO,
-  LISTA_TABLAS,
-  TABLAS,
-  apartadoDeTabla,
-  type TablaId,
-} from "../contenido";
+import { GLOSARIO, INFO, LISTA_TABLAS, TABLAS, apartadoDeTabla, type TablaId } from "../contenido";
 import { DESTINOS } from "../nav";
 import { href } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Revelar, Segmented } from "../ui";
@@ -277,7 +269,7 @@ export function Infografia() {
         })}
       </ol>
       <p className="mt-3 text-xs italic text-slate-500">
-        {INFO.titulo} {APARTADOS[12].titulo}, p. {INFO.pagina}.
+        Infografía del capítulo (apartado 13), p. {INFO.pagina}.
       </p>
       <ImagenFigura figura={INFO} />
     </div>

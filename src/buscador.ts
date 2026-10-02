@@ -188,8 +188,17 @@ export function buscar(consulta: string, limite = 40): Resultado[] {
 
 function fragmento(texto: string, pos: number, radio = 90): string {
   if (pos < 0) return texto.length > radio * 2 ? texto.slice(0, radio * 2) + "…" : texto;
-  const ini = Math.max(0, pos - radio);
-  const fin = Math.min(texto.length, pos + radio);
+  let ini = Math.max(0, pos - radio);
+  let fin = Math.min(texto.length, pos + radio);
+  // Cortar en límite de palabra: un fragmento que empieza a media palabra se lee mal.
+  if (ini > 0) {
+    const esp = texto.indexOf(" ", ini);
+    if (esp > 0 && esp < pos) ini = esp + 1;
+  }
+  if (fin < texto.length) {
+    const esp = texto.lastIndexOf(" ", fin);
+    if (esp > pos) fin = esp;
+  }
   return (ini > 0 ? "…" : "") + texto.slice(ini, fin) + (fin < texto.length ? "…" : "");
 }
 

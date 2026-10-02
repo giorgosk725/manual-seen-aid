@@ -160,7 +160,9 @@ function Fichas({
             style={{ borderColor: "#e5ebf1" }}
           >
             <div className="mb-2 text-sm font-bold text-slate-900">
-              <Lineas>{f.etiqueta}</Lineas>
+              <Lineas>
+                {/^\d+$/.test(f.etiqueta) ? `${tabla.cabeceraEtiqueta} ${f.etiqueta}` : f.etiqueta}
+              </Lineas>
             </div>
             <dl className="space-y-2">
               {(f.unida ? [columnas[0]] : columnas).map((c) => (
