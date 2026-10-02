@@ -9,6 +9,7 @@ import { TablaVista } from "./TablaVista";
 import { FiguraVista } from "./FiguraVista";
 import { Figura3Lectura } from "./Figura3Vista";
 import { Figura1Animada } from "./Figura1Animada";
+import { DiagramaVista } from "./Diagramas";
 import { href } from "../rutas";
 
 function Ancla({ id, slug }: { id: string; slug: string }) {
@@ -110,6 +111,12 @@ function BloqueVista({
       return (
         <div id={id} className="scroll-mt-24 lg:-mr-16">
           <TablaVista tabla={TABLAS[b.id]} modo="lectura" />
+        </div>
+      );
+    case "diagrama":
+      return (
+        <div id={id} className="scroll-mt-24 lg:-mr-16">
+          <DiagramaVista id={b.id} enApartado />
         </div>
       );
     case "figura":

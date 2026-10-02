@@ -78,3 +78,23 @@ test.describe("Impresión", () => {
     await expect(page.getByRole("table", { name: /Tabla 1/ })).toBeVisible();
   });
 });
+
+test.describe("Visor de imágenes", () => {
+  test("la infografía se abre a pantalla completa, se amplía y se cierra con Escape", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 393, height: 851 });
+    await page.goto("/#/visual");
+    await page.getByRole("button", { name: /Ampliar Infografía/ }).click();
+    const visor = page.getByRole("dialog", { name: "Infografía." });
+    await expect(visor).toBeVisible();
+    await expect(visor.getByText("100 %")).toBeVisible();
+    await visor.getByRole("button", { name: "Acercar" }).click();
+    await expect(visor.getByText("140 %")).toBeVisible();
+    await expect
+      .poll(() => visor.locator("img").evaluate((i: HTMLImageElement) => i.naturalWidth))
+      .toBeGreaterThan(1000);
+    await page.keyboard.press("Escape");
+    await expect(visor).toBeHidden();
+  });
+});

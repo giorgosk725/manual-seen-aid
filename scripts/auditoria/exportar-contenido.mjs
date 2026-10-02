@@ -10,6 +10,7 @@ import {
   GLOSARIO,
 } from "../../src/contenido/index.ts";
 import { CIFRAS } from "../../src/contenido/cifras.ts";
+import * as D from "../../src/contenido/diagramas.ts";
 import { trocear } from "../../src/marcado.ts";
 
 const plano = (s) =>
@@ -80,5 +81,28 @@ for (const f of Object.values(FIGURAS))
     pagina: f.pagina,
     texto: f.cajas.flatMap((c) => [c.titulo || "", ...c.items.map(plano)]).join(" "),
   });
+// Diagramas: cada cifra o frase con la página de la que sale.
+out.diagramas = [];
+const dg = (id, p, texto) => out.diagramas.push({ id, p, texto });
+for (const pob of D.OBJETIVOS_MCG) {
+  for (const f of pob.franjas) dg(`objetivos ${pob.id}`, pob.pagina, `${f.franja} ${f.objetivo}`);
+  for (const e of pob.extras) dg(`objetivos ${pob.id} extra`, pob.pagina, e);
+}
+for (const t of D.ESCALA_CETONEMIA.tramos) dg(`cetonemia ${t.clave}`, t.p, t.accion);
+for (const m of D.ESCALA_CETONEMIA.marcas) dg("cetonemia marca", m.p, m.texto);
+for (const z of D.EJERCICIO.zonas)
+  dg("ejercicio zona", D.EJERCICIO.pagina, `${z.etiqueta} ${z.texto}`);
+dg("ejercicio marca", D.EJERCICIO.pagina, D.EJERCICIO.marca.texto);
+for (const f of D.EJERCICIO.fases)
+  for (const it of f.items) dg(`ejercicio ${f.titulo}`, D.EJERCICIO.pagina, it);
+for (const h of D.SEGUIMIENTO.hitos)
+  dg("seguimiento", D.SEGUIMIENTO.pagina, `${h.cuando} ${h.que}`);
+for (const r of D.HIPOGLUCEMIA.ramas)
+  dg("hipoglucemia", D.HIPOGLUCEMIA.pagina, `${r.condicion} ${r.cantidad}`);
+for (const x of D.HIPOGLUCEMIA.despues) dg("hipoglucemia después", D.HIPOGLUCEMIA.pagina, x);
+for (const p of D.TRANSICION.pasos) dg("transición", D.TRANSICION.pagina, p.texto);
+for (const a of D.ALGORITMOS)
+  for (const k of ["cadencia", "prediccion", "autocorreccion", "aprendizaje"])
+    dg(`algoritmos ${k}`, 3, a[k]);
 writeFileSync("_audit_contenido.json", JSON.stringify(out, null, 1), "utf8");
 console.log("ok", out.parrafos.length, "párrafos/listas;", out.tablas.length, "celdas y notas");

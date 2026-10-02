@@ -29,6 +29,7 @@ import {
 } from "../ampliacion";
 import { href } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Foldable, PaginaBadge, Revelar, ToneCard } from "../ui";
+import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { plano } from "../marcado";
@@ -371,16 +372,17 @@ export function FichaSistema({ id }: { id?: string }) {
         <span>{s.name}</span>
       </div>
       <header className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start">
-        <div
-          className="h-40 w-40 shrink-0 overflow-hidden rounded-2xl border bg-white shadow-soft"
-          style={{ borderColor: "#e5ebf1" }}
+        <AbrirEnVisor
+          imagen={{ src: FOTO_SISTEMA[s.id], alt: `Foto oficial de ${s.name}`, titulo: s.name }}
+          className="h-40 w-40 shrink-0 overflow-hidden rounded-2xl border bg-white shadow-soft focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+          etiqueta={`Ampliar la foto de ${s.name}`}
         >
           <img
             src={FOTO_SISTEMA[s.id]}
             alt={`Foto oficial de ${s.name}`}
             className="h-full w-full object-cover"
           />
-        </div>
+        </AbrirEnVisor>
         <div className="min-w-0 flex-1">
           <h1 className="text-3xl font-black tracking-tight" style={{ color: h.ink }}>
             {s.name}

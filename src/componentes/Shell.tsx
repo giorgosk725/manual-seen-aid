@@ -235,6 +235,7 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
       <nav aria-label="Navegación principal">
         {grupo("Leer", ["capitulo"])}
         {grupo("Consultar", [
+          "visual",
           "sistemas",
           "situacion",
           "figura-3",

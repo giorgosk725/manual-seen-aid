@@ -290,3 +290,33 @@ describe("cabeceras de sistema: solo texto del capítulo", () => {
     ]);
   });
 });
+
+describe("diagramas a partir del texto", () => {
+  it("cada diagrama aparece una vez en su apartado, con página dentro del apartado", async () => {
+    const { DIAGRAMAS } = await import("./contenido/diagramas");
+    expect(new Set(DIAGRAMAS.map((d) => d.id)).size).toBe(DIAGRAMAS.length);
+    for (const d of DIAGRAMAS) {
+      const a = APARTADOS.find((x) => x.slug === d.apartado)!;
+      const bloques = a.bloques.filter((b) => b.t === "diagrama" && b.id === d.id);
+      expect(bloques, d.id).toHaveLength(1);
+      expect(bloques[0].p).toBeGreaterThanOrEqual(a.paginas[0]);
+      expect(bloques[0].p).toBeLessThanOrEqual(a.paginas[1]);
+    }
+    const enApartados = APARTADOS.flatMap((a) => a.bloques.filter((b) => b.t === "diagrama"));
+    expect(enApartados).toHaveLength(DIAGRAMAS.length);
+  });
+  it("la escala de cetonemia coincide con los tramos de la Figura 3", async () => {
+    const { ESCALA_CETONEMIA } = await import("./contenido/diagramas");
+    expect(ESCALA_CETONEMIA.tramos.map((t) => t.clave)).toEqual(FIGURA3.tramos.map((t) => t.clave));
+    expect(ESCALA_CETONEMIA.tramos.map((t) => t.desde)).toEqual([0, 0.6, 1.0, 3.0]);
+  });
+  it("los algoritmos siguen el orden de columnas de la Tabla 1 y citan sus fragmentos", async () => {
+    const { ALGORITMOS } = await import("./contenido/diagramas");
+    expect(ALGORITMOS).toHaveLength(4);
+    const t1 = JSON.stringify(TABLAS.T1);
+    for (const a of ALGORITMOS) {
+      expect(t1, a.autocorreccion).toContain(a.autocorreccion);
+      if (a.prediccionH) expect(t1, a.prediccion).toContain(a.prediccion);
+    }
+  });
+});

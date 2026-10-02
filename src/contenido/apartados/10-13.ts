@@ -109,6 +109,7 @@ export const A10: Apartado = {
       texto:
         "Antes de empezar conviene valorar la glucemia de partida, su tendencia y la insulina activa: un bolo reciente o una flecha descendente aumentan el riesgo de hipoglucemia. Como referencia, se recomienda iniciar el ejercicio con una glucemia de 126–180 mg/dl; con cifras <90 mg/dl deben administrarse hidratos de carbono y retrasar el inicio. Si la glucemia supera 270 mg/dl, debe medirse la cetonemia y descartarse un fallo de infusión. Si la β-OHB es ≥1,0 mmol/l en contexto de hiperglucemia persistente o sospecha de fallo de infusión, debe aplicarse previamente el algoritmo de la figura 3; en cualquier caso, el ejercicio debe evitarse con cetonemia ≥1,5 mmol/l, con independencia de la glucemia, hasta corregir la cetosis y reevaluar la situación clínica.",
     },
+    { t: "diagrama", p: 19, id: "ejercicio" },
     {
       t: "p",
       p: 19,

@@ -4,6 +4,8 @@
    11 correcciones editoriales anotadas aplicadas, y cada bloque lleva su página de origen.
    Nada de contenido inventado ni traído de otras fuentes. */
 
+import type { DiagramaId } from "./diagramas";
+
 export type TablaId = "T1" | "T2" | "T3" | "T4" | "T5" | "T6";
 export type FiguraId = "F1" | "F2" | "F3" | "INFO";
 
@@ -19,7 +21,9 @@ export type Bloque =
   /* `p2` = página en la que termina cuando la lista salta de página. */
   | { t: "lista"; p: number; p2?: number; items: string[]; intro?: string }
   | { t: "tabla"; p: number; id: TablaId }
-  | { t: "figura"; p: number; id: FiguraId };
+  | { t: "figura"; p: number; id: FiguraId }
+  /* Diagrama a partir del texto del capítulo (src/contenido/diagramas.ts). */
+  | { t: "diagrama"; p: number; id: DiagramaId };
 
 export interface Apartado {
   n: number;

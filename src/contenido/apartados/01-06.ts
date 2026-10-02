@@ -109,6 +109,7 @@ export const A04: Apartado = {
         "Entre los sistemas de asa cerrada comercializados en España se encuentran MiniMed 780G, Tandem Control-IQ/IQ+, myLoop powered by CamAPS y Omnipod 5. Sus características principales comparadas se recogen en la tabla 1. La disponibilidad comercial, la financiación y las condiciones de uso pueden cambiar con el tiempo y diferir entre comunidades autónomas, por lo que deben confirmarse en la ficha técnica vigente y en el circuito asistencial correspondiente antes de la prescripción.",
     },
     { t: "tabla", p: 3, id: "T1" },
+    { t: "diagrama", p: 4, id: "algoritmos" },
     {
       t: "p",
       p: 4,
@@ -143,6 +144,7 @@ export const A05: Apartado = {
       texto:
         "El TIR 70-180 mg/dl es la métrica principal de control global (objetivo general > 70 % en adultos no gestantes). El TBR es el indicador prioritario de seguridad: < 70 mg/dl debe mantenerse por debajo del 4 % y < 54 mg/dl por debajo del 1 %. El TAR informa de la hiperglucemia: el TAR > 180 mg/dl complementa al TIR, mientras que el de nivel 2 (> 250 mg/dl, objetivo < 5 %) ayuda a detectar hiperglucemia mantenida o fallo de infusión. El coeficiente de variación (objetivo ≤ 36 %) refleja la variabilidad glucémica y se relaciona estrechamente con el riesgo de hipoglucemia.",
     },
+    { t: "diagrama", p: 4, id: "objetivos-mcg" },
     {
       t: "p",
       p: 4,

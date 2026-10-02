@@ -37,6 +37,14 @@ de nada clínico.
   «Interrupción del sistema» (línea de tiempo). «Cifras del apartado» (`src/contenido/cifras.ts`): los
   umbrales de cada apartado de un vistazo. Figura 1 como diagrama animado.
 
+- **Figuras y diagramas (0.3.0).** Siete diagramas hechos con las cifras y frases literales del capítulo,
+  cada una con su página (objetivos de MCG en escalera tipo AGP, escala de cetonemia, glucemia y ejercicio,
+  calendario de seguimiento, los cuatro algoritmos, hipoglucemia en asa cerrada, transición desde MDI); cada
+  uno dentro de su apartado y a pantalla completa en `#/visual/<id>`. Galería «Figuras y diagramas»
+  (`#/visual`) con filtros; visor a pantalla completa con zoom y pellizco para las figuras originales y las
+  fotos; tira de tablas, figuras y diagramas al principio de cada apartado; «De un vistazo» en la portada; la
+  búsqueda encuentra también los diagramas.
+
 ## Fuente única
 
 El PDF final maquetado del 30-9-2026 (ec-europe, 25 páginas) con sus 11 correcciones editoriales anotadas,

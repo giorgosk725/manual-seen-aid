@@ -2,7 +2,8 @@
    la maquetación es un apoyo plegado («Ver la figura original»). Preparada para que el
    autor añada o sustituya imágenes: basta con cambiar `imagen.src` en src/contenido. */
 import { useState } from "react";
-import { Image as ImageIcon } from "lucide-react";
+import { Image as ImageIcon, Maximize2 } from "lucide-react";
+import { AbrirEnVisor } from "./Visor";
 import type { Figura } from "../contenido";
 import { Texto } from "../texto";
 import { PaginaBadge } from "../ui";
@@ -30,6 +31,17 @@ export function ImagenFigura({ figura, abierta = false }: { figura: Figura; abie
         <ImageIcon size={14} aria-hidden="true" />
         {ver ? "Ocultar la figura original" : "Ver la figura original"}
       </button>
+      <AbrirEnVisor
+        imagen={{
+          src: figura.imagen.src,
+          alt: figura.imagen.alt,
+          titulo: figura.titulo,
+          nota: `p. ${figura.pagina}`,
+        }}
+        className="ml-2 inline-flex items-center gap-1.5 rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+      >
+        <Maximize2 size={14} aria-hidden="true" /> Pantalla completa con zoom
+      </AbrirEnVisor>
       {ver && (
         <figure
           className="animate-in mt-3 overflow-hidden rounded-xl border bg-white"

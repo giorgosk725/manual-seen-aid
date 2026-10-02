@@ -132,6 +132,24 @@ for slug, lista in app["cifras"].items():
             donde = [p for p, t in paginas.items() if all(n in t for n in nums)][:4]
             res["cifras_fallo"].append({"apartado": slug, "valor": c["valor"], "p": c["p"], "faltan": faltan, "todos_en": donde})
 
+# --- Diagramas: números exactos y palabras en la página indicada (algoritmos: Tabla 1, pp. 3–4) ---
+res["diagramas_fallo"] = []
+VACIAS = {"no", "se", "indica", "en", "la", "tabla", "1", "p"}  # «no se indica en la Tabla 1» es interfaz
+for d in app.get("diagramas", []):
+    pags = [3, 4] if d["id"].startswith("algoritmos") else [4, 5] if d["id"].startswith("objetivos general") else [d["p"]]
+    fuente = " ".join(paginas[x] for x in pags)
+    if 8 in pags:  # la Figura 3 es imagen: se compara con su transcripción
+        fuente += " " + " ".join(f["texto"] for f in app["figura3"])
+    bolsa = Counter(palabras(fuente))
+    nums_f = set(numeros(fuente))
+    texto = d["texto"]
+    if texto.startswith("no se indica"):
+        continue
+    faltan_n = [n for n in numeros(texto) if n not in nums_f]
+    faltan_w = [w for w in set(palabras(texto)) if bolsa[w] < 1 and w not in VACIAS]
+    if faltan_n or faltan_w:
+        res["diagramas_fallo"].append({"id": d["id"], "p": pags, "numeros": faltan_n, "palabras": faltan_w, "texto": texto[:120]})
+
 json.dump(res, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 print("párrafos OK", res["parrafos_ok"], "| divergencias", len(res["parrafos_fallo"]))
 print("celdas OK", res["celdas_ok"], "| divergencias", len(res["celdas_fallo"]))
@@ -139,3 +157,6 @@ print("referencias con palabras ausentes", len(res["refs_fallo"]))
 print("glosario con página dudosa", len(res["glosario_fallo"]))
 print("cifras con número ausente en su página", len(res["cifras_fallo"]))
 print("correcciones editoriales detectadas", len(res["corr"]))
+print("diagramas: frases con algo que no está en su página", len(res["diagramas_fallo"]), "de", len(app.get("diagramas", [])))
+for f in res["diagramas_fallo"]:
+    print("  ", f)

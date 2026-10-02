@@ -11,6 +11,7 @@ export { FIGURA3 } from "./figura3";
 export { BIBLIOGRAFIA } from "./bibliografia";
 export { GLOSARIO } from "./glosario";
 export { algoritmoDelCapitulo, fichasDelCapitulo } from "./resumen-sistema";
+export { DIAGRAMAS, type DiagramaId, type DiagramaMeta } from "./diagramas";
 
 /* Datos de la obra (portada de la app y «Sobre esta versión»). */
 export const CAPITULO = {
@@ -55,6 +56,15 @@ export const apartadoDeTabla = (id: TablaId): Apartado | undefined =>
 
 export const apartadoDeFigura = (id: FiguraId): Apartado | undefined =>
   APARTADOS.find((a) => a.bloques.some((b) => b.t === "figura" && b.id === id));
+
+/* Dónde se inserta cada diagrama (apartado y ancla del bloque). */
+export const ubicacionDeDiagrama = (id: string) => {
+  for (const a of APARTADOS) {
+    const i = a.bloques.findIndex((b) => b.t === "diagrama" && b.id === id);
+    if (i >= 0) return { apartado: a, ancla: idDeBloque(a.bloques[i], i) };
+  }
+  return null;
+};
 
 /* Subapartados (h3) de un apartado, para el índice «En este apartado». */
 export const subapartados = (a: Apartado) =>

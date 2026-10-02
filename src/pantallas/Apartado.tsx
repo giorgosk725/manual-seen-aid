@@ -1,8 +1,17 @@
 /* Pantalla de lectura de un apartado: cabecera editorial con numeral, índice «En este
    apartado», barra de progreso, columna de lectura, anterior/siguiente e impresión. */
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { APARTADOS, subapartados, type Apartado as TApartado } from "../contenido";
+import { ArrowLeft, ArrowRight, Image as ImageIcon, Table2 } from "lucide-react";
+import {
+  APARTADOS,
+  DIAGRAMAS,
+  FIGURAS,
+  TABLAS,
+  idDeBloque,
+  subapartados,
+  type Apartado as TApartado,
+} from "../contenido";
+import { ICONO_DIAGRAMA } from "../nav";
 import { CIFRAS } from "../contenido/cifras";
 import { href } from "../rutas";
 import { BotonImprimir } from "../ui";
@@ -39,6 +48,27 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
   const next = APARTADOS[i + 1];
   const subs = subapartados(apartado);
   const cifras = CIFRAS[apartado.slug] || [];
+  // Recursos visuales del apartado (tablas, figuras, diagramas), en orden de lectura.
+  const recursos = apartado.bloques.flatMap((b, i) => {
+    const ancla = idDeBloque(b, i);
+    if (b.t === "tabla")
+      return [{ ancla, icono: Table2, texto: `Tabla ${TABLAS[b.id].numero}`, tipo: "Tabla" }];
+    if (b.t === "figura")
+      return [
+        {
+          ancla,
+          icono: ImageIcon,
+          texto: b.id === "INFO" ? "Infografía" : `Figura ${b.id.slice(1)}`,
+          tipo: b.id === "F3" ? "Algoritmo" : "Figura",
+          titulo: FIGURAS[b.id]?.titulo,
+        },
+      ];
+    if (b.t === "diagrama") {
+      const d = DIAGRAMAS.find((x) => x.id === b.id)!;
+      return [{ ancla, icono: ICONO_DIAGRAMA[b.id], texto: d.titulo, tipo: "Diagrama" }];
+    }
+    return [];
+  });
   const hex = CATEGORIA_HEX.leer;
 
   return (
@@ -111,6 +141,43 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                 {s.texto}
               </a>
             ))}
+          </nav>
+        )}
+        {recursos.length > 0 && (
+          <nav aria-label="Recursos visuales del apartado" className="no-imprimir mt-3">
+            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Tablas, figuras y diagramas
+            </div>
+            <ul className="flex gap-2 overflow-x-auto pb-1">
+              {recursos.map((r) => {
+                const I = r.icono;
+                return (
+                  <li key={r.ancla} className="shrink-0">
+                    <a
+                      href={href("capitulo", apartado.slug, r.ancla)}
+                      className="hover-lift ease-brand flex items-center gap-2 rounded-xl border bg-white px-3 py-2 text-sm shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                      style={{ borderColor: "#e5ebf1" }}
+                    >
+                      <span
+                        className="flex h-7 w-7 items-center justify-center rounded-lg text-white"
+                        style={{ background: "linear-gradient(135deg, #514dbf, #4340a6)" }}
+                        aria-hidden="true"
+                      >
+                        <I size={15} />
+                      </span>
+                      <span>
+                        <span className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                          {r.tipo}
+                        </span>
+                        <span className="block whitespace-nowrap font-semibold text-slate-900">
+                          {r.texto}
+                        </span>
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
           </nav>
         )}
       </header>

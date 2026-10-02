@@ -16,6 +16,7 @@ const hex = CATEGORIA_HEX.consultar;
 
 export function HubConsultar() {
   const ids = [
+    "visual",
     "sistemas",
     "situacion",
     "figura-3",

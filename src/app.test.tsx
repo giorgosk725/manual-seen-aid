@@ -122,6 +122,50 @@ describe("App", () => {
     );
   });
 
+  it("Figuras y diagramas reúne diagramas, figuras, tablas y sistemas, y filtra", async () => {
+    render(<App />);
+    await ir("#/visual");
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Figuras y diagramas" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Escala de cetonemia/ })).toHaveAttribute(
+      "href",
+      "#/visual/cetonemia",
+    );
+    expect(screen.getAllByRole("button", { name: /^Ampliar/ }).length).toBeGreaterThanOrEqual(8);
+    await userEvent.click(screen.getByRole("button", { name: /^Tablas \(6\)/ }));
+    expect(screen.queryByRole("link", { name: /Escala de cetonemia/ })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Tabla 6/ })).toBeInTheDocument();
+  });
+
+  it("un diagrama a pantalla completa enlaza a su lugar en el capítulo", async () => {
+    render(<App />);
+    await ir("#/visual/ejercicio");
+    expect(
+      screen.getByRole("heading", { level: 3, name: "Glucemia y ejercicio" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/se recomienda iniciar el ejercicio con una glucemia de 126–180 mg\/dl/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /Leer en el capítulo: 10\./ }).getAttribute("href"),
+    ).toMatch(/^#\/capitulo\/10-situaciones\/b\d+$/);
+  });
+
+  it("el apartado lista sus tablas, figuras y diagramas", async () => {
+    render(<App />);
+    await ir("#/capitulo/08-iniciacion");
+    const nav = screen.getByRole("navigation", { name: "Recursos visuales del apartado" });
+    for (const t of [
+      "Tabla 2",
+      "Transición desde MDI",
+      "Tabla 3",
+      "Tabla 4",
+      "Calendario de seguimiento",
+    ])
+      expect(within(nav).getByText(t)).toBeInTheDocument();
+  });
+
   it("el modo nocturno se activa y se guarda", async () => {
     render(<App />);
     await userEvent.click(screen.getByRole("button", { name: "Modo nocturno" }));

@@ -55,6 +55,13 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
    `src/contenido/cifras.ts` («Cifras del apartado») is NOT an exception: every figure there is a
    literal value from the chapter with its page, and the test checks pages and anchors.
 
+8. **Diagrams are chapter text, rearranged.** `src/contenido/diagramas.ts` holds the data of the
+   «Figuras y diagramas» diagrams (MCG targets, ketone scale, exercise, follow-up calendar, the four
+   algorithms, hypoglycaemia, MDI transition). Every number and phrase is the chapter's own wording
+   with its page; do not paraphrase (no verb changes) and do not add values the chapter does not
+   give (leave a band without target as «—»). `scripts/auditoria/fidelidad.py` checks each one
+   against its PDF page. Diagrams are HTML/CSS, not SVG, so the text stays real text.
+
 ## 2. Quality gates (all must pass before a push)
 
 ```bash

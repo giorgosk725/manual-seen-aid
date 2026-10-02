@@ -8,13 +8,24 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.2.1";
+export const VERSION_APP = "0.3.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-02",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — auditoría extensa`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — figuras y diagramas`,
+    detalle: [
+      "Siete diagramas construidos con las cifras y frases del capítulo, cada una con su página: objetivos de MCG (adultos, gestación, hospital y fragilidad), escala de cetonemia, glucemia y ejercicio, calendario de seguimiento, los cuatro algoritmos, hipoglucemia en asa cerrada y transición desde MDI. Cada uno aparece en su apartado y a pantalla completa.",
+      "Nueva sección «Figuras y diagramas»: todo lo visual en un sitio, con filtros (diagramas, figuras, tablas y sistemas).",
+      "Visor a pantalla completa con zoom (botones, rueda, pellizco y doble toque) para las figuras originales y las fotos de los sistemas.",
+      "Cada apartado abre con una tira de sus tablas, figuras y diagramas; la portada muestra «De un vistazo» y la búsqueda encuentra también los diagramas.",
+    ],
+  },
+  {
+    fecha: "2026-10-02",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.2.1 — auditoría extensa",
     detalle: [
       "Fidelidad comprobada frente al PDF: 144 de 144 párrafos y listas, 216 de 216 celdas de tabla, las 10 referencias y las 49 cifras por apartado. Corregidas las páginas de dos listas que saltan de página y las de EASD e ISPAD en el glosario.",
       "Las cabeceras de cada sistema (ficha, portada e índice) salen ahora de la Tabla 1 del capítulo; la ampliación del autor solo se ve dentro de su bloque rotulado.",

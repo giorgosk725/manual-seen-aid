@@ -14,7 +14,8 @@ import {
   Table2,
 } from "lucide-react";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
-import { APARTADOS, CAPITULO, INFO, algoritmoDelCapitulo } from "../contenido";
+import { APARTADOS, CAPITULO, DIAGRAMAS, INFO, algoritmoDelCapitulo } from "../contenido";
+import { ICONO_DIAGRAMA } from "../nav";
 import { CAMBIOS, PENDIENTES, VERSION_APP } from "../contenido/cambios";
 import { href } from "../rutas";
 import { Revelar } from "../ui";
@@ -185,7 +186,7 @@ export function Portada() {
         </ol>
       </section>
 
-      <section aria-labelledby="sistemas-portada">
+      <section aria-labelledby="vistazo">
         <div className="mb-3 flex items-end gap-3">
           <span
             aria-hidden="true"
@@ -193,6 +194,80 @@ export function Portada() {
             style={{ color: `${CATEGORIA_HEX.consultar.strong}2e` }}
           >
             02
+          </span>
+          <div className="flex-1">
+            <h2
+              id="vistazo"
+              className="text-base font-extrabold tracking-tight"
+              style={{ color: CATEGORIA_HEX.consultar.ink }}
+            >
+              De un vistazo
+            </h2>
+            <p className="text-xs text-slate-500">
+              Las cifras y los pasos más consultados del capítulo, en diagramas con su página.
+            </p>
+            <div
+              aria-hidden="true"
+              className="mt-1.5 h-px w-full"
+              style={{
+                background: `linear-gradient(90deg, ${CATEGORIA_HEX.consultar.strong}30, transparent)`,
+              }}
+            />
+          </div>
+        </div>
+        <ul className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+          {DIAGRAMAS.slice(0, 7).map((d) => {
+            const I = ICONO_DIAGRAMA[d.id];
+            return (
+              <li key={d.id}>
+                <a
+                  href={href("visual", d.id)}
+                  className="hover-lift ease-brand flex h-full flex-col gap-2 rounded-2xl border bg-white p-3 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  style={{
+                    borderColor: "#e5ebf1",
+                    background: `linear-gradient(160deg, ${CATEGORIA_HEX.consultar.soft}, #ffffff 60%)`,
+                  }}
+                >
+                  <span
+                    className="flex h-9 w-9 items-center justify-center rounded-lg text-white"
+                    style={{
+                      background: `linear-gradient(135deg, ${CATEGORIA_HEX.consultar.strong}, ${CATEGORIA_HEX.consultar.strong2})`,
+                    }}
+                    aria-hidden="true"
+                  >
+                    <I size={17} />
+                  </span>
+                  <span className="text-sm font-bold leading-snug text-slate-900">{d.titulo}</span>
+                  <span className="pagina-badge mt-auto">
+                    {d.paginas.length === 1 ? "p." : "pp."} {d.paginas.join(", ")}
+                  </span>
+                </a>
+              </li>
+            );
+          })}
+          <li>
+            <a
+              href={href("visual")}
+              className="flex h-full flex-col justify-center gap-1 rounded-2xl border border-dashed p-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
+              style={{ borderColor: "#cbd5e1" }}
+            >
+              Todas las figuras y diagramas
+              <span className="inline-flex items-center gap-1 text-xs text-slate-500">
+                figuras con zoom, tablas y sistemas <ArrowRight size={12} aria-hidden="true" />
+              </span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="sistemas-portada">
+        <div className="mb-3 flex items-end gap-3">
+          <span
+            aria-hidden="true"
+            className="pointer-events-none text-3xl font-black leading-none"
+            style={{ color: `${CATEGORIA_HEX.consultar.strong}2e` }}
+          >
+            03
           </span>
           <div className="flex-1">
             <h2
@@ -255,7 +330,7 @@ export function Portada() {
             className="pointer-events-none text-3xl font-black leading-none"
             style={{ color: `${CATEGORIA_HEX.consultar.strong}2e` }}
           >
-            03
+            04
           </span>
           <div className="flex-1">
             <h2

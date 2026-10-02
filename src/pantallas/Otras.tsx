@@ -19,6 +19,7 @@ const fecha = (iso: string) =>
   });
 
 const TIPO: Record<string, string> = {
+  diagrama: "Diagrama",
   texto: "Texto",
   tabla: "Tabla",
   figura: "Figura",

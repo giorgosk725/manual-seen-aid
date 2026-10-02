@@ -63,6 +63,7 @@ export const A07: Apartado = {
       texto:
         "En determinados episodios de hipoglucemia leve, sobre todo cuando el algoritmo ya ha reducido o suspendido la infusión y no existe insulina activa relevante, pueden bastar cantidades menores que la regla clásica de 15 g: como orientación, 5-10 g ante glucemia 54-70 mg/dl con flecha estable o ascendente, reservando cantidades en torno a 15 g para glucemia < 54 mg/dl, doble flecha descendente o insulina activa significativa. Debe reevaluarse con glucosa capilar a los 15 min y evitarse el sobretratamiento; la evidencia específica en AID es aún limitada, por lo que conviene individualizar. Los hidratos para tratar la hipoglucemia no deben anunciarse como comida; en CamAPS FX existe la opción de registrarlos como “tratamiento de hipoglucemia”, que los documenta y suaviza la entrega de insulina sin contabilizarlos como ingesta.",
     },
+    { t: "diagrama", p: 8, id: "hipoglucemia" },
     {
       t: "p",
       p: 8,
@@ -138,6 +139,7 @@ export const A08: Apartado = {
         "La iniciación y el seguimiento de un sistema de asa cerrada siguen una secuencia estructurada en cuatro fases: selección individualizada y preparación, inicio del sistema, seguimiento estrecho durante los primeros 3 meses y seguimiento mantenido a largo plazo. La transición desde MDI (cálculo de parámetros iniciales y manejo del solapamiento basal) se sintetiza en la tabla 2; los parámetros clásicos modificables por sistema, en la tabla 3; las herramientas del sistema y la conducta recomendada ante situaciones clínicas frecuentes, en la tabla 4; y el análisis estructurado de la descarga, en la tabla 5.",
     },
     { t: "tabla", p: 10, id: "T2" },
+    { t: "diagrama", p: 10, id: "transicion" },
     { t: "tabla", p: 10, id: "T3" },
     { t: "tabla", p: 11, id: "T4" },
     {
@@ -166,6 +168,7 @@ export const A08: Apartado = {
       texto:
         "La estructura recomendada incluye un contacto remoto en las primeras 72 h y a la semana, una revisión presencial a las 2-4 semanas, y una visita a los 3 meses con determinación de HbA1c. El contacto remoto inicial se centra en resolución de dudas, revisión de alarmas e identificación de salidas a modo manual. La revisión presencial a las 2-4 semanas permite ajustes finos (ratios y objetivos configurables) e incorporación de modos temporales, revisión del patrón posprandial, los bolos omitidos o tardíos y la frecuencia de correcciones automáticas. La visita a los 3 meses incorpora la HbA1c y el análisis estructurado de la descarga (v. Tabla 5).",
     },
+    { t: "diagrama", p: 12, id: "seguimiento" },
     {
       t: "p",
       p: 12,
@@ -293,6 +296,7 @@ export const A09: Apartado = {
         "β-OHB ≥3,0 mmol/l o presencia de signos de gravedad —vómitos persistentes, dolor abdominal, respiración rápida o profunda, somnolencia, confusión, deshidratación, imposibilidad para beber o deterioro del estado general—: posible cetoacidosis diabética; valoración hospitalaria urgente.",
       ],
     },
+    { t: "diagrama", p: 15, id: "cetonemia" },
     {
       t: "p",
       p: 15,

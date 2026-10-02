@@ -9,6 +9,8 @@ import { Figura3Pantalla, Glosario, HubConsultar, Infografia, Tablas } from "./p
 import { Bibliografia, Buscar, Cambios, Mas, Sobre, Test } from "./pantallas/Otras";
 import { FichaSistema, HubSistemas } from "./pantallas/Sistemas";
 import { sistemaPorId } from "./ampliacion";
+import { DiagramaPantalla, Visual } from "./pantallas/Visual";
+import { DIAGRAMAS } from "./contenido";
 import { Interrupcion, RevisarDescarga, SituacionSistema } from "./pantallas/Recorridos";
 import { TABLAS } from "./contenido";
 
@@ -99,6 +101,10 @@ export default function App() {
       }
       break;
     }
+    case "visual":
+      pantalla = ruta.sub ? <DiagramaPantalla id={ruta.sub} /> : <Visual />;
+      titulo = DIAGRAMAS.find((d) => d.id === ruta.sub)?.titulo ?? "Figuras y diagramas";
+      break;
     case "sistemas":
       pantalla = ruta.sub ? <FichaSistema id={ruta.sub} /> : <HubSistemas />;
       titulo = sistemaPorId(ruta.sub)?.name ?? "Sistemas";

@@ -1,25 +1,32 @@
 /* Destinos de la navegación: cada concepto tiene un único hogar y una única etiqueta. */
 import {
+  Activity,
   BookOpen,
+  CalendarClock,
   Clock3,
   Columns3,
   Cpu,
   Droplets,
+  Footprints,
   FlaskConical,
   GraduationCap,
   History,
+  Images,
   Info,
   LayoutGrid,
   Library,
   ListChecks,
+  ListOrdered,
   ListTree,
   Route,
   Search,
   SpellCheck,
   Table2,
+  Target,
   type LucideIcon,
 } from "lucide-react";
 import { href } from "./rutas";
+import type { DiagramaId } from "./contenido/diagramas";
 
 export interface Destino {
   id: string;
@@ -33,6 +40,16 @@ export interface Destino {
 }
 
 export const DESTINOS: Destino[] = [
+  {
+    id: "visual",
+    etiqueta: "Figuras y diagramas",
+    corto: "Visual",
+    href: href("visual"),
+    icono: Images,
+    cat: "consultar",
+    descripcion:
+      "Todo lo visual en un sitio: diagramas a partir del texto, figuras con zoom, tablas y sistemas.",
+  },
   {
     id: "sistemas",
     etiqueta: "Sistemas",
@@ -162,3 +179,14 @@ export const ICONO_CONSULTAR = Columns3;
 export const ICONO_EVIDENCIA = FlaskConical;
 
 export const destino = (id: string) => DESTINOS.find((d) => d.id === id)!;
+
+/* Icono de cada diagrama (galería, portada, tira de recursos de cada apartado). */
+export const ICONO_DIAGRAMA: Record<DiagramaId, LucideIcon> = {
+  "objetivos-mcg": Target,
+  cetonemia: Droplets,
+  ejercicio: Footprints,
+  seguimiento: CalendarClock,
+  algoritmos: Cpu,
+  hipoglucemia: Activity,
+  transicion: ListOrdered,
+};

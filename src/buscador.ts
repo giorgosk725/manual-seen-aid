@@ -3,6 +3,7 @@
    Comparación sin tildes ni mayúsculas; todos los términos deben aparecer. */
 import {
   APARTADOS,
+  DIAGRAMAS,
   BIBLIOGRAFIA,
   FIGURA3,
   FIGURAS,
@@ -15,7 +16,7 @@ import { plano } from "./marcado";
 
 export interface Entrada {
   id: string;
-  tipo: "texto" | "tabla" | "figura" | "referencia" | "sigla";
+  tipo: "texto" | "tabla" | "figura" | "diagrama" | "referencia" | "sigla";
   titulo: string;
   texto: string;
   pagina: number;
@@ -122,6 +123,16 @@ export function indice(): Entrada[] {
     pagina: FIGURA3.pagina,
     ruta: href("consultar", "figura-3"),
   });
+  for (const d of DIAGRAMAS) {
+    out.push({
+      id: `diagrama/${d.id}`,
+      tipo: "diagrama",
+      titulo: `Diagrama: ${d.titulo}`,
+      texto: `${d.titulo}. ${d.resumen}`,
+      pagina: d.paginas[0],
+      ruta: href("visual", d.id),
+    });
+  }
   for (const r of BIBLIOGRAFIA) {
     out.push({
       id: `ref/${r.n}`,
