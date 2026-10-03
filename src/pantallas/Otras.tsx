@@ -8,7 +8,7 @@ import { DESTINOS } from "../nav";
 import { href } from "../rutas";
 import { Badge, CabeceraEditorial, Revelar, ToneCard } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
-import { buscar, marcar } from "../buscador";
+import { buscar, fueraDelCapitulo, marcar, type Resultado } from "../buscador";
 import { useNocturno } from "../prefs";
 
 const fecha = (iso: string) =>
@@ -25,9 +25,46 @@ const TIPO: Record<string, string> = {
   figura: "Figura",
   referencia: "Bibliografía",
   sigla: "Sigla",
+  extendida: "Versión extendida",
+  ampliacion: "Ampliación",
 };
 
 /* ---------- Buscar ---------- */
+function ListaResultados({ res, q, fuera }: { res: Resultado[]; q: string; fuera?: boolean }) {
+  return (
+    <ol className="mt-3 space-y-2">
+      {res.map((r) => (
+        <li key={r.entrada.id}>
+          <a
+            href={r.entrada.ruta}
+            className={`block rounded-xl border p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 ${fuera ? "border-amber-200 bg-amber-50" : "bg-white"}`}
+            style={fuera ? undefined : { borderColor: "#e5ebf1" }}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+              <span className="flex items-center gap-2">
+                <Badge tone={fuera ? "amber" : "sky"}>{TIPO[r.entrada.tipo]}</Badge>
+                <span className="font-semibold">{r.entrada.titulo}</span>
+              </span>
+              {r.entrada.pagina > 0 && <span className="pagina-badge">p. {r.entrada.pagina}</span>}
+            </div>
+            <p className="mt-1 text-sm text-slate-800">
+              {marcar(r.fragmento, q).map((t, i) =>
+                t.hit ? (
+                  <mark key={i} className="resaltado">
+                    {t.t}
+                  </mark>
+                ) : (
+                  <span key={i}>{t.t}</span>
+                ),
+              )}
+            </p>
+          </a>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 export function Buscar({ inicial }: { inicial?: string }) {
   const [q, setQ] = useState(inicial ?? "");
   useEffect(() => {
@@ -47,8 +84,9 @@ export function Buscar({ inicial }: { inicial?: string }) {
     <div>
       <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1}>
         <p className="text-sm text-slate-600">
-          Búsqueda instantánea sobre el texto literal: párrafos, tablas, figuras, bibliografía y
-          siglas. Sin inteligencia generativa.
+          Búsqueda instantánea sobre el texto literal: párrafos, tablas, figuras, diagramas,
+          bibliografía y siglas. Debajo y aparte, lo que no es del capítulo (versión extendida y
+          ampliación del autor). Sin inteligencia generativa.
         </p>
       </CabeceraEditorial>
       <label className="sr-only" htmlFor="buscar-q">
@@ -70,36 +108,18 @@ export function Buscar({ inicial }: { inicial?: string }) {
             : `${res.length} resultado${res.length === 1 ? "" : "s"}`}
         </p>
       )}
-      <ol className="mt-3 space-y-2">
-        {res.map((r) => (
-          <li key={r.entrada.id}>
-            <a
-              href={r.entrada.ruta}
-              className="block rounded-xl border bg-white p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-              style={{ borderColor: "#e5ebf1" }}
-            >
-              <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
-                <span className="flex items-center gap-2">
-                  <Badge tone="sky">{TIPO[r.entrada.tipo]}</Badge>
-                  <span className="font-semibold">{r.entrada.titulo}</span>
-                </span>
-                <span className="pagina-badge">p. {r.entrada.pagina}</span>
-              </div>
-              <p className="mt-1 text-sm text-slate-800">
-                {marcar(r.fragmento, q).map((t, i) =>
-                  t.hit ? (
-                    <mark key={i} className="resaltado">
-                      {t.t}
-                    </mark>
-                  ) : (
-                    <span key={i}>{t.t}</span>
-                  ),
-                )}
-              </p>
-            </a>
-          </li>
-        ))}
-      </ol>
+      <ListaResultados res={res.filter((r) => !fueraDelCapitulo(r.entrada))} q={q} />
+      {res.some((r) => fueraDelCapitulo(r.entrada)) && (
+        <section aria-labelledby="fuera" className="mt-6">
+          <h2 id="fuera" className="text-sm font-bold text-amber-900">
+            Fuera del capítulo · versión extendida y ampliación del autor
+          </h2>
+          <p className="text-xs text-slate-600">
+            No es texto del Manual SEEN: material propio del autor, rotulado en ámbar.
+          </p>
+          <ListaResultados res={res.filter((r) => fueraDelCapitulo(r.entrada))} q={q} fuera />
+        </section>
+      )}
     </div>
   );
 }
@@ -266,21 +286,40 @@ export function Sobre() {
           caja.
         </p>
         <h2 className="mt-5 text-base font-extrabold text-slate-900">
-          Dos capas, siempre separadas
+          El capítulo y, aparte, lo que no es del capítulo
         </h2>
         <p className="mt-2 text-sm">
-          Todo lo que viene del capítulo se muestra como texto literal con su página. La única
-          excepción, rotulada en ámbar como «Ampliación del autor · fuera del capítulo», es la ficha
-          técnica de cada sistema (indicación, algoritmo, equipo, parámetros, sets de infusión,
-          insulinas): material propio del autor, validado en su proyecto asistente-aid, con sus
-          fuentes al pie. No forma parte del Manual SEEN.
+          Todo lo que viene del capítulo se muestra como texto literal con su página. Lo demás va
+          siempre rotulado y separado, nunca mezclado con él, y si algo difiriera manda el capítulo:
         </p>
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+          <li>
+            <strong>Versión extendida del autor · no publicada en el Manual</strong> (ámbar,
+            plegada): fragmentos de los borradores de mayo de 2026 que no cupieron en el capítulo,
+            aprobados uno a uno por el autor, con su borrador y su fecha.
+          </li>
+          <li>
+            <strong>Ampliación del autor · fuera del capítulo</strong> (ámbar): la ficha técnica de
+            cada sistema, validada en su proyecto asistente-aid, con sus fuentes.
+          </li>
+          <li>
+            <strong>Para el paciente</strong>: la información para pacientes (versión corregida V5
+            del autor) y el resumen del capítulo (maquetación de la editorial), literales; y el plan
+            de seguridad de cada sistema, hecho solo con texto del capítulo.
+          </li>
+          <li>
+            <strong>Autoevaluación</strong>: las preguntas del autor, rotuladas «pendiente de
+            validación del autor» hasta que dé su visto bueno.
+          </li>
+        </ul>
         <h2 className="mt-5 text-base font-extrabold text-slate-900">Qué no es</h2>
         <p className="mt-2 text-sm">
           Material educativo para profesionales. No es un producto sanitario, no contiene
           calculadoras, no pide ni guarda datos de pacientes y no sustituye la ficha técnica de cada
-          sistema, los protocolos del centro ni el juicio clínico. Las únicas preferencias que
-          guarda el navegador son el modo nocturno y el tamaño de letra.
+          sistema, los protocolos del centro ni el juicio clínico. Lo único que guarda el navegador
+          son preferencias de lectura: modo nocturno, tamaño de letra, por dónde se iba leyendo, los
+          apartados leídos y los favoritos (rutas de la app, nunca datos clínicos). El plan de
+          seguridad se rellena a mano, en papel.
         </p>
       </section>
       <section
@@ -334,7 +373,7 @@ function Pregunta({ p, n }: { p: (typeof PREGUNTAS)[number]; n: number }) {
     <li className="rounded-2xl border bg-white p-4 shadow-soft" style={{ borderColor: "#e5ebf1" }}>
       <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
         <span className="font-bold">Pregunta {n}</span>
-        {p.provisional && <Badge tone="amber">Provisional · ejemplo</Badge>}
+        {!p.validada && <Badge tone="amber">Pendiente de validación del autor</Badge>}
       </div>
       <p className="mt-1 text-base font-semibold text-slate-900">{p.enunciado}</p>
       <ol className="mt-3 space-y-1.5">
@@ -370,18 +409,34 @@ function Pregunta({ p, n }: { p: (typeof PREGUNTAS)[number]; n: number }) {
         })}
       </ol>
       {elegida != null && (
-        <div
-          className="animate-in mt-3 rounded-xl p-3 text-sm"
-          style={{ background: "#eef3f8" }}
-          aria-live="polite"
-        >
-          <p className="font-bold text-slate-900">
-            {elegida === p.correcta ? "Correcto." : "No es esa."} Por qué, con el capítulo:
-          </p>
-          <p className="mt-1 text-slate-800">{p.razon}</p>
+        <div className="animate-in mt-3 space-y-2" aria-live="polite">
+          <div className="rounded-xl p-3 text-sm" style={{ background: "#eef3f8" }}>
+            <p className="font-bold text-slate-900">
+              {elegida === p.correcta ? "Correcto." : "No es esa."} Explicación del autor:
+            </p>
+            <p className="mt-1 text-slate-800">{p.explicacion}</p>
+          </div>
+          <div className="rounded-xl border p-3 text-sm" style={{ borderColor: "#e5ebf1" }}>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+              Lo que dice el capítulo
+            </p>
+            <ul className="mt-1.5 space-y-1.5">
+              {p.citas.map((c, i) => (
+                <li key={i} className="text-slate-800">
+                  «{c.texto}»{" "}
+                  <a
+                    href={href("capitulo", c.apartado, c.ancla)}
+                    className="pagina-badge whitespace-nowrap hover:underline"
+                  >
+                    p. {c.p}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
           <a
             href={href("capitulo", p.apartado, p.ancla)}
-            className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+            className="inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
           >
             Leer en el apartado {ap?.n}: {ap?.titulo} (p. {p.pagina}){" "}
             <ArrowRight size={14} aria-hidden="true" />
@@ -393,20 +448,24 @@ function Pregunta({ p, n }: { p: (typeof PREGUNTAS)[number]; n: number }) {
 }
 
 export function Test() {
+  const pendientes = PREGUNTAS.filter((p) => !p.validada).length;
   return (
     <div>
       <CabeceraEditorial titulo="Autoevaluación" hex={CATEGORIA_HEX.aprender} level={1}>
         <p className="text-sm text-slate-600">
-          Cada respuesta se razona con el texto del capítulo y enlaza a la página que la justifica.
+          Diez casos del autor. Al responder se ve su explicación y las frases del capítulo que la
+          respaldan, con su página.
         </p>
       </CabeceraEditorial>
-      <ToneCard tone="amber" title="Preguntas pendientes del autor" className="mb-4">
-        <p className="text-sm text-slate-800">
-          El capítulo deja el hueco de la autoevaluación (p. 24) sin preguntas. Las dos de abajo son
-          ejemplos provisionales para dejar lista la estructura; las definitivas las escribirá el
-          autor.
-        </p>
-      </ToneCard>
+      {pendientes > 0 && (
+        <ToneCard tone="amber" title="Pendiente de validación del autor" className="mb-4">
+          <p className="text-sm text-slate-800">
+            Las preguntas se escribieron en mayo de 2026 y se han comprobado contra el texto final
+            del capítulo; el autor aún no ha dado su visto bueno a esta versión. Si algo difiriera,
+            manda el capítulo.
+          </p>
+        </ToneCard>
+      )}
       <ol className="space-y-3">
         {PREGUNTAS.map((p, i) => (
           <Pregunta key={p.id} p={p} n={i + 1} />
@@ -419,7 +478,7 @@ export function Test() {
 /* ---------- Más (móvil): el resto de destinos y las preferencias ---------- */
 export function Mas() {
   const [night, toggle] = useNocturno();
-  const ids = ["bibliografia", "cambios", "sobre", "test"];
+  const ids = ["pacientes", "bibliografia", "cambios", "sobre", "test"];
   return (
     <div>
       <CabeceraEditorial titulo="Más" hex={CATEGORIA_HEX.confiar} level={1} />

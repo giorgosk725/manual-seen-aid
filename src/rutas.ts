@@ -87,4 +87,5 @@ export const SECCIONES = {
   cambios: "cambios",
   sobre: "sobre",
   test: "test",
+  pacientes: "pacientes",
 } as const;

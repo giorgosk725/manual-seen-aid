@@ -11,15 +11,22 @@ import {
   OBJETIVOS_MCG,
   SEGUIMIENTO,
   TRANSICION,
+  GESTACION_COMUN,
+  GESTACION_SISTEMAS,
+  HOSPITAL,
+  EXPLORACIONES_ESTADO,
+  INTERRUPCION_LINEA,
   type DiagramaId,
+  type EstadoExploracion,
   type TonoFranja,
 } from "../contenido/diagramas";
-import { TABLAS, algoritmoDelCapitulo, ubicacionDeDiagrama } from "../contenido";
+import { F2, TABLAS, algoritmoDelCapitulo, ubicacionDeDiagrama } from "../contenido";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion";
 import { href } from "../rutas";
 import { BotonImprimir, PaginaBadge, Segmented } from "../ui";
 import { SISTEMA_HEX, TRAMO_HEX } from "../tokens";
-import { Lineas } from "../texto";
+import { Lineas, Texto } from "../texto";
+import { EnlaceEducativa } from "./Lectura";
 
 /* Colores de franja (familia AGP). Texto con contraste AA sobre cada fondo. */
 const TONO: Record<TonoFranja, { bg: string; fg: string }> = {
@@ -140,8 +147,10 @@ function Escalera({ i }: { i: number }) {
   );
 }
 
-function ObjetivosMCG() {
-  const [sel, setSel] = useState(OBJETIVOS_MCG[0].id);
+function ObjetivosMCG({ opcion }: { opcion?: string }) {
+  const [sel, setSel] = useState(
+    OBJETIVOS_MCG.find((p) => p.id === opcion)?.id ?? OBJETIVOS_MCG[0].id,
+  );
   const i = OBJETIVOS_MCG.findIndex((p) => p.id === sel);
   return (
     <div>
@@ -561,11 +570,390 @@ function Transicion() {
       >
         Tabla 2 completa <ArrowRight size={12} aria-hidden="true" />
       </a>
+      <div className="mt-3">
+        <EnlaceEducativa clave="transicion" />
+      </div>
     </div>
   );
 }
 
-const CUERPO: Record<DiagramaId, () => JSX.Element> = {
+/* ---------- 8. Gestación, sistema a sistema ---------- */
+function TarjetaGestacion({ c }: { c: number }) {
+  const h = SISTEMA_HEX[c];
+  const id = ORDEN_SISTEMAS[c];
+  const autorizacion = TABLAS.T1.filas.find((f) => f.etiqueta.startsWith("Gestación"));
+  return (
+    <article
+      className="flex h-full flex-col rounded-xl border p-3"
+      style={{ borderColor: `${h.strong}40`, background: h.soft }}
+    >
+      <div className="mb-2 flex items-center gap-2">
+        <img src={FOTO_SISTEMA[id]} alt="" className="h-10 w-10 rounded-lg bg-white object-cover" />
+        <div className="text-sm font-extrabold" style={{ color: h.ink }}>
+          {TABLAS.T1.columnas[c]}
+        </div>
+      </div>
+      {autorizacion && (
+        <div className="mb-2 rounded-lg bg-white px-2.5 py-2 text-xs">
+          <div className="font-bold text-slate-600">Tabla 1 · {autorizacion.etiqueta}</div>
+          <div className="mt-0.5 font-semibold text-slate-900">
+            <Lineas>{autorizacion.celdas[c]}</Lineas>
+          </div>
+        </div>
+      )}
+      <dl className="space-y-2 text-xs">
+        {GESTACION_SISTEMAS[c].map((x) => (
+          <div key={x.tema}>
+            <dt className="flex items-center justify-between gap-2 font-bold text-slate-600">
+              {x.tema}
+              {x.texto !== "—" && <PaginaBadge p={x.p} />}
+            </dt>
+            <dd className="mt-0.5 leading-snug text-slate-900">{x.texto}</dd>
+          </div>
+        ))}
+      </dl>
+    </article>
+  );
+}
+
+function GestacionSistemas({ opcion }: { opcion?: string }) {
+  const [sel, setSel] = useState<string>(
+    ORDEN_SISTEMAS.find((x) => x === opcion) ?? ORDEN_SISTEMAS[0],
+  );
+  const c = ORDEN_SISTEMAS.indexOf(sel as (typeof ORDEN_SISTEMAS)[number]);
+  return (
+    <div>
+      <div className="no-imprimir mb-3 lg:hidden">
+        <Segmented
+          label="Sistema"
+          wrap
+          value={sel}
+          onChange={setSel}
+          options={ORDEN_SISTEMAS.map((id, k) => ({
+            id,
+            label: TABLAS.T1.columnas[k].replace("Tandem ", "").replace("myLoop ", ""),
+          }))}
+        />
+      </div>
+      <div className="lg:hidden">
+        <TarjetaGestacion c={c} />
+      </div>
+      <div className="hidden gap-3 lg:grid lg:grid-cols-2">
+        {ORDEN_SISTEMAS.map((id, k) => (
+          <TarjetaGestacion key={id} c={k} />
+        ))}
+      </div>
+      <h4 className="mb-1.5 mt-4 text-sm font-bold text-slate-900">En todos los sistemas</h4>
+      <ul className="space-y-1.5 text-xs text-slate-800">
+        {GESTACION_COMUN.map((x) => (
+          <li key={x.texto} className="flex items-start gap-2">
+            <span
+              aria-hidden="true"
+              className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500"
+            />
+            <span className="min-w-0 flex-1">{x.texto}</span>
+            <PaginaBadge p={x.p} />
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 text-xs text-slate-500">
+        «—»: el capítulo no lo da para ese sistema. Objetivos de MCG en la gestación: diagrama
+        «Objetivos de MCG».
+      </p>
+    </div>
+  );
+}
+
+/* ---------- 9. Hospital: cuándo no continuar el sistema ---------- */
+function Hospital() {
+  const H = HOSPITAL;
+  return (
+    <div className="space-y-3">
+      <div className="grid gap-3 md:grid-cols-2">
+        <div
+          className="rounded-xl border p-3"
+          style={{ borderColor: "#a7f3d0", background: "#ecfdf5" }}
+        >
+          <div className="mb-1 flex items-center justify-between gap-2">
+            <h4 className="text-sm font-bold" style={{ color: "#065f46" }}>
+              Pueden mantenerse
+            </h4>
+            <PaginaBadge p={H.mantener.p} />
+          </div>
+          <p className="text-sm text-slate-800">{H.mantener.texto}</p>
+        </div>
+        <div
+          className="rounded-xl border p-3"
+          style={{ borderColor: "#fecaca", background: "#fef2f2" }}
+        >
+          <div className="mb-1 flex items-center justify-between gap-2">
+            <h4 className="text-sm font-bold" style={{ color: "#991b1b" }}>
+              {H.noApropiada.intro}
+            </h4>
+            <PaginaBadge p={H.noApropiada.p} />
+          </div>
+          <ul className="list-disc space-y-0.5 pl-5 text-sm text-slate-800">
+            {H.noApropiada.items.map((x) => (
+              <li key={x}>{x}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <div className="flex justify-center" aria-hidden="true">
+        <ArrowDown size={18} className="text-slate-400" />
+      </div>
+      <p className="rounded-xl bg-slate-800 px-3 py-2 text-center text-sm font-semibold text-white">
+        {H.entonces.texto}
+      </p>
+      <ol className="grid gap-2 md:grid-cols-3">
+        {H.pasos.map((x, k) => (
+          <li
+            key={x.cuando}
+            className="rounded-xl border bg-white p-3"
+            style={{ borderColor: "#e5ebf1" }}
+          >
+            <div className="mb-1 flex items-center justify-between gap-2">
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-900">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-800 text-[11px] text-white">
+                  {k + 1}
+                </span>
+                {x.cuando}
+              </span>
+              <PaginaBadge p={x.p} p2={"p2" in x ? x.p2 : undefined} />
+            </div>
+            <p className="text-xs leading-snug text-slate-800">{x.texto}</p>
+          </li>
+        ))}
+      </ol>
+      <div className="grid gap-2 md:grid-cols-2">
+        {[H.mientras, H.desdeIV].map((x) => (
+          <p
+            key={x.texto}
+            className="rounded-xl p-3 text-xs leading-snug text-slate-800"
+            style={{ background: "#f1f5f9" }}
+          >
+            {x.texto} <PaginaBadge p={x.p} />
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- 10. Exploraciones: la Tabla 6 como mapa ---------- */
+const ESTADO_EXPLORACION: Record<
+  EstadoExploracion,
+  { etiqueta: string; bg: string; borde: string; punto: string }
+> = {
+  retirar: { etiqueta: "Retirar o suspender", bg: "#fef2f2", borde: "#fecaca", punto: "#dc2626" },
+  depende: {
+    etiqueta: "Depende del dispositivo, del modelo o del contexto",
+    bg: "#fffbeb",
+    borde: "#fde68a",
+    punto: "#ca8a04",
+  },
+  mantener: { etiqueta: "Mantener", bg: "#ecfdf5", borde: "#a7f3d0", punto: "#15803d" },
+};
+
+function Exploraciones() {
+  const T6 = TABLAS.T6;
+  return (
+    <div>
+      <ul className="mb-3 flex flex-wrap gap-2 text-xs" aria-label="Leyenda">
+        {(Object.keys(ESTADO_EXPLORACION) as EstadoExploracion[]).map((k) => (
+          <li
+            key={k}
+            className="inline-flex items-center gap-1.5 rounded-full border bg-white px-2 py-0.5"
+            style={{ borderColor: "#e5ebf1" }}
+          >
+            <span
+              aria-hidden="true"
+              className="h-2.5 w-2.5 rounded-full"
+              style={{ background: ESTADO_EXPLORACION[k].punto }}
+            />
+            {ESTADO_EXPLORACION[k].etiqueta}
+          </li>
+        ))}
+      </ul>
+      <div className="hidden grid-cols-[12rem_1fr_1fr] gap-2 pb-1 text-xs font-bold uppercase tracking-wide text-slate-500 md:grid">
+        <span>{T6.cabeceraEtiqueta}</span>
+        <span>{T6.columnas[0]}</span>
+        <span>{T6.columnas[1]}</span>
+      </div>
+      <ol className="space-y-2">
+        {T6.filas.map((f, i) => (
+          <li
+            key={f.etiqueta}
+            className="grid gap-1.5 rounded-xl border bg-white p-2 md:grid-cols-[12rem_1fr_1fr] md:gap-2"
+            style={{ borderColor: "#e5ebf1" }}
+          >
+            <span className="text-sm font-bold text-slate-900">
+              <Lineas>{f.etiqueta}</Lineas>
+            </span>
+            {f.celdas.map((celda, j) => {
+              const e = ESTADO_EXPLORACION[EXPLORACIONES_ESTADO[i][j]];
+              return (
+                <span
+                  key={j}
+                  className="flex gap-2 rounded-lg border px-2 py-1.5 text-xs leading-snug text-slate-800"
+                  style={{ background: e.bg, borderColor: e.borde }}
+                >
+                  <span className="sr-only">
+                    {T6.columnas[j]}: {e.etiqueta}.{" "}
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full"
+                    style={{ background: e.punto }}
+                  />
+                  <span className="min-w-0 flex-1">
+                    <span
+                      aria-hidden="true"
+                      className="block text-[11px] font-bold uppercase tracking-wide text-slate-600 md:hidden"
+                    >
+                      {T6.columnas[j]}
+                    </span>
+                    <Lineas>{celda}</Lineas>
+                  </span>
+                </span>
+              );
+            })}
+          </li>
+        ))}
+      </ol>
+      <p className="mt-3 text-xs text-slate-600">{T6.notas[0]}</p>
+      <p className="mt-1 text-xs text-slate-500">
+        El color resume cada celda; manda el texto de la Tabla 6, que se lee completo debajo.
+      </p>
+    </div>
+  );
+}
+
+/* ---------- 11. Elección compartida (Figura 2 dibujada) ---------- */
+function CajaEleccion({ i, tono = "azul" }: { i: number; tono?: "azul" | "centro" }) {
+  const caja = F2.cajas[i];
+  return (
+    <div
+      className={`h-full rounded-xl border p-3 ${tono === "centro" ? "border-indigo-200 bg-indigo-50" : "border-sky-200 bg-sky-50"}`}
+    >
+      <h4
+        className="mb-1.5 text-sm font-extrabold"
+        style={{ color: tono === "centro" ? "#3730a3" : "#1e3a8a" }}
+      >
+        {caja.titulo}
+      </h4>
+      <ul className="space-y-1 text-xs leading-snug text-slate-800">
+        {caja.items.map((x) => (
+          <li key={x}>
+            <Texto>{x}</Texto>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function Eleccion() {
+  return (
+    <div className="space-y-3">
+      <div className="grid items-stretch gap-2 lg:grid-cols-[1fr_auto_0.8fr_auto_1fr]">
+        <CajaEleccion i={0} />
+        <div className="flex items-center justify-center" aria-hidden="true">
+          <ArrowRight size={18} className="hidden text-slate-400 lg:block" />
+          <ArrowDown size={18} className="text-slate-400 lg:hidden" />
+        </div>
+        <CajaEleccion i={1} tono="centro" />
+        <div className="flex items-center justify-center" aria-hidden="true">
+          <ArrowRight size={18} className="hidden rotate-180 text-slate-400 lg:block" />
+          <ArrowDown size={18} className="rotate-180 text-slate-400 lg:hidden" />
+        </div>
+        <CajaEleccion i={2} />
+      </div>
+      <div className="grid gap-2 md:grid-cols-2">
+        <CajaEleccion i={3} />
+        <CajaEleccion i={4} />
+      </div>
+      <div
+        className="rounded-xl border p-3"
+        style={{ borderColor: "#fde68a", background: "#fffbeb" }}
+      >
+        <p className="text-sm font-semibold text-amber-900">{F2.cajas[5].titulo}</p>
+        <ul className="mt-1.5 flex flex-wrap gap-1.5 text-xs">
+          {F2.cajas[5].items.map((x) => (
+            <li key={x} className="rounded-full bg-white px-2 py-0.5 text-slate-800">
+              {x}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <p className="text-xs text-slate-500">
+        Dibujo hecho con el texto de la Figura 2 (p. 6), caja a caja. La imagen original está en el
+        apartado 6.
+      </p>
+    </div>
+  );
+}
+
+/* ---------- 12. Interrupción del sistema según su duración ---------- */
+const TONO_INTERRUPCION = ["#15803d", "#a16207", "#c2410c", "#b91c1c"];
+
+function InterrupcionLinea() {
+  const L = INTERRUPCION_LINEA;
+  return (
+    <div className="space-y-3">
+      <ol className="grid gap-2 md:grid-cols-4">
+        {L.tramos.map((t, k) => (
+          <li
+            key={t.cuando}
+            className="flex flex-col overflow-hidden rounded-xl border bg-white"
+            style={{ borderColor: "#e5ebf1" }}
+          >
+            <span
+              className="px-3 py-1.5 text-xs font-bold text-white"
+              style={{ background: TONO_INTERRUPCION[k] }}
+            >
+              {t.cuando}
+            </span>
+            <span className="px-3 py-2 text-xs leading-snug text-slate-800">{t.texto}</span>
+          </li>
+        ))}
+      </ol>
+      <div className="grid gap-2 md:grid-cols-2">
+        <p
+          className="rounded-xl p-3 text-xs leading-snug text-slate-800"
+          style={{ background: "#f1f5f9" }}
+        >
+          <span className="block font-bold text-slate-900">Pod</span>
+          {L.formatos.pod}
+        </p>
+        <p
+          className="rounded-xl p-3 text-xs leading-snug text-slate-800"
+          style={{ background: "#f1f5f9" }}
+        >
+          <span className="block font-bold text-slate-900">Bomba con catéter</span>
+          {L.formatos.bomba}
+        </p>
+      </div>
+      <ul className="space-y-1 text-xs text-slate-800">
+        {L.detalles.map((d) => (
+          <li key={d.cuando} className="flex gap-2">
+            <span
+              aria-hidden="true"
+              className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500"
+            />
+            <span>
+              <span className="font-bold text-slate-900">{d.cuando}: </span>
+              {d.texto}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p className="text-xs text-slate-600">{L.nota}</p>
+    </div>
+  );
+}
+
+const CUERPO: Record<DiagramaId, (props: { opcion?: string }) => JSX.Element> = {
   "objetivos-mcg": ObjetivosMCG,
   cetonemia: EscalaCetonemia,
   ejercicio: Ejercicio,
@@ -573,19 +961,27 @@ const CUERPO: Record<DiagramaId, () => JSX.Element> = {
   algoritmos: Algoritmos,
   hipoglucemia: Hipoglucemia,
   transicion: Transicion,
+  "gestacion-sistemas": GestacionSistemas,
+  hospital: Hospital,
+  exploraciones: Exploraciones,
+  eleccion: Eleccion,
+  interrupcion: InterrupcionLinea,
 };
 
 export function DiagramaVista({
   id,
   enApartado = false,
+  opcion,
 }: {
   id: DiagramaId;
   enApartado?: boolean;
+  /* Pestaña inicial (población, sistema) cuando el diagrama tiene varias. */
+  opcion?: string;
 }) {
   const Cuerpo = CUERPO[id];
   return (
     <MarcoDiagrama id={id} enApartado={enApartado}>
-      <Cuerpo />
+      <Cuerpo opcion={opcion} />
     </MarcoDiagrama>
   );
 }

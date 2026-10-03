@@ -20,6 +20,10 @@ for (const ruta of [
   "#/capitulo/10-situaciones",
   "#/consultar/figura-3/naranja",
   "#/sistemas/camaps",
+  "#/pacientes/informacion",
+  "#/pacientes/plan/op5",
+  "#/visual/gestacion-sistemas",
+  // La última, la infografía: el script abre después su figura original.
   "#/consultar/infografia",
 ]) {
   await p.goto("about:blank");

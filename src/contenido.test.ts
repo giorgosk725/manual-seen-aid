@@ -13,6 +13,12 @@ import {
   F2,
 } from "./contenido";
 import { PREGUNTAS } from "./contenido/test";
+import { idDeBloque, posicionDeAncla } from "./contenido";
+import { plano } from "./marcado";
+import { FRAGMENTOS_EXTENDIDOS, textoDeFragmento } from "./extendida";
+import { INFORMACION_PACIENTES, RESUMEN_CAPITULO } from "./pacientes/textos";
+
+const normalizarEspacios = (s: string) => s.replace(/\s+/g, " ").trim();
 import { CAMBIOS, PENDIENTES } from "./contenido/cambios";
 import { buscar, indice, normalizar } from "./buscador";
 
@@ -190,11 +196,36 @@ describe("convenciones de escritura", () => {
     expect(new Set(GLOSARIO.map((g) => g.sigla)).size).toBe(GLOSARIO.length);
     for (const g of GLOSARIO) expect(g.pagina).toBeGreaterThan(0);
   });
-  it("las preguntas de ejemplo están marcadas como provisionales y apuntan a un apartado real", () => {
+  it("el test: 10 preguntas del autor, pendientes de su validación, con citas literales del capítulo", () => {
+    expect(PREGUNTAS).toHaveLength(10);
     for (const p of PREGUNTAS) {
-      expect(p.provisional).toBe(true);
-      expect(APARTADOS.some((a) => a.slug === p.apartado)).toBe(true);
+      expect(p.validada, p.id).toBe(false);
+      expect(p.opciones, p.id).toHaveLength(4);
       expect(p.correcta).toBeLessThan(p.opciones.length);
+      const a = APARTADOS.find((x) => x.slug === p.apartado)!;
+      expect(a, p.id).toBeTruthy();
+      if (p.ancla)
+        expect(
+          a.bloques.some((b, i) => idDeBloque(b, i) === p.ancla),
+          p.id,
+        ).toBe(true);
+      expect(p.citas.length, p.id).toBeGreaterThan(0);
+      for (const c of p.citas) {
+        const ap = APARTADOS.find((x) => x.slug === c.apartado)!;
+        const i = ap.bloques.findIndex((b, k) => idDeBloque(b, k) === c.ancla);
+        const b = ap.bloques[i];
+        expect(b, `${p.id} ${c.ancla}`).toBeTruthy();
+        const texto =
+          b.t === "p"
+            ? plano((b.lead ? b.lead + " " : "") + b.texto)
+            : b.t === "lista"
+              ? plano([b.intro, ...b.items].filter(Boolean).join(" "))
+              : "";
+        for (const trozo of c.texto.split(" […] ")) expect(texto, p.id).toContain(trozo);
+        const p2 = "p2" in b && b.p2 ? b.p2 : b.p;
+        expect(c.p, p.id).toBeGreaterThanOrEqual(b.p);
+        expect(c.p, p.id).toBeLessThanOrEqual(p2);
+      }
     }
   });
   it("los cambios llevan fecha ISO y hay pendientes visibles", () => {
@@ -298,12 +329,59 @@ describe("diagramas a partir del texto", () => {
     for (const d of DIAGRAMAS) {
       const a = APARTADOS.find((x) => x.slug === d.apartado)!;
       const bloques = a.bloques.filter((b) => b.t === "diagrama" && b.id === d.id);
-      expect(bloques, d.id).toHaveLength(1);
-      expect(bloques[0].p).toBeGreaterThanOrEqual(a.paginas[0]);
-      expect(bloques[0].p).toBeLessThanOrEqual(a.paginas[1]);
+      if (d.ancla) {
+        // Posteriores a la 0.3.0: no son bloques; su ancla existe y alguna página es del apartado.
+        expect(bloques, d.id).toHaveLength(0);
+        expect(posicionDeAncla(a, d.ancla), d.id).toBeGreaterThanOrEqual(0);
+        expect(
+          d.paginas.some((p) => p >= a.paginas[0] && p <= a.paginas[1]),
+          d.id,
+        ).toBe(true);
+      } else {
+        expect(bloques, d.id).toHaveLength(1);
+        expect(bloques[0].p).toBeGreaterThanOrEqual(a.paginas[0]);
+        expect(bloques[0].p).toBeLessThanOrEqual(a.paginas[1]);
+      }
     }
     const enApartados = APARTADOS.flatMap((a) => a.bloques.filter((b) => b.t === "diagrama"));
-    expect(enApartados).toHaveLength(DIAGRAMAS.length);
+    expect(enApartados).toHaveLength(DIAGRAMAS.filter((d) => !d.ancla).length);
+  });
+  it("los diagramas nuevos solo usan frases literales del capítulo", async () => {
+    const D = await import("./contenido/diagramas");
+    const corpus = normalizarEspacios(
+      [
+        ...APARTADOS.flatMap((a) =>
+          a.bloques.flatMap((b) =>
+            b.t === "p"
+              ? [plano((b.lead ? b.lead + " " : "") + b.texto)]
+              : b.t === "lista"
+                ? [plano([b.intro, ...b.items].filter(Boolean).join(" "))]
+                : [],
+          ),
+        ),
+        ...LISTA_TABLAS.flatMap((t) => [...t.notas, ...t.filas.flatMap((f) => f.celdas)]),
+      ].join(" "),
+    );
+    const frases = [
+      ...D.GESTACION_SISTEMAS.flat().map((x) => x.texto),
+      ...D.GESTACION_COMUN.map((x) => x.texto),
+      D.HOSPITAL.mantener.texto,
+      ...D.HOSPITAL.noApropiada.items,
+      D.HOSPITAL.noApropiada.intro,
+      D.HOSPITAL.entonces.texto,
+      ...D.HOSPITAL.pasos.map((x) => x.texto),
+      D.HOSPITAL.mientras.texto,
+      D.HOSPITAL.desdeIV.texto,
+      ...D.INTERRUPCION_LINEA.tramos.map((x) => x.texto),
+      ...D.INTERRUPCION_LINEA.detalles.map((x) => x.texto),
+      D.INTERRUPCION_LINEA.formatos.pod,
+      D.INTERRUPCION_LINEA.formatos.bomba,
+      D.INTERRUPCION_LINEA.nota,
+    ].filter((f) => f !== "—");
+    for (const f of frases)
+      for (const trozo of f.split(/(?<=\.) (?=[A-ZÁÉÍÓÚ])/))
+        expect(corpus, trozo).toContain(normalizarEspacios(trozo.replace(/\.$/, "")));
+    expect(D.EXPLORACIONES_ESTADO).toHaveLength(TABLAS.T6.filas.length);
   });
   it("la escala de cetonemia coincide con los tramos de la Figura 3", async () => {
     const { ESCALA_CETONEMIA } = await import("./contenido/diagramas");
@@ -318,5 +396,54 @@ describe("diagramas a partir del texto", () => {
       expect(t1, a.autocorreccion).toContain(a.autocorreccion);
       if (a.prediccionH) expect(t1, a.prediccion).toContain(a.prediccion);
     }
+  });
+});
+
+describe("capas fuera del capítulo", () => {
+  it("versión extendida: solo fragmentos aprobados, con ancla real, convenciones y fuente", () => {
+    expect(FRAGMENTOS_EXTENDIDOS).toHaveLength(33);
+    expect(new Set(FRAGMENTOS_EXTENDIDOS.map((f) => f.id)).size).toBe(33);
+    const sistemas = ["mm780", "ciq", "camaps", "op5"];
+    for (const f of FRAGMENTOS_EXTENDIDOS) {
+      const a = APARTADOS.find((x) => x.slug === f.donde.apartado)!;
+      expect(a, f.id).toBeTruthy();
+      expect(posicionDeAncla(a, f.donde.ancla), f.id).toBeGreaterThanOrEqual(0);
+      for (const s of f.sistemas) expect(sistemas, f.id).toContain(s);
+      expect(
+        f.partes.some((p) => p && p.texto.length > 10),
+        f.id,
+      ).toBe(true);
+      expect(f.relacion, f.id).toMatch(/p\./);
+      // Ninguna parte arrastra la siguiente (un corte «hasta el final del párrafo» la duplicaría).
+      const partes = f.partes.filter((p) => p !== null).map((p) => p!.texto);
+      for (const [i, a] of partes.entries())
+        for (const [j, b] of partes.entries())
+          if (i !== j)
+            expect(a.includes(b.slice(0, 60)), `${f.id} parte ${i} contiene ${j}`).toBe(false);
+      const texto = textoDeFragmento(f);
+      expect(texto, f.id).not.toMatch(/\bDT[12]\b|mg\/dL|mmol\/L|\bAIT\b|\bU\/día/);
+    }
+  });
+  it("para el paciente: V5 en 13 preguntas y resumen en 6 párrafos, con las convenciones", () => {
+    expect(INFORMACION_PACIENTES.secciones).toHaveLength(13);
+    expect(INFORMACION_PACIENTES.secciones[0].pregunta).toBe("¿Qué es un sistema de asa cerrada?");
+    expect(INFORMACION_PACIENTES.secciones.at(-1)!.pregunta).toBe("Mensaje final");
+    expect(RESUMEN_CAPITULO.parrafos).toHaveLength(6);
+    const todo = JSON.stringify({ INFORMACION_PACIENTES, RESUMEN_CAPITULO });
+    expect(todo).not.toMatch(/\bDT[12]\b|mg\/dL|mmol\/L|\bAIT\b/);
+    // Correcciones de la V5 frente a la maquetación del 30-9 (muestra).
+    expect(todo).toContain("una bomba (con tubo o catéter) o un pod (sin tubo externo)");
+    expect(todo).toContain("Si la glucosa es >270 mg/dl, medir cetonas y revisar el set o el pod");
+  });
+  it("la búsqueda pone el capítulo primero y lo de fuera rotulado, detrás", () => {
+    const res = buscar("Nightscout");
+    expect(res.length).toBeGreaterThan(0);
+    expect(
+      res.every((r) => r.entrada.tipo === "extendida" || r.entrada.tipo === "ampliacion"),
+    ).toBe(true);
+    const mezcla = buscar("glargina");
+    const primeraFuera = mezcla.findIndex((r) => r.entrada.pagina === 0);
+    if (primeraFuera >= 0)
+      expect(mezcla.slice(primeraFuera).every((r) => r.entrada.pagina === 0)).toBe(true);
   });
 });

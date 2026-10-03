@@ -10,6 +10,7 @@ import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion
 import { DiagramaVista } from "../componentes/Diagramas";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { href } from "../rutas";
+import { BotonFavorito } from "../componentes/Lectura";
 import { CabeceraEditorial, Revelar, Segmented } from "../ui";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 
@@ -259,7 +260,7 @@ export function Visual() {
   );
 }
 
-export function DiagramaPantalla({ id }: { id: string }) {
+export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }) {
   const i = DIAGRAMAS.findIndex((d) => d.id === id);
   if (i < 0) return <Visual />;
   const prev = DIAGRAMAS[i - 1];
@@ -277,9 +278,12 @@ export function DiagramaPantalla({ id }: { id: string }) {
         <span>
           Diagrama {i + 1} de {DIAGRAMAS.length}
         </span>
+        <span className="ml-auto">
+          <BotonFavorito ruta={href("visual", DIAGRAMAS[i].id)} titulo={DIAGRAMAS[i].titulo} />
+        </span>
       </div>
       <h1 className="sr-only">{DIAGRAMAS[i].titulo}</h1>
-      <DiagramaVista id={DIAGRAMAS[i].id} />
+      <DiagramaVista id={DIAGRAMAS[i].id} opcion={opcion} />
       <nav
         aria-label="Diagrama anterior y siguiente"
         className="no-imprimir mt-4 grid gap-2 sm:grid-cols-2"

@@ -33,6 +33,9 @@ import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { plano } from "../marcado";
+import { VersionExtendida } from "../componentes/VersionExtendida";
+import { BotonFavorito } from "../componentes/Lectura";
+import { extendidosDeSistema } from "../extendida";
 
 const hex = CATEGORIA_HEX.consultar;
 
@@ -423,6 +426,7 @@ export function FichaSistema({ id }: { id?: string }) {
             <BotonImprimir objetivo={ref} compacto>
               Imprimir la ficha
             </BotonImprimir>
+            <BotonFavorito ruta={href("sistemas", s.id)} titulo={s.name} />
           </div>
         </div>
       </header>
@@ -480,6 +484,12 @@ export function FichaSistema({ id }: { id?: string }) {
           </Foldable>
         </div>
       </section>
+
+      {extendidosDeSistema(s.id).length > 0 && (
+        <section aria-label="Versión extendida del autor" className="mt-6">
+          <VersionExtendida fragmentos={extendidosDeSistema(s.id)} />
+        </section>
+      )}
 
       <Ampliacion s={s} />
 

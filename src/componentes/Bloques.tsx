@@ -1,8 +1,17 @@
 /* Renderiza los bloques de un apartado: párrafos, subapartados, listas, tablas y figuras,
    cada uno con su página de origen y un id estable (ancla). */
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { Link2 } from "lucide-react";
-import { FIGURAS, TABLAS, idDeBloque, type Apartado, type Bloque } from "../contenido";
+import {
+  FIGURAS,
+  TABLAS,
+  diagramasTrasBloque,
+  idDeBloque,
+  type Apartado,
+  type Bloque,
+} from "../contenido";
+import { extendidosTrasBloque } from "../extendida";
+import { VersionExtendida } from "./VersionExtendida";
 import { Texto } from "../texto";
 import { PaginaBadge } from "../ui";
 import { TablaVista } from "./TablaVista";
@@ -149,6 +158,9 @@ export function Bloques({
     if (!destacado) return;
     const el = document.getElementById(destacado);
     if (!el) return;
+    // Si el destino está dentro de un plegable (versión extendida), se abre.
+    const plegable = el.closest("details");
+    if (plegable) plegable.open = true;
     el.scrollIntoView({ block: "start" });
     el.classList.add("destello");
     const t = setTimeout(() => el.classList.remove("destello"), 2000);
@@ -156,16 +168,31 @@ export function Bloques({
   }, [destacado, apartado.slug]);
   return (
     <div className="space-y-5">
-      {apartado.bloques.map((b, i) => (
-        <BloqueVista
-          key={i}
-          b={b}
-          i={i}
-          slug={apartado.slug}
-          prefijo={prefijo}
-          nivelSub={nivelSub}
-        />
-      ))}
+      {apartado.bloques.map((b, i) => {
+        const diagramas = diagramasTrasBloque(apartado, i);
+        const extendidos = extendidosTrasBloque(apartado, i);
+        return (
+          <Fragment key={i}>
+            <BloqueVista b={b} i={i} slug={apartado.slug} prefijo={prefijo} nivelSub={nivelSub} />
+            {/* Diagramas posteriores a la 0.3.0: tras su ancla, sin mover las anclas b1, b2… */}
+            {diagramas.map((d) => (
+              <div
+                key={d.id}
+                id={prefijo ? `${prefijo}-d-${d.id}` : `d-${d.id}`}
+                className="scroll-mt-24 lg:-mr-16"
+              >
+                <DiagramaVista id={d.id} enApartado />
+              </div>
+            ))}
+            {extendidos.length > 0 && (
+              <VersionExtendida
+                fragmentos={extendidos}
+                id={`${prefijo ? prefijo + "-" : ""}ext-tras-${idDeBloque(b, i)}`}
+              />
+            )}
+          </Fragment>
+        );
+      })}
     </div>
   );
 }

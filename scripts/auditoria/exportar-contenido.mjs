@@ -12,6 +12,9 @@ import {
 import { CIFRAS } from "../../src/contenido/cifras.ts";
 import * as D from "../../src/contenido/diagramas.ts";
 import { trocear } from "../../src/marcado.ts";
+import { FRAGMENTOS_EXTENDIDOS } from "../../src/extendida/fragmentos.ts";
+import { INFORMACION_PACIENTES, RESUMEN_CAPITULO } from "../../src/pacientes/textos.ts";
+import { PREGUNTAS } from "../../src/contenido/test.ts";
 
 const plano = (s) =>
   trocear(s)
@@ -83,7 +86,7 @@ for (const f of Object.values(FIGURAS))
   });
 // Diagramas: cada cifra o frase con la página de la que sale.
 out.diagramas = [];
-const dg = (id, p, texto) => out.diagramas.push({ id, p, texto });
+const dg = (id, p, texto, p2) => out.diagramas.push({ id, p, texto, ...(p2 ? { p2 } : {}) });
 for (const pob of D.OBJETIVOS_MCG) {
   for (const f of pob.franjas) dg(`objetivos ${pob.id}`, pob.pagina, `${f.franja} ${f.objetivo}`);
   for (const e of pob.extras) dg(`objetivos ${pob.id} extra`, pob.pagina, e);
@@ -104,5 +107,33 @@ for (const p of D.TRANSICION.pasos) dg("transición", D.TRANSICION.pagina, p.tex
 for (const a of D.ALGORITMOS)
   for (const k of ["cadencia", "prediccion", "autocorreccion", "aprendizaje"])
     dg(`algoritmos ${k}`, 3, a[k]);
+// Diagramas de la sesión 4 (frases literales con su página).
+for (let c = 0; c < D.GESTACION_SISTEMAS.length; c++)
+  for (const x of D.GESTACION_SISTEMAS[c])
+    if (x.texto !== "—") dg(`gestación ${c} ${x.tema}`, x.p, x.texto);
+for (const x of D.GESTACION_COMUN) dg("gestación común", x.p, x.texto);
+const H = D.HOSPITAL;
+dg("hospital mantener", H.mantener.p, H.mantener.texto);
+for (const it of H.noApropiada.items) dg("hospital no apropiada", H.noApropiada.p, it);
+dg("hospital entonces", H.entonces.p, H.entonces.texto);
+for (const x of H.pasos) dg(`hospital ${x.cuando}`, x.p, x.texto, x.p2);
+dg("hospital mientras", H.mientras.p, H.mientras.texto);
+dg("hospital desde IV", H.desdeIV.p, H.desdeIV.texto);
+const L = D.INTERRUPCION_LINEA;
+for (const x of L.tramos) dg(`interrupción ${x.cuando}`, L.pagina, x.texto);
+for (const x of L.detalles) dg(`interrupción ${x.cuando}`, L.pagina, x.texto);
+dg("interrupción pod", L.pagina, L.formatos.pod);
+dg("interrupción bomba", L.pagina, L.formatos.bomba);
+dg("interrupción nota", L.pagina, L.nota);
+// Capas fuera del capítulo (las comprueba fidelidad_extra.py contra sus fuentes).
+out.extendida = FRAGMENTOS_EXTENDIDOS.map((f) => ({
+  id: f.id,
+  partes: f.partes.filter(Boolean).map((p) => ({ borrador: p.borrador, texto: p.texto })),
+}));
+out.pacientes = {
+  informacion: INFORMACION_PACIENTES.secciones,
+  resumen: RESUMEN_CAPITULO.parrafos,
+};
+out.test = PREGUNTAS.map((q) => ({ id: q.id, citas: q.citas }));
 writeFileSync("_audit_contenido.json", JSON.stringify(out, null, 1), "utf8");
 console.log("ok", out.parrafos.length, "párrafos/listas;", out.tablas.length, "celdas y notas");

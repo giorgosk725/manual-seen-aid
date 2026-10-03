@@ -80,18 +80,52 @@ describe("App", () => {
     expect(within(lista).getAllByText(/p\. 10/).length).toBeGreaterThan(0);
   });
 
-  it("el test razona la respuesta con el capítulo y enlaza al apartado", async () => {
+  it("el test razona la respuesta con la explicación del autor y el capítulo", async () => {
     render(<App />);
     await ir("#/test");
-    expect(screen.getAllByText(/Provisional/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Pendiente de validación del autor/).length).toBeGreaterThan(1);
+    expect(screen.queryByText(/Provisional · ejemplo/)).toBeNull();
     await userEvent.click(
-      screen.getByRole("button", { name: /tiempo por debajo del rango \(TBR\)/ }),
+      screen.getByRole("button", {
+        name: /Revisar hipoglucemias y sobretratamiento, y reducir el TBR/,
+      }),
     );
     expect(screen.getByText(/^Correcto\./)).toBeInTheDocument();
+    expect(screen.getByText(/Lo que dice el capítulo/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Leer en el apartado 5/ })).toHaveAttribute(
       "href",
-      "#/capitulo/05-resultados",
+      "#/capitulo/05-resultados/b2",
     );
+  });
+
+  it("para el paciente: información V5, resumen y plan de seguridad sin campos", async () => {
+    render(<App />);
+    await ir("#/pacientes/informacion");
+    expect(screen.getByText("¿Qué es un sistema de asa cerrada?")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /Código QR/ })).toBeInTheDocument();
+    await ir("#/pacientes/plan/op5");
+    expect(screen.getByText(/Plan de seguridad · Omnipod 5/)).toBeInTheDocument();
+    // La hoja se rellena a mano: no hay ni un campo de texto.
+    expect(document.querySelectorAll("main input, main textarea")).toHaveLength(0);
+    expect(screen.getAllByText(/Función Actividad/).length).toBeGreaterThan(0);
+  });
+
+  it("la versión extendida va plegada, rotulada y aparte del texto del capítulo", async () => {
+    render(<App />);
+    await ir("#/capitulo/12-horizonte");
+    const capa = screen.getByText("Versión extendida del autor · no publicada en el Manual");
+    const det = capa.closest("details")!;
+    expect(det).not.toHaveAttribute("open");
+    expect(within(det).getAllByText(/Borrador V85 limpio · 31-5-2026/).length).toBeGreaterThan(0);
+  });
+
+  it("los diagramas nuevos se muestran en su apartado sin mover las anclas", async () => {
+    render(<App />);
+    await ir("#/capitulo/10-situaciones");
+    expect(document.getElementById("d-gestacion-sistemas")).not.toBeNull();
+    expect(document.getElementById("d-hospital")).not.toBeNull();
+    expect(document.getElementById("d-exploraciones")).not.toBeNull();
+    expect(document.getElementById("b36")).not.toBeNull();
   });
 
   it("la ficha de un sistema separa el capítulo de la ampliación del autor", async () => {

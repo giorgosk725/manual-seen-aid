@@ -1,5 +1,8 @@
 /* Búsqueda instantánea sobre el texto LITERAL del capítulo (sin IA generativa).
    Índice en memoria: un registro por párrafo, celda de tabla, caja de figura y referencia.
+   Aparte, en su propio grupo y rotuladas (decisión del autor, 3-10-2026): la versión
+   extendida del autor y la ampliación del autor (fichas de sistemas). Nunca se mezclan con
+   el capítulo: van detrás y con su rótulo.
    Comparación sin tildes ni mayúsculas; todos los términos deben aparecer. */
 import {
   APARTADOS,
@@ -13,15 +16,22 @@ import {
 } from "./contenido";
 import { href } from "./rutas";
 import { plano } from "./marcado";
+import { FRAGMENTOS_EXTENDIDOS, textoDeFragmento } from "./extendida";
+import { CRITERIOS, FICHA_FILAS, SETS_INFUSION, SISTEMAS_AMPLIACION } from "./ampliacion";
 
 export interface Entrada {
   id: string;
-  tipo: "texto" | "tabla" | "figura" | "diagrama" | "referencia" | "sigla";
+  tipo:
+    "texto" | "tabla" | "figura" | "diagrama" | "referencia" | "sigla" | "extendida" | "ampliacion";
   titulo: string;
   texto: string;
+  /* Página del capítulo (0 = fuera del capítulo). */
   pagina: number;
   ruta: string;
 }
+
+/* Lo que no es texto del capítulo se muestra en un grupo aparte y rotulado. */
+export const fueraDelCapitulo = (e: Entrada) => e.tipo === "extendida" || e.tipo === "ampliacion";
 
 const sinMarcado = (s: string) => plano(s);
 
@@ -153,6 +163,55 @@ export function indice(): Entrada[] {
       ruta: href("consultar", "glosario", g.sigla),
     });
   }
+  // Fuera del capítulo (grupo aparte, rotulado).
+  for (const f of FRAGMENTOS_EXTENDIDOS) {
+    out.push({
+      id: `ext/${f.id}`,
+      tipo: "extendida",
+      titulo: `Versión extendida del autor · ${f.titulo}`,
+      texto: textoDeFragmento(f),
+      pagina: 0,
+      ruta: href("capitulo", f.donde.apartado, `ext-${f.id}`),
+    });
+  }
+  for (const s of SISTEMAS_AMPLIACION) {
+    const ruta = href("sistemas", s.id);
+    for (const g of FICHA_FILAS)
+      for (const r of g.rows) {
+        const texto = r.f
+          ? s.detail[r.f]
+          : r.crit
+            ? CRITERIOS.find((c) => c.id === r.crit)?.s[s.id]?.t
+            : undefined;
+        if (texto)
+          out.push({
+            id: `amp/${s.id}/${r.k}`,
+            tipo: "ampliacion",
+            titulo: `Ampliación del autor · ${s.name} · ${r.k}`,
+            texto,
+            pagina: 0,
+            ruta,
+          });
+      }
+    for (const prm of s.params)
+      out.push({
+        id: `amp/${s.id}/param/${prm.name}`,
+        tipo: "ampliacion",
+        titulo: `Ampliación del autor · ${s.name} · Parámetros`,
+        texto: `${prm.name}: ${prm.note}`,
+        pagina: 0,
+        ruta,
+      });
+    for (const set of SETS_INFUSION[s.id] || [])
+      out.push({
+        id: `amp/${s.id}/set/${set.name}`,
+        tipo: "ampliacion",
+        titulo: `Ampliación del autor · ${s.name} · Sets de infusión`,
+        texto: `${set.name} (${set.material}, ${set.angle})`,
+        pagina: 0,
+        ruta,
+      });
+  }
   cache = out;
   return out;
 }
@@ -194,7 +253,12 @@ export function buscar(consulta: string, limite = 40): Resultado[] {
     if (e.tipo === "sigla") puntos += 1.5;
     res.push({ entrada: e, fragmento: fragmento(e.texto, primera), puntos });
   }
-  res.sort((a, b) => b.puntos - a.puntos);
+  // Primero el capítulo; lo de fuera, detrás (y en su grupo en la pantalla de búsqueda).
+  res.sort(
+    (a, b) =>
+      Number(fueraDelCapitulo(a.entrada)) - Number(fueraDelCapitulo(b.entrada)) ||
+      b.puntos - a.puntos,
+  );
   return res.slice(0, limite);
 }
 

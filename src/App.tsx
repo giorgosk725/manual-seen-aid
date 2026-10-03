@@ -13,6 +13,12 @@ import { DiagramaPantalla, Visual } from "./pantallas/Visual";
 import { DIAGRAMAS } from "./contenido";
 import { Interrupcion, RevisarDescarga, SituacionSistema } from "./pantallas/Recorridos";
 import { TABLAS } from "./contenido";
+import {
+  HubPacientes,
+  InformacionPacientes,
+  PlanSeguridad,
+  ResumenPacientes,
+} from "./pantallas/Pacientes";
 
 function NoEncontrada() {
   return (
@@ -102,7 +108,7 @@ export default function App() {
       break;
     }
     case "visual":
-      pantalla = ruta.sub ? <DiagramaPantalla id={ruta.sub} /> : <Visual />;
+      pantalla = ruta.sub ? <DiagramaPantalla id={ruta.sub} opcion={ruta.detalle} /> : <Visual />;
       titulo = DIAGRAMAS.find((d) => d.id === ruta.sub)?.titulo ?? "Figuras y diagramas";
       break;
     case "sistemas":
@@ -128,6 +134,21 @@ export default function App() {
     case "test":
       pantalla = <Test />;
       titulo = "Autoevaluación";
+      break;
+    case "pacientes":
+      if (ruta.sub === "informacion") {
+        pantalla = <InformacionPacientes />;
+        titulo = "Información para pacientes";
+      } else if (ruta.sub === "resumen") {
+        pantalla = <ResumenPacientes />;
+        titulo = "Resumen del capítulo";
+      } else if (ruta.sub === "plan") {
+        pantalla = <PlanSeguridad sistema={ruta.detalle} />;
+        titulo = "Plan de seguridad";
+      } else if (!ruta.sub) {
+        pantalla = <HubPacientes />;
+        titulo = "Para el paciente";
+      } else pantalla = <NoEncontrada />;
       break;
     case "mas":
       pantalla = <Mas />;

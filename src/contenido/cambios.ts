@@ -8,13 +8,26 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.3.0";
+export const VERSION_APP = "0.4.0";
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-03",
+    ambito: "app",
+    titulo: `Manual SEEN · AID ${VERSION_APP} — lo que el PDF no puede dar`,
+    detalle: [
+      "Versión extendida del autor: 33 fragmentos de los borradores de mayo de 2026 que no cupieron en el capítulo, aprobados uno a uno por el autor. Van plegados, en ámbar y con su borrador y fecha, al final del bloque al que pertenecen y en la ficha de cada sistema; nunca se mezclan con el texto publicado.",
+      "Cinco diagramas nuevos con frases literales y su página: gestación sistema a sistema, cuándo no continuar el sistema en el hospital, la Tabla 6 como mapa de exploraciones, la Figura 2 dibujada y la interrupción del sistema según su duración.",
+      "Para el paciente: información para pacientes (versión corregida V5 del autor) y resumen del capítulo, cada uno en una cara A4 imprimible y con código QR; y un plan de seguridad por sistema, hecho solo con texto del capítulo, para rellenar a mano (la app no guarda nada).",
+      "Autoevaluación: las diez preguntas del autor, con su explicación y las frases del capítulo que la respaldan, rotuladas «pendiente de validación del autor».",
+      "Navegación: «¿Qué necesitas?» en la portada, con buscador y ocho atajos a dos toques; «Seguir leyendo»; favoritos y apartados leídos (solo en este navegador, nada clínico); «Volver arriba»; la barra lateral, agrupada en Sistemas, Situaciones y recorridos, Figuras y tablas, y Glosario.",
+      "Cada apartado: «Cómo citar» y «Escuchar» (voz del propio dispositivo). La búsqueda encuentra también la versión extendida y la ampliación del autor, en un grupo aparte y rotulado. Enlaces a los casos prácticos de la edición educativa de asistente-aid desde las situaciones que los tienen.",
+    ],
+  },
+  {
     fecha: "2026-10-02",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — figuras y diagramas`,
+    titulo: "Manual SEEN · AID 0.3.0 — figuras y diagramas",
     detalle: [
       "Siete diagramas construidos con las cifras y frases del capítulo, cada una con su página: objetivos de MCG (adultos, gestación, hospital y fragilidad), escala de cetonemia, glucemia y ejercicio, calendario de seguimiento, los cuatro algoritmos, hipoglucemia en asa cerrada y transición desde MDI. Cada uno aparece en su apartado y a pantalla completa.",
       "Nueva sección «Figuras y diagramas»: todo lo visual en un sitio, con filtros (diagramas, figuras, tablas y sistemas).",
@@ -72,7 +85,11 @@ export const CAMBIOS: Cambio[] = [
 /* Lo que todavía no se sabe. Se muestra tal cual; no se rellena con suposiciones. */
 export const PENDIENTES: string[] = [
   "Permiso escrito de la SEEN y de ec-europe para la versión web, y dónde se aloja (enlace o alojamiento junto al capítulo).",
-  "Las preguntas definitivas del test de autoevaluación (las escribirá el autor; las dos actuales son ejemplos provisionales).",
-  "Los archivos fuente de la infografía y de las figuras (hoy solo imágenes de la maquetación; el texto de cada caja ya está transcrito).",
-  "La fecha de publicación del capítulo en el Manual SEEN.",
+  "La validación por el autor de las diez preguntas del test (hoy rotuladas «pendiente de validación del autor»).",
+  "La versión del capítulo con las 11 correcciones aplicadas por la editorial (la maquetación recibida el 3-10-2026 aún no las lleva; esta app ya las aplica).",
+  "Que la editorial publique la información para pacientes en la versión corregida V5 del autor, que es la que muestra esta app.",
+  "El ISBN y la fecha de publicación del capítulo en el Manual SEEN (para «Cómo citar»; los confirma la coordinación de la SEEN).",
+  "Las diferencias entre el capítulo y la ampliación del autor (asistente-aid): ratio I/HC, tipo de algoritmo de Control-IQ, autocorrección de MiniMed 780G, fecha de verificación y otras (auditoría del 2-10-2026); manda el capítulo hasta que el autor decida.",
+  "La edad de Liberty: la Tabla 1 dice «> 13 años» y el apartado 3, «menores de 13 años».",
+  "Los archivos fuente de la infografía y de las figuras (hoy, imágenes de la maquetación; el texto de cada caja ya está transcrito).",
 ];

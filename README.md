@@ -24,9 +24,8 @@ de nada clínico.
 - **Confiar.** Bibliografía con DOI enlazado; «Qué ha cambiado» con la fecha de cada revisión del capítulo y
   de la app; «Sobre esta versión» con alcance, correcciones aplicadas y descargo educativo; los pendientes a
   la vista.
-- **Aprender.** Test de autoevaluación con respuesta razonada y la página del capítulo que la justifica
-  (estructura lista; dos preguntas de ejemplo marcadas como provisionales, las definitivas las escribirá el
-  autor).
+- **Aprender.** Test de autoevaluación: las diez preguntas del autor, con su explicación y las frases del
+  capítulo que la respaldan (con página), rotuladas «pendiente de validación del autor» hasta su visto bueno.
 
 - **Sistemas y recorridos (0.2.0).** Una ficha por sistema con su foto oficial: primero «Lo que dice el
   capítulo» (sus columnas de las Tablas 1, 3 y 4 y los párrafos que lo nombran, literales y con página) y,
@@ -44,6 +43,17 @@ de nada clínico.
   (`#/visual`) con filtros; visor a pantalla completa con zoom y pellizco para las figuras originales y las
   fotos; tira de tablas, figuras y diagramas al principio de cada apartado; «De un vistazo» en la portada; la
   búsqueda encuentra también los diagramas.
+
+- **Lo que el PDF no puede dar (0.4.0).** «Versión extendida del autor · no publicada en el Manual»: 33
+  fragmentos de los borradores de mayo de 2026 que no cupieron en el capítulo, aprobados uno a uno por el
+  autor, plegados en ámbar en su apartado y en la ficha de cada sistema. Cinco diagramas nuevos (gestación
+  sistema a sistema, hospital, la Tabla 6 como mapa, la Figura 2 dibujada, interrupción del sistema). «Para
+  el paciente»: información para pacientes (V5 del autor) y resumen, cada uno en una cara A4 con QR, y un
+  plan de seguridad por sistema para rellenar a mano. El test con las diez preguntas del autor («pendiente de
+  validación del autor»). Navegación: «¿Qué necesitas?» con ocho atajos a dos toques, seguir leyendo,
+  favoritos, apartados leídos, volver arriba y la barra lateral agrupada. En cada apartado, «Cómo citar» y
+  «Escuchar». La búsqueda incluye, aparte y rotulado, lo que no es del capítulo. Enlaces a los casos de la
+  edición educativa de asistente-aid.
 
 ## Fuente única
 
@@ -72,8 +82,10 @@ de tres niveles, Cloudflare Pages.
 
 ```
 src/
-  contenido/        texto literal del capítulo (apartados, tablas, figuras, figura3, bibliografía, glosario, cifras, cambios, test)
+  contenido/        texto literal del capítulo (apartados, tablas, figuras, figura3, bibliografía, glosario, cifras, diagramas, cambios) y el test del autor
   ampliacion/       AMPLIACIÓN DEL AUTOR, fuera del capítulo: fichas de sistemas, sets, insulinas, criterios y sus fuentes
+  extendida/        VERSIÓN EXTENDIDA DEL AUTOR, no publicada en el Manual: fragmentos aprobados de los borradores de mayo
+  pacientes/        PARA EL PACIENTE: información para pacientes (V5) y resumen, literales
   componentes/      Shell (cromo), Bloques, TablaVista, FiguraVista, Figura3Vista
   pantallas/        Portada, Capitulo, Apartado, Consultar (tablas, figura 3, infografía, glosario), Sistemas, Recorridos, Otras
   ui.tsx tokens.ts index.css rutas.ts prefs.ts buscador.ts texto.tsx imprimir.js
@@ -92,9 +104,14 @@ dominio.
 ## Pendiente (no se ha inventado nada para rellenarlo)
 
 - Permiso escrito de la SEEN y de ec-europe para la versión web, y dónde se aloja.
-- Las preguntas del test de autoevaluación.
+- La validación por el autor de las diez preguntas del test.
+- La versión del capítulo con las 11 correcciones aplicadas por la editorial (al llegar, pasar
+  `scripts/auditoria/fidelidad.py` con ella).
+- Que la editorial publique la información para pacientes en la V5 del autor.
+- ISBN y fecha de publicación del capítulo (los confirma la coordinación de la SEEN).
+- Las diferencias entre el capítulo y asistente-aid y la edad de Liberty (docs/AUDITORIA_2026-10-02.md, §3 y §7).
 - Los archivos fuente de la infografía y de las figuras (hoy solo imágenes de la maquetación).
-- La fecha de publicación del capítulo en el Manual SEEN.
+- El secreto `CLOUDFLARE_API_TOKEN` en el repositorio para el despliegue automático.
 
 ## Convenciones
 

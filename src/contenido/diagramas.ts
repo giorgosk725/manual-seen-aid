@@ -10,7 +10,12 @@ export type DiagramaId =
   | "seguimiento"
   | "algoritmos"
   | "hipoglucemia"
-  | "transicion";
+  | "transicion"
+  | "gestacion-sistemas"
+  | "hospital"
+  | "exploraciones"
+  | "eleccion"
+  | "interrupcion";
 
 export interface DiagramaMeta {
   id: DiagramaId;
@@ -20,6 +25,10 @@ export interface DiagramaMeta {
   paginas: number[];
   /* Apartado donde se inserta (slug). */
   apartado: string;
+  /* Diagramas añadidos después de la 0.3.0: no ocupan un bloque del apartado (así no cambian
+     las anclas b1, b2…) y se muestran tras esta ancla: id de tabla o figura (después de ella),
+     id de subapartado (al final de ese subapartado) o id de bloque «bN» (después de él). */
+  ancla?: string;
 }
 
 export const DIAGRAMAS: DiagramaMeta[] = [
@@ -73,6 +82,49 @@ export const DIAGRAMAS: DiagramaMeta[] = [
       "Los pasos de la Tabla 2 en orden: respaldo, DTD, basal, ratio, sensibilidad, solapamiento.",
     paginas: [10],
     apartado: "08-iniciacion",
+  },
+  {
+    id: "gestacion-sistemas",
+    titulo: "Gestación, sistema a sistema",
+    resumen:
+      "Autorización, ensayo, objetivo configurable y estrategia de intensificación de cada sistema.",
+    paginas: [4, 17, 18],
+    apartado: "10-situaciones",
+    ancla: "gestacion",
+  },
+  {
+    id: "hospital",
+    titulo: "Hospital: cuándo no continuar el sistema",
+    resumen:
+      "Cuándo mantenerlo, cuándo no es apropiado y cómo pasar a la pauta alternativa y volver.",
+    paginas: [20, 21, 22],
+    apartado: "10-situaciones",
+    ancla: "b36",
+  },
+  {
+    id: "exploraciones",
+    titulo: "Exploraciones: bomba o pod y sensor",
+    resumen: "La Tabla 6 como mapa: qué se retira, qué depende del modelo y qué se mantiene.",
+    paginas: [21, 22],
+    apartado: "10-situaciones",
+    ancla: "T6",
+  },
+  {
+    id: "eleccion",
+    titulo: "Elección compartida del sistema",
+    resumen:
+      "La Figura 2 dibujada: perfil de la persona, características del sistema y contexto asistencial.",
+    paginas: [6],
+    apartado: "06-indicaciones",
+    ancla: "F2",
+  },
+  {
+    id: "interrupcion",
+    titulo: "Interrupción del sistema, según su duración",
+    resumen: "De la interrupción muy breve a la prolongada: qué hacer en cada tramo de tiempo.",
+    paginas: [9],
+    apartado: "07-educacion",
+    ancla: "interrupcion",
   },
 ];
 
@@ -435,4 +487,241 @@ export const TRANSICION = {
     },
   ],
   nota: "Los parámetros iniciales son solo el valor de partida; el algoritmo de cada sistema los modula según su propia lógica.",
+};
+
+/* ---------- Gestación, sistema a sistema (pp. 17-18; autorización: Tabla 1, p. 4) ----------
+   La fila «Gestación: autorización y evidencia» se toma de la Tabla 1 (TABLAS.T1); aquí, las
+   frases de las pp. 17-18 que nombran cada sistema, en el orden de las columnas. «—»: el
+   capítulo no lo da para ese sistema. */
+export type TemaGestacion = "Autorización" | "Ensayo" | "Objetivo" | "Estrategia";
+
+export const GESTACION_SISTEMAS: { tema: TemaGestacion; texto: string; p: number }[][] = [
+  [
+    {
+      tema: "Autorización",
+      texto:
+        "MiniMed 780G dispone asimismo de marcado CE para gestación y cuenta con evidencia específica procedente del ensayo CRISTAL",
+      p: 17,
+    },
+    {
+      tema: "Ensayo",
+      texto:
+        "CRISTAL evidenció con MiniMed 780G una mejoría principalmente nocturna y una reducción del tiempo por debajo del rango, sin diferencia significativa en el tiempo en rango global",
+      p: 17,
+    },
+    {
+      tema: "Objetivo",
+      texto:
+        "su objetivo mínimo configurable, de 100 mg/dl, permanece por encima de los objetivos glucémicos específicos del embarazo",
+      p: 18,
+    },
+    {
+      tema: "Estrategia",
+      texto:
+        "evitando estrategias no estandarizadas —como los hidratos fantasma— para forzar una mayor administración de insulina y priorizando el ajuste supervisado de los parámetros disponibles y del bolo prandial",
+      p: 18,
+    },
+  ],
+  [
+    {
+      tema: "Autorización",
+      texto:
+        "Control-IQ+ dispone de marcado CE para su uso durante la gestación en la DM1 desde junio de 2026, indicación respaldada por los resultados del ensayo CIRCUIT",
+      p: 18,
+    },
+    {
+      tema: "Ensayo",
+      texto:
+        "CIRCUIT mostró con Control-IQ una mejoría significativa del tiempo en rango específico de gestación, junto con una reducción del tiempo por encima y por debajo del rango",
+      p: 17,
+    },
+    {
+      tema: "Objetivo",
+      texto:
+        "No incorpora un objetivo gestacional específico configurable. Puede utilizarse el modo sueño de forma continuada para emplear el rango de tratamiento más bajo disponible, de 112,5–120 mg/dl, reservando un rango más alto para el ejercicio",
+      p: 18,
+    },
+    {
+      tema: "Estrategia",
+      texto:
+        "la estrategia de intensificación se basa en optimizar la tasa basal, la ratio insulina/hidratos de carbono y el factor de sensibilidad",
+      p: 18,
+    },
+  ],
+  [
+    {
+      tema: "Autorización",
+      texto:
+        "CamAPS FX dispone de marcado CE para su uso durante la gestación y de evidencia aleatorizada específica, principalmente del ensayo AiDAPT, además de permitir objetivos glucémicos suficientemente bajos; su modalidad Liberty, en cambio, no está autorizada durante la gestación",
+      p: 17,
+    },
+    {
+      tema: "Ensayo",
+      texto:
+        "AiDAPT mostró con CamAPS FX un mayor tiempo en rango específico de gestación y menor ganancia ponderal materna, además de señales favorables en algunos desenlaces maternos",
+      p: 17,
+    },
+    {
+      tema: "Objetivo",
+      texto:
+        "alrededor de 100 mg/dl en el primer trimestre y 80–90 mg/dl a partir del segundo, pudiendo individualizarse aproximadamente a 81 mg/dl durante la noche si el TBR lo permite. Tras el parto debe elevarse nuevamente el objetivo",
+      p: 17,
+    },
+    {
+      tema: "Estrategia",
+      texto:
+        "Boost puede utilizarse transitoriamente cuando aumentan las necesidades de insulina —por ejemplo, ante hiperglucemia posprandial, enfermedad leve sin cetosis o glucocorticoides antenatales—, mientras que Ease-off puede ser útil ante ejercicio o situaciones de mayor sensibilidad a la insulina, incluido el periodo periparto y el posparto inmediato",
+      p: 18,
+    },
+  ],
+  [
+    {
+      tema: "Autorización",
+      texto:
+        "Omnipod 5 no dispone actualmente de autorización específica para su uso durante la gestación",
+      p: 17,
+    },
+    { tema: "Ensayo", texto: "—", p: 17 },
+    { tema: "Objetivo", texto: "—", p: 17 },
+    { tema: "Estrategia", texto: "—", p: 17 },
+  ],
+];
+
+/* Lo común a todos los sistemas en la gestación (pp. 17-18). */
+export const GESTACION_COMUN: { texto: string; p: number }[] = [
+  {
+    texto:
+      "anticipando el bolo prandial, habitualmente 10–15 min y, en fases avanzadas, hasta 30–45 min según la respuesta individual",
+    p: 17,
+  },
+  {
+    texto:
+      "Durante la gestación debe extremarse la vigilancia de la cetoacidosis, que puede aparecer con glucemias menos elevadas que fuera del embarazo y comporta un riesgo importante para el feto.",
+    p: 18,
+  },
+  {
+    texto:
+      "Tras el parto, el aumento brusco de la sensibilidad a la insulina suele exigir una reducción importante de las necesidades de insulina y la adaptación de los ajustes del sistema.",
+    p: 18,
+  },
+];
+
+/* ---------- Hospital: cuándo no continuar el sistema (pp. 20-22) ---------- */
+export const HOSPITAL = {
+  mantener: {
+    texto:
+      "La MCG, la bomba de insulina y los sistemas AID pueden mantenerse cuando la persona puede utilizarlos de forma segura y el centro dispone de personal, procedimientos y recursos que permitan su supervisión.",
+    p: 20,
+  },
+  noApropiada: {
+    intro: "La continuación del sistema no es apropiada cuando",
+    items: [
+      "la persona o el equipo asistencial no pueden manejarlo con seguridad",
+      "existe alteración del nivel de conciencia que impide el autocuidado —excluida la anestesia—",
+      "cetoacidosis diabética o estado hiperosmolar",
+      "falta de material necesario",
+      "determinadas exploraciones incompatibles",
+      "situaciones que comprometan la precisión de la MCG",
+    ],
+    p: 20,
+  },
+  entonces: {
+    texto:
+      "En estos casos debe establecerse una pauta alternativa sin interrupción de la cobertura insulínica.",
+    p: 20,
+  },
+  pasos: [
+    {
+      cuando: "2 h antes",
+      texto:
+        "Si la transición desde bomba/AID a una pauta subcutánea está programada, la insulina basal debe administrarse aproximadamente 2 h antes de suspender la bomba.",
+      p: 20,
+    },
+    {
+      cuando: "Pauta alternativa",
+      texto:
+        "Cuando el sistema no proporciona un perfil basal detallado —como puede ocurrir con Omnipod 5—, la pauta de respaldo puede estimarse a partir de la dosis total diaria; en el ámbito hospitalario, una distribución inicial aproximada del 50 % basal y 50 % prandial puede utilizarse como punto de partida, individualizándola según la ingesta y la situación clínica.",
+      p: 20,
+    },
+    {
+      cuando: "Unas 22 h",
+      texto:
+        "La bomba o el AID pueden reanudarse cuando hayan desaparecido las contraindicaciones y el efecto de la insulina basal administrada haya disminuido suficientemente; como orientación, unas 22 h tras la última dosis de una basal de duración cercana a 24 h, individualizando según el preparado utilizado.",
+      p: 20,
+      p2: 21,
+    },
+  ],
+  mientras: {
+    texto:
+      "Mientras se mantiene la bomba o el AID, las dosis suplementarias de insulina deben administrarse preferentemente a través de la propia bomba, salvo que exista una razón clínica para utilizar una pauta alternativa.",
+    p: 21,
+  },
+  desdeIV: {
+    texto:
+      "Para volver al sistema desde insulina intravenosa, una vez recuperada la estabilidad clínica, reanudar el sistema y mantener ambas vías en paralelo aproximadamente 60 min antes de suspender la perfusión, de acuerdo con el protocolo de transición utilizado.",
+    p: 22,
+  },
+};
+
+/* ---------- Exploraciones (Tabla 6 como mapa) ----------
+   Clasificación visual de cada celda de la Tabla 6 (interfaz); lo que se lee es la celda
+   literal de la tabla. Filas en el orden de la Tabla 6; columnas: bomba o pod, sensor. */
+export type EstadoExploracion = "retirar" | "depende" | "mantener";
+export const EXPLORACIONES_ESTADO: [EstadoExploracion, EstadoExploracion][] = [
+  ["retirar", "retirar"],
+  ["retirar", "depende"],
+  ["depende", "depende"],
+  ["depende", "depende"],
+  ["depende", "depende"],
+  ["mantener", "mantener"],
+  ["mantener", "mantener"],
+  ["retirar", "depende"],
+];
+
+/* ---------- Interrupción del sistema según su duración (p. 9) ---------- */
+export const INTERRUPCION_LINEA = {
+  pagina: 9,
+  tramos: [
+    {
+      cuando: "Muy breve",
+      texto:
+        "Las interrupciones muy breves, con reanudación o sustitución inmediata, no suelen requerir medidas adicionales",
+    },
+    {
+      cuando: "Aproximadamente 1 h",
+      texto:
+        "a partir de aproximadamente 1 h sin administración de insulina debe actuarse —glucemia capilar, valoración de cetonemia según el contexto y reposición de la insulina no administrada— por el riesgo de hiperglucemia y cetosis",
+    },
+    {
+      cuando: "Hasta 2-3 h, programadas",
+      texto:
+        "puede valorarse, si no existe riesgo de hipoglucemia, administrar antes de la desconexión un bolo de acción rápida o ultrarrápida para cubrir la insulina basal prevista durante ese período",
+    },
+    {
+      cuando: "Prolongadas",
+      texto:
+        "se pasa a múltiples dosis con pluma: insulina basal —preferentemente glargina U-100 si se busca facilitar el retorno posterior al sistema— y análogo ultrarrápido para comidas y correcciones",
+    },
+  ],
+  detalles: [
+    {
+      cuando: "Basal de respaldo sin estimación fiable",
+      texto: "puede orientarse en torno al 40-50 % de la DTD reciente",
+    },
+    {
+      cuando: "Glargina programada ante una interrupción prolongada",
+      texto:
+        "puede adelantarse aproximadamente dos horas antes de la retirada del dispositivo para evitar un vacío de insulinización",
+    },
+    {
+      cuando: "Cetonemia o sospecha de fallo",
+      texto:
+        "Si existe cetonemia, hiperglucemia persistente o sospecha de fallo de infusión, se seguirá el algoritmo de la figura 3.",
+    },
+  ],
+  formatos: {
+    pod: "el pod no se desconecta —si falla, se despega o debe retirarse, se sustituye por uno nuevo—",
+    bomba: "la bomba con catéter puede desconectarse y reconectarse a través del set de infusión",
+  },
+  nota: "Estas pautas son orientativas y se apoyan en la farmacocinética de las insulinas más que en ensayos específicos en asa cerrada, por lo que deben individualizarse.",
 };

@@ -1,10 +1,19 @@
 /* Shell: barra superior, barra lateral de escritorio (índice del capítulo + consultar),
    barra inferior móvil (5 destinos), paleta de búsqueda (Ctrl K) y aviso de versión nueva. */
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import {
   AArrowDown,
   AArrowUp,
   BookOpen,
+  CircleCheck,
   Columns3,
   Home,
   Menu,
@@ -15,11 +24,12 @@ import {
   X,
 } from "lucide-react";
 import { APARTADOS, CAPITULO } from "../contenido";
-import { DESTINOS } from "../nav";
+import { DESTINOS, GRUPOS_CONSULTAR } from "../nav";
 import { consumirNavegacionNueva, href, marcarNavegacionNueva, useRuta, type Ruta } from "../rutas";
-import { TAMANOS, useNocturno, useTamanoLetra } from "../prefs";
+import { TAMANOS, useLeidos, useNocturno, useTamanoLetra } from "../prefs";
+import { VolverArriba } from "./Lectura";
 import { Modal } from "../ui";
-import { buscar, marcar } from "../buscador";
+import { buscar, fueraDelCapitulo, marcar } from "../buscador";
 import { CATEGORIA_HEX } from "../tokens";
 
 /* Destinos que viven bajo #/consultar/<id>. */
@@ -86,7 +96,13 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
                 >
                   <div className="flex items-center justify-between gap-2 text-xs text-slate-500">
                     <span className="truncate font-semibold">{r.entrada.titulo}</span>
-                    <span className="pagina-badge">p. {r.entrada.pagina}</span>
+                    {fueraDelCapitulo(r.entrada) ? (
+                      <span className="shrink-0 rounded-full bg-amber-100 px-1.5 text-[11px] font-semibold text-amber-900">
+                        Fuera del capítulo
+                      </span>
+                    ) : (
+                      <span className="pagina-badge">p. {r.entrada.pagina}</span>
+                    )}
                   </div>
                   <div className="mt-0.5 text-sm text-slate-800">
                     {marcar(r.fragmento, q).map((t, i) =>
@@ -159,8 +175,9 @@ function AvisoVersion() {
 /* ---------- Barra lateral (escritorio) ---------- */
 function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
   const enCapitulo = ruta.seccion === "capitulo";
+  const leidos = useLeidos();
   const grupo = (titulo: string, ids: string[]) => (
-    <div className="mt-4">
+    <div className="mt-3">
       <div className="px-3 text-[11px] font-bold uppercase tracking-wider text-white/50">
         {titulo}
       </div>
@@ -196,7 +213,12 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
                           className={`flex gap-2 rounded-md px-2 py-1 text-[13px] leading-snug transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 ${onA ? "bg-white/15 font-semibold text-white" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
                         >
                           <span className="w-5 shrink-0 tabular-nums text-white/50">{a.n}</span>
-                          <span>{a.corto}</span>
+                          <span className="flex-1">{a.corto}</span>
+                          {leidos.includes(a.slug) && (
+                            <span className="text-white/60" title="Leído">
+                              <CircleCheck size={13} aria-label="Leído" />
+                            </span>
+                          )}
                         </a>
                       </li>
                     );
@@ -234,17 +256,10 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
       </button>
       <nav aria-label="Navegación principal">
         {grupo("Leer", ["capitulo"])}
-        {grupo("Consultar", [
-          "visual",
-          "sistemas",
-          "situacion",
-          "figura-3",
-          "descarga",
-          "interrupcion",
-          "tablas",
-          "infografia",
-          "glosario",
-        ])}
+        {GRUPOS_CONSULTAR.map((g) => (
+          <Fragment key={g.id}>{grupo(g.titulo, g.ids)}</Fragment>
+        ))}
+        {grupo("Para el paciente", ["pacientes"])}
         {grupo("Confiar", ["bibliografia", "cambios", "sobre"])}
         {grupo("Aprender", ["test"])}
       </nav>
@@ -285,7 +300,7 @@ function Inferior({ ruta }: { ruta: Ruta }) {
       etiqueta: "Más",
       href: href("mas"),
       icono: MoreHorizontal,
-      on: ["mas", "bibliografia", "cambios", "sobre", "test"].includes(ruta.seccion),
+      on: ["mas", "bibliografia", "cambios", "sobre", "test", "pacientes"].includes(ruta.seccion),
     },
   ];
   return (
@@ -318,6 +333,7 @@ function Inferior({ ruta }: { ruta: Ruta }) {
 
 /* ---------- Cajón móvil con el índice ---------- */
 function Cajon({ open, onClose, ruta }: { open: boolean; onClose: () => void; ruta: Ruta }) {
+  const leidos = useLeidos();
   return (
     <Modal open={open} onClose={onClose} ariaLabel="Índice del capítulo" maxW="max-w-md">
       <div className="p-3">
@@ -342,7 +358,14 @@ function Cajon({ open, onClose, ruta }: { open: boolean; onClose: () => void; ru
                 className={`flex gap-2 rounded-lg px-2 py-2 text-sm transition hover:bg-slate-50 ${ruta.sub === a.slug ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700"}`}
               >
                 <span className="w-5 shrink-0 tabular-nums text-slate-500">{a.n}</span>
-                {a.titulo}
+                <span className="flex-1">{a.titulo}</span>
+                {leidos.includes(a.slug) && (
+                  <CircleCheck
+                    size={15}
+                    className="mt-0.5 shrink-0 text-emerald-700"
+                    aria-label="Leído"
+                  />
+                )}
               </a>
             </li>
           ))}
@@ -425,7 +448,9 @@ export function Shell({ children, titulo }: { children: ReactNode; titulo?: stri
         ? CATEGORIA_HEX.confiar
         : ruta.seccion === "test"
           ? CATEGORIA_HEX.aprender
-          : CATEGORIA_HEX.leer;
+          : ruta.seccion === "pacientes"
+            ? CATEGORIA_HEX.pacientes
+            : CATEGORIA_HEX.leer;
 
   const menor = TAMANOS[Math.max(0, TAMANOS.indexOf(letra) - 1)];
   const mayor = TAMANOS[Math.min(TAMANOS.length - 1, TAMANOS.indexOf(letra) + 1)];
@@ -514,6 +539,7 @@ export function Shell({ children, titulo }: { children: ReactNode; titulo?: stri
       <Inferior ruta={ruta} />
       <Cajon open={cajon} onClose={cerrarCajon} ruta={ruta} />
       <Paleta open={paleta} onClose={cerrarPaleta} />
+      <VolverArriba />
       <AvisoVersion />
     </div>
   );

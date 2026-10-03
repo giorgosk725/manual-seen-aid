@@ -136,7 +136,12 @@ for slug, lista in app["cifras"].items():
 res["diagramas_fallo"] = []
 VACIAS = {"no", "se", "indica", "en", "la", "tabla", "1", "p"}  # «no se indica en la Tabla 1» es interfaz
 for d in app.get("diagramas", []):
-    pags = [3, 4] if d["id"].startswith("algoritmos") else [4, 5] if d["id"].startswith("objetivos general") else [d["p"]]
+    pags = (
+        [3, 4] if d["id"].startswith("algoritmos")
+        else [4, 5] if d["id"].startswith("objetivos general")
+        else list(range(d["p"], d["p2"] + 1)) if d.get("p2")
+        else [d["p"]]
+    )
     fuente = " ".join(paginas[x] for x in pags)
     if 8 in pags:  # la Figura 3 es imagen: se compara con su transcripción
         fuente += " " + " ".join(f["texto"] for f in app["figura3"])

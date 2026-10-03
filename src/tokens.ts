@@ -41,4 +41,5 @@ export const CATEGORIA_HEX: Record<
   consultar: { soft: "#eff0f7", strong: "#514dbf", strong2: "#4340a6", ink: "#343093" },
   confiar: { soft: "#eef5f1", strong: "#0f7a58", strong2: "#0c6448", ink: "#0b5540" },
   aprender: { soft: "#edf5fa", strong: "#2f93c4", strong2: "#1f6a8f", ink: "#1f6a8f" },
+  pacientes: { soft: "#fdf1ef", strong: "#b4473a", strong2: "#923a2f", ink: "#7f3128" },
 };

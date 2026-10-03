@@ -62,6 +62,29 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
    give (leave a band without target as «—»). `scripts/auditoria/fidelidad.py` checks each one
    against its PDF page. Diagrams are HTML/CSS, not SVG, so the text stays real text.
 
+9. **Layers added in 0.4.0 (session 4, 3-10-2026). Same rule: never mixed with the chapter.**
+   - `src/extendida/` — «Versión extendida del autor · no publicada en el Manual»: fragments of the
+     author's May 2026 drafts (V93, V85, tablas V85) that were cut for space, **only those the
+     author approved one by one** (33 on 3-10-2026). Generated from the .docx files (literal, with
+     the app's conventions); never hand-edit. Unapproved fragments are NOT committed (public
+     repo). Shown folded, in amber, after the block they belong to (`donde`) and in the system
+     fichas (`sistemas`). If a fragment ever contradicted the chapter, the chapter wins.
+   - `src/pacientes/textos.ts` — «Para el paciente»: the author's corrected patient information
+     (V5) and the editorial's typeset summary, literal. The safety-plan sheet
+     (`pantallas/Pacientes.tsx`) is built ONLY from chapter data (p. 7 list, Figure 3, Table 4)
+     plus blank lines for handwriting: no inputs, nothing stored.
+   - `src/contenido/test.ts` — the author's 10 quiz questions; `explicacion` is author text,
+     `citas` are literal chapter phrases (the content test checks each one in its block).
+     `validada: false` shows «pendiente de validación del autor» until the author approves.
+   - «Novedades desde la publicación»: nothing is published until the author approves each item
+     (the draft lives in the session's review page, not in the repo).
+10. **Diagrams after 0.3.0 are not blocks.** Adding a block to an apartado shifts the positional
+    anchors (`b17`…) that search, cifras and shared links use. New diagrams carry `ancla` in
+    `DIAGRAMAS` and are rendered after it (`posicionDeAncla`, ids `d-<id>`); the extended layer
+    uses the same resolver.
+11. **Reader preferences** (`src/prefs.ts`): night mode, font size, last reading position, read
+    apartados and favourites — app routes and interface titles only, never clinical data.
+
 ## 2. Quality gates (all must pass before a push)
 
 ```bash
@@ -72,6 +95,11 @@ npm run format:check
 npm run build
 npm run test:e2e    # Playwright: desktop, mobile 393 px, night mode with axe
 ```
+
+Plus the audits in `scripts/auditoria/` (see docs/AUDITORIA_2026-10-02.md §8): `fidelidad.py`
+(chapter, tables, figures, cifras, diagrams vs the final PDF) and `fidelidad_extra.py` (extended
+layer vs the drafts, patient texts vs V5 and the typeset summary, quiz citations vs the PDF).
+`e2e/sesion4.spec.ts` checks that each patient sheet prints on ONE A4 side.
 
 CI (`.github/workflows/ci.yml`) runs the same. Deploy to Cloudflare Pages (`manual-seen-aid`)
 on push to main (`deploy-cloudflare.yml`, needs `CLOUDFLARE_API_TOKEN`).

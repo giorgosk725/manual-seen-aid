@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Table2 } from "lucide-react";
 import { GLOSARIO, INFO, LISTA_TABLAS, TABLAS, apartadoDeTabla, type TablaId } from "../contenido";
-import { DESTINOS } from "../nav";
+import { DESTINOS, GRUPOS_CONSULTAR } from "../nav";
 import { href } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Revelar, Segmented } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
@@ -11,22 +11,41 @@ import { Figura3Recorrido } from "../componentes/Figura3Vista";
 import { ImagenFigura } from "../componentes/FiguraVista";
 import { Texto } from "../texto";
 import { normalizar } from "../buscador";
+import { VersionExtendida } from "../componentes/VersionExtendida";
+import { EnlaceEducativa } from "../componentes/Lectura";
+import { extendidosDeTabla } from "../extendida";
 
 const hex = CATEGORIA_HEX.consultar;
 
 export function HubConsultar() {
-  const ids = [
-    "visual",
-    "sistemas",
-    "situacion",
-    "figura-3",
-    "descarga",
-    "interrupcion",
-    "tablas",
-    "infografia",
-    "glosario",
-    "buscar",
-  ];
+  const tarjeta = (id: string) => {
+    const d = DESTINOS.find((x) => x.id === id)!;
+    const I = d.icono;
+    return (
+      <Revelar as="li" key={id}>
+        <a
+          href={d.href}
+          className="hover-lift ease-brand flex h-full gap-3 rounded-2xl border bg-white p-4 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+          style={{
+            borderColor: "#e5ebf1",
+            background: `linear-gradient(160deg, ${hex.soft}, #ffffff 60%)`,
+          }}
+        >
+          <span
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white shadow-sm"
+            style={{ background: `linear-gradient(135deg, ${hex.strong}, ${hex.strong2})` }}
+            aria-hidden="true"
+          >
+            <I size={20} />
+          </span>
+          <span className="min-w-0">
+            <span className="block text-base font-bold text-slate-900">{d.etiqueta}</span>
+            <span className="mt-0.5 block text-sm text-slate-600">{d.descripcion}</span>
+          </span>
+        </a>
+      </Revelar>
+    );
+  };
   return (
     <div>
       <CabeceraEditorial titulo="Consultar" hex={hex} level={1}>
@@ -35,36 +54,30 @@ export function HubConsultar() {
           página.
         </p>
       </CabeceraEditorial>
-      <ul className="grid gap-3 sm:grid-cols-2">
-        {ids.map((id) => {
-          const d = DESTINOS.find((x) => x.id === id)!;
-          const I = d.icono;
-          return (
-            <Revelar as="li" key={id}>
-              <a
-                href={d.href}
-                className="hover-lift ease-brand flex h-full gap-3 rounded-2xl border bg-white p-4 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{
-                  borderColor: "#e5ebf1",
-                  background: `linear-gradient(160deg, ${hex.soft}, #ffffff 60%)`,
-                }}
-              >
-                <span
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white shadow-sm"
-                  style={{ background: `linear-gradient(135deg, ${hex.strong}, ${hex.strong2})` }}
-                  aria-hidden="true"
-                >
-                  <I size={20} />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-base font-bold text-slate-900">{d.etiqueta}</span>
-                  <span className="mt-0.5 block text-sm text-slate-600">{d.descripcion}</span>
-                </span>
-              </a>
-            </Revelar>
-          );
-        })}
-      </ul>
+      <div className="space-y-6">
+        {GRUPOS_CONSULTAR.map((g) => (
+          <section key={g.id} aria-labelledby={`grupo-${g.id}`}>
+            <h2
+              id={`grupo-${g.id}`}
+              className="mb-2 text-sm font-bold uppercase tracking-wide"
+              style={{ color: hex.ink }}
+            >
+              {g.titulo}
+            </h2>
+            <ul className="grid gap-3 sm:grid-cols-2">{g.ids.map(tarjeta)}</ul>
+          </section>
+        ))}
+        <section aria-labelledby="grupo-pacientes">
+          <h2
+            id="grupo-pacientes"
+            className="mb-2 text-sm font-bold uppercase tracking-wide"
+            style={{ color: hex.ink }}
+          >
+            Para el paciente
+          </h2>
+          <ul className="grid gap-3 sm:grid-cols-2">{tarjeta("pacientes")}</ul>
+        </section>
+      </div>
       <h2 className="mt-8 text-sm font-bold uppercase tracking-wide text-slate-500">
         Las seis tablas
       </h2>
@@ -129,6 +142,9 @@ export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
         key={tid}
       >
         <TablaVista tabla={tabla} modo="interactiva" seleccionInicial={seleccion} />
+        <div className="mt-4">
+          <VersionExtendida fragmentos={extendidosDeTabla(tid)} />
+        </div>
         <div
           className="no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3"
           style={{ borderColor: "#e5ebf1" }}
@@ -173,6 +189,9 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
             <ArrowRight size={14} aria-hidden="true" />
           </a>
         </div>
+      </div>
+      <div className="mt-3">
+        <EnlaceEducativa clave="cetonemia" />
       </div>
     </div>
   );

@@ -758,6 +758,9 @@ main .note-soft {
   main {
     padding: 0 !important;
     max-width: none !important;
+    /* La barra lateral no se imprime: sin su margen (en papel A4 la consulta de anchura da
+       ≥ 768 px y el margen de 16 rem empujaba el contenido a la derecha). */
+    margin-left: 0 !important;
   }
   .shadow-soft {
     box-shadow: none !important;
@@ -1108,5 +1111,145 @@ html.night .cabecera {
   @page {
     size: A4 portrait;
     margin: 14mm;
+  }
+}
+
+/* ---------- Sesión 4: hojas para el paciente, lectura en voz alta, versión extendida ---------- */
+
+/* Bloque que se está leyendo en voz alta (Escuchar el apartado). */
+.leyendo {
+  border-radius: 0.5rem;
+  background: #fef9c3;
+  box-shadow: 0 0 0 6px #fef9c3;
+}
+html.night .leyendo {
+  background: #3f3a1a;
+  box-shadow: 0 0 0 6px #3f3a1a;
+}
+
+/* Tramos de la Figura 3 en el plan de seguridad: borde del color del tramo (también en papel). */
+.tramo-plan.tramo-verde {
+  border-color: #a7f3d0;
+  background: #ecfdf5;
+}
+.tramo-plan.tramo-amarillo {
+  border-color: #fde68a;
+  background: #fffbeb;
+}
+.tramo-plan.tramo-naranja {
+  border-color: #fed7aa;
+  background: #fff7ed;
+}
+.tramo-plan.tramo-rojo {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+html.night .tramo-plan {
+  background: #1e293b;
+}
+
+/* Hoja A4 en papel: UNA cara, a dos columnas, letra pequeña pero legible (7,2 pt).
+   En pantalla es una sola columna normal. La prueba e2e (sesion4.spec.ts) cuenta las páginas
+   del PDF de cada hoja: tiene que ser una. */
+@media print {
+  html.imprimiendo .hoja-a4 {
+    font-size: 7.2pt;
+    line-height: 1.22;
+    color: #000;
+  }
+  html.imprimiendo .hoja-a4 * {
+    font-size: inherit !important;
+    line-height: inherit !important;
+  }
+  html.imprimiendo .hoja-a4 h1 {
+    font-size: 9.5pt !important;
+    line-height: 1.15 !important;
+  }
+  html.imprimiendo .hoja-a4 h2 {
+    font-size: 7.8pt !important;
+    margin-top: 0 !important;
+    break-after: avoid;
+  }
+  html.imprimiendo .hoja-a4 .hoja-cabecera {
+    margin-bottom: 1.5mm !important;
+    padding-bottom: 1mm !important;
+  }
+  html.imprimiendo .hoja-a4 .hoja-cuerpo {
+    column-count: 2;
+    column-gap: 5mm;
+  }
+  html.imprimiendo .hoja-a4 .hoja-seccion {
+    margin-bottom: 1.2mm !important;
+  }
+  html.imprimiendo .hoja-a4 p,
+  html.imprimiendo .hoja-a4 li,
+  html.imprimiendo .hoja-a4 dd,
+  html.imprimiendo .hoja-a4 ul,
+  html.imprimiendo .hoja-a4 ol,
+  html.imprimiendo .hoja-a4 dl {
+    margin-top: 0.4mm !important;
+  }
+  html.imprimiendo .hoja-a4 .space-y-0\.5 > *,
+  html.imprimiendo .hoja-a4 .space-y-1 > *,
+  html.imprimiendo .hoja-a4 .space-y-1\.5 > *,
+  html.imprimiendo .hoja-a4 .space-y-2 > * {
+    margin-top: 0.4mm !important;
+  }
+  html.imprimiendo .hoja-a4 .hoja-pie {
+    margin-top: 1.5mm !important;
+    padding-top: 1mm !important;
+    break-inside: avoid;
+  }
+  html.imprimiendo .hoja-a4 .qr {
+    width: 17mm;
+    height: 17mm;
+  }
+  html.imprimiendo .hoja-a4 .tramo-plan {
+    break-inside: avoid;
+    padding: 0.8mm 1.2mm !important;
+  }
+  /* En papel, los pasos de cada tramo y las filas de la Tabla 4 van seguidos. */
+  html.imprimiendo .hoja-a4 .tramo-plan li,
+  html.imprimiendo .hoja-a4 .plan-t4 dt,
+  html.imprimiendo .hoja-a4 .plan-t4 dd {
+    display: inline;
+  }
+  html.imprimiendo .hoja-a4 .tramo-plan li + li::before {
+    content: " · ";
+  }
+  html.imprimiendo .hoja-a4 .plan-t4 dt::after {
+    content: ": ";
+  }
+  html.imprimiendo .hoja-a4 .hueco {
+    min-height: 4.2mm;
+  }
+  /* El resumen es corto: una columna y letra de lectura. */
+  html.imprimiendo .hoja-a4.holgada {
+    font-size: 9.2pt;
+    line-height: 1.38;
+  }
+  html.imprimiendo .hoja-a4.holgada .hoja-cuerpo {
+    column-count: 1;
+  }
+  html.imprimiendo .hoja-a4.holgada p {
+    margin-top: 1.6mm !important;
+  }
+}
+
+/* Nocturno: tinta de la categoría «Para el paciente» y tintas de los diagramas nuevos. */
+@media screen {
+  html.night [style^="color: rgb(127, 49, 40)"],
+  html.night [style*="; color: rgb(127, 49, 40)"],
+  html.night [style^="color: rgb(180, 71, 58)"],
+  html.night [style*="; color: rgb(180, 71, 58)"],
+  html.night [style^="color: rgb(146, 58, 47)"],
+  html.night [style*="; color: rgb(146, 58, 47)"] {
+    color: #fca5a5 !important;
+  }
+  html.night [style^="color: rgb(30, 58, 138)"],
+  html.night [style*="; color: rgb(30, 58, 138)"],
+  html.night [style^="color: rgb(55, 48, 163)"],
+  html.night [style*="; color: rgb(55, 48, 163)"] {
+    color: #a5b4fc !important;
   }
 }

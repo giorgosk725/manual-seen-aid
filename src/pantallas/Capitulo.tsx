@@ -1,14 +1,16 @@
 /* Índice del capítulo (lista de apartados con sus páginas) y «capítulo entero» para
    imprimir de una vez. */
 import { useRef } from "react";
-import { ArrowRight, Printer } from "lucide-react";
+import { ArrowRight, CircleCheck, Printer } from "lucide-react";
 import { APARTADOS, AUTOEVALUACION, CAPITULO, subapartados } from "../contenido";
 import { href } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Revelar } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
+import { useLeidos } from "../prefs";
 
 export function IndiceCapitulo() {
+  const leidos = useLeidos();
   return (
     <div>
       <CabeceraEditorial titulo="Índice del capítulo" hex={CATEGORIA_HEX.leer} level={1}>
@@ -43,10 +45,17 @@ export function IndiceCapitulo() {
                     </span>
                   )}
                 </span>
-                <span className="pagina-badge shrink-0 pt-1">
-                  {a.paginas[0] === a.paginas[1]
-                    ? `p. ${a.paginas[0]}`
-                    : `pp. ${a.paginas[0]}–${a.paginas[1]}`}
+                <span className="flex shrink-0 flex-col items-end gap-1 pt-1">
+                  <span className="pagina-badge">
+                    {a.paginas[0] === a.paginas[1]
+                      ? `p. ${a.paginas[0]}`
+                      : `pp. ${a.paginas[0]}–${a.paginas[1]}`}
+                  </span>
+                  {leidos.includes(a.slug) && (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700">
+                      <CircleCheck size={13} aria-hidden="true" /> Leído
+                    </span>
+                  )}
                 </span>
               </a>
             </Revelar>
@@ -70,7 +79,8 @@ export function IndiceCapitulo() {
                 {AUTOEVALUACION.titulo}
               </span>
               <span className="mt-1 block text-xs text-slate-500">
-                Test con respuesta razonada (preguntas pendientes del autor; dos de ejemplo).
+                Diez casos del autor con respuesta razonada y la página del capítulo (pendientes de
+                su validación).
               </span>
             </span>
             <span className="pagina-badge shrink-0 pt-1">p. {AUTOEVALUACION.pagina}</span>

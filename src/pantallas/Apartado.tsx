@@ -15,6 +15,8 @@ import { ICONO_DIAGRAMA } from "../nav";
 import { CIFRAS } from "../contenido/cifras";
 import { href } from "../rutas";
 import { BotonImprimir } from "../ui";
+import { BotonFavorito, ComoCitar, Escuchar } from "../componentes/Lectura";
+import { guardarUltimo, marcarLeido } from "../prefs";
 import { CATEGORIA_HEX } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
 
@@ -40,9 +42,41 @@ function useProgreso(ref: React.RefObject<HTMLElement | null>) {
   return p;
 }
 
+/* Seguir leyendo: guarda el bloque visible (solo la ruta) y marca el apartado como leído al
+   llegar al final. */
+function useMarcadorLectura(apartado: TApartado, progreso: number) {
+  useEffect(() => {
+    if (progreso >= 0.95) marcarLeido(apartado.slug);
+  }, [progreso, apartado.slug]);
+  useEffect(() => {
+    let t: ReturnType<typeof setTimeout> | undefined;
+    const titulo = `${apartado.n}. ${apartado.titulo}`;
+    const guardar = () => {
+      let ancla: string | undefined;
+      apartado.bloques.forEach((b, i) => {
+        const id = idDeBloque(b, i);
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top < 140) ancla = id;
+      });
+      guardarUltimo({ slug: apartado.slug, titulo, ruta: href("capitulo", apartado.slug, ancla) });
+    };
+    const onScroll = () => {
+      clearTimeout(t);
+      t = setTimeout(guardar, 600);
+    };
+    guardar();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [apartado]);
+}
+
 export function Apartado({ apartado, destacado }: { apartado: TApartado; destacado?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const progreso = useProgreso(ref);
+  useMarcadorLectura(apartado, progreso);
   const i = APARTADOS.findIndex((a) => a.slug === apartado.slug);
   const prev = APARTADOS[i - 1];
   const next = APARTADOS[i + 1];
@@ -111,10 +145,16 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                   : `pp. ${apartado.paginas[0]}–${apartado.paginas[1]}`}{" "}
                 del capítulo
               </span>
-              <span className="no-imprimir">
+              <span className="no-imprimir flex flex-wrap items-center gap-1.5">
                 <BotonImprimir objetivo={ref} compacto titulo="Imprimir solo este apartado">
                   Imprimir
                 </BotonImprimir>
+                <BotonFavorito
+                  ruta={href("capitulo", apartado.slug)}
+                  titulo={`${apartado.n}. ${apartado.titulo}`}
+                />
+                <Escuchar apartado={apartado} />
+                <ComoCitar apartado={apartado} />
               </span>
             </div>
           </div>

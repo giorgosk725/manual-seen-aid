@@ -1,6 +1,7 @@
 /* Destinos de la navegación: cada concepto tiene un único hogar y una única etiqueta. */
 import {
   Activity,
+  Baby,
   BookOpen,
   CalendarClock,
   Clock3,
@@ -10,7 +11,10 @@ import {
   Footprints,
   FlaskConical,
   GraduationCap,
+  Handshake,
+  HeartHandshake,
   History,
+  Hospital,
   Images,
   Info,
   LayoutGrid,
@@ -19,10 +23,12 @@ import {
   ListOrdered,
   ListTree,
   Route,
+  ScanLine,
   Search,
   SpellCheck,
   Table2,
   Target,
+  Unplug,
   type LucideIcon,
 } from "lucide-react";
 import { href } from "./rutas";
@@ -35,7 +41,7 @@ export interface Destino {
   href: string;
   icono: LucideIcon;
   /* Categoría (color por función; tokens.CATEGORIA_HEX). */
-  cat: "leer" | "consultar" | "confiar" | "aprender";
+  cat: "leer" | "consultar" | "confiar" | "aprender" | "pacientes";
   descripcion: string;
 }
 
@@ -139,6 +145,16 @@ export const DESTINOS: Destino[] = [
     descripcion: "Búsqueda instantánea sobre el texto literal (sin IA generativa).",
   },
   {
+    id: "pacientes",
+    etiqueta: "Para el paciente",
+    corto: "Pacientes",
+    href: href("pacientes"),
+    icono: HeartHandshake,
+    cat: "pacientes",
+    descripcion:
+      "Información para pacientes y resumen, para imprimir en una cara o compartir con QR, y el plan de seguridad de cada sistema.",
+  },
+  {
     id: "bibliografia",
     etiqueta: "Bibliografía",
     href: href("bibliografia"),
@@ -174,6 +190,18 @@ export const DESTINOS: Destino[] = [
   },
 ];
 
+/* «Consultar», agrupado (barra lateral, hub de Consultar y «Más»). */
+export const GRUPOS_CONSULTAR: { id: string; titulo: string; ids: string[] }[] = [
+  { id: "sistemas", titulo: "Sistemas", ids: ["sistemas"] },
+  {
+    id: "situaciones",
+    titulo: "Situaciones y recorridos",
+    ids: ["situacion", "figura-3", "descarga", "interrupcion"],
+  },
+  { id: "figuras", titulo: "Figuras y tablas", ids: ["visual", "tablas", "infografia"] },
+  { id: "glosario", titulo: "Glosario", ids: ["glosario"] },
+];
+
 export const ICONO_CAPITULO = BookOpen;
 export const ICONO_CONSULTAR = Columns3;
 export const ICONO_EVIDENCIA = FlaskConical;
@@ -189,4 +217,9 @@ export const ICONO_DIAGRAMA: Record<DiagramaId, LucideIcon> = {
   algoritmos: Cpu,
   hipoglucemia: Activity,
   transicion: ListOrdered,
+  "gestacion-sistemas": Baby,
+  hospital: Hospital,
+  exploraciones: ScanLine,
+  eleccion: Handshake,
+  interrupcion: Unplug,
 };

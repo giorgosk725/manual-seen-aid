@@ -1,23 +1,29 @@
 /* Portada: «parece el manual, no una app genérica». Hero con el título del capítulo, el
    autor y la SEEN; debajo, el mapa del capítulo (los cuatro bloques de la infografía como
    entradas), los accesos de consulta en dos toques y la fecha de revisión. */
+import { useState } from "react";
 import {
   ArrowRight,
   BookOpen,
   Clock3,
   Droplets,
-  LayoutGrid,
+  Footprints,
+  HeartHandshake,
   ListChecks,
+  ListOrdered,
   Route,
   Search,
-  SpellCheck,
+  Star,
   Table2,
+  Target,
 } from "lucide-react";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
 import { APARTADOS, CAPITULO, DIAGRAMAS, INFO, algoritmoDelCapitulo } from "../contenido";
 import { ICONO_DIAGRAMA } from "../nav";
 import { CAMBIOS, PENDIENTES, VERSION_APP } from "../contenido/cambios";
-import { href } from "../rutas";
+import { href, navegar } from "../rutas";
+import { buscar, marcar } from "../buscador";
+import { useFavoritos, useUltimo } from "../prefs";
 import { Revelar } from "../ui";
 import { CATEGORIA_HEX, HERO_GRADIENT, SISTEMA_HEX } from "../tokens";
 import { Texto } from "../texto";
@@ -37,12 +43,243 @@ const fecha = (iso: string) =>
     year: "numeric",
   });
 
+/* «¿Qué necesitas?»: buscador y las consultas más probables, cada una a dos toques de la
+   respuesta (atajo + elegir sistema, tramo o población). Debajo, seguir leyendo y favoritos
+   (solo rutas de la app, guardadas en este navegador). */
+const ATAJOS = [
+  {
+    href: href("consultar", "situacion", "ejercicio-aerobico"),
+    icono: Footprints,
+    t: "Ejercicio y sistema",
+    s: "Qué hace cada sistema (Tabla 4)",
+  },
+  {
+    href: href("consultar", "figura-3"),
+    icono: Droplets,
+    t: "Cetonemia (β-OHB)",
+    s: "Qué hacer según el tramo",
+  },
+  {
+    href: href("visual", "objetivos-mcg"),
+    icono: Target,
+    t: "Objetivos de MCG",
+    s: "Adultos, gestación, hospital, fragilidad",
+  },
+  {
+    href: href("consultar", "tablas", "T1"),
+    icono: Table2,
+    t: "Comparar sistemas",
+    s: "Tabla 1, filtrable",
+  },
+  {
+    href: href("consultar", "situacion"),
+    icono: Route,
+    t: "Otra situación",
+    s: "Enfermedad, noche, comidas, exploraciones",
+  },
+  {
+    href: href("consultar", "descarga", "1"),
+    icono: ListChecks,
+    t: "Revisar la descarga",
+    s: "Tabla 5 en ocho pasos",
+  },
+  {
+    href: href("consultar", "interrupcion"),
+    icono: Clock3,
+    t: "Interrupción del sistema",
+    s: "Cuánto dura y qué hacer",
+  },
+  {
+    href: href("visual", "transicion"),
+    icono: ListOrdered,
+    t: "Empezar desde MDI",
+    s: "Parámetros iniciales (Tabla 2)",
+  },
+];
+
+function QueNecesitas() {
+  const [q, setQ] = useState("");
+  const res = q.trim().length >= 2 ? buscar(q, 5) : [];
+  const ultimo = useUltimo();
+  const favoritos = useFavoritos();
+  return (
+    <section aria-labelledby="que-necesitas" className="space-y-3">
+      <h2
+        id="que-necesitas"
+        className="text-lg font-extrabold tracking-tight"
+        style={{ color: CATEGORIA_HEX.consultar.ink }}
+      >
+        ¿Qué necesitas?
+      </h2>
+      <form
+        role="search"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (q.trim()) navegar("buscar", q.trim());
+        }}
+      >
+        <label htmlFor="portada-q" className="sr-only">
+          ¿Qué necesitas? Escribe lo que buscas
+        </label>
+        <div className="flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2.5 shadow-soft">
+          <Search size={17} className="shrink-0 text-slate-500" aria-hidden="true" />
+          <input
+            id="portada-q"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Busca: modo sueño, glargina, cetonemia, TBR…"
+            autoComplete="off"
+            className="w-full bg-transparent text-base text-slate-900 placeholder:text-slate-400 focus:outline-none"
+          />
+        </div>
+      </form>
+      {res.length > 0 && (
+        <ul
+          className="divide-y rounded-xl border bg-white shadow-soft"
+          style={{ borderColor: "#e5ebf1" }}
+          aria-label="Resultados"
+        >
+          {res.map((r) => (
+            <li key={r.entrada.id}>
+              <a
+                href={r.entrada.ruta}
+                className="block px-3 py-2 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+              >
+                <span className="flex items-center justify-between gap-2 text-xs text-slate-500">
+                  <span className="truncate font-semibold">{r.entrada.titulo}</span>
+                  {r.entrada.pagina > 0 && (
+                    <span className="pagina-badge">p. {r.entrada.pagina}</span>
+                  )}
+                </span>
+                <span className="mt-0.5 block text-slate-800">
+                  {marcar(r.fragmento, q).map((t, i) =>
+                    t.hit ? (
+                      <mark key={i} className="resaltado">
+                        {t.t}
+                      </mark>
+                    ) : (
+                      <span key={i}>{t.t}</span>
+                    ),
+                  )}
+                </span>
+              </a>
+            </li>
+          ))}
+          <li>
+            <a
+              href={href("buscar", q)}
+              className="block px-3 py-2 text-sm font-semibold text-slate-700 hover:underline"
+            >
+              Ver todos los resultados
+            </a>
+          </li>
+        </ul>
+      )}
+      <ul className="grid grid-cols-2 gap-2 lg:grid-cols-4" aria-label="Consultas frecuentes">
+        {ATAJOS.map((c) => {
+          const I = c.icono;
+          return (
+            <li key={c.t}>
+              <a
+                href={c.href}
+                className="hover-lift ease-brand flex h-full min-h-[3.5rem] items-center gap-2.5 rounded-xl border bg-white p-3 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                style={{ borderColor: "#e5ebf1" }}
+              >
+                <span
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white"
+                  style={{
+                    background: `linear-gradient(135deg, ${CATEGORIA_HEX.consultar.strong}, ${CATEGORIA_HEX.consultar.strong2})`,
+                  }}
+                  aria-hidden="true"
+                >
+                  <I size={17} />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-sm font-bold leading-snug text-slate-900">{c.t}</span>
+                  <span className="block text-xs leading-snug text-slate-500">{c.s}</span>
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+      {(ultimo || favoritos.length > 0) && (
+        <div className="grid gap-2 md:grid-cols-2">
+          {ultimo && (
+            <a
+              href={ultimo.ruta}
+              className="flex items-center gap-3 rounded-xl border bg-white p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+              style={{ borderColor: "#e5ebf1" }}
+            >
+              <BookOpen
+                size={18}
+                className="shrink-0"
+                style={{ color: CATEGORIA_HEX.leer.strong }}
+                aria-hidden="true"
+              />
+              <span className="min-w-0 flex-1">
+                <span className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  Seguir leyendo donde lo dejaste
+                </span>
+                <span className="block truncate text-sm font-bold text-slate-900">
+                  {ultimo.titulo}
+                </span>
+              </span>
+              <ArrowRight size={15} className="shrink-0 text-slate-500" aria-hidden="true" />
+            </a>
+          )}
+          {favoritos.length > 0 && (
+            <div
+              className="rounded-xl border bg-white p-3 shadow-soft"
+              style={{ borderColor: "#e5ebf1" }}
+            >
+              <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <Star size={13} className="fill-amber-400 text-amber-500" aria-hidden="true" /> Tus
+                favoritos
+              </div>
+              <ul className="mt-1.5 flex flex-wrap gap-1.5">
+                {favoritos.map((f) => (
+                  <li key={f.ruta}>
+                    <a
+                      href={f.ruta}
+                      className="inline-block rounded-full border px-2.5 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
+                      style={{ borderColor: "#cbd5e1" }}
+                    >
+                      {f.titulo}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+      <a
+        href={href("pacientes")}
+        className="flex items-center gap-2 rounded-xl border bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+        style={{ borderColor: "#e5ebf1" }}
+      >
+        <HeartHandshake
+          size={16}
+          className="shrink-0"
+          style={{ color: CATEGORIA_HEX.pacientes.strong }}
+          aria-hidden="true"
+        />
+        <span className="flex-1">
+          Para el paciente: información, resumen y plan de seguridad para imprimir o compartir
+        </span>
+        <ArrowRight size={14} className="shrink-0" aria-hidden="true" />
+      </a>
+    </section>
+  );
+}
+
 export function Portada() {
   const ultimoCap = CAMBIOS.find((c) => c.ambito === "capitulo")!;
   return (
     <div className="space-y-8">
       <section
-        className="relative overflow-hidden rounded-3xl px-5 py-8 text-white shadow-soft sm:px-8 sm:py-10 lg:px-12 lg:py-14"
+        className="relative overflow-hidden rounded-3xl px-5 py-5 text-white shadow-soft sm:px-8 sm:py-10 lg:px-12 lg:py-14"
         style={{ background: HERO_GRADIENT }}
         aria-labelledby="titulo-capitulo"
       >
@@ -63,14 +300,14 @@ export function Portada() {
         />
         <div aria-hidden="true" className="trama pointer-events-none absolute inset-0" />
         <div className="relative max-w-3xl">
-          <div className="mb-3 flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wider text-sky-200/90">
+          <div className="mb-2 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-sky-200/90 sm:mb-3 sm:text-xs">
             <span>{CAPITULO.obra}</span>
             <span aria-hidden="true">·</span>
             <span>{CAPITULO.sociedad.replace(/ \(SEEN\)$/, "")}</span>
           </div>
           <h1
             id="titulo-capitulo"
-            className="text-balance text-3xl font-black leading-tight tracking-tight sm:text-4xl lg:text-5xl"
+            className="text-balance text-2xl font-black leading-tight tracking-tight sm:text-4xl lg:text-5xl"
             style={{
               backgroundImage: "linear-gradient(90deg, #ffffff, #7dd3fc)",
               WebkitBackgroundClip: "text",
@@ -80,10 +317,11 @@ export function Portada() {
           >
             {CAPITULO.titulo}
           </h1>
-          <p className="mt-4 text-base text-white/90 sm:text-lg">
-            <span className="font-bold text-white">{CAPITULO.autor}.</span> {CAPITULO.filiacion}
+          <p className="mt-3 text-sm text-white/90 sm:mt-4 sm:text-lg">
+            <span className="font-bold text-white">{CAPITULO.autor}.</span>{" "}
+            <span className="hidden sm:inline">{CAPITULO.filiacion}</span>
           </p>
-          <div className="mt-6 flex flex-wrap gap-2">
+          <div className="mt-4 flex flex-wrap gap-2 sm:mt-6">
             <a
               href={href("capitulo", APARTADOS[0].slug)}
               className="hover-lift ease-brand inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-900 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800"
@@ -96,15 +334,11 @@ export function Portada() {
             >
               Índice <ArrowRight size={15} aria-hidden="true" />
             </a>
-            <a
-              href={href("consultar")}
-              className="inline-flex items-center gap-2 rounded-xl border border-white/40 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            >
-              Consultar en dos toques
-            </a>
           </div>
         </div>
       </section>
+
+      <QueNecesitas />
 
       <section aria-labelledby="mapa">
         <div className="mb-3 flex items-end gap-3">
@@ -315,106 +549,6 @@ export function Portada() {
                     <span className="block truncate text-[11px] text-slate-500">
                       {algoritmoDelCapitulo(c)}
                     </span>
-                  </span>
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
-
-      <section aria-labelledby="consulta">
-        <div className="mb-3 flex items-end gap-3">
-          <span
-            aria-hidden="true"
-            className="pointer-events-none text-3xl font-black leading-none"
-            style={{ color: `${CATEGORIA_HEX.consultar.strong}2e` }}
-          >
-            04
-          </span>
-          <div className="flex-1">
-            <h2
-              id="consulta"
-              className="text-base font-extrabold tracking-tight"
-              style={{ color: CATEGORIA_HEX.consultar.ink }}
-            >
-              En consulta, en dos toques
-            </h2>
-            <div
-              aria-hidden="true"
-              className="mt-1.5 h-px w-full"
-              style={{
-                background: `linear-gradient(90deg, ${CATEGORIA_HEX.consultar.strong}30, transparent)`,
-              }}
-            />
-          </div>
-        </div>
-        <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
-          {[
-            {
-              href: href("consultar", "situacion"),
-              icono: Route,
-              t: "Situación y sistema",
-              s: "Qué hacer, Tablas 4 y 6",
-            },
-            {
-              href: href("consultar", "figura-3"),
-              icono: Droplets,
-              t: "Cetonemia",
-              s: "Figura 3 paso a paso",
-            },
-            {
-              href: href("consultar", "descarga", "1"),
-              icono: ListChecks,
-              t: "Revisar la descarga",
-              s: "Tabla 5 en ocho pasos",
-            },
-            {
-              href: href("consultar", "interrupcion"),
-              icono: Clock3,
-              t: "Interrupción",
-              s: "Cuánto dura y qué hacer",
-            },
-            {
-              href: href("consultar", "tablas", "T1"),
-              icono: Table2,
-              t: "Tablas",
-              s: "Las seis, filtrables",
-            },
-            {
-              href: href("consultar", "tablas", "T6"),
-              icono: LayoutGrid,
-              t: "Exploraciones",
-              s: "Tabla 6 por procedimiento",
-            },
-            {
-              href: href("consultar", "glosario"),
-              icono: SpellCheck,
-              t: "Siglas",
-              s: "Glosario del capítulo",
-            },
-            { href: href("buscar"), icono: Search, t: "Buscar", s: "En el texto literal" },
-          ].map((c) => {
-            const I = c.icono;
-            return (
-              <li key={c.t}>
-                <a
-                  href={c.href}
-                  className="hover-lift ease-brand flex h-full items-center gap-2.5 rounded-xl border bg-white p-3 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                  style={{ borderColor: "#e5ebf1" }}
-                >
-                  <span
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white"
-                    style={{
-                      background: `linear-gradient(135deg, ${CATEGORIA_HEX.consultar.strong}, ${CATEGORIA_HEX.consultar.strong2})`,
-                    }}
-                    aria-hidden="true"
-                  >
-                    <I size={17} />
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block text-sm font-bold text-slate-900">{c.t}</span>
-                    <span className="block truncate text-xs text-slate-500">{c.s}</span>
                   </span>
                 </a>
               </li>
