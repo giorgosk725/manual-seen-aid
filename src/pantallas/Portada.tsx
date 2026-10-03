@@ -23,7 +23,7 @@ import {
 import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
 import { APARTADOS, CAPITULO, DIAGRAMAS, INFO, algoritmoDelCapitulo } from "../contenido";
 import { ICONO_APARTADO, ICONO_DIAGRAMA } from "../nav";
-import { CAMBIOS, PENDIENTES, VERSION_APP } from "../contenido/cambios";
+import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
 import { href, navegar } from "../rutas";
 import { buscar, marcar, tramoDeConsulta } from "../buscador";
 import { AtajoTramo } from "../componentes/AtajoTramo";
@@ -633,7 +633,7 @@ export function Portada() {
         </ul>
       </section>
 
-      <section aria-labelledby="revision" className="grid gap-3 md:grid-cols-2">
+      <section aria-labelledby="revision">
         <div className="rounded-[4px] border bg-white p-4" style={{ borderColor: "#e6e6e6" }}>
           <h2
             id="revision"
@@ -642,7 +642,7 @@ export function Portada() {
           >
             Última revisión
           </h2>
-          <dl className="mt-2 grid grid-cols-2 gap-2">
+          <dl className="mt-2 grid grid-cols-2 gap-2 md:max-w-xl">
             <div className="rounded-[3px] p-3" style={{ background: CATEGORIA_HEX.confiar.soft }}>
               <dt className="text-xs text-slate-600">Capítulo</dt>
               <dd
@@ -666,18 +666,8 @@ export function Portada() {
             href={href("cambios")}
             className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
           >
-            Qué ha cambiado <ArrowRight size={14} aria-hidden="true" />
+            Qué ha cambiado y qué queda pendiente <ArrowRight size={14} aria-hidden="true" />
           </a>
-        </div>
-        <div className="rounded-[4px] border border-amber-200 bg-amber-50 p-4">
-          <h2 className="font-display text-base font-medium uppercase tracking-[0.04em] text-amber-900">
-            Pendiente (visible a propósito)
-          </h2>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-amber-900">
-            {PENDIENTES.slice(0, 3).map((p, i) => (
-              <li key={i}>{p}</li>
-            ))}
-          </ul>
         </div>
       </section>
     </div>

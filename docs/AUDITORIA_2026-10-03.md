@@ -101,8 +101,8 @@ búsqueda con alternativa y atajo por cifra de β-OHB; notas de tabla en la fich
 4. ~~Hojas para el paciente a 7,2 pt~~ — HECHO en la 0.5.1 (decisión del autor): formato «letra
    grande» de 12 pt en una columna, a doble cara. Medido en PDF: resumen 2 caras; información y
    planes 3 (a 10 pt cabría todo en 2 caras, pero el autor prefirió 12 pt).
-5. El recuadro «Pendiente» de la portada: la auditoría de uso propone llevarlo a «Sobre esta versión»
-   porque transmite «sin validar»; se mantiene visible por decisión anterior.
+5. ~~El recuadro «Pendiente» de la portada~~ — QUITADO en la 0.5.1 (decisión del autor); lo pendiente
+   sigue en «Qué ha cambiado» y en «Sobre esta versión».
 6. Pendientes de siempre: permiso de la SEEN y de ec-europe, ISBN, Completo corregido, Liberty,
    presentaciones de 2023, novedades, 25 dudosos, `CLOUDFLARE_API_TOKEN`.
 
