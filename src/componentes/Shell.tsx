@@ -279,7 +279,7 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
     <aside className="barra-lateral fixed inset-y-0 left-0 z-30 hidden w-64 flex-col overflow-y-auto px-3 py-4 md:flex">
       <a
         href="#/"
-        aria-label="Manual SEEN · AID, inicio"
+        aria-label="Manual SEEN · AID Diabetes, inicio"
         className="rounded-md px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
         <Rotulo />
@@ -528,7 +528,7 @@ export function Shell({
           </button>
           <a
             href="#/"
-            aria-label="Manual SEEN · AID, inicio"
+            aria-label="Manual SEEN · AID Diabetes, inicio"
             className="min-w-0 shrink-0 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
           >
             <Rotulo compacto />

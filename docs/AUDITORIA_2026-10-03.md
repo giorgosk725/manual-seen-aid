@@ -9,26 +9,26 @@ correcciones, comprobadas con las pruebas que se citan (no es una segunda audito
 
 ### Por niveles (0–10)
 
-| Nivel                           |   0.4.0 |   0.5.0 | Qué lo mueve                                                                                                                                      |
-| ------------------------------- | ------: | ------: | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Fidelidad al capítulo           |     9,0 |     9,5 | Diagramas devueltos a su literal; enlace a la Figura 3 en su bloque; glosario sin añadidos. `fidelidad.py` y `fidelidad_extra.py` limpios.        |
-| Separación de capas y confianza |     7,5 |     8,5 | Marca «Difiere del capítulo» con la frase literal; textos de la interfaz que decían de más, corregidos; diez páginas de relación arregladas.      |
-| Coherencia clínica              |     8,0 |     8,5 | Tramo amarillo completo, calificadores recuperados. Quedan E04, E28, E07 y dos frases de la V5 (decide el autor).                                 |
-| Calidad del lenguaje            |     8,0 |     8,5 | Registro de la interfaz; «Fuentes y versión». Queda la mezcla tú/usted de la V5 y su tipografía (del autor).                                      |
-| Completitud útil                |     8,0 |     8,5 | Remisiones internas enlazadas, notas de tabla en la ficha, patrones de la descarga en sus pasos. Faltan enlaces a la bibliografía desde el texto. |
-| Diseño visual y atractivo       |     7,0 |     8,5 | Identidad del Manual SEEN: mosaico de áreas, títulos finos en mayúsculas, franja de color, paginación en círculos.                                |
-| Encontrabilidad                 |     7,0 |     8,0 | Índice en mosaico, búsqueda con alternativa, atajo por cifra de β-OHB, resultados de fuera visibles.                                              |
-| Ergonomía móvil                 |     5,0 |     7,0 | Cabecera compacta, «Volver arriba» que no tapa, botones de 36 px, sin saltos de pantalla. Faltan 44 px en pestañas.                               |
-| Comodidad de lectura            |     8,0 |     8,5 | Open Sans; «Seguir leyendo» vuelve al punto leído.                                                                                                |
-| Accesibilidad                   |     8,0 |     9,0 | Foco estable en Escuchar, niveles de encabezado, sin numerales de bajo contraste; axe limpio en 78 rutas × 6 anchos (diurno y nocturno).          |
-| Rendimiento                     |     8,5 |     8,5 | Igual (CSS +1 kB gz, JS +6 kB gz). Pendiente: figuras a WebP (−0,8 MB de precache).                                                               |
-| PWA y sin conexión              |     8,5 |     9,0 | Aviso de versión que no se pierde; colores de tema nuevos; 8 de 8 pantallas sin red.                                                              |
-| Robustez                        |     6,5 |     8,5 | Preferencias validadas, aviso de fallo por pantalla con «Restablecer», sin «lookbehind» (Safari < 16.4), voz que no se cuelga.                    |
-| Calidad del código              |     7,5 |     8,0 | Una sola fuente de ruta, sin bus de eventos que repinta todo. El nocturno sigue por selectores de estilo en línea.                                |
-| Pruebas                         |     6,0 |     7,0 | +11 unitarias y +3 e2e de regresión. El despliegue aún no exige las e2e.                                                                          |
-| Seguridad y privacidad          |     9,0 |     9,5 | Solo rutas internas en favoritos; voz local preferida. Sin terceros.                                                                              |
-| Imprimir y compartir            |     7,0 |     7,5 | Ctrl+P limpio y hojas iguales que con su botón; plan con abreviaturas. La letra de las hojas (7,2 pt) sigue igual: decisión del autor.            |
-| **Media**                       | **7,6** | **8,4** |                                                                                                                                                   |
+| Nivel                           |   0.4.0 |   0.5.0 | Qué lo mueve                                                                                                                                                               |
+| ------------------------------- | ------: | ------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Fidelidad al capítulo           |     9,0 |     9,5 | Diagramas devueltos a su literal; enlace a la Figura 3 en su bloque; glosario sin añadidos. `fidelidad.py` y `fidelidad_extra.py` limpios.                                 |
+| Separación de capas y confianza |     7,5 |     8,5 | Marca «Difiere del capítulo» con la frase literal; textos de la interfaz que decían de más, corregidos; diez páginas de relación arregladas.                               |
+| Coherencia clínica              |     8,0 |     8,5 | Tramo amarillo completo, calificadores recuperados. Quedan E04, E28, E07 y dos frases de la V5 (decide el autor).                                                          |
+| Calidad del lenguaje            |     8,0 |     8,5 | Registro de la interfaz; «Fuentes y versión». Queda la mezcla tú/usted de la V5 y su tipografía (del autor).                                                               |
+| Completitud útil                |     8,0 |     8,5 | Remisiones internas enlazadas, notas de tabla en la ficha, patrones de la descarga en sus pasos. Faltan enlaces a la bibliografía desde el texto.                          |
+| Diseño visual y atractivo       |     7,0 |     8,5 | Identidad del Manual SEEN: mosaico de áreas, títulos finos en mayúsculas, franja de color, paginación en círculos.                                                         |
+| Encontrabilidad                 |     7,0 |     8,0 | Índice en mosaico, búsqueda con alternativa, atajo por cifra de β-OHB, resultados de fuera visibles.                                                                       |
+| Ergonomía móvil                 |     5,0 |     7,0 | Cabecera compacta, «Volver arriba» que no tapa, botones de 36 px, sin saltos de pantalla. Faltan 44 px en pestañas.                                                        |
+| Comodidad de lectura            |     8,0 |     8,5 | Open Sans; «Seguir leyendo» vuelve al punto leído.                                                                                                                         |
+| Accesibilidad                   |     8,0 |     9,0 | Lighthouse 100 en portada (móvil y escritorio) y apartado 10 (antes 96–97); foco estable en Escuchar, niveles de encabezado; axe limpio en las e2e.                        |
+| Rendimiento                     |     8,5 |     8,0 | Lighthouse móvil 89–92 (antes 93–98): dos fuentes nuevas (Open Sans y Oswald) retrasan el LCP a 2,8–3,0 s. Escritorio 99. Pendiente: figuras a WebP y pantallas perezosas. |
+| PWA y sin conexión              |     8,5 |     9,0 | Aviso de versión que no se pierde; colores de tema nuevos; 8 de 8 pantallas sin red.                                                                                       |
+| Robustez                        |     6,5 |     8,5 | Preferencias validadas, aviso de fallo por pantalla con «Restablecer», sin «lookbehind» (Safari < 16.4), voz que no se cuelga.                                             |
+| Calidad del código              |     7,5 |     8,0 | Una sola fuente de ruta, sin bus de eventos que repinta todo. El nocturno sigue por selectores de estilo en línea.                                                         |
+| Pruebas                         |     6,0 |     7,0 | +11 unitarias y +3 e2e de regresión. El despliegue aún no exige las e2e.                                                                                                   |
+| Seguridad y privacidad          |     9,0 |     9,5 | Solo rutas internas en favoritos; voz local preferida. Sin terceros.                                                                                                       |
+| Imprimir y compartir            |     7,0 |     7,5 | Ctrl+P limpio y hojas iguales que con su botón; plan con abreviaturas. La letra de las hojas (7,2 pt) sigue igual: decisión del autor.                                     |
+| **Media**                       | **7,6** | **8,4** |                                                                                                                                                                            |
 
 ### Puntuación del usuario (SUS estimado, 0–100)
 
