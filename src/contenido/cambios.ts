@@ -8,13 +8,21 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.5.1";
+export const VERSION_APP = "0.5.2";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-03",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — hojas para el paciente con letra grande`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — figuras más ligeras`,
+    detalle: [
+      "Las cuatro figuras originales (Figuras 1, 2 y 3 e infografía) pasan a WebP sin pérdida: los mismos píxeles, comprobados uno a uno, en la mitad de peso (de 1,16 MB a 0,61 MB). La app instalada descarga y guarda para usar sin conexión medio megabyte menos.",
+    ],
+  },
+  {
+    fecha: "2026-10-03",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.5.1 — hojas para el paciente con letra grande",
     detalle: [
       "Cada hoja para el paciente (información, resumen y plan de seguridad de cada sistema) se puede imprimir en dos formatos: una cara A4 con letra pequeña, como hasta ahora, o letra grande de 12 pt en una columna, a doble cara (el resumen ocupa dos caras; la información y los planes, tres). La elección se hace en la propia hoja y se recuerda en este navegador; también vale al imprimir con Ctrl+P.",
       "La portada ya no muestra el recuadro «Pendiente» (decisión del autor): lo pendiente sigue, completo, en «Qué ha cambiado» y en «Sobre esta versión».",

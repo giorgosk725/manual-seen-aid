@@ -1,4 +1,4 @@
-# Cabeceras de seguridad (Netlify las lee de aqui). La app no tiene backend ni carga nada
+# Cabeceras de seguridad (Cloudflare Pages las lee de aqui). La app no tiene backend ni carga nada
 # de terceros: todo es del mismo origen. `unsafe-inline` en style-src es por los estilos en
 # linea de las tarjetas y el mapa nocturno; en script-src no hace falta.
 /*

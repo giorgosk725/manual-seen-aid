@@ -12,7 +12,7 @@ export const F1: Figura = {
   pagina: 2,
   cabecera: "Arquitectura clínica de un sistema automatizado de administración de insulina",
   imagen: {
-    src: "figuras/figura-1.png",
+    src: "figuras/figura-1.webp",
     alt: "Figura 1 del capítulo: diagrama circular con el sensor de MCG, el algoritmo de control, la bomba de insulina o pod y la plataforma de descarga, alrededor de la persona con diabetes tipo 1, y el equipo sanitario.",
     nota: "Imagen de la maquetación del 30-9-2026 (provisional, a falta del archivo fuente).",
   },
@@ -62,7 +62,7 @@ export const F2: Figura = {
   pagina: 6,
   cabecera: "Elección compartida del sistema de asa cerrada",
   imagen: {
-    src: "figuras/figura-2.png",
+    src: "figuras/figura-2.webp",
     alt: "Figura 2 del capítulo: el perfil de la persona y las características del sistema confluyen en la decisión compartida, que lleva al sistema de asa cerrada más adecuado, con el contexto asistencial debajo.",
     nota: "Imagen de la maquetación del 30-9-2026 (provisional, a falta del archivo fuente).",
   },
@@ -128,7 +128,7 @@ export const INFO: Figura = {
   cabecera:
     "Tratamiento insulínico del paciente con diabetes tipo 1: automatización de la insulinoterapia",
   imagen: {
-    src: "figuras/infografia.png",
+    src: "figuras/infografia.webp",
     alt: "Infografía del capítulo en cuatro bloques: beneficios, qué es un sistema de asa cerrada, indicación e implementación y seguimiento, con el plan de seguridad y la franja «No olvides».",
     nota: "Imagen de la maquetación del 30-9-2026 (provisional, a falta del archivo fuente; las seis correcciones de la anotación 9/11 están aplicadas en el texto, no en la imagen).",
   },

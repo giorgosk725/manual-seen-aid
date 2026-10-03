@@ -132,7 +132,9 @@ on push to main (`deploy-cloudflare.yml`, needs `CLOUDFLARE_API_TOKEN`).
 
 ## 4. Adding images, infographics or animations
 
-- Images go in `public/figuras/` (or `public/media/`) and are referenced from the content's
+- Images go in `public/figuras/` (or `public/media/`) as **lossless WebP** (pixel-identical to
+  the source; the figures carry text and the viewer zooms, so no lossy compression; check with
+  Pillow `ImageChops.difference`) and are referenced from the content's
   `imagen: { src, alt, nota }` (see `tipos.ts` → `Figura`). The transcription stays the primary
   content; the image is a collapsible «Ver la figura original».
 - Animations: only via CSS classes under `prefers-reduced-motion: no-preference` in

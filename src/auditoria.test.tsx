@@ -2,6 +2,8 @@
    límites de búsqueda por grupo, remisiones internas que llevan a su sitio y marcas
    «Difiere del capítulo» con la frase literal del capítulo. */
 import { afterEach, describe, expect, it } from "vitest";
+import { FIGURAS } from "./contenido";
+import { INFO_F3 } from "./componentes/figura3-imagen";
 import { render, screen } from "@testing-library/react";
 import { APARTADOS, TABLAS, idDeBloque } from "./contenido";
 import { buscar, buscarConTotales, fueraDelCapitulo, tramoDeConsulta } from "./buscador";
@@ -147,5 +149,22 @@ describe("ampliación: lo que difiere del capítulo", () => {
           `${id}: ${k}`,
         ).toBe(true);
     }
+  });
+});
+
+describe("figuras originales", () => {
+  it("son WebP y existen en public/", () => {
+    const imagenes = [...Object.values(FIGURAS), INFO_F3].map((f) => f!.imagen!.src);
+    expect(imagenes).toHaveLength(4);
+    // Los ficheros que hay de verdad en public/figuras (Vite los lista sin cargarlos).
+    const enPublic = Object.keys(import.meta.glob("/public/figuras/*"));
+    for (const src of imagenes) {
+      expect(src, src).toMatch(/\.webp$/);
+      expect(enPublic, src).toContain(`/public/${src}`);
+    }
+    expect(
+      enPublic.filter((f) => f.endsWith(".png")),
+      "PNG sobrantes",
+    ).toEqual([]);
   });
 });

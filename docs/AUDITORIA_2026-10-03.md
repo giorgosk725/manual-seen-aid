@@ -108,7 +108,7 @@ búsqueda con alternativa y atajo por cifra de β-OHB; notas de tabla en la fich
 
 ## 6. Recomendaciones técnicas no aplicadas
 
-Figuras PNG a WebP (−0,8 MB de precache); `React.lazy` por pantalla (−30 kB gz); `id` y `screenshots`
+Figuras PNG a WebP: HECHO en la 0.5.2 (sin pérdida, −0,55 MB de precache); `React.lazy` por pantalla (−30 kB gz); `id` y `screenshots`
 en el manifiesto; `404.html` para rutas reales desconocidas; e2e como requisito del despliegue en CI;
 pestañas y lista de situaciones a 44 px; búsqueda en textos para pacientes y test; enlaces a la
 bibliografía desde las menciones del texto; dos ámbar distintos para versión extendida y ampliación.
