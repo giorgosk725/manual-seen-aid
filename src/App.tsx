@@ -24,7 +24,7 @@ function NoEncontrada() {
   return (
     <div
       className="rounded-2xl border border-dashed bg-white p-6 text-center"
-      style={{ borderColor: "#cbd5e1" }}
+      style={{ borderColor: "#d4d4d4" }}
     >
       <p className="text-sm font-semibold text-slate-800">Esa pantalla no existe.</p>
       <a href="#/" className="mt-2 inline-block text-sm font-semibold text-slate-700 underline">
@@ -158,5 +158,9 @@ export default function App() {
       pantalla = <NoEncontrada />;
   }
 
-  return <Shell titulo={titulo}>{pantalla}</Shell>;
+  return (
+    <Shell titulo={titulo} ruta={ruta}>
+      {pantalla}
+    </Shell>
+  );
 }

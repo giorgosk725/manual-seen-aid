@@ -252,7 +252,7 @@ export const ESCALA_CETONEMIA: {
       hasta: 1.0,
       etiqueta: "0,6–0,9 · cetonemia leve",
       accion:
-        "Vigilancia estrecha, revisión del sistema y reevaluación de glucemia y cetonemia en 1–2 h.",
+        "Vigilancia estrecha, revisión del sistema y reevaluación de glucemia y cetonemia en 1–2 h. Si la hiperglucemia no responde o existe sospecha de fallo de infusión, administrar la corrección con pluma y recambiar el set/pod. Si β-OHB aumenta a ≥1,0 mmol/l, seguir las recomendaciones del tramo siguiente.",
       p: 15,
     },
     {
@@ -340,7 +340,7 @@ export const EJERCICIO = {
       items: [
         "Vigilar las lecturas y las flechas de tendencia.",
         "Comprobar la glucosa del sensor a los 20–30 min y repetir la ingesta si es necesario.",
-        "Esfuerzo breve y de alta intensidad o anaeróbico: mantener el objetivo habitual y evitar sobrecorregir la hiperglucemia reactiva.",
+        "Esfuerzo breve y de alta intensidad o anaeróbico: suele preferirse mantener el objetivo habitual y evitar sobrecorregir la hiperglucemia reactiva.",
         "Desconexiones superiores a 1 h: pueden aumentar el riesgo de hiperglucemia y cetosis.",
       ],
     },
@@ -478,7 +478,7 @@ export const TRANSICION = {
     {
       titulo: "Factor de sensibilidad inicial",
       texto:
-        "Regla del 1700: mg/dl por unidad = 1700/DTD (regla del 1800 si riesgo elevado de hipoglucemia).",
+        "Regla del 1700: mg/dl por unidad = 1700/DTD. Puede valorarse la regla del 1800 en personas con riesgo elevado de hipoglucemia.",
     },
     {
       titulo: "Solapamiento con glargina U–300 o degludec",

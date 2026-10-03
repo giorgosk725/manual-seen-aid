@@ -27,7 +27,7 @@ export function HubConsultar() {
           href={d.href}
           className="hover-lift ease-brand flex h-full gap-3 rounded-2xl border bg-white p-4 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
           style={{
-            borderColor: "#e5ebf1",
+            borderColor: "#e6e6e6",
             background: `linear-gradient(160deg, ${hex.soft}, #ffffff 60%)`,
           }}
         >
@@ -50,8 +50,8 @@ export function HubConsultar() {
     <div>
       <CabeceraEditorial titulo="Consultar" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Lo que se busca en consulta, en dos toques. Todo es texto literal del capítulo, con su
-          página.
+          Lo que se busca en consulta, en dos toques. El texto del capítulo va literal y con su
+          página; lo que no es del capítulo va rotulado aparte.
         </p>
       </CabeceraEditorial>
       <div className="space-y-6">
@@ -87,7 +87,7 @@ export function HubConsultar() {
             <a
               href={href("consultar", "tablas", t.id)}
               className="flex h-full items-start gap-2 rounded-xl border bg-white p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-              style={{ borderColor: "#e5ebf1" }}
+              style={{ borderColor: "#e6e6e6" }}
             >
               <Table2
                 size={16}
@@ -138,7 +138,7 @@ export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
       <div
         ref={ref}
         className="imprimible rounded-2xl border bg-white p-4 shadow-soft"
-        style={{ borderColor: "#e5ebf1" }}
+        style={{ borderColor: "#e6e6e6" }}
         key={tid}
       >
         <TablaVista tabla={tabla} modo="interactiva" seleccionInicial={seleccion} />
@@ -147,7 +147,7 @@ export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
         </div>
         <div
           className="no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3"
-          style={{ borderColor: "#e5ebf1" }}
+          style={{ borderColor: "#e6e6e6" }}
         >
           <BotonImprimir objetivo={ref} compacto>
             Imprimir la tabla
@@ -177,12 +177,12 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
       </CabeceraEditorial>
       <div
         className="rounded-2xl border bg-white p-4 shadow-soft"
-        style={{ borderColor: "#e5ebf1" }}
+        style={{ borderColor: "#e6e6e6" }}
       >
         <Figura3Recorrido tramoInicial={tramo} />
-        <div className="no-imprimir mt-4 border-t pt-3" style={{ borderColor: "#e5ebf1" }}>
+        <div className="no-imprimir mt-4 border-t pt-3" style={{ borderColor: "#e6e6e6" }}>
           <a
-            href={href("capitulo", "07-educacion", "b6")}
+            href={href("capitulo", "07-educacion", "b5")}
             className="inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
           >
             Leer en su apartado: 7. Educación terapéutica y plan de seguridad{" "}
@@ -230,7 +230,7 @@ export function Infografia() {
               <section
                 className="h-full rounded-2xl border p-4 shadow-soft"
                 style={{
-                  borderColor: "#e5ebf1",
+                  borderColor: "#e6e6e6",
                   background: esPlan ? "linear-gradient(160deg, #eef3f8, #ffffff 60%)" : "#ffffff",
                   boxShadow: `inset 0 3px 0 0 ${hex.strong}, 0 8px 24px rgba(15,23,42,0.05)`,
                 }}
@@ -332,7 +332,7 @@ export function Glosario({ sigla }: { sigla?: string }) {
         id="glos-q"
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Filtrar (p. ej. TBR, cetonemia…)"
+        placeholder="Filtrar (p. ej. TBR, β-OHB…)"
         className="mb-3 w-full max-w-md rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       />
       <dl className="grid gap-2 sm:grid-cols-2">
@@ -341,7 +341,7 @@ export function Glosario({ sigla }: { sigla?: string }) {
             key={g.sigla}
             id={`sigla-${g.sigla}`}
             className="flex items-start gap-3 rounded-xl border bg-white p-3 shadow-soft"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
           >
             <dt
               className="shrink-0 rounded-lg px-2 py-1 text-sm font-extrabold"

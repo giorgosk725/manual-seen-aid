@@ -73,7 +73,7 @@ export function Visual() {
                     href={href("visual", d.id)}
                     className="hover-lift ease-brand flex h-full gap-3 rounded-2xl border bg-white p-4 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
                     style={{
-                      borderColor: "#e5ebf1",
+                      borderColor: "#e6e6e6",
                       background: `linear-gradient(160deg, ${hex.soft}, #ffffff 60%)`,
                     }}
                   >
@@ -112,7 +112,7 @@ export function Visual() {
                 <li
                   key={fig.id}
                   className="overflow-hidden rounded-2xl border bg-white shadow-soft"
-                  style={{ borderColor: "#e5ebf1" }}
+                  style={{ borderColor: "#e6e6e6" }}
                 >
                   <AbrirEnVisor
                     imagen={{
@@ -134,7 +134,7 @@ export function Visual() {
                       <Maximize2 size={12} aria-hidden="true" /> Ampliar
                     </span>
                   </AbrirEnVisor>
-                  <div className="border-t p-3" style={{ borderColor: "#e5ebf1" }}>
+                  <div className="border-t p-3" style={{ borderColor: "#e6e6e6" }}>
                     <div className="text-sm font-bold text-slate-900">
                       {fig.titulo.replace(/\.$/, "")}
                     </div>
@@ -182,7 +182,7 @@ export function Visual() {
                   <a
                     href={href("consultar", "tablas", t.id)}
                     className="hover-lift ease-brand flex h-full gap-2 rounded-xl border bg-white p-3 shadow-soft transition"
-                    style={{ borderColor: "#e5ebf1" }}
+                    style={{ borderColor: "#e6e6e6" }}
                   >
                     <Table2
                       size={18}
@@ -222,7 +222,7 @@ export function Visual() {
                 <li
                   key={id}
                   className="overflow-hidden rounded-2xl border bg-white shadow-soft"
-                  style={{ borderColor: "#e5ebf1" }}
+                  style={{ borderColor: "#e6e6e6" }}
                 >
                   <AbrirEnVisor
                     imagen={{
@@ -243,7 +243,7 @@ export function Visual() {
                   <a
                     href={href("sistemas", id)}
                     className="flex items-center justify-between border-t px-3 py-2 text-sm font-bold"
-                    style={{ borderColor: "#e5ebf1", color: h.ink }}
+                    style={{ borderColor: "#e6e6e6", color: h.ink }}
                   >
                     {s.name} <ArrowRight size={14} aria-hidden="true" />
                   </a>
@@ -292,7 +292,7 @@ export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }
           <a
             href={href("visual", prev.id)}
             className="flex min-w-0 items-center gap-2 overflow-hidden rounded-xl border bg-white p-3 shadow-soft"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
           >
             <ArrowLeft size={16} className="shrink-0 text-slate-500" aria-hidden="true" />
             <span className="min-w-0 truncate text-sm font-semibold text-slate-900">
@@ -306,7 +306,7 @@ export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }
           <a
             href={href("visual", next.id)}
             className="flex min-w-0 items-center justify-end gap-2 overflow-hidden rounded-xl border bg-white p-3 text-right shadow-soft"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
           >
             <span className="min-w-0 truncate text-sm font-semibold text-slate-900">
               {next.titulo}

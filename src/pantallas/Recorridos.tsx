@@ -55,7 +55,7 @@ const SITUACIONES: Situacion[] = [
   },
   {
     id: "necesidad-transitoria",
-    etiqueta: "Enfermedad leve, menstruación o estrés",
+    etiqueta: "Enfermedad leve, menstruación o estrés, sin sospecha de fallo",
     tabla: "T4",
     fila: 3,
     leer: [
@@ -88,7 +88,7 @@ const SITUACIONES: Situacion[] = [
   },
   {
     id: "hiperglucemia-persistente",
-    etiqueta: "Hiperglucemia persistente o inexplicada",
+    etiqueta: "Hiperglucemia persistente o inexplicada (sospecha de fallo)",
     tabla: "T4",
     fila: 6,
     leer: [
@@ -97,7 +97,7 @@ const SITUACIONES: Situacion[] = [
         ancla: "incidencias",
         titulo: "Hiperglucemia persistente y sospecha de fallo de infusión",
       },
-      { slug: "07-educacion", ancla: "b6", titulo: "Figura 3" },
+      { slug: "07-educacion", ancla: "b5", titulo: "Figura 3" },
     ],
   },
   {
@@ -147,7 +147,7 @@ const SITUACIONES: Situacion[] = [
   },
   {
     id: "eco",
-    etiqueta: "Ecografía, ECG o endoscopia",
+    etiqueta: "Ecografía, ECG o endoscopia sin electrocirugía",
     tabla: "T6",
     fila: 5,
     leer: [
@@ -156,7 +156,7 @@ const SITUACIONES: Situacion[] = [
   },
   {
     id: "cirugia-corta",
-    etiqueta: "Cirugía corta, persona estable",
+    etiqueta: "Cirugía corta (≤ 1 comida omitida), persona estable",
     tabla: "T6",
     fila: 6,
     leer: [
@@ -222,7 +222,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                     style={
                       on
                         ? { background: hex.strong, borderColor: hex.strong }
-                        : { borderColor: "#e5ebf1" }
+                        : { borderColor: "#e6e6e6" }
                     }
                   >
                     {on && <Check size={14} aria-hidden="true" />}
@@ -240,13 +240,23 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
           {!sit && (
             <div
               className="rounded-xl border border-dashed px-4 py-8 text-center text-sm text-slate-600"
-              style={{ borderColor: "#cbd5e1", background: "#f8fafc" }}
+              style={{ borderColor: "#d4d4d4", background: "#f8fafc" }}
             >
-              Elige una situación a la izquierda.
+              Elige una situación de la lista.
             </div>
           )}
           {sit && tabla && fila && (
             <div key={sit.id} className="pantalla-in space-y-4">
+              {!porSistema && (
+                <p className="rounded-md bg-slate-100 px-3 py-2 text-xs text-slate-700">
+                  En la Tabla {tabla.numero}, esta situación tiene una conducta común a los cuatro
+                  sistemas (no distingue sistema). Lo propio de cada uno está en su ficha de{" "}
+                  <a href={href("sistemas")} className="font-semibold underline">
+                    Sistemas
+                  </a>
+                  .
+                </p>
+              )}
               {porSistema && (
                 <div>
                   <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
@@ -294,7 +304,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
               )}
               <section
                 className="rounded-2xl border bg-white p-4 shadow-soft"
-                style={{ borderColor: "#e5ebf1" }}
+                style={{ borderColor: "#e6e6e6" }}
                 aria-label="Conducta recomendada"
               >
                 <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
@@ -379,7 +389,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                       <a
                         href={href("capitulo", l.slug, l.ancla)}
                         className="inline-flex items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
-                        style={{ borderColor: "#cbd5e1" }}
+                        style={{ borderColor: "#d4d4d4" }}
                       >
                         {l.titulo} <ArrowRight size={12} aria-hidden="true" />
                       </a>
@@ -389,7 +399,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                     <a
                       href={href("consultar", "tablas", sit.tabla)}
                       className="inline-flex items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
-                      style={{ borderColor: "#cbd5e1" }}
+                      style={{ borderColor: "#d4d4d4" }}
                     >
                       Tabla {tabla.numero} completa <ArrowRight size={12} aria-hidden="true" />
                     </a>
@@ -407,10 +417,15 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
 
 /* ---------- Revisar la descarga (Tabla 5 paso a paso) ---------- */
 const PATRON_DEL_PASO: Record<number, string[]> = {
-  1: ["Salidas repetidas del modo automático."],
+  1: ["Salidas repetidas del modo automático.", "Pérdidas de señal y salidas del modo automático."],
   2: ["Tiempo por debajo del rango elevado.", "Hipoglucemia nocturna."],
-  3: ["Variabilidad elevada con TIR aceptable.", "Hiperglucemia matutina."],
-  4: ["Exceso de autocorrecciones."],
+  3: ["Variabilidad elevada con TIR aceptable."],
+  4: [
+    "Bolos omitidos o retrasados.",
+    "Hidratos de carbono fantasma (ghost carbs).",
+    "Exceso de autocorrecciones.",
+  ],
+  5: ["Hipoglucemia nocturna.", "Hiperglucemia matutina."],
   6: ["Hiperglucemia posprandial precoz.", "Hiperglucemia tardía tras comidas grasas o proteicas."],
   7: ["Exceso de autocorrecciones."],
   8: ["Hiperglucemia persistente y sospecha de fallo de infusión."],
@@ -465,7 +480,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
       <section
         key={n}
         className="pantalla-in rounded-2xl border bg-white p-4 shadow-soft"
-        style={{ borderColor: "#e5ebf1" }}
+        style={{ borderColor: "#e6e6e6" }}
         aria-live="polite"
       >
         <div className="flex items-start justify-between gap-2">
@@ -506,7 +521,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                 <li
                   key={p.ancla}
                   className="rounded-xl border p-3 text-sm text-slate-800"
-                  style={{ borderColor: "#e5ebf1" }}
+                  style={{ borderColor: "#e6e6e6" }}
                 >
                   <strong>{p.b.lead} </strong>
                   <Texto>{p.b.texto}</Texto>
@@ -532,7 +547,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
         )}
         <div
           className="mt-4 flex items-center justify-between border-t pt-3"
-          style={{ borderColor: "#e5ebf1" }}
+          style={{ borderColor: "#e6e6e6" }}
         >
           <button
             type="button"
@@ -625,7 +640,7 @@ export function Interrupcion({ tramo }: { tramo?: string }) {
               className="mx-auto h-2 rounded-full"
               style={{
                 background:
-                  i <= TRAMOS_INTERRUPCION.findIndex((x) => x.id === sel) ? hex.strong : "#e5ebf1",
+                  i <= TRAMOS_INTERRUPCION.findIndex((x) => x.id === sel) ? hex.strong : "#e6e6e6",
               }}
             />
             <div className="mt-1 hidden text-[11px] text-slate-500 sm:block">{t.sub}</div>
@@ -635,7 +650,7 @@ export function Interrupcion({ tramo }: { tramo?: string }) {
       <section
         key={sel}
         className="pantalla-in rounded-2xl border bg-white p-4 shadow-soft"
-        style={{ borderColor: "#e5ebf1" }}
+        style={{ borderColor: "#e6e6e6" }}
         aria-live="polite"
       >
         <h2 className="text-lg font-extrabold text-slate-900">{actual.titulo}</h2>

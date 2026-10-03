@@ -222,25 +222,65 @@ export interface Resultado {
   puntos: number;
 }
 
-export function buscar(consulta: string, limite = 40): Resultado[] {
+/* Resultados con el total de cada grupo. El límite se aplica POR GRUPO (capítulo y fuera del
+   capítulo): si se cortara después de ordenar, los de fuera no aparecerían nunca en las
+   búsquedas frecuentes («insulina», «sistema»). */
+export interface Busqueda {
+  resultados: Resultado[];
+  totalCapitulo: number;
+  totalFuera: number;
+  /* Sin coincidencias con todas las palabras: resultados con alguna de ellas. */
+  parcial?: boolean;
+}
+
+export function buscar(consulta: string, limite = 40, limiteFuera?: number): Resultado[] {
+  return buscarConTotales(consulta, limite, limiteFuera).resultados;
+}
+
+export function buscarConTotales(
+  consulta: string,
+  limite = 40,
+  limiteFuera = Math.max(3, Math.ceil(limite / 3)),
+): Busqueda {
   const terminos = normalizar(consulta)
     .split(/\s+/)
     .filter((t) => t.length >= 2);
-  if (!terminos.length) return [];
+  if (!terminos.length) return { resultados: [], totalCapitulo: 0, totalFuera: 0 };
+  // Primero con TODAS las palabras; si no hay nada y son varias, con ALGUNA (y se avisa).
+  let res = puntuar(terminos, true);
+  let parcial = false;
+  if (!res.length && terminos.length > 1) {
+    res = puntuar(terminos, false);
+    parcial = res.length > 0;
+  }
+  // Primero el capítulo; lo de fuera, detrás (y en su grupo en la pantalla de búsqueda).
+  res.sort((a, b) => b.puntos - a.puntos);
+  const dentro = res.filter((r) => !fueraDelCapitulo(r.entrada));
+  const fuera = res.filter((r) => fueraDelCapitulo(r.entrada));
+  return {
+    resultados: [...dentro.slice(0, limite), ...fuera.slice(0, limiteFuera)],
+    totalCapitulo: dentro.length,
+    totalFuera: fuera.length,
+    parcial,
+  };
+}
+
+function puntuar(terminos: string[], todas: boolean): Resultado[] {
   const res: Resultado[] = [];
   for (const e of indice()) {
     const n = normalizar(e.texto);
     const nt = normalizar(e.titulo);
     let puntos = 0;
     let primera = -1;
-    let ok = true;
+    let aciertos = 0;
     for (const t of terminos) {
       const i = n.indexOf(t);
       const enTitulo = nt.includes(t);
       if (i < 0 && !enTitulo) {
-        ok = false;
-        break;
+        if (todas) break;
+        continue;
       }
+      aciertos++;
       if (i >= 0) {
         puntos += 2;
         if (primera < 0 || i < primera) primera = i;
@@ -249,17 +289,23 @@ export function buscar(consulta: string, limite = 40): Resultado[] {
       }
       if (enTitulo) puntos += 1;
     }
-    if (!ok) continue;
+    if (todas ? aciertos < terminos.length : aciertos === 0) continue;
     if (e.tipo === "sigla") puntos += 1.5;
     res.push({ entrada: e, fragmento: fragmento(e.texto, primera), puntos });
   }
-  // Primero el capítulo; lo de fuera, detrás (y en su grupo en la pantalla de búsqueda).
-  res.sort(
-    (a, b) =>
-      Number(fueraDelCapitulo(a.entrada)) - Number(fueraDelCapitulo(b.entrada)) ||
-      b.puntos - a.puntos,
+  return res;
+}
+
+/* Atajo por cifra: «β-OHB 1,2», «cetonemia 0,8», «cetonas 3» llevan al tramo de la Figura 3. */
+export function tramoDeConsulta(consulta: string): { clave: string; valor: number } | null {
+  const m = normalizar(consulta).match(
+    /(?:b-?ohb|β-?ohb|beta-?hidroxibutirato|cetonemia|cetonas?)\D{0,12}(\d+(?:[.,]\d+)?)/,
   );
-  return res.slice(0, limite);
+  if (!m) return null;
+  const valor = Number(m[1].replace(",", "."));
+  if (!Number.isFinite(valor)) return null;
+  const clave = valor < 0.6 ? "verde" : valor < 1 ? "amarillo" : valor < 3 ? "naranja" : "rojo";
+  return { clave, valor };
 }
 
 function fragmento(texto: string, pos: number, radio = 90): string {

@@ -8,7 +8,14 @@ import { DESTINOS } from "../nav";
 import { href } from "../rutas";
 import { Badge, CabeceraEditorial, Revelar, ToneCard } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
-import { buscar, fueraDelCapitulo, marcar, type Resultado } from "../buscador";
+import {
+  buscarConTotales,
+  fueraDelCapitulo,
+  marcar,
+  tramoDeConsulta,
+  type Resultado,
+} from "../buscador";
+import { AtajoTramo } from "../componentes/AtajoTramo";
 import { useNocturno } from "../prefs";
 
 const fecha = (iso: string) =>
@@ -38,7 +45,7 @@ function ListaResultados({ res, q, fuera }: { res: Resultado[]; q: string; fuera
           <a
             href={r.entrada.ruta}
             className={`block rounded-xl border p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 ${fuera ? "border-amber-200 bg-amber-50" : "bg-white"}`}
-            style={fuera ? undefined : { borderColor: "#e5ebf1" }}
+            style={fuera ? undefined : { borderColor: "#e6e6e6" }}
           >
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
               <span className="flex items-center gap-2">
@@ -79,7 +86,19 @@ export function Buscar({ inicial }: { inicial?: string }) {
     }, 400);
     return () => clearTimeout(t);
   }, [q]);
-  const res = useMemo(() => (q.trim().length >= 2 ? buscar(q, 60) : []), [q]);
+  const [tope, setTope] = useState(60);
+  useEffect(() => setTope(60), [q]);
+  const busqueda = useMemo(
+    () =>
+      q.trim().length >= 2
+        ? buscarConTotales(q, tope, Math.round(tope / 3))
+        : { resultados: [], totalCapitulo: 0, totalFuera: 0 },
+    [q, tope],
+  );
+  const res = busqueda.resultados;
+  const dentro = res.filter((r) => !fueraDelCapitulo(r.entrada));
+  const fueraRes = res.filter((r) => fueraDelCapitulo(r.entrada));
+  const hayMas = dentro.length < busqueda.totalCapitulo || fueraRes.length < busqueda.totalFuera;
   return (
     <div>
       <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1}>
@@ -101,15 +120,21 @@ export function Buscar({ inicial }: { inicial?: string }) {
         className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-soft placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
         autoComplete="off"
       />
+      {tramoDeConsulta(q) && <AtajoTramo consulta={q} />}
+      {busqueda.parcial && (
+        <p className="mt-2 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-900">
+          Ningún texto tiene todas esas palabras: se muestran los que tienen alguna.
+        </p>
+      )}
       {q.trim().length >= 2 && (
         <p className="mt-2 text-xs text-slate-500" aria-live="polite">
           {res.length === 0
             ? "Nada en el capítulo con esas palabras."
-            : `${res.length} resultado${res.length === 1 ? "" : "s"}`}
+            : `${busqueda.totalCapitulo} en el capítulo${dentro.length < busqueda.totalCapitulo ? ` (se ven ${dentro.length})` : ""} · ${busqueda.totalFuera} fuera del capítulo${fueraRes.length < busqueda.totalFuera ? ` (se ven ${fueraRes.length})` : ""}`}
         </p>
       )}
-      <ListaResultados res={res.filter((r) => !fueraDelCapitulo(r.entrada))} q={q} />
-      {res.some((r) => fueraDelCapitulo(r.entrada)) && (
+      <ListaResultados res={dentro} q={q} />
+      {fueraRes.length > 0 && (
         <section aria-labelledby="fuera" className="mt-6">
           <h2 id="fuera" className="text-sm font-bold text-amber-900">
             Fuera del capítulo · versión extendida y ampliación del autor
@@ -117,8 +142,17 @@ export function Buscar({ inicial }: { inicial?: string }) {
           <p className="text-xs text-slate-600">
             No es texto del Manual SEEN: material propio del autor, rotulado en ámbar.
           </p>
-          <ListaResultados res={res.filter((r) => fueraDelCapitulo(r.entrada))} q={q} fuera />
+          <ListaResultados res={fueraRes} q={q} fuera />
         </section>
+      )}
+      {hayMas && (
+        <button
+          type="button"
+          onClick={() => setTope((t) => t + 60)}
+          className="mt-4 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        >
+          Ver más resultados
+        </button>
       )}
     </div>
   );
@@ -135,7 +169,7 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
       <CabeceraEditorial titulo="Bibliografía" hex={CATEGORIA_HEX.confiar} level={1}>
         <p className="text-sm text-slate-600">
           Las diez referencias del capítulo (pp. 24–25), tal como aparecen, con el DOI enlazado
-          cuando lo tienen.
+          cuando lo tienen (y, si no, su dirección web).
         </p>
       </CabeceraEditorial>
       <ol className="space-y-2">
@@ -187,55 +221,77 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
 }
 
 /* ---------- Qué ha cambiado ---------- */
+/* Línea de tiempo de cambios (capítulo o app). */
+function LineaCambios({ cambios }: { cambios: typeof CAMBIOS }) {
+  return (
+    <ol className="relative space-y-4 border-l-2 pl-5" style={{ borderColor: "#e6e6e6" }}>
+      {cambios.map((c, i) => (
+        <Revelar as="li" key={i} className="relative">
+          <span
+            aria-hidden="true"
+            className="absolute -left-[27px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-white"
+            style={{
+              background:
+                c.ambito === "capitulo" ? CATEGORIA_HEX.leer.strong : CATEGORIA_HEX.confiar.strong,
+            }}
+          />
+          <div className="rounded-[4px] border bg-white p-3" style={{ borderColor: "#e6e6e6" }}>
+            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+              <Badge tone={c.ambito === "capitulo" ? "sky" : "emerald"}>
+                {c.ambito === "capitulo" ? "Capítulo" : "App"}
+              </Badge>
+              <time dateTime={c.fecha}>{fecha(c.fecha)}</time>
+            </div>
+            <h3 className="mt-1 text-sm font-bold text-slate-900">{c.titulo}</h3>
+            <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm text-slate-700">
+              {c.detalle.map((d, j) => (
+                <li key={j}>{d}</li>
+              ))}
+            </ul>
+          </div>
+        </Revelar>
+      ))}
+    </ol>
+  );
+}
+
+/* Primero lo clínico (cambios del capítulo) y lo pendiente; después, las versiones de la app. */
 export function Cambios() {
+  const delCapitulo = CAMBIOS.filter((c) => c.ambito === "capitulo");
+  const deLaApp = CAMBIOS.filter((c) => c.ambito !== "capitulo");
   return (
     <div>
       <CabeceraEditorial titulo="Qué ha cambiado" hex={CATEGORIA_HEX.confiar} level={1}>
         <p className="text-sm text-slate-600">
-          Cada revisión del capítulo y cada versión de la app, con su fecha. Lo que no se sabe,
-          abajo, como pendiente.
+          Primero, los cambios del texto del capítulo y lo que aún está pendiente; después, cada
+          versión de la app, con su fecha.
         </p>
       </CabeceraEditorial>
-      <ol className="relative space-y-4 border-l-2 pl-5" style={{ borderColor: "#e5ebf1" }}>
-        {CAMBIOS.map((c, i) => (
-          <Revelar as="li" key={i} className="relative">
-            <span
-              aria-hidden="true"
-              className="absolute -left-[27px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-white"
-              style={{
-                background:
-                  c.ambito === "capitulo"
-                    ? CATEGORIA_HEX.leer.strong
-                    : CATEGORIA_HEX.confiar.strong,
-              }}
-            />
-            <div
-              className="rounded-xl border bg-white p-3 shadow-soft"
-              style={{ borderColor: "#e5ebf1" }}
-            >
-              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                <Badge tone={c.ambito === "capitulo" ? "sky" : "emerald"}>
-                  {c.ambito === "capitulo" ? "Capítulo" : "App"}
-                </Badge>
-                <time dateTime={c.fecha}>{fecha(c.fecha)}</time>
-              </div>
-              <h2 className="mt-1 text-sm font-bold text-slate-900">{c.titulo}</h2>
-              <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm text-slate-700">
-                {c.detalle.map((d, j) => (
-                  <li key={j}>{d}</li>
-                ))}
-              </ul>
-            </div>
-          </Revelar>
-        ))}
-      </ol>
-      <ToneCard tone="amber" title="Pendiente" className="mt-6">
-        <ul className="list-disc space-y-1 pl-5 text-sm text-slate-800">
-          {PENDIENTES.map((p, i) => (
-            <li key={i}>{p}</li>
-          ))}
-        </ul>
-      </ToneCard>
+      <section aria-labelledby="cambios-capitulo">
+        <h2
+          id="cambios-capitulo"
+          className="mb-3 font-display text-base font-medium uppercase tracking-[0.04em] text-slate-800"
+        >
+          Cambios del capítulo
+        </h2>
+        <LineaCambios cambios={delCapitulo} />
+        <ToneCard tone="amber" title="Pendiente" className="mt-3">
+          <ul className="list-disc space-y-1 pl-5 text-sm text-slate-800">
+            {PENDIENTES.map((p, i) => (
+              <li key={i}>{p}</li>
+            ))}
+          </ul>
+        </ToneCard>
+      </section>
+      <section aria-labelledby="cambios-app" className="mt-8">
+        <h2
+          id="cambios-app"
+          className="mb-3 font-display text-base font-medium uppercase tracking-[0.04em] text-slate-800"
+        >
+          Versiones de la app
+        </h2>
+        <LineaCambios cambios={deLaApp} />
+      </section>
     </div>
   );
 }
@@ -266,7 +322,7 @@ export function Sobre() {
       </CabeceraEditorial>
       <section
         className="prosa rounded-2xl border bg-white p-4 shadow-soft"
-        style={{ borderColor: "#e5ebf1" }}
+        style={{ borderColor: "#e6e6e6" }}
         aria-labelledby="s-que"
       >
         <h2 id="s-que" className="text-base font-extrabold text-slate-900">
@@ -314,17 +370,17 @@ export function Sobre() {
         </ul>
         <h2 className="mt-5 text-base font-extrabold text-slate-900">Qué no es</h2>
         <p className="mt-2 text-sm">
-          Material educativo para profesionales. No es un producto sanitario, no contiene
-          calculadoras, no pide ni guarda datos de pacientes y no sustituye la ficha técnica de cada
-          sistema, los protocolos del centro ni el juicio clínico. Lo único que guarda el navegador
-          son preferencias de lectura: modo nocturno, tamaño de letra, por dónde se iba leyendo, los
-          apartados leídos y los favoritos (rutas de la app, nunca datos clínicos). El plan de
-          seguridad se rellena a mano, en papel.
+          Material educativo para profesionales (con hojas para que el profesional entregue al
+          paciente). No es un producto sanitario, no contiene calculadoras, no pide ni guarda datos
+          de pacientes y no sustituye la ficha técnica de cada sistema, los protocolos del centro ni
+          el juicio clínico. Lo único que guarda el navegador son preferencias de lectura: modo
+          nocturno, tamaño de letra, por dónde se iba leyendo, los apartados leídos y los favoritos
+          (rutas de la app, nunca datos clínicos). El plan de seguridad se rellena a mano, en papel.
         </p>
       </section>
       <section
         className="rounded-2xl border bg-white p-4 shadow-soft"
-        style={{ borderColor: "#e5ebf1" }}
+        style={{ borderColor: "#e6e6e6" }}
         aria-labelledby="s-corr"
       >
         <h2 id="s-corr" className="text-base font-extrabold text-slate-900">
@@ -352,7 +408,7 @@ export function Sobre() {
       </ToneCard>
       <section
         className="rounded-2xl border bg-white p-4 text-sm text-slate-700 shadow-soft"
-        style={{ borderColor: "#e5ebf1" }}
+        style={{ borderColor: "#e6e6e6" }}
       >
         <h2 className="text-base font-extrabold text-slate-900">Tecnología</h2>
         <p className="mt-2">
@@ -370,7 +426,7 @@ function Pregunta({ p, n }: { p: (typeof PREGUNTAS)[number]; n: number }) {
   const [elegida, setElegida] = useState<number | null>(null);
   const ap = apartadoPorSlug(p.apartado);
   return (
-    <li className="rounded-2xl border bg-white p-4 shadow-soft" style={{ borderColor: "#e5ebf1" }}>
+    <li className="rounded-2xl border bg-white p-4 shadow-soft" style={{ borderColor: "#e6e6e6" }}>
       <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
         <span className="font-bold">Pregunta {n}</span>
         {!p.validada && <Badge tone="amber">Pendiente de validación del autor</Badge>}
@@ -412,11 +468,12 @@ function Pregunta({ p, n }: { p: (typeof PREGUNTAS)[number]; n: number }) {
         <div className="animate-in mt-3 space-y-2" aria-live="polite">
           <div className="rounded-xl p-3 text-sm" style={{ background: "#eef3f8" }}>
             <p className="font-bold text-slate-900">
-              {elegida === p.correcta ? "Correcto." : "No es esa."} Explicación del autor:
+              {elegida === p.correcta ? "Correcto." : "Respuesta incorrecta."} Explicación del
+              autor:
             </p>
             <p className="mt-1 text-slate-800">{p.explicacion}</p>
           </div>
-          <div className="rounded-xl border p-3 text-sm" style={{ borderColor: "#e5ebf1" }}>
+          <div className="rounded-xl border p-3 text-sm" style={{ borderColor: "#e6e6e6" }}>
             <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
               Lo que dice el capítulo
             </p>
@@ -453,8 +510,8 @@ export function Test() {
     <div>
       <CabeceraEditorial titulo="Autoevaluación" hex={CATEGORIA_HEX.aprender} level={1}>
         <p className="text-sm text-slate-600">
-          Diez casos del autor. Al responder se ve su explicación y las frases del capítulo que la
-          respaldan, con su página.
+          Diez preguntas del autor. Al responder se ve su explicación y las frases del capítulo que
+          la respaldan, con su página.
         </p>
       </CabeceraEditorial>
       {pendientes > 0 && (
@@ -491,7 +548,7 @@ export function Mas() {
               <a
                 href={d.href}
                 className="flex items-center gap-3 rounded-xl border bg-white p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{ borderColor: "#e5ebf1" }}
+                style={{ borderColor: "#e6e6e6" }}
               >
                 <I
                   size={18}
@@ -513,7 +570,7 @@ export function Mas() {
             onClick={toggle}
             aria-pressed={night}
             className="flex w-full items-center gap-3 rounded-xl border bg-white p-3 text-left shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
           >
             {night ? (
               <Sun size={18} className="shrink-0" aria-hidden="true" />

@@ -25,12 +25,12 @@ import {
 } from "lucide-react";
 import { APARTADOS, CAPITULO } from "../contenido";
 import { DESTINOS, GRUPOS_CONSULTAR } from "../nav";
-import { consumirNavegacionNueva, href, marcarNavegacionNueva, useRuta, type Ruta } from "../rutas";
+import { consumirNavegacionNueva, href, marcarNavegacionNueva, type Ruta } from "../rutas";
 import { TAMANOS, useLeidos, useNocturno, useTamanoLetra } from "../prefs";
 import { VolverArriba } from "./Lectura";
-import { Modal } from "../ui";
+import { ErrorBoundary, Modal } from "../ui";
 import { buscar, fueraDelCapitulo, marcar } from "../buscador";
-import { CATEGORIA_HEX } from "../tokens";
+import { CATEGORIA_HEX, SEEN } from "../tokens";
 
 /* Destinos que viven bajo #/consultar/<id>. */
 const SUB_CONSULTAR = [
@@ -79,7 +79,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
         {q.trim().length >= 2 && (
           <ul
             className="mt-2 max-h-[60vh] divide-y overflow-y-auto"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
             aria-label="Resultados"
           >
             {res.length === 0 && (
@@ -138,7 +138,9 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
 
 /* ---------- Aviso de versión nueva (service worker) ---------- */
 function AvisoVersion() {
-  const [update, setUpdate] = useState<null | (() => void)>(null);
+  const [update, setUpdate] = useState<null | (() => void)>(
+    () => (window as unknown as { __mseenActualizar?: () => void }).__mseenActualizar ?? null,
+  );
   useEffect(() => {
     const on = (e: Event) =>
       setUpdate(() => (e as CustomEvent<{ update: () => void }>).detail.update);
@@ -149,7 +151,7 @@ function AvisoVersion() {
   return (
     <div
       role="status"
-      className="fixed inset-x-3 bottom-20 z-40 mx-auto max-w-md rounded-xl border border-slate-300 bg-white p-3 shadow-xl md:bottom-4"
+      className="aviso-version fixed inset-x-3 bottom-32 z-40 mx-auto max-w-md rounded-xl border border-slate-300 bg-white p-3 shadow-xl md:bottom-4"
     >
       <p className="text-sm text-slate-800">Hay una versión nueva de la app.</p>
       <div className="mt-2 flex gap-2">
@@ -172,15 +174,42 @@ function AvisoVersion() {
   );
 }
 
+/* ---------- Rótulo (inspirado en el del Manual SEEN, sin ser su logotipo) ----------
+   «Manual» en el azul del Manual oscurecido lo justo para 3:1 en texto grande. */
+export function Rotulo({ compacto = false }: { compacto?: boolean }) {
+  return (
+    <span className="flex items-center gap-1.5 leading-none" aria-hidden="true">
+      <span
+        className={`font-display font-semibold uppercase tracking-tight ${compacto ? "text-[1.35rem] min-[400px]:text-[1.6rem]" : "text-[2.1rem]"}`}
+        style={{ color: "#6893C4" }}
+      >
+        Manual
+      </span>
+      <span className="flex flex-col font-display font-medium uppercase leading-[0.95]">
+        <span
+          className={compacto ? "text-[0.62rem] min-[400px]:text-[0.72rem]" : "text-[0.85rem]"}
+          style={{ color: SEEN.burdeos }}
+        >
+          SEEN · AID
+        </span>
+        <span
+          className={compacto ? "text-[0.62rem] min-[400px]:text-[0.72rem]" : "text-[0.85rem]"}
+          style={{ color: SEEN.mostazaOsc }}
+        >
+          Diabetes
+        </span>
+      </span>
+    </span>
+  );
+}
+
 /* ---------- Barra lateral (escritorio) ---------- */
 function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
   const enCapitulo = ruta.seccion === "capitulo";
   const leidos = useLeidos();
   const grupo = (titulo: string, ids: string[]) => (
-    <div className="mt-3">
-      <div className="px-3 text-[11px] font-bold uppercase tracking-wider text-white/50">
-        {titulo}
-      </div>
+    <div className="mt-4">
+      <div className="etiqueta-area px-3 text-[11px] text-slate-500">{titulo}</div>
       <ul className="mt-1 space-y-0.5">
         {ids.map((id) => {
           const d = DESTINOS.find((x) => x.id === id)!;
@@ -191,18 +220,29 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
                 ? activo(ruta, "consultar", id)
                 : activo(ruta, id);
           const I = d.icono;
+          const cat = CATEGORIA_HEX[d.cat];
           return (
             <li key={id}>
               <a
                 href={d.href}
                 aria-current={on ? "page" : undefined}
-                className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 ${on ? "bg-white/15 text-white" : "text-white/80 hover:bg-white/10 hover:text-white"}`}
+                className={`relative flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[13.5px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"}`}
               >
-                <I size={16} aria-hidden="true" />
+                {on && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-y-1 left-0 w-[3px] rounded-full"
+                    style={{ background: cat.strong }}
+                  />
+                )}
+                <I size={16} aria-hidden="true" style={{ color: cat.strong }} />
                 {d.etiqueta}
               </a>
               {id === "capitulo" && enCapitulo && (
-                <ol className="ml-4 mt-1 space-y-0.5 border-l border-white/15 pl-2">
+                <ol
+                  className="ml-4 mt-1 space-y-0.5 border-l pl-2"
+                  style={{ borderColor: "#e6e6e6" }}
+                >
                   {APARTADOS.map((a) => {
                     const onA = ruta.sub === a.slug;
                     return (
@@ -210,12 +250,16 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
                         <a
                           href={href("capitulo", a.slug)}
                           aria-current={onA ? "page" : undefined}
-                          className={`flex gap-2 rounded-md px-2 py-1 text-[13px] leading-snug transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 ${onA ? "bg-white/15 font-semibold text-white" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
+                          className={`flex gap-2 rounded-md px-2 py-1 text-[12.5px] uppercase leading-snug tracking-wide transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${onA ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
                         >
-                          <span className="w-5 shrink-0 tabular-nums text-white/50">{a.n}</span>
+                          <span
+                            className={`w-5 shrink-0 tabular-nums ${onA ? "text-slate-700" : "text-slate-500"}`}
+                          >
+                            {a.n}
+                          </span>
                           <span className="flex-1">{a.corto}</span>
                           {leidos.includes(a.slug) && (
-                            <span className="text-white/60" title="Leído">
+                            <span className="text-emerald-700" title="Leído">
                               <CircleCheck size={13} aria-label="Leído" />
                             </span>
                           )}
@@ -232,27 +276,28 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
     </div>
   );
   return (
-    <aside className="barra-lateral fixed inset-y-0 left-0 z-30 hidden w-64 flex-col overflow-y-auto px-3 py-4 text-white md:flex">
+    <aside className="barra-lateral fixed inset-y-0 left-0 z-30 hidden w-64 flex-col overflow-y-auto px-3 py-4 md:flex">
       <a
         href="#/"
-        className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+        aria-label="Manual SEEN · AID, inicio"
+        className="rounded-md px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/15">
-          <BookOpen size={18} aria-hidden="true" />
-        </span>
-        <span className="min-w-0">
-          <span className="block text-sm font-extrabold leading-tight">Manual SEEN · AID</span>
-          <span className="block truncate text-[11px] text-white/60">{CAPITULO.tituloCorto}</span>
+        <Rotulo />
+        <span className="mt-1.5 block truncate text-[11px] text-slate-500">
+          {CAPITULO.tituloCorto}
         </span>
       </a>
       <button
         type="button"
         onClick={onBuscar}
-        className="mt-3 flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-left text-sm text-white/80 transition hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+        aria-label="Buscar en el capítulo (Ctrl K)"
+        className="mt-3 flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-left text-sm text-slate-600 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
         <Search size={15} aria-hidden="true" />
-        <span className="flex-1">Buscar en el capítulo</span>
-        <kbd className="rounded border border-white/25 px-1 text-[10px] text-white/60">Ctrl K</kbd>
+        <span className="flex-1">Buscar</span>
+        <kbd className="rounded border border-slate-300 px-1 text-[10px] text-slate-500">
+          Ctrl K
+        </kbd>
       </button>
       <nav aria-label="Navegación principal">
         {grupo("Leer", ["capitulo"])}
@@ -260,10 +305,10 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
           <Fragment key={g.id}>{grupo(g.titulo, g.ids)}</Fragment>
         ))}
         {grupo("Para el paciente", ["pacientes"])}
-        {grupo("Confiar", ["bibliografia", "cambios", "sobre"])}
+        {grupo("Fuentes y versión", ["bibliografia", "cambios", "sobre"])}
         {grupo("Aprender", ["test"])}
       </nav>
-      <div className="mt-auto px-3 pt-6 text-[11px] leading-relaxed text-white/50">
+      <div className="mt-auto px-3 pt-6 text-[11px] leading-relaxed text-slate-500">
         Material educativo. No es producto sanitario ni sustituye el juicio clínico.
       </div>
     </aside>
@@ -307,7 +352,7 @@ function Inferior({ ruta }: { ruta: Ruta }) {
     <nav
       aria-label="Barra inferior"
       className="fixed inset-x-0 bottom-0 z-30 border-t bg-white md:hidden"
-      style={{ borderColor: "#e5ebf1", paddingBottom: "env(safe-area-inset-bottom)" }}
+      style={{ borderColor: "#e6e6e6", paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <ul className="grid grid-cols-5">
         {items.map((it) => {
@@ -318,7 +363,7 @@ function Inferior({ ruta }: { ruta: Ruta }) {
                 href={it.href}
                 aria-current={it.on ? "page" : undefined}
                 className={`flex flex-col items-center gap-0.5 py-2 text-[11px] font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${it.on ? "text-slate-900" : "text-slate-500"}`}
-                style={it.on ? { color: "#1f4e79" } : undefined}
+                style={it.on ? { color: SEEN.burdeos } : undefined}
               >
                 <I size={20} aria-hidden="true" />
                 {it.etiqueta}
@@ -375,8 +420,18 @@ function Cajon({ open, onClose, ruta }: { open: boolean; onClose: () => void; ru
   );
 }
 
-export function Shell({ children, titulo }: { children: ReactNode; titulo?: string }) {
-  const ruta = useRuta();
+/* La ruta llega de App (una sola fuente): si la Shell tuviera su propia copia, durante un
+   render la clave de la pantalla nueva iría con la pantalla vieja, que se volvía a montar y
+   saltaba a su ancla (y guardaba ese punto como «seguir leyendo»). */
+export function Shell({
+  children,
+  titulo,
+  ruta,
+}: {
+  children: ReactNode;
+  titulo?: string;
+  ruta: Ruta;
+}) {
   const [night, toggleNight] = useNocturno();
   const [letra, setLetra] = useTamanoLetra();
   const [paleta, setPaleta] = useState(false);
@@ -460,7 +515,7 @@ export function Shell({ children, titulo }: { children: ReactNode; titulo?: stri
       <Lateral ruta={ruta} onBuscar={abrirPaleta} />
       <header
         className="cabecera sticky top-0 z-20 border-b backdrop-blur md:ml-64"
-        style={{ borderColor: "#e5ebf1" }}
+        style={{ borderColor: "#e6e6e6" }}
       >
         <div className="mx-auto flex h-14 max-w-5xl items-center gap-2 px-3 sm:px-5">
           <button
@@ -473,11 +528,21 @@ export function Shell({ children, titulo }: { children: ReactNode; titulo?: stri
           </button>
           <a
             href="#/"
-            className="min-w-0 flex-1 truncate text-sm font-extrabold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:text-base"
+            aria-label="Manual SEEN · AID, inicio"
+            className="min-w-0 shrink-0 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
           >
-            <span className="md:hidden">Manual SEEN · AID</span>
-            <span className="hidden text-slate-600 md:inline">{titulo || "Manual SEEN · AID"}</span>
+            <Rotulo compacto />
           </a>
+          <span className="hidden min-w-0 flex-1 truncate text-sm text-slate-600 md:block">
+            {titulo || CAPITULO.tituloCorto}
+          </span>
+          <span
+            className="etiqueta-area ml-auto hidden truncate text-sm lg:block"
+            style={{ color: SEEN.diabetesOsc }}
+          >
+            Área · Diabetes
+          </span>
+          <span className="flex-1 md:hidden" />
           {enLectura && (
             <div className="flex items-center" role="group" aria-label="Tamaño de letra">
               <button
@@ -533,7 +598,8 @@ export function Shell({ children, titulo }: { children: ReactNode; titulo?: stri
           key={clavePantalla}
           className="pantalla-in mx-auto max-w-5xl px-3 pb-24 pt-4 sm:px-5 md:pb-10"
         >
-          {children}
+          {/* Un fallo en una pantalla deja en pie la barra lateral y la navegación. */}
+          <ErrorBoundary>{children}</ErrorBoundary>
         </div>
       </main>
       <Inferior ruta={ruta} />

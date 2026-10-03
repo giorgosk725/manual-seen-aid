@@ -8,6 +8,11 @@ Una web estática, instalable y que funciona sin conexión, para que un endocrin
 capítulo mejor que en papel, lo **consulte** en dos toques en la consulta y vea cuándo y en qué se ha
 **actualizado**. No es la consola asistente-aid ni compite con ella: es el capítulo, hecho usable.
 
+Desde la 0.5.0 lleva la identidad visual del Manual SEEN (sus colores, títulos finos en mayúsculas, índice
+en mosaico de áreas y paginación en círculos; fuentes Open Sans y Oswald, OFL), sin su logotipo y sin
+presentarse como producto oficial de la SEEN mientras el permiso esté pendiente. Auditoría con
+puntuaciones por nivel y por perfil de usuario: [docs/AUDITORIA_2026-10-03.md](docs/AUDITORIA_2026-10-03.md).
+
 **Material educativo. No es producto sanitario:** sin calculadoras, sin datos de paciente, sin almacenamiento
 de nada clínico.
 

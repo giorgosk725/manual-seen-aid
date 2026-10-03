@@ -1,18 +1,36 @@
-/* Inter Variable (subconjunto latino, eje de peso 100–900). Vendorizado de
-   @fontsource-variable/inter@5.2.8 (files/inter-latin-wght-normal.woff2) para
-   garantizar disponibilidad OFFLINE (PWA) con un único fichero de 48 kB. Vite
-   resuelve y versiona la URL respetando `base`, y workbox la precachea (glob woff2).
-   En el artefacto (que no incluye CSS) la tipografía degrada a la pila de sistema
-   declarada en tailwind.config.js. */
+/* Tipografías del Manual SEEN (0.5.0), autoalojadas para el uso sin conexión: Open Sans
+   (texto y títulos) y Oswald (rótulo y etiquetas condensadas). Subconjunto latino, eje de
+   peso variable. Vendorizadas de @fontsource-variable/open-sans y /oswald 5.3.0 (OFL-1.1;
+   licencias en src/assets/fonts). */
 @font-face {
-  font-family: "Inter Variable";
+  font-family: "Open Sans Variable";
   font-style: normal;
   font-display: swap;
-  font-weight: 100 900;
-  src: url("./assets/fonts/inter-latin-wght.woff2") format("woff2");
+  font-weight: 300 800;
+  src: url("./assets/fonts/open-sans-latin-wght-normal.woff2") format("woff2");
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
-    U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Open Sans Variable";
+  font-style: italic;
+  font-display: swap;
+  font-weight: 300 800;
+  src: url("./assets/fonts/open-sans-latin-wght-italic.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Oswald Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 700;
+  src: url("./assets/fonts/oswald-latin-wght-normal.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @tailwind base;
@@ -27,10 +45,10 @@
      «papel»; el color de señalización clínica se conserva tal cual. */
   html {
     color-scheme: light;
-    background-color: #f5f7f9;
+    background-color: #fafafa;
   }
 
-  /* Tipografía base 2026: Inter (con fallback de sistema moderno) + suavizado.
+  /* Tipografía base: Open Sans del Manual SEEN (con respaldo de sistema) + suavizado.
      El color/escala se mantienen; solo cambia la familia y el render del texto. */
   body {
     font-family: theme("fontFamily.sans");
@@ -45,13 +63,17 @@
      en la app se compila desde index.css; si el artefacto se sirve en un host sin
      esta hoja, la tarjeta degrada con elegancia (conserva borde y fondo). */
   .shadow-soft {
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.06),
+      0 6px 16px rgba(0, 0, 0, 0.05);
   }
   /* Hover de elevación de la casa: la MISMA geometría de sombra que shadow-soft,
      más profunda — la tarjeta «se levanta» en vez de cambiar de material (antes el
      hover saltaba a shadow-md de Tailwind, otra familia de sombra). */
   .hover-lift:hover {
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.1);
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.08),
+      0 12px 28px rgba(0, 0, 0, 0.1);
   }
   /* Curva de movimiento única de la casa (la misma de animate-in/loop-draw) para
      transiciones de hover: una sola personalidad de movimiento en toda la portada. */
@@ -97,10 +119,11 @@
 main .bg-white.shadow-soft {
   /* Lenguaje de la portada: borde NEUTRO (el color vive en el acento superior,
      el título y los iconos, no en el perímetro). */
-  border-color: #e5ebf1;
+  border-color: #e6e6e6;
   box-shadow:
-    inset 0 3px 0 0 var(--cat, #1f4e79),
-    0 8px 24px rgba(15, 23, 42, 0.05);
+    inset 0 3px 0 0 var(--cat, #3f6e9f),
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 6px 16px rgba(0, 0, 0, 0.05);
 }
 
 /* Cajas de nota informativa: tinte suave de la categoría activa. Mantienen
@@ -752,6 +775,9 @@ main .note-soft {
   .cabecera,
   nav[aria-label="Barra inferior"],
   .no-print,
+  .no-imprimir,
+  .volver-arriba,
+  .aviso-version,
   [data-print="hide"] {
     display: none !important;
   }
@@ -1042,15 +1068,21 @@ html.night .pagina-badge {
 /* Cabecera translúcida: blanco en día, pizarra oscura en nocturno (las clases con opacidad
    de Tailwind no las remapea el nocturno). */
 .cabecera {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(250, 250, 250, 0.94);
 }
 html.night .cabecera {
   background: rgba(15, 23, 42, 0.9);
 }
 
-/* Barra lateral de escritorio (receta 8). */
+/* Barra lateral de escritorio: papel blanco con filete, como el índice de los capítulos del
+   Manual (0.5.0). En nocturno, superficie oscura. */
 .barra-lateral {
-  background: linear-gradient(180deg, #0d2438, #15324f);
+  background: #ffffff;
+  border-right: 1px solid #e6e6e6;
+}
+html.night .barra-lateral {
+  background: #111827;
+  border-right-color: #1f2937;
 }
 
 /* Resaltado del bloque enlazado (#/capitulo/slug/b12): un destello corto. */
@@ -1252,4 +1284,175 @@ html.night .tramo-plan {
   html.night [style*="; color: rgb(55, 48, 163)"] {
     color: #a5b4fc !important;
   }
+}
+
+/* ---------- Identidad del Manual SEEN (0.5.0) ---------- */
+/* Rótulo y etiquetas condensadas, como el logotipo y las cabeceras de área del Manual. */
+.font-display {
+  letter-spacing: 0.01em;
+}
+.etiqueta-area {
+  font-family: theme("fontFamily.display");
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+}
+/* Título de capítulo y de apartado: Open Sans ligera y en mayúsculas (los capítulos del
+   Manual se titulan así). */
+.titulo-manual {
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+  line-height: 1.12;
+  color: #161616;
+}
+html.night .titulo-manual {
+  color: #f3f4f6;
+}
+/* Paginación de apartados con círculos, como la de los capítulos del Manual. */
+.paginacion a,
+.paginacion span[aria-current] {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+@media (min-width: 640px) {
+  .paginacion a,
+  .paginacion span[aria-current] {
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+}
+html.night .paginacion a {
+  border-color: #475569 !important;
+}
+
+/* Regla de las cabeceras de sección (tramo de color + línea fina). */
+.regla-seccion > span:last-child {
+  background: #e6e6e6;
+}
+html.night .regla-seccion > span:last-child {
+  background: #334155;
+}
+
+/* ---------- Identidad del Manual SEEN (0.5.0) ---------- */
+/* Botón principal burdeos: se oscurece al pasar el ratón. */
+.boton-seen:hover {
+  filter: brightness(0.9);
+}
+/* Mosaico de la cabecera: las piezas entran escalonadas (solo si no se pide reducir el
+   movimiento). */
+@media (prefers-reduced-motion: no-preference) {
+  .mosaico-pieza {
+    animation: pieza-entra 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  @keyframes pieza-entra {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+/* Nocturno: bordes finos en línea, tintes suaves y tintas de las categorías nuevas. */
+html.night [style*="border-color: rgb(230, 230, 230)"],
+html.night [style*="border-color: rgb(212, 212, 212)"] {
+  border-color: #334155 !important;
+}
+html.night [style*="background: rgb(238, 243, 249)"] {
+  background: #172a3f !important;
+  color: #e2e8f0 !important;
+}
+html.night [style*="background: rgb(247, 239, 243)"] {
+  background: #33202b !important;
+  color: #e2e8f0 !important;
+}
+html.night [style*="background: rgb(239, 243, 246)"] {
+  background: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+html.night [style*="background: rgb(251, 244, 230)"] {
+  background: #2b220c !important;
+  color: #e2e8f0 !important;
+}
+html.night [style*="background: rgb(251, 238, 235)"] {
+  background: #33201c !important;
+  color: #e2e8f0 !important;
+}
+html.night [style^="color: rgb(47, 86, 128)"],
+html.night [style*="; color: rgb(47, 86, 128)"],
+html.night [style^="color: rgb(63, 110, 159)"],
+html.night [style*="; color: rgb(63, 110, 159)"] {
+  color: #93c5fd !important;
+  filter: none !important;
+}
+html.night [style^="color: rgb(110, 52, 82)"],
+html.night [style*="; color: rgb(110, 52, 82)"],
+html.night [style^="color: rgb(148, 73, 110)"],
+html.night [style*="; color: rgb(148, 73, 110)"],
+html.night [style^="color: rgb(126, 61, 94)"],
+html.night [style*="; color: rgb(126, 61, 94)"] {
+  color: #f5b8d2 !important;
+  filter: none !important;
+}
+html.night [style^="color: rgb(62, 86, 106)"],
+html.night [style*="; color: rgb(62, 86, 106)"],
+html.night [style^="color: rgb(91, 123, 149)"],
+html.night [style*="; color: rgb(91, 123, 149)"] {
+  color: #cbd5e1 !important;
+  filter: none !important;
+}
+html.night [style^="color: rgb(107, 74, 13)"],
+html.night [style*="; color: rgb(107, 74, 13)"],
+html.night [style^="color: rgb(138, 94, 16)"],
+html.night [style*="; color: rgb(138, 94, 16)"] {
+  color: #fcd34d !important;
+  filter: none !important;
+}
+html.night [style^="color: rgb(127, 49, 40)"],
+html.night [style*="; color: rgb(127, 49, 40)"],
+html.night [style^="color: rgb(168, 71, 58)"],
+html.night [style*="; color: rgb(168, 71, 58)"],
+html.night [style^="color: rgb(142, 37, 78)"],
+html.night [style*="; color: rgb(142, 37, 78)"] {
+  color: #fca5a5 !important;
+  filter: none !important;
+}
+html.night input.bg-transparent {
+  background: transparent !important;
+}
+
+/* Remisiones internas del capítulo («v. Tabla 5»): enlace discreto, subrayado punteado. */
+.remision {
+  color: inherit;
+  text-decoration: underline dotted;
+  text-decoration-color: #3f6e9f;
+  text-underline-offset: 3px;
+}
+.remision:hover {
+  text-decoration-style: solid;
+}
+.remision:focus-visible {
+  outline: 2px solid #3f6e9f;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+html.night .remision {
+  text-decoration-color: #93c5fd;
+}
+@media print {
+  .remision {
+    text-decoration: none;
+  }
+}
+html.night .bg-orange-50 {
+  background-color: #2f1a0c;
+}
+html.night .border-orange-200 {
+  border-color: #7c2d12;
+}
+html.night .text-orange-900 {
+  color: #fed7aa;
 }

@@ -2,6 +2,7 @@
    ToneCard, Segmented, Foldable, ErrorBoundary, BotonImprimir) y ampliadas con lo que
    pide un manual de lectura (Revelar, PaginaBadge, CabeceraEditorial, Enlace). */
 import React, { useEffect, useRef, useState, type ReactNode } from "react";
+import { restablecerPreferencias } from "./prefs";
 import { createPortal } from "react-dom";
 import { AlertTriangle, ChevronDown, Printer, RotateCcw, X, type LucideIcon } from "lucide-react";
 import { imprimirRegion } from "./imprimir";
@@ -239,7 +240,7 @@ export function Segmented<T extends string>({
       role="group"
       aria-label={label}
       className={`${wrap ? "flex flex-wrap" : "flex overflow-x-auto"} gap-1 rounded-xl border p-1 shadow-soft`}
-      style={{ borderColor: "#e5ebf1", background: "#ffffff" }}
+      style={{ borderColor: "#e6e6e6", background: "#ffffff" }}
     >
       {options.map((o) => {
         const on = value === o.id;
@@ -350,7 +351,9 @@ export class ErrorBoundary extends React.Component<{ children: ReactNode }, { ha
           <AlertTriangle size={24} className="mb-2 text-amber-600" />
           <p className="text-sm font-semibold text-slate-800">Algo ha fallado en esta pantalla.</p>
           <p className="mt-1 max-w-md text-sm text-slate-600">
-            Puedes reintentar o recargar la página. La app no guarda nada en ningún servidor.
+            Puedes reintentar o recargar la página. La app no guarda nada en ningún servidor; si el
+            fallo se repite, restablece las preferencias de lectura de este navegador (modo
+            nocturno, letra, favoritos y apartados leídos).
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
             <button
@@ -366,6 +369,16 @@ export class ErrorBoundary extends React.Component<{ children: ReactNode }, { ha
               className="rounded-md bg-slate-800 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
             >
               Recargar la página
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                restablecerPreferencias();
+                window.location.reload();
+              }}
+              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-800 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+            >
+              Restablecer preferencias
             </button>
           </div>
         </div>
@@ -393,7 +406,7 @@ export function BotonImprimir({
       onClick={() => imprimirRegion(() => objetivo.current || null)}
       className={
         compacto
-          ? "inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+          ? "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
           : "flex shrink-0 items-center gap-1.5 rounded-lg bg-slate-800 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
       }
     >
@@ -463,7 +476,8 @@ export function PaginaBadge({ p, p2 }: { p: number; p2?: number }) {
   );
 }
 
-/* Cabecera editorial de sección (receta 2): numeral fantasma + título + regla que se desvanece. */
+/* Cabecera de sección al modo del Manual SEEN: cuadro de color con el número, título en
+   mayúsculas condensadas y una regla fina con un tramo del color de la sección. */
 export function CabeceraEditorial({
   numero,
   titulo,
@@ -479,26 +493,26 @@ export function CabeceraEditorial({
 }) {
   const H = `h${level}` as "h1" | "h2" | "h3";
   return (
-    <div className="mb-3 flex items-end gap-3">
-      {numero != null && (
+    <div className="mb-3">
+      <div className="flex items-center gap-2.5">
         <span
           aria-hidden="true"
-          className="pointer-events-none text-3xl font-black leading-none tabular-nums"
-          style={{ color: `${hex.strong}2e` }}
+          className="flex h-7 min-w-[1.75rem] shrink-0 items-center justify-center rounded-[3px] px-1 font-display text-sm font-medium tabular-nums text-white"
+          style={{ background: hex.strong }}
         >
-          {numero}
+          {numero ?? ""}
         </span>
-      )}
-      <div className="min-w-0 flex-1">
-        <H className="text-base font-extrabold tracking-tight" style={{ color: hex.ink }}>
+        <H
+          className="font-display text-lg font-medium uppercase leading-tight tracking-[0.04em]"
+          style={{ color: hex.ink }}
+        >
           {titulo}
         </H>
-        {children}
-        <div
-          aria-hidden="true"
-          className="mt-1.5 h-px w-full"
-          style={{ background: `linear-gradient(90deg, ${hex.strong}30, transparent)` }}
-        />
+      </div>
+      {children && <div className="mt-1">{children}</div>}
+      <div aria-hidden="true" className="regla-seccion mt-2 flex h-px w-full">
+        <span className="w-12" style={{ background: hex.strong }} />
+        <span className="flex-1" />
       </div>
     </div>
   );

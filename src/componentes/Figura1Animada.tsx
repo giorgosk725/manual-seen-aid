@@ -29,7 +29,7 @@ export function Figura1Animada() {
   return (
     <figure
       className="rounded-2xl border bg-white p-4 shadow-soft"
-      style={{ borderColor: "#e5ebf1" }}
+      style={{ borderColor: "#e6e6e6" }}
       aria-label="Figura 1 como diagrama animado"
     >
       <div className="mb-2 text-xs font-bold uppercase tracking-wide" style={{ color: "#15324f" }}>
@@ -60,7 +60,7 @@ export function Figura1Animada() {
             id="f1-asa"
             d="M60 50 L260 50 L260 210 L160 130 L60 50"
             fill="none"
-            stroke="#cbd5e1"
+            stroke="#d4d4d4"
             strokeWidth="3"
             strokeLinejoin="round"
           />

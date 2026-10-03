@@ -66,7 +66,7 @@ function TablaHTML({ tabla, columnas }: { tabla: Tabla; columnas: number[] }) {
   return (
     <div
       className="tabla-scroll fade-right-scroll rounded-xl border focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-      style={{ borderColor: "#e5ebf1" }}
+      style={{ borderColor: "#e6e6e6" }}
       tabIndex={0}
       role="region"
       aria-label={`Tabla ${tabla.numero}, desplazable`}
@@ -116,7 +116,7 @@ function TablaHTML({ tabla, columnas }: { tabla: Tabla; columnas: number[] }) {
               <th
                 scope="row"
                 className="border-t px-3 py-2 text-left text-xs font-bold text-slate-800"
-                style={{ borderColor: "#e5ebf1", minWidth: "9rem" }}
+                style={{ borderColor: "#e6e6e6", minWidth: "9rem" }}
               >
                 <Lineas>{f.etiqueta}</Lineas>
               </th>
@@ -124,7 +124,7 @@ function TablaHTML({ tabla, columnas }: { tabla: Tabla; columnas: number[] }) {
                 <td
                   colSpan={columnas.length}
                   className="border-t px-3 py-2 text-slate-700"
-                  style={{ borderColor: "#e5ebf1" }}
+                  style={{ borderColor: "#e6e6e6" }}
                 >
                   <Lineas>{f.celdas[0]}</Lineas>
                 </td>
@@ -134,7 +134,7 @@ function TablaHTML({ tabla, columnas }: { tabla: Tabla; columnas: number[] }) {
                     key={c}
                     className="border-t px-3 py-2 text-slate-700"
                     style={{
-                      borderColor: "#e5ebf1",
+                      borderColor: "#e6e6e6",
                       minWidth: tabla.porSistema ? "11rem" : "10rem",
                     }}
                   >
@@ -169,7 +169,7 @@ function Fichas({
           <li
             key={i}
             className="rounded-xl border bg-white p-3 shadow-soft"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
           >
             <div className="mb-2 text-sm font-bold text-slate-900">
               <Lineas>
@@ -209,14 +209,14 @@ function FichaSistema({ tabla, c }: { tabla: Tabla; c: number }) {
     <div
       className="rounded-2xl border bg-white shadow-soft"
       style={{
-        borderColor: "#e5ebf1",
+        borderColor: "#e6e6e6",
         boxShadow: `inset 0 3px 0 0 ${hex.strong}, 0 8px 24px rgba(15,23,42,0.05)`,
       }}
     >
       <div className="px-4 pt-4 text-base font-extrabold" style={{ color: hex.ink }}>
         {tabla.columnas[c]}
       </div>
-      <dl className="divide-y px-4 pb-2" style={{ borderColor: "#e5ebf1" }}>
+      <dl className="divide-y px-4 pb-2" style={{ borderColor: "#e6e6e6" }}>
         {tabla.filas.map((f, i) => (
           <div key={i} className="grid gap-1 py-3 sm:grid-cols-[13rem_1fr] sm:gap-4">
             <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">

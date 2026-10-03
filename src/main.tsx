@@ -11,6 +11,9 @@ import "./index.css";
 const UNA_HORA = 60 * 60 * 1000;
 const updateSW = registerSW({
   onNeedRefresh() {
+    // Se guarda también en la ventana: el aviso puede montarse después del evento.
+    (window as unknown as { __mseenActualizar?: () => void }).__mseenActualizar = () =>
+      updateSW(true);
     window.dispatchEvent(
       new CustomEvent("mseen:sw-need-refresh", { detail: { update: () => updateSW(true) } }),
     );

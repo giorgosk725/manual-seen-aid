@@ -29,7 +29,7 @@ export const CASO_EDUCATIVO: Record<string, CasoEducativo> = {
   "necesidad-transitoria": CASOS,
   "comida-grasa": CASOS,
   "cirugia-corta": CASOS,
-  "cirugia-prolongada": CASOS,
+  "cirugia-larga": CASOS,
   rm: DESCONEXION,
   tc: DESCONEXION,
   interrupcion: DESCONEXION,

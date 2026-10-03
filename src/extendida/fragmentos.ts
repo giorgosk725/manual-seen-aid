@@ -50,7 +50,7 @@ export const FRAGMENTOS_EXTENDIDOS: FragmentoExtendido[] = [
     ],
     donde: { apartado: "04-sistemas" },
     sistemas: ["mm780"],
-    relacion: "Tabla 1 (p. 4) y Tabla 3 (p. 10)",
+    relacion: "Tabla 1 (p. 4) y Tabla 3 (p. 11)",
   },
   {
     id: "E02",
@@ -64,7 +64,7 @@ export const FRAGMENTOS_EXTENDIDOS: FragmentoExtendido[] = [
     ],
     donde: { apartado: "04-sistemas" },
     sistemas: ["ciq"],
-    relacion: "Tabla 1 (p. 4) y Tabla 3 (p. 10)",
+    relacion: "Tabla 1 (p. 4) y Tabla 3 (p. 11)",
   },
   {
     id: "E03",
@@ -80,7 +80,7 @@ export const FRAGMENTOS_EXTENDIDOS: FragmentoExtendido[] = [
     ],
     donde: { apartado: "08-iniciacion", ancla: "T3" },
     sistemas: ["ciq"],
-    relacion: "Tabla 3 (p. 10)",
+    relacion: "Tabla 3 (p. 11)",
   },
   {
     id: "E04",
@@ -96,7 +96,7 @@ export const FRAGMENTOS_EXTENDIDOS: FragmentoExtendido[] = [
     ],
     donde: { apartado: "08-iniciacion", ancla: "T3" },
     sistemas: ["ciq"],
-    relacion: "Tabla 3 (p. 10)",
+    relacion: "Tabla 3 (p. 11)",
   },
   {
     id: "E05",
@@ -117,7 +117,7 @@ export const FRAGMENTOS_EXTENDIDOS: FragmentoExtendido[] = [
     ],
     donde: { apartado: "04-sistemas" },
     sistemas: ["camaps"],
-    relacion: "pp. 17-18 y Tabla 3 (p. 10)",
+    relacion: "pp. 17-18 y Tabla 3 (p. 11)",
   },
   {
     id: "E07",
@@ -159,7 +159,7 @@ export const FRAGMENTOS_EXTENDIDOS: FragmentoExtendido[] = [
     ],
     donde: { apartado: "08-iniciacion", ancla: "T3" },
     sistemas: ["op5"],
-    relacion: "Tabla 3 (p. 10)",
+    relacion: "Tabla 3 (p. 11)",
   },
   {
     id: "E09",
@@ -228,7 +228,7 @@ export const FRAGMENTOS_EXTENDIDOS: FragmentoExtendido[] = [
     ],
     donde: { apartado: "08-iniciacion", ancla: "T3" },
     sistemas: [],
-    relacion: "Tablas 1 y 3 (pp. 4 y 10)",
+    relacion: "Tablas 1 y 3 (pp. 4 y 11)",
   },
   {
     id: "E14",
@@ -256,7 +256,7 @@ export const FRAGMENTOS_EXTENDIDOS: FragmentoExtendido[] = [
     ],
     donde: { apartado: "08-iniciacion", ancla: "T2" },
     sistemas: [],
-    relacion: "Tabla 2 (p. 10) y p. 9",
+    relacion: "Tabla 2 (p. 10) y pp. 9 y 12",
   },
   {
     id: "E18",
@@ -359,7 +359,7 @@ export const FRAGMENTOS_EXTENDIDOS: FragmentoExtendido[] = [
     ],
     donde: { apartado: "09-descarga", ancla: "T5" },
     sistemas: [],
-    relacion: "Nota de la Tabla 5 (p. 13)",
+    relacion: "Nota de la Tabla 5 (p. 14)",
   },
   {
     id: "E28",
@@ -411,7 +411,7 @@ export const FRAGMENTOS_EXTENDIDOS: FragmentoExtendido[] = [
     ],
     donde: { apartado: "08-iniciacion", ancla: "T4" },
     sistemas: ["camaps"],
-    relacion: "p. 20 y Tabla 4 (p. 11)",
+    relacion: "p. 20 y Tabla 4 (p. 12)",
   },
   {
     id: "E33",
@@ -427,7 +427,7 @@ export const FRAGMENTOS_EXTENDIDOS: FragmentoExtendido[] = [
     ],
     donde: { apartado: "08-iniciacion", ancla: "T4" },
     sistemas: ["mm780"],
-    relacion: "Tabla 4 (p. 11)",
+    relacion: "Tabla 4 (p. 12)",
   },
   {
     id: "E36",

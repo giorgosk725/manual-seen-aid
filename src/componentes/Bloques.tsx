@@ -12,7 +12,7 @@ import {
 } from "../contenido";
 import { extendidosTrasBloque } from "../extendida";
 import { VersionExtendida } from "./VersionExtendida";
-import { Texto } from "../texto";
+import { TextoConRemisiones } from "./Remisiones";
 import { PaginaBadge } from "../ui";
 import { TablaVista } from "./TablaVista";
 import { FiguraVista } from "./FiguraVista";
@@ -87,7 +87,7 @@ function BloqueVista({
         <Marco id={id} ancla={ancla} slug={slug} p={b.p} p2={b.p2}>
           <p className="bloque-papel">
             {b.lead && <strong>{b.lead} </strong>}
-            <Texto>{b.texto}</Texto>
+            <TextoConRemisiones>{b.texto}</TextoConRemisiones>
           </p>
         </Marco>
       );
@@ -103,13 +103,13 @@ function BloqueVista({
           <div className="bloque-papel">
             {b.intro && (
               <p>
-                <Texto>{b.intro}</Texto>
+                <TextoConRemisiones>{b.intro}</TextoConRemisiones>
               </p>
             )}
             <ul className="mt-2 list-disc space-y-1.5 pl-6">
               {b.items.map((it, j) => (
                 <li key={j}>
-                  <Texto>{it}</Texto>
+                  <TextoConRemisiones>{it}</TextoConRemisiones>
                 </li>
               ))}
             </ul>
@@ -156,6 +156,8 @@ export function Bloques({
   // Enlace profundo a un bloque: se desplaza hasta él y lo destella.
   useEffect(() => {
     if (!destacado) return;
+    // Solo si la dirección sigue apuntando a este bloque (nunca al salir de la pantalla).
+    if (!window.location.hash.endsWith(`/${destacado}`)) return;
     const el = document.getElementById(destacado);
     if (!el) return;
     // Si el destino está dentro de un plegable (versión extendida), se abre.

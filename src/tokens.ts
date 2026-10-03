@@ -1,15 +1,65 @@
-/* Tokens de diseño — heredados del lenguaje validado de asistente-aid (navy SEEN, hairline
-   única, acentos por sistema) y ampliados con los tonos de los tramos de la Figura 3. */
+/* Tokens de diseño — identidad del Manual de Endocrinología y Nutrición de la SEEN (0.5.0):
+   azul «MANUAL», burdeos y mostaza del rótulo, el malva del área Diabetes y los tonos de las
+   fichas de área de su portada, sobre papel #FAFAFA y texto gris #4E4E4E. Se conservan los
+   acentos por sistema y los tonos clínicos de la Figura 3. */
 
-// Color de marca SEEN (azul institucional) y su variante oscura.
-export const BRAND = "#1F4E79";
-export const BRAND_DARK = "#15324f";
+// Paleta del Manual SEEN (muestreada de manual.seen.es). Las variantes «osc» son las que
+// cumplen contraste AA para texto pequeño sobre el papel; las claras son decorativas.
+export const SEEN = {
+  azul: "#739DCB",
+  azulOsc: "#3F6E9F",
+  burdeos: "#8E254E",
+  mostaza: "#E0A83E",
+  mostazaOsc: "#8A5E10",
+  diabetes: "#B5668C",
+  diabetesOsc: "#94496E",
+  papel: "#FAFAFA",
+  texto: "#4E4E4E",
+  tinta: "#1A1A1A",
+  linea: "#E6E6E6",
+} as const;
+
+// Colores de las fichas de área de la portada del Manual (para las fichas de esta app).
+export const FICHA_AREA = {
+  endocrino: "#A3CCE3",
+  diabetes: "#B5668C",
+  nutricion: "#C9CC86",
+  lipidos: "#E3B55E",
+  obesidad: "#DD897A",
+  mineral: "#8FCBCB",
+  lavanda: "#9C9BC6",
+  azul: "#7CABE9",
+  perla: "#CFC6B8",
+  pizarra: "#5B7B95",
+  rosa: "#E3AFC4",
+} as const;
+
+// Color de cada apartado 1-12 (mosaico de la portada y cabecera del apartado), en el orden
+// de las áreas de manual.seen.es; el 13 (infografía) va en burdeos. Son fondos con icono
+// blanco decorativo: nunca color de texto.
+export const COLOR_APARTADO = [
+  FICHA_AREA.endocrino,
+  FICHA_AREA.diabetes,
+  FICHA_AREA.nutricion,
+  FICHA_AREA.lipidos,
+  FICHA_AREA.obesidad,
+  FICHA_AREA.mineral,
+  FICHA_AREA.lavanda,
+  FICHA_AREA.azul,
+  FICHA_AREA.perla,
+  FICHA_AREA.pizarra,
+  FICHA_AREA.rosa,
+  FICHA_AREA.diabetes,
+  SEEN.burdeos,
+] as const;
+export const colorApartado = (n: number) => COLOR_APARTADO[(n - 1) % COLOR_APARTADO.length];
+
+// Color de marca (texto e interacción) y su variante oscura.
+export const BRAND = SEEN.azulOsc;
+export const BRAND_DARK = "#2F5680";
 
 // Gris «hairline» único para bordes de tarjeta en reposo.
-export const HAIRLINE = "#e5ebf1";
-
-// Hero de portada: navy en degradado + auroras (receta 1 del lenguaje de diseño).
-export const HERO_GRADIENT = "linear-gradient(130deg, #0b2036, #15324f 48%, #1f4e79)";
+export const HAIRLINE = SEEN.linea;
 
 // Acento por sistema (mismo emparejamiento que asistente-aid): índice = columna de las
 // tablas por sistema (MiniMed 780G · Tandem Control-IQ · myLoop CamAPS · Omnipod 5).
@@ -20,8 +70,8 @@ export const SISTEMA_HEX: { soft: string; strong: string; ink: string }[] = [
   { soft: "#fcefe7", strong: "#E05300", ink: "#a83f00" },
 ];
 
-// Acento por defecto (sin sistema): navy de marca.
-export const BRAND_ACCENT = { soft: "#eef3f8", strong: BRAND, ink: BRAND_DARK };
+// Acento por defecto (sin sistema): azul del Manual.
+export const BRAND_ACCENT = { soft: "#eef3f9", strong: BRAND, ink: BRAND_DARK };
 
 // Tramos de cetonemia de la Figura 3: el color ES señalización clínica (verde = sin cetosis
 // significativa, amarillo = leve, naranja = significativa, rojo = posible cetoacidosis).
@@ -32,14 +82,16 @@ export const TRAMO_HEX = {
   rojo: { soft: "#fef2f2", border: "#fecaca", strong: "#dc2626", ink: "#991b1b" },
 } as const;
 
-// Categorías de la navegación (color por FUNCIÓN, como en el hub de asistente-aid).
+// Categorías de la navegación (color por FUNCIÓN, con los tonos de área del Manual SEEN):
+// leer = azul del Manual; consultar = malva del área Diabetes; confiar = pizarra;
+// aprender = mostaza; pacientes = salmón.
 export const CATEGORIA_HEX: Record<
   string,
   { soft: string; strong: string; strong2: string; ink: string }
 > = {
-  leer: { soft: "#eef3f8", strong: "#1f4e79", strong2: "#15324f", ink: "#15324f" },
-  consultar: { soft: "#eff0f7", strong: "#514dbf", strong2: "#4340a6", ink: "#343093" },
-  confiar: { soft: "#eef5f1", strong: "#0f7a58", strong2: "#0c6448", ink: "#0b5540" },
-  aprender: { soft: "#edf5fa", strong: "#2f93c4", strong2: "#1f6a8f", ink: "#1f6a8f" },
-  pacientes: { soft: "#fdf1ef", strong: "#b4473a", strong2: "#923a2f", ink: "#7f3128" },
+  leer: { soft: "#eef3f9", strong: "#3f6e9f", strong2: "#2f5680", ink: "#2f5680" },
+  consultar: { soft: "#f7eff3", strong: "#94496e", strong2: "#7e3d5e", ink: "#6e3452" },
+  confiar: { soft: "#eff3f6", strong: "#5b7b95", strong2: "#4a657b", ink: "#3e566a" },
+  aprender: { soft: "#fbf4e6", strong: "#8a5e10", strong2: "#73500e", ink: "#6b4a0d" },
+  pacientes: { soft: "#fbeeeb", strong: "#a8473a", strong2: "#8e3b30", ink: "#7f3128" },
 };

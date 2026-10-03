@@ -473,7 +473,7 @@ export const SETS_INFUSION: Record<string, InfusionSet[]> = {
   ],
   camaps: [
     {
-      name: "Mylife Ypsopump Orbitsoft",
+      name: "mylife YpsoPump Orbitsoft",
       material: "Teflón",
       angle: "90°",
       cannula: [6, 9],
@@ -482,7 +482,7 @@ export const SETS_INFUSION: Record<string, InfusionSet[]> = {
       change: 3,
     },
     {
-      name: "Mylife Ypsopump Orbitmicro",
+      name: "mylife YpsoPump Orbitmicro",
       material: "Acero",
       angle: "90°",
       cannula: [5.5, 8.5],
@@ -491,7 +491,7 @@ export const SETS_INFUSION: Record<string, InfusionSet[]> = {
       change: 2,
     },
     {
-      name: "Mylife Ypsopump Orbitmicro 2.0",
+      name: "mylife YpsoPump Orbitmicro 2.0",
       material: "Acero",
       angle: "90°",
       cannula: [5.5, 8.5],
@@ -500,7 +500,7 @@ export const SETS_INFUSION: Record<string, InfusionSet[]> = {
       change: 2,
     },
     {
-      name: "Mylife Ypsopump Inset",
+      name: "mylife YpsoPump Inset",
       material: "Teflón",
       angle: "90°",
       cannula: [6, 9],

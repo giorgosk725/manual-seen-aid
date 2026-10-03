@@ -45,7 +45,7 @@ export function ImagenFigura({ figura, abierta = false }: { figura: Figura; abie
       {ver && (
         <figure
           className="animate-in mt-3 overflow-hidden rounded-xl border bg-white"
-          style={{ borderColor: "#e5ebf1" }}
+          style={{ borderColor: "#e6e6e6" }}
         >
           <img
             src={figura.imagen.src}
@@ -85,7 +85,7 @@ export function FiguraVista({ figura }: { figura: Figura }) {
               key={i}
               className="rounded-xl border p-3"
               style={{
-                borderColor: t ? `${t.strong}40` : "#e5ebf1",
+                borderColor: t ? `${t.strong}40` : "#e6e6e6",
                 background: t ? `linear-gradient(160deg, ${t.soft}, #ffffff 70%)` : "#ffffff",
               }}
             >

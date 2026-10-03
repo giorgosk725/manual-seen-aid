@@ -42,9 +42,16 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
    questions, source files of the infographic and figures) live in `src/contenido/cambios.ts`
    (`PENDIENTES`) and are shown in «Qué ha cambiado» and «Sobre esta versión». Do not fill them
    with guesses.
-6. **Reuse, don't fork.** UI language comes from `asistente-aid` (tokens, index.css utilities,
+6. **Reuse, don't fork.** The mechanics come from `asistente-aid` (index.css utilities,
    night mode via `html.night`, print-a-region via `imprimir.js`, hash routing, folded
    inventories, quality gates). Do NOT copy its clinical data or its sources registry.
+   **Visual identity (0.5.0) follows the Manual SEEN, not asistente-aid:** SEEN palette in
+   `src/tokens.ts` (`SEEN`, `FICHA_AREA`, `COLOR_APARTADO`), Open Sans for text and light
+   uppercase titles (`.titulo-manual`), Oswald for labels (`.etiqueta-area`), both self-hosted
+   under OFL (`src/assets/fonts/`). Never use the SEEN logo or anything that presents the app
+   as an official SEEN product (the permission is still pending). Pale area colours are
+   backgrounds for white decorative icons only — never put text on them (axe checks it even
+   under `aria-hidden`). Every new inline colour needs its night rule in `index.css`.
 
 7. **The one exception, and how it is kept apart.** `src/ampliacion/` holds the AUTHOR'S OWN
    validated data from asistente-aid (system technical sheets, infusion sets, insulin
@@ -84,6 +91,16 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     uses the same resolver.
 11. **Reader preferences** (`src/prefs.ts`): night mode, font size, last reading position, read
     apartados and favourites — app routes and interface titles only, never clinical data.
+    Everything read back is validated by shape (`#/` routes only); a bad value falls back to
+    the default, never crashes a screen.
+
+12. **One route source.** `App` reads the route and passes it to `Shell`; never call `useRuta()`
+    in a second place (a stale copy re-mounted the previous screen and broke scroll and
+    «Seguir leyendo»; see docs/AUDITORIA_2026-10-03.md).
+
+13. **Author's data that differs from the chapter** is marked, not silently shown:
+    `src/ampliacion/difiere.ts` quotes the chapter literally with its page (tested). Remove an
+    entry only when the author decides.
 
 ## 2. Quality gates (all must pass before a push)
 

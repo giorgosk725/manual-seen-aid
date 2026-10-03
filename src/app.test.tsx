@@ -176,7 +176,7 @@ describe("App", () => {
     render(<App />);
     await ir("#/visual/ejercicio");
     expect(
-      screen.getByRole("heading", { level: 3, name: "Glucemia y ejercicio" }),
+      screen.getByRole("heading", { level: 2, name: "Glucemia y ejercicio" }),
     ).toBeInTheDocument();
     expect(
       screen.getByText(/se recomienda iniciar el ejercicio con una glucemia de 126–180 mg\/dl/),

@@ -15,6 +15,8 @@ import {
 import {
   COMPAT_INSULINA,
   CRITERIOS,
+  DIFIERE_CAMPO,
+  DIFIERE_PARAM,
   FICHA_FILAS,
   FOTO_SISTEMA,
   FUENTES,
@@ -25,6 +27,7 @@ import {
   WEB_SISTEMA,
   columnaDeSistema,
   sistemaPorId,
+  type Discrepancia,
   type Sistema,
 } from "../ampliacion";
 import { href } from "../rutas";
@@ -77,13 +80,13 @@ export function HubSistemas() {
                 href={href("sistemas", s.id)}
                 className="hover-lift ease-brand flex h-full gap-3 rounded-2xl border bg-white p-3 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
                 style={{
-                  borderColor: "#e5ebf1",
+                  borderColor: "#e6e6e6",
                   boxShadow: `inset 0 3px 0 0 ${h.strong}, 0 8px 24px rgba(15,23,42,0.05)`,
                 }}
               >
                 <span
                   className="h-24 w-24 shrink-0 overflow-hidden rounded-xl border bg-white"
-                  style={{ borderColor: "#e5ebf1" }}
+                  style={{ borderColor: "#e6e6e6" }}
                 >
                   <img
                     src={FOTO_SISTEMA[s.id]}
@@ -128,9 +131,20 @@ function Estado({ v }: { v: "yes" | "partial" | "no" }) {
 const NIVEL: Record<string, { etiqueta: string; color: string }> = {
   directo: { etiqueta: "Influye en automático", color: "#10b981" },
   indirecto: { etiqueta: "Influye indirectamente", color: "#f59e0b" },
-  manual: { etiqueta: "Solo en manual o calculador", color: "#cbd5e1" },
+  manual: { etiqueta: "Solo en manual o calculador", color: "#d4d4d4" },
   fijo: { etiqueta: "Fijo en automático", color: "#94a3b8" },
 };
+
+/* Marca de un dato de la ampliación que no coincide con el capítulo: manda el capítulo. */
+function Difiere({ d }: { d: Discrepancia }) {
+  return (
+    <span className="mt-1.5 block rounded-md border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs text-red-900">
+      <span className="font-bold">Difiere del capítulo; manda el capítulo.</span> {d.donde}, p.{" "}
+      {d.p}: <q className="italic">{d.capitulo}</q>
+      {d.nota && <span className="mt-0.5 block text-red-800">{d.nota}</span>}
+    </span>
+  );
+}
 
 function Ampliacion({ s }: { s: Sistema }) {
   const sets = SETS_INFUSION[s.id] || [];
@@ -151,10 +165,17 @@ function Ampliacion({ s }: { s: Sistema }) {
       <div className="space-y-3">
         {FICHA_FILAS.map((g) => (
           <Foldable key={g.g} title={g.g} open={g.g === "Indicación y objetivo"}>
-            <dl className="divide-y" style={{ borderColor: "#e5ebf1" }}>
+            <dl className="divide-y" style={{ borderColor: "#e6e6e6" }}>
               {g.rows.map((r) => {
                 let valor: React.ReactNode = null;
-                if (r.f) valor = <Lineas>{s.detail[r.f] || "—"}</Lineas>;
+                const dif = r.f ? DIFIERE_CAMPO[s.id]?.[r.f] : undefined;
+                if (r.f)
+                  valor = (
+                    <>
+                      <Lineas>{s.detail[r.f] || "—"}</Lineas>
+                      {dif && <Difiere d={dif} />}
+                    </>
+                  );
                 else if (r.crit) {
                   const c = CRITERIOS.find((x) => x.id === r.crit);
                   const cel = c?.s[s.id];
@@ -201,6 +222,7 @@ function Ampliacion({ s }: { s: Sistema }) {
                     </span>
                   </div>
                   <p className="mt-0.5 text-sm text-slate-700">{p.note}</p>
+                  {DIFIERE_PARAM[s.id]?.[p.name] && <Difiere d={DIFIERE_PARAM[s.id]![p.name]} />}
                   {p.modes && (
                     <ul className="mt-1 space-y-1 text-sm text-slate-700">
                       {p.modes.map((m) => (
@@ -224,7 +246,7 @@ function Ampliacion({ s }: { s: Sistema }) {
           ) : (
             <div
               className="tabla-scroll rounded-xl border"
-              style={{ borderColor: "#e5ebf1" }}
+              style={{ borderColor: "#e6e6e6" }}
               tabIndex={0}
               role="region"
               aria-label="Sets de infusión, desplazable"
@@ -257,43 +279,43 @@ function Ampliacion({ s }: { s: Sistema }) {
                       <th
                         scope="row"
                         className="border-t px-2 py-1.5 text-left text-xs font-bold text-slate-800"
-                        style={{ borderColor: "#e5ebf1" }}
+                        style={{ borderColor: "#e6e6e6" }}
                       >
                         {x.name}
                       </th>
                       <td
                         className="border-t px-2 py-1.5 text-slate-700"
-                        style={{ borderColor: "#e5ebf1" }}
+                        style={{ borderColor: "#e6e6e6" }}
                       >
                         {x.material}
                       </td>
                       <td
                         className="border-t px-2 py-1.5 text-slate-700"
-                        style={{ borderColor: "#e5ebf1" }}
+                        style={{ borderColor: "#e6e6e6" }}
                       >
                         {x.angle}
                       </td>
                       <td
                         className="border-t px-2 py-1.5 text-slate-700"
-                        style={{ borderColor: "#e5ebf1" }}
+                        style={{ borderColor: "#e6e6e6" }}
                       >
                         {x.cannula.join(" / ")}
                       </td>
                       <td
                         className="border-t px-2 py-1.5 text-slate-700"
-                        style={{ borderColor: "#e5ebf1" }}
+                        style={{ borderColor: "#e6e6e6" }}
                       >
                         {x.tubing.join(" / ")}
                       </td>
                       <td
                         className="border-t px-2 py-1.5 text-slate-700"
-                        style={{ borderColor: "#e5ebf1" }}
+                        style={{ borderColor: "#e6e6e6" }}
                       >
                         {x.insertion}
                       </td>
                       <td
                         className="border-t px-2 py-1.5 text-slate-700"
-                        style={{ borderColor: "#e5ebf1" }}
+                        style={{ borderColor: "#e6e6e6" }}
                       >
                         {x.change}
                       </td>
@@ -446,7 +468,7 @@ export function FichaSistema({ id }: { id?: string }) {
               subtitle={`Columna ${s.name}`}
               open={t.id === "T1"}
             >
-              <dl className="divide-y" style={{ borderColor: "#e5ebf1" }}>
+              <dl className="divide-y" style={{ borderColor: "#e6e6e6" }}>
                 {t.filas.map((f, j) => (
                   <div key={j} className="grid gap-1 py-2.5 sm:grid-cols-[13rem_1fr] sm:gap-4">
                     <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">
@@ -458,6 +480,18 @@ export function FichaSistema({ id }: { id?: string }) {
                   </div>
                 ))}
               </dl>
+              {t.notas.length > 0 && (
+                <div
+                  className="mt-2 space-y-1 border-t pt-2 text-xs text-slate-600"
+                  style={{ borderColor: "#e6e6e6" }}
+                >
+                  {t.notas.map((n, k) => (
+                    <p key={k}>
+                      <Texto>{n}</Texto>
+                    </p>
+                  ))}
+                </div>
+              )}
               <div className="mt-2 text-right">
                 <PaginaBadge p={t.paginas[0]} p2={t.paginas[1]} />
               </div>
@@ -487,7 +521,7 @@ export function FichaSistema({ id }: { id?: string }) {
 
       {extendidosDeSistema(s.id).length > 0 && (
         <section aria-label="Versión extendida del autor" className="mt-6">
-          <VersionExtendida fragmentos={extendidosDeSistema(s.id)} />
+          <VersionExtendida fragmentos={extendidosDeSistema(s.id)} nivel={3} />
         </section>
       )}
 
@@ -506,7 +540,7 @@ export function FichaSistema({ id }: { id?: string }) {
           <a
             href={href("sistemas", prev.id)}
             className="flex min-w-0 items-center gap-2 overflow-hidden rounded-xl border bg-white p-3 shadow-soft"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
           >
             <img src={FOTO_SISTEMA[prev.id]} alt="" className="h-10 w-10 rounded-lg object-cover" />
             <span className="min-w-0">
@@ -523,7 +557,7 @@ export function FichaSistema({ id }: { id?: string }) {
           <a
             href={href("sistemas", next.id)}
             className="flex min-w-0 items-center justify-end gap-2 overflow-hidden rounded-xl border bg-white p-3 text-right shadow-soft"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
           >
             <span className="min-w-0">
               <span className="block text-xs text-slate-500">Siguiente</span>

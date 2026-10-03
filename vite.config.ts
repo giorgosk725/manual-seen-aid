@@ -33,8 +33,8 @@ export default defineConfig({
         short_name: "Manual SEEN · AID",
         description:
           "Capítulo del Manual SEEN sobre automatización de la insulinoterapia en DM1, para leer y consultar. Educativo; no es producto sanitario.",
-        theme_color: "#1F4E79",
-        background_color: "#f5f7f9",
+        theme_color: "#3F6E9F",
+        background_color: "#fafafa",
         display: "standalone",
         lang: "es",
         icons: [

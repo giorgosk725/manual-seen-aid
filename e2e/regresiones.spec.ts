@@ -98,3 +98,42 @@ test.describe("Visor de imágenes", () => {
     await expect(visor).toBeHidden();
   });
 });
+
+/* Regresiones de la auditoría del 3-10-2026 (docs/AUDITORIA_2026-10-03.md). */
+test.describe("Auditoría 0.5.0", () => {
+  test("salir de un apartado abierto en un subapartado no salta ni falsea seguir leyendo", async ({
+    page,
+  }) => {
+    await page.goto("/#/capitulo/10-situaciones/ejercicio");
+    await expect(page.locator("#ejercicio")).toBeInViewport();
+    await page.evaluate(() => window.scrollBy(0, 2500));
+    await page.waitForTimeout(1000);
+    await page
+      .getByRole("navigation", { name: "Navegación principal" })
+      .getByRole("link", { name: "Sistemas", exact: true })
+      .click();
+    await expect(page).toHaveURL(/#\/sistemas$/);
+    await page.waitForTimeout(500);
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    const ultimo = await page.evaluate(() => localStorage.getItem("mseen:ultimo"));
+    expect(ultimo).not.toContain("/ejercicio");
+  });
+
+  test("Ctrl+P en un apartado no imprime botones ni la versión extendida", async ({ page }) => {
+    await page.goto("/#/capitulo/12-horizonte");
+    await page.emulateMedia({ media: "print" });
+    await expect(page.getByRole("button", { name: /Escuchar/ })).toBeHidden();
+    await expect(page.locator("details.extendida").first()).toBeHidden();
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  });
+
+  test("las preferencias con forma inesperada no dejan la app en blanco", async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem("mseen:favoritos", "{}");
+      localStorage.setItem("mseen:leidos", "null");
+    });
+    await page.goto("/#/");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByText("Algo ha fallado")).toHaveCount(0);
+  });
+});

@@ -95,7 +95,8 @@ export const CIFRAS: Record<string, Cifra[]> = {
     { valor: "48 h", etiqueta: "MiniMed 780G: insulina en modo manual antes de SmartGuard", p: 10 },
     {
       valor: "10-20 %",
-      etiqueta: "reducción orientativa de la DTD al pasar de MDI con buen control",
+      etiqueta:
+        "reducción orientativa de la DTD al pasar de MDI, con buen control previo o riesgo de hipoglucemia",
       p: 10,
     },
     { valor: "40-50 %", etiqueta: "de la DTD reducida como ritmo basal inicial (24 h)", p: 10 },

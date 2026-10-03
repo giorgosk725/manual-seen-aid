@@ -3,7 +3,7 @@
    del capítulo (p. 7, Figura 3 y Tabla 4) y huecos para rellenar a mano. Cada hoja cabe en una
    cara A4 y lleva un QR para abrirla en el móvil. La app no guarda nada de lo que se escribe:
    no hay campos, solo líneas en blanco para el papel. */
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowRight, FileText, Link2, ListChecks, Printer, ShieldCheck } from "lucide-react";
 import { CAPITULO, FIGURA3, TABLAS, apartadoPorSlug, idDeBloque } from "../contenido";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS, sistemaPorId } from "../ampliacion";
@@ -18,7 +18,7 @@ import { elegirRuta, href } from "../rutas";
 import { CabeceraEditorial, ToneCard } from "../ui";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { Texto } from "../texto";
-import { imprimirRegion } from "../imprimir";
+import { abrirPlegables, imprimirRegion } from "../imprimir";
 import { QR } from "../componentes/QR";
 import { direccion } from "../compartir";
 
@@ -44,8 +44,10 @@ function Acciones({
       }
       await navigator.clipboard.writeText(url);
       setAviso("Enlace copiado.");
-    } catch {
-      setAviso(url);
+    } catch (e) {
+      // Cerrar la hoja de compartir no es un fallo; si no se pudo copiar, se muestra el enlace.
+      if (e instanceof DOMException && e.name === "AbortError") return;
+      setAviso(`Copia este enlace: ${url}`);
     }
   };
   return (
@@ -74,6 +76,35 @@ function Acciones({
 }
 
 /* ---------- Hoja A4 (en pantalla, una hoja; en papel, una cara a dos columnas) ---------- */
+/* Imprimir desde el navegador (Ctrl+P o su menú) una pantalla con hoja: se marca igual que
+   con el botón, para que salga solo la hoja en una cara A4. */
+function useImprimirConTeclado(ref: React.RefObject<HTMLDivElement>) {
+  useEffect(() => {
+    const html = document.documentElement;
+    let marcado = false;
+    let restaurar = () => {};
+    const antes = () => {
+      if (html.classList.contains("imprimiendo")) return;
+      marcado = true;
+      html.classList.add("imprimiendo");
+      restaurar = abrirPlegables(ref.current);
+    };
+    const despues = () => {
+      if (!marcado) return;
+      marcado = false;
+      html.classList.remove("imprimiendo");
+      restaurar();
+    };
+    window.addEventListener("beforeprint", antes);
+    window.addEventListener("afterprint", despues);
+    return () => {
+      window.removeEventListener("beforeprint", antes);
+      window.removeEventListener("afterprint", despues);
+      despues();
+    };
+  }, [ref]);
+}
+
 function Hoja({
   hojaRef,
   rotulo,
@@ -93,13 +124,14 @@ function Hoja({
   pie: ReactNode;
   children: ReactNode;
 }) {
+  useImprimirConTeclado(hojaRef);
   return (
     <div
       ref={hojaRef}
       className={`hoja-a4 imprimible rounded-2xl border bg-white p-4 shadow-soft sm:p-6 ${holgada ? "holgada" : ""}`}
-      style={{ borderColor: "#e5ebf1" }}
+      style={{ borderColor: "#e6e6e6" }}
     >
-      <header className="hoja-cabecera mb-3 border-b pb-3" style={{ borderColor: "#e5ebf1" }}>
+      <header className="hoja-cabecera mb-3 border-b pb-3" style={{ borderColor: "#e6e6e6" }}>
         <div className="text-xs font-bold uppercase tracking-wider" style={{ color: hex.ink }}>
           {rotulo}
         </div>
@@ -111,7 +143,7 @@ function Hoja({
       <div className="hoja-cuerpo">{children}</div>
       <footer
         className="hoja-pie mt-4 flex items-center gap-3 border-t pt-3"
-        style={{ borderColor: "#e5ebf1" }}
+        style={{ borderColor: "#e6e6e6" }}
       >
         <QR texto={direccion(ruta)} titulo={`Código QR para abrir esta hoja: ${direccion(ruta)}`} />
         <div className="min-w-0 text-xs text-slate-600">
@@ -133,7 +165,7 @@ export function HubPacientes() {
       href: href("pacientes", "informacion"),
       icono: FileText,
       t: "Información para pacientes",
-      s: "Trece preguntas y respuestas del autor: qué es el sistema, qué material llevar, qué hacer si la glucosa baja o sube, ejercicio, viajes y pruebas.",
+      s: "Doce preguntas y respuestas del autor y un mensaje final: qué es el sistema, qué material llevar, qué hacer si la glucosa baja o sube, ejercicio, viajes y pruebas.",
     },
     {
       href: href("pacientes", "resumen"),
@@ -159,7 +191,7 @@ export function HubPacientes() {
               <a
                 href={c.href}
                 className="hover-lift ease-brand flex h-full gap-3 rounded-2xl border bg-white p-4 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{ borderColor: "#e5ebf1" }}
+                style={{ borderColor: "#e6e6e6" }}
               >
                 <span
                   className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white"
@@ -192,7 +224,7 @@ export function HubPacientes() {
               <a
                 href={href("pacientes", "plan", id)}
                 className="hover-lift ease-brand flex h-full items-center gap-2 rounded-xl border bg-white p-2.5 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{ borderColor: "#e5ebf1" }}
+                style={{ borderColor: "#e6e6e6" }}
               >
                 <img src={FOTO_SISTEMA[id]} alt="" className="h-10 w-10 rounded-lg object-cover" />
                 <span className="text-sm font-bold" style={{ color: SISTEMA_HEX[c].ink }}>
@@ -287,9 +319,13 @@ const textoDe = (slug: string, ancla: string) => {
   const b = bloque(slug, ancla);
   return b && b.t === "p" ? b.texto : "";
 };
-/* Frase del bloque que contiene `clave` (literal, sin tocar). */
+/* Frase del bloque que contiene `clave` (literal, sin tocar). Se corta en «. » + mayúscula y
+   se repone el punto; sin «lookbehind», que Safari anterior a 16.4 no admite. */
 const fraseCon = (texto: string, clave: string) =>
-  texto.split(/(?<=\.) (?=[A-ZÁÉÍÓÚ])/).find((f) => f.includes(clave)) ?? "";
+  texto
+    .split(/\. (?=[A-ZÁÉÍÓÚ])/)
+    .map((f, i, todas) => (i < todas.length - 1 ? `${f}.` : f))
+    .find((f) => f.includes(clave)) ?? "";
 
 function Hueco({ etiqueta, ancho = "flex-1" }: { etiqueta: string; ancho?: string }) {
   return (
@@ -326,7 +362,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
                 <a
                   href={href("pacientes", "plan", id)}
                   className="flex items-center gap-2 rounded-xl border bg-white p-2 text-sm font-semibold"
-                  style={{ borderColor: "#e5ebf1", color: SISTEMA_HEX[c].ink }}
+                  style={{ borderColor: "#e6e6e6", color: SISTEMA_HEX[c].ink }}
                 >
                   {TABLAS.T1.columnas[c]} <ArrowRight size={13} aria-hidden="true" />
                 </a>
@@ -364,7 +400,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
                     borderColor: SISTEMA_HEX[k].ink,
                     color: "#ffffff",
                   }
-                : { borderColor: "#cbd5e1", color: "#334155", background: "#ffffff" }
+                : { borderColor: "#d4d4d4", color: "#334155", background: "#ffffff" }
             }
           >
             {TABLAS.T1.columnas[k]}
@@ -478,12 +514,13 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
             <Texto>{FIGURA3.reglaDeOro}</Texto>
           </p>
           <p className="mt-1 text-xs text-slate-600">
-            <Texto>{FIGURA3.notaAsterisco}</Texto>
+            <Texto>{FIGURA3.notaAsterisco}</Texto> <Texto>{FIGURA3.abreviaturas}</Texto>
           </p>
         </section>
         <section className="hoja-seccion mb-1">
           <h2 className="text-base font-extrabold" style={{ color: SISTEMA_HEX[c].ink }}>
-            {nombre}: {t4.titulo.toLowerCase()} <span className="pagina-badge">Tabla 4, p. 11</span>
+            {nombre}: {t4.titulo.toLowerCase()}{" "}
+            <span className="pagina-badge">Tabla 4, pp. 11-12</span>
           </h2>
           <dl className="plan-t4 mt-1 space-y-1.5 text-sm">
             {t4.filas.map((f) => (

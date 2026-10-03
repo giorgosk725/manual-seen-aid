@@ -1,7 +1,9 @@
-/* Pantalla de lectura de un apartado: cabecera editorial con numeral, índice «En este
-   apartado», barra de progreso, columna de lectura, anterior/siguiente e impresión. */
+/* Pantalla de lectura de un apartado, con la cabecera de los capítulos del Manual SEEN
+   (área, título en mayúsculas finas, ficha de color con el número), índice «En este
+   apartado», barra de progreso, columna de lectura, paginación en círculos,
+   anterior/siguiente e impresión. */
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Image as ImageIcon, Table2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, Image as ImageIcon, Table2 } from "lucide-react";
 import {
   APARTADOS,
   DIAGRAMAS,
@@ -11,13 +13,13 @@ import {
   subapartados,
   type Apartado as TApartado,
 } from "../contenido";
-import { ICONO_DIAGRAMA } from "../nav";
+import { ICONO_APARTADO, ICONO_DIAGRAMA } from "../nav";
 import { CIFRAS } from "../contenido/cifras";
 import { href } from "../rutas";
 import { BotonImprimir } from "../ui";
 import { BotonFavorito, ComoCitar, Escuchar } from "../componentes/Lectura";
 import { guardarUltimo, marcarLeido } from "../prefs";
-import { CATEGORIA_HEX } from "../tokens";
+import { CATEGORIA_HEX, SEEN, colorApartado } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
 
 function useProgreso(ref: React.RefObject<HTMLElement | null>) {
@@ -104,6 +106,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
     return [];
   });
   const hex = CATEGORIA_HEX.leer;
+  const Icono = ICONO_APARTADO[apartado.slug] ?? BookOpen;
 
   return (
     <div ref={ref} className="imprimible">
@@ -117,28 +120,40 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         />
       </div>
       <header className="mb-6">
-        <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
-          <a href={href("capitulo")} className="font-semibold hover:underline">
+        <div className="no-imprimir mb-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+          <span className="etiqueta-area" style={{ color: SEEN.diabetesOsc }}>
+            Área Diabetes
+          </span>
+          <span aria-hidden="true" className="text-slate-400">
+            ·
+          </span>
+          <a href={href("capitulo")} className="font-semibold text-slate-600 hover:underline">
             Capítulo
           </a>
-          <span aria-hidden="true">›</span>
-          <span>
+          <span aria-hidden="true" className="text-slate-400">
+            ›
+          </span>
+          <span className="text-slate-500">
             Apartado {apartado.n} de {APARTADOS.length}
           </span>
         </div>
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-3 sm:gap-4">
           <span
             aria-hidden="true"
-            className="pointer-events-none text-5xl font-black leading-none tabular-nums sm:text-6xl"
-            style={{ color: `${hex.strong}2e` }}
+            className="cabecera-ficha flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-[3px] text-white sm:h-20 sm:w-20"
+            style={{ background: colorApartado(apartado.n) }}
           >
-            {String(apartado.n).padStart(2, "0")}
+            <Icono size={22} strokeWidth={1.5} className="sm:hidden" />
+            <Icono size={30} strokeWidth={1.5} className="hidden sm:block" />
+            <span className="mt-1 rounded-sm bg-white px-1.5 font-display text-xs font-medium leading-tight tabular-nums text-slate-900 sm:text-sm">
+              {apartado.n}
+            </span>
           </span>
           <div className="min-w-0 flex-1">
-            <h1 className="text-balance text-2xl font-black leading-tight tracking-tight text-slate-900 sm:text-3xl">
+            <h1 className="titulo-manual text-balance text-[1.45rem] leading-[1.15] sm:text-[2rem]">
               {apartado.titulo}
             </h1>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
+            <div className="mt-2.5 flex flex-wrap items-center gap-2">
               <span className="pagina-badge rounded-full bg-slate-100 px-2 py-0.5">
                 {apartado.paginas[0] === apartado.paginas[1]
                   ? `p. ${apartado.paginas[0]}`
@@ -159,11 +174,10 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
             </div>
           </div>
         </div>
-        <div
-          aria-hidden="true"
-          className="mt-3 h-px w-full"
-          style={{ background: `linear-gradient(90deg, ${hex.strong}30, transparent)` }}
-        />
+        <div aria-hidden="true" className="regla-seccion mt-4 flex h-px w-full">
+          <span className="w-16" style={{ background: colorApartado(apartado.n) }} />
+          <span className="flex-1" />
+        </div>
         {subs.length > 0 && (
           <nav
             aria-label="En este apartado"
@@ -176,7 +190,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
               <a
                 key={s.id}
                 href={href("capitulo", apartado.slug, s.id)}
-                className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                className="inline-flex min-h-9 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
               >
                 {s.texto}
               </a>
@@ -195,12 +209,12 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                   <li key={r.ancla} className="shrink-0">
                     <a
                       href={href("capitulo", apartado.slug, r.ancla)}
-                      className="hover-lift ease-brand flex items-center gap-2 rounded-xl border bg-white px-3 py-2 text-sm shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                      style={{ borderColor: "#e5ebf1" }}
+                      className="hover-lift ease-brand flex items-center gap-2 rounded-[4px] border bg-white px-3 py-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                      style={{ borderColor: "#e6e6e6" }}
                     >
                       <span
-                        className="flex h-7 w-7 items-center justify-center rounded-lg text-white"
-                        style={{ background: "linear-gradient(135deg, #514dbf, #4340a6)" }}
+                        className="flex h-7 w-7 items-center justify-center rounded-[3px] text-white"
+                        style={{ background: SEEN.azulOsc }}
                         aria-hidden="true"
                       >
                         <I size={15} />
@@ -260,7 +274,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
               <div className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500">
                 En este apartado
               </div>
-              <ol className="space-y-1 border-l-2 pl-3" style={{ borderColor: "#e5ebf1" }}>
+              <ol className="space-y-1 border-l-2 pl-3" style={{ borderColor: "#e6e6e6" }}>
                 {subs.map((s) => (
                   <li key={s.id}>
                     <a
@@ -278,16 +292,44 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         )}
       </div>
 
+      <nav aria-label="Apartados del capítulo" className="paginacion no-imprimir mt-10">
+        <ol className="flex flex-wrap justify-center gap-1.5">
+          {APARTADOS.map((a) => (
+            <li key={a.slug}>
+              {a.slug === apartado.slug ? (
+                <span
+                  aria-current="page"
+                  className="flex items-center justify-center rounded-full text-sm font-semibold tabular-nums text-white"
+                  style={{ background: SEEN.azulOsc }}
+                >
+                  {a.n}
+                </span>
+              ) : (
+                <a
+                  href={href("capitulo", a.slug)}
+                  title={`${a.n}. ${a.titulo}`}
+                  aria-label={`Apartado ${a.n}: ${a.corto}`}
+                  className="flex items-center justify-center rounded-full border-2 bg-white text-sm font-semibold tabular-nums transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  style={{ borderColor: "#a9c3df", color: SEEN.azulOsc }}
+                >
+                  {a.n}
+                </a>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+
       <nav
         aria-label="Apartado anterior y siguiente"
-        className="no-imprimir mt-10 grid gap-2 border-t pt-4 sm:grid-cols-2"
-        style={{ borderColor: "#e5ebf1" }}
+        className="no-imprimir mt-5 grid gap-2 border-t pt-4 sm:grid-cols-2"
+        style={{ borderColor: "#e6e6e6" }}
       >
         {prev ? (
           <a
             href={href("capitulo", prev.slug)}
-            className="hover-lift ease-brand flex min-w-0 items-center gap-2 overflow-hidden rounded-xl border bg-white p-3 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-            style={{ borderColor: "#e5ebf1" }}
+            className="hover-lift ease-brand flex min-w-0 items-center gap-2 overflow-hidden rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+            style={{ borderColor: "#e6e6e6" }}
           >
             <ArrowLeft size={16} className="shrink-0 text-slate-500" aria-hidden="true" />
             <span className="min-w-0">
@@ -303,8 +345,8 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         {next ? (
           <a
             href={href("capitulo", next.slug)}
-            className="hover-lift ease-brand flex min-w-0 items-center justify-end gap-2 overflow-hidden rounded-xl border bg-white p-3 text-right shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-            style={{ borderColor: "#e5ebf1" }}
+            className="hover-lift ease-brand flex min-w-0 items-center justify-end gap-2 overflow-hidden rounded-[4px] border bg-white p-3 text-right transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+            style={{ borderColor: "#e6e6e6" }}
           >
             <span className="min-w-0">
               <span className="block text-xs text-slate-500">Siguiente</span>
@@ -317,8 +359,8 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         ) : (
           <a
             href={href("bibliografia")}
-            className="hover-lift ease-brand flex min-w-0 items-center justify-end gap-2 overflow-hidden rounded-xl border bg-white p-3 text-right shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-            style={{ borderColor: "#e5ebf1" }}
+            className="hover-lift ease-brand flex min-w-0 items-center justify-end gap-2 overflow-hidden rounded-[4px] border bg-white p-3 text-right transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+            style={{ borderColor: "#e6e6e6" }}
           >
             <span className="min-w-0">
               <span className="block text-xs text-slate-500">Siguiente</span>

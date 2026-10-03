@@ -15,8 +15,7 @@ export const GLOSARIO: Sigla[] = [
   { sigla: "DEXA", desarrollo: "absorciometría de rayos X de doble energía", pagina: 22 },
   {
     sigla: "DIY",
-    desarrollo:
-      "sistemas de asa cerrada de desarrollo propio (do it yourself) basados en código abierto",
+    desarrollo: "sistemas de asa cerrada de desarrollo propio basados en código abierto",
     pagina: 22,
   },
   { sigla: "DM1", desarrollo: "diabetes mellitus tipo 1", pagina: 1 },

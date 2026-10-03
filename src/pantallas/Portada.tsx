@@ -1,14 +1,17 @@
-/* Portada: «parece el manual, no una app genérica». Hero con el título del capítulo, el
-   autor y la SEEN; debajo, el mapa del capítulo (los cuatro bloques de la infografía como
-   entradas), los accesos de consulta en dos toques y la fecha de revisión. */
+/* Portada con la identidad del Manual SEEN: cabecera blanca con el título en mayúsculas
+   finas, la franja de colores y el autor; «¿Qué necesitas?» con fichas de color; el índice
+   del capítulo en mosaico (como las áreas de manual.seen.es); los cuatro bloques de la
+   infografía, los diagramas, los sistemas y la fecha de revisión. */
 import { useState } from "react";
 import {
   ArrowRight,
   BookOpen,
+  CircleCheck,
   Clock3,
   Droplets,
   Footprints,
   HeartHandshake,
+  LayoutGrid,
   ListChecks,
   ListOrdered,
   Route,
@@ -19,13 +22,14 @@ import {
 } from "lucide-react";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
 import { APARTADOS, CAPITULO, DIAGRAMAS, INFO, algoritmoDelCapitulo } from "../contenido";
-import { ICONO_DIAGRAMA } from "../nav";
+import { ICONO_APARTADO, ICONO_DIAGRAMA } from "../nav";
 import { CAMBIOS, PENDIENTES, VERSION_APP } from "../contenido/cambios";
 import { href, navegar } from "../rutas";
-import { buscar, marcar } from "../buscador";
-import { useFavoritos, useUltimo } from "../prefs";
-import { Revelar } from "../ui";
-import { CATEGORIA_HEX, HERO_GRADIENT, SISTEMA_HEX } from "../tokens";
+import { buscar, marcar, tramoDeConsulta } from "../buscador";
+import { AtajoTramo } from "../componentes/AtajoTramo";
+import { useFavoritos, useLeidos, useUltimo } from "../prefs";
+import { CabeceraEditorial, Revelar } from "../ui";
+import { CATEGORIA_HEX, COLOR_APARTADO, FICHA_AREA, SEEN, SISTEMA_HEX } from "../tokens";
 import { Texto } from "../texto";
 
 /* Cada bloque de la infografía lleva al apartado que lo desarrolla. */
@@ -50,48 +54,56 @@ const ATAJOS = [
   {
     href: href("consultar", "situacion", "ejercicio-aerobico"),
     icono: Footprints,
+    color: FICHA_AREA.diabetes,
     t: "Ejercicio y sistema",
     s: "Qué hace cada sistema (Tabla 4)",
   },
   {
     href: href("consultar", "figura-3"),
     icono: Droplets,
+    color: FICHA_AREA.azul,
     t: "Cetonemia (β-OHB)",
     s: "Qué hacer según el tramo",
   },
   {
     href: href("visual", "objetivos-mcg"),
     icono: Target,
+    color: FICHA_AREA.lipidos,
     t: "Objetivos de MCG",
     s: "Adultos, gestación, hospital, fragilidad",
   },
   {
     href: href("consultar", "tablas", "T1"),
     icono: Table2,
+    color: FICHA_AREA.pizarra,
     t: "Comparar sistemas",
     s: "Tabla 1, filtrable",
   },
   {
     href: href("consultar", "situacion"),
     icono: Route,
+    color: FICHA_AREA.obesidad,
     t: "Otra situación",
     s: "Enfermedad, noche, comidas, exploraciones",
   },
   {
     href: href("consultar", "descarga", "1"),
     icono: ListChecks,
+    color: FICHA_AREA.mineral,
     t: "Revisar la descarga",
     s: "Tabla 5 en ocho pasos",
   },
   {
     href: href("consultar", "interrupcion"),
     icono: Clock3,
+    color: FICHA_AREA.lavanda,
     t: "Interrupción del sistema",
     s: "Cuánto dura y qué hacer",
   },
   {
     href: href("visual", "transicion"),
     icono: ListOrdered,
+    color: FICHA_AREA.nutricion,
     t: "Empezar desde MDI",
     s: "Parámetros iniciales (Tabla 2)",
   },
@@ -99,14 +111,14 @@ const ATAJOS = [
 
 function QueNecesitas() {
   const [q, setQ] = useState("");
-  const res = q.trim().length >= 2 ? buscar(q, 5) : [];
+  const res = q.trim().length >= 2 ? buscar(q, 5, 2) : [];
   const ultimo = useUltimo();
   const favoritos = useFavoritos();
   return (
     <section aria-labelledby="que-necesitas" className="space-y-3">
       <h2
         id="que-necesitas"
-        className="text-lg font-extrabold tracking-tight"
+        className="font-display text-xl font-medium uppercase tracking-[0.04em]"
         style={{ color: CATEGORIA_HEX.consultar.ink }}
       >
         ¿Qué necesitas?
@@ -121,7 +133,7 @@ function QueNecesitas() {
         <label htmlFor="portada-q" className="sr-only">
           ¿Qué necesitas? Escribe lo que buscas
         </label>
-        <div className="flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2.5 shadow-soft">
+        <div className="flex items-center gap-2 rounded-md border-2 border-slate-300 bg-white px-3 py-2.5 transition focus-within:border-slate-500">
           <Search size={17} className="shrink-0 text-slate-500" aria-hidden="true" />
           <input
             id="portada-q"
@@ -133,10 +145,20 @@ function QueNecesitas() {
           />
         </div>
       </form>
+      {tramoDeConsulta(q) && <AtajoTramo consulta={q} />}
+      {q.trim().length >= 2 && res.length === 0 && (
+        <p
+          role="status"
+          className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
+        >
+          Nada con esas palabras. Prueba con otra (p. ej. «sueño», «cetonemia», «TBR») o usa los
+          atajos de abajo.
+        </p>
+      )}
       {res.length > 0 && (
         <ul
           className="divide-y rounded-xl border bg-white shadow-soft"
-          style={{ borderColor: "#e5ebf1" }}
+          style={{ borderColor: "#e6e6e6" }}
           aria-label="Resultados"
         >
           {res.map((r) => (
@@ -182,20 +204,20 @@ function QueNecesitas() {
             <li key={c.t}>
               <a
                 href={c.href}
-                className="hover-lift ease-brand flex h-full min-h-[3.5rem] items-center gap-2.5 rounded-xl border bg-white p-3 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{ borderColor: "#e5ebf1" }}
+                className="hover-lift ease-brand flex h-full min-h-[3.5rem] items-center gap-3 rounded-md border bg-white p-2 pr-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                style={{ borderColor: "#e6e6e6" }}
               >
                 <span
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white"
-                  style={{
-                    background: `linear-gradient(135deg, ${CATEGORIA_HEX.consultar.strong}, ${CATEGORIA_HEX.consultar.strong2})`,
-                  }}
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[3px] text-white sm:h-11 sm:w-11"
+                  style={{ background: c.color }}
                   aria-hidden="true"
                 >
-                  <I size={17} />
+                  <I size={19} strokeWidth={1.75} />
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-sm font-bold leading-snug text-slate-900">{c.t}</span>
+                  <span className="block text-[13px] font-bold leading-snug text-slate-900 sm:text-sm">
+                    {c.t}
+                  </span>
                   <span className="block text-xs leading-snug text-slate-500">{c.s}</span>
                 </span>
               </a>
@@ -209,7 +231,7 @@ function QueNecesitas() {
             <a
               href={ultimo.ruta}
               className="flex items-center gap-3 rounded-xl border bg-white p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-              style={{ borderColor: "#e5ebf1" }}
+              style={{ borderColor: "#e6e6e6" }}
             >
               <BookOpen
                 size={18}
@@ -231,7 +253,7 @@ function QueNecesitas() {
           {favoritos.length > 0 && (
             <div
               className="rounded-xl border bg-white p-3 shadow-soft"
-              style={{ borderColor: "#e5ebf1" }}
+              style={{ borderColor: "#e6e6e6" }}
             >
               <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
                 <Star size={13} className="fill-amber-400 text-amber-500" aria-hidden="true" /> Tus
@@ -243,7 +265,7 @@ function QueNecesitas() {
                     <a
                       href={f.ruta}
                       className="inline-block rounded-full border px-2.5 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
-                      style={{ borderColor: "#cbd5e1" }}
+                      style={{ borderColor: "#d4d4d4" }}
                     >
                       {f.titulo}
                     </a>
@@ -257,7 +279,7 @@ function QueNecesitas() {
       <a
         href={href("pacientes")}
         className="flex items-center gap-2 rounded-xl border bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-        style={{ borderColor: "#e5ebf1" }}
+        style={{ borderColor: "#e6e6e6" }}
       >
         <HeartHandshake
           size={16}
@@ -274,145 +296,239 @@ function QueNecesitas() {
   );
 }
 
+/* Colores del mosaico (los de los apartados 1-12). */
+const MOSAICO = COLOR_APARTADO.slice(0, 12);
+
+/* Franja de cuatro colores (azul, burdeos, mostaza y rosa del Manual). */
+function Franja({ className = "" }: { className?: string }) {
+  return (
+    <div aria-hidden="true" className={`flex h-1.5 ${className}`}>
+      {[SEEN.azul, SEEN.burdeos, SEEN.mostaza, SEEN.diabetes].map((c) => (
+        <span key={c} className="flex-1" style={{ background: c }} />
+      ))}
+    </div>
+  );
+}
+
+/* Índice del capítulo en mosaico: doce apartados en fichas de color y la infografía, que
+   resume el capítulo en una página, a todo el ancho. */
+function IndiceMosaico() {
+  const leidos = useLeidos();
+  const doce = APARTADOS.filter((a) => a.n <= 12);
+  const info = APARTADOS.find((a) => a.n === 13)!;
+  return (
+    <section aria-labelledby="indice-mosaico">
+      <CabeceraEditorial numero="1" titulo="El capítulo" hex={CATEGORIA_HEX.leer}>
+        <p className="text-xs text-slate-500">
+          Trece apartados del texto final, cada uno con su página.{" "}
+          {leidos.length > 0 && (
+            <span>
+              Has leído {leidos.length} de {APARTADOS.length}.
+            </span>
+          )}
+        </p>
+      </CabeceraEditorial>
+      <h2 id="indice-mosaico" className="sr-only">
+        Índice del capítulo
+      </h2>
+      <ol className="grid grid-cols-3 gap-x-2 gap-y-3 sm:grid-cols-4 lg:grid-cols-6">
+        {doce.map((a, i) => {
+          const I = ICONO_APARTADO[a.slug] ?? BookOpen;
+          const leido = leidos.includes(a.slug);
+          return (
+            <li key={a.slug}>
+              <a
+                href={href("capitulo", a.slug)}
+                className="ficha-area group block rounded-[3px] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 focus-visible:ring-offset-2"
+              >
+                <span
+                  className="relative flex aspect-[3/2] w-full items-center justify-center rounded-[3px] text-white transition group-hover:brightness-95 lg:aspect-square"
+                  style={{ background: MOSAICO[i] }}
+                  aria-hidden="true"
+                >
+                  <I size={34} strokeWidth={1.5} className="transition group-hover:scale-110" />
+                  {leido && (
+                    <span className="absolute right-1.5 top-1.5 rounded-full bg-white p-0.5 text-emerald-700">
+                      <CircleCheck size={13} />
+                    </span>
+                  )}
+                </span>
+                <span className="mt-1.5 flex gap-1 text-[11px] font-semibold uppercase leading-tight text-slate-800 sm:text-xs sm:tracking-wide">
+                  <span className="tabular-nums text-slate-500">{a.n}</span>
+                  <span className="min-w-0 hyphens-auto [overflow-wrap:anywhere]">
+                    {a.corto}
+                    {leido && <span className="sr-only"> (leído)</span>}
+                  </span>
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ol>
+      <a
+        href={href("capitulo", info.slug)}
+        className="ficha-area group mt-3 flex items-center gap-3 overflow-hidden rounded-[3px] border bg-white pr-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+        style={{ borderColor: "#e6e6e6" }}
+      >
+        <span
+          className="flex h-14 w-14 shrink-0 items-center justify-center text-white"
+          style={{ background: SEEN.burdeos }}
+          aria-hidden="true"
+        >
+          <LayoutGrid size={26} strokeWidth={1.5} />
+        </span>
+        <span className="min-w-0 flex-1 py-2">
+          <span className="block text-xs font-semibold uppercase tracking-wide text-slate-800">
+            <span className="tabular-nums text-slate-500">{info.n}</span> {info.corto}
+          </span>
+          <span className="block text-xs text-slate-500">
+            El capítulo en una página (p. {INFO.pagina})
+          </span>
+        </span>
+        <ArrowRight size={16} className="shrink-0 text-slate-500" aria-hidden="true" />
+      </a>
+    </section>
+  );
+}
+
 export function Portada() {
   const ultimoCap = CAMBIOS.find((c) => c.ambito === "capitulo")!;
+  const nTablas = APARTADOS.flatMap((a) => a.bloques).filter((b) => b.t === "tabla").length;
   return (
-    <div className="space-y-8">
+    <div className="space-y-9">
       <section
-        className="relative overflow-hidden rounded-3xl px-5 py-5 text-white shadow-soft sm:px-8 sm:py-10 lg:px-12 lg:py-14"
-        style={{ background: HERO_GRADIENT }}
+        className="cabecera-manual relative overflow-hidden rounded-[4px] border bg-white"
+        style={{ borderColor: "#e6e6e6" }}
         aria-labelledby="titulo-capitulo"
       >
-        <div
-          aria-hidden="true"
-          className="aurora pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full"
-          style={{
-            background: "radial-gradient(closest-side, rgba(56,189,248,0.35), transparent)",
-          }}
-        />
-        <div
-          aria-hidden="true"
-          className="aurora pointer-events-none absolute -bottom-32 left-1/3 h-96 w-96 rounded-full"
-          style={{
-            background: "radial-gradient(closest-side, rgba(139,92,246,0.28), transparent)",
-            animationDelay: "-6s",
-          }}
-        />
-        <div aria-hidden="true" className="trama pointer-events-none absolute inset-0" />
-        <div className="relative max-w-3xl">
-          <div className="mb-2 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-sky-200/90 sm:mb-3 sm:text-xs">
-            <span>{CAPITULO.obra}</span>
-            <span aria-hidden="true">·</span>
-            <span>{CAPITULO.sociedad.replace(/ \(SEEN\)$/, "")}</span>
-          </div>
-          <h1
-            id="titulo-capitulo"
-            className="text-balance text-2xl font-black leading-tight tracking-tight sm:text-4xl lg:text-5xl"
-            style={{
-              backgroundImage: "linear-gradient(90deg, #ffffff, #7dd3fc)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-            }}
-          >
-            {CAPITULO.titulo}
-          </h1>
-          <p className="mt-3 text-sm text-white/90 sm:mt-4 sm:text-lg">
-            <span className="font-bold text-white">{CAPITULO.autor}.</span>{" "}
-            <span className="hidden sm:inline">{CAPITULO.filiacion}</span>
-          </p>
-          <div className="mt-4 flex flex-wrap gap-2 sm:mt-6">
-            <a
-              href={href("capitulo", APARTADOS[0].slug)}
-              className="hover-lift ease-brand inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-900 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800"
+        <Franja />
+        <div className="grid items-center gap-8 px-4 py-4 sm:px-8 sm:py-9 lg:grid-cols-[minmax(0,1fr)_auto] lg:px-10 lg:py-11">
+          <div className="min-w-0">
+            <div
+              className="etiqueta-area flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] sm:text-xs"
+              style={{ color: SEEN.diabetesOsc }}
             >
-              <BookOpen size={16} aria-hidden="true" /> Leer el capítulo
-            </a>
-            <a
-              href={href("capitulo")}
-              className="inline-flex items-center gap-2 rounded-xl border border-white/40 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              <span
+                aria-hidden="true"
+                className="inline-block h-2.5 w-2.5"
+                style={{ background: SEEN.diabetes }}
+              />
+              <span>Manual SEEN</span>
+              <span aria-hidden="true">·</span>
+              <span>Área Diabetes</span>
+            </div>
+            <h1
+              id="titulo-capitulo"
+              className="titulo-manual mt-2 text-balance text-[1.22rem] leading-[1.18] sm:mt-3 sm:text-[2.1rem] sm:leading-[1.15] lg:text-[2.6rem]"
             >
-              Índice <ArrowRight size={15} aria-hidden="true" />
-            </a>
+              {CAPITULO.titulo}
+            </h1>
+            <p className="mt-2 text-sm text-slate-700 sm:mt-4 sm:text-base">
+              <span className="font-bold text-slate-900">{CAPITULO.autor}</span>
+              <span className="hidden sm:inline">. {CAPITULO.filiacion}</span>
+            </p>
+            <p className="mt-1 text-xs text-slate-500">
+              {CAPITULO.sociedad.replace(/ \(SEEN\)$/, "")}
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2 sm:mt-5">
+              <a
+                href={href("capitulo", APARTADOS[0].slug)}
+                className="boton-seen inline-flex items-center gap-2 rounded-[3px] px-3.5 py-2 text-sm sm:px-4 sm:py-2.5 font-semibold uppercase tracking-wide text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2"
+                style={{ background: SEEN.burdeos }}
+              >
+                <BookOpen size={16} aria-hidden="true" /> Leer el capítulo
+              </a>
+              <a
+                href={href("capitulo")}
+                className="inline-flex items-center gap-2 rounded-[3px] border-2 border-slate-300 px-3.5 py-1.5 text-sm sm:px-4 sm:py-2 font-semibold uppercase tracking-wide text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+              >
+                Índice <ArrowRight size={15} aria-hidden="true" />
+              </a>
+            </div>
+            <ul className="mt-5 hidden flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600 sm:flex">
+              <li>
+                <span className="font-semibold tabular-nums text-slate-900">
+                  {CAPITULO.paginas}
+                </span>{" "}
+                páginas
+              </li>
+              <li>
+                <span className="font-semibold tabular-nums text-slate-900">{nTablas}</span> tablas
+              </li>
+              <li>
+                <span className="font-semibold tabular-nums text-slate-900">3</span> figuras
+              </li>
+              <li>
+                Texto final del{" "}
+                <span className="font-semibold text-slate-900">{fecha(ultimoCap.fecha)}</span>
+              </li>
+            </ul>
           </div>
+          <MosaicoDecorativo />
         </div>
       </section>
 
       <QueNecesitas />
 
+      <IndiceMosaico />
+
       <section aria-labelledby="mapa">
-        <div className="mb-3 flex items-end gap-3">
-          <span
-            aria-hidden="true"
-            className="pointer-events-none text-3xl font-black leading-none"
-            style={{ color: `${CATEGORIA_HEX.leer.strong}2e` }}
-          >
-            01
-          </span>
-          <div className="flex-1">
-            <h2
-              id="mapa"
-              className="text-base font-extrabold tracking-tight"
-              style={{ color: CATEGORIA_HEX.leer.ink }}
-            >
-              El capítulo en cuatro bloques
-            </h2>
-            <p className="text-xs text-slate-500">
-              La infografía del capítulo (p. 24) como mapa de entrada: cada bloque lleva a su
-              apartado.
-            </p>
-            <div
-              aria-hidden="true"
-              className="mt-1.5 h-px w-full"
-              style={{
-                background: `linear-gradient(90deg, ${CATEGORIA_HEX.leer.strong}30, transparent)`,
-              }}
-            />
-          </div>
-        </div>
+        <CabeceraEditorial numero="2" titulo="En cuatro bloques" hex={CATEGORIA_HEX.leer}>
+          <p className="text-xs text-slate-500">
+            La infografía del capítulo (p. 24) como mapa de entrada: cada bloque lleva a su
+            apartado.
+          </p>
+        </CabeceraEditorial>
+        <h2 id="mapa" className="sr-only">
+          El capítulo en cuatro bloques
+        </h2>
         <ol className="grid gap-3 sm:grid-cols-2">
           {ENTRADAS.map((e, i) => {
             const caja = INFO.cajas[e.caja];
             const ap = APARTADOS.find((a) => a.slug === e.slug)!;
+            const color = [SEEN.azulOsc, SEEN.burdeos, SEEN.mostazaOsc, SEEN.diabetesOsc][i];
             return (
               <Revelar as="li" key={e.slug}>
                 <a
                   href={href("capitulo", e.slug)}
-                  className="hover-lift ease-brand relative block h-full overflow-hidden rounded-2xl border bg-white p-4 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                  style={{
-                    borderColor: "#e5ebf1",
-                    background: "linear-gradient(160deg, #eef3f8, #ffffff 60%)",
-                  }}
+                  className="hover-lift ease-brand relative flex h-full overflow-hidden rounded-[4px] border bg-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  style={{ borderColor: "#e6e6e6" }}
                 >
                   <span
                     aria-hidden="true"
-                    className="pointer-events-none absolute -right-2 -top-3 text-6xl font-black"
-                    style={{ color: "#1f4e790f" }}
-                  >
-                    {i + 1}
+                    className="w-1.5 shrink-0"
+                    style={{ background: color }}
+                  />
+                  <span className="block min-w-0 flex-1 p-4">
+                    <span className="flex items-baseline gap-2">
+                      <span
+                        aria-hidden="true"
+                        className="font-display text-2xl font-light leading-none"
+                        style={{ color }}
+                      >
+                        {i + 1}
+                      </span>
+                      <span className="text-sm font-bold uppercase tracking-wide text-slate-900">
+                        {caja.titulo?.replace(/^\d+\.\s*/, "")}
+                      </span>
+                    </span>
+                    <span className="mt-2 flex flex-wrap gap-1.5">
+                      {caja.items
+                        .slice(0, 6)
+                        .filter((it) => !it.startsWith("Gráfico"))
+                        .map((it, j) => (
+                          <span
+                            key={j}
+                            className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs text-slate-700"
+                          >
+                            <Texto>{it.replace(/\*\*/g, "").split(":")[0].split(".")[0]}</Texto>
+                          </span>
+                        ))}
+                    </span>
+                    <span className="mt-3 flex items-center gap-1 text-xs font-semibold text-slate-700">
+                      Apartado {ap.n} · {ap.titulo} <ArrowRight size={13} aria-hidden="true" />
+                    </span>
                   </span>
-                  <div className="text-sm font-extrabold" style={{ color: CATEGORIA_HEX.leer.ink }}>
-                    {caja.titulo?.replace(/^\d+\.\s*/, "")}
-                  </div>
-                  <ul className="mt-2 flex flex-wrap gap-1.5">
-                    {caja.items
-                      .slice(0, 6)
-                      .filter((it) => !it.startsWith("Gráfico"))
-                      .map((it, j) => (
-                        <li
-                          key={j}
-                          className="rounded-full bg-white px-2 py-0.5 text-xs text-slate-700 shadow-sm"
-                        >
-                          <Texto>{it.replace(/\*\*/g, "").split(":")[0].split(".")[0]}</Texto>
-                        </li>
-                      ))}
-                  </ul>
-                  <div
-                    className="mt-3 flex items-center gap-1 text-xs font-semibold"
-                    style={{ color: CATEGORIA_HEX.leer.strong }}
-                  >
-                    Apartado {ap.n} · {ap.titulo} <ArrowRight size={13} aria-hidden="true" />
-                  </div>
                 </a>
               </Revelar>
             );
@@ -421,55 +537,30 @@ export function Portada() {
       </section>
 
       <section aria-labelledby="vistazo">
-        <div className="mb-3 flex items-end gap-3">
-          <span
-            aria-hidden="true"
-            className="pointer-events-none text-3xl font-black leading-none"
-            style={{ color: `${CATEGORIA_HEX.consultar.strong}2e` }}
-          >
-            02
-          </span>
-          <div className="flex-1">
-            <h2
-              id="vistazo"
-              className="text-base font-extrabold tracking-tight"
-              style={{ color: CATEGORIA_HEX.consultar.ink }}
-            >
-              De un vistazo
-            </h2>
-            <p className="text-xs text-slate-500">
-              Las cifras y los pasos más consultados del capítulo, en diagramas con su página.
-            </p>
-            <div
-              aria-hidden="true"
-              className="mt-1.5 h-px w-full"
-              style={{
-                background: `linear-gradient(90deg, ${CATEGORIA_HEX.consultar.strong}30, transparent)`,
-              }}
-            />
-          </div>
-        </div>
+        <CabeceraEditorial numero="3" titulo="De un vistazo" hex={CATEGORIA_HEX.consultar}>
+          <p className="text-xs text-slate-500">
+            Las cifras y los pasos más consultados del capítulo, en diagramas con su página.
+          </p>
+        </CabeceraEditorial>
+        <h2 id="vistazo" className="sr-only">
+          De un vistazo
+        </h2>
         <ul className="grid grid-cols-2 gap-2 lg:grid-cols-4">
-          {DIAGRAMAS.slice(0, 7).map((d) => {
+          {DIAGRAMAS.slice(0, 7).map((d, i) => {
             const I = ICONO_DIAGRAMA[d.id];
             return (
               <li key={d.id}>
                 <a
                   href={href("visual", d.id)}
-                  className="hover-lift ease-brand flex h-full flex-col gap-2 rounded-2xl border bg-white p-3 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                  style={{
-                    borderColor: "#e5ebf1",
-                    background: `linear-gradient(160deg, ${CATEGORIA_HEX.consultar.soft}, #ffffff 60%)`,
-                  }}
+                  className="hover-lift ease-brand flex h-full flex-col gap-2 rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  style={{ borderColor: "#e6e6e6" }}
                 >
                   <span
-                    className="flex h-9 w-9 items-center justify-center rounded-lg text-white"
-                    style={{
-                      background: `linear-gradient(135deg, ${CATEGORIA_HEX.consultar.strong}, ${CATEGORIA_HEX.consultar.strong2})`,
-                    }}
+                    className="flex h-10 w-10 items-center justify-center rounded-[3px] text-white"
+                    style={{ background: MOSAICO[(i + 1) % MOSAICO.length] }}
                     aria-hidden="true"
                   >
-                    <I size={17} />
+                    <I size={19} strokeWidth={1.75} />
                   </span>
                   <span className="text-sm font-bold leading-snug text-slate-900">{d.titulo}</span>
                   <span className="pagina-badge mt-auto">
@@ -482,8 +573,8 @@ export function Portada() {
           <li>
             <a
               href={href("visual")}
-              className="flex h-full flex-col justify-center gap-1 rounded-2xl border border-dashed p-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
-              style={{ borderColor: "#cbd5e1" }}
+              className="flex h-full flex-col justify-center gap-1 rounded-[4px] border border-dashed p-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
+              style={{ borderColor: "#d4d4d4" }}
             >
               Todas las figuras y diagramas
               <span className="inline-flex items-center gap-1 text-xs text-slate-500">
@@ -495,34 +586,14 @@ export function Portada() {
       </section>
 
       <section aria-labelledby="sistemas-portada">
-        <div className="mb-3 flex items-end gap-3">
-          <span
-            aria-hidden="true"
-            className="pointer-events-none text-3xl font-black leading-none"
-            style={{ color: `${CATEGORIA_HEX.consultar.strong}2e` }}
-          >
-            03
-          </span>
-          <div className="flex-1">
-            <h2
-              id="sistemas-portada"
-              className="text-base font-extrabold tracking-tight"
-              style={{ color: CATEGORIA_HEX.consultar.ink }}
-            >
-              Los cuatro sistemas
-            </h2>
-            <p className="text-xs text-slate-500">
-              Lo que dice el capítulo de cada uno y, aparte, la ficha ampliada del autor.
-            </p>
-            <div
-              aria-hidden="true"
-              className="mt-1.5 h-px w-full"
-              style={{
-                background: `linear-gradient(90deg, ${CATEGORIA_HEX.consultar.strong}30, transparent)`,
-              }}
-            />
-          </div>
-        </div>
+        <CabeceraEditorial numero="4" titulo="Los cuatro sistemas" hex={CATEGORIA_HEX.consultar}>
+          <p className="text-xs text-slate-500">
+            Lo que dice el capítulo de cada uno y, aparte, la ficha ampliada del autor.
+          </p>
+        </CabeceraEditorial>
+        <h2 id="sistemas-portada" className="sr-only">
+          Los cuatro sistemas
+        </h2>
         <ul className="grid grid-cols-2 gap-2 lg:grid-cols-4">
           {ORDEN_SISTEMAS.map((id, c) => {
             const s = SISTEMAS_AMPLIACION[c];
@@ -531,8 +602,8 @@ export function Portada() {
               <li key={id}>
                 <a
                   href={href("sistemas", id)}
-                  className="hover-lift ease-brand flex h-full flex-col overflow-hidden rounded-2xl border bg-white shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                  style={{ borderColor: "#e5ebf1" }}
+                  className="hover-lift ease-brand flex h-full flex-col overflow-hidden rounded-[4px] border bg-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  style={{ borderColor: "#e6e6e6" }}
                 >
                   <span className="block aspect-[4/3] w-full overflow-hidden bg-white">
                     <img
@@ -542,7 +613,12 @@ export function Portada() {
                       loading="lazy"
                     />
                   </span>
-                  <span className="block border-t px-3 py-2" style={{ borderColor: "#e5ebf1" }}>
+                  <span
+                    aria-hidden="true"
+                    className="block h-1 w-full"
+                    style={{ background: h.strong }}
+                  />
+                  <span className="block px-3 py-2">
                     <span className="block text-sm font-extrabold" style={{ color: h.ink }}>
                       {s.name}
                     </span>
@@ -558,19 +634,16 @@ export function Portada() {
       </section>
 
       <section aria-labelledby="revision" className="grid gap-3 md:grid-cols-2">
-        <div
-          className="rounded-2xl border bg-white p-4 shadow-soft"
-          style={{ borderColor: "#e5ebf1" }}
-        >
+        <div className="rounded-[4px] border bg-white p-4" style={{ borderColor: "#e6e6e6" }}>
           <h2
             id="revision"
-            className="text-sm font-extrabold"
+            className="font-display text-base font-medium uppercase tracking-[0.04em]"
             style={{ color: CATEGORIA_HEX.confiar.ink }}
           >
             Última revisión
           </h2>
           <dl className="mt-2 grid grid-cols-2 gap-2">
-            <div className="rounded-xl p-3" style={{ background: CATEGORIA_HEX.confiar.soft }}>
+            <div className="rounded-[3px] p-3" style={{ background: CATEGORIA_HEX.confiar.soft }}>
               <dt className="text-xs text-slate-600">Capítulo</dt>
               <dd
                 className="text-sm font-extrabold tabular-nums"
@@ -579,7 +652,7 @@ export function Portada() {
                 {fecha(ultimoCap.fecha)}
               </dd>
             </div>
-            <div className="rounded-xl p-3" style={{ background: CATEGORIA_HEX.confiar.soft }}>
+            <div className="rounded-[3px] p-3" style={{ background: CATEGORIA_HEX.confiar.soft }}>
               <dt className="text-xs text-slate-600">App</dt>
               <dd
                 className="text-sm font-extrabold tabular-nums"
@@ -596,8 +669,10 @@ export function Portada() {
             Qué ha cambiado <ArrowRight size={14} aria-hidden="true" />
           </a>
         </div>
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
-          <h2 className="text-sm font-extrabold text-amber-900">Pendiente (visible a propósito)</h2>
+        <div className="rounded-[4px] border border-amber-200 bg-amber-50 p-4">
+          <h2 className="font-display text-base font-medium uppercase tracking-[0.04em] text-amber-900">
+            Pendiente (visible a propósito)
+          </h2>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-amber-900">
             {PENDIENTES.slice(0, 3).map((p, i) => (
               <li key={i}>{p}</li>
@@ -605,6 +680,35 @@ export function Portada() {
           </ul>
         </div>
       </section>
+    </div>
+  );
+}
+
+/* Composición decorativa de la cabecera (solo escritorio): fichas de color con iconos del
+   capítulo, al modo del mosaico de áreas del Manual. */
+function MosaicoDecorativo() {
+  const piezas = [
+    { c: FICHA_AREA.endocrino, I: Droplets },
+    { c: FICHA_AREA.diabetes, I: Target },
+    { c: FICHA_AREA.lipidos, I: null },
+    { c: FICHA_AREA.mineral, I: null },
+    { c: SEEN.burdeos, I: BookOpen },
+    { c: FICHA_AREA.azul, I: Clock3 },
+    { c: FICHA_AREA.lavanda, I: Footprints },
+    { c: FICHA_AREA.obesidad, I: null },
+    { c: FICHA_AREA.nutricion, I: ListChecks },
+  ];
+  return (
+    <div aria-hidden="true" className="hidden grid-cols-3 gap-1.5 lg:grid">
+      {piezas.map((p, i) => (
+        <span
+          key={i}
+          className="mosaico-pieza flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[3px] text-white xl:h-20 xl:w-20"
+          style={{ background: p.c, animationDelay: `${i * 60}ms` }}
+        >
+          {p.I && <p.I size={28} strokeWidth={1.5} />}
+        </span>
+      ))}
     </div>
   );
 }

@@ -2,7 +2,7 @@
    Nada de esto guarda datos clínicos: favoritos y lectura son rutas de la app (src/prefs.ts) y
    la voz es la del propio dispositivo (Web Speech), que funciona sin conexión si hay una voz
    en español instalada. */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowUp,
   Check,
@@ -23,7 +23,7 @@ import { citaDeApartado } from "../compartir";
 import { CASO_EDUCATIVO, EDUCATIVA } from "../enlaces";
 
 const BOTON =
-  "inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600";
+  "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600";
 
 /* ---------- Favorito ---------- */
 export function BotonFavorito({ ruta, titulo }: { ruta: string; titulo: string }) {
@@ -42,17 +42,26 @@ export function BotonFavorito({ ruta, titulo }: { ruta: string; titulo: string }
         aria-hidden="true"
         className={on ? "fill-amber-400 text-amber-500" : undefined}
       />
-      {on ? "En favoritos" : "Favorito"}
+      Favorito
     </button>
   );
 }
 
-/* ---------- Volver arriba (pantallas largas) ---------- */
+/* ---------- Volver arriba (pantallas largas) ----------
+   Aparece al desplazarse hacia arriba lejos del principio y se esconde al seguir leyendo
+   hacia abajo, para no tapar el texto ni los controles de la derecha. */
 export function VolverArriba() {
   const [ver, setVer] = useState(false);
   useEffect(() => {
-    const on = () => setVer(window.scrollY > window.innerHeight * 1.5);
-    on();
+    let antes = window.scrollY;
+    const on = () => {
+      const y = window.scrollY;
+      const lejos = y > window.innerHeight * 1.5;
+      if (!lejos) setVer(false);
+      else if (y < antes - 4) setVer(true);
+      else if (y > antes + 4) setVer(false);
+      antes = y;
+    };
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
   }, []);
@@ -76,7 +85,12 @@ export function VolverArriba() {
 /* ---------- Cómo citar ---------- */
 export function ComoCitar({ apartado }: { apartado: Apartado }) {
   const [abierto, setAbierto] = useState(false);
-  const [copiado, setCopiado] = useState(false);
+  const [copiado, setCopiado] = useState<"" | "ok" | "error">("");
+  useEffect(() => {
+    if (!copiado) return;
+    const t = setTimeout(() => setCopiado(""), 2500);
+    return () => clearTimeout(t);
+  }, [copiado]);
   const texto = citaDeApartado(apartado);
   return (
     <>
@@ -91,7 +105,7 @@ export function ComoCitar({ apartado }: { apartado: Apartado }) {
       {abierto && (
         <div
           className="mt-2 w-full rounded-xl border bg-white p-3 text-sm"
-          style={{ borderColor: "#e5ebf1" }}
+          style={{ borderColor: "#e6e6e6" }}
         >
           <p className="select-all text-slate-800">{texto}</p>
           <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -101,19 +115,22 @@ export function ComoCitar({ apartado }: { apartado: Apartado }) {
               onClick={async () => {
                 try {
                   await navigator.clipboard.writeText(texto);
-                  setCopiado(true);
+                  setCopiado("ok");
                 } catch {
-                  setCopiado(false);
+                  setCopiado("error");
                 }
               }}
             >
-              {copiado ? (
+              {copiado === "ok" ? (
                 <Check size={14} aria-hidden="true" />
               ) : (
                 <Copy size={14} aria-hidden="true" />
               )}
-              {copiado ? "Copiada" : "Copiar"}
+              {copiado === "ok" ? "Copiada" : "Copiar"}
             </button>
+            <span role="status" className="text-xs text-slate-600">
+              {copiado === "error" && "No se pudo copiar: selecciona el texto y cópialo a mano."}
+            </span>
             <span className="text-xs text-slate-500">
               ISBN y fecha de publicación del Manual: pendientes de confirmar con la SEEN.
             </span>
@@ -142,6 +159,11 @@ const trozos = (a: Apartado) =>
 export function Escuchar({ apartado }: { apartado: Apartado }) {
   const [estado, setEstado] = useState<EstadoVoz>("parado");
   const actual = useRef<string>("");
+  // Trozo por el que va la lectura y «turno» que invalida los avisos de lo ya cancelado.
+  const indice = useRef(0);
+  const turno = useRef(0);
+  const conmutador = useRef<HTMLButtonElement>(null);
+  const lista = useMemo(() => trozos(apartado), [apartado]);
   const disponible = typeof window !== "undefined" && "speechSynthesis" in window;
 
   const marcar = (id: string) => {
@@ -149,75 +171,105 @@ export function Escuchar({ apartado }: { apartado: Apartado }) {
     actual.current = id;
     if (id) document.getElementById(id)?.classList.add("leyendo");
   };
-  const parar = () => {
-    if (!disponible) return;
+  /* Voz en español, preferentemente del propio dispositivo: las voces «en línea» envían el
+     texto fuera. Se elige al decir cada trozo porque algunas listas de voces llegan tarde. */
+  const voz = () => {
+    const es = window.speechSynthesis
+      .getVoices()
+      .filter((v) => v.lang.toLowerCase().startsWith("es"));
+    const locales = es.filter((v) => v.localService);
+    const grupo = locales.length ? locales : es;
+    return grupo.find((v) => v.lang.toLowerCase().startsWith("es-es")) ?? grupo[0];
+  };
+  const callar = () => {
+    turno.current++;
     window.speechSynthesis.cancel();
+    // Tras cancelar una pausa, algunos motores quedan «en pausa» y no vuelven a hablar.
+    window.speechSynthesis.resume();
+  };
+  const parar = (devolverFoco = false) => {
+    if (!disponible) return;
+    callar();
+    indice.current = 0;
     marcar("");
     setEstado("parado");
+    if (devolverFoco) conmutador.current?.focus();
+  };
+  /* Un trozo cada vez: pausar es callar y recordar por dónde iba (pause() no es fiable en
+     todos los navegadores) y seguir es volver a empezar ese trozo. */
+  const decir = (k: number) => {
+    if (k >= lista.length) {
+      parar();
+      return;
+    }
+    const t = lista[k];
+    const mio = turno.current;
+    const u = new SpeechSynthesisUtterance(t.texto);
+    u.lang = "es-ES";
+    const v = voz();
+    if (v) u.voice = v;
+    u.onstart = () => {
+      if (mio === turno.current) marcar(t.id);
+    };
+    u.onend = () => {
+      if (mio !== turno.current) return;
+      indice.current = k + 1;
+      decir(k + 1);
+    };
+    u.onerror = (e) => {
+      if (mio !== turno.current || e.error === "interrupted" || e.error === "canceled") return;
+      parar();
+    };
+    window.speechSynthesis.speak(u);
+  };
+  const empezar = (desde: number) => {
+    callar();
+    indice.current = desde;
+    setEstado("hablando");
+    decir(desde);
   };
   // Al salir del apartado (o cambiar de apartado) se calla.
   useEffect(() => () => parar(), [apartado.slug]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!disponible) return null;
-  const empezar = () => {
-    const s = window.speechSynthesis;
-    s.cancel();
-    const voz =
-      s.getVoices().find((v) => v.lang.toLowerCase().startsWith("es-es")) ??
-      s.getVoices().find((v) => v.lang.toLowerCase().startsWith("es"));
-    const lista = trozos(apartado);
-    lista.forEach((t, k) => {
-      const u = new SpeechSynthesisUtterance(t.texto);
-      u.lang = "es-ES";
-      if (voz) u.voice = voz;
-      u.onstart = () => marcar(t.id);
-      if (k === lista.length - 1) u.onend = () => parar();
-      s.speak(u);
-    });
-    setEstado("hablando");
-  };
   return (
     <span
       className="inline-flex flex-wrap items-center gap-1.5"
       role="group"
       aria-label="Escuchar el apartado"
     >
-      {estado === "parado" && (
-        <button
-          type="button"
-          onClick={empezar}
-          className={BOTON}
-          title="Lee el apartado con la voz del dispositivo"
-        >
-          <Volume2 size={14} aria-hidden="true" /> Escuchar
-        </button>
-      )}
-      {estado === "hablando" && (
-        <button
-          type="button"
-          onClick={() => {
-            window.speechSynthesis.pause();
+      {/* Un solo botón que cambia de función: no desaparece y el foco se queda en él. */}
+      <button
+        ref={conmutador}
+        type="button"
+        onClick={() => {
+          if (estado === "parado") empezar(0);
+          else if (estado === "hablando") {
+            callar();
             setEstado("pausa");
-          }}
-          className={BOTON}
-        >
-          <Pause size={14} aria-hidden="true" /> Pausa
-        </button>
-      )}
-      {estado === "pausa" && (
-        <button
-          type="button"
-          onClick={() => {
-            window.speechSynthesis.resume();
-            setEstado("hablando");
-          }}
-          className={BOTON}
-        >
-          <Play size={14} aria-hidden="true" /> Seguir
-        </button>
-      )}
+          } else empezar(indice.current);
+        }}
+        className={BOTON}
+        title="Lee el texto del apartado con la voz del dispositivo (las tablas, figuras y diagramas no se leen)"
+      >
+        {estado === "parado" && (
+          <>
+            <Volume2 size={14} aria-hidden="true" /> Escuchar
+          </>
+        )}
+        {estado === "hablando" && (
+          <>
+            <Pause size={14} aria-hidden="true" /> Pausa
+          </>
+        )}
+        {estado === "pausa" && (
+          <>
+            <Play size={14} aria-hidden="true" /> Seguir
+          </>
+        )}
+      </button>
       {estado !== "parado" && (
-        <button type="button" onClick={parar} className={BOTON}>
+        <button type="button" onClick={() => parar(true)} className={BOTON}>
           <Square size={14} aria-hidden="true" /> Parar
         </button>
       )}
@@ -235,7 +287,7 @@ export function EnlaceEducativa({ clave }: { clave: string }) {
       target="_blank"
       rel="noopener noreferrer"
       className="no-imprimir flex items-start gap-3 rounded-xl border bg-white p-3 text-sm transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-      style={{ borderColor: "#e5ebf1" }}
+      style={{ borderColor: "#e6e6e6" }}
     >
       <GraduationCap size={18} className="mt-0.5 shrink-0 text-sky-700" aria-hidden="true" />
       <span className="min-w-0 flex-1">

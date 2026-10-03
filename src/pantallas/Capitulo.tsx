@@ -1,13 +1,19 @@
 /* Índice del capítulo (lista de apartados con sus páginas) y «capítulo entero» para
    imprimir de una vez. */
 import { useRef } from "react";
-import { ArrowRight, CircleCheck, Printer } from "lucide-react";
+import { ArrowRight, BookOpen, CircleCheck, Printer } from "lucide-react";
+import { ICONO_APARTADO } from "../nav";
 import { APARTADOS, AUTOEVALUACION, CAPITULO, subapartados } from "../contenido";
 import { href } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Revelar } from "../ui";
-import { CATEGORIA_HEX } from "../tokens";
+import { CATEGORIA_HEX, colorApartado } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
 import { useLeidos } from "../prefs";
+
+function IconoApartado({ slug }: { slug: string }) {
+  const I = ICONO_APARTADO[slug] ?? BookOpen;
+  return <I size={20} strokeWidth={1.5} />;
+}
 
 export function IndiceCapitulo() {
   const leidos = useLeidos();
@@ -25,19 +31,19 @@ export function IndiceCapitulo() {
             <Revelar as="li" key={a.slug}>
               <a
                 href={href("capitulo", a.slug)}
-                className="hover-lift ease-brand flex items-start gap-3 rounded-2xl border bg-white p-4 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{ borderColor: "#e5ebf1" }}
+                className="hover-lift ease-brand flex items-start gap-3 rounded-[4px] border bg-white p-4 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                style={{ borderColor: "#e6e6e6" }}
               >
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none w-8 shrink-0 text-2xl font-black leading-none tabular-nums"
-                  style={{ color: `${CATEGORIA_HEX.leer.strong}55` }}
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[3px] text-white"
+                  style={{ background: colorApartado(a.n) }}
                 >
-                  {String(a.n).padStart(2, "0")}
+                  <IconoApartado slug={a.slug} />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-base font-bold leading-snug text-slate-900">
-                    {a.titulo}
+                  <span className="block text-[15px] font-semibold uppercase leading-snug tracking-wide text-slate-900">
+                    <span className="tabular-nums text-slate-500">{a.n}</span> {a.titulo}
                   </span>
                   {subs.length > 0 && (
                     <span className="mt-1 block text-xs text-slate-500">
@@ -65,12 +71,15 @@ export function IndiceCapitulo() {
           <a
             href={href("test")}
             className="flex items-start gap-3 rounded-2xl border border-dashed bg-white p-4 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-            style={{ borderColor: "#cbd5e1" }}
+            style={{ borderColor: "#d4d4d4" }}
           >
             <span
               aria-hidden="true"
-              className="pointer-events-none w-8 shrink-0 text-2xl font-black leading-none tabular-nums"
-              style={{ color: `${CATEGORIA_HEX.aprender.strong}55` }}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[3px] border-2 border-dashed font-display text-base font-medium tabular-nums"
+              style={{
+                borderColor: CATEGORIA_HEX.aprender.strong,
+                color: CATEGORIA_HEX.aprender.strong,
+              }}
             >
               14
             </span>
@@ -79,11 +88,12 @@ export function IndiceCapitulo() {
                 {AUTOEVALUACION.titulo}
               </span>
               <span className="mt-1 block text-xs text-slate-500">
-                Diez casos del autor con respuesta razonada y la página del capítulo (pendientes de
-                su validación).
+                Diez preguntas del autor con respuesta razonada y las frases del capítulo que la
+                respaldan (pendientes de su validación). En la p. 24 del capítulo, la autoevaluación
+                aún no tiene preguntas.
               </span>
             </span>
-            <span className="pagina-badge shrink-0 pt-1">p. {AUTOEVALUACION.pagina}</span>
+            <span className="pagina-badge shrink-0 pt-1">fuera del capítulo</span>
           </a>
         </li>
       </ol>

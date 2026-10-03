@@ -36,11 +36,13 @@ export function imprimirRegion(getRegion, win = typeof window !== "undefined" ? 
   const restaurarPlegables = abrirPlegables(region);
   doc.documentElement.classList.add("imprimiendo");
   let limpio = false;
+  let quitarOyente = () => {};
   const limpiar = () => {
     if (limpio) return;
     limpio = true;
     doc.documentElement.classList.remove("imprimiendo");
     restaurarPlegables();
+    quitarOyente();
   };
   // `afterprint` es lo correcto, pero no todos los navegadores lo lanzan al cancelar: el
   // temporizador es la red de seguridad para no dejar la pantalla en modo impresión.
@@ -58,6 +60,7 @@ export function imprimirRegion(getRegion, win = typeof window !== "undefined" ? 
     if (!e.matches) limpiar();
   };
   mq?.addEventListener?.("change", alCambiar);
+  quitarOyente = () => mq?.removeEventListener?.("change", alCambiar);
   win.setTimeout(() => {
     win.addEventListener("pointerdown", limpiar, { once: true });
     win.addEventListener("focus", limpiar, { once: true });

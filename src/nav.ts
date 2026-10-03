@@ -4,12 +4,16 @@ import {
   Baby,
   BookOpen,
   CalendarClock,
+  CirclePlay,
+  ClipboardCheck,
   Clock3,
+  CodeXml,
   Columns3,
   Cpu,
   Droplets,
   Footprints,
   FlaskConical,
+  GitBranch,
   GraduationCap,
   Handshake,
   HeartHandshake,
@@ -22,12 +26,16 @@ import {
   ListChecks,
   ListOrdered,
   ListTree,
+  MapPinned,
+  Puzzle,
   Route,
   ScanLine,
   Search,
   SpellCheck,
   Table2,
   Target,
+  Telescope,
+  TrendingUp,
   Unplug,
   type LucideIcon,
 } from "lucide-react";
@@ -73,7 +81,7 @@ export const DESTINOS: Destino[] = [
     icono: Route,
     cat: "consultar",
     descripcion:
-      "Elige la situación (ejercicio, enfermedad, exploración…) y el sistema: la conducta exacta.",
+      "Elige la situación (ejercicio, enfermedad, exploración…) y el sistema: la conducta que da el capítulo.",
   },
   {
     id: "descarga",
@@ -142,7 +150,8 @@ export const DESTINOS: Destino[] = [
     href: href("buscar"),
     icono: Search,
     cat: "consultar",
-    descripcion: "Búsqueda instantánea sobre el texto literal (sin IA generativa).",
+    descripcion:
+      "Búsqueda instantánea en el texto del capítulo y, en un grupo aparte, en lo que no es del capítulo (sin IA generativa).",
   },
   {
     id: "pacientes",
@@ -160,7 +169,7 @@ export const DESTINOS: Destino[] = [
     href: href("bibliografia"),
     icono: Library,
     cat: "confiar",
-    descripcion: "Las diez referencias del capítulo, con el DOI enlazado.",
+    descripcion: "Las diez referencias del capítulo, con su enlace.",
   },
   {
     id: "cambios",
@@ -203,6 +212,22 @@ export const GRUPOS_CONSULTAR: { id: string; titulo: string; ids: string[] }[] =
 ];
 
 export const ICONO_CAPITULO = BookOpen;
+/* Icono de cada apartado (índice en mosaico de la portada y cabecera del apartado). */
+export const ICONO_APARTADO: Record<string, LucideIcon> = {
+  "01-introduccion": BookOpen,
+  "02-componentes": Puzzle,
+  "03-algoritmos": GitBranch,
+  "04-sistemas": MapPinned,
+  "05-resultados": TrendingUp,
+  "06-indicaciones": ClipboardCheck,
+  "07-educacion": GraduationCap,
+  "08-iniciacion": CirclePlay,
+  "09-descarga": Activity,
+  "10-situaciones": Route,
+  "11-diy": CodeXml,
+  "12-horizonte": Telescope,
+  "13-infografia": LayoutGrid,
+};
 export const ICONO_CONSULTAR = Columns3;
 export const ICONO_EVIDENCIA = FlaskConical;
 

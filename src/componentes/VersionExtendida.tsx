@@ -22,10 +22,11 @@ function Origen({ f }: { f: FragmentoExtendido }) {
   );
 }
 
-export function FragmentoVista({ f }: { f: FragmentoExtendido }) {
+export function FragmentoVista({ f, nivel = 4 }: { f: FragmentoExtendido; nivel?: 3 | 4 }) {
+  const H = nivel === 3 ? "h3" : "h4";
   return (
     <li id={`ext-${f.id}`} className="scroll-mt-24">
-      <h4 className="text-sm font-bold text-amber-900">{f.titulo}</h4>
+      <H className="text-sm font-bold text-amber-900">{f.titulo}</H>
       <div className="mt-1 space-y-1.5">
         {f.partes.map((p, i) =>
           p ? (
@@ -59,10 +60,13 @@ export function VersionExtendida({
   fragmentos,
   abierta = false,
   id,
+  nivel = 4,
 }: {
   fragmentos: FragmentoExtendido[];
   abierta?: boolean;
   id?: string;
+  /* Nivel del título de cada fragmento según dónde va (sin saltos de encabezado). */
+  nivel?: 3 | 4;
 }) {
   if (!fragmentos.length) return null;
   return (
@@ -101,13 +105,13 @@ export function VersionExtendida({
       </summary>
       <div className="border-t border-amber-200 px-4 pb-4 pt-3">
         <p className="text-xs leading-relaxed text-amber-900">
-          Texto del autor que no entró en el capítulo por espacio. No forma parte del Manual SEEN y
-          nunca lo contradice: si algo difiriera, manda el texto publicado. «[…]» marca una frase
-          del borrador que cambió en la versión publicada.
+          Texto del autor que no entró en el capítulo por espacio. No forma parte del Manual SEEN ni
+          lo sustituye: si algo no coincide, manda el texto publicado. «[…]» marca una frase de los
+          borradores que cambió en la versión publicada.
         </p>
         <ul className="mt-3 space-y-4">
           {fragmentos.map((f) => (
-            <FragmentoVista key={f.id} f={f} />
+            <FragmentoVista key={f.id} f={f} nivel={nivel} />
           ))}
         </ul>
       </div>

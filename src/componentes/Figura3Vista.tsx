@@ -115,7 +115,7 @@ function Pies() {
           <div
             key={i}
             className="rounded-xl border bg-white p-3 text-sm text-slate-700"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
           >
             <span className="font-bold text-slate-900">{p.titulo}</span> <Texto>{p.texto}</Texto>
           </div>
@@ -152,7 +152,7 @@ function Cabecera() {
 function SospecharComprobar() {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
-      <div className="rounded-xl border bg-white p-3" style={{ borderColor: "#e5ebf1" }}>
+      <div className="rounded-xl border bg-white p-3" style={{ borderColor: "#e6e6e6" }}>
         <div
           className="mb-1.5 flex items-center gap-2 text-sm font-bold"
           style={{ color: "#15324f" }}
@@ -165,7 +165,7 @@ function SospecharComprobar() {
           ))}
         </ul>
       </div>
-      <div className="rounded-xl border bg-white p-3" style={{ borderColor: "#e5ebf1" }}>
+      <div className="rounded-xl border bg-white p-3" style={{ borderColor: "#e6e6e6" }}>
         <div
           className="mb-1.5 flex items-center gap-2 text-sm font-bold"
           style={{ color: "#15324f" }}
@@ -303,7 +303,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
           ) : (
             <div
               className="rounded-xl border border-dashed px-4 py-6 text-center text-sm text-slate-600"
-              style={{ borderColor: "#cbd5e1", background: "#f8fafc" }}
+              style={{ borderColor: "#d4d4d4", background: "#f8fafc" }}
             >
               Elige un tramo de β-OHB arriba para ver la rama correspondiente de la figura.
             </div>

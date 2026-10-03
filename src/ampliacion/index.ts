@@ -9,6 +9,7 @@ import { SISTEMAS_AMPLIACION } from "./datos";
 export * from "./tipos";
 export * from "./datos";
 export { FUENTES } from "./fuentes";
+export { DIFIERE_CAMPO, DIFIERE_PARAM, type Discrepancia } from "./difiere";
 
 /* Fotos oficiales de producto (Medtronic, Tandem/Novalab, mylife/Ypsomed e Insulet), lienzo
    blanco 480 px, las mismas que usa asistente-aid. */

@@ -1,6 +1,13 @@
 /* Diagramas a partir del texto del capítulo (datos en src/contenido/diagramas.ts). HTML y CSS,
    no SVG: el texto es real (se lee a 360 px, se busca, se imprime y lo lee un lector de pantalla). */
-import { useRef, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import { ArrowDown, ArrowRight, BookOpen, Images } from "lucide-react";
 import {
   ALGORITMOS,
@@ -20,7 +27,7 @@ import {
   type EstadoExploracion,
   type TonoFranja,
 } from "../contenido/diagramas";
-import { F2, TABLAS, algoritmoDelCapitulo, ubicacionDeDiagrama } from "../contenido";
+import { F2, FIGURA3, TABLAS, algoritmoDelCapitulo, ubicacionDeDiagrama } from "../contenido";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion";
 import { href } from "../rutas";
 import { BotonImprimir, PaginaBadge, Segmented } from "../ui";
@@ -38,6 +45,26 @@ const TONO: Record<TonoFranja, { bg: string; fg: string }> = {
   "muy-bajo": { bg: "#7f1d1d", fg: "#ffffff" },
 };
 
+/* Nivel del título del diagrama: 2 en su pantalla (#/visual, tras el h1) y 3 dentro de un
+   apartado. Los subtítulos del diagrama van un nivel por debajo. */
+const NivelDiagrama = createContext<2 | 3>(3);
+function Sub({
+  children,
+  className,
+  style,
+}: {
+  children: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+}) {
+  const H = useContext(NivelDiagrama) === 2 ? "h3" : "h4";
+  return (
+    <H className={className} style={style}>
+      {children}
+    </H>
+  );
+}
+
 export function MarcoDiagrama({
   id,
   children,
@@ -50,53 +77,56 @@ export function MarcoDiagrama({
   const meta = DIAGRAMAS.find((d) => d.id === id)!;
   const ref = useRef<HTMLElement>(null);
   const donde = ubicacionDeDiagrama(id);
+  const Titulo = enApartado ? "h3" : "h2";
   return (
-    <section
-      ref={ref}
-      aria-labelledby={`diag-${id}`}
-      className="bloque-papel imprimible rounded-2xl border bg-white p-4 shadow-soft"
-      style={{ borderColor: "#e5ebf1" }}
-    >
-      <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
-        <div className="min-w-0">
-          <div className="text-xs font-bold uppercase tracking-wide" style={{ color: "#343093" }}>
-            Diagrama · a partir del texto del capítulo
-          </div>
-          <h3 id={`diag-${id}`} className="text-base font-extrabold text-slate-900">
-            {meta.titulo}
-          </h3>
-        </div>
-        <span className="pagina-badge">
-          {meta.paginas.length === 1 ? "p." : "pp."} {meta.paginas.join(", ")}
-        </span>
-      </div>
-      {children}
-      <div
-        className="no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3"
-        style={{ borderColor: "#e5ebf1" }}
+    <NivelDiagrama.Provider value={enApartado ? 3 : 2}>
+      <section
+        ref={ref}
+        aria-labelledby={`diag-${id}`}
+        className="bloque-papel imprimible rounded-2xl border bg-white p-4 shadow-soft"
+        style={{ borderColor: "#e6e6e6" }}
       >
-        {!enApartado && donde && (
-          <a
-            href={href("capitulo", donde.apartado.slug, donde.ancla)}
-            className="inline-flex items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
-          >
-            <BookOpen size={12} aria-hidden="true" /> Leer en el capítulo: {donde.apartado.n}.{" "}
-            {donde.apartado.corto}
-          </a>
-        )}
-        {enApartado && (
-          <a
-            href={href("visual", id)}
-            className="inline-flex items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
-          >
-            <Images size={12} aria-hidden="true" /> Abrir a pantalla completa
-          </a>
-        )}
-        <BotonImprimir objetivo={ref} compacto>
-          Imprimir
-        </BotonImprimir>
-      </div>
-    </section>
+        <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
+          <div className="min-w-0">
+            <div className="text-xs font-bold uppercase tracking-wide" style={{ color: "#343093" }}>
+              Diagrama · a partir del texto del capítulo
+            </div>
+            <Titulo id={`diag-${id}`} className="text-base font-extrabold text-slate-900">
+              {meta.titulo}
+            </Titulo>
+          </div>
+          <span className="pagina-badge">
+            {meta.paginas.length === 1 ? "p." : "pp."} {meta.paginas.join(", ")}
+          </span>
+        </div>
+        {children}
+        <div
+          className="no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3"
+          style={{ borderColor: "#e6e6e6" }}
+        >
+          {!enApartado && donde && (
+            <a
+              href={href("capitulo", donde.apartado.slug, donde.ancla)}
+              className="inline-flex items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
+            >
+              <BookOpen size={12} aria-hidden="true" /> Leer en el capítulo: {donde.apartado.n}.{" "}
+              {donde.apartado.corto}
+            </a>
+          )}
+          {enApartado && (
+            <a
+              href={href("visual", id)}
+              className="inline-flex items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
+            >
+              <Images size={12} aria-hidden="true" /> Abrir a pantalla completa
+            </a>
+          )}
+          <BotonImprimir objetivo={ref} compacto>
+            Imprimir
+          </BotonImprimir>
+        </div>
+      </section>
+    </NivelDiagrama.Provider>
   );
 }
 
@@ -106,7 +136,7 @@ function Escalera({ i }: { i: number }) {
   return (
     <div>
       <div className="mb-2 flex items-baseline justify-between gap-2">
-        <h4 className="text-sm font-bold text-slate-900">{p.nombre}</h4>
+        <Sub className="text-sm font-bold text-slate-900">{p.nombre}</Sub>
         <PaginaBadge p={p.pagina} />
       </div>
       <ol className="space-y-1">
@@ -116,7 +146,7 @@ function Escalera({ i }: { i: number }) {
             <li
               key={j}
               className="flex items-stretch overflow-hidden rounded-lg border"
-              style={{ borderColor: "#e5ebf1" }}
+              style={{ borderColor: "#e6e6e6" }}
             >
               <span
                 className="flex w-28 shrink-0 items-center px-2 py-2 text-xs font-bold"
@@ -266,8 +296,7 @@ function EscalaCetonemia() {
         ))}
       </ol>
       <p className="mt-2 text-xs text-slate-500">
-        *Dosis orientativas para personas adultas; en pediatría y en gestación se seguirá el
-        protocolo correspondiente (nota de la Figura 3).
+        {FIGURA3.notaAsterisco} <span className="pagina-badge">Figura 3, p. 8</span>
       </p>
     </div>
   );
@@ -322,7 +351,7 @@ function Ejercicio() {
           <li
             key={z.etiqueta}
             className="flex gap-2 rounded-xl border p-2.5 text-xs text-slate-700"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
           >
             <span
               aria-hidden="true"
@@ -346,7 +375,7 @@ function Ejercicio() {
       <div className="mt-4 grid gap-3 md:grid-cols-3">
         {EJERCICIO.fases.map((f) => (
           <div key={f.titulo} className="rounded-xl p-3" style={{ background: "#f1f5f9" }}>
-            <h4 className="mb-1.5 text-sm font-extrabold text-slate-900">{f.titulo}</h4>
+            <Sub className="mb-1.5 text-sm font-extrabold text-slate-900">{f.titulo}</Sub>
             <ul className="space-y-1.5 text-xs text-slate-700">
               {f.items.map((it) => (
                 <li key={it} className="flex gap-1.5">
@@ -421,7 +450,7 @@ function Algoritmos() {
               </div>
               <dl className="space-y-1.5 text-xs">
                 <div>
-                  <dt className="font-bold text-slate-600">Dónde vive</dt>
+                  <dt className="font-bold text-slate-600">Dónde se aloja</dt>
                   <dd className="text-slate-900">
                     <Lineas>{fila("Localización del algoritmo", c)}</Lineas>
                   </dd>
@@ -435,7 +464,7 @@ function Algoritmos() {
                   <dd className="text-slate-900">{a.autocorreccion}</dd>
                 </div>
                 <div>
-                  <dt className="font-bold text-slate-600">Aprende</dt>
+                  <dt className="font-bold text-slate-600">Aprendizaje</dt>
                   <dd className="text-slate-900">{a.aprendizaje}</dd>
                 </div>
               </dl>
@@ -444,7 +473,7 @@ function Algoritmos() {
         })}
       </div>
       <div className="mt-4">
-        <h4 className="mb-2 text-sm font-bold text-slate-900">Hasta dónde predice</h4>
+        <Sub className="mb-2 text-sm font-bold text-slate-900">Horizonte de predicción</Sub>
         <div className="space-y-2">
           {ORDEN_SISTEMAS.map((id, c) => {
             const a = ALGORITMOS[c];
@@ -505,7 +534,7 @@ function Hipoglucemia() {
           <div
             key={r.cantidad}
             className="overflow-hidden rounded-xl border"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
           >
             <div
               className="px-3 py-2 text-xs font-bold"
@@ -555,7 +584,7 @@ function Transicion() {
             </span>
             <div
               className="min-w-0 flex-1 rounded-xl border p-2.5"
-              style={{ borderColor: "#e5ebf1" }}
+              style={{ borderColor: "#e6e6e6" }}
             >
               <div className="text-sm font-bold text-slate-900">{p.titulo}</div>
               <p className="text-xs text-slate-700">{p.texto}</p>
@@ -643,7 +672,7 @@ function GestacionSistemas({ opcion }: { opcion?: string }) {
           <TarjetaGestacion key={id} c={k} />
         ))}
       </div>
-      <h4 className="mb-1.5 mt-4 text-sm font-bold text-slate-900">En todos los sistemas</h4>
+      <Sub className="mb-1.5 mt-4 text-sm font-bold text-slate-900">En todos los sistemas</Sub>
       <ul className="space-y-1.5 text-xs text-slate-800">
         {GESTACION_COMUN.map((x) => (
           <li key={x.texto} className="flex items-start gap-2">
@@ -675,9 +704,9 @@ function Hospital() {
           style={{ borderColor: "#a7f3d0", background: "#ecfdf5" }}
         >
           <div className="mb-1 flex items-center justify-between gap-2">
-            <h4 className="text-sm font-bold" style={{ color: "#065f46" }}>
+            <Sub className="text-sm font-bold" style={{ color: "#065f46" }}>
               Pueden mantenerse
-            </h4>
+            </Sub>
             <PaginaBadge p={H.mantener.p} />
           </div>
           <p className="text-sm text-slate-800">{H.mantener.texto}</p>
@@ -687,9 +716,9 @@ function Hospital() {
           style={{ borderColor: "#fecaca", background: "#fef2f2" }}
         >
           <div className="mb-1 flex items-center justify-between gap-2">
-            <h4 className="text-sm font-bold" style={{ color: "#991b1b" }}>
+            <Sub className="text-sm font-bold" style={{ color: "#991b1b" }}>
               {H.noApropiada.intro}
-            </h4>
+            </Sub>
             <PaginaBadge p={H.noApropiada.p} />
           </div>
           <ul className="list-disc space-y-0.5 pl-5 text-sm text-slate-800">
@@ -710,7 +739,7 @@ function Hospital() {
           <li
             key={x.cuando}
             className="rounded-xl border bg-white p-3"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
           >
             <div className="mb-1 flex items-center justify-between gap-2">
               <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-900">
@@ -764,7 +793,7 @@ function Exploraciones() {
           <li
             key={k}
             className="inline-flex items-center gap-1.5 rounded-full border bg-white px-2 py-0.5"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
           >
             <span
               aria-hidden="true"
@@ -785,7 +814,7 @@ function Exploraciones() {
           <li
             key={f.etiqueta}
             className="grid gap-1.5 rounded-xl border bg-white p-2 md:grid-cols-[12rem_1fr_1fr] md:gap-2"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
           >
             <span className="text-sm font-bold text-slate-900">
               <Lineas>{f.etiqueta}</Lineas>
@@ -823,7 +852,7 @@ function Exploraciones() {
       </ol>
       <p className="mt-3 text-xs text-slate-600">{T6.notas[0]}</p>
       <p className="mt-1 text-xs text-slate-500">
-        El color resume cada celda; manda el texto de la Tabla 6, que se lee completo debajo.
+        El color resume cada celda; manda el texto de la Tabla 6 (apartado 10, p. 22).
       </p>
     </div>
   );
@@ -836,12 +865,12 @@ function CajaEleccion({ i, tono = "azul" }: { i: number; tono?: "azul" | "centro
     <div
       className={`h-full rounded-xl border p-3 ${tono === "centro" ? "border-indigo-200 bg-indigo-50" : "border-sky-200 bg-sky-50"}`}
     >
-      <h4
+      <Sub
         className="mb-1.5 text-sm font-extrabold"
         style={{ color: tono === "centro" ? "#3730a3" : "#1e3a8a" }}
       >
         {caja.titulo}
-      </h4>
+      </Sub>
       <ul className="space-y-1 text-xs leading-snug text-slate-800">
         {caja.items.map((x) => (
           <li key={x}>
@@ -906,7 +935,7 @@ function InterrupcionLinea() {
           <li
             key={t.cuando}
             className="flex flex-col overflow-hidden rounded-xl border bg-white"
-            style={{ borderColor: "#e5ebf1" }}
+            style={{ borderColor: "#e6e6e6" }}
           >
             <span
               className="px-3 py-1.5 text-xs font-bold text-white"
