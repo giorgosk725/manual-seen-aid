@@ -59,23 +59,25 @@ export const GLOSARIO: Sigla[] = [
   { sigla: "PID", desarrollo: "control proporcional-integral-derivativo", pagina: 3 },
   { sigla: "RM", desarrollo: "resonancia magnética", pagina: 21 },
   { sigla: "SED", desarrollo: "Sociedad Española de Diabetes", pagina: 1 },
+  { sigla: "SEEN", desarrollo: "sigla no desarrollada en el capítulo (Manual SEEN)", pagina: 1 },
   { sigla: "TAR", desarrollo: "tiempo por encima del rango", pagina: 2 },
   {
     sigla: "TARp",
-    desarrollo: "objetivos específicos para la gestación (subíndice p)",
+    desarrollo: "TAR con el objetivo específico de la gestación (subíndice p): > 140 mg/dl",
     pagina: 17,
   },
   { sigla: "TBR", desarrollo: "tiempo por debajo del rango", pagina: 2 },
   {
     sigla: "TBRp",
-    desarrollo: "objetivos específicos para la gestación (subíndice p)",
+    desarrollo:
+      "TBR con los objetivos específicos de la gestación (subíndice p): < 63 y < 54 mg/dl",
     pagina: 17,
   },
   { sigla: "TC", desarrollo: "tomografía computarizada", pagina: 21 },
   { sigla: "TIR", desarrollo: "tiempo en rango", pagina: 2 },
   {
     sigla: "TIRp",
-    desarrollo: "objetivos específicos para la gestación (subíndice p)",
+    desarrollo: "TIR con el rango específico de la gestación (subíndice p): 63–140 mg/dl",
     pagina: 17,
   },
   { sigla: "TITR", desarrollo: "tiempo en rango estrecho", pagina: 4 },

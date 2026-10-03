@@ -323,7 +323,7 @@ export const EJERCICIO = {
   marca: {
     valor: 126,
     texto:
-      "Durante: si la glucosa baja de unos 126 mg/dl, 10-20 g de hidratos rápidos, sin anunciarlos al sistema",
+      "Durante: si la glucosa baja de unos 126 mg/dl, hidratos rápidos (orientativamente 10-20 g), sin anunciarlos al sistema. Estas cantidades se refieren a la prevención del descenso glucémico durante la actividad y no sustituyen el tratamiento de una hipoglucemia ya establecida.",
   },
   fases: [
     {
@@ -332,6 +332,7 @@ export const EJERCICIO = {
         "Valorar la glucemia de partida, su tendencia y la insulina activa: un bolo reciente o una flecha descendente aumentan el riesgo de hipoglucemia.",
         "Actividad planificada con descenso esperado: elevar el objetivo glucémico, iniciado 1-2 h antes de la actividad.",
         "Solo de forma complementaria, si el ejercicio se realiza en las 2 h siguientes a una comida rica en hidratos, se reduce además el bolo prandial en un 25-33 %.",
+        "Si la β-OHB es ≥1,0 mmol/l en contexto de hiperglucemia persistente o sospecha de fallo de infusión, debe aplicarse previamente el algoritmo de la figura 3.",
         "Evitar el ejercicio con cetonemia ≥1,5 mmol/l, con independencia de la glucemia.",
       ],
     },
@@ -385,7 +386,7 @@ export const SEGUIMIENTO = {
     },
     { cuando: "Anual", tipo: "Reevaluación", que: "Idoneidad del sistema y satisfacción." },
   ],
-  nota: "Con buen control, uso sostenido y sin incidencias, las visitas pueden espaciarse; el seguimiento frecuente se reserva para quien lo necesita.",
+  nota: "Con buen control, uso sostenido y sin incidencias, las visitas pueden espaciarse (orientativamente a 3-6 meses el primer año, y más una vez consolidada la estabilidad), reservando el seguimiento frecuente para quien lo necesita.",
 };
 
 /* ---------- Los cuatro algoritmos ---------- */

@@ -80,6 +80,7 @@ export function indice(): Entrada[] {
         titulo: `Tabla ${t.numero}. ${t.titulo}`,
         texto: [f.etiqueta, ...f.celdas].join(" · ").replace(/\n/g, " "),
         pagina: t.paginas[0],
+        pagina2: t.paginas[1],
         ruta: href("consultar", "tablas", t.id),
       });
     });

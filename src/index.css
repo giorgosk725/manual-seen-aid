@@ -1212,7 +1212,7 @@ html.night .tramo-plan {
     break-after: avoid;
   }
   html.imprimiendo .hoja-a4 .hoja-cabecera {
-    margin-bottom: 1.5mm !important;
+    margin-bottom: 1mm !important;
     padding-bottom: 1mm !important;
   }
   html.imprimiendo .hoja-a4 .hoja-cuerpo {
@@ -1220,7 +1220,7 @@ html.night .tramo-plan {
     column-gap: 5mm;
   }
   html.imprimiendo .hoja-a4 .hoja-seccion {
-    margin-bottom: 1.2mm !important;
+    margin-bottom: 1mm !important;
   }
   html.imprimiendo .hoja-a4 p,
   html.imprimiendo .hoja-a4 li,
@@ -1237,13 +1237,13 @@ html.night .tramo-plan {
     margin-top: 0.4mm !important;
   }
   html.imprimiendo .hoja-a4 .hoja-pie {
-    margin-top: 1.5mm !important;
-    padding-top: 1mm !important;
+    margin-top: 0.6mm !important;
+    padding-top: 0.6mm !important;
     break-inside: avoid;
   }
   html.imprimiendo .hoja-a4 .qr {
-    width: 17mm;
-    height: 17mm;
+    width: 15mm;
+    height: 15mm;
   }
   html.imprimiendo .hoja-a4 .tramo-plan {
     break-inside: avoid;
@@ -1262,7 +1262,7 @@ html.night .tramo-plan {
     content: ": ";
   }
   html.imprimiendo .hoja-a4 .hueco {
-    min-height: 4.2mm;
+    min-height: 3.8mm;
   }
   /* El resumen es corto: una columna y letra de lectura. */
   html.imprimiendo .hoja-a4.holgada {

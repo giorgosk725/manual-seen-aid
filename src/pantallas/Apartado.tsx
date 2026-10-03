@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight, BookOpen, Image as ImageIcon, Table2 } from "luc
 import {
   APARTADOS,
   DIAGRAMAS,
+  FIGURA3,
   FIGURAS,
   TABLAS,
   idDeBloque,
@@ -261,6 +262,12 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
               </li>
             ))}
           </ul>
+          {/* Las dosis con asterisco (Figura 3) llevan siempre su nota. */}
+          {cifras.some((c) => c.valor.includes("*")) && (
+            <p className="mt-2 text-xs text-slate-600">
+              {FIGURA3.notaAsterisco} <span className="pagina-badge">Figura 3, p. 8</span>
+            </p>
+          )}
         </section>
       )}
 

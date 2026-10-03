@@ -25,7 +25,7 @@ import { APARTADOS, CAPITULO, DIAGRAMAS, INFO, TABLAS, algoritmoDelCapitulo } fr
 import { ICONO_APARTADO, ICONO_DIAGRAMA } from "../nav";
 import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
 import { href, navegar } from "../rutas";
-import { marcar, tramoDeConsulta } from "../busqueda";
+import { marcar, paginaDe, tramoDeConsulta } from "../busqueda";
 import { precargarBuscador, useBuscador } from "../useBuscador";
 import { AtajoTramo } from "../componentes/AtajoTramo";
 import { useFavoritos, useLeidos, useUltimo } from "../prefs";
@@ -178,7 +178,7 @@ function QueNecesitas() {
                     </span>
                   )}
                   {r.entrada.pagina > 0 && (
-                    <span className="pagina-badge">p. {r.entrada.pagina}</span>
+                    <span className="pagina-badge">{paginaDe(r.entrada)}</span>
                   )}
                 </span>
                 <span className="mt-0.5 block text-slate-800">

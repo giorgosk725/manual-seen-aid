@@ -28,7 +28,8 @@ interface Situacion {
 const SITUACIONES: Situacion[] = [
   {
     id: "ejercicio-aerobico",
-    etiqueta: "Ejercicio aeróbico planificado",
+    etiqueta:
+      "Ejercicio aeróbico planificado o situación previsible de mayor riesgo de hipoglucemia",
     tabla: "T4",
     fila: 0,
     leer: [{ slug: "10-situaciones", ancla: "ejercicio", titulo: "Ejercicio físico" }],
@@ -169,7 +170,7 @@ const SITUACIONES: Situacion[] = [
   },
   {
     id: "cirugia-larga",
-    etiqueta: "Cirugía prolongada o inestabilidad",
+    etiqueta: "Cirugía prolongada o compleja, o inestabilidad clínica",
     tabla: "T6",
     fila: 7,
     leer: [

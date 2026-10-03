@@ -29,7 +29,7 @@ export const CAPITULO = {
   fechaFuente: "30 de septiembre de 2026",
   fechaFuenteISO: "2026-09-30",
   paginas: 25,
-  /* El capítulo remite a esta guía para la profundización técnica (p. 1). */
+  /* Capítulo del Manual SEEN que precede a este (MDI), al que remite la introducción (p. 1). */
   continuaA: "Tratamiento insulínico del paciente con diabetes tipo 1: múltiples dosis de insulina",
 } as const;
 

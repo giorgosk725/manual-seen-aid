@@ -1,6 +1,6 @@
 /* «Para el paciente»: información para pacientes (V5 del autor) y resumen (maquetación de la
    editorial), literales; y la hoja «Plan de seguridad» de cada sistema, hecha SOLO con texto
-   del capítulo (p. 7, Figura 3 y Tabla 4) y huecos para rellenar a mano. Cada hoja se imprime
+   del capítulo (pp. 7-9, Figura 3 y Tabla 4) y huecos para rellenar a mano. Cada hoja se imprime
    en una cara A4 (letra pequeña, dos columnas) o, a elegir, con letra grande (una columna,
    12 pt, a doble cara: dos o tres caras), y lleva un QR para abrirla en el móvil. La app no guarda nada de lo que se escribe:
    no hay campos, solo líneas en blanco para el papel. */
@@ -407,6 +407,8 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
   const reglas = [
     fraseCon(textoDe("07-educacion", "b6"), "La primera es"),
     fraseCon(textoDe("07-educacion", "b7"), "como orientación"),
+    fraseCon(textoDe("07-educacion", "b7"), "Debe reevaluarse con glucosa capilar"),
+    fraseCon(textoDe("07-educacion", "b7"), "Los hidratos para tratar la hipoglucemia"),
     fraseCon(textoDe("07-educacion", "b9"), "La segunda regla"),
   ];
   const t4 = TABLAS.T4;
@@ -442,8 +444,8 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
         titulo={CAPITULO.titulo}
         subtitulo={
           <>
-            Hecha solo con el texto del capítulo (p. 7, Figura 3 y Tabla 4). Para rellenar a mano;
-            la app no guarda nada.
+            Hecha solo con el texto del capítulo (pp. 7-9, Figura 3 y Tabla 4). Para rellenar a
+            mano; la app no guarda nada.
           </>
         }
         ruta={ruta}
@@ -490,7 +492,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
         )}
         <section className="hoja-seccion mb-3">
           <h2 className="text-base font-extrabold" style={{ color: hex.ink }}>
-            Dos reglas operativas <span className="pagina-badge">p. 8</span>
+            Dos reglas operativas <span className="pagina-badge">pp. 8-9</span>
           </h2>
           <ul className="mt-1 space-y-1 text-sm text-slate-800">
             {reglas.map((r) => (

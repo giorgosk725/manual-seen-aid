@@ -17,8 +17,9 @@ export interface Entrada {
     | "test";
   titulo: string;
   texto: string;
-  /* Página del capítulo (0 = fuera del capítulo). */
+  /* Página del capítulo (0 = fuera del capítulo) y, si ocupa dos, la última. */
   pagina: number;
+  pagina2?: number;
   ruta: string;
 }
 
@@ -47,12 +48,14 @@ export interface Busqueda {
 
 /* Atajo por cifra: «β-OHB 1,2», «cetonemia 0,8», «cetonas 3» llevan al tramo de la Figura 3. */
 export function tramoDeConsulta(consulta: string): { clave: string; valor: number } | null {
+  // La cifra va pegada a la palabra (como mucho «de», «en», «:» o «=» en medio) y no es una
+  // hora, una glucemia ni un porcentaje: «cetonas y glucemia 250» o «cetonas 2 h» no cuentan.
   const m = normalizar(consulta).match(
-    /(?:b-?ohb|β-?ohb|beta-?hidroxibutirato|cetonemia|cetonas?)\D{0,12}(\d+(?:[.,]\d+)?)/,
+    /(?:b-?ohb|β-?ohb|beta-?hidroxibutirato|cetonemia|cetonas?)\s*(?:(?:de|en|a|:|=)\s*)?(\d+(?:[.,]\d+)?)(?!\s*(?:h\b|min|mg|g\b|%|\d|[.,]\d))/,
   );
   if (!m) return null;
   const valor = Number(m[1].replace(",", "."));
-  if (!Number.isFinite(valor)) return null;
+  if (!Number.isFinite(valor) || valor > 10) return null;
   const clave = valor < 0.6 ? "verde" : valor < 1 ? "amarillo" : valor < 3 ? "naranja" : "rojo";
   return { clave, valor };
 }
@@ -87,3 +90,7 @@ export function marcar(fragmento: string, consulta: string): { t: string; hit: b
   if (actual) out.push({ t: actual, hit: estado });
   return out;
 }
+
+/* Página de un resultado: «p. 11» o, si ocupa dos, «pp. 11–12». */
+export const paginaDe = (e: Entrada) =>
+  e.pagina2 && e.pagina2 !== e.pagina ? `pp. ${e.pagina}–${e.pagina2}` : `p. ${e.pagina}`;

@@ -204,7 +204,11 @@ function Ampliacion({ s }: { s: Sistema }) {
         ))}
         <Foldable
           title="Parámetros: cuáles mueven el modo automático"
-          subtitle={`Resumen: ${s.takeaway}`}
+          subtitle={`Resumen de la ampliación: ${s.takeaway}${
+            DIFIERE_PARAM[s.id]
+              ? ` · Difiere del capítulo: ${Object.keys(DIFIERE_PARAM[s.id]!).join(", ")} (Tabla 1, p. 4)`
+              : ""
+          }`}
         >
           <ul className="space-y-2">
             {s.params.map((p) => {

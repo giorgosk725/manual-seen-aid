@@ -12,6 +12,7 @@ import {
   buscarConTotales,
   fueraDelCapitulo,
   marcar,
+  paginaDe,
   tramoDeConsulta,
   type Resultado,
 } from "../buscador";
@@ -46,17 +47,27 @@ function ListaResultados({ res, q, fuera }: { res: Resultado[]; q: string; fuera
         <li key={r.entrada.id}>
           <a
             href={r.entrada.ruta}
-            className={`block rounded-xl border p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 ${!fuera ? "bg-white" : r.entrada.tipo === "ampliacion" ? "border-violet-200 bg-violet-50" : "border-amber-200 bg-amber-50"}`}
+            className={`block rounded-xl border p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 ${!fuera ? "bg-white" : r.entrada.tipo === "ampliacion" ? "border-violet-200 bg-violet-50" : r.entrada.tipo === "extendida" ? "border-amber-200 bg-amber-50" : "border-slate-200 bg-slate-50"}`}
             style={fuera ? undefined : { borderColor: "#e6e6e6" }}
           >
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
               <span className="flex items-center gap-2">
-                <Badge tone={!fuera ? "sky" : r.entrada.tipo === "ampliacion" ? "violet" : "amber"}>
+                <Badge
+                  tone={
+                    !fuera
+                      ? "sky"
+                      : r.entrada.tipo === "ampliacion"
+                        ? "violet"
+                        : r.entrada.tipo === "extendida"
+                          ? "amber"
+                          : "slate"
+                  }
+                >
                   {TIPO[r.entrada.tipo]}
                 </Badge>
                 <span className="font-semibold">{r.entrada.titulo}</span>
               </span>
-              {r.entrada.pagina > 0 && <span className="pagina-badge">p. {r.entrada.pagina}</span>}
+              {r.entrada.pagina > 0 && <span className="pagina-badge">{paginaDe(r.entrada)}</span>}
             </div>
             <p className="mt-1 text-sm text-slate-800">
               {marcar(r.fragmento, q).map((t, i) =>
@@ -108,8 +119,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
       <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1}>
         <p className="text-sm text-slate-600">
           Búsqueda instantánea sobre el texto literal: párrafos, tablas, figuras, diagramas,
-          bibliografía y siglas. Debajo y aparte, lo que no es del capítulo (versión extendida y
-          ampliación del autor). Sin inteligencia generativa.
+          bibliografía y siglas. Debajo y aparte, lo que no es del capítulo (versión extendida,
+          ampliación del autor, hojas para el paciente y test). Sin inteligencia generativa.
         </p>
       </CabeceraEditorial>
       <label className="sr-only" htmlFor="buscar-q">
@@ -146,7 +157,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
           </h2>
           <p className="text-xs text-slate-600">
             No es el texto del capítulo: material del autor, cada capa con su rótulo (versión
-            extendida en ámbar, ampliación en violeta).
+            extendida en ámbar, ampliación en violeta, hojas para el paciente y test en gris).
           </p>
           <ListaResultados res={fueraRes} q={q} fuera />
         </section>
@@ -213,6 +224,7 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
                   >
                     <span className="min-w-0 break-all">{r.url.replace(/^https?:\/\//, "")}</span>{" "}
                     <ExternalLink size={12} aria-hidden="true" />
+                    <span className="font-normal text-slate-500">(enlace añadido)</span>
                   </a>
                 ) : (
                   <span className="mt-1 block text-xs text-slate-500">Sin DOI ni enlace.</span>
@@ -361,8 +373,8 @@ export function Sobre() {
             aprobados uno a uno por el autor, con su borrador y su fecha.
           </li>
           <li>
-            <strong>Ampliación del autor · fuera del capítulo</strong> (ámbar): la ficha técnica de
-            cada sistema, validada en su proyecto asistente-aid, con sus fuentes.
+            <strong>Ampliación del autor · fuera del capítulo</strong> (violeta): la ficha técnica
+            de cada sistema, validada en su proyecto asistente-aid, con sus fuentes.
           </li>
           <li>
             <strong>Para el paciente</strong>: la información para pacientes (versión corregida V5

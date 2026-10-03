@@ -30,7 +30,7 @@ import { consumirNavegacionNueva, href, marcarNavegacionNueva, type Ruta } from 
 import { TAMANOS, useLeidos, useNocturno, useTamanoLetra } from "../prefs";
 import { VolverArriba } from "./Lectura";
 import { ErrorBoundary, Modal } from "../ui";
-import { fueraDelCapitulo, marcar } from "../busqueda";
+import { fueraDelCapitulo, marcar, paginaDe } from "../busqueda";
 import { useBuscador } from "../useBuscador";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
 
@@ -118,7 +118,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
                         Fuera del capítulo
                       </span>
                     ) : (
-                      <span className="pagina-badge">p. {r.entrada.pagina}</span>
+                      <span className="pagina-badge">{paginaDe(r.entrada)}</span>
                     )}
                   </div>
                   <div className="mt-0.5 text-sm text-slate-800">

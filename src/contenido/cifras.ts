@@ -50,6 +50,11 @@ export const CIFRAS: Record<string, Cifra[]> = {
     { valor: "TAR > 250 ≥ 5 %", etiqueta: "necesidad clínica no cubierta", p: 5 },
   ],
   "07-educacion": [
+    {
+      valor: "10-15 min",
+      etiqueta: "bolo prandial antes de comer (salvo hipoglucemia o descenso)",
+      p: 7,
+    },
     // Figura 3 (p. 8, imagen): la fidelidad se coteja con su transcripción (figura3.ts).
     {
       valor: "0,1 UI/kg*",
@@ -59,7 +64,8 @@ export const CIFRAS: Record<string, Cifra[]> = {
     },
     {
       valor: "0,15 UI/kg*",
-      etiqueta: "dosis total de rescate si β-OHB ≥1,5 mmol/l (no adicional)",
+      etiqueta:
+        "puede considerarse como dosis total de rescate (no adicional) si β-OHB ≥1,5 mmol/l; con ≥3,0, si no hay pauta específica y sin retrasar el traslado",
       p: 8,
       ancla: "b5",
     },
@@ -68,11 +74,6 @@ export const CIFRAS: Record<string, Cifra[]> = {
       etiqueta: "reevaluar glucemia y β-OHB tras corregir; nueva dosis nunca antes de 2 h",
       p: 8,
       ancla: "b5",
-    },
-    {
-      valor: "10-15 min",
-      etiqueta: "bolo prandial antes de comer (salvo hipoglucemia o descenso)",
-      p: 7,
     },
     { valor: "5-10 g", etiqueta: "hipoglucemia 54-70 mg/dl con flecha estable o ascendente", p: 8 },
     {
@@ -248,12 +249,6 @@ export const CIFRAS: Record<string, Cifra[]> = {
       ancla: "ingreso",
     },
     {
-      valor: "24 h",
-      etiqueta: "confirmar con glucemia capilar tras insertar un sensor nuevo",
-      p: 21,
-      ancla: "ingreso",
-    },
-    {
       valor: "~2 h antes",
       etiqueta: "basal subcutánea antes de suspender la bomba en el hospital",
       p: 20,
@@ -262,6 +257,13 @@ export const CIFRAS: Record<string, Cifra[]> = {
     {
       valor: "~22 h",
       etiqueta: "reanudar el sistema tras la última dosis de una basal de ~24 h",
+      p: 21,
+      ancla: "ingreso",
+    },
+    {
+      valor: "24 h",
+      etiqueta:
+        "primeras horas tras insertar un sensor nuevo: confirmar con glucemia capilar durante ellas",
       p: 21,
       ancla: "ingreso",
     },

@@ -93,6 +93,11 @@ describe("búsqueda con límite por grupo", () => {
     expect(tramoDeConsulta("cetonas 3")?.clave).toBe("rojo");
     expect(tramoDeConsulta("b-OHB 0.4")?.clave).toBe("verde");
     expect(tramoDeConsulta("modo sueño")).toBeNull();
+    // Sin falsos positivos: otras cifras de la consulta no son una cetonemia.
+    expect(tramoDeConsulta("cetonas y glucemia 250")).toBeNull();
+    expect(tramoDeConsulta("cetonas 2 h")).toBeNull();
+    expect(tramoDeConsulta("cetonemia 250 mg/dl")).toBeNull();
+    expect(tramoDeConsulta("β-OHB de 1,2 mmol/l")?.clave).toBe("naranja");
   });
   it("el capítulo va siempre delante", () => {
     const r = buscar("insulina", 10, 5);
