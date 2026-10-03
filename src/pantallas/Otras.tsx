@@ -34,6 +34,8 @@ const TIPO: Record<string, string> = {
   sigla: "Sigla",
   extendida: "Versión extendida",
   ampliacion: "Ampliación",
+  pacientes: "Para el paciente",
+  test: "Autoevaluación",
 };
 
 /* ---------- Buscar ---------- */
@@ -44,12 +46,14 @@ function ListaResultados({ res, q, fuera }: { res: Resultado[]; q: string; fuera
         <li key={r.entrada.id}>
           <a
             href={r.entrada.ruta}
-            className={`block rounded-xl border p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 ${fuera ? "border-amber-200 bg-amber-50" : "bg-white"}`}
+            className={`block rounded-xl border p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 ${!fuera ? "bg-white" : r.entrada.tipo === "ampliacion" ? "border-violet-200 bg-violet-50" : "border-amber-200 bg-amber-50"}`}
             style={fuera ? undefined : { borderColor: "#e6e6e6" }}
           >
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
               <span className="flex items-center gap-2">
-                <Badge tone={fuera ? "amber" : "sky"}>{TIPO[r.entrada.tipo]}</Badge>
+                <Badge tone={!fuera ? "sky" : r.entrada.tipo === "ampliacion" ? "violet" : "amber"}>
+                  {TIPO[r.entrada.tipo]}
+                </Badge>
                 <span className="font-semibold">{r.entrada.titulo}</span>
               </span>
               {r.entrada.pagina > 0 && <span className="pagina-badge">p. {r.entrada.pagina}</span>}
@@ -137,10 +141,12 @@ export function Buscar({ inicial }: { inicial?: string }) {
       {fueraRes.length > 0 && (
         <section aria-labelledby="fuera" className="mt-6">
           <h2 id="fuera" className="text-sm font-bold text-amber-900">
-            Fuera del capítulo · versión extendida y ampliación del autor
+            Fuera del capítulo · versión extendida, ampliación del autor, hojas para el paciente y
+            test
           </h2>
           <p className="text-xs text-slate-600">
-            No es texto del Manual SEEN: material propio del autor, rotulado en ámbar.
+            No es el texto del capítulo: material del autor, cada capa con su rótulo (versión
+            extendida en ámbar, ampliación en violeta).
           </p>
           <ListaResultados res={fueraRes} q={q} fuera />
         </section>
@@ -444,10 +450,13 @@ function Pregunta({ p, n }: { p: (typeof PREGUNTAS)[number]; n: number }) {
             <li key={i}>
               <button
                 type="button"
-                onClick={() => setElegida(i)}
-                disabled={resuelta}
+                onClick={() => {
+                  if (!resuelta) setElegida(i);
+                }}
+                // aria-disabled (no «disabled»): el botón pulsado conserva el foco al responder.
+                aria-disabled={resuelta || undefined}
                 aria-pressed={marcada}
-                className={`flex w-full items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm text-slate-800 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 disabled:cursor-default ${estilo}`}
+                className={`flex min-h-11 w-full items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm text-slate-800 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 aria-disabled:cursor-default ${estilo}`}
               >
                 <span className="w-5 shrink-0 font-bold text-slate-500">
                   {String.fromCharCode(97 + i)})
@@ -464,42 +473,45 @@ function Pregunta({ p, n }: { p: (typeof PREGUNTAS)[number]; n: number }) {
           );
         })}
       </ol>
-      {elegida != null && (
-        <div className="animate-in mt-3 space-y-2" aria-live="polite">
-          <div className="rounded-xl p-3 text-sm" style={{ background: "#eef3f8" }}>
-            <p className="font-bold text-slate-900">
-              {elegida === p.correcta ? "Correcto." : "Respuesta incorrecta."} Explicación del
-              autor:
-            </p>
-            <p className="mt-1 text-slate-800">{p.explicacion}</p>
+      {/* Región viva montada desde el principio: así se anuncia la explicación al responder. */}
+      <div aria-live="polite">
+        {elegida != null && (
+          <div className="animate-in mt-3 space-y-2">
+            <div className="rounded-xl p-3 text-sm" style={{ background: "#eef3f8" }}>
+              <p className="font-bold text-slate-900">
+                {elegida === p.correcta ? "Correcto." : "Respuesta incorrecta."} Explicación del
+                autor:
+              </p>
+              <p className="mt-1 text-slate-800">{p.explicacion}</p>
+            </div>
+            <div className="rounded-xl border p-3 text-sm" style={{ borderColor: "#e6e6e6" }}>
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                Lo que dice el capítulo
+              </p>
+              <ul className="mt-1.5 space-y-1.5">
+                {p.citas.map((c, i) => (
+                  <li key={i} className="text-slate-800">
+                    «{c.texto}»{" "}
+                    <a
+                      href={href("capitulo", c.apartado, c.ancla)}
+                      className="pagina-badge whitespace-nowrap hover:underline"
+                    >
+                      p. {c.p}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <a
+              href={href("capitulo", p.apartado, p.ancla)}
+              className="inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+            >
+              Leer en el apartado {ap?.n}: {ap?.titulo} (p. {p.pagina}){" "}
+              <ArrowRight size={14} aria-hidden="true" />
+            </a>
           </div>
-          <div className="rounded-xl border p-3 text-sm" style={{ borderColor: "#e6e6e6" }}>
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-              Lo que dice el capítulo
-            </p>
-            <ul className="mt-1.5 space-y-1.5">
-              {p.citas.map((c, i) => (
-                <li key={i} className="text-slate-800">
-                  «{c.texto}»{" "}
-                  <a
-                    href={href("capitulo", c.apartado, c.ancla)}
-                    className="pagina-badge whitespace-nowrap hover:underline"
-                  >
-                    p. {c.p}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <a
-            href={href("capitulo", p.apartado, p.ancla)}
-            className="inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
-          >
-            Leer en el apartado {ap?.n}: {ap?.titulo} (p. {p.pagina}){" "}
-            <ArrowRight size={14} aria-hidden="true" />
-          </a>
-        </div>
-      )}
+        )}
+      </div>
     </li>
   );
 }

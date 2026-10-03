@@ -1,7 +1,16 @@
 /* Tipografías del Manual SEEN (0.5.0), autoalojadas para el uso sin conexión: Open Sans
    (texto y títulos) y Oswald (rótulo y etiquetas condensadas). Subconjunto latino, eje de
    peso variable. Vendorizadas de @fontsource-variable/open-sans y /oswald 5.3.0 (OFL-1.1;
-   licencias en src/assets/fonts). */
+   licencias en src/assets/fonts). El subconjunto griego de Open Sans (solo normal) da la «β»
+   de β-OHB con la misma letra; el navegador lo pide solo donde aparece. */
+@font-face {
+  font-family: "Open Sans Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 800;
+  src: url("./assets/fonts/open-sans-greek-wght-normal.woff2") format("woff2");
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
 @font-face {
   font-family: "Open Sans Variable";
   font-style: normal;

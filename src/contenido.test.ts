@@ -291,7 +291,7 @@ describe("cifras del apartado y ampliación", () => {
         expect(c.p).toBeLessThanOrEqual(a.paginas[1]);
         if (c.ancla)
           expect(
-            a.bloques.some((b) => b.t === "h3" && b.id === c.ancla),
+            a.bloques.some((b, i) => idDeBloque(b, i) === c.ancla),
             c.ancla,
           ).toBe(true);
       }

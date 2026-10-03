@@ -7,7 +7,8 @@ import { INFO_F3 } from "./componentes/figura3-imagen";
 import { render, screen } from "@testing-library/react";
 import { APARTADOS, TABLAS, idDeBloque } from "./contenido";
 import { buscar, buscarConTotales, fueraDelCapitulo, tramoDeConsulta } from "./buscador";
-import { PATRON_REMISION, destinoDeRemision } from "./remisiones";
+import { OBRAS_NOMBRADAS, PATRON_REMISION, destinoDeRemision } from "./remisiones";
+import { BIBLIOGRAFIA } from "./contenido";
 import { DIFIERE_CAMPO, DIFIERE_PARAM, SISTEMAS_AMPLIACION } from "./ampliacion";
 import {
   restablecerPreferencias,
@@ -113,6 +114,21 @@ describe("remisiones internas del capítulo", () => {
           }
       }
     expect(n).toBeGreaterThan(10);
+  });
+  it("las obras nombradas son frases literales del capítulo y su referencia existe", () => {
+    const texto = APARTADOS.flatMap((a) =>
+      a.bloques.flatMap((b) =>
+        b.t === "p" ? [b.texto] : b.t === "lista" ? [b.intro ?? "", ...b.items] : [],
+      ),
+    ).join(" ");
+    for (const o of OBRAS_NOMBRADAS) {
+      expect(texto, o.frase).toContain(o.frase);
+      expect(
+        BIBLIOGRAFIA.some((r) => r.n === o.ref),
+        o.frase,
+      ).toBe(true);
+      expect(destinoDeRemision(o.frase)).toBe(`#/bibliografia/ref-${o.ref}`);
+    }
   });
   it("la Figura 3 es el bloque b5 del apartado 7", () => {
     const a = APARTADOS.find((x) => x.slug === "07-educacion")!;

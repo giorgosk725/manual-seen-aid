@@ -18,6 +18,8 @@ import { href } from "./rutas";
 import { plano } from "./marcado";
 import { FRAGMENTOS_EXTENDIDOS, textoDeFragmento } from "./extendida";
 import { CRITERIOS, FICHA_FILAS, SETS_INFUSION, SISTEMAS_AMPLIACION } from "./ampliacion";
+import { INFORMACION_PACIENTES, RESUMEN_CAPITULO } from "./pacientes/textos";
+import { PREGUNTAS } from "./contenido/test";
 import {
   fueraDelCapitulo,
   normalizar,
@@ -206,6 +208,37 @@ export function indice(): Entrada[] {
         ruta,
       });
   }
+  // Hojas para el paciente (V5 del autor y resumen de la editorial) y preguntas del test:
+  // también fuera del capítulo, en su grupo.
+  for (const s of INFORMACION_PACIENTES.secciones)
+    out.push({
+      id: `pac/info/${s.pregunta}`,
+      tipo: "pacientes",
+      titulo: `Información para pacientes · ${s.pregunta}`,
+      texto: s.parrafos.join(" "),
+      pagina: 0,
+      ruta: href("pacientes", "informacion"),
+    });
+  RESUMEN_CAPITULO.parrafos.forEach((t, i) =>
+    out.push({
+      id: `pac/resumen/${i}`,
+      tipo: "pacientes",
+      titulo: "Resumen del capítulo (hoja para el paciente)",
+      texto: t,
+      pagina: 0,
+      ruta: href("pacientes", "resumen"),
+    }),
+  );
+  PREGUNTAS.forEach((q, i) =>
+    out.push({
+      id: `test/${q.id}`,
+      tipo: "test",
+      titulo: `Autoevaluación · pregunta ${i + 1}`,
+      texto: [q.enunciado, ...q.opciones, q.explicacion].join(" "),
+      pagina: 0,
+      ruta: href("test"),
+    }),
+  );
   cache = out;
   return out;
 }

@@ -50,6 +50,25 @@ export const CIFRAS: Record<string, Cifra[]> = {
     { valor: "TAR > 250 ≥ 5 %", etiqueta: "necesidad clínica no cubierta", p: 5 },
   ],
   "07-educacion": [
+    // Figura 3 (p. 8, imagen): la fidelidad se coteja con su transcripción (figura3.ts).
+    {
+      valor: "0,1 UI/kg*",
+      etiqueta: "insulina rápida con pluma si β-OHB 1,0–2,9 mmol/l y no hay plan específico",
+      p: 8,
+      ancla: "b5",
+    },
+    {
+      valor: "0,15 UI/kg*",
+      etiqueta: "dosis total de rescate si β-OHB ≥1,5 mmol/l (no adicional)",
+      p: 8,
+      ancla: "b5",
+    },
+    {
+      valor: "1-2 h",
+      etiqueta: "reevaluar glucemia y β-OHB tras corregir; nueva dosis nunca antes de 2 h",
+      p: 8,
+      ancla: "b5",
+    },
     {
       valor: "10-15 min",
       etiqueta: "bolo prandial antes de comer (salvo hipoglucemia o descenso)",
@@ -220,6 +239,18 @@ export const CIFRAS: Record<string, Cifra[]> = {
       valor: "> 60 % · 0 %",
       etiqueta: "hospital: TIR 70–180 · TBR < 70; TAR > 180 < 25 %, > 250 < 5 %, 70–100 < 15 %",
       p: 20,
+      ancla: "ingreso",
+    },
+    {
+      valor: "50 % · 50 %",
+      etiqueta: "hospital: basal y prandial de partida si no hay perfil basal detallado",
+      p: 20,
+      ancla: "ingreso",
+    },
+    {
+      valor: "24 h",
+      etiqueta: "confirmar con glucemia capilar tras insertar un sensor nuevo",
+      p: 21,
       ancla: "ingreso",
     },
     {

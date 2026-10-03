@@ -8,7 +8,7 @@ test.describe("Navegación e historial", () => {
   }) => {
     await page.setViewportSize({ width: 393, height: 760 });
     await page.goto("/#/consultar/figura-3");
-    const boton = page.getByRole("button", { name: /β-OHB ≥3,0 mmol\/l/ });
+    const boton = page.getByRole("button", { name: /^β-OHB ≥3,0 mmol\/l/ });
     await boton.scrollIntoViewIfNeeded();
     const antes = await page.evaluate(() => window.scrollY);
     expect(antes).toBeGreaterThan(100);

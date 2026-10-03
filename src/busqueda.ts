@@ -5,7 +5,16 @@
 export interface Entrada {
   id: string;
   tipo:
-    "texto" | "tabla" | "figura" | "diagrama" | "referencia" | "sigla" | "extendida" | "ampliacion";
+    | "texto"
+    | "tabla"
+    | "figura"
+    | "diagrama"
+    | "referencia"
+    | "sigla"
+    | "extendida"
+    | "ampliacion"
+    | "pacientes"
+    | "test";
   titulo: string;
   texto: string;
   /* Página del capítulo (0 = fuera del capítulo). */
@@ -14,7 +23,8 @@ export interface Entrada {
 }
 
 /* Lo que no es texto del capítulo se muestra en un grupo aparte y rotulado. */
-export const fueraDelCapitulo = (e: Entrada) => e.tipo === "extendida" || e.tipo === "ampliacion";
+export const fueraDelCapitulo = (e: Entrada) =>
+  e.tipo === "extendida" || e.tipo === "ampliacion" || e.tipo === "pacientes" || e.tipo === "test";
 
 export const normalizar = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 

@@ -106,7 +106,7 @@ test.describe("Búsqueda y enlaces", () => {
   test("lo que no es del capítulo sale aparte y rotulado", async ({ page }) => {
     await page.goto("/#/buscar/Nightscout");
     await expect(
-      page.getByRole("heading", { name: /Fuera del capítulo · versión extendida y ampliación/ }),
+      page.getByRole("heading", { name: /Fuera del capítulo · versión extendida, ampliación/ }),
     ).toBeVisible();
     await page
       .getByRole("link", { name: /Versión extendida del autor · DIY: Nightscout y AAPS/ })

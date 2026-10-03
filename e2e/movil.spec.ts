@@ -41,7 +41,7 @@ test.describe("Móvil (393 px)", () => {
     page,
   }) => {
     await page.goto("/#/consultar/figura-3");
-    await page.getByRole("button", { name: /β-OHB ≥3,0 mmol\/l/ }).click();
+    await page.getByRole("button", { name: /^β-OHB ≥3,0 mmol\/l/ }).click();
     await expect(page.getByText("URGENCIAS / VALORACIÓN HOSPITALARIA INMEDIATA.")).toBeVisible();
     await sinScrollHorizontal(page, "Figura 3");
   });

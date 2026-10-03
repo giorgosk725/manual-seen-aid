@@ -1,7 +1,7 @@
 name: Deploy (Cloudflare Pages)
 
 # Publica https://manual-seen-aid.pages.dev con cada push a main, solo si pasan las mismas
-# puertas que la CI. Necesita el secreto CLOUDFLARE_API_TOKEN (permiso «Cloudflare Pages: Edit»).
+# puertas que la CI, e2e incluidas. Necesita el secreto CLOUDFLARE_API_TOKEN (permiso «Cloudflare Pages: Edit»).
 
 on:
   push:
@@ -39,6 +39,12 @@ jobs:
           npm run format:check
           npm run typecheck
           npm test
+      # Las e2e (escritorio, móvil 393 px, nocturno con axe, hojas en una cara) también son
+      # requisito para publicar: si fallan, no se despliega.
+      - name: Instala el navegador de Playwright
+        run: npx playwright install --with-deps chromium
+      - name: e2e (Playwright)
+        run: npm run test:e2e
       - name: Build
         run: npm run build
       - name: Publicar en Cloudflare Pages

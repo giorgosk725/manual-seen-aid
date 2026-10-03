@@ -129,7 +129,7 @@ export function Badge({
   tone = "slate",
   children,
 }: {
-  tone?: "slate" | "emerald" | "amber" | "red" | "sky";
+  tone?: "slate" | "emerald" | "amber" | "red" | "sky" | "violet";
   children: ReactNode;
 }) {
   const m = {
@@ -138,6 +138,7 @@ export function Badge({
     amber: "bg-amber-100 text-amber-800",
     red: "bg-red-100 text-red-800",
     sky: "bg-sky-100 text-sky-800",
+    violet: "bg-violet-50 text-violet-900",
   };
   return (
     <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${m[tone]}`}>
@@ -251,7 +252,7 @@ export function Segmented<T extends string>({
             type="button"
             onClick={() => onChange(o.id)}
             aria-pressed={on}
-            className={`flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 ${wrap ? "" : "flex-1"} ${on ? "text-white shadow-sm" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
+            className={`flex min-h-11 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-semibold transition sm:min-h-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 ${wrap ? "" : "flex-1"} ${on ? "text-white shadow-sm" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
             style={
               on
                 ? { background: o.gradient || "linear-gradient(135deg, #3f6e9f, #2f5680)" }

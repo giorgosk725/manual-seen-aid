@@ -53,7 +53,7 @@ describe("App", () => {
     render(<App />);
     await ir("#/consultar/figura-3");
     expect(screen.getByText(/Elige un tramo de β-OHB/)).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: /β-OHB 1,0-2,9 mmol\/l/ }));
+    await userEvent.click(screen.getByRole("button", { name: /^β-OHB 1,0-2,9 mmol\/l/ }));
     expect(screen.getByText(/0,1 UI\/kg/)).toBeInTheDocument();
     expect(
       screen.queryByText(/URGENCIAS \/ VALORACIÓN HOSPITALARIA INMEDIATA/),

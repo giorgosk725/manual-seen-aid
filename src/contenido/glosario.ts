@@ -58,10 +58,26 @@ export const GLOSARIO: Sigla[] = [
   { sigla: "PET", desarrollo: "tomografía por emisión de positrones", pagina: 22 },
   { sigla: "PID", desarrollo: "control proporcional-integral-derivativo", pagina: 3 },
   { sigla: "RM", desarrollo: "resonancia magnética", pagina: 21 },
+  { sigla: "SED", desarrollo: "Sociedad Española de Diabetes", pagina: 1 },
   { sigla: "TAR", desarrollo: "tiempo por encima del rango", pagina: 2 },
+  {
+    sigla: "TARp",
+    desarrollo: "objetivos específicos para la gestación (subíndice p)",
+    pagina: 17,
+  },
   { sigla: "TBR", desarrollo: "tiempo por debajo del rango", pagina: 2 },
+  {
+    sigla: "TBRp",
+    desarrollo: "objetivos específicos para la gestación (subíndice p)",
+    pagina: 17,
+  },
   { sigla: "TC", desarrollo: "tomografía computarizada", pagina: 21 },
   { sigla: "TIR", desarrollo: "tiempo en rango", pagina: 2 },
+  {
+    sigla: "TIRp",
+    desarrollo: "objetivos específicos para la gestación (subíndice p)",
+    pagina: 17,
+  },
   { sigla: "TITR", desarrollo: "tiempo en rango estrecho", pagina: 4 },
   { sigla: "UI", desarrollo: "unidades de insulina", pagina: 4 },
 ];

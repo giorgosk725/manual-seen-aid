@@ -19,11 +19,12 @@ export function QR({ texto, tam = 112, titulo }: { texto: string; tam?: number; 
       aria-label={titulo}
       width={tam}
       height={tam}
-      viewBox={`-2 -2 ${n + 4} ${n + 4}`}
+      viewBox={`-4 -4 ${n + 8} ${n + 8}`}
       shapeRendering="crispEdges"
       className="qr shrink-0 rounded bg-white"
     >
-      <rect x={-2} y={-2} width={n + 4} height={n + 4} fill="#ffffff" />
+      {/* Zona de silencio de 4 módulos alrededor (ISO/IEC 18004). */}
+      <rect x={-4} y={-4} width={n + 8} height={n + 8} fill="#ffffff" />
       <path d={d} fill="#000000" />
     </svg>
   );

@@ -172,6 +172,11 @@ function QueNecesitas() {
               >
                 <span className="flex items-center justify-between gap-2 text-xs text-slate-500">
                   <span className="truncate font-semibold">{r.entrada.titulo}</span>
+                  {r.entrada.pagina === 0 && (
+                    <span className="shrink-0 rounded-full bg-amber-100 px-1.5 text-[11px] font-semibold text-amber-900">
+                      Fuera del capítulo
+                    </span>
+                  )}
                   {r.entrada.pagina > 0 && (
                     <span className="pagina-badge">p. {r.entrada.pagina}</span>
                   )}
@@ -233,7 +238,7 @@ function QueNecesitas() {
           {ultimo && (
             <a
               href={ultimo.ruta}
-              className="flex items-center gap-3 rounded-xl border bg-white p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+              className="hidden items-center gap-3 rounded-xl border bg-white p-3 shadow-soft transition sm:flex hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
               style={{ borderColor: "#e6e6e6" }}
             >
               <BookOpen
@@ -310,6 +315,29 @@ function Franja({ className = "" }: { className?: string }) {
         <span key={c} className="flex-1" style={{ background: c }} />
       ))}
     </div>
+  );
+}
+
+/* «Seguir leyendo» compacto en la cabecera, solo en el móvil (en pantallas grandes ya se ve
+   debajo, en «¿Qué necesitas?»). */
+function SeguirLeyendoMovil() {
+  const ultimo = useUltimo();
+  if (!ultimo) return null;
+  return (
+    <a
+      href={ultimo.ruta}
+      className="mt-3 flex min-h-11 items-center gap-2 rounded-[3px] border-l-4 bg-slate-50 px-3 py-2 text-sm sm:hidden"
+      style={{ borderLeftColor: SEEN.azulOsc }}
+    >
+      <BookOpen size={15} className="shrink-0 text-slate-600" aria-hidden="true" />
+      <span className="min-w-0 flex-1">
+        <span className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+          Seguir leyendo
+        </span>
+        <span className="block truncate font-semibold text-slate-900">{ultimo.titulo}</span>
+      </span>
+      <ArrowRight size={14} className="shrink-0 text-slate-500" aria-hidden="true" />
+    </a>
   );
 }
 
@@ -448,6 +476,7 @@ export function Portada() {
                 Índice <ArrowRight size={15} aria-hidden="true" />
               </a>
             </div>
+            <SeguirLeyendoMovil />
             <ul className="mt-5 hidden flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600 sm:flex">
               <li>
                 <span className="font-semibold tabular-nums text-slate-900">

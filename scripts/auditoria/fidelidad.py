@@ -127,6 +127,8 @@ for slug, lista in app["cifras"].items():
     for c in lista:
         nums = numeros(c["valor"])
         txt = paginas[c["p"]]
+        if c["p"] == 8:  # la Figura 3 es imagen: se coteja también con su transcripción
+            txt += " " + " ".join(f["texto"] for f in app["figura3"])
         faltan = [n for n in nums if n not in txt]
         if faltan:
             donde = [p for p, t in paginas.items() if all(n in t for n in nums)][:4]

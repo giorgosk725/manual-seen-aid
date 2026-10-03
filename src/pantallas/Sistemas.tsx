@@ -151,11 +151,11 @@ function Ampliacion({ s }: { s: Sistema }) {
   const fuentes = s.sources.map((id) => ({ id, f: FUENTES[id] })).filter((x) => x.f);
   return (
     <section aria-labelledby="ampliacion" className="mt-8">
-      <div className="mb-3 rounded-2xl border border-amber-200 bg-amber-50 p-3">
-        <h2 id="ampliacion" className="text-base font-extrabold text-amber-900">
+      <div className="mb-3 rounded-2xl border border-violet-200 bg-violet-50 p-3">
+        <h2 id="ampliacion" className="text-base font-extrabold text-violet-900">
           Ampliación del autor · fuera del capítulo
         </h2>
-        <p className="mt-1 text-sm text-amber-900">
+        <p className="mt-1 text-sm text-violet-900">
           Ficha técnica validada por el autor en su proyecto asistente-aid, con sus fuentes al pie
           (última verificación: {s.verified}). No forma parte del texto del Manual SEEN. La
           disponibilidad y las condiciones pueden cambiar: confirmar siempre en la ficha técnica

@@ -2,10 +2,12 @@
    Modo «recorrido»: sospechar → comprobar → confirmar y medir → elegir el tramo de β-OHB →
    solo esa rama, paso a paso, con los pies de la figura. El color de cada tramo es
    señalización clínica (la misma de la figura). */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AlertTriangle,
   Ambulance,
+  ArrowDown,
+  Check,
   Clock3,
   Droplets,
   Eye,
@@ -175,9 +177,7 @@ function SospecharComprobar() {
         <ul className="space-y-1 text-sm text-slate-700">
           {FIGURA3.comprobar.items.map((it, i) => (
             <li key={i} className="flex gap-2">
-              <span aria-hidden="true" className="mt-0.5 text-emerald-700">
-                ☑
-              </span>
+              <Check size={15} aria-hidden="true" className="mt-0.5 shrink-0 text-emerald-700" />
               {it}
             </li>
           ))}
@@ -208,7 +208,7 @@ export function Figura3Lectura() {
         <a
           href={href("consultar", "figura-3")}
           className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
-          style={{ background: "linear-gradient(135deg, #514dbf, #4340a6)" }}
+          style={{ background: "linear-gradient(135deg, #3f6e9f, #2f5680)" }}
         >
           <Droplets size={15} aria-hidden="true" /> Recorrer paso a paso
         </a>
@@ -227,9 +227,46 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
     elegirRuta("consultar", "figura-3", t ?? undefined);
   };
   const actual = tramo ? FIGURA3.tramos.find((t) => t.clave === tramo)! : null;
+  const actuar = useRef<HTMLLIElement>(null);
+  // Entrar con un tramo ya elegido (enlace profundo, atajo de búsqueda): directo a su rama.
+  useEffect(() => {
+    if (valido) actuar.current?.scrollIntoView({ block: "start" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  /* Atajo: con la cetonemia ya medida, ir directo a su rama («Actuar»). */
+  const irATramo = (t: Tramo) => {
+    elegir(t);
+    requestAnimationFrame(() => actuar.current?.scrollIntoView({ block: "start" }));
+  };
   return (
     <section aria-label="Figura 3, recorrido paso a paso">
       <Cabecera />
+      <nav
+        aria-label="Ir directamente al tramo"
+        className="no-imprimir mb-4 rounded-xl border bg-slate-50 p-2.5"
+        style={{ borderColor: "#e6e6e6" }}
+      >
+        <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-slate-700">
+          <ArrowDown size={13} aria-hidden="true" /> ¿Ya tienes el β-OHB? Ir a su rama:
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {FIGURA3.tramos.map((t) => {
+            const hex = TRAMO_HEX[t.clave];
+            return (
+              <button
+                key={t.clave}
+                type="button"
+                onClick={() => irATramo(t.clave)}
+                aria-label={`Ir a la rama: ${t.rango}`}
+                className="inline-flex min-h-9 items-center rounded-full border bg-white px-3 text-xs font-bold transition hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                style={{ borderColor: hex.border, color: hex.ink }}
+              >
+                {t.rango}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
       <ol className="space-y-4">
         <li>
           <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-500">
@@ -289,7 +326,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
             })}
           </div>
         </li>
-        <li aria-live="polite">
+        <li ref={actuar} aria-live="polite" className="scroll-mt-20">
           <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-500">
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-white">
               3

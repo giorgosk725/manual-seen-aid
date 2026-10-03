@@ -109,6 +109,14 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     `src/ampliacion/difiere.ts` quotes the chapter literally with its page (tested). Remove an
     entry only when the author decides.
 
+15. **PWA assets are generated, not hand-edited (0.6.0).** Icons: `node scripts/iconos.mjs`
+    (favicon.svg, pwa-192/512 «any», pwa-maskable-512, apple-touch-icon). Install screenshots:
+    `BASE_URL=http://localhost:5181 node scripts/capturas-manifiesto.mjs` → public/capturas-app
+    (sizes must match `vite.config.ts`; excluded from the precache). The manifest `id` is
+    `/manual-seen-aid`: never change it (it identifies the installed app). QR codes and «Cómo
+    citar» use `direccion()` from `src/compartir.ts`, which maps localhost and Pages previews to
+    the public URL. `public/404.html` serves unknown real paths (routes are hash-based).
+
 ## 2. Quality gates (all must pass before a push)
 
 ```bash

@@ -218,7 +218,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                         on ? undefined : s.id + (sistema ? ":" + sistema : ""),
                       )
                     }
-                    className={`flex w-full items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "bg-white text-slate-800 hover:border-slate-400"}`}
+                    className={`flex min-h-11 w-full items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "bg-white text-slate-800 hover:border-slate-400"}`}
                     style={
                       on
                         ? { background: hex.strong, borderColor: hex.strong }
@@ -227,14 +227,17 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                   >
                     {on && <Check size={14} aria-hidden="true" />}
                     <span className="flex-1">{s.etiqueta}</span>
-                    <span className={`text-[11px] ${on ? "text-white/80" : "text-slate-500"}`}>
-                      T{s.tabla.slice(1)}
+                    <span
+                      className={`shrink-0 text-[11px] ${on ? "text-white/80" : "text-slate-500"}`}
+                    >
+                      Tabla {s.tabla.slice(1)}
                     </span>
                   </button>
                 </li>
               );
             })}
           </ul>
+          <OtrasSituaciones />
         </div>
         <div aria-live="polite" className={sit ? "order-first lg:order-none" : undefined}>
           {!sit && (
@@ -412,6 +415,37 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
         </div>
       </div>
     </div>
+  );
+}
+
+/* Situaciones especiales del capítulo que no están en las Tablas 4 y 6: se leen en su
+   subapartado del apartado 10 (el ejercicio y las exploraciones ya están en la lista). */
+function OtrasSituaciones() {
+  const a = APARTADOS.find((x) => x.slug === "10-situaciones")!;
+  const subs = a.bloques.filter(
+    (b): b is Extract<typeof b, { t: "h3" }> =>
+      b.t === "h3" && b.id !== "ejercicio" && b.id !== "exploraciones",
+  );
+  return (
+    <nav aria-label="Otras situaciones del capítulo" className="mt-4">
+      <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
+        Otras situaciones (sin tabla)
+      </div>
+      <ul className="space-y-1">
+        {subs.map((b) => (
+          <li key={b.id}>
+            <a
+              href={href("capitulo", a.slug, b.id)}
+              className="flex min-h-11 items-center gap-2 rounded-lg border bg-white px-3 py-2 text-sm text-slate-800 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+              style={{ borderColor: "#e6e6e6" }}
+            >
+              <span className="flex-1">{b.texto}</span>
+              <span className="pagina-badge shrink-0">p. {b.p}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
 
