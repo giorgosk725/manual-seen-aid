@@ -22,11 +22,23 @@ FUENTES NUEVAS (todas mías; léelas enteras antes de proponer nada)
   NEW NEW.pdf (24-9-2026).
 - Cuestionario de autoevaluación ya escrito (10 preguntas con casos):
   C:\Users\giorg\OneDrive\Capitulo SEEN\30 mayo\Cuestionario_autoevaluacion_AID_SEEN_formato_manual_v2.docx
-- Información para pacientes: versión final C:\Users\giorg\Downloads\Informacion_pacientes_AID_SEEN_version_definitiva_V5.pdf
-  (y su .docx en OneDrive\Desktop\Capitulo SEEN\); maquetada por la editorial: OneDrive\Documents\Capitulo
-  SEEN AID\Tratamiento-insulínico-…_Pacientes.pdf
-- Resumen: C:\Users\giorg\Downloads\Resumen_AID_SEEN_version_definitiva_V6.pdf (y el maquetado
-  …_Resumen.pdf en la misma carpeta de Documents).
+- ÚLTIMOS FICHEROS DE LA EDITORIAL (recibidos el 3-10-2026), en C:\Users\giorg\OneDrive\Desktop\:
+  «Tratamiento-insulínico-…_Completo.pdf», «…_Resumen.pdf» y «…_Pacientes.pdf», maquetación del
+  30-9-2026. OJO: los nombres usan acentos descompuestos (NFD); ábrelos con la ruta que devuelve
+  os.listdir, no tecleándola.
+  · Completo (25 págs): comprobado el 3-10-2026, es idéntico página a página al PDF anotado
+  (C:\Users\giorg\Downloads\Capitulo_AID_SEEN_30-09-2026_ANOTADO_FINAL_11_OBSERVACIONES.pdf), pero sin
+  las notas: la editorial AÚN NO ha aplicado las 11 correcciones. La app sigue mostrando el texto con
+  las correcciones aplicadas (docs/CORRECCIONES.md); no cambies el capítulo por este fichero. Cuando
+  llegue la versión con las correcciones aplicadas, pasa scripts/auditoria/fidelidad.py con ella y
+  dime qué difiere.
+  · Información para pacientes: la fuente para la app es MI versión corregida
+  C:\Users\giorg\Downloads\Informacion_pacientes_AID_SEEN_version_definitiva_V5.docx (1432 palabras).
+  El «…_Pacientes.pdf» maquetado (2 págs) es anterior a mis correcciones y difiere en unas 30 frases
+  («tubo» en vez de «catéter», hipoglucemia, regla de 270 mg/dl en el ejercicio, «cetonas en
+  sangre»…). Enséñame esa lista para que confirme que la V5 es lo que publicará la editorial (las
+  correcciones enviadas están en C:\Users\giorg\OneDrive\Documents\Capitulo SEEN AID\Correcciones\Pacientes\).
+  · Resumen (1 pág): el maquetado coincide con mi V6 salvo el título; usa el maquetado.
 - Mis presentaciones de 2023 con imágenes propias: C:\Users\giorg\OneDrive\Hybrid Closed Loop\26 Octubre
   2023 Sistemas Hibridos De Asa Cerrada.pptx y C:\Users\giorg\OneDrive\Sistemas Hibridos De Asa Cerrada 2023.pptx
   (contenido de 2023: muchas cifras estarán superadas; sirven por las imágenes, no por el texto).
@@ -49,7 +61,7 @@ QUÉ QUIERO (por orden de prioridad)
    continuar el sistema en el hospital y transición a pauta alternativa (pp. 20–21), Tabla 6 como
    mapa visual por exploración, Figura 2 dibujada (elección compartida) e interrupción del sistema
    como línea de tiempo. Todo entra en la galería, en su apartado y en la búsqueda.
-3. Para el paciente. Información para pacientes y resumen, literales de la versión final, en una
+3. Para el paciente. Información para pacientes (V5) y resumen (maquetado), literales, en una
    sección propia, imprimibles en una cara y con QR para compartir desde la consulta. Más una hoja
    «Plan de seguridad» por sistema hecha solo con texto del capítulo (p. 7, Figura 3 y Tabla 4), con
    campos en blanco para rellenar a mano (la app no guarda nada).
