@@ -20,12 +20,13 @@ import {
   Table2,
   Target,
 } from "lucide-react";
-import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
-import { APARTADOS, CAPITULO, DIAGRAMAS, INFO, algoritmoDelCapitulo } from "../contenido";
+import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { APARTADOS, CAPITULO, DIAGRAMAS, INFO, TABLAS, algoritmoDelCapitulo } from "../contenido";
 import { ICONO_APARTADO, ICONO_DIAGRAMA } from "../nav";
 import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
 import { href, navegar } from "../rutas";
-import { buscar, marcar, tramoDeConsulta } from "../buscador";
+import { marcar, tramoDeConsulta } from "../busqueda";
+import { precargarBuscador, useBuscador } from "../useBuscador";
 import { AtajoTramo } from "../componentes/AtajoTramo";
 import { useFavoritos, useLeidos, useUltimo } from "../prefs";
 import { CabeceraEditorial, Revelar } from "../ui";
@@ -111,7 +112,8 @@ const ATAJOS = [
 
 function QueNecesitas() {
   const [q, setQ] = useState("");
-  const res = q.trim().length >= 2 ? buscar(q, 5, 2) : [];
+  const motor = useBuscador(q.length > 0);
+  const res = motor && q.trim().length >= 2 ? motor.buscar(q, 5, 2) : [];
   const ultimo = useUltimo();
   const favoritos = useFavoritos();
   return (
@@ -137,6 +139,7 @@ function QueNecesitas() {
           <Search size={17} className="shrink-0 text-slate-500" aria-hidden="true" />
           <input
             id="portada-q"
+            onFocus={() => void precargarBuscador()}
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Busca: modo sueño, glargina, cetonemia, TBR…"
@@ -146,7 +149,7 @@ function QueNecesitas() {
         </div>
       </form>
       {tramoDeConsulta(q) && <AtajoTramo consulta={q} />}
-      {q.trim().length >= 2 && res.length === 0 && (
+      {motor && q.trim().length >= 2 && res.length === 0 && (
         <p
           role="status"
           className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
@@ -596,7 +599,7 @@ export function Portada() {
         </h2>
         <ul className="grid grid-cols-2 gap-2 lg:grid-cols-4">
           {ORDEN_SISTEMAS.map((id, c) => {
-            const s = SISTEMAS_AMPLIACION[c];
+            const nombre = TABLAS.T1.columnas[c];
             const h = SISTEMA_HEX[c];
             return (
               <li key={id}>
@@ -620,7 +623,7 @@ export function Portada() {
                   />
                   <span className="block px-3 py-2">
                     <span className="block text-sm font-extrabold" style={{ color: h.ink }}>
-                      {s.name}
+                      {nombre}
                     </span>
                     <span className="block truncate text-[11px] text-slate-500">
                       {algoritmoDelCapitulo(c)}

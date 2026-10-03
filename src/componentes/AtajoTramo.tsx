@@ -1,7 +1,7 @@
 /* Atajo de la búsqueda: si se escribe una cifra de β-OHB («β-OHB 1,2», «cetonemia 0,8»),
    se ofrece ir directamente a su tramo de la Figura 3. */
 import { ArrowRight, Droplets } from "lucide-react";
-import { tramoDeConsulta } from "../buscador";
+import { tramoDeConsulta } from "../busqueda";
 import { ESCALA_CETONEMIA } from "../contenido/diagramas";
 import { href } from "../rutas";
 

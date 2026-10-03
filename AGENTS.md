@@ -98,7 +98,14 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     in a second place (a stale copy re-mounted the previous screen and broke scroll and
     «Seguir leyendo»; see docs/AUDITORIA_2026-10-03.md).
 
-13. **Author's data that differs from the chapter** is marked, not silently shown:
+13. **Lazy screens (0.5.3).** Only Portada, Capitulo and Apartado (and what they import) are
+    in the entry bundle; every other screen is `React.lazy` in `App.tsx`, one chunk per screen
+    module, with `<Suspense>` inside the Shell's per-screen ErrorBoundary. Entry screens must
+    import system ids/photos from `ampliacion/ids` (never `ampliacion`, which pulls the author's
+    data) and search helpers from `busqueda` (never `buscador`, the index; load it with
+    `useBuscador`/`precargarBuscador`). `src/auditoria.test.tsx` guards this.
+
+14. **Author's data that differs from the chapter** is marked, not silently shown:
     `src/ampliacion/difiere.ts` quotes the chapter literally with its page (tested). Remove an
     entry only when the author decides.
 

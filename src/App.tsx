@@ -1,24 +1,57 @@
-/* Enrutador: una pantalla por ruta hash. */
-import { apartadoPorSlug } from "./contenido";
+/* Enrutador: una pantalla por ruta hash. Portada, índice y apartados se cargan al entrar
+   (son la puerta y la lectura); el resto de pantallas, cada grupo en su trozo, con React.lazy
+   la primera vez que se visitan (el service worker ya las tiene para usar sin conexión). */
+import { lazy } from "react";
+import { apartadoPorSlug, DIAGRAMAS, TABLAS } from "./contenido";
 import { useRuta } from "./rutas";
 import { Shell } from "./componentes/Shell";
 import { Portada } from "./pantallas/Portada";
 import { CapituloEntero, IndiceCapitulo } from "./pantallas/Capitulo";
 import { Apartado } from "./pantallas/Apartado";
-import { Figura3Pantalla, Glosario, HubConsultar, Infografia, Tablas } from "./pantallas/Consultar";
-import { Bibliografia, Buscar, Cambios, Mas, Sobre, Test } from "./pantallas/Otras";
-import { FichaSistema, HubSistemas } from "./pantallas/Sistemas";
-import { sistemaPorId } from "./ampliacion";
-import { DiagramaPantalla, Visual } from "./pantallas/Visual";
-import { DIAGRAMAS } from "./contenido";
-import { Interrupcion, RevisarDescarga, SituacionSistema } from "./pantallas/Recorridos";
-import { TABLAS } from "./contenido";
-import {
-  HubPacientes,
-  InformacionPacientes,
-  PlanSeguridad,
-  ResumenPacientes,
-} from "./pantallas/Pacientes";
+import { ORDEN_SISTEMAS } from "./ampliacion/ids";
+import type { SistemaId } from "./ampliacion/tipos";
+
+const consultar = () => import("./pantallas/Consultar");
+const HubConsultar = lazy(() => consultar().then((m) => ({ default: m.HubConsultar })));
+const Tablas = lazy(() => consultar().then((m) => ({ default: m.Tablas })));
+const Figura3Pantalla = lazy(() => consultar().then((m) => ({ default: m.Figura3Pantalla })));
+const Infografia = lazy(() => consultar().then((m) => ({ default: m.Infografia })));
+const Glosario = lazy(() => consultar().then((m) => ({ default: m.Glosario })));
+
+const recorridos = () => import("./pantallas/Recorridos");
+const SituacionSistema = lazy(() => recorridos().then((m) => ({ default: m.SituacionSistema })));
+const RevisarDescarga = lazy(() => recorridos().then((m) => ({ default: m.RevisarDescarga })));
+const Interrupcion = lazy(() => recorridos().then((m) => ({ default: m.Interrupcion })));
+
+const otras = () => import("./pantallas/Otras");
+const Bibliografia = lazy(() => otras().then((m) => ({ default: m.Bibliografia })));
+const Buscar = lazy(() => otras().then((m) => ({ default: m.Buscar })));
+const Cambios = lazy(() => otras().then((m) => ({ default: m.Cambios })));
+const Mas = lazy(() => otras().then((m) => ({ default: m.Mas })));
+const Sobre = lazy(() => otras().then((m) => ({ default: m.Sobre })));
+const Test = lazy(() => otras().then((m) => ({ default: m.Test })));
+
+const sistemas = () => import("./pantallas/Sistemas");
+const FichaSistema = lazy(() => sistemas().then((m) => ({ default: m.FichaSistema })));
+const HubSistemas = lazy(() => sistemas().then((m) => ({ default: m.HubSistemas })));
+
+const visual = () => import("./pantallas/Visual");
+const DiagramaPantalla = lazy(() => visual().then((m) => ({ default: m.DiagramaPantalla })));
+const Visual = lazy(() => visual().then((m) => ({ default: m.Visual })));
+
+const pacientes = () => import("./pantallas/Pacientes");
+const HubPacientes = lazy(() => pacientes().then((m) => ({ default: m.HubPacientes })));
+const InformacionPacientes = lazy(() =>
+  pacientes().then((m) => ({ default: m.InformacionPacientes })),
+);
+const PlanSeguridad = lazy(() => pacientes().then((m) => ({ default: m.PlanSeguridad })));
+const ResumenPacientes = lazy(() => pacientes().then((m) => ({ default: m.ResumenPacientes })));
+
+/* Nombre de un sistema para el título de la pestaña: el de la Tabla 1 del capítulo. */
+const nombreDeSistema = (id: string | undefined) => {
+  const c = ORDEN_SISTEMAS.indexOf(id as SistemaId);
+  return c >= 0 ? TABLAS.T1.columnas[c] : undefined;
+};
 
 function NoEncontrada() {
   return (
@@ -113,7 +146,7 @@ export default function App() {
       break;
     case "sistemas":
       pantalla = ruta.sub ? <FichaSistema id={ruta.sub} /> : <HubSistemas />;
-      titulo = sistemaPorId(ruta.sub)?.name ?? "Sistemas";
+      titulo = nombreDeSistema(ruta.sub) ?? "Sistemas";
       break;
     case "buscar":
       pantalla = <Buscar inicial={ruta.sub} />;

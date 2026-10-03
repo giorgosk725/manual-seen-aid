@@ -10,7 +10,7 @@ import type { Tabla } from "../contenido";
 import { Lineas, Texto } from "../texto";
 import { Enlace, PaginaBadge } from "../ui";
 import { BRAND_ACCENT, SISTEMA_HEX } from "../tokens";
-import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion";
+import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
 
 const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];

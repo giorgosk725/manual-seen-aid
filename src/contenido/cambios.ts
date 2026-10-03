@@ -8,13 +8,21 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.5.2";
+export const VERSION_APP = "0.5.3";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-03",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — figuras más ligeras`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — arranque más rápido`,
+    detalle: [
+      "Al abrir la app solo se carga lo necesario para la portada, el índice y los apartados; el resto de pantallas (consultar, recorridos, sistemas, figuras y diagramas, para el paciente, búsqueda, bibliografía y test) llega la primera vez que se visita. El índice de búsqueda se pide al buscar por primera vez. El código que se descarga al arrancar baja de 196 a 150 kB comprimidos y la puntuación de rendimiento en el móvil sube de 89-92 a 94-95. Sin conexión todo sigue funcionando: la app instalada guarda todas las pantallas.",
+    ],
+  },
+  {
+    fecha: "2026-10-03",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.5.2 — figuras más ligeras",
     detalle: [
       "Las cuatro figuras originales (Figuras 1, 2 y 3 e infografía) pasan a WebP sin pérdida: los mismos píxeles, comprobados uno a uno, en la mitad de peso (de 1,16 MB a 0,61 MB). La app instalada descarga y guarda para usar sin conexión medio megabyte menos.",
     ],

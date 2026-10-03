@@ -2,6 +2,7 @@
    barra inferior móvil (5 destinos), paleta de búsqueda (Ctrl K) y aviso de versión nueva. */
 import {
   Fragment,
+  Suspense,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -29,7 +30,8 @@ import { consumirNavegacionNueva, href, marcarNavegacionNueva, type Ruta } from 
 import { TAMANOS, useLeidos, useNocturno, useTamanoLetra } from "../prefs";
 import { VolverArriba } from "./Lectura";
 import { ErrorBoundary, Modal } from "../ui";
-import { buscar, fueraDelCapitulo, marcar } from "../buscador";
+import { fueraDelCapitulo, marcar } from "../busqueda";
+import { useBuscador } from "../useBuscador";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
 
 /* Destinos que viven bajo #/consultar/<id>. */
@@ -48,10 +50,25 @@ function activo(ruta: Ruta, seccion: string, sub?: string) {
   return sub ? ruta.sub === sub : true;
 }
 
+/* ---------- Espera mientras llega una pantalla perezosa ---------- */
+function CargandoPantalla() {
+  const [ver, setVer] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setVer(true), 200);
+    return () => clearTimeout(t);
+  }, []);
+  return (
+    <div role="status" aria-live="polite" data-cargando="" className="min-h-[60vh] py-10">
+      {ver && <p className="text-sm text-slate-500">Cargando…</p>}
+    </div>
+  );
+}
+
 /* ---------- Paleta de búsqueda (Ctrl K) ---------- */
 function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [q, setQ] = useState("");
-  const res = q.trim().length >= 2 ? buscar(q, 12) : [];
+  const motor = useBuscador(open);
+  const res = motor && q.trim().length >= 2 ? motor.buscar(q, 12) : [];
   useEffect(() => {
     if (!open) setQ("");
   }, [open]);
@@ -599,7 +616,9 @@ export function Shell({
           className="pantalla-in mx-auto max-w-5xl px-3 pb-24 pt-4 sm:px-5 md:pb-10"
         >
           {/* Un fallo en una pantalla deja en pie la barra lateral y la navegación. */}
-          <ErrorBoundary>{children}</ErrorBoundary>
+          <ErrorBoundary>
+            <Suspense fallback={<CargandoPantalla />}>{children}</Suspense>
+          </ErrorBoundary>
         </div>
       </main>
       <Inferior ruta={ruta} />

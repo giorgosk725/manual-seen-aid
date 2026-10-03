@@ -168,3 +168,23 @@ describe("figuras originales", () => {
     ).toEqual([]);
   });
 });
+
+describe("pantallas perezosas", () => {
+  const fuentes = import.meta.glob(
+    ["./App.tsx", "./componentes/Shell.tsx", "./pantallas/Portada.tsx", "./pantallas/Apartado.tsx"],
+    { query: "?raw", import: "default", eager: true },
+  ) as Record<string, string>;
+  it("App solo carga al entrar la portada, el índice y los apartados", () => {
+    const app = fuentes["./App.tsx"];
+    for (const m of ["Consultar", "Otras", "Sistemas", "Visual", "Recorridos", "Pacientes"]) {
+      expect(app, m).not.toContain(`from "./pantallas/${m}"`);
+      expect(app, m).toContain(`import("./pantallas/${m}")`);
+    }
+  });
+  it("las pantallas de entrada no arrastran el índice de búsqueda ni los datos de la ampliación", () => {
+    for (const [f, src] of Object.entries(fuentes)) {
+      expect(src, f).not.toMatch(/from "\.\.?\/buscador"/);
+      expect(src, f).not.toMatch(/from "\.\.?\/ampliacion"/);
+    }
+  });
+});

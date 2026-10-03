@@ -10,7 +10,7 @@ import { TablaVista } from "../componentes/TablaVista";
 import { Figura3Recorrido } from "../componentes/Figura3Vista";
 import { ImagenFigura } from "../componentes/FiguraVista";
 import { Texto } from "../texto";
-import { normalizar } from "../buscador";
+import { normalizar } from "../busqueda";
 import { VersionExtendida } from "../componentes/VersionExtendida";
 import { EnlaceEducativa } from "../componentes/Lectura";
 import { extendidosDeTabla } from "../extendida";

@@ -14,6 +14,8 @@ export default defineConfig({
           if (id.includes("node_modules")) {
             if (/[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id)) return "react";
             if (id.includes("lucide-react")) return undefined;
+            // El QR solo lo usan las hojas para el paciente: va con su pantalla perezosa.
+            if (id.includes("qrcode-generator")) return undefined;
             return "vendor";
           }
           // El contenido del capítulo en su propio trozo: cambia con cada revisión del

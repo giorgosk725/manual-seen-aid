@@ -1,16 +1,18 @@
 /* Pantallas: la portada, un apartado con tabla, el recorrido de la Figura 3, el filtro por
    sistema, la paleta de búsqueda y el test. Más una auditoría axe (sin contraste: jsdom). */
 import { describe, expect, it } from "vitest";
-import { render, screen, within, act, fireEvent } from "@testing-library/react";
+import { render, screen, within, act, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
 import App from "./App";
 
+/* Navega y espera a que la pantalla (perezosa, React.lazy) haya llegado. */
 const ir = async (hash: string) => {
   await act(async () => {
     window.location.hash = hash;
     window.dispatchEvent(new HashChangeEvent("hashchange"));
   });
+  await waitFor(() => expect(document.querySelector("[data-cargando]")).toBeNull());
 };
 
 const AXE = {

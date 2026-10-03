@@ -28,7 +28,7 @@ import {
   type TonoFranja,
 } from "../contenido/diagramas";
 import { F2, FIGURA3, TABLAS, algoritmoDelCapitulo, ubicacionDeDiagrama } from "../contenido";
-import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion";
+import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
 import { BotonImprimir, PaginaBadge, Segmented } from "../ui";
 import { SISTEMA_HEX, TRAMO_HEX } from "../tokens";
