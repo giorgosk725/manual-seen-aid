@@ -6,14 +6,13 @@ import { createRequire } from "node:module";
 
 const AXE = createRequire(import.meta.url).resolve("axe-core/axe.min.js");
 
-// Mismas reglas desactivadas que en jsdom: la app es una SPA con un unico main y el
-// orden de encabezados lo gobierna el shell, no cada pantalla.
+// La app es una SPA con un unico main. Desde la 0.6.1 el orden de encabezados y los puntos
+// de referencia unicos SI se comprueban (tablas, figuras y diagramas toman su nivel del
+// contexto; los <aside> llevan nombre).
 const DESACTIVADAS = {
   region: { enabled: false },
   "page-has-heading-one": { enabled: false },
   "landmark-one-main": { enabled: false },
-  "landmark-unique": { enabled: false },
-  "heading-order": { enabled: false },
 };
 
 type Violacion = { id: string; impact?: string; nodes: { target: string[] }[] };

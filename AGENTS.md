@@ -117,6 +117,20 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     citar» use `direccion()` from `src/compartir.ts`, which maps localhost and Pages previews to
     the public URL. `public/404.html` serves unknown real paths (routes are hash-based).
 
+16. **Search (0.6.1).** `src/busqueda.ts` holds the light part (types, `terminosDe` with the
+    query synonyms, `posiciones` — short acronyms match whole words only —, `marcar`,
+    `tramoDeConsulta`); `src/buscador.ts` the index, loaded lazily with `useBuscador` (which
+    exposes `estado` and `reintentar`). «Ir a» entries (`tipo: "atajo"`) point to the
+    consultation tools; situations come from `src/situaciones.ts`. Synonyms only widen what is
+    found; they never change chapter text.
+
+17. **Headings and dialogs.** Tables, figures, diagrams and extended fragments take their
+    heading level from `NivelTitulo` (`src/nivel-contexto.ts`; Bloques sets it per block, the
+    standalone screens set 2). axe `heading-order` and `landmark-unique` are enforced in e2e.
+    `Modal` pushes a history entry so Back closes it. A chunk that fails to load reloads once
+    (`src/recarga.ts`). Night mode is a single store (`useNocturno`, `public/tema.js` before
+    paint); it is saved only when the reader chooses.
+
 ## 2. Quality gates (all must pass before a push)
 
 ```bash

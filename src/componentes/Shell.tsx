@@ -32,6 +32,7 @@ import { VolverArriba } from "./Lectura";
 import { ErrorBoundary, Modal } from "../ui";
 import { fueraDelCapitulo, marcar, paginaDe } from "../busqueda";
 import { useBuscador } from "../useBuscador";
+import { AvisosBusqueda } from "./AvisosBusqueda";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
 
 /* Destinos que viven bajo #/consultar/<id>. */
@@ -67,8 +68,9 @@ function CargandoPantalla() {
 /* ---------- Paleta de búsqueda (Ctrl K) ---------- */
 function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [q, setQ] = useState("");
-  const motor = useBuscador(open);
-  const res = motor && q.trim().length >= 2 ? motor.buscar(q, 12) : [];
+  const { motor, estado, reintentar } = useBuscador(open);
+  const busqueda = motor && q.trim().length >= 2 ? motor.buscarConTotales(q, 12) : null;
+  const res = busqueda?.resultados ?? [];
   useEffect(() => {
     if (!open) setQ("");
   }, [open]);
@@ -93,13 +95,29 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
             Esc
           </kbd>
         </div>
+        {q.trim().length >= 2 && <AvisosBusqueda q={q} parcial={busqueda?.parcial} />}
         {q.trim().length >= 2 && (
           <ul
             className="mt-2 max-h-[60vh] divide-y overflow-y-auto"
             style={{ borderColor: "#e6e6e6" }}
             aria-label="Resultados"
           >
-            {res.length === 0 && (
+            {estado === "cargando" && (
+              <li className="px-2 py-3 text-sm text-slate-600">Cargando el índice…</li>
+            )}
+            {estado === "error" && (
+              <li className="flex flex-wrap items-center gap-2 px-2 py-3 text-sm text-slate-700">
+                No se pudo cargar el índice de búsqueda.
+                <button
+                  type="button"
+                  onClick={reintentar}
+                  className="rounded-md border border-slate-300 px-2 py-1 text-xs font-semibold hover:border-slate-500"
+                >
+                  Reintentar
+                </button>
+              </li>
+            )}
+            {estado === "listo" && res.length === 0 && (
               <li className="px-2 py-3 text-sm text-slate-600">
                 Nada en el capítulo con esas palabras.
               </li>
@@ -293,7 +311,10 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
     </div>
   );
   return (
-    <aside className="barra-lateral fixed inset-y-0 left-0 z-30 hidden w-64 flex-col overflow-y-auto px-3 py-4 md:flex">
+    <aside
+      aria-label="Menú del capítulo"
+      className="barra-lateral fixed inset-y-0 left-0 z-30 hidden w-64 flex-col overflow-y-auto px-3 py-4 md:flex"
+    >
       <a
         href="#/"
         aria-label="Manual SEEN · AID Diabetes, inicio"
@@ -546,7 +567,7 @@ export function Shell({
           <a
             href="#/"
             aria-label="Manual SEEN · AID Diabetes, inicio"
-            className="min-w-0 shrink-0 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
+            className="inline-flex min-h-11 min-w-0 shrink-0 items-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
           >
             <Rotulo compacto />
           </a>

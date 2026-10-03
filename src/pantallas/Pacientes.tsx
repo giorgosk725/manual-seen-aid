@@ -5,9 +5,17 @@
    12 pt, a doble cara: dos o tres caras), y lleva un QR para abrirla en el móvil. La app no guarda nada de lo que se escribe:
    no hay campos, solo líneas en blanco para el papel. */
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowRight, FileText, Link2, ListChecks, Printer, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  FileText,
+  Link2,
+  ListChecks,
+  Printer,
+  QrCode,
+  ShieldCheck,
+} from "lucide-react";
 import { CAPITULO, FIGURA3, TABLAS, apartadoPorSlug, idDeBloque } from "../contenido";
-import { FOTO_SISTEMA, ORDEN_SISTEMAS, sistemaPorId } from "../ampliacion";
+import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import type { SistemaId } from "../ampliacion/tipos";
 import {
   AUTOR_PACIENTES,
@@ -16,7 +24,7 @@ import {
   TITULO_CAPITULO_PACIENTES,
 } from "../pacientes/textos";
 import { elegirRuta, href } from "../rutas";
-import { CabeceraEditorial, Segmented, ToneCard } from "../ui";
+import { CabeceraEditorial, Modal, Segmented, ToneCard } from "../ui";
 import { guardarFormatoHoja, useFormatoHoja, type FormatoHoja } from "../prefs";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { Texto } from "../texto";
@@ -41,6 +49,7 @@ function Acciones({
   titulo: string;
 }) {
   const [aviso, setAviso] = useState("");
+  const [verQR, setVerQR] = useState(false);
   const formato = useFormatoHoja();
   const compartir = async () => {
     const url = direccion(ruta);
@@ -92,6 +101,31 @@ function Acciones({
         >
           <Link2 size={15} aria-hidden="true" /> Compartir el enlace
         </button>
+        <button
+          type="button"
+          onClick={() => setVerQR(true)}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        >
+          <QrCode size={15} aria-hidden="true" /> Mostrar el QR
+        </button>
+        <Modal open={verQR} onClose={() => setVerQR(false)} ariaLabel={`Código QR: ${titulo}`}>
+          <div className="flex flex-col items-center gap-3 p-5 text-center">
+            <QR
+              texto={direccion(ruta)}
+              tam={260}
+              titulo={`Código QR para abrir esta hoja: ${direccion(ruta)}`}
+            />
+            <p className="text-sm font-semibold text-slate-900">{titulo}</p>
+            <p className="break-all text-xs text-slate-600">{direccion(ruta)}</p>
+            <button
+              type="button"
+              onClick={() => setVerQR(false)}
+              className="min-h-11 rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:border-slate-500"
+            >
+              Cerrar
+            </button>
+          </div>
+        </Modal>
         {aviso && (
           <span role="status" className="break-all text-xs text-slate-600">
             {aviso}
@@ -328,12 +362,37 @@ export function ResumenPacientes() {
 }
 
 function Volver() {
+  const ruta = typeof window === "undefined" ? "" : window.location.hash;
+  const hojas = [
+    { href: href("pacientes", "informacion"), t: "Información" },
+    { href: href("pacientes", "resumen"), t: "Resumen" },
+    { href: href("pacientes", "plan"), t: "Plan de seguridad" },
+  ];
   return (
-    <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
-      <a href={href("pacientes")} className="font-semibold hover:underline">
-        Para el paciente
+    <nav
+      aria-label="Hojas para el paciente"
+      className="no-imprimir mb-3 flex flex-wrap items-center gap-1.5"
+    >
+      <a
+        href={href("pacientes")}
+        className="inline-flex min-h-11 items-center pr-2 text-sm font-semibold text-slate-600 hover:underline"
+      >
+        Para el paciente ›
       </a>
-    </div>
+      {hojas.map((h) => {
+        const on = ruta.startsWith(h.href);
+        return (
+          <a
+            key={h.href}
+            href={h.href}
+            aria-current={on ? "page" : undefined}
+            className={`inline-flex min-h-11 items-center rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "border-slate-700 bg-slate-800 text-white" : "border-slate-300 bg-white text-slate-700 hover:border-slate-500"}`}
+          >
+            {h.t}
+          </a>
+        );
+      })}
+    </nav>
   );
 }
 
@@ -378,7 +437,9 @@ function Casilla() {
 
 export function PlanSeguridad({ sistema }: { sistema?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const s = sistemaPorId(sistema);
+  // Solo el identificador y el nombre de la Tabla 1: el plan no depende de la ampliación.
+  const col = ORDEN_SISTEMAS.indexOf(sistema as SistemaId);
+  const s = col >= 0 ? { id: ORDEN_SISTEMAS[col], name: TABLAS.T1.columnas[col] } : undefined;
   if (!s)
     return (
       <div>

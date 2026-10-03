@@ -6,6 +6,7 @@
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
 import { ArrowRight, Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque } from "../contenido";
+import { SIS_IDS, SITUACIONES } from "../situaciones";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
 import { elegirRuta, href } from "../rutas";
 import { CabeceraEditorial, PaginaBadge, Segmented } from "../ui";
@@ -16,174 +17,6 @@ import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 const hex = CATEGORIA_HEX.consultar;
 
 /* ---------- Situación y sistema ---------- */
-interface Situacion {
-  id: string;
-  etiqueta: string;
-  tabla: "T4" | "T6";
-  fila: number;
-  /* Párrafos del capítulo que la desarrollan: apartado + ancla. */
-  leer: { slug: string; ancla?: string; titulo: string }[];
-}
-
-const SITUACIONES: Situacion[] = [
-  {
-    id: "ejercicio-aerobico",
-    etiqueta:
-      "Ejercicio aeróbico planificado o situación previsible de mayor riesgo de hipoglucemia",
-    tabla: "T4",
-    fila: 0,
-    leer: [{ slug: "10-situaciones", ancla: "ejercicio", titulo: "Ejercicio físico" }],
-  },
-  {
-    id: "ejercicio-anaerobico",
-    etiqueta: "Ejercicio anaeróbico o de alta intensidad",
-    tabla: "T4",
-    fila: 1,
-    leer: [{ slug: "10-situaciones", ancla: "ejercicio", titulo: "Ejercicio físico" }],
-  },
-  {
-    id: "sueno",
-    etiqueta: "Sueño / período nocturno",
-    tabla: "T4",
-    fila: 2,
-    leer: [
-      {
-        slug: "09-descarga",
-        ancla: "patrones",
-        titulo: "Hipoglucemia nocturna · Hiperglucemia matutina",
-      },
-    ],
-  },
-  {
-    id: "necesidad-transitoria",
-    etiqueta: "Enfermedad leve, menstruación o estrés, sin sospecha de fallo",
-    tabla: "T4",
-    fila: 3,
-    leer: [
-      {
-        slug: "10-situaciones",
-        ancla: "enfermedad",
-        titulo: "Enfermedad intercurrente y riesgo de cetosis",
-      },
-    ],
-  },
-  {
-    id: "hiperglucemia-puntual",
-    etiqueta: "Hiperglucemia puntual sin sospecha de fallo",
-    tabla: "T4",
-    fila: 4,
-    leer: [{ slug: "09-descarga", ancla: "incidencias", titulo: "Resolución de incidencias" }],
-  },
-  {
-    id: "comida-grasa",
-    etiqueta: "Comida rica en grasa o proteína",
-    tabla: "T4",
-    fila: 5,
-    leer: [
-      {
-        slug: "09-descarga",
-        ancla: "patrones",
-        titulo: "Hiperglucemia tardía tras comidas grasas o proteicas",
-      },
-    ],
-  },
-  {
-    id: "hiperglucemia-persistente",
-    etiqueta: "Hiperglucemia persistente o inexplicada (sospecha de fallo)",
-    tabla: "T4",
-    fila: 6,
-    leer: [
-      {
-        slug: "09-descarga",
-        ancla: "incidencias",
-        titulo: "Hiperglucemia persistente y sospecha de fallo de infusión",
-      },
-      { slug: "07-educacion", ancla: "b5", titulo: "Figura 3" },
-    ],
-  },
-  {
-    id: "rm",
-    etiqueta: "Resonancia magnética",
-    tabla: "T6",
-    fila: 0,
-    leer: [
-      { slug: "10-situaciones", ancla: "exploraciones", titulo: "Exploraciones diagnósticas" },
-    ],
-  },
-  {
-    id: "tc",
-    etiqueta: "Tomografía computarizada",
-    tabla: "T6",
-    fila: 1,
-    leer: [
-      { slug: "10-situaciones", ancla: "exploraciones", titulo: "Exploraciones diagnósticas" },
-    ],
-  },
-  {
-    id: "rx",
-    etiqueta: "Radiografía o DEXA",
-    tabla: "T6",
-    fila: 2,
-    leer: [
-      { slug: "10-situaciones", ancla: "exploraciones", titulo: "Exploraciones diagnósticas" },
-    ],
-  },
-  {
-    id: "pet",
-    etiqueta: "PET, medicina nuclear o radioterapia",
-    tabla: "T6",
-    fila: 3,
-    leer: [
-      { slug: "10-situaciones", ancla: "exploraciones", titulo: "Exploraciones diagnósticas" },
-    ],
-  },
-  {
-    id: "diatermia",
-    etiqueta: "Diatermia o electrocirugía",
-    tabla: "T6",
-    fila: 4,
-    leer: [
-      { slug: "10-situaciones", ancla: "exploraciones", titulo: "Exploraciones diagnósticas" },
-    ],
-  },
-  {
-    id: "eco",
-    etiqueta: "Ecografía, ECG o endoscopia sin electrocirugía",
-    tabla: "T6",
-    fila: 5,
-    leer: [
-      { slug: "10-situaciones", ancla: "exploraciones", titulo: "Exploraciones diagnósticas" },
-    ],
-  },
-  {
-    id: "cirugia-corta",
-    etiqueta: "Cirugía corta (≤ 1 comida omitida), persona estable",
-    tabla: "T6",
-    fila: 6,
-    leer: [
-      {
-        slug: "10-situaciones",
-        ancla: "ingreso",
-        titulo: "Ingreso hospitalario (período perioperatorio)",
-      },
-    ],
-  },
-  {
-    id: "cirugia-larga",
-    etiqueta: "Cirugía prolongada o compleja, o inestabilidad clínica",
-    tabla: "T6",
-    fila: 7,
-    leer: [
-      {
-        slug: "10-situaciones",
-        ancla: "ingreso",
-        titulo: "Ingreso hospitalario (período perioperatorio)",
-      },
-    ],
-  },
-];
-
-const SIS_IDS = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 
 export function SituacionSistema({ situacion, sistema }: { situacion?: string; sistema?: string }) {
   const sit = SITUACIONES.find((s) => s.id === situacion) || null;
@@ -204,7 +37,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
           <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
             1 · Situación
           </div>
-          <ul className="space-y-1" role="list">
+          <ul id="lista-situaciones" className="scroll-mt-20 space-y-1" role="list">
             {SITUACIONES.map((s) => {
               const on = sit?.id === s.id;
               return (
@@ -251,6 +84,27 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
           )}
           {sit && tabla && fila && (
             <div key={sit.id} className="pantalla-in space-y-4">
+              {/* En el móvil, la situación elegida a la vista y cómo cambiarla sin bajar. */}
+              <div
+                className="flex items-center gap-2 rounded-lg border bg-white px-3 py-2 lg:hidden"
+                style={{ borderColor: "#e6e6e6" }}
+              >
+                <span className="min-w-0 flex-1 text-sm">
+                  <span className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                    Situación
+                  </span>
+                  <span className="block font-semibold text-slate-900">{sit.etiqueta}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    document.getElementById("lista-situaciones")?.scrollIntoView({ block: "start" })
+                  }
+                  className="min-h-11 shrink-0 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-500"
+                >
+                  Cambiar
+                </button>
+              </div>
               {!porSistema && (
                 <p className="rounded-md bg-slate-100 px-3 py-2 text-xs text-slate-700">
                   En la Tabla {tabla.numero}, esta situación tiene una conducta común a los cuatro

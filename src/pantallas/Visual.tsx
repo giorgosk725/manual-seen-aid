@@ -4,9 +4,17 @@ import { useState } from "react";
 import { ArrowLeft, ArrowRight, Images, Maximize2, Table2 } from "lucide-react";
 import { ICONO_DIAGRAMA } from "../nav";
 import { DIAGRAMAS } from "../contenido/diagramas";
-import { F1, F2, INFO, LISTA_TABLAS, apartadoDeFigura, apartadoDeTabla } from "../contenido";
+import {
+  F1,
+  F2,
+  INFO,
+  LISTA_TABLAS,
+  TABLAS,
+  apartadoDeFigura,
+  apartadoDeTabla,
+} from "../contenido";
 import { INFO_F3 } from "../componentes/figura3-imagen";
-import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
+import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { DiagramaVista } from "../componentes/Diagramas";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { href } from "../rutas";
@@ -216,7 +224,7 @@ export function Visual() {
           <Titulo n={4}>Sistemas</Titulo>
           <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             {ORDEN_SISTEMAS.map((id, c) => {
-              const s = SISTEMAS_AMPLIACION[c];
+              const s = { name: TABLAS.T1.columnas[c] };
               const h = SISTEMA_HEX[c];
               return (
                 <li
@@ -270,7 +278,7 @@ export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }
       <div className="no-imprimir mb-3 flex items-center gap-2 text-xs text-slate-500">
         <a
           href={href("visual")}
-          className="inline-flex items-center gap-1 font-semibold hover:underline"
+          className="inline-flex min-h-11 items-center gap-1 font-semibold hover:underline"
         >
           <Images size={12} aria-hidden="true" /> Figuras y diagramas
         </a>

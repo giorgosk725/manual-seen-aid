@@ -49,11 +49,12 @@ export function BotonFavorito({ ruta, titulo }: { ruta: string; titulo: string }
 
 /* ---------- Volver arriba (pantallas largas) ----------
    Aparece al desplazarse hacia arriba lejos del principio y se esconde al seguir leyendo
-   hacia abajo, para no tapar el texto ni los controles de la derecha. */
+   hacia abajo o a los 2,5 s sin desplazar, para no tapar el texto ni los controles. */
 export function VolverArriba() {
   const [ver, setVer] = useState(false);
   useEffect(() => {
     let antes = window.scrollY;
+    let reposo: ReturnType<typeof setTimeout> | undefined;
     const on = () => {
       const y = window.scrollY;
       const lejos = y > window.innerHeight * 1.5;
@@ -61,9 +62,14 @@ export function VolverArriba() {
       else if (y < antes - 4) setVer(true);
       else if (y > antes + 4) setVer(false);
       antes = y;
+      clearTimeout(reposo);
+      reposo = setTimeout(() => setVer(false), 2500);
     };
     window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
+    return () => {
+      clearTimeout(reposo);
+      window.removeEventListener("scroll", on);
+    };
   }, []);
   if (!ver) return null;
   return (

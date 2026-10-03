@@ -23,34 +23,47 @@ import { guardarUltimo, marcarLeido } from "../prefs";
 import { CATEGORIA_HEX, SEEN, colorApartado } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
 
-function useProgreso(ref: React.RefObject<HTMLElement | null>) {
-  const [p, setP] = useState(0);
+/* Progreso de lectura: la barra se mueve escribiendo su «transform» (un fotograma por
+   desplazamiento, sin volver a pintar el apartado); el estado solo cambia una vez, al llegar
+   al final (para marcarlo como leído). */
+function useProgreso(
+  ref: React.RefObject<HTMLElement | null>,
+  barra: React.RefObject<HTMLDivElement | null>,
+) {
+  const [alFinal, setAlFinal] = useState(false);
   useEffect(() => {
+    let fotograma = 0;
     const calc = () => {
+      fotograma = 0;
       const el = ref.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
       const alto = r.height - window.innerHeight;
       const leido = alto > 0 ? Math.min(1, Math.max(0, -r.top / alto)) : 1;
-      setP(leido);
+      if (barra.current) barra.current.style.transform = `scaleX(${leido})`;
+      if (leido >= 0.95) setAlFinal(true);
+    };
+    const pedir = () => {
+      if (!fotograma) fotograma = requestAnimationFrame(calc);
     };
     calc();
-    window.addEventListener("scroll", calc, { passive: true });
-    window.addEventListener("resize", calc);
+    window.addEventListener("scroll", pedir, { passive: true });
+    window.addEventListener("resize", pedir);
     return () => {
-      window.removeEventListener("scroll", calc);
-      window.removeEventListener("resize", calc);
+      cancelAnimationFrame(fotograma);
+      window.removeEventListener("scroll", pedir);
+      window.removeEventListener("resize", pedir);
     };
-  }, [ref]);
-  return p;
+  }, [ref, barra]);
+  return alFinal;
 }
 
 /* Seguir leyendo: guarda el bloque visible (solo la ruta) y marca el apartado como leído al
    llegar al final. */
-function useMarcadorLectura(apartado: TApartado, progreso: number) {
+function useMarcadorLectura(apartado: TApartado, alFinal: boolean) {
   useEffect(() => {
-    if (progreso >= 0.95) marcarLeido(apartado.slug);
-  }, [progreso, apartado.slug]);
+    if (alFinal) marcarLeido(apartado.slug);
+  }, [alFinal, apartado.slug]);
   useEffect(() => {
     let t: ReturnType<typeof setTimeout> | undefined;
     const titulo = `${apartado.n}. ${apartado.titulo}`;
@@ -78,8 +91,9 @@ function useMarcadorLectura(apartado: TApartado, progreso: number) {
 
 export function Apartado({ apartado, destacado }: { apartado: TApartado; destacado?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const progreso = useProgreso(ref);
-  useMarcadorLectura(apartado, progreso);
+  const barra = useRef<HTMLDivElement>(null);
+  const alFinal = useProgreso(ref, barra);
+  useMarcadorLectura(apartado, alFinal);
   const i = APARTADOS.findIndex((a) => a.slug === apartado.slug);
   const prev = APARTADOS[i - 1];
   const next = APARTADOS[i + 1];
@@ -116,8 +130,9 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         className="no-imprimir fixed left-0 right-0 top-14 z-20 h-0.5 bg-transparent md:left-64"
       >
         <div
+          ref={barra}
           className="progreso h-full origin-left"
-          style={{ background: hex.strong, transform: `scaleX(${progreso})` }}
+          style={{ background: hex.strong, transform: "scaleX(0)" }}
         />
       </div>
       <header className="mb-6">
@@ -128,7 +143,10 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
           <span aria-hidden="true" className="text-slate-400">
             ·
           </span>
-          <a href={href("capitulo")} className="font-semibold text-slate-600 hover:underline">
+          <a
+            href={href("capitulo")}
+            className="inline-flex min-h-11 items-center font-semibold text-slate-600 hover:underline"
+          >
             Capítulo
           </a>
           <span aria-hidden="true" className="text-slate-400">
@@ -276,7 +294,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
           <Bloques apartado={apartado} destacado={destacado} />
         </div>
         {subs.length > 0 && (
-          <aside className="no-imprimir hidden xl:block">
+          <aside aria-label="Índice lateral del apartado" className="no-imprimir hidden xl:block">
             <nav aria-label="Índice del apartado" className="sticky top-20">
               <div className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500">
                 En este apartado

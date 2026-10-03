@@ -380,6 +380,37 @@ function Ampliacion({ s }: { s: Sistema }) {
   );
 }
 
+/* «Qué mueve el modo automático»: la fila literal de la Tabla 1 para este sistema, con la nota
+   del asterisco. Arriba de la ficha, porque es la consulta más frecuente sobre un sistema. */
+function ParametrosAutomatico({
+  c,
+  hexSistema,
+}: {
+  c: number;
+  hexSistema: { soft: string; ink: string; strong: string };
+}) {
+  const fila = TABLAS.T1.filas.find(
+    (f) => f.etiqueta === "Parámetros configurables en modo automático",
+  );
+  if (!fila) return null;
+  return (
+    <div
+      className="mt-3 rounded-xl border-l-4 bg-white p-3"
+      style={{ borderLeftColor: hexSistema.strong }}
+    >
+      <div className="text-xs font-bold uppercase tracking-wide text-slate-600">
+        Qué mueve el modo automático <PaginaBadge p={4} />
+      </div>
+      <div className="mt-1 text-sm font-semibold text-slate-900">
+        <Lineas>{fila.celdas[c]}</Lineas>
+      </div>
+      <p className="mt-1 text-xs text-slate-600">
+        <Texto>{TABLAS.T1.notas[0]}</Texto>
+      </p>
+    </div>
+  );
+}
+
 export function FichaSistema({ id }: { id?: string }) {
   const s = sistemaPorId(id);
   const ref = useRef<HTMLDivElement>(null);
@@ -394,7 +425,10 @@ export function FichaSistema({ id }: { id?: string }) {
   return (
     <div ref={ref} className="imprimible">
       <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
-        <a href={href("sistemas")} className="font-semibold hover:underline">
+        <a
+          href={href("sistemas")}
+          className="inline-flex min-h-11 items-center font-semibold hover:underline"
+        >
           Sistemas
         </a>
         <span aria-hidden="true">›</span>
@@ -429,6 +463,7 @@ export function FichaSistema({ id }: { id?: string }) {
               </div>
             ))}
           </dl>
+          <ParametrosAutomatico c={c} hexSistema={h} />
           <div className="no-imprimir mt-3 flex flex-wrap gap-2">
             <a
               href={href(
@@ -436,7 +471,7 @@ export function FichaSistema({ id }: { id?: string }) {
                 "tablas",
                 `T1:${["minimed-780g", "control-iq", "camaps", "omnipod-5"][c]}`,
               )}
-              className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold"
+              className="inline-flex min-h-9 items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold"
               style={{ borderColor: `${h.strong}40`, color: h.ink }}
             >
               Comparar en la Tabla 1 <ArrowRight size={12} aria-hidden="true" />
@@ -445,7 +480,7 @@ export function FichaSistema({ id }: { id?: string }) {
               href={WEB_SISTEMA[s.id]}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700"
+              className="inline-flex min-h-9 items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700"
             >
               Web oficial <ExternalLink size={12} aria-hidden="true" />
             </a>

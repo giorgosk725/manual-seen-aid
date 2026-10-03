@@ -16,6 +16,8 @@ import {
   ListOrdered,
   Route,
   Search,
+  SlidersHorizontal,
+  Stethoscope,
   Star,
   Table2,
   Target,
@@ -25,9 +27,9 @@ import { APARTADOS, CAPITULO, DIAGRAMAS, INFO, TABLAS, algoritmoDelCapitulo } fr
 import { ICONO_APARTADO, ICONO_DIAGRAMA } from "../nav";
 import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
 import { href, navegar } from "../rutas";
-import { marcar, paginaDe, tramoDeConsulta } from "../busqueda";
+import { marcar, paginaDe } from "../busqueda";
 import { precargarBuscador, useBuscador } from "../useBuscador";
-import { AtajoTramo } from "../componentes/AtajoTramo";
+import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { useFavoritos, useLeidos, useUltimo } from "../prefs";
 import { CabeceraEditorial, Revelar } from "../ui";
 import { CATEGORIA_HEX, COLOR_APARTADO, FICHA_AREA, SEEN, SISTEMA_HEX } from "../tokens";
@@ -108,12 +110,27 @@ const ATAJOS = [
     t: "Empezar desde MDI",
     s: "Parámetros iniciales (Tabla 2)",
   },
+  {
+    href: href("sistemas"),
+    icono: SlidersHorizontal,
+    color: FICHA_AREA.pizarra,
+    t: "Parámetros por sistema",
+    s: "Qué mueve el modo automático",
+  },
+  {
+    href: href("consultar", "situacion", "rm"),
+    icono: Stethoscope,
+    color: FICHA_AREA.rosa,
+    t: "Exploraciones y cirugía",
+    s: "RM, TC, PET, quirófano (Tabla 6)",
+  },
 ];
 
 function QueNecesitas() {
   const [q, setQ] = useState("");
-  const motor = useBuscador(q.length > 0);
-  const res = motor && q.trim().length >= 2 ? motor.buscar(q, 5, 2) : [];
+  const { motor, estado, reintentar } = useBuscador(q.length > 0);
+  const busqueda = motor && q.trim().length >= 2 ? motor.buscarConTotales(q, 5, 2) : null;
+  const res = busqueda?.resultados ?? [];
   const ultimo = useUltimo();
   const favoritos = useFavoritos();
   return (
@@ -148,7 +165,22 @@ function QueNecesitas() {
           />
         </div>
       </form>
-      {tramoDeConsulta(q) && <AtajoTramo consulta={q} />}
+      <AvisosBusqueda q={q} parcial={busqueda?.parcial} />
+      {estado === "error" && q.trim().length >= 2 && (
+        <p
+          role="status"
+          className="flex flex-wrap items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
+        >
+          No se pudo cargar el índice de búsqueda.
+          <button
+            type="button"
+            onClick={reintentar}
+            className="rounded-md border border-slate-300 px-2 py-1 text-xs font-semibold hover:border-slate-500"
+          >
+            Reintentar
+          </button>
+        </p>
+      )}
       {motor && q.trim().length >= 2 && res.length === 0 && (
         <p
           role="status"
@@ -205,7 +237,7 @@ function QueNecesitas() {
           </li>
         </ul>
       )}
-      <ul className="grid grid-cols-2 gap-2 lg:grid-cols-4" aria-label="Consultas frecuentes">
+      <ul className="grid grid-cols-2 gap-2 lg:grid-cols-5" aria-label="Consultas frecuentes">
         {ATAJOS.map((c) => {
           const I = c.icono;
           return (
@@ -696,7 +728,7 @@ export function Portada() {
           </dl>
           <a
             href={href("cambios")}
-            className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+            className="mt-2 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
           >
             Qué ha cambiado y qué queda pendiente <ArrowRight size={14} aria-hidden="true" />
           </a>

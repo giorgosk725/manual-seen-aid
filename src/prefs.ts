@@ -1,6 +1,6 @@
 /* Preferencias del lector (solo preferencias de interfaz, nunca datos clínicos): modo
    nocturno y tamaño de letra de lectura. localStorage con tolerancia a bloqueo. */
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 
 const leer = (clave: string): string | null => {
   try {
@@ -17,22 +17,48 @@ const guardar = (clave: string, valor: string) => {
   }
 };
 
+/* ---------- Modo nocturno ----------
+   Un solo estado para toda la app (la cabecera y «Más» siempre de acuerdo). Solo se guarda
+   cuando el lector lo elige; sin elección, sigue al sistema y a sus cambios. public/tema.js
+   pone la clase antes de pintar, para que no haya destello claro. */
+const CLAVE_NOCHE = "mseen:night";
+const EVENTO_NOCHE = "mseen:noche";
+const preferenciaOscura = () => {
+  try {
+    return window.matchMedia("(prefers-color-scheme: dark)");
+  } catch {
+    return null;
+  }
+};
+const nocheActual = () => {
+  const guardado = leer(CLAVE_NOCHE);
+  if (guardado !== null) return guardado === "1";
+  return preferenciaOscura()?.matches ?? false;
+};
+const suscribirNoche = (avisar: () => void) => {
+  const mq = preferenciaOscura();
+  const onStorage = (e: StorageEvent) => {
+    if (e.key === null || e.key === CLAVE_NOCHE) avisar();
+  };
+  window.addEventListener(EVENTO_NOCHE, avisar);
+  window.addEventListener("storage", onStorage);
+  mq?.addEventListener?.("change", avisar);
+  return () => {
+    window.removeEventListener(EVENTO_NOCHE, avisar);
+    window.removeEventListener("storage", onStorage);
+    mq?.removeEventListener?.("change", avisar);
+  };
+};
+export const alternarNoche = () => {
+  guardar(CLAVE_NOCHE, nocheActual() ? "0" : "1");
+  window.dispatchEvent(new Event(EVENTO_NOCHE));
+};
 export function useNocturno(): [boolean, () => void] {
-  const [night, setNight] = useState(() => {
-    const guardado = leer("mseen:night");
-    if (guardado !== null) return guardado === "1";
-    try {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches;
-    } catch {
-      return false;
-    }
-  });
+  const noche = useSyncExternalStore(suscribirNoche, nocheActual, () => false);
   useEffect(() => {
-    document.documentElement.classList.toggle("night", night);
-    guardar("mseen:night", night ? "1" : "0");
-  }, [night]);
-  const toggle = useCallback(() => setNight((n) => !n), []);
-  return [night, toggle];
+    document.documentElement.classList.toggle("night", noche);
+  }, [noche]);
+  return [noche, alternarNoche];
 }
 
 /* Tamaño de letra de la columna de lectura: 0 = base (18 px), -1, +1, +2. */

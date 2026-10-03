@@ -1,7 +1,7 @@
 /* Enrutador: una pantalla por ruta hash. Portada, índice y apartados se cargan al entrar
    (son la puerta y la lectura); el resto de pantallas, cada grupo en su trozo, con React.lazy
    la primera vez que se visitan (el service worker ya las tiene para usar sin conexión). */
-import { lazy } from "react";
+import { lazy, useEffect } from "react";
 import { apartadoPorSlug, DIAGRAMAS, TABLAS } from "./contenido";
 import { useRuta } from "./rutas";
 import { Shell } from "./componentes/Shell";
@@ -47,6 +47,20 @@ const InformacionPacientes = lazy(() =>
 const PlanSeguridad = lazy(() => pacientes().then((m) => ({ default: m.PlanSeguridad })));
 const ResumenPacientes = lazy(() => pacientes().then((m) => ({ default: m.ResumenPacientes })));
 
+/* Precarga en un momento libre (sin ahorro de datos): al navegar ya no hay espera. */
+const precargarPantallas = () => {
+  const ahorro = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
+    ?.saveData;
+  if (ahorro) return;
+  const cargar = () => {
+    for (const f of [consultar, recorridos, sistemas, visual, pacientes, otras])
+      f().catch(() => {});
+  };
+  const w = window as Window & { requestIdleCallback?: (cb: () => void) => number };
+  if (w.requestIdleCallback) w.requestIdleCallback(cargar);
+  else setTimeout(cargar, 2500);
+};
+
 /* Nombre de un sistema para el título de la pestaña: el de la Tabla 1 del capítulo. */
 const nombreDeSistema = (id: string | undefined) => {
   const c = ORDEN_SISTEMAS.indexOf(id as SistemaId);
@@ -69,6 +83,10 @@ function NoEncontrada() {
 
 export default function App() {
   const ruta = useRuta();
+  useEffect(() => {
+    // En pruebas (jsdom) no hace falta: cada pantalla se carga al visitarla.
+    if (import.meta.env.MODE !== "test") precargarPantallas();
+  }, []);
   let pantalla: React.ReactNode;
   let titulo: string | undefined;
 

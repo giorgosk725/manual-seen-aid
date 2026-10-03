@@ -1,3 +1,4 @@
-# Despliegue de pruebas, pendiente del permiso de la SEEN: no indexar.
+# Despliegue pendiente del permiso de la SEEN: no se indexa (cabecera X-Robots-Tag: noindex en
+# _headers). El rastreo se permite para que los buscadores puedan leer esa cabecera.
 User-agent: *
-Disallow: /
+Allow: /

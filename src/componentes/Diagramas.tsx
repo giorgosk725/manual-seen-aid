@@ -34,6 +34,7 @@ import { BotonImprimir, PaginaBadge, Segmented } from "../ui";
 import { SISTEMA_HEX, TRAMO_HEX } from "../tokens";
 import { Lineas, Texto } from "../texto";
 import { EnlaceEducativa } from "./Lectura";
+import { useNivelTitulo, type Nivel } from "../nivel-contexto";
 
 /* Colores de franja (familia AGP). Texto con contraste AA sobre cada fondo. */
 const TONO: Record<TonoFranja, { bg: string; fg: string }> = {
@@ -47,7 +48,7 @@ const TONO: Record<TonoFranja, { bg: string; fg: string }> = {
 
 /* Nivel del título del diagrama: 2 en su pantalla (#/visual, tras el h1) y 3 dentro de un
    apartado. Los subtítulos del diagrama van un nivel por debajo. */
-const NivelDiagrama = createContext<2 | 3>(3);
+const NivelDiagrama = createContext<Nivel>(3);
 function Sub({
   children,
   className,
@@ -57,7 +58,8 @@ function Sub({
   className?: string;
   style?: CSSProperties;
 }) {
-  const H = useContext(NivelDiagrama) === 2 ? "h3" : "h4";
+  const nivel = useContext(NivelDiagrama);
+  const H = nivel === 2 ? "h3" : nivel === 3 ? "h4" : "h5";
   return (
     <H className={className} style={style}>
       {children}
@@ -77,9 +79,11 @@ export function MarcoDiagrama({
   const meta = DIAGRAMAS.find((d) => d.id === id)!;
   const ref = useRef<HTMLElement>(null);
   const donde = ubicacionDeDiagrama(id);
-  const Titulo = enApartado ? "h3" : "h2";
+  const nivelContexto = useNivelTitulo();
+  const nivel: Nivel = enApartado ? nivelContexto : 2;
+  const Titulo = `h${nivel}` as "h2" | "h3" | "h4";
   return (
-    <NivelDiagrama.Provider value={enApartado ? 3 : 2}>
+    <NivelDiagrama.Provider value={nivel}>
       <section
         ref={ref}
         aria-labelledby={`diag-${id}`}

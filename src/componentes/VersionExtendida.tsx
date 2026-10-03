@@ -22,8 +22,8 @@ function Origen({ f }: { f: FragmentoExtendido }) {
   );
 }
 
-export function FragmentoVista({ f, nivel = 4 }: { f: FragmentoExtendido; nivel?: 3 | 4 }) {
-  const H = nivel === 3 ? "h3" : "h4";
+export function FragmentoVista({ f, nivel = 4 }: { f: FragmentoExtendido; nivel?: 2 | 3 | 4 }) {
+  const H = `h${nivel}` as "h2" | "h3" | "h4";
   return (
     <li id={`ext-${f.id}`} className="scroll-mt-24">
       <H className="text-sm font-bold text-amber-900">{f.titulo}</H>
@@ -66,7 +66,7 @@ export function VersionExtendida({
   abierta?: boolean;
   id?: string;
   /* Nivel del título de cada fragmento según dónde va (sin saltos de encabezado). */
-  nivel?: 3 | 4;
+  nivel?: 2 | 3 | 4;
 }) {
   if (!fragmentos.length) return null;
   return (

@@ -8,13 +8,27 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.6.0";
+export const VERSION_APP = "0.6.1";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-04",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — instalación, enlaces y consulta más directa`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — segunda auditoría aplicada`,
+    detalle: [
+      "Búsqueda que lleva a la respuesta: «Ir a» las situaciones, las fichas de sistema, los objetivos por población y las herramientas (si se nombra un sistema, llega ya elegido); sinónimos de consulta (RM/resonancia, TC/escáner, quirófano/cirugía, beta/β-OHB, cetonas, embarazo); las siglas cortas solo como palabra entera; los tres buscadores con los mismos avisos; «Cargando el índice…» y «Reintentar» si falla.",
+      "Contenido: las dosis con asterisco llevan su nota; 0,15 UI/kg con su «puede considerarse»; el plan de seguridad incluye reevaluar a los 15 min y no anunciar los hidratos como comida; el diagrama de ejercicio y el de seguimiento con sus frases literales completas; rótulos de cirugía y ejercicio con su calificador; la ampliación avisa de lo que difiere en el resumen de parámetros.",
+      "Fichas de sistema: «Qué mueve el modo automático» (Tabla 1, p. 4) arriba. En «¿Qué necesitas?», «Parámetros por sistema» y «Exploraciones y cirugía».",
+      "Hojas para el paciente: «Mostrar el QR» en grande y selector Información · Resumen · Plan arriba de cada hoja.",
+      "Móvil: Atrás cierra la búsqueda o el índice en vez de cambiar la página de debajo; barra «Situación · Cambiar» en Situación y sistema; objetivos táctiles de 44 px en migas, logotipo y enlaces; «Volver arriba» se esconde solo.",
+      "Robustez: una pantalla o el índice de búsqueda que no llegan se recuperan recargando una vez; una dirección escrita sin «#» (por ejemplo, la de una hoja impresa) lleva a su pantalla; modo nocturno único y sin destello al abrir; las pantallas se precargan en un momento libre.",
+      "Accesibilidad: orden de encabezados correcto en tablas, figuras, diagramas y versión extendida (ahora se comprueba en las pruebas), puntos de referencia con nombre, contraste y nombres de botones corregidos.",
+    ],
+  },
+  {
+    fecha: "2026-10-04",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.6.0 — instalación, enlaces y consulta más directa",
     detalle: [
       "App instalable completa: identificador estable, capturas para el diálogo de instalación, accesos directos (índice, cetonemia, situación y sistema, para el paciente) e iconos nuevos con la identidad del Manual SEEN, también en versión adaptable («maskable»).",
       "Las obras que el texto nombra (Guía SED, ensayo AIDE T1D, posicionamientos EASD/ISPAD y hospitalario de 2026) enlazan a su referencia de la bibliografía.",

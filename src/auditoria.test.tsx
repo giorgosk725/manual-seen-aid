@@ -4,7 +4,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { FIGURAS } from "./contenido";
 import { INFO_F3 } from "./componentes/figura3-imagen";
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { APARTADOS, TABLAS, idDeBloque } from "./contenido";
 import { buscar, buscarConTotales, fueraDelCapitulo, tramoDeConsulta } from "./buscador";
 import { OBRAS_NOMBRADAS, PATRON_REMISION, destinoDeRemision } from "./remisiones";
@@ -207,5 +207,37 @@ describe("pantallas perezosas", () => {
       expect(src, f).not.toMatch(/from "\.\.?\/buscador"/);
       expect(src, f).not.toMatch(/from "\.\.?\/ampliacion"/);
     }
+  });
+});
+
+describe("dirección pública y modo nocturno (auditoría 0.6.0)", () => {
+  it("las copias de trabajo usan la dirección pública en QR y citas", async () => {
+    const { esCopiaDeTrabajo } = await import("./compartir");
+    for (const h of ["localhost", "127.0.0.1", "[::1]", "ede24dc8.manual-seen-aid.pages.dev"])
+      expect(esCopiaDeTrabajo(h), h).toBe(true);
+    for (const h of ["manual-seen-aid.pages.dev", "www.seen.es"])
+      expect(esCopiaDeTrabajo(h), h).toBe(false);
+  });
+  it("el modo nocturno es uno solo para toda la app y no se guarda sin elegirlo", async () => {
+    const { useNocturno } = await import("./prefs");
+    localStorage.removeItem("mseen:night");
+    function Interruptor({ n }: { n: string }) {
+      const [noche, alternar] = useNocturno();
+      return (
+        <button type="button" onClick={alternar}>
+          {n}:{noche ? "noche" : "dia"}
+        </button>
+      );
+    }
+    render(
+      <>
+        <Interruptor n="cabecera" />
+        <Interruptor n="mas" />
+      </>,
+    );
+    expect(localStorage.getItem("mseen:night")).toBeNull();
+    act(() => screen.getByText("cabecera:dia").click());
+    expect(screen.getByText("mas:noche")).toBeInTheDocument();
+    expect(localStorage.getItem("mseen:night")).toBe("1");
   });
 });

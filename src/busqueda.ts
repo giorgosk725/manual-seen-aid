@@ -14,7 +14,8 @@ export interface Entrada {
     | "extendida"
     | "ampliacion"
     | "pacientes"
-    | "test";
+    | "test"
+    | "atajo";
   titulo: string;
   texto: string;
   /* Página del capítulo (0 = fuera del capítulo) y, si ocupa dos, la última. */
@@ -27,12 +28,18 @@ export interface Entrada {
 export const fueraDelCapitulo = (e: Entrada) =>
   e.tipo === "extendida" || e.tipo === "ampliacion" || e.tipo === "pacientes" || e.tipo === "test";
 
-export const normalizar = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+export const normalizar = (s: string) =>
+  s
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
 
 export interface Resultado {
   entrada: Entrada;
   fragmento: string;
   puntos: number;
+  /* Palabras de la consulta que aparecen (para ordenar cuando se busca con «alguna»). */
+  aciertos?: number;
 }
 
 /* Resultados con el total de cada grupo. El límite se aplica POR GRUPO (capítulo y fuera del
@@ -60,22 +67,54 @@ export function tramoDeConsulta(consulta: string): { clave: string; valor: numbe
   return { clave, valor };
 }
 
+/* Sinónimos de la consulta diaria: cada palabra buscada vale por cualquiera de sus variantes
+   (en el texto del capítulo se busca la forma que usa el capítulo). */
+const SINONIMOS: [RegExp, string[]][] = [
+  [/^(beta|beta-?hidroxibutirato|b-?ohb|bohb)$/, ["β-ohb", "β-hidroxibutirato"]],
+  [/^(cetonas?|cetonemia|cetosis)$/, ["ceton", "cetosis", "β-ohb"]],
+  [/^(cetoacidosis|cad)$/, ["cetoacidosis"]],
+  [/^(resonancia|rm|rmn)$/, ["resonancia", "rm"]],
+  [/^(tc|tac|escaner|tomografia)$/, ["tomografia", "tc"]],
+  [/^(quirofano|operacion|intervencion|cirugia)$/, ["cirugia", "quirurgic", "intervencion"]],
+  [/^(embarazo|embarazada|gestante|gestacion)$/, ["gestacion", "gestante", "embaraz"]],
+  [/^(deporte|ejercicio)$/, ["ejercicio", "actividad", "deport"]],
+  [/^(hipo|hipoglucemias?)$/, ["hipoglucemi"]],
+];
+
+/* Palabras de la consulta, cada una con sus variantes (la propia palabra primero). */
+export function terminosDe(consulta: string): string[][] {
+  return normalizar(consulta)
+    .split(/\s+/)
+    .filter((t) => t.length >= 2)
+    .map((t) => {
+      const sin = SINONIMOS.find(([re]) => re.test(t));
+      return sin ? [t, ...sin[1].filter((v) => v !== t)] : [t];
+    });
+}
+
+/* Posiciones de `v` en el texto normalizado `n`. Las variantes cortas (siglas de 2-3 letras,
+   como «rm» o «tc») solo cuentan como palabra entera: «rm» no está en «forma». */
+export function posiciones(n: string, v: string): number[] {
+  const out: number[] = [];
+  if (v.length <= 3 && /^[a-z0-9]+$/.test(v)) {
+    const re = new RegExp(`(^|[^a-z0-9])${v}(?![a-z0-9])`, "g");
+    for (let m = re.exec(n); m; m = re.exec(n)) out.push(m.index + m[1].length);
+    return out;
+  }
+  for (let i = n.indexOf(v); i >= 0; i = n.indexOf(v, i + v.length)) out.push(i);
+  return out;
+}
+
 /* Trozos del fragmento con los términos marcados (para <mark>). */
 export function marcar(fragmento: string, consulta: string): { t: string; hit: boolean }[] {
-  const terminos = normalizar(consulta)
-    .split(/\s+/)
-    .filter((t) => t.length >= 2);
-  if (!terminos.length) return [{ t: fragmento, hit: false }];
+  const variantes = terminosDe(consulta).flat();
+  if (!variantes.length) return [{ t: fragmento, hit: false }];
   const n = normalizar(fragmento);
   // normalizar no cambia la longitud (NFD + quitar diacríticos deja un char por char base)
   const marcas = new Array<boolean>(fragmento.length).fill(false);
-  for (const t of terminos) {
-    let i = n.indexOf(t);
-    while (i >= 0) {
-      for (let k = i; k < i + t.length && k < marcas.length; k++) marcas[k] = true;
-      i = n.indexOf(t, i + t.length);
-    }
-  }
+  for (const v of variantes)
+    for (const i of posiciones(n, v))
+      for (let k = i; k < i + v.length && k < marcas.length; k++) marcas[k] = true;
   const out: { t: string; hit: boolean }[] = [];
   let actual = "";
   let estado = marcas[0] ?? false;

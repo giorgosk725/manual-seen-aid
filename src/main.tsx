@@ -3,7 +3,14 @@ import ReactDOM from "react-dom/client";
 import { registerSW } from "virtual:pwa-register";
 import { ErrorBoundary } from "./ui";
 import App from "./App";
+import { limpiarMarcaDeRecarga, recargarUnaVez } from "./recarga";
 import "./index.css";
+
+/* Si Vite no puede precargar un trozo (despliegue a medias, red cortada), recarga una vez. */
+window.addEventListener("vite:preloadError", (e) => {
+  if (recargarUnaVez()) e.preventDefault();
+});
+limpiarMarcaDeRecarga();
 
 /* Service worker en modo «prompt»: al detectar una versión nueva se avisa a la app (evento)
    y es el lector quien decide recargar. Comprobación cada hora y al volver a primer plano:

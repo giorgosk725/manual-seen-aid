@@ -1,6 +1,6 @@
 /* Renderiza los bloques de un apartado: párrafos, subapartados, listas, tablas y figuras,
    cada uno con su página de origen y un id estable (ancla). */
-import { Fragment, useEffect } from "react";
+import { Fragment, memo, useEffect } from "react";
 import { Link2 } from "lucide-react";
 import {
   FIGURAS,
@@ -20,6 +20,7 @@ import { Figura3Lectura } from "./Figura3Vista";
 import { Figura1Animada } from "./Figura1Animada";
 import { DiagramaVista } from "./Diagramas";
 import { href } from "../rutas";
+import { NivelTitulo, type Nivel } from "../nivel-contexto";
 
 function Ancla({ id, slug }: { id: string; slug: string }) {
   return (
@@ -27,7 +28,7 @@ function Ancla({ id, slug }: { id: string; slug: string }) {
       href={href("capitulo", slug, id)}
       aria-label="Enlace a este bloque"
       title="Enlace a este bloque"
-      className="no-imprimir absolute -left-6 top-1 hidden rounded p-0.5 text-slate-300 opacity-0 transition hover:text-slate-600 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 group-hover:opacity-100 lg:block"
+      className="no-imprimir absolute -left-7 top-0.5 hidden h-6 w-6 items-center justify-center rounded text-slate-300 opacity-0 transition hover:text-slate-600 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 group-hover:opacity-100 lg:flex"
     >
       <Link2 size={14} />
     </a>
@@ -142,7 +143,7 @@ function BloqueVista({
   }
 }
 
-export function Bloques({
+export const Bloques = memo(function Bloques({
   apartado,
   destacado,
   prefijo,
@@ -173,28 +174,35 @@ export function Bloques({
       {apartado.bloques.map((b, i) => {
         const diagramas = diagramasTrasBloque(apartado, i);
         const extendidos = extendidosTrasBloque(apartado, i);
+        // Tablas, figuras y diagramas: al nivel de los subapartados o uno por debajo si ya
+        // hay uno antes (sin saltos de encabezado).
+        const haySub = apartado.bloques.slice(0, i).some((x) => x.t === "h3");
+        const nivel: Nivel = haySub ? ((nivelSub + 1) as Nivel) : nivelSub;
         return (
-          <Fragment key={i}>
-            <BloqueVista b={b} i={i} slug={apartado.slug} prefijo={prefijo} nivelSub={nivelSub} />
-            {/* Diagramas posteriores a la 0.3.0: tras su ancla, sin mover las anclas b1, b2… */}
-            {diagramas.map((d) => (
-              <div
-                key={d.id}
-                id={prefijo ? `${prefijo}-d-${d.id}` : `d-${d.id}`}
-                className="scroll-mt-24 lg:-mr-16"
-              >
-                <DiagramaVista id={d.id} enApartado />
-              </div>
-            ))}
-            {extendidos.length > 0 && (
-              <VersionExtendida
-                fragmentos={extendidos}
-                id={`${prefijo ? prefijo + "-" : ""}ext-tras-${idDeBloque(b, i)}`}
-              />
-            )}
-          </Fragment>
+          <NivelTitulo.Provider key={i} value={nivel}>
+            <Fragment>
+              <BloqueVista b={b} i={i} slug={apartado.slug} prefijo={prefijo} nivelSub={nivelSub} />
+              {/* Diagramas posteriores a la 0.3.0: tras su ancla, sin mover las anclas b1, b2… */}
+              {diagramas.map((d) => (
+                <div
+                  key={d.id}
+                  id={prefijo ? `${prefijo}-d-${d.id}` : `d-${d.id}`}
+                  className="scroll-mt-24 lg:-mr-16"
+                >
+                  <DiagramaVista id={d.id} enApartado />
+                </div>
+              ))}
+              {extendidos.length > 0 && (
+                <VersionExtendida
+                  nivel={nivel}
+                  fragmentos={extendidos}
+                  id={`${prefijo ? prefijo + "-" : ""}ext-tras-${idDeBloque(b, i)}`}
+                />
+              )}
+            </Fragment>
+          </NivelTitulo.Provider>
         );
       })}
     </div>
   );
-}
+});

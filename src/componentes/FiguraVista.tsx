@@ -8,6 +8,7 @@ import type { Figura } from "../contenido";
 import { Texto } from "../texto";
 import { PaginaBadge } from "../ui";
 import { BRAND_ACCENT } from "../tokens";
+import { TituloBloque } from "../nivel";
 
 const TONO = {
   azul: { soft: "#eef3f8", ink: "#15324f", strong: "#1f4e79" },
@@ -38,6 +39,7 @@ export function ImagenFigura({ figura, abierta = false }: { figura: Figura; abie
           titulo: figura.titulo,
           nota: `p. ${figura.pagina}`,
         }}
+        etiqueta={`Pantalla completa con zoom: ${figura.titulo}`}
         className="ml-2 inline-flex items-center gap-1.5 rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
         <Maximize2 size={14} aria-hidden="true" /> Pantalla completa con zoom
@@ -71,9 +73,9 @@ export function FiguraVista({ figura }: { figura: Figura }) {
           >
             {figura.numero ? `Figura ${figura.numero}` : "Infografía"} · transcripción
           </div>
-          <h3 className="text-sm font-semibold text-slate-800">
+          <TituloBloque className="text-sm font-semibold text-slate-800">
             {figura.cabecera || figura.titulo}
-          </h3>
+          </TituloBloque>
         </div>
         <PaginaBadge p={figura.pagina} />
       </div>

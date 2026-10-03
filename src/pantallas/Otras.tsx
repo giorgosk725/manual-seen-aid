@@ -8,15 +8,9 @@ import { DESTINOS } from "../nav";
 import { href } from "../rutas";
 import { Badge, CabeceraEditorial, Revelar, ToneCard } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
-import {
-  buscarConTotales,
-  fueraDelCapitulo,
-  marcar,
-  paginaDe,
-  tramoDeConsulta,
-  type Resultado,
-} from "../buscador";
-import { AtajoTramo } from "../componentes/AtajoTramo";
+import { fueraDelCapitulo, marcar, paginaDe, type Busqueda, type Resultado } from "../busqueda";
+import { useBuscador } from "../useBuscador";
+import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { useNocturno } from "../prefs";
 
 const fecha = (iso: string) =>
@@ -37,6 +31,7 @@ const TIPO: Record<string, string> = {
   ampliacion: "Ampliación",
   pacientes: "Para el paciente",
   test: "Autoevaluación",
+  atajo: "Ir a",
 };
 
 /* ---------- Buscar ---------- */
@@ -50,7 +45,7 @@ function ListaResultados({ res, q, fuera }: { res: Resultado[]; q: string; fuera
             className={`block rounded-xl border p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 ${!fuera ? "bg-white" : r.entrada.tipo === "ampliacion" ? "border-violet-200 bg-violet-50" : r.entrada.tipo === "extendida" ? "border-amber-200 bg-amber-50" : "border-slate-200 bg-slate-50"}`}
             style={fuera ? undefined : { borderColor: "#e6e6e6" }}
           >
-            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
               <span className="flex items-center gap-2">
                 <Badge
                   tone={
@@ -103,12 +98,14 @@ export function Buscar({ inicial }: { inicial?: string }) {
   }, [q]);
   const [tope, setTope] = useState(60);
   useEffect(() => setTope(60), [q]);
-  const busqueda = useMemo(
+  // El índice llega en su trozo (useBuscador): estas pantallas no lo cargan si no se busca.
+  const { motor, estado, reintentar } = useBuscador(true);
+  const busqueda: Busqueda = useMemo(
     () =>
-      q.trim().length >= 2
-        ? buscarConTotales(q, tope, Math.round(tope / 3))
+      motor && q.trim().length >= 2
+        ? motor.buscarConTotales(q, tope, Math.round(tope / 3))
         : { resultados: [], totalCapitulo: 0, totalFuera: 0 },
-    [q, tope],
+    [motor, q, tope],
   );
   const res = busqueda.resultados;
   const dentro = res.filter((r) => !fueraDelCapitulo(r.entrada));
@@ -135,17 +132,26 @@ export function Buscar({ inicial }: { inicial?: string }) {
         className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-soft placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
         autoComplete="off"
       />
-      {tramoDeConsulta(q) && <AtajoTramo consulta={q} />}
-      {busqueda.parcial && (
-        <p className="mt-2 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-900">
-          Ningún texto tiene todas esas palabras: se muestran los que tienen alguna.
+      <AvisosBusqueda q={q} parcial={busqueda.parcial} />
+      {estado === "error" && (
+        <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-700">
+          No se pudo cargar el índice de búsqueda.
+          <button
+            type="button"
+            onClick={reintentar}
+            className="rounded-md border border-slate-300 px-2 py-1 text-xs font-semibold hover:border-slate-500"
+          >
+            Reintentar
+          </button>
         </p>
       )}
-      {q.trim().length >= 2 && (
+      {q.trim().length >= 2 && estado !== "error" && (
         <p className="mt-2 text-xs text-slate-500" aria-live="polite">
-          {res.length === 0
-            ? "Nada en el capítulo con esas palabras."
-            : `${busqueda.totalCapitulo} en el capítulo${dentro.length < busqueda.totalCapitulo ? ` (se ven ${dentro.length})` : ""} · ${busqueda.totalFuera} fuera del capítulo${fueraRes.length < busqueda.totalFuera ? ` (se ven ${fueraRes.length})` : ""}`}
+          {estado !== "listo"
+            ? "Cargando el índice…"
+            : res.length === 0
+              ? "Nada en el capítulo con esas palabras."
+              : `${busqueda.totalCapitulo} en el capítulo${dentro.length < busqueda.totalCapitulo ? ` (se ven ${dentro.length})` : ""} · ${busqueda.totalFuera} fuera del capítulo${fueraRes.length < busqueda.totalFuera ? ` (se ven ${fueraRes.length})` : ""}`}
         </p>
       )}
       <ListaResultados res={dentro} q={q} />
@@ -211,7 +217,7 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
                     href={`https://doi.org/${r.doi}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-sky-800 hover:underline"
+                    className="mt-1 inline-flex min-h-6 items-center gap-1 text-xs font-semibold text-sky-800 hover:underline"
                   >
                     doi.org/{r.doi} <ExternalLink size={12} aria-hidden="true" />
                   </a>

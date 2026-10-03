@@ -137,3 +137,28 @@ test.describe("Auditoría 0.5.0", () => {
     await expect(page.getByText("Algo ha fallado")).toHaveCount(0);
   });
 });
+
+/* Auditoría de uso del 4-10-2026 (0.6.1). */
+test.describe("Auditoría 0.6.1", () => {
+  test("Atrás con la paleta abierta la cierra y deja la página de debajo", async ({ page }) => {
+    await page.goto("/#/");
+    await page.goto("/#/consultar/figura-3");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Cetonemia");
+    await page.keyboard.press("Control+k");
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await page.goBack();
+    await expect(page.getByRole("dialog")).toBeHidden();
+    await expect(page).toHaveURL(/#\/consultar\/figura-3$/);
+  });
+
+  test("la búsqueda lleva a la herramienta: «resonancia 780G» → Situación y sistema", async ({
+    page,
+  }) => {
+    await page.goto("/#/buscar/resonancia%20780G");
+    await page
+      .getByRole("link", { name: /Situación y sistema · Resonancia magnética/ })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/#\/consultar\/situacion\/rm/);
+  });
+});

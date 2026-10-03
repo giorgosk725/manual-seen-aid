@@ -8,6 +8,9 @@
   X-Frame-Options: DENY
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Cross-Origin-Opener-Policy: same-origin
+  # Hasta el permiso de la SEEN: que no salga en buscadores (el rastreo se permite para que
+  # el buscador vea esta cabecera).
+  X-Robots-Tag: noindex, nofollow
 
 # Cache: los assets llevan hash en el nombre (inmutables); el HTML, el service worker y el
 # manifiesto se revalidan siempre, para que una version nueva llegue en la siguiente visita.

@@ -3,6 +3,7 @@
    pide un manual de lectura (Revelar, PaginaBadge, CabeceraEditorial, Enlace). */
 import React, { useEffect, useRef, useState, type ReactNode } from "react";
 import { restablecerPreferencias } from "./prefs";
+import { esFalloDeTrozo, recargarUnaVez } from "./recarga";
 import { createPortal } from "react-dom";
 import { AlertTriangle, ChevronDown, Printer, RotateCcw, X, type LucideIcon } from "lucide-react";
 import { imprimirRegion } from "./imprimir";
@@ -41,6 +42,29 @@ export function Modal({
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
   const prevFocus = useRef<Element | null>(null);
+  // Atrás (gesto de Android, botón del navegador) cierra el diálogo en vez de cambiar la
+  // página de debajo: al abrir se añade una entrada al historial con la misma dirección.
+  const cerrar = useRef(onClose);
+  cerrar.current = onClose;
+  useEffect(() => {
+    if (!open) return undefined;
+    const marca = Date.now();
+    window.history.pushState({ mseenDialogo: marca }, "");
+    const onPop = (e: PopStateEvent) => {
+      // Solo si se ha vuelto por debajo de un diálogo (no a la entrada de otro).
+      if (!(e.state && "mseenDialogo" in e.state)) cerrar.current();
+    };
+    window.addEventListener("popstate", onPop);
+    return () => {
+      window.removeEventListener("popstate", onPop);
+      // Cerrado con Esc, el botón o un clic fuera: se retira la entrada añadida. Se mira un
+      // instante después: si se cerró por pulsar un enlace del diálogo, para entonces ya se
+      // ha navegado (la entrada de arriba es otra) y no se toca el historial.
+      window.setTimeout(() => {
+        if (window.history.state?.mseenDialogo === marca) window.history.back();
+      }, 0);
+    };
+  }, [open]);
   useEffect(() => {
     if (!open) return undefined;
     prevFocus.current = document.activeElement;
@@ -341,6 +365,8 @@ export class ErrorBoundary extends React.Component<{ children: ReactNode }, { ha
   }
   componentDidCatch(error: unknown) {
     console.error("Fallo en una pantalla:", error);
+    // Un trozo de código que no llegó: recargar una vez lo arregla (Reintentar no basta).
+    if (esFalloDeTrozo(error)) recargarUnaVez();
   }
   render() {
     if (this.state.hasError) {

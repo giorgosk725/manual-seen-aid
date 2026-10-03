@@ -14,6 +14,7 @@ import { normalizar } from "../busqueda";
 import { VersionExtendida } from "../componentes/VersionExtendida";
 import { EnlaceEducativa } from "../componentes/Lectura";
 import { extendidosDeTabla } from "../extendida";
+import { NivelTitulo } from "../nivel-contexto";
 
 const hex = CATEGORIA_HEX.consultar;
 
@@ -141,7 +142,9 @@ export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
         style={{ borderColor: "#e6e6e6" }}
         key={tid}
       >
-        <TablaVista tabla={tabla} modo="interactiva" seleccionInicial={seleccion} />
+        <NivelTitulo.Provider value={2}>
+          <TablaVista tabla={tabla} modo="interactiva" seleccionInicial={seleccion} />
+        </NivelTitulo.Provider>
         <div className="mt-4">
           <VersionExtendida fragmentos={extendidosDeTabla(tid)} />
         </div>
@@ -179,7 +182,9 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
         className="rounded-2xl border bg-white p-4 shadow-soft"
         style={{ borderColor: "#e6e6e6" }}
       >
-        <Figura3Recorrido tramoInicial={tramo} />
+        <NivelTitulo.Provider value={2}>
+          <Figura3Recorrido tramoInicial={tramo} />
+        </NivelTitulo.Provider>
         <div className="no-imprimir mt-4 border-t pt-3" style={{ borderColor: "#e6e6e6" }}>
           <a
             href={href("capitulo", "07-educacion", "b5")}

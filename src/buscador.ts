@@ -12,6 +12,7 @@ import {
   FIGURAS,
   GLOSARIO,
   LISTA_TABLAS,
+  TABLAS,
   idDeBloque,
 } from "./contenido";
 import { href } from "./rutas";
@@ -23,10 +24,14 @@ import { PREGUNTAS } from "./contenido/test";
 import {
   fueraDelCapitulo,
   normalizar,
+  posiciones,
+  terminosDe,
   type Busqueda,
   type Entrada,
   type Resultado,
 } from "./busqueda";
+import { SIS_IDS, SITUACIONES } from "./situaciones";
+import { OBJETIVOS_MCG } from "./contenido/diagramas";
 
 /* Lo ligero sigue disponible desde aquí para quien ya carga el índice. */
 export * from "./busqueda";
@@ -81,7 +86,10 @@ export function indice(): Entrada[] {
         texto: [f.etiqueta, ...f.celdas].join(" · ").replace(/\n/g, " "),
         pagina: t.paginas[0],
         pagina2: t.paginas[1],
-        ruta: href("consultar", "tablas", t.id),
+        ruta: (() => {
+          const st = SITUACIONES.find((x) => x.tabla === t.id && x.fila === i);
+          return st ? href("consultar", "situacion", st.id) : href("consultar", "tablas", t.id);
+        })(),
       });
     });
   }
@@ -209,6 +217,70 @@ export function indice(): Entrada[] {
         ruta,
       });
   }
+  // Atajos («Ir a»): las herramientas de consulta, para que la búsqueda lleve a la respuesta y
+  // no solo a la tabla. Su texto es el rótulo de la fila de la tabla (literal) más los nombres
+  // de los sistemas, para que «resonancia 780G» o «ejercicio omnipod» los encuentren.
+  const NOMBRES =
+    "MiniMed 780G Medtronic Tandem Control-IQ t:slim myLoop CamAPS FX mylife YpsoPump Omnipod 5 Insulet";
+  for (const st of SITUACIONES) {
+    const t = TABLAS[st.tabla];
+    const fila = t.filas[st.fila];
+    out.push({
+      id: `atajo/sit/${st.id}`,
+      tipo: "atajo",
+      titulo: `Situación y sistema · ${st.etiqueta}`,
+      texto: `${st.etiqueta}. ${fila.etiqueta.replace(/\n/g, " ")} (Tabla ${t.numero}). ${NOMBRES}`,
+      pagina: t.paginas[0],
+      pagina2: t.paginas[1],
+      ruta: href("consultar", "situacion", st.id),
+    });
+  }
+  for (const s of SISTEMAS_AMPLIACION)
+    out.push({
+      id: `atajo/sis/${s.id}`,
+      tipo: "atajo",
+      titulo: `Ficha del sistema · ${s.name}`,
+      texto: `${s.name} ${s.short}: lo que dice el capítulo (Tablas 1, 3 y 4), parámetros configurables en modo automático, algoritmo, sensores y ficha ampliada.`,
+      pagina: TABLAS.T1.paginas[0],
+      pagina2: TABLAS.T1.paginas[1],
+      ruta: href("sistemas", s.id),
+    });
+  for (const pob of OBJETIVOS_MCG)
+    out.push({
+      id: `atajo/mcg/${pob.id}`,
+      tipo: "atajo",
+      titulo: `Objetivos de MCG · ${pob.nombre}`,
+      texto: `Objetivos de MCG (TIR, TBR, TAR) · ${pob.nombre}`,
+      pagina: pob.pagina,
+      ruta: href("visual", "objetivos-mcg", pob.id),
+    });
+  for (const [titulo, texto, pagina, ruta] of [
+    [
+      "Cetonemia paso a paso (Figura 3)",
+      "Cetonemia, cetonas, β-OHB, cetosis, fallo de infusión, hiperglucemia persistente: qué hacer según el tramo",
+      8,
+      href("consultar", "figura-3"),
+    ],
+    [
+      "Revisar la descarga (Tabla 5)",
+      "Revisar la descarga en consulta: los ocho pasos de la Tabla 5 y sus patrones",
+      13,
+      href("consultar", "descarga", "1"),
+    ],
+    [
+      "Interrupción del sistema",
+      "Interrupción o desconexión del sistema: cuánto dura y qué hacer, pauta alternativa",
+      9,
+      href("consultar", "interrupcion"),
+    ],
+    [
+      "Empezar desde MDI (Tabla 2)",
+      "Transición desde MDI: parámetros iniciales, reducción de la DTD, ratio y factor de sensibilidad",
+      10,
+      href("visual", "transicion"),
+    ],
+  ] as const)
+    out.push({ id: `atajo/${ruta}`, tipo: "atajo", titulo, texto, pagina, ruta });
   // Hojas para el paciente (V5 del autor y resumen de la editorial) y preguntas del test:
   // también fuera del capítulo, en su grupo.
   for (const s of INFORMACION_PACIENTES.secciones)
@@ -253,9 +325,7 @@ export function buscarConTotales(
   limite = 40,
   limiteFuera = Math.max(3, Math.ceil(limite / 3)),
 ): Busqueda {
-  const terminos = normalizar(consulta)
-    .split(/\s+/)
-    .filter((t) => t.length >= 2);
+  const terminos = terminosDe(consulta);
   if (!terminos.length) return { resultados: [], totalCapitulo: 0, totalFuera: 0 };
   // Primero con TODAS las palabras; si no hay nada y son varias, con ALGUNA (y se avisa).
   let res = puntuar(terminos, true);
@@ -264,8 +334,19 @@ export function buscarConTotales(
     res = puntuar(terminos, false);
     parcial = res.length > 0;
   }
+  // Más palabras coincidentes primero (cuenta con «alguna»); después, la puntuación.
+  res.sort((a, b) => (b.aciertos ?? 0) - (a.aciertos ?? 0) || b.puntos - a.puntos);
+  // Si la consulta nombra un sistema, los atajos de situación lo llevan ya elegido.
+  const sis = sistemaDeConsulta(consulta);
+  if (sis >= 0)
+    res = res.map((r) => {
+      const st = r.entrada.id.startsWith("atajo/sit/")
+        ? SITUACIONES.find((x) => `atajo/sit/${x.id}` === r.entrada.id)
+        : undefined;
+      if (!st || st.tabla !== "T4" || TABLAS.T4.filas[st.fila].unida) return r;
+      return { ...r, entrada: { ...r.entrada, ruta: `${r.entrada.ruta}:${SIS_IDS[sis]}` } };
+    });
   // Primero el capítulo; lo de fuera, detrás (y en su grupo en la pantalla de búsqueda).
-  res.sort((a, b) => b.puntos - a.puntos);
   const dentro = res.filter((r) => !fueraDelCapitulo(r.entrada));
   const fuera = res.filter((r) => fueraDelCapitulo(r.entrada));
   return {
@@ -276,7 +357,19 @@ export function buscarConTotales(
   };
 }
 
-function puntuar(terminos: string[], todas: boolean): Resultado[] {
+/* Sistema que nombra la consulta (índice de columna), o -1. */
+const ALIAS_SISTEMA: RegExp[] = [
+  /^(780g|minimed|medtronic|smartguard)$/,
+  /^(control-?iq|tandem|t:?slim|mobi|ciq)$/,
+  /^(camaps|ypsopump|mylife|myloop)$/,
+  /^(omnipod|op5|insulet|smartadjust)$/,
+];
+function sistemaDeConsulta(consulta: string): number {
+  const palabras = normalizar(consulta).split(/\s+/);
+  return ALIAS_SISTEMA.findIndex((re) => palabras.some((w) => re.test(w)));
+}
+
+function puntuar(terminos: string[][], todas: boolean): Resultado[] {
   const res: Resultado[] = [];
   for (const e of indice()) {
     const n = normalizar(e.texto);
@@ -284,25 +377,48 @@ function puntuar(terminos: string[], todas: boolean): Resultado[] {
     let puntos = 0;
     let primera = -1;
     let aciertos = 0;
-    for (const t of terminos) {
-      const i = n.indexOf(t);
-      const enTitulo = nt.includes(t);
-      if (i < 0 && !enTitulo) {
+    for (const variantes of terminos) {
+      let mejor = -1;
+      let veces = 0;
+      let enTitulo = false;
+      let exacta = false; // la palabra tal cual (no un sinónimo)
+      let inicio = false; // al principio de una palabra (cirugía, no electrocirugía)
+      let kMin = variantes.length; // la primera variante que aparece (las primeras, mejores)
+      for (const [k, v] of variantes.entries()) {
+        const pos = posiciones(n, v);
+        if (pos.length && (mejor < 0 || pos[0] < mejor)) mejor = pos[0];
+        veces += pos.length;
+        if (k === 0 && pos.length) exacta = true;
+        if (pos.length && k < kMin) kMin = k;
+        if (pos.some((x) => x === 0 || !/[a-zñ]/.test(n[x - 1]))) inicio = true;
+        const posT = posiciones(nt, v);
+        if (posT.length) {
+          enTitulo = true;
+          if (k === 0) exacta = true;
+          if (posT.some((x) => x === 0 || !/[a-zñ]/.test(nt[x - 1]))) inicio = true;
+        }
+      }
+      if (mejor < 0 && !enTitulo) {
         if (todas) break;
         continue;
       }
       aciertos++;
-      if (i >= 0) {
+      if (mejor >= 0) {
         puntos += 2;
-        if (primera < 0 || i < primera) primera = i;
+        if (primera < 0 || mejor < primera) primera = mejor;
         // Varias apariciones puntúan un poco más.
-        puntos += Math.min(3, n.split(t).length - 2) * 0.5;
+        puntos += Math.min(3, veces - 1) * 0.5;
       }
       if (enTitulo) puntos += 1;
+      if (exacta) puntos += 0.5;
+      if (inicio) puntos += 0.5;
+      puntos -= Math.min(kMin, 3) * 0.1;
     }
     if (todas ? aciertos < terminos.length : aciertos === 0) continue;
-    if (e.tipo === "sigla") puntos += 1.5;
-    res.push({ entrada: e, fragmento: fragmento(e.texto, primera), puntos });
+    if (e.tipo === "sigla") puntos += 1;
+    // Las herramientas llevan directamente a la respuesta: van delante.
+    if (e.tipo === "atajo") puntos += 4;
+    res.push({ entrada: e, fragmento: fragmento(e.texto, primera), puntos, aciertos });
   }
   return res;
 }

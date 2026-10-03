@@ -26,6 +26,7 @@ import { TRAMO_HEX } from "../tokens";
 import { elegirRuta, href } from "../rutas";
 import { ImagenFigura } from "./FiguraVista";
 import { INFO_F3 } from "./figura3-imagen";
+import { TituloBloque } from "../nivel";
 
 const ICONOS: Record<PasoTramo["icono"], LucideIcon> = {
   pluma: Syringe,
@@ -144,7 +145,9 @@ function Cabecera() {
         <div className="text-xs font-bold uppercase tracking-wide" style={{ color: "#15324f" }}>
           Figura 3
         </div>
-        <h3 className="text-sm font-semibold text-slate-800">{FIGURA3.cabecera}</h3>
+        <TituloBloque className="text-sm font-semibold text-slate-800">
+          {FIGURA3.cabecera}
+        </TituloBloque>
       </div>
       <PaginaBadge p={FIGURA3.pagina} />
     </div>

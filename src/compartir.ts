@@ -18,7 +18,9 @@ export const esCopiaDeTrabajo = (host: string) =>
 export const direccion = (hash: string) => {
   if (typeof window === "undefined") return hash;
   if (esCopiaDeTrabajo(window.location.hostname)) return `${DIRECCION_PUBLICA}${hash}`;
-  return `${window.location.origin}${window.location.pathname}${hash}`;
+  // Raíz de la app a partir de este módulo (vive en assets/ o en src/): no depende de la
+  // dirección por la que se haya entrado (p. ej. /noexiste servido por el service worker).
+  return `${new URL(/* @vite-ignore */ "../", import.meta.url).href}${hash}`;
 };
 
 const hoy = () =>

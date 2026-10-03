@@ -12,6 +12,7 @@ import { Enlace, PaginaBadge } from "../ui";
 import { BRAND_ACCENT, SISTEMA_HEX } from "../tokens";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
+import { TituloBloque } from "../nivel";
 
 const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
 
@@ -31,7 +32,7 @@ export function CabeceraTabla({
         >
           Tabla {tabla.numero}
         </div>
-        <h3 className="text-sm font-semibold text-slate-800">{tabla.titulo}</h3>
+        <TituloBloque className="text-sm font-semibold text-slate-800">{tabla.titulo}</TituloBloque>
       </div>
       <div className="flex items-center gap-2">
         <PaginaBadge p={tabla.paginas[0]} p2={tabla.paginas[1]} />

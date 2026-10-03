@@ -1,0 +1,6 @@
+# Fin de línea LF en todo el repositorio (Prettier lo exige; en Windows con autocrlf salían CRLF).
+* text=auto eol=lf
+*.png binary
+*.webp binary
+*.woff2 binary
+*.pdf binary

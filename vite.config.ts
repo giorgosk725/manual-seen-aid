@@ -20,6 +20,8 @@ export default defineConfig({
           }
           // El contenido del capítulo en su propio trozo: cambia con cada revisión del
           // texto, el código no.
+          // (el test del autor no: solo lo usan Autoevaluación y el buscador, perezosos).
+          if (/[\\/]src[\\/]contenido[\\/]test\.ts$/.test(id)) return undefined;
           if (/[\\/]src[\\/]contenido[\\/]/.test(id)) return "contenido";
           return undefined;
         },
@@ -30,6 +32,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "prompt",
+      includeManifestIcons: false,
       manifest: {
         // Identidad estable de la app instalada: no cambia aunque cambie start_url o el
         // alojamiento (p. ej., si la SEEN la aloja junto al capítulo).
@@ -130,9 +133,15 @@ export default defineConfig({
         // tiene que leerse sin red.
         globPatterns: ["**/*.{js,css,html,svg,png,webp,woff2}"],
         // Las capturas del manifiesto solo las usa el diálogo de instalación.
-        globIgnores: ["capturas-app/**"],
+        globIgnores: ["capturas-app/**", "404.html", "redirige.js"],
+        // Los iconos del manifiesto ya entran por globPatterns: sin duplicados en el precache.
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         navigateFallback: "index.html",
+        // Solo la raíz: una dirección real desconocida (p. ej. /pacientes/resumen, tecleada
+        // sin «#») va a la red y recibe 404.html, en vez de un index.html con recursos rotos.
+        navigateFallbackAllowlist: [/^\/$/, /^\/index\.html$/],
+        // La página de una primera visita queda controlada en cuanto el SW se activa.
+        clientsClaim: true,
         cleanupOutdatedCaches: true,
       },
     }),
