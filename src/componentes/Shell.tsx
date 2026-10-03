@@ -175,13 +175,13 @@ function AvisoVersion() {
 }
 
 /* ---------- Rótulo (inspirado en el del Manual SEEN, sin ser su logotipo) ----------
-   «Manual» en el azul del Manual oscurecido lo justo para 3:1 en texto grande. */
+   «Manual» en el azul oscuro del Manual (#3F6E9F): 4,5:1 también en el tamaño compacto. */
 export function Rotulo({ compacto = false }: { compacto?: boolean }) {
   return (
     <span className="flex items-center gap-1.5 leading-none" aria-hidden="true">
       <span
         className={`font-display font-semibold uppercase tracking-tight ${compacto ? "text-[1.35rem] min-[400px]:text-[1.6rem]" : "text-[2.1rem]"}`}
-        style={{ color: "#6893C4" }}
+        style={{ color: SEEN.azulOsc }}
       >
         Manual
       </span>
