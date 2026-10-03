@@ -8,13 +8,21 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.5.0";
+export const VERSION_APP = "0.5.1";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-03",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — con la identidad del Manual SEEN`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — hojas para el paciente con letra grande`,
+    detalle: [
+      "Cada hoja para el paciente (información, resumen y plan de seguridad de cada sistema) se puede imprimir en dos formatos: una cara A4 con letra pequeña, como hasta ahora, o letra grande de 12 pt en una columna, a doble cara (el resumen ocupa dos caras; la información y los planes, tres). La elección se hace en la propia hoja y se recuerda en este navegador; también vale al imprimir con Ctrl+P.",
+    ],
+  },
+  {
+    fecha: "2026-10-03",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.5.0 — con la identidad del Manual SEEN",
     detalle: [
       "Diseño nuevo con los colores y la tipografía del Manual SEEN: títulos en mayúsculas finas, rótulo «Área Diabetes», franja de cuatro colores, índice del capítulo en mosaico de fichas de color (como las áreas de manual.seen.es) y paginación en círculos al pie de cada apartado. Fuentes Open Sans y Oswald, alojadas en la app (licencia OFL).",
       "Auditoría extensa (contenido, técnica y uso con tres perfiles): enlaces a la Figura 3 que caían un párrafo después, páginas de relación de la versión extendida corregidas en el PDF, frases de los diagramas devueltas a su literal (regla del 1800, ejercicio anaeróbico, tramo amarillo de cetonemia completo) y calificadores recuperados en «Situación y sistema».",

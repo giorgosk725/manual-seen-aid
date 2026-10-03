@@ -98,7 +98,9 @@ búsqueda con alternativa y atajo por cifra de β-OHB; notas de tabla en la fich
    flecha estable) y la desconexión sin «suspender o pausar la administración».
 3. Test: q03 («deben ofrecerse» frente a «pueden considerarse»), q06 («debe considerarse fallo» frente
    a «sospecha de fallo») y q04 («Aumentar la ratio», ambiguo).
-4. Hojas para el paciente a 7,2 pt para caber en una cara: ¿añadir «letra grande, dos caras»?
+4. ~~Hojas para el paciente a 7,2 pt~~ — HECHO en la 0.5.1 (decisión del autor): formato «letra
+   grande» de 12 pt en una columna, a doble cara. Medido en PDF: resumen 2 caras; información y
+   planes 3 (a 10 pt cabría todo en 2 caras, pero el autor prefirió 12 pt).
 5. El recuadro «Pendiente» de la portada: la auditoría de uso propone llevarlo a «Sobre esta versión»
    porque transmite «sin validar»; se mantiene visible por decisión anterior.
 6. Pendientes de siempre: permiso de la SEEN y de ec-europe, ISBN, Completo corregido, Liberty,

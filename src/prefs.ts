@@ -142,6 +142,15 @@ export const alternarFavorito = (m: Marcador) => {
 };
 export const useFavoritos = () => useLectura("mseen:favoritos", [], validarFavoritos);
 
+/* Formato de impresión de las hojas para el paciente: una cara con letra pequeña (a dos
+   columnas) o dos caras con letra grande (una columna). */
+export type FormatoHoja = "una-cara" | "letra-grande";
+const validarFormatoHoja: Validar<FormatoHoja> = (v) =>
+  v === "una-cara" || v === "letra-grande" ? v : undefined;
+export const useFormatoHoja = () =>
+  useLectura<FormatoHoja>("mseen:hoja", "una-cara", validarFormatoHoja);
+export const guardarFormatoHoja = (f: FormatoHoja) => guardarJSON("mseen:hoja", f);
+
 /* Borra todas las preferencias de esta app en el navegador (botón del aviso de fallo). */
 export function restablecerPreferencias() {
   try {

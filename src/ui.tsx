@@ -254,7 +254,7 @@ export function Segmented<T extends string>({
             className={`flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 ${wrap ? "" : "flex-1"} ${on ? "text-white shadow-sm" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
             style={
               on
-                ? { background: o.gradient || "linear-gradient(135deg, #1f4e79, #15324f)" }
+                ? { background: o.gradient || "linear-gradient(135deg, #3f6e9f, #2f5680)" }
                 : undefined
             }
           >

@@ -7,7 +7,13 @@ import { APARTADOS, TABLAS, idDeBloque } from "./contenido";
 import { buscar, buscarConTotales, fueraDelCapitulo, tramoDeConsulta } from "./buscador";
 import { PATRON_REMISION, destinoDeRemision } from "./remisiones";
 import { DIFIERE_CAMPO, DIFIERE_PARAM, SISTEMAS_AMPLIACION } from "./ampliacion";
-import { useFavoritos, useLeidos, useUltimo, restablecerPreferencias } from "./prefs";
+import {
+  restablecerPreferencias,
+  useFavoritos,
+  useFormatoHoja,
+  useLeidos,
+  useUltimo,
+} from "./prefs";
 
 function Lector() {
   const leidos = useLeidos();
@@ -40,6 +46,18 @@ describe("preferencias de lectura", () => {
     );
     render(<Lector />);
     expect(screen.getByText("0·#/capitulo/01-introduccion·nada")).toBeInTheDocument();
+  });
+  it("el formato de las hojas solo acepta sus dos valores", () => {
+    function Formato() {
+      return <p>{useFormatoHoja()}</p>;
+    }
+    localStorage.setItem("mseen:hoja", JSON.stringify("gigante"));
+    const { unmount } = render(<Formato />);
+    expect(screen.getByText("una-cara")).toBeInTheDocument();
+    unmount();
+    localStorage.setItem("mseen:hoja", JSON.stringify("letra-grande"));
+    render(<Formato />);
+    expect(screen.getByText("letra-grande")).toBeInTheDocument();
   });
   it("restablecer borra solo las claves de la app", () => {
     localStorage.setItem("mseen:night", "1");

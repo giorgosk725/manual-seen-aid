@@ -1,7 +1,8 @@
 /* «Para el paciente»: información para pacientes (V5 del autor) y resumen (maquetación de la
    editorial), literales; y la hoja «Plan de seguridad» de cada sistema, hecha SOLO con texto
-   del capítulo (p. 7, Figura 3 y Tabla 4) y huecos para rellenar a mano. Cada hoja cabe en una
-   cara A4 y lleva un QR para abrirla en el móvil. La app no guarda nada de lo que se escribe:
+   del capítulo (p. 7, Figura 3 y Tabla 4) y huecos para rellenar a mano. Cada hoja se imprime
+   en una cara A4 (letra pequeña, dos columnas) o, a elegir, con letra grande (una columna,
+   12 pt, a doble cara: dos o tres caras), y lleva un QR para abrirla en el móvil. La app no guarda nada de lo que se escribe:
    no hay campos, solo líneas en blanco para el papel. */
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowRight, FileText, Link2, ListChecks, Printer, ShieldCheck } from "lucide-react";
@@ -15,7 +16,8 @@ import {
   TITULO_CAPITULO_PACIENTES,
 } from "../pacientes/textos";
 import { elegirRuta, href } from "../rutas";
-import { CabeceraEditorial, ToneCard } from "../ui";
+import { CabeceraEditorial, Segmented, ToneCard } from "../ui";
+import { guardarFormatoHoja, useFormatoHoja, type FormatoHoja } from "../prefs";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { Texto } from "../texto";
 import { abrirPlegables, imprimirRegion } from "../imprimir";
@@ -24,7 +26,11 @@ import { direccion } from "../compartir";
 
 const hex = CATEGORIA_HEX.pacientes;
 
-/* ---------- Barra de acciones de una hoja: imprimir en una cara y compartir el enlace ---------- */
+/* ---------- Barra de acciones de una hoja: formato, imprimir y compartir el enlace ---------- */
+const FORMATOS: { id: FormatoHoja; label: string; shortLabel: string }[] = [
+  { id: "una-cara", label: "Una cara · letra pequeña", shortLabel: "Una cara" },
+  { id: "letra-grande", label: "Letra grande · doble cara", shortLabel: "Letra grande" },
+];
 function Acciones({
   hoja,
   ruta,
@@ -35,6 +41,7 @@ function Acciones({
   titulo: string;
 }) {
   const [aviso, setAviso] = useState("");
+  const formato = useFormatoHoja();
   const compartir = async () => {
     const url = direccion(ruta);
     try {
@@ -51,26 +58,46 @@ function Acciones({
     }
   };
   return (
-    <div className="no-imprimir mb-3 flex flex-wrap items-center gap-2">
-      <button
-        type="button"
-        onClick={() => imprimirRegion(() => hoja.current)}
-        className="inline-flex items-center gap-1.5 rounded-lg bg-slate-800 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-      >
-        <Printer size={15} aria-hidden="true" /> Imprimir en una cara
-      </button>
-      <button
-        type="button"
-        onClick={compartir}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-      >
-        <Link2 size={15} aria-hidden="true" /> Compartir el enlace
-      </button>
-      {aviso && (
-        <span role="status" className="break-all text-xs text-slate-600">
-          {aviso}
+    <div className="no-imprimir mb-3 space-y-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          Formato de impresión
         </span>
-      )}
+        <Segmented
+          label="Formato de impresión"
+          options={FORMATOS}
+          value={formato}
+          onChange={guardarFormatoHoja}
+          wrap
+        />
+      </div>
+      <p className="text-xs text-slate-600">
+        {formato === "una-cara"
+          ? "En papel: una cara A4, dos columnas, letra pequeña (7 pt)."
+          : "En papel: una columna con letra de 12 pt; ocupa dos o tres caras A4. Mejor a doble cara."}
+      </p>
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => imprimirRegion(() => hoja.current)}
+          className="inline-flex items-center gap-1.5 rounded-lg bg-slate-800 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+        >
+          <Printer size={15} aria-hidden="true" />{" "}
+          {formato === "una-cara" ? "Imprimir en una cara" : "Imprimir con letra grande"}
+        </button>
+        <button
+          type="button"
+          onClick={compartir}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        >
+          <Link2 size={15} aria-hidden="true" /> Compartir el enlace
+        </button>
+        {aviso && (
+          <span role="status" className="break-all text-xs text-slate-600">
+            {aviso}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
@@ -125,10 +152,11 @@ function Hoja({
   children: ReactNode;
 }) {
   useImprimirConTeclado(hojaRef);
+  const grande = useFormatoHoja() === "letra-grande";
   return (
     <div
       ref={hojaRef}
-      className={`hoja-a4 imprimible rounded-2xl border bg-white p-4 shadow-soft sm:p-6 ${holgada ? "holgada" : ""}`}
+      className={`hoja-a4 imprimible rounded-2xl border bg-white p-4 shadow-soft sm:p-6 ${holgada ? "holgada" : ""} ${grande ? "grande" : ""}`}
       style={{ borderColor: "#e6e6e6" }}
     >
       <header className="hoja-cabecera mb-3 border-b pb-3" style={{ borderColor: "#e6e6e6" }}>
@@ -178,9 +206,9 @@ export function HubPacientes() {
     <div>
       <CabeceraEditorial titulo="Para el paciente" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Hojas para entregar o compartir en la consulta. Cada una cabe en una cara A4 y lleva un
-          código QR para abrirla en el móvil. No son el texto del capítulo: van rotuladas con su
-          origen.
+          Hojas para entregar o compartir en la consulta. Cada una cabe en una cara A4 o, con letra
+          grande (12 pt), en dos o tres caras; y lleva un código QR para abrirla en el móvil. No son
+          el texto del capítulo: van rotuladas con su origen.
         </p>
       </CabeceraEditorial>
       <ul className="grid gap-3 md:grid-cols-2">

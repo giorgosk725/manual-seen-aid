@@ -1266,6 +1266,59 @@ html.night .tramo-plan {
   html.imprimiendo .hoja-a4.holgada p {
     margin-top: 1.6mm !important;
   }
+  /* Letra grande: una columna a 12 pt (el mínimo habitual en material para pacientes),
+     secciones sin partir y huecos más altos para escribir. Decisión del autor (3-10-2026):
+     12 pt aunque ocupe más de dos caras. Medido: resumen 2 caras; información y planes 3
+     (dos hojas a doble cara). La prueba e2e lo vigila. */
+  html.imprimiendo .hoja-a4.grande {
+    font-size: var(--hoja-letra, 12pt);
+    line-height: 1.33;
+  }
+  html.imprimiendo .hoja-a4.grande h1 {
+    font-size: 15pt !important;
+    line-height: 1.2 !important;
+  }
+  html.imprimiendo .hoja-a4.grande h2 {
+    font-size: 13pt !important;
+    line-height: 1.25 !important;
+  }
+  html.imprimiendo .hoja-a4.grande .hoja-cabecera {
+    margin-bottom: 3mm !important;
+    padding-bottom: 2mm !important;
+  }
+  html.imprimiendo .hoja-a4.grande .hoja-cuerpo {
+    column-count: 1;
+  }
+  html.imprimiendo .hoja-a4.grande .hoja-seccion {
+    margin-bottom: 2.6mm !important;
+    break-inside: avoid;
+  }
+  html.imprimiendo .hoja-a4.grande p,
+  html.imprimiendo .hoja-a4.grande li,
+  html.imprimiendo .hoja-a4.grande dd,
+  html.imprimiendo .hoja-a4.grande ul,
+  html.imprimiendo .hoja-a4.grande ol,
+  html.imprimiendo .hoja-a4.grande dl,
+  html.imprimiendo .hoja-a4.grande .space-y-0\.5 > *,
+  html.imprimiendo .hoja-a4.grande .space-y-1 > *,
+  html.imprimiendo .hoja-a4.grande .space-y-1\.5 > *,
+  html.imprimiendo .hoja-a4.grande .space-y-2 > * {
+    margin-top: 1mm !important;
+  }
+  html.imprimiendo .hoja-a4.grande .tramo-plan {
+    padding: 1.5mm 2.5mm !important;
+  }
+  html.imprimiendo .hoja-a4.grande .hueco {
+    min-height: 8mm;
+  }
+  html.imprimiendo .hoja-a4.grande .qr {
+    width: 24mm;
+    height: 24mm;
+  }
+  html.imprimiendo .hoja-a4.grande .hoja-pie {
+    margin-top: 3mm !important;
+    padding-top: 2mm !important;
+  }
 }
 
 /* Nocturno: tinta de la categoría «Para el paciente» y tintas de los diagramas nuevos. */
