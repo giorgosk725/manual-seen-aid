@@ -154,6 +154,14 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     the question banks; the blind figures in docs/PREGUNTAS_2026-10-04.md were measured once:
     to claim a new figure, write a NEW bank before looking at results and do not tune to it.
 
+21. **Start a system (0.9.0).** `src/inicio.ts` describes the «Iniciar un sistema» recorrido
+    as references (paragraph + sentence indexes, lists, Tabla 2 rows, Tabla 1 cells, the
+    system's Tabla 2 initialization line); `src/pantallas/Inicio.tsx` only renders them. No
+    text is written there except navigation labels and the follow-up checkboxes. If the
+    chapter text changes, `inicio.test.tsx` checks that each cited sentence still starts as
+    expected. Route `#/consultar/inicio/<fase>[:<sistema>]`; the checklist sheet prints on one
+    A4 side (e2e).
+
 ## 2. Quality gates (all must pass before a push)
 
 ```bash

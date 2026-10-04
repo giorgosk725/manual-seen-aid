@@ -477,6 +477,17 @@ export function FichaSistema({ id }: { id?: string }) {
               Comparar en la Tabla 1 <ArrowRight size={12} aria-hidden="true" />
             </a>
             <a
+              href={href(
+                "consultar",
+                "inicio",
+                `inicio:${["minimed-780g", "control-iq", "camaps", "omnipod-5"][c]}`,
+              )}
+              className="inline-flex min-h-9 items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold"
+              style={{ borderColor: `${h.strong}40`, color: h.ink }}
+            >
+              Iniciar este sistema paso a paso <ArrowRight size={12} aria-hidden="true" />
+            </a>
+            <a
               href={WEB_SISTEMA[s.id]}
               target="_blank"
               rel="noopener noreferrer"

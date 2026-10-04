@@ -129,3 +129,32 @@ test.describe("Búsqueda y enlaces", () => {
       await expect(nav.getByText(g, { exact: true }).first()).toBeVisible();
   });
 });
+
+/* Iniciar un sistema (0.9.0): la hoja de comprobación cabe en una cara, con sistema y sin él;
+   se llega desde la ficha del sistema y desde el apartado 8. */
+test.describe("Iniciar un sistema", () => {
+  for (const ruta of ["hoja:omnipod-5", "hoja"]) {
+    test(`la hoja de comprobación (${ruta}) cabe en una cara`, async ({ page }) => {
+      await page.goto(`/#/consultar/inicio/${ruta}`);
+      await expect(page.getByRole("button", { name: /Imprimir la hoja/ })).toBeVisible();
+      expect(await paginasAlImprimir(page), ruta).toBe(1);
+    });
+  }
+  test("desde la ficha de Omnipod 5, la fase de inicio con su línea de la Tabla 2", async ({
+    page,
+  }) => {
+    await page.goto("/#/sistemas/op5");
+    await page.getByRole("link", { name: /Iniciar este sistema paso a paso/ }).click();
+    await expect(page.getByRole("heading", { name: /Inicio del sistema/ })).toBeVisible();
+    await expect(
+      page.getByText(/^Omnipod 5: iniciar modo automático desde el primer pod/),
+    ).toBeVisible();
+    await expect(page.getByText(/^MiniMed 780G: SmartGuard/)).toHaveCount(0);
+    await auditar(page, "Iniciar un sistema · Omnipod 5");
+  });
+  test("el apartado 8 lleva al recorrido", async ({ page }) => {
+    await page.goto("/#/capitulo/08-iniciacion");
+    await page.getByRole("link", { name: "Iniciar un sistema paso a paso" }).click();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(/Iniciar un sistema/i);
+  });
+});

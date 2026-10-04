@@ -70,6 +70,7 @@ test.describe("Pantallas nuevas en el móvil", () => {
     ["/#/pacientes/plan/camaps", "Plan de seguridad · CamAPS"],
     ["/#/test", "Autoevaluación"],
     ["/#/repaso", "Tarjetas de repaso"],
+    ["/#/consultar/inicio/inicio:omnipod-5", "Iniciar un sistema"],
     ["/#/visual/gestacion-sistemas", "Gestación por sistema"],
     ["/#/visual/exploraciones", "Exploraciones"],
     ["/#/visual/eleccion", "Elección compartida"],

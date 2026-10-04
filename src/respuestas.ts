@@ -27,6 +27,9 @@ import { plano } from "./marcado";
 import { normalizar, tramoDeConsulta, type Respuesta } from "./busqueda";
 import { SIS_IDS, SITUACIONES } from "./situaciones";
 import { ORDEN_SISTEMAS } from "./ampliacion/ids";
+import { frases } from "./frases";
+
+export { frases };
 
 export type { Respuesta };
 
@@ -440,24 +443,6 @@ const nombrados = (s: string) => [
       .filter((x) => x !== undefined),
   ),
 ];
-
-/* Frases de un párrafo, sin cortar en «p. ej.», «v. Tabla», «aprox.» ni en decimales. */
-export function frases(t: string): string[] {
-  const out: string[] = [];
-  let ini = 0;
-  for (let i = 0; i < t.length; i++) {
-    const c = t[i];
-    if (c !== "." && c !== "?" && c !== "!") continue;
-    if (!/^\s+[A-ZÁÉÍÓÚÑ¿«“(]/.test(t.slice(i + 1, i + 4))) continue;
-    const previa = (t.slice(ini, i).split(/\s+/).pop() ?? "").replace(/^[(«“]/, "");
-    if (/^(v|p|pp|ej|aprox|fig|etc|n\.º|n)$/i.test(previa)) continue;
-    out.push(t.slice(ini, i + 1).trim());
-    ini = i + 1;
-  }
-  const resto = t.slice(ini).trim();
-  if (resto) out.push(resto);
-  return out;
-}
 
 /* Una frase que empieza por un conector necesita la anterior para entenderse. */
 const RE_CONECTOR =

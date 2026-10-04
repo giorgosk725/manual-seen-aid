@@ -105,11 +105,11 @@ const ATAJOS = [
     s: "Cuánto dura y qué hacer",
   },
   {
-    href: href("visual", "transicion"),
+    href: href("consultar", "inicio"),
     icono: ListOrdered,
     color: FICHA_AREA.nutricion,
-    t: "Empezar desde MDI",
-    s: "Parámetros iniciales (Tabla 2)",
+    t: "Iniciar un sistema",
+    s: "Preparación, Tabla 2 y 3 primeros meses",
   },
   {
     href: href("sistemas"),

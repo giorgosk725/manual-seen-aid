@@ -8,13 +8,24 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.8.0";
+export const VERSION_APP = "0.9.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-04",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — el buscador responde`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — iniciar un sistema, paso a paso`,
+    detalle: [
+      "Nuevo recorrido «Iniciar un sistema» (Consultar): el apartado 8 en sus cuatro fases —selección y preparación, inicio del sistema, seguimiento estrecho de los primeros 3 meses y seguimiento mantenido—, con lo que piden los apartados 6, 7 y 9 en cada una. Todo es texto del capítulo con su página.",
+      "Eliges el sistema y ves solo lo suyo: su línea de inicialización de la Tabla 2 (p. ej., «SmartGuard requiere 48 h previas en modo manual»), su objetivo en automático y los parámetros que mueven el automático (Tabla 1).",
+      "Hoja de comprobación del inicio para imprimir en una cara A4: plan de respaldo, plan de seguridad, núcleo de la configuración, la línea del sistema, lo que se programa (Tabla 1) y las citas de los 3 primeros meses. Las casillas son para marcar en papel; no se guarda nada.",
+      "Se llega desde el atajo «Iniciar un sistema» de la portada, desde el apartado 8 y desde la ficha de cada sistema. Los apartados 7, 8, 9 y 10 enlazan arriba a su recorrido.",
+    ],
+  },
+  {
+    fecha: "2026-10-04",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.8.0 — el buscador responde",
     detalle: [
       "Preguntas al capítulo: la búsqueda (Ctrl K, «¿Qué necesitas?» y Buscar) responde primero con el texto LITERAL que contesta, con su página y «Leer en su sitio»: una frase, un punto de una lista, una fila de tabla (la casilla del sistema si lo nombras), un tramo de la Figura 3 o una sigla. Debajo siguen todos los sitios donde sale.",
       "Entiende la forma de preguntar («cetonas 1,2», «glucosa alta dos horas qué hago», «cuánto tiempo puedo estar desconectado», «ejercicio con glucosa 80»), equivalentes de la consulta diaria y una errata. Si el capítulo no lo trata («precio del Omnipod»), no responde: no se inventa nada.",

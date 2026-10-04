@@ -85,6 +85,16 @@ export const DESTINOS: Destino[] = [
       "Elige la situación (ejercicio, enfermedad, exploración…) y el sistema: la conducta que da el capítulo.",
   },
   {
+    id: "inicio",
+    etiqueta: "Iniciar un sistema",
+    corto: "Iniciar",
+    href: href("consultar", "inicio"),
+    icono: CirclePlay,
+    cat: "consultar",
+    descripcion:
+      "El apartado 8 en sus cuatro fases, sistema a sistema, y la hoja de comprobación del inicio para imprimir.",
+  },
+  {
     id: "descarga",
     etiqueta: "Revisar la descarga",
     corto: "Descarga",
@@ -216,7 +226,7 @@ export const GRUPOS_CONSULTAR: { id: string; titulo: string; ids: string[] }[] =
   {
     id: "situaciones",
     titulo: "Situaciones y recorridos",
-    ids: ["situacion", "figura-3", "descarga", "interrupcion"],
+    ids: ["inicio", "situacion", "figura-3", "descarga", "interrupcion"],
   },
   { id: "figuras", titulo: "Figuras y tablas", ids: ["visual", "tablas", "infografia"] },
   { id: "glosario", titulo: "Glosario", ids: ["glosario"] },

@@ -18,6 +18,9 @@ const Figura3Pantalla = lazy(() => consultar().then((m) => ({ default: m.Figura3
 const Infografia = lazy(() => consultar().then((m) => ({ default: m.Infografia })));
 const Glosario = lazy(() => consultar().then((m) => ({ default: m.Glosario })));
 
+const inicio = () => import("./pantallas/Inicio");
+const IniciarSistema = lazy(() => inicio().then((m) => ({ default: m.IniciarSistema })));
+
 const recorridos = () => import("./pantallas/Recorridos");
 const SituacionSistema = lazy(() => recorridos().then((m) => ({ default: m.SituacionSistema })));
 const RevisarDescarga = lazy(() => recorridos().then((m) => ({ default: m.RevisarDescarga })));
@@ -58,7 +61,7 @@ const precargarPantallas = () => {
     ?.saveData;
   if (ahorro) return;
   const cargar = () => {
-    for (const f of [consultar, recorridos, sistemas, visual, pacientes, otras, repaso])
+    for (const f of [consultar, recorridos, inicio, sistemas, visual, pacientes, otras, repaso])
       f().catch(() => {});
   };
   const w = window as Window & {
@@ -144,6 +147,10 @@ export default function App() {
             />
           );
           titulo = "Situación y sistema";
+          break;
+        case "inicio":
+          pantalla = <IniciarSistema detalle={ruta.detalle} />;
+          titulo = "Iniciar un sistema";
           break;
         case "descarga":
           pantalla = <RevisarDescarga paso={ruta.detalle} />;

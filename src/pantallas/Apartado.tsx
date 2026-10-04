@@ -23,6 +23,21 @@ import { guardarUltimo, marcarLeido } from "../prefs";
 import { CATEGORIA_HEX, SEEN, colorApartado } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
 
+/* Recorridos de consulta que desarrollan cada apartado (los mismos de «Consultar»). */
+const RECORRIDOS: Record<string, { texto: string; ruta: string }[]> = {
+  "07-educacion": [
+    { texto: "Cetonemia paso a paso (Figura 3)", ruta: href("consultar", "figura-3") },
+    { texto: "Interrupción del sistema", ruta: href("consultar", "interrupcion") },
+  ],
+  "08-iniciacion": [{ texto: "Iniciar un sistema paso a paso", ruta: href("consultar", "inicio") }],
+  "09-descarga": [
+    { texto: "Revisar la descarga en ocho pasos", ruta: href("consultar", "descarga", "1") },
+  ],
+  "10-situaciones": [
+    { texto: "Situación y sistema (Tablas 4 y 6)", ruta: href("consultar", "situacion") },
+  ],
+};
+
 /* Progreso de lectura: la barra se mueve escribiendo su «transform» (un fotograma por
    desplazamiento, sin volver a pintar el apartado); el estado solo cambia una vez, al llegar
    al final (para marcarlo como leído). */
@@ -255,6 +270,23 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         )}
       </header>
 
+      {(RECORRIDOS[apartado.slug] ?? []).length > 0 && (
+        <nav
+          aria-label="Recorridos de este apartado"
+          className="no-imprimir mb-4 flex flex-wrap gap-2"
+        >
+          {RECORRIDOS[apartado.slug].map((r) => (
+            <a
+              key={r.ruta}
+              href={r.ruta}
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-sm font-semibold text-white transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 focus-visible:ring-offset-2"
+              style={{ background: CATEGORIA_HEX.consultar.strong }}
+            >
+              {r.texto} <ArrowRight size={14} aria-hidden="true" />
+            </a>
+          ))}
+        </nav>
+      )}
       {cifras.length > 0 && (
         <section aria-labelledby="cifras" className="mb-6">
           <h2 id="cifras" className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500">

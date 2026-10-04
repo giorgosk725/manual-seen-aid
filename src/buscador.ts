@@ -276,10 +276,10 @@ export function indice(): Entrada[] {
       href("consultar", "interrupcion"),
     ],
     [
-      "Empezar desde MDI (Tabla 2)",
-      "Transición desde MDI: parámetros iniciales, reducción de la DTD, ratio y factor de sensibilidad",
+      "Iniciar un sistema (apartado 8, Tabla 2)",
+      "Iniciar, empezar, arrancar, inicio del sistema, transición desde MDI, parámetros iniciales, reducción de la DTD, ratio y factor de sensibilidad, plan de respaldo, primeros 3 meses, seguimiento, hoja de comprobación",
       10,
-      href("visual", "transicion"),
+      href("consultar", "inicio"),
     ],
     [
       "Tarjetas de repaso",

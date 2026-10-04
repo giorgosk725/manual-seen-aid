@@ -44,7 +44,7 @@ function trozosDePantallas(bundle: OutputBundle): Record<string, string[]> {
     const m = t.isDynamicEntry && t.facadeModuleId?.match(/[\\/]src[\\/]pantallas[\\/](\w+)\.tsx$/);
     if (m) mapa[m[1]] = [...cierre([t.fileName], entrada)].map((f) => `./${f}`);
   }
-  for (const p of new Set([...Object.values(PANTALLA_DE_SECCION), "Recorridos"]))
+  for (const p of new Set([...Object.values(PANTALLA_DE_SECCION), "Recorridos", "Inicio"]))
     if (!mapa[p]) throw new Error(`No encuentro el trozo de la pantalla ${p}`);
   return mapa;
 }
@@ -53,7 +53,7 @@ function trozosDePantallas(bundle: OutputBundle): Record<string, string[]> {
    ya el trozo de su pantalla, a la vez que la entrada, en vez de esperar a que la entrada se
    ejecute. Con el service worker instalado no cambia nada (todo sale de la caché). */
 function codigoPrecarga(mapa: Record<string, string[]>) {
-  return `(function(){var t=${JSON.stringify(mapa)},s=${JSON.stringify(PANTALLA_DE_SECCION)};try{var p=location.hash.replace(/^#/,"").split("/").filter(Boolean),k=p[0]==="consultar"&&/^(situacion|descarga|interrupcion)$/.test(p[1]||"")?"Recorridos":s[p[0]],l=t[k]||[];for(var i=0;i<l.length;i++){var e=document.createElement("link");e.rel="modulepreload";e.href=l[i];e.setAttribute("data-arranque","");document.head.appendChild(e)}}catch(e){}})();`;
+  return `(function(){var t=${JSON.stringify(mapa)},s=${JSON.stringify(PANTALLA_DE_SECCION)};try{var p=location.hash.replace(/^#/,"").split("/").filter(Boolean),k=p[0]==="consultar"&&/^(situacion|descarga|interrupcion)$/.test(p[1]||"")?"Recorridos":p[0]==="consultar"&&p[1]==="inicio"?"Inicio":s[p[0]],l=t[k]||[];for(var i=0;i<l.length;i++){var e=document.createElement("link");e.rel="modulepreload";e.href=l[i];e.setAttribute("data-arranque","");document.head.appendChild(e)}}catch(e){}})();`;
 }
 
 /* Scripts de arranque EN LÍNEA en index.html (archivos aparte serían peticiones que bloquean el

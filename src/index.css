@@ -862,6 +862,22 @@ main .note-soft {
   html.imprimiendo .imprimible tr {
     break-inside: avoid;
   }
+  /* Hoja de comprobación del inicio (Iniciar un sistema): una cara A4. */
+  html.imprimiendo .hoja-inicio {
+    font-size: 10pt;
+  }
+  html.imprimiendo .hoja-inicio .text-sm,
+  html.imprimiendo .hoja-inicio .text-base {
+    font-size: 10pt;
+    line-height: 1.35;
+  }
+  html.imprimiendo .hoja-inicio li {
+    break-inside: avoid;
+  }
+  html.imprimiendo .hoja-inicio input[type="checkbox"] {
+    width: 11pt;
+    height: 11pt;
+  }
 }
 
 /* ===========================================================================
