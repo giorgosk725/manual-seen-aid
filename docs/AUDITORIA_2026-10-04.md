@@ -140,6 +140,11 @@ Revisados de nuevo los tres informes de la 0.6.0 frente a lo publicado. Aplicado
   (A9). La auditoría de fidelidad coteja ahora el glosario con la sigla o su desarrollo y con la
   leyenda de la Figura 3: 0 páginas dudosas (antes 3, ninguna real).
 
+**Lighthouse móvil en producción con la 0.6.4** (mediana de tres; rendimiento, LCP, bloqueo;
+accesibilidad y buenas prácticas 100 en todas): portada 97 (2,4 s, 53 ms), apartado 10 94
+(2,4 s, 141 ms), información al paciente 97 (2,4 s, 0 ms), Figura 3 95 (2,7 s, 38 ms). En la
+0.6.0 eran 98, 92, 87 y 89.
+
 No aplicado, a propósito: `content-visibility` en los apartados largos (el bloqueo es de JS, no
 de pintado, y estropearía la vuelta exacta a «Seguir leyendo»); reducir las fotos de los sistemas
 (36 KB las cuatro, y el visor las usa a 480 px con zoom); incrustar el CSS crítico (un único CSS
