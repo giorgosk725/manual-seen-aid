@@ -241,3 +241,21 @@ describe("dirección pública y modo nocturno (auditoría 0.6.0)", () => {
     expect(localStorage.getItem("mseen:night")).toBe("1");
   });
 });
+
+describe("modo nocturno antes de pintar (0.6.2)", () => {
+  const f = import.meta.glob(["/index.html", "/public/_headers", "/src/tema-inicial.js"], {
+    query: "?raw",
+    import: "default",
+    eager: true,
+  }) as Record<string, string>;
+  it("el script va en línea (el build lo pone en el hueco de index.html), no como archivo aparte", () => {
+    expect(f["/index.html"]).toContain('<script src="./tema.js"></script>');
+    expect(Object.keys(import.meta.glob("/public/tema.js"))).toEqual([]);
+    expect(f["/src/tema-inicial.js"]).toContain('localStorage.getItem("mseen:night")');
+  });
+  it("la CSP admite solo ese script por su hash (el build lo añade y falla si no puede)", () => {
+    const cabeceras = f["/public/_headers"];
+    expect(cabeceras.match(/script-src 'self';/g)).toHaveLength(1);
+    expect(cabeceras).not.toMatch(/script-src[^;]*unsafe-inline/);
+  });
+});

@@ -1,6 +1,42 @@
-import { defineConfig } from "vite";
+import { createHash } from "node:crypto";
+import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
+
+/* El modo nocturno se pone antes del primer pintado con un script EN LÍNEA (src/tema-inicial.js):
+   como archivo aparte era una petición más que bloqueaba el pintado en el móvil. La CSP no
+   admite scripts en línea, así que el build añade a dist/_headers el hash de este script, y
+   solo el de este; si el HTML publicado no lo lleva tal cual, el build falla. */
+function temaEnLinea(): Plugin {
+  const MARCA = '<script src="./tema.js"></script>';
+  let codigo = "";
+  let salida = "";
+  return {
+    name: "tema-en-linea",
+    configResolved(c) {
+      codigo = readFileSync(resolve(c.root, "src/tema-inicial.js"), "utf8").trim();
+      salida = c.command === "build" ? resolve(c.root, c.build.outDir) : "";
+    },
+    transformIndexHtml(html) {
+      if (!html.includes(MARCA)) throw new Error(`index.html: falta ${MARCA}`);
+      return html.replace(MARCA, `<script>${codigo}</script>`);
+    },
+    closeBundle() {
+      if (!salida) return;
+      const html = readFileSync(resolve(salida, "index.html"), "utf8");
+      if (!html.includes(`<script>${codigo}</script>`))
+        throw new Error("dist/index.html no lleva el script del tema tal cual");
+      const ruta = resolve(salida, "_headers");
+      const cabeceras = readFileSync(ruta, "utf8");
+      const antes = "script-src 'self';";
+      if (!cabeceras.includes(antes)) throw new Error(`_headers: falta «${antes}»`);
+      const hash = createHash("sha256").update(codigo).digest("base64");
+      writeFileSync(ruta, cabeceras.replace(antes, `script-src 'self' 'sha256-${hash}';`));
+    },
+  };
+}
 
 /* Web estática, instalable y con uso sin conexión (PWA). Base relativa para poder servirla
    desde cualquier subruta (si la SEEN la aloja junto al capítulo). El service worker se
@@ -30,6 +66,7 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    temaEnLinea(),
     VitePWA({
       registerType: "prompt",
       includeManifestIcons: false,

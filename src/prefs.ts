@@ -19,8 +19,8 @@ const guardar = (clave: string, valor: string) => {
 
 /* ---------- Modo nocturno ----------
    Un solo estado para toda la app (la cabecera y «Más» siempre de acuerdo). Solo se guarda
-   cuando el lector lo elige; sin elección, sigue al sistema y a sus cambios. public/tema.js
-   pone la clase antes de pintar, para que no haya destello claro. */
+   cuando el lector lo elige; sin elección, sigue al sistema y a sus cambios. src/tema-inicial.js
+   (en línea en index.html) pone la clase antes de pintar, para que no haya destello claro. */
 const CLAVE_NOCHE = "mseen:night";
 const EVENTO_NOCHE = "mseen:noche";
 const preferenciaOscura = () => {

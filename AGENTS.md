@@ -128,7 +128,7 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     heading level from `NivelTitulo` (`src/nivel-contexto.ts`; Bloques sets it per block, the
     standalone screens set 2). axe `heading-order` and `landmark-unique` are enforced in e2e.
     `Modal` pushes a history entry so Back closes it. A chunk that fails to load reloads once
-    (`src/recarga.ts`). Night mode is a single store (`useNocturno`, `public/tema.js` before
+    (`src/recarga.ts`). Night mode is a single store (`useNocturno`, `src/tema-inicial.js`, inlined by the build with its CSP hash, before
     paint); it is saved only when the reader chooses.
 
 ## 2. Quality gates (all must pass before a push)

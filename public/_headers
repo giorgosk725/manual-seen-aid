@@ -1,6 +1,7 @@
 # Cabeceras de seguridad (Cloudflare Pages las lee de aqui). La app no tiene backend ni carga nada
 # de terceros: todo es del mismo origen. `unsafe-inline` en style-src es por los estilos en
-# linea de las tarjetas y el mapa nocturno; en script-src no hace falta.
+# linea de las tarjetas y el mapa nocturno. En script-src, el build (vite.config.ts, temaEnLinea)
+# añade el hash del único script en línea, el del modo nocturno.
 /*
   Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'
   Referrer-Policy: no-referrer

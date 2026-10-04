@@ -92,7 +92,24 @@ recorrido.
 Vitest 74/74; Playwright 56/56 (escritorio, 393 px, nocturno con axe —ahora con
 `heading-order`—, hojas en una cara y en letra grande, y producción con service worker);
 fidelidad frente al PDF limpia (144/144 párrafos, 216/216 celdas, 115 frases de diagrama en su
-página); barrido de rutas a 6 anchos (ver `_audit_rutas.json`).
+página); barrido de rutas a 6 anchos (ver `_audit_rutas.json`): un desborde de 3 px a 1024 px en
+«¿Qué necesitas?», corregido (entre 1024 y 1279 px el icono va encima del texto).
+
+**Lighthouse en producción (0.6.1, Lighthouse 13.5, Edge sin interfaz).** Rendimiento /
+accesibilidad / buenas prácticas; SEO 63–66 por el `noindex` deliberado hasta el permiso de la
+SEEN.
+
+| Pantalla                | Móvil 0.6.0 | Móvil 0.6.1 | Escritorio 0.6.1 | LCP móvil 0.6.1 |
+| ----------------------- | ----------: | ----------: | ---------------: | --------------: |
+| Portada                 |  98/100/100 |  94/100/100 |      100/100/100 |           2,7 s |
+| Apartado 10             |  92/100/100 |  93/100/100 |      100/100/100 |           2,7 s |
+| Figura 3, tramo naranja |   89/98/100 |  94/100/100 |      100/100/100 |           2,9 s |
+| Información al paciente |  87/100/100 |  88/100/100 |      100/100/100 |           3,5 s |
+
+La portada bajó de 98 a 94 porque `tema.js` (el modo nocturno antes de pintar) era una petición
+aparte que bloqueaba el primer pintado. **0.6.2:** el script va en línea en `index.html` y el
+build añade su hash a la CSP de `_headers` (`temaEnLinea` en `vite.config.ts`; falla si no puede
+hacerlo); una prueba vigila que no vuelva a ser un archivo aparte ni entre `unsafe-inline`.
 
 ## 4. Para el autor
 
