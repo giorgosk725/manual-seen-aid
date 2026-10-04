@@ -344,7 +344,7 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
         ))}
         {grupo("Para el paciente", ["pacientes"])}
         {grupo("Fuentes y versión", ["bibliografia", "cambios", "sobre"])}
-        {grupo("Aprender", ["test"])}
+        {grupo("Aprender", ["test", "repaso"])}
       </nav>
       <div className="mt-auto px-3 pt-6 text-[11px] leading-relaxed text-slate-500">
         Material educativo. No es producto sanitario ni sustituye el juicio clínico.
@@ -383,7 +383,9 @@ function Inferior({ ruta }: { ruta: Ruta }) {
       etiqueta: "Más",
       href: href("mas"),
       icono: MoreHorizontal,
-      on: ["mas", "bibliografia", "cambios", "sobre", "test", "pacientes"].includes(ruta.seccion),
+      on: ["mas", "bibliografia", "cambios", "sobre", "test", "repaso", "pacientes"].includes(
+        ruta.seccion,
+      ),
     },
   ];
   return (
@@ -539,7 +541,7 @@ export function Shell({
       ? CATEGORIA_HEX.consultar
       : ["bibliografia", "cambios", "sobre"].includes(ruta.seccion)
         ? CATEGORIA_HEX.confiar
-        : ruta.seccion === "test"
+        : ruta.seccion === "test" || ruta.seccion === "repaso"
           ? CATEGORIA_HEX.aprender
           : ruta.seccion === "pacientes"
             ? CATEGORIA_HEX.pacientes

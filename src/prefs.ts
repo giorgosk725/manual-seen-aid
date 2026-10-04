@@ -177,6 +177,30 @@ export const useFormatoHoja = () =>
   useLectura<FormatoHoja>("mseen:hoja", "una-cara", validarFormatoHoja);
 export const guardarFormatoHoja = (f: FormatoHoja) => guardarJSON("mseen:hoja", f);
 
+/* Tarjetas de repaso (repaso.ts): caja (1-5) y próxima fecha de cada tarjeta que se ha visto.
+   Solo identificadores de tarjeta y fechas; nada clínico ni de pacientes. */
+export type ProgresoRepaso = Record<string, { caja: number; proxima: string }>;
+const validarRepaso: Validar<ProgresoRepaso> = (v) => {
+  if (!v || typeof v !== "object" || Array.isArray(v)) return undefined;
+  const out: ProgresoRepaso = {};
+  for (const [id, e] of Object.entries(v as Record<string, unknown>)) {
+    const { caja, proxima } = (e ?? {}) as { caja?: unknown; proxima?: unknown };
+    if (
+      Number.isInteger(caja) &&
+      (caja as number) >= 1 &&
+      (caja as number) <= 5 &&
+      typeof proxima === "string" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(proxima)
+    )
+      out[id] = { caja: caja as number, proxima };
+  }
+  return out;
+};
+const SIN_PROGRESO: ProgresoRepaso = {};
+export const useRepaso = () => useLectura("mseen:repaso", SIN_PROGRESO, validarRepaso);
+export const leerRepaso = () => leerJSON("mseen:repaso", SIN_PROGRESO, validarRepaso);
+export const guardarRepaso = (p: ProgresoRepaso) => guardarJSON("mseen:repaso", p);
+
 /* Borra todas las preferencias de esta app en el navegador (botón del aviso de fallo). */
 export function restablecerPreferencias() {
   try {

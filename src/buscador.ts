@@ -279,6 +279,12 @@ export function indice(): Entrada[] {
       10,
       href("visual", "transicion"),
     ],
+    [
+      "Tarjetas de repaso",
+      "Tarjetas, repasar, estudiar, memorizar, aprender las cifras y las siglas del capítulo, con su página",
+      0,
+      href("repaso"),
+    ],
   ] as const)
     out.push({ id: `atajo/${ruta}`, tipo: "atajo", titulo, texto, pagina, ruta });
   // Hojas para el paciente (V5 del autor y resumen de la editorial) y preguntas del test:

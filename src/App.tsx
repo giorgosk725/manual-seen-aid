@@ -31,6 +31,9 @@ const Mas = lazy(() => otras().then((m) => ({ default: m.Mas })));
 const Sobre = lazy(() => otras().then((m) => ({ default: m.Sobre })));
 const Test = lazy(() => otras().then((m) => ({ default: m.Test })));
 
+const repaso = () => import("./pantallas/Repaso");
+const Repaso = lazy(() => repaso().then((m) => ({ default: m.Repaso })));
+
 const sistemas = () => import("./pantallas/Sistemas");
 const FichaSistema = lazy(() => sistemas().then((m) => ({ default: m.FichaSistema })));
 const HubSistemas = lazy(() => sistemas().then((m) => ({ default: m.HubSistemas })));
@@ -55,7 +58,7 @@ const precargarPantallas = () => {
     ?.saveData;
   if (ahorro) return;
   const cargar = () => {
-    for (const f of [consultar, recorridos, sistemas, visual, pacientes, otras])
+    for (const f of [consultar, recorridos, sistemas, visual, pacientes, otras, repaso])
       f().catch(() => {});
   };
   const w = window as Window & {
@@ -91,8 +94,10 @@ function NoEncontrada() {
 export default function App() {
   const ruta = useRuta();
   useEffect(() => {
-    // En pruebas (jsdom) no hace falta: cada pantalla se carga al visitarla.
-    if (import.meta.env.MODE !== "test") precargarPantallas();
+    // Solo en el build publicado. En pruebas (jsdom) no hace falta: cada pantalla se carga al
+    // visitarla. En desarrollo, Vite compila cada módulo al pedirlo y siete pantallas a la vez
+    // retrasan lo que el lector sí ha pedido (lo cubre el proyecto e2e «produccion»).
+    if (import.meta.env.PROD) precargarPantallas();
   }, []);
   let pantalla: React.ReactNode;
   let titulo: string | undefined;
@@ -192,6 +197,10 @@ export default function App() {
     case "test":
       pantalla = <Test />;
       titulo = "Autoevaluación";
+      break;
+    case "repaso":
+      pantalla = <Repaso filtro={ruta.sub} />;
+      titulo = "Tarjetas de repaso";
       break;
     case "pacientes":
       if (ruta.sub === "informacion") {

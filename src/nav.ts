@@ -21,6 +21,7 @@ import {
   Hospital,
   Images,
   Info,
+  Layers,
   LayoutGrid,
   Library,
   ListChecks,
@@ -196,6 +197,16 @@ export const DESTINOS: Destino[] = [
     icono: GraduationCap,
     cat: "aprender",
     descripcion: "Test con respuesta razonada y la página del capítulo que la justifica.",
+  },
+  {
+    id: "repaso",
+    etiqueta: "Tarjetas de repaso",
+    corto: "Repaso",
+    href: href("repaso"),
+    icono: Layers,
+    cat: "aprender",
+    descripcion:
+      "Las cifras y las siglas del capítulo como tarjetas, con su página; repaso espaciado guardado en este dispositivo.",
   },
 ];
 

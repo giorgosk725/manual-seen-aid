@@ -72,8 +72,9 @@ test.describe("Primera visita a un enlace profundo", () => {
     ["#/sistemas/ciq", "Sistemas"],
     ["#/visual", "Visual"],
     ["#/bibliografia", "Otras"],
+    ["#/repaso/siglas", "Repaso"],
   ] as const;
-  const PANTALLAS = /\/assets\/(Consultar|Recorridos|Otras|Sistemas|Visual|Pacientes)-/;
+  const PANTALLAS = /\/assets\/(Consultar|Recorridos|Otras|Sistemas|Visual|Pacientes|Repaso)-/;
   for (const [ruta, pantalla] of CASOS) {
     test(`${ruta} → ${pantalla}`, async ({ browser }) => {
       // Contexto nuevo y sin service worker: de verdad la primera visita.
@@ -105,6 +106,29 @@ test.describe("Primera visita a un enlace profundo", () => {
       await ctx.close();
     });
   }
+  test("tras cargar, la precarga en reposo trae las demás pantallas", async ({ browser }) => {
+    const ctx = await browser.newContext({ serviceWorkers: "block" });
+    const page = await ctx.newPage();
+    await page.goto("/#/");
+    await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+    // Espera al evento load, 2 s de respiro y el momento libre (con tope de 5 s).
+    await expect
+      .poll(
+        () =>
+          page.evaluate((fuente) => {
+            const re = new RegExp(fuente);
+            return new Set(
+              performance
+                .getEntriesByType("resource")
+                .map((e) => e.name.match(re)?.[1])
+                .filter(Boolean),
+            ).size;
+          }, PANTALLAS.source),
+        { timeout: 15000 },
+      )
+      .toBe(7);
+    await ctx.close();
+  });
   test("la portada y los apartados no precargan nada", async ({ browser }) => {
     const ctx = await browser.newContext({ serviceWorkers: "block" });
     const page = await ctx.newPage();

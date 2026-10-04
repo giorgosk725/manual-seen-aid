@@ -22,6 +22,7 @@ const RUTAS = [
   "#/cambios",
   "#/sobre",
   "#/test",
+  "#/repaso",
   "#/buscar/insulina",
   "#/mas",
 ];

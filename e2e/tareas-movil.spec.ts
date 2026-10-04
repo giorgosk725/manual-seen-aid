@@ -69,6 +69,7 @@ test.describe("Pantallas nuevas en el móvil", () => {
     ["/#/pacientes/informacion", "Información para pacientes"],
     ["/#/pacientes/plan/camaps", "Plan de seguridad · CamAPS"],
     ["/#/test", "Autoevaluación"],
+    ["/#/repaso", "Tarjetas de repaso"],
     ["/#/visual/gestacion-sistemas", "Gestación por sistema"],
     ["/#/visual/exploraciones", "Exploraciones"],
     ["/#/visual/eleccion", "Elección compartida"],

@@ -391,6 +391,11 @@ export function Sobre() {
             <strong>Autoevaluación</strong>: las preguntas del autor, rotuladas «pendiente de
             validación del autor» hasta que dé su visto bueno.
           </li>
+          <li>
+            <strong>Tarjetas de repaso</strong>: las cifras de cada apartado y las siglas del
+            glosario, tal como las da el capítulo y con su página; no añaden texto. El avance se
+            guarda solo en este dispositivo.
+          </li>
         </ul>
         <h2 className="mt-5 text-base font-extrabold text-slate-900">Qué no es</h2>
         <p className="mt-2 text-sm">
@@ -541,7 +546,11 @@ export function Test() {
       <CabeceraEditorial titulo="Autoevaluación" hex={CATEGORIA_HEX.aprender} level={1}>
         <p className="text-sm text-slate-600">
           Diez preguntas del autor. Al responder se ve su explicación y las frases del capítulo que
-          la respaldan, con su página.
+          la respaldan, con su página. Para memorizar las cifras y las siglas,{" "}
+          <a href={href("repaso")} className="font-semibold text-slate-800 underline">
+            tarjetas de repaso
+          </a>
+          .
         </p>
       </CabeceraEditorial>
       {pendientes > 0 && (
@@ -565,7 +574,7 @@ export function Test() {
 /* ---------- Más (móvil): el resto de destinos y las preferencias ---------- */
 export function Mas() {
   const [night, toggle] = useNocturno();
-  const ids = ["pacientes", "bibliografia", "cambios", "sobre", "test"];
+  const ids = ["pacientes", "bibliografia", "cambios", "sobre", "test", "repaso"];
   return (
     <div>
       <CabeceraEditorial titulo="Más" hex={CATEGORIA_HEX.confiar} level={1} />

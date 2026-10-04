@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.6.4";
+export const VERSION_APP = "0.7.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-04",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — enlaces directos más rápidos y objetivos táctiles`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — tarjetas de repaso`,
+    detalle: [
+      "Tarjetas de repaso (Aprender): las cifras de cada apartado y las siglas del glosario como tarjetas, tal como las da el capítulo y con su página. Pregunta, «Mostrar la respuesta» y «¿Te acordabas?»: lo que recuerdas vuelve al cabo de 1, 3, 7, 16 y 35 días; lo que no, en la misma ronda. Por mazo (cifras, siglas) o por apartado; desde las «Cifras del apartado», «Repasar estas cifras como tarjetas».",
+      "Las dosis con asterisco de la Figura 3 llevan su nota también en la tarjeta. Las cifras con la misma etiqueta (TIR, TBR y TAR de «necesidad clínica no cubierta», p. 5) van juntas en una.",
+      "El avance se guarda solo en este dispositivo y se puede borrar («Empezar de cero»). Teclado: espacio para ver la respuesta; 1 y 2 para responder.",
+    ],
+  },
+  {
+    fecha: "2026-10-04",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.6.4 — enlaces directos más rápidos y objetivos táctiles",
     detalle: [
       "La primera vez que se abre un enlace directo (por ejemplo, el QR de una hoja para el paciente), su pantalla se pide a la vez que el resto de la app: en el móvil llega antes (información para el paciente, de 3,0 a 2,3 s en Lighthouse).",
       "La letra de la cabecera se pide desde el principio: no cambia al terminar de cargar.",

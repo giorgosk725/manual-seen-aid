@@ -140,6 +140,12 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     `PANTALLA_DE_SECCION`: `e2e/produccion.spec.ts` checks it. Touch targets are at least
     24 px (`e2e/tactiles-movil.spec.ts`; 44 px for breadcrumbs, header and loose links).
 
+19. **Review cards (0.7.0).** `src/repaso.ts` builds the cards from `contenido/cifras.ts` (one
+    per label per section; same-label figures are joined) and from the glossary (only acronyms
+    the chapter expands). No card text is written by hand: change the figure or the glossary.
+    Leitner boxes 1-5 (1, 3, 7, 16, 35 days); progress in `mseen:repaso` (validated in
+    `prefs.ts`). Screen `src/pantallas/Repaso.tsx`, routes `#/repaso[/cifras|siglas|<slug>]`.
+
 ## 2. Quality gates (all must pass before a push)
 
 ```bash

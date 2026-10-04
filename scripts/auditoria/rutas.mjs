@@ -73,6 +73,9 @@ const RUTAS = [
   "#/cambios",
   "#/sobre",
   "#/test",
+  "#/repaso",
+  "#/repaso/siglas",
+  "#/repaso/07-educacion",
   "#/mas",
 ];
 const ANCHOS = [360, 393, 430, 768, 1024, 1440];

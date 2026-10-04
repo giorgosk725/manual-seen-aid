@@ -20,6 +20,7 @@ const PANTALLA_DE_SECCION: Record<string, string> = {
   sobre: "Otras",
   test: "Otras",
   mas: "Otras",
+  repaso: "Repaso",
 };
 
 /* Trozos que necesita cada pantalla perezosa y que no trae ya la entrada. */
