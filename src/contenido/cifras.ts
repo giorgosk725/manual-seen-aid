@@ -261,9 +261,8 @@ export const CIFRAS: Record<string, Cifra[]> = {
       ancla: "ingreso",
     },
     {
-      valor: "24 h",
-      etiqueta:
-        "primeras horas tras insertar un sensor nuevo: confirmar con glucemia capilar durante ellas",
+      valor: "primeras 24 h",
+      etiqueta: "tras la inserción de un nuevo sensor: confirmar con glucemia capilar",
       p: 21,
       ancla: "ingreso",
     },

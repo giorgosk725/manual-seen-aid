@@ -116,8 +116,17 @@ for r in app["refs"]:
 # --- Glosario: cada sigla aparece en el capítulo y su página la contiene ---
 todo = " ".join(paginas.values())
 res["glosario_fallo"] = []
+# La página vale si en ella está la sigla o su desarrollo (el capítulo puede desarrollar en una
+# página una sigla que usa en otra: «Guía SED» en la p. 1, «Sociedad Española de Diabetes» en
+# la 4). La p. 8 incluye la transcripción de la Figura 3, que en el PDF es imagen.
+def texto_de_pagina(p):
+    t = paginas[p]
+    if p == 8:
+        t += " " + " ".join(f["texto"] for f in app["figura3"])
+    return " ".join(t.split())
 for g in app["glosario"]:
-    if g["sigla"] not in paginas[g["pagina"]]:
+    txt = texto_de_pagina(g["pagina"])
+    if g["sigla"] not in txt and g["desarrollo"] not in txt:
         donde = [p for p, txt in paginas.items() if g["sigla"] in txt][:3]
         res["glosario_fallo"].append({"sigla": g["sigla"], "pagina_app": g["pagina"], "aparece_en": donde})
 

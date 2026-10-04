@@ -117,7 +117,37 @@ precarga de pantallas esperaba solo a un momento libre y arrancaba a los 0,5 s, 
 pintaba la portada; ahora espera al final de la carga y 2 s más. Portada móvil, mediana de tres
 medidas: 95 → 96, LCP 2,7 → 2,3 s, bloqueo 140 → 70 ms.
 
-## 4. Para el autor
+## 4. Lo que quedaba de los informes (0.6.4)
+
+Revisados de nuevo los tres informes de la 0.6.0 frente a lo publicado. Aplicado ahora:
+
+- **Primera visita a un enlace profundo** (el QR de una hoja, un enlace compartido): el script
+  de arranque, en línea, pide el trozo de la pantalla de la ruta a la vez que la entrada
+  (`arranqueEnLinea` en `vite.config.ts`; la CSP lleva el hash del único script en línea). En
+  producción de prueba, información al paciente en el móvil: 91 → 96, LCP 3,0 → 2,3 s (mediana
+  de tres); la Figura 3, igual (su trozo pesa 3 KB). Prueba e2e de producción: seis rutas
+  precargan justo el trozo que su pantalla usa; la portada y los apartados, nada.
+- **Oswald precargada**: neutra en Lighthouse (portada 95 → 97, información igual), evita el
+  cambio de letra de la cabecera y se descarga igualmente en todas las pantallas.
+- **Objetivos táctiles**: los que quedaban por debajo de 24 px (13 en el móvil, 24 en escritorio)
+  ya no; prueba e2e fija sobre 20 pantallas a 393 px.
+- **Presupuesto de tamaño** (`npm run presupuesto`, en CI y en el despliegue): entrada 148/165 KB
+  de JS y 12/16 KB de CSS, trozo perezoso mayor 13/25 KB, precache 1,54/1,9 MB.
+- **CI**: actions fijadas por SHA con su versión al lado.
+- **Cobertura**: «Reintentar» del índice de búsqueda (falla una vez y se recupera), el buscador
+  inactivo no pide nada, y «Seguir leyendo», leídos y favoritos en vivo.
+- **Contenido**: SED en la p. 4 (A8) y «primeras 24 h tras la inserción de un nuevo sensor»
+  (A9). La auditoría de fidelidad coteja ahora el glosario con la sigla o su desarrollo y con la
+  leyenda de la Figura 3: 0 páginas dudosas (antes 3, ninguna real).
+
+No aplicado, a propósito: `content-visibility` en los apartados largos (el bloqueo es de JS, no
+de pintado, y estropearía la vuelta exacta a «Seguir leyendo»); reducir las fotos de los sistemas
+(36 KB las cuatro, y el visor las usa a 480 px con zoom); incrustar el CSS crítico (un único CSS
+de 12 KB); una e2e de actualización con dos builds (el flujo se comprobó a mano en la auditoría
+técnica); desplegar solo desde CI (falta el secreto `CLOUDFLARE_API_TOKEN`); `X-Frame-Options:
+DENY` se queda salvo que la SEEN quiera incrustar la app en su web.
+
+## 5. Para el autor
 
 1. Liberty: el capítulo la da como comercializada en España (corrección 2/11 y resumen) y la
    ampliación dice «confirmar disponibilidad con Ypsomed»: ¿marca «Difiere» o se actualiza una de

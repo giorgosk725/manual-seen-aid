@@ -1,10 +1,10 @@
 /* Regresiones de la auditoría del 3-10-2026 (0.5.0): preferencias que no rompen la app,
    límites de búsqueda por grupo, remisiones internas que llevan a su sitio y marcas
    «Difiere del capítulo» con la frase literal del capítulo. */
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { FIGURAS } from "./contenido";
 import { INFO_F3 } from "./componentes/figura3-imagen";
-import { act, render, screen } from "@testing-library/react";
+import { act, render, renderHook, screen, waitFor } from "@testing-library/react";
 import { APARTADOS, TABLAS, idDeBloque } from "./contenido";
 import { buscar, buscarConTotales, fueraDelCapitulo, tramoDeConsulta } from "./buscador";
 import { OBRAS_NOMBRADAS, PATRON_REMISION, destinoDeRemision } from "./remisiones";
@@ -257,5 +257,63 @@ describe("modo nocturno antes de pintar (0.6.2)", () => {
     const cabeceras = f["/public/_headers"];
     expect(cabeceras.match(/script-src 'self';/g)).toHaveLength(1);
     expect(cabeceras).not.toMatch(/script-src[^;]*unsafe-inline/);
+  });
+});
+
+describe("seguir leyendo, leídos y favoritos (cobertura pedida en la auditoría técnica)", () => {
+  afterEach(() => localStorage.clear());
+  it("se actualizan en vivo: el favorito se pone y se quita, el leído no se duplica", async () => {
+    const { alternarFavorito, guardarUltimo, marcarLeido } = await import("./prefs");
+    render(<Lector />);
+    expect(screen.getByText("0··nada")).toBeInTheDocument();
+    const fav = { ruta: "#/consultar/figura-3", titulo: "Figura 3" };
+    act(() => {
+      alternarFavorito(fav);
+      marcarLeido("07-educacion");
+      marcarLeido("07-educacion");
+      guardarUltimo({ ruta: "#/capitulo/10-situaciones/b4", titulo: "10", slug: "10-situaciones" });
+    });
+    expect(
+      screen.getByText("1·#/consultar/figura-3·#/capitulo/10-situaciones/b4"),
+    ).toBeInTheDocument();
+    act(() => alternarFavorito(fav));
+    expect(screen.getByText("1··#/capitulo/10-situaciones/b4")).toBeInTheDocument();
+  });
+});
+
+describe("índice de búsqueda que no llega (auditoría técnica, M1)", () => {
+  afterEach(() => {
+    vi.doUnmock("./buscador");
+    vi.resetModules();
+  });
+  it("avisa con «error» y «Reintentar» lo vuelve a pedir (el fallo no se queda guardado)", async () => {
+    vi.resetModules();
+    let intentos = 0;
+    vi.doMock("./buscador", async () => {
+      intentos++;
+      if (intentos === 1) throw new Error("sin red");
+      return await vi.importActual<typeof import("./buscador")>("./buscador");
+    });
+    const { useBuscador } = await import("./useBuscador");
+    const { result } = renderHook(() => useBuscador(true));
+    expect(result.current.estado).toBe("cargando");
+    await waitFor(() => expect(result.current.estado).toBe("error"));
+    act(() => result.current.reintentar());
+    await waitFor(() => expect(result.current.estado).toBe("listo"));
+    expect(intentos).toBe(2);
+    expect(result.current.motor?.buscar("glargina").length).toBeGreaterThan(0);
+  });
+  it("con el buscador inactivo no pide nada", async () => {
+    vi.resetModules();
+    let intentos = 0;
+    vi.doMock("./buscador", async () => {
+      intentos++;
+      return await vi.importActual<typeof import("./buscador")>("./buscador");
+    });
+    const { useBuscador } = await import("./useBuscador");
+    const { result } = renderHook(() => useBuscador(false));
+    expect(result.current.estado).toBe("inactivo");
+    await new Promise((r) => setTimeout(r, 50));
+    expect(intentos).toBe(0);
   });
 });

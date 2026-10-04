@@ -151,7 +151,7 @@ export function Visual() {
                       {ap && (
                         <a
                           href={href("capitulo", ap.slug)}
-                          className="rounded-full border border-slate-300 px-2 py-0.5 text-xs font-semibold text-slate-700 hover:border-slate-400"
+                          className="inline-flex min-h-6 items-center rounded-full border border-slate-300 px-2 py-0.5 text-xs font-semibold text-slate-700 hover:border-slate-400"
                         >
                           Transcripción en {ap.n}. {ap.corto}
                         </a>
@@ -159,7 +159,7 @@ export function Visual() {
                       {extra && (
                         <a
                           href={extra.href}
-                          className="rounded-full px-2 py-0.5 text-xs font-semibold text-white"
+                          className="inline-flex min-h-6 items-center rounded-full px-2 py-0.5 text-xs font-semibold text-white"
                           style={{ background: hex.strong }}
                         >
                           {extra.texto}

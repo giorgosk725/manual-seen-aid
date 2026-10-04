@@ -305,7 +305,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                     <a
                       href={href("capitulo", apartado.slug, s.id)}
                       aria-current={destacado === s.id ? "location" : undefined}
-                      className={`block rounded px-1 py-0.5 text-sm leading-snug hover:text-slate-900 ${destacado === s.id ? "font-semibold text-slate-900" : "text-slate-600"}`}
+                      className={`block min-h-6 rounded px-1 py-0.5 text-sm leading-snug hover:text-slate-900 ${destacado === s.id ? "font-semibold text-slate-900" : "text-slate-600"}`}
                     >
                       {s.texto}
                     </a>

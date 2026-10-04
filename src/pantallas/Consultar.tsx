@@ -158,7 +158,7 @@ export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
           {ap && (
             <a
               href={href("capitulo", ap.slug)}
-              className="inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
             >
               Leer en su apartado: {ap.n}. {ap.titulo} <ArrowRight size={14} aria-hidden="true" />
             </a>
@@ -188,7 +188,7 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
         <div className="no-imprimir mt-4 border-t pt-3" style={{ borderColor: "#e6e6e6" }}>
           <a
             href={href("capitulo", "07-educacion", "b5")}
-            className="inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
           >
             Leer en su apartado: 7. Educación terapéutica y plan de seguridad{" "}
             <ArrowRight size={14} aria-hidden="true" />

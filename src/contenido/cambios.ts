@@ -8,13 +8,24 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.6.3";
+export const VERSION_APP = "0.6.4";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-04",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — precarga sin estorbar al arranque`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — enlaces directos más rápidos y objetivos táctiles`,
+    detalle: [
+      "La primera vez que se abre un enlace directo (por ejemplo, el QR de una hoja para el paciente), su pantalla se pide a la vez que el resto de la app: en el móvil llega antes (información para el paciente, de 3,0 a 2,3 s en Lighthouse).",
+      "La letra de la cabecera se pide desde el principio: no cambia al terminar de cargar.",
+      "Enlaces pequeños ampliados a 24 px como mínimo: fuentes de las fichas de sistema, galería «Figuras y diagramas», «Leer en su apartado» (44 px), índice lateral del apartado y enlaces web de la bibliografía.",
+      "Glosario: SED con la página en la que el capítulo la desarrolla (p. 4). Cifras del apartado 10: «primeras 24 h» tras la inserción de un nuevo sensor.",
+    ],
+  },
+  {
+    fecha: "2026-10-04",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.6.3 — precarga sin estorbar al arranque",
     detalle: [
       "Las demás pantallas se precargan cuando la página ya ha terminado de cargar, no mientras se pinta la portada: en el móvil, la portada responde antes (bloqueo del hilo principal de 140 a 70 ms en Lighthouse).",
     ],

@@ -58,7 +58,7 @@ export const GLOSARIO: Sigla[] = [
   { sigla: "PET", desarrollo: "tomografía por emisión de positrones", pagina: 22 },
   { sigla: "PID", desarrollo: "control proporcional-integral-derivativo", pagina: 3 },
   { sigla: "RM", desarrollo: "resonancia magnética", pagina: 21 },
-  { sigla: "SED", desarrollo: "Sociedad Española de Diabetes", pagina: 1 },
+  { sigla: "SED", desarrollo: "Sociedad Española de Diabetes", pagina: 4 },
   { sigla: "SEEN", desarrollo: "sigla no desarrollada en el capítulo (Manual SEEN)", pagina: 1 },
   { sigla: "TAR", desarrollo: "tiempo por encima del rango", pagina: 2 },
   {

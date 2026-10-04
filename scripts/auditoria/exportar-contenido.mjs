@@ -78,6 +78,14 @@ for (const tr of FIGURA3.tramos)
       ...tr.pasos.flatMap((p) => [plano(p.texto), ...(p.detalle || []).map(plano)]),
     ].join(" "),
   });
+// Leyenda de abreviaturas, regla de oro y nota del asterisco: también son texto de la figura.
+out.figura3.push({
+  id: "leyenda",
+  texto: [FIGURA3.abreviaturas, FIGURA3.reglaDeOro, FIGURA3.notaAsterisco]
+    .filter(Boolean)
+    .map(plano)
+    .join(" "),
+});
 for (const f of Object.values(FIGURAS))
   out.figuras.push({
     id: f.id,

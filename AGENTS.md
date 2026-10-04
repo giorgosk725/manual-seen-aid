@@ -131,6 +131,15 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     (`src/recarga.ts`). Night mode is a single store (`useNocturno`, `src/tema-inicial.js`, inlined by the build with its CSP hash, before
     paint); it is saved only when the reader chooses.
 
+18. **Startup script and CSP (0.6.4).** `index.html` has ONE inline script, built by
+    `arranqueEnLinea` in `vite.config.ts`: the night mode (`src/tema-inicial.js`) and, in the
+    build, the deep-link preload (`<link rel="modulepreload" data-arranque>` for the lazy
+    screen of the route, from `PANTALLA_DE_SECCION`; Recorridos for situacion/descarga/
+    interrupcion). The build writes its sha256 into `script-src` of `dist/_headers` and fails if
+    there is any other inline script. If a route moves to another screen in `App.tsx`, update
+    `PANTALLA_DE_SECCION`: `e2e/produccion.spec.ts` checks it. Touch targets are at least
+    24 px (`e2e/tactiles-movil.spec.ts`; 44 px for breadcrumbs, header and loose links).
+
 ## 2. Quality gates (all must pass before a push)
 
 ```bash
@@ -139,7 +148,8 @@ npm test            # Vitest: content integrity, screens, jest-axe
 npm run lint
 npm run format:check
 npm run build
-npm run test:e2e    # Playwright: desktop, mobile 393 px, night mode with axe
+npm run presupuesto # size budget (gzip): entry JS/CSS, each lazy chunk, precache
+npm run test:e2e    # Playwright: desktop, mobile 393 px, night mode with axe, production build with SW
 ```
 
 Plus the audits in `scripts/auditoria/` (see docs/AUDITORIA_2026-10-02.md §8): `fidelidad.py`

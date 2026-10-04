@@ -59,3 +59,61 @@ test.describe("Producción con service worker", () => {
     await expect(page.getByText(/en el capítulo/).first()).toBeVisible();
   });
 });
+
+test.describe("Primera visita a un enlace profundo", () => {
+  /* El QR de una hoja abre, por ejemplo, #/pacientes/resumen en un móvil que nunca ha
+     visitado la app: el script de arranque pide ya el trozo de esa pantalla, a la vez que la
+     entrada. Se comprueba que precarga justo el trozo que la pantalla usa (si App.tsx cambia
+     una ruta de pantalla y vite.config.ts no, esto falla). */
+  const CASOS = [
+    ["#/pacientes/resumen", "Pacientes"],
+    ["#/consultar/situacion/rm", "Recorridos"],
+    ["#/consultar/figura-3", "Consultar"],
+    ["#/sistemas/ciq", "Sistemas"],
+    ["#/visual", "Visual"],
+    ["#/bibliografia", "Otras"],
+  ] as const;
+  const PANTALLAS = /\/assets\/(Consultar|Recorridos|Otras|Sistemas|Visual|Pacientes)-/;
+  for (const [ruta, pantalla] of CASOS) {
+    test(`${ruta} → ${pantalla}`, async ({ browser }) => {
+      // Contexto nuevo y sin service worker: de verdad la primera visita.
+      const ctx = await browser.newContext({ serviceWorkers: "block" });
+      const page = await ctx.newPage();
+      await page.goto(`/${ruta}`);
+      await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+      const r = await page.evaluate((fuente) => {
+        const re = new RegExp(fuente);
+        return {
+          precargados: [...document.querySelectorAll("link[data-arranque]")].map(
+            (l) => (l as HTMLLinkElement).href,
+          ),
+          // Antes de la precarga en reposo (que espera 2 s tras la carga).
+          cargados: performance
+            .getEntriesByType("resource")
+            .map((e) => e.name)
+            .filter((n) => re.test(n)),
+        };
+      }, PANTALLAS.source);
+      expect(
+        r.precargados.some((h) => h.includes(`/assets/${pantalla}-`)),
+        ruta,
+      ).toBe(true);
+      expect(
+        r.cargados.map((n) => n.match(PANTALLAS)![1]),
+        ruta,
+      ).toEqual([pantalla]);
+      await ctx.close();
+    });
+  }
+  test("la portada y los apartados no precargan nada", async ({ browser }) => {
+    const ctx = await browser.newContext({ serviceWorkers: "block" });
+    const page = await ctx.newPage();
+    for (const ruta of ["#/", "#/capitulo/07-educacion"]) {
+      await page.goto(`/${ruta}`);
+      await page.reload();
+      await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+      expect(await page.locator("link[data-arranque]").count(), ruta).toBe(0);
+    }
+    await ctx.close();
+  });
+});
