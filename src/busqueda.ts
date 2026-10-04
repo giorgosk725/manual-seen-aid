@@ -57,6 +57,8 @@ export interface Respuesta {
   pagina2?: number;
   ruta: string;
   score: number;
+  /* Nada responde de lleno: es de lo más parecido que tiene el capítulo («lo más cercano»). */
+  aproximada?: boolean;
 }
 
 /* Preguntas de ejemplo (todas con respuesta: lo comprueba respuestas.test.ts). */
@@ -92,9 +94,15 @@ export interface Busqueda {
 export function tramoDeConsulta(consulta: string): { clave: string; valor: number } | null {
   // La cifra va pegada a la palabra (como mucho «de», «en», «:» o «=» en medio) y no es una
   // hora, una glucemia ni un porcentaje: «cetonas y glucemia 250» o «cetonas 2 h» no cuentan.
-  const m = normalizar(consulta).match(
-    /(?:b-?ohb|β-?ohb|beta-?hidroxibutirato|cetonemia|cetonas?)\s*(?:(?:de|en|a|:|=)\s*)?(\d+(?:[.,]\d+)?)(?!\s*(?:h\b|min|mg|g\b|%|\d|[.,]\d))/,
-  );
+  // También con la cifra delante: «0,3 de cetonas», «1,2 mmol/l de β-OHB».
+  const q = normalizar(consulta);
+  const m =
+    q.match(
+      /(?:b-?ohb|β-?ohb|beta-?hidroxibutirato|cetonemia|cetonas?)\s*(?:(?:de|en|a|:|=)\s*)?(\d+(?:[.,]\d+)?)(?!\s*(?:h\b|min|mg|g\b|%|\d|[.,]\d))/,
+    ) ??
+    q.match(
+      /(?<![\d.,])(\d+(?:[.,]\d+)?)\s*(?:mmol(?:\/l)?\s*)?(?:de\s+)?(?:b-?ohb|β-?ohb|beta-?hidroxibutirato|cetonemia|cetonas?)\b/,
+    );
   if (!m) return null;
   const valor = Number(m[1].replace(",", "."));
   if (!Number.isFinite(valor) || valor > 10) return null;
@@ -158,6 +166,17 @@ export function marcar(fragmento: string, consulta: string): { t: string; hit: b
   for (const v of variantes)
     for (const i of posiciones(n, v))
       for (let k = i; k < i + v.length && k < marcas.length; k++) marcas[k] = true;
+  // La palabra entera: se extiende la marca hasta sus bordes, y un guion o una barra entre
+  // dos partes marcadas («Control-IQ», «set/pod») también se marca.
+  const letra = (c: string | undefined) => !!c && /[\p{L}\p{N}]/u.test(c);
+  for (let k = 1; k < marcas.length; k++)
+    if (marcas[k - 1] && !marcas[k] && letra(fragmento[k]) && letra(fragmento[k - 1]))
+      marcas[k] = true;
+  for (let k = marcas.length - 2; k >= 0; k--)
+    if (marcas[k + 1] && !marcas[k] && letra(fragmento[k]) && letra(fragmento[k + 1]))
+      marcas[k] = true;
+  for (let k = 1; k + 1 < marcas.length; k++)
+    if (!marcas[k] && /[-/]/.test(fragmento[k]) && marcas[k - 1] && marcas[k + 1]) marcas[k] = true;
   const out: { t: string; hit: boolean }[] = [];
   let actual = "";
   let estado = marcas[0] ?? false;

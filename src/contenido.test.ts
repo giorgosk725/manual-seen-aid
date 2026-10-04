@@ -19,7 +19,7 @@ import { FRAGMENTOS_EXTENDIDOS, textoDeFragmento } from "./extendida";
 import { INFORMACION_PACIENTES, RESUMEN_CAPITULO } from "./pacientes/textos";
 
 const normalizarEspacios = (s: string) => s.replace(/\s+/g, " ").trim();
-import { CAMBIOS, PENDIENTES } from "./contenido/cambios";
+import { CAMBIOS, NOTAS_AUTOR, PENDIENTES } from "./contenido/cambios";
 import { buscar, indice, normalizar } from "./buscador";
 
 const todoElTexto = () =>
@@ -231,6 +231,10 @@ describe("convenciones de escritura", () => {
   it("los cambios llevan fecha ISO y hay pendientes visibles", () => {
     for (const c of CAMBIOS) expect(c.fecha).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(PENDIENTES.length).toBeGreaterThanOrEqual(3);
+    // Lo del lector, corto y sin jerga interna; el detalle va en las notas para el autor.
+    expect(PENDIENTES.length).toBeLessThanOrEqual(5);
+    for (const p of PENDIENTES) expect(p).not.toMatch(/asistente-aid|E\d\d|auditoría/);
+    expect(NOTAS_AUTOR.length).toBeGreaterThan(0);
   });
 });
 
@@ -289,11 +293,11 @@ describe("cifras del apartado y ampliación", () => {
       for (const c of lista) {
         expect(c.p).toBeGreaterThanOrEqual(a.paginas[0]);
         expect(c.p).toBeLessThanOrEqual(a.paginas[1]);
-        if (c.ancla)
-          expect(
-            a.bloques.some((b, i) => idDeBloque(b, i) === c.ancla),
-            c.ancla,
-          ).toBe(true);
+        // Toda cifra lleva a su frase (bloque o subapartado), no al principio del apartado.
+        expect(
+          a.bloques.some((b, i) => idDeBloque(b, i) === c.ancla),
+          `${slug} ${c.valor} → ${c.ancla}`,
+        ).toBe(true);
       }
     }
   });

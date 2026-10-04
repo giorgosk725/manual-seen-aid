@@ -599,7 +599,7 @@ function Transicion() {
       <p className="mt-3 text-xs text-slate-600">{TRANSICION.nota}</p>
       <a
         href={href("consultar", "tablas", "T2")}
-        className="no-imprimir mt-2 inline-flex items-center gap-1 text-xs font-semibold text-slate-700 hover:underline"
+        className="no-imprimir mt-2 inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-slate-700 hover:underline sm:min-h-8"
       >
         Tabla 2 completa <ArrowRight size={12} aria-hidden="true" />
       </a>

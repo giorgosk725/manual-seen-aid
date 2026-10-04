@@ -282,6 +282,12 @@ export function indice(): Entrada[] {
       href("consultar", "inicio"),
     ],
     [
+      "Sistemas de código abierto (DIY, apartado 11)",
+      "DIY, sistemas de desarrollo propio, hechos en casa, caseros, de código abierto: el capítulo los trata en el apartado 11",
+      22,
+      href("capitulo", "11-diy"),
+    ],
+    [
       "Tarjetas de repaso",
       "Tarjetas, repasar, estudiar, memorizar, aprender las cifras y las siglas del capítulo, con su página",
       0,

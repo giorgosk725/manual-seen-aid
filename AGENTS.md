@@ -162,6 +162,17 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     expected. Route `#/consultar/inicio/<fase>[:<sistema>]`; the checklist sheet prints on one
     A4 side (e2e).
 
+22. **Search answers: confidence and blind banks (0.10.0).** `responder` marks results
+    `aproximada` («Lo más cercano en el capítulo») when nothing covers the question or when
+    the first answer is doubtful (coverage < 0.75 and less than 1 point ahead of the next
+    paragraph): never present a doubtful passage as «la respuesta». Two sentences of the same
+    paragraph within 85 % of each other are shown together. Answer routes carry the sentence
+    (`#/capitulo/<slug>/<bloque>~<k>`) and `fraseCitada.ts` highlights it. Blind banks live in
+    `src/bancos/ciegoN.json` (questions + literal acceptable fragments, written by another
+    agent without seeing the engine) and are measured with `medirCiego`; a bank is honest
+    only the FIRST time it is measured, so a new claim needs a new bank. Vocabulary is
+    general (lexicon, phrases, generic words, phonetic typo fix), never per question.
+
 ## 2. Quality gates (all must pass before a push)
 
 ```bash

@@ -8,13 +8,29 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.9.0";
+export const VERSION_APP = "0.10.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-04",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — iniciar un sistema, paso a paso`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — más fácil de usar y un buscador que entiende mejor`,
+    detalle: [
+      "El buscador entiende mejor la forma de preguntar: palabras de la calle («bajada», «me pita», «el parche», «bultos en la barriga», «hidratos de mentira»), faltas de ortografía («bomitos», «asucar»), verbos y edades («mi hijo de 1 año», «mi madre tiene 80 años»), siglas por su nombre («dosis total diaria» = DTD) y cifras de cetonemia escritas delante («0,3 de cetonas»).",
+      "Si dos frases del mismo párrafo responden, salen juntas. Si nada responde de lleno, o la respuesta es dudosa, se rotula «Lo más cercano en el capítulo» en lugar de presentarla como la respuesta; y si no hay nada, propone las situaciones de «¿Qué necesitas?».",
+      "«Leer en su sitio» lleva a la frase exacta y la resalta unos segundos. La nota del asterisco es la de cada tabla (en la Tabla 1, la de los parámetros del modo automático), las celdas de varias líneas se leen separadas y se resaltan palabras enteras.",
+      "Medido con un banco de 120 preguntas nuevas escritas por otro agente sin ver el motor: la primera respuesta acierta el 42 % (antes, el 35 %), la buena está entre las tres en el 53 % (antes, el 38 %) y las respuestas equivocadas presentadas como directas bajan un tercio (docs/PREGUNTAS_2026-10-04.md). Con preguntas largas o muy coloquiales todavía falla a menudo.",
+      "Paleta (Ctrl K): Intro abre la respuesta y ↓ ↑ recorren los resultados. «Saltar al contenido» con el primer Tab.",
+      "Recorridos: «Siguiente» lleva al principio del paso nuevo; al elegir sistema, su casilla queda a la vista sobre la barra inferior; «Iniciar un sistema» tiene un índice «En esta fase» (p. ej., la reducción de la DTD al pasar de MDI) y nombres de sistema cortos.",
+      "La hoja de comprobación del inicio lleva QR, dirección, fecha del capítulo y versión, y se comparte como las hojas para el paciente; sale en una cara A4 con letra de 11 pt.",
+      "La portada dice qué es la app (material educativo; no es producto sanitario ni publicación oficial de la SEEN), enseña «Seguir leyendo» sin desplazar y lleva a las tarjetas y al test; «Aprender» sube en la barra lateral. Al enfocar la caja en el móvil, sube para que el teclado no tape la respuesta.",
+      "Las 55 cifras de los apartados llevan a su frase. Tarjetas: «en la ronda de hoy» y «por estrenar». Test: resultado final y «Volver a empezar». «Qué ha cambiado» se acorta: pendientes en lenguaje llano y las notas para el autor y las versiones antiguas, plegadas. Páginas siempre como «pp. 3–4».",
+    ],
+  },
+  {
+    fecha: "2026-10-04",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.9.0 — iniciar un sistema, paso a paso",
     detalle: [
       "Nuevo recorrido «Iniciar un sistema» (Consultar): el apartado 8 en sus cuatro fases —selección y preparación, inicio del sistema, seguimiento estrecho de los primeros 3 meses y seguimiento mantenido—, con lo que piden los apartados 6, 7 y 9 en cada una. Todo es texto del capítulo con su página.",
       "Eliges el sistema y ves solo lo suyo: su línea de inicialización de la Tabla 2 (p. ej., «SmartGuard requiere 48 h previas en modo manual»), su objetivo en automático y los parámetros que mueven el automático (Tabla 1).",
@@ -211,13 +227,18 @@ export const CAMBIOS: Cambio[] = [
   },
 ];
 
-/* Lo que todavía no se sabe. Se muestra tal cual; no se rellena con suposiciones. */
+/* Lo que todavía no se sabe. Se muestra tal cual; no se rellena con suposiciones.
+   PENDIENTES: lo que importa al lector, en pocas palabras. NOTAS_AUTOR: decisiones de detalle
+   que quedan en manos del autor (se enseñan plegadas). */
 export const PENDIENTES: string[] = [
-  "Permiso escrito de la SEEN y de ec-europe para la versión web, y dónde se aloja (enlace o alojamiento junto al capítulo).",
-  "La validación por el autor de las diez preguntas del test (hoy rotuladas «pendiente de validación del autor»).",
-  "La versión del capítulo con las 11 correcciones aplicadas por la editorial (la maquetación recibida el 3-10-2026 aún no las lleva; esta app ya las aplica).",
+  "El permiso de la SEEN y de la editorial (ec-europe) para esta versión web, y dónde se alojará.",
+  "Que el autor valide las diez preguntas del test (hoy, «pendiente de validación del autor»).",
+  "La versión de la editorial con las 11 correcciones del capítulo (esta app ya las aplica).",
+  "El ISBN y la fecha de publicación del capítulo en el Manual SEEN, para «Cómo citar».",
+];
+
+export const NOTAS_AUTOR: string[] = [
   "Que la editorial publique la información para pacientes en la versión corregida V5 del autor, que es la que muestra esta app.",
-  "El ISBN y la fecha de publicación del capítulo en el Manual SEEN (para «Cómo citar»; los confirma la coordinación de la SEEN).",
   "Las diferencias entre el capítulo y la ampliación del autor (asistente-aid): ratio I/HC, tipo de algoritmo de Control-IQ, autocorrección de MiniMed 780G, fecha de verificación y otras (auditoría del 2-10-2026). Llevan la marca «Difiere del capítulo» en la ficha la ratio I/HC, el tipo de algoritmo de Control-IQ y la autocorrección de la 780G; el resto, hasta que el autor decida, solo figura aquí.",
   "Tres matices de la versión extendida frente al capítulo, para que el autor decida si los deja, los precisa o los retira: E04 («ajustar si hay hiperglucemia persistente», cuando el capítulo pide descartar antes fallo de infusión), E28 («el objetivo se eleva antes de reducir el bolo, no en paralelo») y E07 (control desde el móvil, cuando en España es con el controlador).",
   "Dos frases de la información para pacientes V5 que el autor puede querer completar con el capítulo: los 5-10 g de hidratos en la hipoglucemia (sin la condición de 54-70 mg/dl y flecha estable) y la desconexión de la bomba con tubo (sin «suspender o pausar la administración»).",

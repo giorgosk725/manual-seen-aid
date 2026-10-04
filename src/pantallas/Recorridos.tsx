@@ -10,6 +10,7 @@ import { SIS_IDS, SITUACIONES } from "../situaciones";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
 import { elegirRuta, href } from "../rutas";
 import { CabeceraEditorial, PaginaBadge, Segmented } from "../ui";
+import { useIrAlCambiar } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
 import { EnlaceEducativa } from "../componentes/Lectura";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
@@ -24,6 +25,11 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
   const tabla = sit ? TABLAS[sit.tabla] : null;
   const fila = sit && tabla ? tabla.filas[sit.fila] : null;
   const porSistema = !!tabla?.porSistema && !fila?.unida;
+  // Al elegir el sistema, su casilla a la vista (en el móvil quedaba bajo la barra inferior).
+  const aLaCasilla = useIrAlCambiar(`${situacion}:${sistema}`, "conducta-situacion", {
+    bloque: "nearest",
+    enfocar: false,
+  });
   return (
     <div>
       <CabeceraEditorial titulo="Situación y sistema" hex={hex} level={1}>
@@ -134,13 +140,14 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                           key={id}
                           type="button"
                           aria-pressed={on}
-                          onClick={() =>
+                          onClick={() => {
+                            aLaCasilla();
                             elegirRuta(
                               "consultar",
                               "situacion",
                               sit.id + (on ? "" : ":" + SIS_IDS[c]),
-                            )
-                          }
+                            );
+                          }}
                           className="hover-lift ease-brand flex items-center gap-2 rounded-xl border p-2 text-left text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
                           style={
                             on
@@ -161,7 +168,8 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                 </div>
               )}
               <section
-                className="rounded-2xl border bg-white p-4 shadow-soft"
+                id="conducta-situacion"
+                className="scroll-mb-28 scroll-mt-24 rounded-2xl border bg-white p-4 shadow-soft"
                 style={{ borderColor: "#e6e6e6" }}
                 aria-label="Conducta recomendada"
               >
@@ -246,7 +254,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                     <li key={l.slug + l.ancla}>
                       <a
                         href={href("capitulo", l.slug, l.ancla)}
-                        className="inline-flex items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
+                        className="inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-8"
                         style={{ borderColor: "#d4d4d4" }}
                       >
                         {l.titulo} <ArrowRight size={12} aria-hidden="true" />
@@ -256,7 +264,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                   <li>
                     <a
                       href={href("consultar", "tablas", sit.tabla)}
-                      className="inline-flex items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
+                      className="inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-8"
                       style={{ borderColor: "#d4d4d4" }}
                     >
                       Tabla {tabla.numero} completa <ArrowRight size={12} aria-hidden="true" />
@@ -335,6 +343,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
   const fila = t.filas[n - 1];
   const patrones = parrafosConLead(PATRON_DEL_PASO[n] || []);
   const ir = (k: number) => elegirRuta("consultar", "descarga", String(k));
+  const alPaso = useIrAlCambiar(String(n), "paso-descarga");
   return (
     <div>
       <CabeceraEditorial titulo="Revisar la descarga" hex={hex} level={1}>
@@ -368,7 +377,9 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
       </ol>
       <section
         key={n}
-        className="pantalla-in rounded-2xl border bg-white p-4 shadow-soft"
+        id="paso-descarga"
+        tabIndex={-1}
+        className="pantalla-in scroll-mt-24 rounded-2xl border bg-white p-4 shadow-soft focus:outline-none"
         style={{ borderColor: "#e6e6e6" }}
         aria-live="polite"
       >
@@ -441,16 +452,22 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           <button
             type="button"
             disabled={n === 1}
-            onClick={() => ir(n - 1)}
-            className="inline-flex items-center gap-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 disabled:opacity-40"
+            onClick={() => {
+              alPaso();
+              ir(n - 1);
+            }}
+            className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 disabled:opacity-40"
           >
             <ChevronLeft size={14} aria-hidden="true" /> Paso {n - 1 || 1}
           </button>
           <button
             type="button"
             disabled={n === 8}
-            onClick={() => ir(n + 1)}
-            className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-40"
+            onClick={() => {
+              alPaso();
+              ir(n + 1);
+            }}
+            className="inline-flex min-h-11 items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-40"
             style={{ background: hex.strong }}
           >
             Paso {Math.min(8, n + 1)} <ChevronRight size={14} aria-hidden="true" />

@@ -34,6 +34,9 @@ import { fueraDelCapitulo, marcar, paginaDe } from "../busqueda";
 import { useBuscador } from "../useBuscador";
 import { AvisosBusqueda } from "./AvisosBusqueda";
 import { RespuestasCapitulo } from "./RespuestasCapitulo";
+import { guardarReciente } from "../prefs";
+import { SugerenciasBusqueda } from "./SugerenciasBusqueda";
+import { SinResultados } from "./SinResultados";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
 
 /* Destinos que viven bajo #/consultar/<id>. */
@@ -73,9 +76,40 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
   const busqueda = motor && q.trim().length >= 2 ? motor.buscarConTotales(q, 12) : null;
   const res = busqueda?.resultados ?? [];
   const respuestas = motor && q.trim().length >= 2 ? motor.responder(q) : [];
+  // Abrir un resultado deja la búsqueda en «recientes».
+  const cerrarYGuardar = () => {
+    guardarReciente(q);
+    onClose();
+  };
   useEffect(() => {
     if (!open) setQ("");
   }, [open]);
+  // Teclado: Intro abre la respuesta (o Buscar con todo); ↓ y ↑ recorren los enlaces de la
+  // respuesta y de los resultados, y ↑ desde el primero vuelve a la caja.
+  const zona = useRef<HTMLDivElement>(null);
+  const entrada = useRef<HTMLInputElement>(null);
+  const enlaces = () => [...(zona.current?.querySelectorAll<HTMLAnchorElement>("a[href]") ?? [])];
+  const alTeclear = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      enlaces()[0]?.focus();
+    } else if (e.key === "Enter" && q.trim().length >= 2) {
+      e.preventDefault();
+      const destino = respuestas[0]?.ruta ?? href("buscar", q.trim());
+      cerrarYGuardar();
+      window.location.hash = destino.replace(/^#/, "");
+    }
+  };
+  const alMoverse = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    const lista = enlaces();
+    const i = lista.indexOf(document.activeElement as HTMLAnchorElement);
+    if (i < 0) return;
+    e.preventDefault();
+    if (e.key === "ArrowDown") lista[Math.min(lista.length - 1, i + 1)]?.focus();
+    else if (i === 0) entrada.current?.focus();
+    else lista[i - 1]?.focus();
+  };
   return (
     <Modal open={open} onClose={onClose} ariaLabel="Paleta de búsqueda" maxW="max-w-xl">
       <div className="p-3">
@@ -86,8 +120,11 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
           <Search size={16} className="text-slate-500" aria-hidden="true" />
           <input
             id="paleta-q"
+            ref={entrada}
             value={q}
             onChange={(e) => setQ(e.target.value)}
+            onKeyDown={alTeclear}
+            aria-describedby="paleta-ayuda"
             aria-label="Buscar en el capítulo"
             placeholder="Pregunta o busca en el capítulo…"
             className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
@@ -97,81 +134,87 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
             Esc
           </kbd>
         </div>
-        {q.trim().length >= 2 && (
-          <AvisosBusqueda q={q} parcial={busqueda?.parcial} primera={respuestas[0]}>
-            <RespuestasCapitulo respuestas={respuestas} q={q} compacta onIr={onClose} />
-          </AvisosBusqueda>
-        )}
-        {q.trim().length >= 2 && (
-          <ul
-            className="mt-2 max-h-[60vh] divide-y overflow-y-auto"
-            style={{ borderColor: "#e6e6e6" }}
-            aria-label="Resultados"
-          >
-            {estado === "cargando" && (
-              <li className="px-2 py-3 text-sm text-slate-600">Cargando el índice…</li>
-            )}
-            {estado === "error" && (
-              <li className="flex flex-wrap items-center gap-2 px-2 py-3 text-sm text-slate-700">
-                No se pudo cargar el índice de búsqueda.
-                <button
-                  type="button"
-                  onClick={reintentar}
-                  className="rounded-md border border-slate-300 px-2 py-1 text-xs font-semibold hover:border-slate-500"
-                >
-                  Reintentar
-                </button>
-              </li>
-            )}
-            {estado === "listo" && res.length === 0 && (
-              <li className="px-2 py-3 text-sm text-slate-600">
-                Nada en el capítulo con esas palabras.
-              </li>
-            )}
-            {res.map((r) => (
-              <li key={r.entrada.id}>
-                <a
-                  href={r.entrada.ruta}
-                  onClick={onClose}
-                  className="block rounded-lg px-2 py-2 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                >
-                  <div className="flex items-center justify-between gap-2 text-xs text-slate-500">
-                    <span className="truncate font-semibold">{r.entrada.titulo}</span>
-                    {fueraDelCapitulo(r.entrada) ? (
-                      <span className="shrink-0 rounded-full bg-amber-100 px-1.5 text-[11px] font-semibold text-amber-900">
-                        Fuera del capítulo
-                      </span>
-                    ) : (
-                      <span className="pagina-badge">{paginaDe(r.entrada)}</span>
-                    )}
-                  </div>
-                  <div className="mt-0.5 text-sm text-slate-800">
-                    {marcar(r.fragmento, q).map((t, i) =>
-                      t.hit ? (
-                        <mark key={i} className="resaltado">
-                          {t.t}
-                        </mark>
+        <p id="paleta-ayuda" className="mt-1 hidden text-[11px] text-slate-500 sm:block">
+          Intro abre la respuesta · ↓ ↑ recorren los resultados · Esc cierra
+        </p>
+        <div ref={zona} onKeyDown={alMoverse}>
+          {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
+          {q.trim().length >= 2 && (
+            <AvisosBusqueda q={q} parcial={busqueda?.parcial} primera={respuestas[0]}>
+              <RespuestasCapitulo respuestas={respuestas} q={q} compacta onIr={cerrarYGuardar} />
+            </AvisosBusqueda>
+          )}
+          {q.trim().length >= 2 && (
+            <ul
+              className="mt-2 max-h-[60vh] divide-y overflow-y-auto"
+              style={{ borderColor: "#e6e6e6" }}
+              aria-label="Resultados"
+            >
+              {estado === "cargando" && (
+                <li className="px-2 py-3 text-sm text-slate-600">Cargando el índice…</li>
+              )}
+              {estado === "error" && (
+                <li className="flex flex-wrap items-center gap-2 px-2 py-3 text-sm text-slate-700">
+                  No se pudo cargar el índice de búsqueda.
+                  <button
+                    type="button"
+                    onClick={reintentar}
+                    className="rounded-md border border-slate-300 px-2 py-1 text-xs font-semibold hover:border-slate-500"
+                  >
+                    Reintentar
+                  </button>
+                </li>
+              )}
+              {estado === "listo" && res.length === 0 && !respuestas.length && (
+                <li className="px-2 pb-2">
+                  <SinResultados onIr={onClose} />
+                </li>
+              )}
+              {res.map((r) => (
+                <li key={r.entrada.id}>
+                  <a
+                    href={r.entrada.ruta}
+                    onClick={cerrarYGuardar}
+                    className="block rounded-lg px-2 py-2 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                  >
+                    <div className="flex items-center justify-between gap-2 text-xs text-slate-500">
+                      <span className="truncate font-semibold">{r.entrada.titulo}</span>
+                      {fueraDelCapitulo(r.entrada) ? (
+                        <span className="shrink-0 rounded-full bg-amber-100 px-1.5 text-[11px] font-semibold text-amber-900">
+                          Fuera del capítulo
+                        </span>
                       ) : (
-                        <span key={i}>{t.t}</span>
-                      ),
-                    )}
-                  </div>
-                </a>
-              </li>
-            ))}
-            {res.length > 0 && (
-              <li>
-                <a
-                  href={href("buscar", q)}
-                  onClick={onClose}
-                  className="block px-2 py-2 text-sm font-semibold text-slate-700 hover:underline"
-                >
-                  Ver todos los resultados de «{q}»
-                </a>
-              </li>
-            )}
-          </ul>
-        )}
+                        <span className="pagina-badge">{paginaDe(r.entrada)}</span>
+                      )}
+                    </div>
+                    <div className="mt-0.5 text-sm text-slate-800">
+                      {marcar(r.fragmento, q).map((t, i) =>
+                        t.hit ? (
+                          <mark key={i} className="resaltado">
+                            {t.t}
+                          </mark>
+                        ) : (
+                          <span key={i}>{t.t}</span>
+                        ),
+                      )}
+                    </div>
+                  </a>
+                </li>
+              ))}
+              {res.length > 0 && (
+                <li>
+                  <a
+                    href={href("buscar", q)}
+                    onClick={cerrarYGuardar}
+                    className="block px-2 py-2 text-sm font-semibold text-slate-700 hover:underline"
+                  >
+                    Ver todos los resultados de «{q}»
+                  </a>
+                </li>
+              )}
+            </ul>
+          )}
+        </div>
       </div>
     </Modal>
   );
@@ -345,12 +388,12 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
       </button>
       <nav aria-label="Navegación principal">
         {grupo("Leer", ["capitulo"])}
+        {grupo("Aprender", ["repaso", "test"])}
         {GRUPOS_CONSULTAR.map((g) => (
           <Fragment key={g.id}>{grupo(g.titulo, g.ids)}</Fragment>
         ))}
         {grupo("Para el paciente", ["pacientes"])}
         {grupo("Fuentes y versión", ["bibliografia", "cambios", "sobre"])}
-        {grupo("Aprender", ["test", "repaso"])}
       </nav>
       <div className="mt-auto px-3 pt-6 text-[11px] leading-relaxed text-slate-500">
         Material educativo. No es producto sanitario ni sustituye el juicio clínico.
@@ -558,6 +601,14 @@ export function Shell({
 
   return (
     <div className="lienzo min-h-screen bg-slate-50 text-slate-900">
+      {/* Con teclado, el primer Tab ofrece saltar la navegación (la portada pedía más de 14). */}
+      <button
+        type="button"
+        onClick={() => mainRef.current?.focus()}
+        className="sr-only z-50 rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white focus:not-sr-only focus:fixed focus:left-3 focus:top-3"
+      >
+        Saltar al contenido
+      </button>
       <Lateral ruta={ruta} onBuscar={abrirPaleta} />
       <header
         className="cabecera sticky top-0 z-20 border-b backdrop-blur md:ml-64"
@@ -590,7 +641,11 @@ export function Shell({
           </span>
           <span className="flex-1 md:hidden" />
           {enLectura && (
-            <div className="flex items-center" role="group" aria-label="Tamaño de letra">
+            <div
+              className="flex items-center max-[359px]:hidden"
+              role="group"
+              aria-label="Tamaño de letra"
+            >
               <button
                 type="button"
                 onClick={() => setLetra(menor)}
@@ -633,7 +688,8 @@ export function Shell({
       </header>
       <main
         ref={mainRef}
-        className="md:ml-64"
+        tabIndex={-1}
+        className="focus:outline-none md:ml-64"
         style={{
           ["--cat" as string]: cat.strong,
           ["--cat-soft" as string]: cat.soft,

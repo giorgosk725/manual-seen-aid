@@ -6,18 +6,30 @@ export interface Cifra {
   valor: string;
   etiqueta: string;
   p: number;
-  /* Ancla del subapartado (id de h3) si procede. */
-  ancla?: string;
+  /* Dónde está la frase: id del bloque («b7») o del subapartado (h3). Todas lo llevan, para que
+     la ficha y la tarjeta lleven a la frase y no al principio del apartado. */
+  ancla: string;
 }
 
 export const CIFRAS: Record<string, Cifra[]> = {
   "03-algoritmos": [
-    { valor: "5-15 min", etiqueta: "retraso de la glucosa intersticial tras la ingesta", p: 3 },
-    { valor: "15-30 min", etiqueta: "inicio de efecto de la insulina rápida subcutánea", p: 3 },
+    {
+      valor: "5-15 min",
+      etiqueta: "retraso de la glucosa intersticial tras la ingesta",
+      p: 3,
+      ancla: "b2",
+    },
+    {
+      valor: "15-30 min",
+      etiqueta: "inicio de efecto de la insulina rápida subcutánea",
+      p: 3,
+      ancla: "b2",
+    },
     {
       valor: "< 13 años",
       etiqueta: "Liberty (asa cerrada completa) no recomendada; tampoco en gestación",
       p: 3,
+      ancla: "b3",
     },
   ],
   "05-resultados": [
@@ -25,18 +37,21 @@ export const CIFRAS: Record<string, Cifra[]> = {
       valor: "> 70 %",
       etiqueta: "TIR 70-180 mg/dl, objetivo general en adultos no gestantes",
       p: 4,
+      ancla: "b2",
     },
     {
       valor: "< 4 % · < 1 %",
       etiqueta: "TBR < 70 mg/dl y < 54 mg/dl, indicador prioritario de seguridad",
       p: 4,
+      ancla: "b2",
     },
-    { valor: "< 5 %", etiqueta: "TAR de nivel 2 (> 250 mg/dl)", p: 4 },
-    { valor: "≤ 36 %", etiqueta: "coeficiente de variación", p: 4 },
+    { valor: "< 5 %", etiqueta: "TAR de nivel 2 (> 250 mg/dl)", p: 4, ancla: "b2" },
+    { valor: "≤ 36 %", etiqueta: "coeficiente de variación", p: 4, ancla: "b2" },
     {
       valor: "70-140 mg/dl",
       etiqueta: "TITR, métrica complementaria; no es objetivo primario universal",
       p: 4,
+      ancla: "b4",
     },
   ],
   "06-indicaciones": [
@@ -44,16 +59,18 @@ export const CIFRAS: Record<string, Cifra[]> = {
       valor: "HbA1c > 7 %",
       etiqueta: "necesidad clínica no cubierta (no umbral rígido de elegibilidad)",
       p: 5,
+      ancla: "b2",
     },
-    { valor: "TIR < 70 %", etiqueta: "necesidad clínica no cubierta", p: 5 },
-    { valor: "TBR ≥ 4 %", etiqueta: "necesidad clínica no cubierta", p: 5 },
-    { valor: "TAR > 250 ≥ 5 %", etiqueta: "necesidad clínica no cubierta", p: 5 },
+    { valor: "TIR < 70 %", etiqueta: "necesidad clínica no cubierta", p: 5, ancla: "b2" },
+    { valor: "TBR ≥ 4 %", etiqueta: "necesidad clínica no cubierta", p: 5, ancla: "b2" },
+    { valor: "TAR > 250 ≥ 5 %", etiqueta: "necesidad clínica no cubierta", p: 5, ancla: "b2" },
   ],
   "07-educacion": [
     {
       valor: "10-15 min",
       etiqueta: "bolo prandial antes de comer (salvo hipoglucemia o descenso)",
       p: 7,
+      ancla: "b3",
     },
     // Figura 3 (p. 8, imagen): la fidelidad se coteja con su transcripción (figura3.ts).
     {
@@ -75,16 +92,23 @@ export const CIFRAS: Record<string, Cifra[]> = {
       p: 8,
       ancla: "b5",
     },
-    { valor: "5-10 g", etiqueta: "hipoglucemia 54-70 mg/dl con flecha estable o ascendente", p: 8 },
+    {
+      valor: "5-10 g",
+      etiqueta: "hipoglucemia 54-70 mg/dl con flecha estable o ascendente",
+      p: 8,
+      ancla: "b7",
+    },
     {
       valor: "~15 g",
       etiqueta: "glucemia < 54 mg/dl, doble flecha descendente o insulina activa significativa",
       p: 8,
+      ancla: "b7",
     },
     {
       valor: "15 min",
       etiqueta: "reevaluar con glucosa capilar tras tratar la hipoglucemia",
       p: 8,
+      ancla: "b7",
     },
     {
       valor: "~1 h",
@@ -112,29 +136,43 @@ export const CIFRAS: Record<string, Cifra[]> = {
     },
   ],
   "08-iniciacion": [
-    { valor: "48 h", etiqueta: "MiniMed 780G: insulina en modo manual antes de SmartGuard", p: 10 },
+    {
+      valor: "48 h",
+      etiqueta: "MiniMed 780G: insulina en modo manual antes de SmartGuard",
+      p: 10,
+      ancla: "b2",
+    },
     {
       valor: "10-20 %",
       etiqueta:
         "reducción orientativa de la DTD al pasar de MDI, con buen control previo o riesgo de hipoglucemia",
       p: 10,
+      ancla: "b2",
     },
-    { valor: "40-50 %", etiqueta: "de la DTD reducida como ritmo basal inicial (24 h)", p: 10 },
-    { valor: "450 / DTD", etiqueta: "regla del 450: g de HC por unidad", p: 10 },
+    {
+      valor: "40-50 %",
+      etiqueta: "de la DTD reducida como ritmo basal inicial (24 h)",
+      p: 10,
+      ancla: "b2",
+    },
+    { valor: "450 / DTD", etiqueta: "regla del 450: g de HC por unidad", p: 10, ancla: "b2" },
     {
       valor: "1700 / DTD",
       etiqueta: "regla del 1700: mg/dl por unidad (1800 si riesgo de hipoglucemia)",
       p: 10,
+      ancla: "b2",
     },
     {
       valor: "72 h · 1 sem · 2-4 sem · 3 m",
       etiqueta: "seguimiento estrecho: remoto, remoto, presencial, visita con HbA1c",
       p: 12,
+      ancla: "b9",
     },
     {
       valor: "3-6 meses",
       etiqueta: "visitas el primer año con buen control; después, más espaciadas",
       p: 12,
+      ancla: "b11",
     },
   ],
   "09-descarga": [
@@ -142,8 +180,14 @@ export const CIFRAS: Record<string, Cifra[]> = {
       valor: "10–20 %",
       etiqueta: "cambio orientativo de basal, ratio I/HC o factor de sensibilidad",
       p: 13,
+      ancla: "b2",
     },
-    { valor: "≥ 70 % en 14 días", etiqueta: "uso de MCG que permite interpretar patrones", p: 13 },
+    {
+      valor: "≥ 70 % en 14 días",
+      etiqueta: "uso de MCG que permite interpretar patrones",
+      p: 13,
+      ancla: "b3",
+    },
     {
       valor: "≥ 250 mg/dl ≥ 2 h",
       etiqueta: "bandera roja: hiperglucemia persistente o sospecha de fallo de infusión",

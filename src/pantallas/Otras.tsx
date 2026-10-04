@@ -1,8 +1,9 @@
 /* Buscar, Bibliografía, Qué ha cambiado, Sobre esta versión, Autoevaluación y «Más» (móvil). */
+import { guardarReciente } from "../prefs";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, CheckCircle2, ExternalLink, Moon, Sun, XCircle } from "lucide-react";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
-import { CAMBIOS, PENDIENTES, VERSION_APP } from "../contenido/cambios";
+import { CAMBIOS, NOTAS_AUTOR, PENDIENTES, VERSION_APP } from "../contenido/cambios";
 import { PREGUNTAS } from "../contenido/test";
 import { DESTINOS } from "../nav";
 import { href } from "../rutas";
@@ -11,8 +12,10 @@ import { CATEGORIA_HEX } from "../tokens";
 import { fueraDelCapitulo, marcar, paginaDe, type Busqueda, type Resultado } from "../busqueda";
 import { useBuscador } from "../useBuscador";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
-import { EJEMPLOS_PREGUNTA } from "../busqueda";
 import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
+import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
+import { SinResultados } from "../componentes/SinResultados";
+import { GuiaDeUso } from "../componentes/Bienvenida";
 import { useNocturno } from "../prefs";
 
 const fecha = (iso: string) =>
@@ -122,12 +125,21 @@ export function Buscar({ inicial }: { inicial?: string }) {
     <div>
       <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1}>
         <p className="text-sm text-slate-600">
-          Pregunta con tus palabras («cetonas 1,2», «modo ejercicio en Control-IQ», «cuánto tiempo
-          puedo estar desconectado»): arriba, la respuesta del capítulo, literal y con su página;
-          debajo, todos los sitios donde sale y, aparte, lo que no es del capítulo (versión
-          extendida, ampliación del autor, hojas para el paciente y test). Sin inteligencia
-          generativa.
+          Pregunta con tus palabras: arriba, la respuesta literal del capítulo con su página.
         </p>
+        <details className="mt-1 text-sm text-slate-600">
+          <summary className="inline-flex min-h-11 cursor-pointer items-center font-semibold text-slate-700 sm:min-h-8">
+            Cómo funciona
+          </summary>
+          <p className="mt-1">
+            Por ejemplo «cetonas 1,2», «modo ejercicio en Control-IQ» o «cuánto tiempo puedo estar
+            desconectado». Arriba sale la frase, la fila de tabla o el tramo de la Figura 3 que
+            responde, literal y con su página; si nada responde de lleno, «lo más cercano». Debajo,
+            todos los sitios donde salen esas palabras y, aparte, lo que no es del capítulo (versión
+            extendida, ampliación del autor, hojas para el paciente y test). Sin inteligencia
+            generativa: el texto se elige por coincidencia de palabras.
+          </p>
+        </details>
       </CabeceraEditorial>
       <label className="sr-only" htmlFor="buscar-q">
         Texto a buscar
@@ -137,66 +149,58 @@ export function Buscar({ inicial }: { inicial?: string }) {
         autoFocus
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Pregunta o busca: cetonas 1,2, modo sueño, TBR…"
+        placeholder="Pregunta: cetonas 1,2, modo sueño, TBR…"
         className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-soft placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
         autoComplete="off"
       />
-      {q.trim().length < 2 && (
-        <div className="mt-3">
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Por ejemplo</p>
-          <ul className="mt-1 flex flex-wrap gap-1.5">
-            {EJEMPLOS_PREGUNTA.map((e) => (
-              <li key={e}>
-                <button
-                  type="button"
-                  onClick={() => setQ(e)}
-                  className="inline-flex min-h-11 items-center rounded-full border border-slate-300 bg-white px-3 text-sm text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9"
-                >
-                  {e}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      <AvisosBusqueda q={q} parcial={busqueda.parcial} primera={respuestas[0]}>
-        <RespuestasCapitulo respuestas={respuestas} q={q} />
-      </AvisosBusqueda>
-      {estado === "error" && (
-        <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-700">
-          No se pudo cargar el índice de búsqueda.
-          <button
-            type="button"
-            onClick={reintentar}
-            className="rounded-md border border-slate-300 px-2 py-1 text-xs font-semibold hover:border-slate-500"
-          >
-            Reintentar
-          </button>
-        </p>
-      )}
-      {q.trim().length >= 2 && estado !== "error" && (
-        <p className="mt-2 text-xs text-slate-500" aria-live="polite">
-          {estado !== "listo"
-            ? "Cargando el índice…"
-            : res.length === 0
-              ? "Nada en el capítulo con esas palabras."
-              : `${busqueda.totalCapitulo} en el capítulo${dentro.length < busqueda.totalCapitulo ? ` (se ven ${dentro.length})` : ""} · ${busqueda.totalFuera} fuera del capítulo${fueraRes.length < busqueda.totalFuera ? ` (se ven ${fueraRes.length})` : ""}`}
-        </p>
-      )}
-      <ListaResultados res={dentro} q={q} />
-      {fueraRes.length > 0 && (
-        <section aria-labelledby="fuera" className="mt-6">
-          <h2 id="fuera" className="text-sm font-bold text-amber-900">
-            Fuera del capítulo · versión extendida, ampliación del autor, hojas para el paciente y
-            test
-          </h2>
-          <p className="text-xs text-slate-600">
-            No es el texto del capítulo: material del autor, cada capa con su rótulo (versión
-            extendida en ámbar, ampliación en violeta, hojas para el paciente y test en gris).
+      {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
+      <div
+        onClickCapture={(e) => {
+          if ((e.target as HTMLElement).closest("a")) guardarReciente(q);
+        }}
+      >
+        <AvisosBusqueda q={q} parcial={busqueda.parcial} primera={respuestas[0]}>
+          <RespuestasCapitulo respuestas={respuestas} q={q} />
+        </AvisosBusqueda>
+        {estado === "error" && (
+          <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-700">
+            No se pudo cargar el índice de búsqueda.
+            <button
+              type="button"
+              onClick={reintentar}
+              className="rounded-md border border-slate-300 px-2 py-1 text-xs font-semibold hover:border-slate-500"
+            >
+              Reintentar
+            </button>
           </p>
-          <ListaResultados res={fueraRes} q={q} fuera />
-        </section>
-      )}
+        )}
+        {q.trim().length >= 2 && estado !== "error" && (
+          <p className="mt-2 text-xs text-slate-500" aria-live="polite">
+            {estado !== "listo"
+              ? "Cargando el índice…"
+              : res.length === 0
+                ? ""
+                : `${busqueda.totalCapitulo} en el capítulo${dentro.length < busqueda.totalCapitulo ? ` (se ven ${dentro.length})` : ""} · ${busqueda.totalFuera} fuera del capítulo${fueraRes.length < busqueda.totalFuera ? ` (se ven ${fueraRes.length})` : ""}`}
+          </p>
+        )}
+        {estado === "listo" && q.trim().length >= 2 && res.length === 0 && !respuestas.length && (
+          <SinResultados />
+        )}
+        <ListaResultados res={dentro} q={q} />
+        {fueraRes.length > 0 && (
+          <section aria-labelledby="fuera" className="mt-6">
+            <h2 id="fuera" className="text-sm font-bold text-amber-900">
+              Fuera del capítulo · versión extendida, ampliación del autor, hojas para el paciente y
+              test
+            </h2>
+            <p className="text-xs text-slate-600">
+              No es el texto del capítulo: material del autor, cada capa con su rótulo (versión
+              extendida en ámbar, ampliación en violeta, hojas para el paciente y test en gris).
+            </p>
+            <ListaResultados res={fueraRes} q={q} fuera />
+          </section>
+        )}
+      </div>
       {hayMas && (
         <button
           type="button"
@@ -334,6 +338,7 @@ export function Cambios() {
               <li key={i}>{p}</li>
             ))}
           </ul>
+          <NotasAutor />
         </ToneCard>
       </section>
       <section aria-labelledby="cambios-app" className="mt-8">
@@ -343,9 +348,35 @@ export function Cambios() {
         >
           Versiones de la app
         </h2>
-        <LineaCambios cambios={deLaApp} />
+        <LineaCambios cambios={deLaApp.slice(0, 3)} />
+        {deLaApp.length > 3 && (
+          <details className="mt-4">
+            <summary className="inline-flex min-h-11 cursor-pointer items-center text-sm font-semibold text-slate-700">
+              Versiones anteriores ({deLaApp.length - 3})
+            </summary>
+            <div className="mt-3">
+              <LineaCambios cambios={deLaApp.slice(3)} />
+            </div>
+          </details>
+        )}
       </section>
     </div>
+  );
+}
+
+/* Decisiones de detalle que quedan en manos del autor: plegadas, para no cargar al lector. */
+function NotasAutor() {
+  return (
+    <details className="mt-2 text-sm text-slate-800">
+      <summary className="inline-flex min-h-11 cursor-pointer items-center font-semibold">
+        Notas para el autor ({NOTAS_AUTOR.length})
+      </summary>
+      <ul className="mt-1 list-disc space-y-1 pl-5">
+        {NOTAS_AUTOR.map((p, i) => (
+          <li key={i}>{p}</li>
+        ))}
+      </ul>
+    </details>
   );
 }
 
@@ -373,6 +404,16 @@ export function Sobre() {
           Manual SEEN · AID {VERSION_APP}. Qué es, de dónde sale el texto y qué no es.
         </p>
       </CabeceraEditorial>
+      <section
+        className="rounded-2xl border bg-white p-4 shadow-soft"
+        style={{ borderColor: "#e6e6e6" }}
+        aria-labelledby="s-uso"
+      >
+        <h2 id="s-uso" className="mb-3 text-base font-extrabold text-slate-900">
+          Cómo sacarle partido
+        </h2>
+        <GuiaDeUso />
+      </section>
       <section
         className="prosa rounded-2xl border bg-white p-4 shadow-soft"
         style={{ borderColor: "#e6e6e6" }}
@@ -432,8 +473,14 @@ export function Sobre() {
           paciente). No es un producto sanitario, no contiene calculadoras, no pide ni guarda datos
           de pacientes y no sustituye la ficha técnica de cada sistema, los protocolos del centro ni
           el juicio clínico. Lo único que guarda el navegador son preferencias de lectura: modo
-          nocturno, tamaño de letra, por dónde se iba leyendo, los apartados leídos y los favoritos
-          (rutas de la app, nunca datos clínicos). El plan de seguridad se rellena a mano, en papel.
+          nocturno, tamaño de letra, por dónde se iba leyendo, los apartados leídos, los favoritos,
+          el avance de las tarjetas y las últimas búsquedas (se borran con «Borrar»); todo se queda
+          en este dispositivo. El plan de seguridad se rellena a mano, en papel.
+        </p>
+        <p className="mt-2 text-sm">
+          Tampoco es una publicación oficial de la SEEN: es una versión interactiva preparada por el
+          autor del capítulo, pendiente del permiso de la Sociedad para su difusión. Por eso no
+          lleva el logotipo de la SEEN.
         </p>
       </section>
       <section
@@ -463,6 +510,7 @@ export function Sobre() {
             <li key={i}>{p}</li>
           ))}
         </ul>
+        <NotasAutor />
       </ToneCard>
       <section
         className="rounded-2xl border bg-white p-4 text-sm text-slate-700 shadow-soft"
@@ -480,7 +528,15 @@ export function Sobre() {
 }
 
 /* ---------- Autoevaluación ---------- */
-function Pregunta({ p, n }: { p: (typeof PREGUNTAS)[number]; n: number }) {
+function Pregunta({
+  p,
+  n,
+  onResponder,
+}: {
+  p: (typeof PREGUNTAS)[number];
+  n: number;
+  onResponder: (acierto: boolean) => void;
+}) {
   const [elegida, setElegida] = useState<number | null>(null);
   const ap = apartadoPorSlug(p.apartado);
   return (
@@ -503,7 +559,9 @@ function Pregunta({ p, n }: { p: (typeof PREGUNTAS)[number]; n: number }) {
               <button
                 type="button"
                 onClick={() => {
-                  if (!resuelta) setElegida(i);
+                  if (resuelta) return;
+                  setElegida(i);
+                  onResponder(esCorrecta);
                 }}
                 // aria-disabled (no «disabled»): el botón pulsado conserva el foco al responder.
                 aria-disabled={resuelta || undefined}
@@ -570,6 +628,16 @@ function Pregunta({ p, n }: { p: (typeof PREGUNTAS)[number]; n: number }) {
 
 export function Test() {
   const pendientes = PREGUNTAS.filter((p) => !p.validada).length;
+  // Cada intento es un juego nuevo de preguntas (clave), con su recuento de aciertos.
+  const [intento, setIntento] = useState(0);
+  const [hechas, setHechas] = useState<Record<string, boolean>>({});
+  const n = Object.keys(hechas).length;
+  const aciertos = Object.values(hechas).filter(Boolean).length;
+  const empezarDeNuevo = () => {
+    setHechas({});
+    setIntento((x) => x + 1);
+    window.scrollTo({ top: 0 });
+  };
   return (
     <div>
       <CabeceraEditorial titulo="Autoevaluación" hex={CATEGORIA_HEX.aprender} level={1}>
@@ -591,11 +659,47 @@ export function Test() {
           </p>
         </ToneCard>
       )}
-      <ol className="space-y-3">
+      <p className="mb-2 text-xs text-slate-600" aria-live="polite">
+        Respondidas {n} de {PREGUNTAS.length}
+        {n > 0 ? ` · ${aciertos} ${aciertos === 1 ? "acierto" : "aciertos"}` : ""}
+      </p>
+      <ol className="space-y-3" key={intento}>
         {PREGUNTAS.map((p, i) => (
-          <Pregunta key={p.id} p={p} n={i + 1} />
+          <Pregunta
+            key={p.id}
+            p={p}
+            n={i + 1}
+            onResponder={(acierto) => setHechas((h) => ({ ...h, [p.id]: acierto }))}
+          />
         ))}
       </ol>
+      {n === PREGUNTAS.length && (
+        <section
+          aria-labelledby="test-resultado"
+          className="mt-4 rounded-2xl border-2 bg-white p-4"
+          style={{ borderColor: CATEGORIA_HEX.aprender.strong }}
+        >
+          <h2 id="test-resultado" className="text-base font-extrabold text-slate-900">
+            Resultado: {aciertos} de {PREGUNTAS.length}
+          </h2>
+          <p className="mt-1 text-sm text-slate-700">
+            Repasa las que fallaste con su explicación y su página; las cifras y las siglas se
+            afianzan mejor con las{" "}
+            <a href={href("repaso")} className="font-semibold text-slate-800 underline">
+              tarjetas de repaso
+            </a>
+            .
+          </p>
+          <button
+            type="button"
+            onClick={empezarDeNuevo}
+            className="mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-lg px-4 text-sm font-bold text-white"
+            style={{ background: CATEGORIA_HEX.aprender.strong }}
+          >
+            Volver a empezar
+          </button>
+        </section>
+      )}
     </div>
   );
 }

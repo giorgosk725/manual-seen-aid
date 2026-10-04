@@ -41,7 +41,9 @@ describe("Iniciar un sistema: el texto sale del capítulo", () => {
   });
   it("la hoja lleva el plan de respaldo, el plan de seguridad y la línea del sistema", () => {
     const h = hojaDeComprobacion(1);
-    expect(h.antes[0].texto).toMatch(/^Entregar una pauta escrita/);
+    // Empieza por el plan de seguridad (p. 7), cuya pauta de respaldo ya cubre la de la Tabla 2.
+    expect(h.antes[0].texto).toMatch(/^Pauta de respaldo con insulina basal y rápida en pluma/);
+    expect(h.antes.some((x) => x.texto.startsWith("Entregar una pauta escrita"))).toBe(false);
     expect(h.antes.some((x) => x.texto.startsWith("Control-IQ:"))).toBe(true);
     expect(h.antes.some((x) => x.texto.startsWith("Omnipod 5:"))).toBe(false);
     expect(

@@ -161,3 +161,49 @@ DENY` se queda salvo que la SEEN quiera incrustar la app en su web.
 3. V5 para pacientes: «TC» y «PET» sin desarrollar; mezcla de impersonal y usted. E09 usa «SAM».
 4. Siguen: E04, E28 y E07; las dos frases de la V5 (5-10 g y pausar la bomba); q03, q04 y q06 del
    test; edad de Liberty; letra grande como formato por defecto para pacientes (opcional).
+
+## 6. Tercera auditoría de uso (0.9.0 → 0.10.0)
+
+Auditoría independiente de la 0.9.0 publicada (otro agente, Playwright en Pixel 5 y a 1440 px,
+KLM, axe, desbordes, teclado e impresión): Nielsen 8,0 de media, SUS estimado 82 / 86 / 81
+(endocrinólogo en móvil, residente en escritorio, enfermera con hojas), y 19 problemas que
+impedían el 9,5. Corregidos en la 0.10.0:
+
+1. **Nota del asterisco**: la de la tabla de la respuesta (Tabla 1: parámetros del modo
+   automático), no la de la Figura 3.
+2. **Respuestas dudosas o sin sujeto**: «Lo más cercano en el capítulo» cuando nada responde de
+   lleno o la primera es dudosa; la frase que empieza sin sujeto («Por el momento…») lleva la
+   anterior; un texto sobre Liberty baja si se nombra otro sistema; el aviso amarillo ya no
+   contradice a la respuesta.
+3. **Vocabulario**: gastroenteritis, «marca distinto que el glucómetro», edades y años,
+   hidratos en la hipoglucemia, «cuándo veo al paciente después de empezar», corticoides; las
+   palabras genéricas («asa cerrada», «AID», «bomba», «paciente») ya no deciden. Sin resultados,
+   propone las situaciones de «¿Qué necesitas?».
+4. **«Siguiente»** en «Iniciar un sistema» y «Revisar la descarga» sube al principio del paso
+   nuevo y le da el foco.
+5. **Teclado del móvil**: la caja de la portada sube al enfocarla; la intro de Buscar es de una
+   línea y «Cómo funciona» va plegado.
+6. **Empezar desde MDI**: el atajo de la portada lleva a la fase «Inicio», que tiene un índice
+   «En esta fase» (una fila deslizable en el móvil).
+7. **Situación y sistema**: al elegir sistema, su casilla queda a la vista sobre la barra.
+8. **Aprender** sube detrás de «Leer» en la barra lateral; la portada lleva a tarjetas y test.
+9. **Qué es la app** en la primera pantalla: «material educativo: no es producto sanitario ni
+   publicación oficial de la SEEN · Qué es →»; en «Sobre», el permiso pendiente.
+10. **Las 55 cifras** de los apartados llevan a su frase (prueba que exige el ancla).
+11. **«Leer en su sitio»** lleva a la frase y la resalta (`fraseCitada.ts`).
+12. **Paleta**: Intro abre la respuesta; ↓ ↑ recorren los enlaces; ayuda de teclas.
+13. **Hoja de comprobación**: Compartir y QR como las hojas del paciente; QR, dirección, fecha
+    del capítulo y versión en el pie; sin el punto repetido; 11 pt en una cara A4.
+14. **Páginas**: siempre «pp. 3–4».
+15. **Celdas de varias líneas** separadas en las respuestas; resaltado de palabras enteras.
+16. **320 px**: A−/A+ se ocultan por debajo de 360 px (sin desborde).
+17. **Tarjetas**: «en la ronda de hoy» y «por estrenar». **Test**: resultado y «Volver a empezar».
+18. **Qué ha cambiado**: cuatro pendientes en lenguaje llano; notas para el autor y versiones
+    anteriores plegadas.
+19. **Menores**: nombres cortos de los sistemas en «Iniciar»; ayuda de la caja más corta;
+    «Seguir leyendo» sin desplazar también en escritorio; «Saltar al contenido»; «Tabla 2
+    completa» y los chips de «Leer en el capítulo» con 44 px; la lista de sistemas enseña qué
+    mueve el modo automático; un atajo a los sistemas DIY (apartado 11).
+
+Pruebas nuevas: `e2e/uso.spec.ts` (12) y `e2e/uso-movil.spec.ts` (3); bancos ciegos en
+`respuestas.test.ts`. El buscador se midió aparte (docs/PREGUNTAS_2026-10-04.md).

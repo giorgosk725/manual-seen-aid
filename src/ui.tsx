@@ -492,7 +492,7 @@ export function Revelar({
 
 /* Insignia de página de origen del capítulo. */
 export function PaginaBadge({ p, p2 }: { p: number; p2?: number }) {
-  const txt = p2 && p2 !== p ? `p. ${p}–${p2}` : `p. ${p}`;
+  const txt = p2 && p2 !== p ? `pp. ${p}–${p2}` : `p. ${p}`;
   return (
     <span
       className="pagina-badge"

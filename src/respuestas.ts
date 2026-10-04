@@ -28,6 +28,7 @@ import { normalizar, tramoDeConsulta, type Respuesta } from "./busqueda";
 import { SIS_IDS, SITUACIONES } from "./situaciones";
 import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import { frases } from "./frases";
+import { raizEs } from "./raiz";
 
 export { frases };
 
@@ -44,23 +45,96 @@ const STOP = new Set(
     "deberia ante bajo desde hasta cada me te nos os paciente persona sistema " +
     "ir voy vas va poner pongo llevar llevo lleva usa usan da dan dar hacen siempre bien " +
     "poco poca pocos pocas mucho mucha muchos muchas demasiado demasiada demasiados " +
-    "demasiadas tanto tanta algun alguna suenan suena pitan pita tomo tomar llama llaman " +
+    "demasiadas tanto tanta algun alguna tomo tomar llama llaman " +
     "sistemas dispositivo usar uso algo mejor pasa ocurre favor otra otro hay vez veces modo dos " +
-    "tres alta alto " +
+    "tres alta alto pacientes personas porque dispositivos tras " +
     "significa significado definicion quiere decir"
   ).split(" "),
 );
 
-/* Raíz tosca: plural y género («objetivos» = «objetivo», «nocturnas» = «nocturno»). */
-const raiz = (w: string) => {
+/* Palabras que no definen la pregunta: verbos de petición («quiero», «conviene», «sirve»),
+   adjetivos vagos («distintos», «nueva») y lo que es tema de todo el capítulo («AID», «bomba»,
+   «diabetes»). Suman si la respuesta las tiene, pero no se exigen ni deciden si consta. */
+const GENERICAS = new Set(
+  (
+    "quiero quiere queremos queria quisiera quedarme quedar quedarse conviene convendria " +
+    "necesito necesita necesitamos sirve sirven servir funciona funcionan funcionar ocurre " +
+    "dice dicen saber explica explicar explicame recomienda recomiendan recomendado " +
+    "recomendable aconseja aconsejable demostro demostrado demuestra muestra mostro encontro " +
+    "hablar hablo concreto concreta concretos distinto distinta distintos distintas " +
+    "diferentes varios varias nuevo nueva nuevos nuevas normal normales posible posibles " +
+    "importante general cosa cosas rato todo toda todos todas ahora hoy ayer luego aun " +
+    "todavia solo mismo misma igual tal aqui alli momento estoy estaba soy fue he ha han " +
+    "hemos habia tenia sigo viene vengo vienen haciendo hecho correcto correcta adecuado " +
+    "adecuada mio mia tu tus nuestro papel manera forma pequeno pequena pequenos pequenas " +
+    "grande grandes puesto puesta puestos puestas hecha visto dicho ayudar ayuda " +
+    "medico medicos endocrino endocrinologo doctor doctora " +
+    "lunes martes miercoles jueves viernes sabado domingo finde aparece aparecen aparecer " +
+    "sale salen sucede suceden aparato aparatos maquina medidor chisme harto harta " +
+    "agobiado agobiada cansado cansada frustrado frustrada estresado estresada diferencial " +
+    "habitual habituales mucho mucha mal salgo sales meto mete metes pongo pone ponga " +
+    "pongan ponerme ponerse mandado mandaron recetado recetaron dijo dicho puse hice hago " +
+    "hacen paso pasan pasado tome tomado llevo llevas noto nota notado siento sienta " +
+    "estoy esta estas estaba sabado lunes " +
+    "aid bomba bombas diabetes diabetico diabeticos diabetica diabeticas automatica " +
+    "automatico asa cerrada cerrado senal senales signo signos"
+  ).split(" "),
+);
+
+/* Raíz suave: plural y género («objetivos» = «objetivo», «nocturnas» = «nocturno»). */
+const raizSuave = (w: string) => {
   if (w.length <= 4) return w;
   const sinPlural = w.replace(/(es|s)$/, "");
   return sinPlural.length > 5 ? sinPlural.replace(/[ao]$/, "") : sinPlural;
 };
+/* Raíz: Snowball para español (raiz.ts) reúne las formas de una palabra («desconectado»,
+   «desconectar», «desconectarse»); si deja menos de 5 letras, choca con otras («nadar» y
+   «nada» → «nad»), y entonces vale la raíz suave. */
+const raiz = (w: string) => {
+  const s = raizEs(w);
+  return s.length >= 5 ? s : raizSuave(w);
+};
 
-/* Formas fijas: β-OHB en cualquiera de sus escrituras es «bohb»; Control-IQ, una palabra. */
+/* Sigla ↔ desarrollo, del propio glosario del capítulo: donde se escribe el desarrollo
+   («dosis total diaria»), se añade la sigla («dtd»), en la pregunta y en el texto; así casan
+   las dos formas. Una sola pasada y el desarrollo más largo primero («tiempo en rango
+   estrecho» es TITR, no TIR). Se añaden formas cortas que el capítulo usa. */
+const DESARROLLOS: [string, string][] = (() => {
+  const pares: [string, string][] = [];
+  for (const g of GLOSARIO) {
+    const sigla = normalizar(g.sigla);
+    if (!/^[a-z0-9]+$/.test(sigla) || /no desarrollada|subindice|:/.test(normalizar(g.desarrollo)))
+      continue;
+    // El desarrollo sin el comentario entre paréntesis; y la forma española entre «».
+    const d = normalizar(g.desarrollo);
+    const base = d.replace(/\s*\(.*\)\s*$/, "").trim();
+    if (base.length > 6) pares.push([base, sigla]);
+    const es = d.match(/«([^»]+)»/);
+    if (es) pares.push([es[1], sigla]);
+  }
+  pares.push(["dosis total diaria", "dtd"], ["factor de sensibilidad", "fsi"]);
+  return pares.sort((a, b) => b[0].length - a[0].length);
+})();
+const RE_DESARROLLO = new RegExp(
+  `\\b(${DESARROLLOS.map(([d]) => d.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&")).join("|")})\\b`,
+  "g",
+);
+const SIGLA_DE = new Map(DESARROLLOS);
+
+/* Formas fijas: β-OHB en cualquiera de sus escrituras es «bohb»; Control-IQ, una palabra.
+   «DIA» en mayúsculas es la duración de la insulina activa (en minúsculas sería «día»). */
 const unificar = (s: string) =>
-  normalizar(s)
+  normalizar(s.replace(/\bDIA\b/g, " duración de la insulina activa "))
+    .replace(RE_DESARROLLO, (m) => `${m} ${SIGLA_DE.get(m) ?? ""} `)
+    .replace(/\b(?:diabetes(?: mellitus)?|dm) (?:de )?tipo ([12])\b/g, " dm$1 ")
+    .replace(/\bnivel ([12])\b/g, " nivel$1 nivel ")
+    .replace(/(\d)\s?%/g, "$1 % porcentaje ")
+    .replace(/[<>≤≥]\s?\d+(?:,\d+)?/g, "$& umbral ")
+    // «Población mayor», «personas mayores», «edad avanzada»: la vejez, no «mayor que».
+    .replace(
+      /\b(?:poblacion|personas?|pacientes?|adultos?) mayor(?:es)?\b|\bedad avanzada\b|\bancian[oa]s?\b/g,
+      "$& ancianidad ",
+    )
     .replace(/β[- ]?ohb|β[- ]?hidroxibutirato|beta[- ]?hidroxibutirato/g, " bohb ")
     .replace(/\b(?:b|beta)[- ]?ohb\b/g, " bohb ")
     // «no gestantes» es un término: no casa con «embarazo».
@@ -110,8 +184,20 @@ function casiIgual(a: string, b: string) {
    ≥ 5 letras); o la misma palabra con otra terminación («desconectado»/«desconectar»). */
 function casa(t: string, w: string, prefijo = false) {
   if (t === w) return true;
+  if (
+    t.length >= 7 &&
+    w.length > t.length &&
+    w.endsWith(t) &&
+    !/^(des|in|im|re|pre|sub|anti|contra|sobre)$/.test(w.slice(0, w.length - t.length))
+  )
+    return true;
   if (prefijo && t.length >= 5 && w.length - t.length <= 4 && w.startsWith(t)) return true;
   const corta = Math.min(t.length, w.length);
+  // Raíces que difieren en la última letra («anunc», de «anuncian», y «anunci», de «anunciarse»).
+  if (corta >= 5 && Math.abs(t.length - w.length) === 1) {
+    const [c, l] = t.length < w.length ? [t, w] : [w, t];
+    if (l.startsWith(c) && /[aeiou]$/.test(l)) return true;
+  }
   if (corta < 7) return false;
   let k = 0;
   while (k < corta && t[k] === w[k]) k++;
@@ -193,11 +279,9 @@ const LEXICO: Record<string, string[]> = {
   nino: ["pediatria", "pediatrica"],
   ninos: ["pediatria", "pediatrica"],
   infantil: ["pediatria", "pediatrica"],
-  mayores: ["mayor", "fragilidad"],
-  anciano: ["mayor", "fragilidad"],
-  ancianos: ["mayor", "fragilidad"],
-  fragil: ["fragilidad"],
-  fragiles: ["fragilidad"],
+  mayores: ["ancianidad", "mayor", "fragilidad"],
+  fragil: ["fragilidad", "ancianidad"],
+  fragiles: ["fragilidad", "ancianidad"],
   adolescente: ["adolescencia"],
   adolescentes: ["adolescencia"],
   joven: ["adolescencia"],
@@ -304,13 +388,119 @@ const LEXICO: Record<string, string[]> = {
   tir: ["tirp"],
   tbr: ["tbrp"],
   tar: ["tarp"],
+  repuesto: ["recambios", "recambio", "material"],
+  recambio: ["recambios"],
+  parche: ["pod", "set", "sensor", "adhesivo"],
+  aprende: ["autoaprendizaje", "aprendizaje"],
+  aprender: ["autoaprendizaje", "aprendizaje"],
+  aprendizaje: ["autoaprendizaje"],
+  decide: ["decision", "seleccion", "eleccion"],
+  decidir: ["decision", "seleccion", "eleccion"],
+  elegir: ["decision", "seleccion", "eleccion"],
+  escoger: ["decision", "seleccion", "eleccion"],
+  eleccion: ["decision", "seleccion"],
+  autocorreccion: ["correccion", "automaticos"],
+  cv: ["coeficiente", "variacion"],
+  discrepancias: ["discordancia"],
+  discordancia: ["discrepancias"],
+  roto: ["fallo", "averia", "interrupcion"],
+  rota: ["fallo", "averia", "interrupcion"],
+  rompe: ["fallo", "averia", "interrupcion"],
+  estropeado: ["fallo", "averia", "interrupcion"],
+  averiado: ["fallo", "averia", "interrupcion"],
+  averia: ["fallo", "interrupcion"],
+  casero: ["diy", "desarrollo"],
+  consulta: ["visita", "revision", "contacto"],
+  cita: ["visita", "revision", "contacto"],
+  hijo: ["pediatrica", "pediatria", "edad"],
+  hija: ["pediatrica", "pediatria", "edad"],
+  bebe: ["pediatrica", "pediatria", "edad"],
+  pinchazo: ["capilar"],
+  dedo: ["capilar"],
+  glucometro: ["capilar"],
+  tarde: ["tardio", "retrasado", "retraso"],
+  servicio: ["soporte"],
+  llamar: ["contactar", "contacto"],
+  enfermeria: ["equipo", "asistencial", "profesionales"],
+  enfermera: ["equipo", "asistencial", "profesionales"],
+  bluetooth: ["comunicacion", "conexion"],
+  ayuno: ["ayunas"],
+  sensor: ["mcg", "monitorizacion"],
+  gastroenteritis: ["enfermedad", "intercurrente", "vomitos"],
+  mcg: ["sensor", "sensores"],
+  autobolo: ["correccion", "automaticos"],
+  autobolos: ["correccion", "automaticos"],
+  microbolos: ["microbolos", "automaticos"],
+  catarro: ["enfermedad", "intercurrente"],
+  resfriado: ["enfermedad", "intercurrente"],
+  infeccion: ["enfermedad", "intercurrente"],
+  betametasona: ["glucocorticoides"],
+  metilprednisolona: ["glucocorticoides"],
+  hidrocortisona: ["glucocorticoides"],
+  deflazacort: ["glucocorticoides"],
+  esteroides: ["glucocorticoides"],
+  ayunas: ["ayuno"],
+  bajada: ["hipoglucemia"],
+  bajadas: ["hipoglucemia"],
+  bajon: ["hipoglucemia"],
+  bajones: ["hipoglucemia"],
+  duermo: ["nocturna", "sueno", "dormir"],
+  golpe: ["brusca", "brusco", "rapida"],
+  bulto: ["lipohipertrofia", "lipodistrofia"],
+  bultos: ["lipohipertrofia", "lipodistrofia"],
+  barriga: ["abdomen", "zona", "zonas"],
+  tripa: ["abdomen", "zona", "zonas"],
+  fiesta: ["alcohol"],
+  copas: ["alcohol"],
+  cerveza: ["alcohol"],
+  vino: ["alcohol"],
+  dejar: ["abandono", "retirada", "interrupcion", "transiciones"],
+  temporada: ["temporal", "temporales", "temporalmente"],
+  verguenza: ["visibles", "imagen", "emocional"],
+  densitometria: ["dexa"],
+  entrenar: ["ejercicio", "actividad"],
+  entreno: ["ejercicio", "actividad"],
+  entrenamiento: ["ejercicio", "actividad"],
+  limite: ["umbral"],
+  minimo: ["umbral"],
+  minima: ["umbral"],
+  maximo: ["umbral"],
+  maxima: ["umbral"],
+  escrito: ["escrita", "formato"],
+  recontrolar: ["reevaluarse", "reevaluar"],
+  diarrea: ["enfermedad", "intercurrente", "vomitos"],
+  cateter: ["set", "cateter", "infusion"],
+  sensores: ["mcg", "monitorizacion"],
+  operado: ["cirugia", "quirurgico", "intervencion"],
 };
 
-/* Expresiones enteras → palabras del capítulo (sobre la pregunta ya normalizada). */
+/* El léxico también por raíz: «olvidados», «repuestos» o «averiada» usan la entrada de su
+   palabra. */
+const LEX_RAIZ = new Map<string, string[]>();
+for (const [k, v] of Object.entries(LEXICO)) if (!LEX_RAIZ.has(raiz(k))) LEX_RAIZ.set(raiz(k), v);
+const lexico = (w: string): string[] | undefined =>
+  LEXICO[w] ?? (raiz(w) !== w ? LEX_RAIZ.get(raiz(w)) : undefined);
+
+/* Faltas de ortografía: se compara cómo suena la palabra (b/v, s/z/c, ll/y, h muda…). */
+const fonetica = (w: string) =>
+  w
+    .replace(/ch/g, "X")
+    .replace(/h/g, "")
+    .replace(/v/g, "b")
+    .replace(/z/g, "s")
+    .replace(/c([ei])/g, "s$1")
+    .replace(/qu([ei])/g, "k$1")
+    .replace(/c/g, "k")
+    .replace(/ll/g, "y")
+    .replace(/g([ei])/g, "j$1")
+    .replace(/(.)\1+/g, "$1");
+
+/* Expresiones enteras → palabras del capítulo (sobre la pregunta ya normalizada). En lo que
+   sustituye, cada palabra se exige; «a|b» es una sola palabra exigida que puede ser a o b. */
 type Modo = "sustituye" | "suma";
 const FRASES: [RegExp, string, Modo][] = [
   [
-    /(glucosa|glucemia|azucar)\s+(alta|elevada|subida|disparada|por encima)|me sube (la )?(glucosa|azucar)/,
+    /(glucosa|glucemia|azucar)\s+(muy )?(alt[oa]s?|elevad[oa]s?|subid[oa]|disparad[oa]|por encima|por las nubes|altisim[oa])|me sube (la )?(glucosa|azucar)/,
     "hiperglucemia persistente",
     "sustituye",
   ],
@@ -325,19 +515,99 @@ const FRASES: [RegExp, string, Modo][] = [
     "interrupcion administracion insulina",
     "sustituye",
   ],
-  [/a partir de (que|cuantos) (edad|anos)|edad minima|que edad/, "anos menores", "sustituye"],
-  [/(cuando|a que hora).*(reanud|volver|reconect|poner otra vez)/, "reanudarse", "suma"],
   [
-    /no coinciden?|no cuadra|discrepa\w*|distint[oa]s? (de|a) la capilar/,
-    "discrepancias",
+    /a partir de (que|cuantos) (edad|anos)|edad minima|que edad/,
+    "edad|anos|ano|indicacion",
     "sustituye",
   ],
+  [/(cuando|a que hora).*(reanud|volver|reconect|poner otra vez)/, "reanudarse", "suma"],
+  [
+    /no coinciden?|no cuadra|discrepa\w*|distint[oa]s? (de|a) la capilar|marca (distinto|diferente|otra cosa)/,
+    "discrepancias|discordancia",
+    "sustituye",
+  ],
+  [
+    /me levanto|al levantarme|me despierto|al despertar(me)?|por las mananas/,
+    "matutina|despertar|alba",
+    "sustituye",
+  ],
+  // «sin tener que ponerse bolos»: el asa cerrada completa (Liberty).
+  [
+    /(sin|no (haga|hace|hiciera) falta|sin tener que) (poner(se|me)? )?(el |los )?bolos?|sin bolos/,
+    "liberty|completa",
+    "sustituye",
+  ],
+  [/hace(n)? falta|hagan? falta|haciendo falta|hacer falta/, "necesario", "sustituye"],
+  [/\b(me )?(pita|pitan|pitido|pitidos|suena|suenan)\b/, "alarmas|alertas", "sustituye"],
+  [/(dormir|duermo|tumbad[oa]) (de lado|encima|sobre)/, "compresion|dormir", "sustituye"],
+  [/hidratos (de mentira|falsos|ficticios)|falsos hidratos/, "fantasma", "sustituye"],
+  [
+    /(fiesta|copas|botellon|emborrach\w*).{0,30}beber|beber.{0,30}(fiesta|copas|alcohol)/,
+    "alcohol",
+    "sustituye",
+  ],
+  [/pasa de (ponerse|poner|pincharse)|no se (los )?pone/, "omision", "sustituye"],
+  [/peso minimo|cuanto (tiene que |debe )?pesar/, "peso|kg|indicacion", "sustituye"],
+  [
+    /(empezar|comenzar|antes de) (a )?(entrenar|correr|hacer (deporte|ejercicio)|nadar)/,
+    "ejercicio|actividad",
+    "sustituye",
+  ],
+  [/recontrol\w*|volver a medir|repetir (la )?medicion/, "reevaluarse|reevaluar", "sustituye"],
+  [
+    /(salir a|ir a|voy a|vamos a) (correr|nadar|andar|caminar|pedalear|entrenar)|hacer (deporte|ejercicio)/,
+    "ejercicio",
+    "sustituye",
+  ],
+  [
+    /\b(harto|harta|cansad[oa]|agobiad[oa]|me agobia|me molesta|me saca de quicio)\b/,
+    "fatiga sobrecarga",
+    "suma",
+  ],
+  [/no funciona|no va bien/, "fallo", "sustituye"],
+  [/(senales|signos) de (alarma|alerta)/, "signos", "sustituye"],
+  [/dias? de enfermedad/, "enfermedad intercurrente", "sustituye"],
+  [/servicio tecnico/, "soporte tecnico", "sustituye"],
+  [
+    /(movil|telefono|app|aplicacion|sensor)\b.{0,25}\bdesconecta\w*|desconecta\w*\b.{0,25}\b(movil|telefono|app|aplicacion|bluetooth)|perdida de (senal|conexion|comunicacion)/,
+    "comunicacion|conexion|bluetooth",
+    "sustituye",
+  ],
+  [
+    /(bajadas?|hipoglucemias?|lecturas?|alarmas?) falsas?|falsas? (bajadas?|hipoglucemias?|alarmas?)/,
+    "falsamente|falsas|compresion",
+    "sustituye",
+  ],
+  [
+    /quedar(me|se)? embarazada|buscar (un )?embarazo|planificar (un |el )?embarazo/,
+    "planificacion|gestacional gestacion|embarazo",
+    "sustituye",
+  ],
+  [/(se me|se) dispara/, "hiperglucemia|ascenso", "sustituye"],
+  [/dieta absoluta|nada por boca|sin comer/, "ayunas", "sustituye"],
+  [/(despues de|tras|al) (empezar|iniciar|comenzar)/, "inicio|iniciacion", "sustituye"],
+  [/cirugia (mayor|larga|compleja|importante)/, "cirugia prolongada|compleja", "sustituye"],
+  // Hidratos y una hipoglucemia: el tratamiento de la hipoglucemia leve.
+  [
+    /(hidratos|azucar|zumo|glucosa).{0,25}hipoglucemia|hipoglucemia.{0,25}(hidratos|azucar)/,
+    "leve tratarse",
+    "suma",
+  ],
+  [
+    /contar (los )?(hidratos|carbohidratos|raciones)/,
+    "recuento|anuncio hidratos|comidas",
+    "sustituye",
+  ],
+  [/material de (repuesto|recambio)|repuestos?|recambios?/, "recambios|repuesto", "sustituye"],
+  [/loops? caseros?|caseros?|hechos? en casa|androidaps|openaps|\bloop\b/, "diy", "sustituye"],
+  // «mi madre tiene 80 años»: la persona es ella; «madre» no pregunta por los progenitores.
+  [/\b(mi|a mi|de mi) (madre|padre|abuel[oa]|marido|mujer|pareja|tia|tio)\b/, " ", "sustituye"],
   [/cuant[oa]s? (hidratos|gramos|carbohidratos)/, "hidratos cantidades g", "sustituye"],
   [/(se )?salta(rse)? (los )?bolos|no se pone (los )?bolos/, "omision bolos", "sustituye"],
   [/pasar de mdi|de plumas a (la )?bomba|desde mdi/, "mdi transicion", "sustituye"],
   [
-    /(cuando|cada cuanto) (revisar|ver|citar)|primeras visitas|seguimiento inicial/,
-    "seguimiento contacto revision",
+    /(cuando|cada cuanto) (revisar|ver|veo|citar|cito|visito)|primeras visitas|seguimiento inicial/,
+    "seguimiento|contacto|revision|visita",
     "sustituye",
   ],
   [/cuanto (modificar|cambiar|subir|bajar)/, "modificarse", "sustituye"],
@@ -347,7 +617,7 @@ const FRASES: [RegExp, string, Modo][] = [
     "sustituye",
   ],
   [/plan de seguridad/, "incluir", "suma"],
-  [/(personas|pacientes) mayores|edad avanzada/, "mayor", "sustituye"],
+  [/(personas|pacientes) mayores|edad avanzada/, "ancianidad|mayor", "sustituye"],
   [/la cuenta|cuenta como activa|contabiliza/, "contabiliza activa", "suma"],
   [/(si )?no (hay|existe|tengo|tiene) (un )?plan|sin plan/, "existe plan especifico", "sustituye"],
   [
@@ -374,7 +644,7 @@ const FRASES: [RegExp, string, Modo][] = [
     "sustituye",
   ],
   [
-    /(pasar|volver|cambiar) de (la )?(perfusion|insulina intravenosa|intravenosa|iv)\b/,
+    /(pasar|paso|volver|cambiar|cambio) de (la )?(perfusion|insulina intravenosa|intravenosa|iv)\b/,
     "volver desde insulina intravenosa paralelo",
     "sustituye",
   ],
@@ -382,8 +652,13 @@ const FRASES: [RegExp, string, Modo][] = [
 
 /* Señales: conducta («qué hago», una cifra con unidad) frente a definición («qué es»). */
 const RE_CONDUCTA =
-  /\b(que (hago|hacer|hacemos|debo)|como (actuo|actuar|tratar|manejar)|actuacion|pauta|tratamiento|cuando|cuanto|cuantos|cuantas)\b|\d+[,.]\d+|\d+\s*(mg|mmol|g\b|h\b|horas|ui)/;
+  /\b(que (hago|hacer|hacemos|debo)|como (actuo|actuar|tratar|manejar)|actuacion|pauta|tratamiento|cuando|cuanto|cuantos|cuantas)\b|\d+[,.]\d+|\d+\s*(mg|mmol|g\b|h\b|horas|ui)|(glucosa|glucemia|azucar) (de )?\d{2,3}\b/;
 const RE_DEFINICION = /\b(que es|que son|que significa|significado|definicion|que quiere decir)\b/;
+
+/* Una cifra de verdad (con unidad, decimal o comparador), no una numeración («1 Seleccionar →
+   2 Educar»). */
+const RE_CIFRA =
+  /\d+\s*(h|horas?|min|minutos|dias?|semanas?|meses|anos?|%|mg|mmol|g|ui|kg)\b|\d+[,.]\d+|[<>≤≥]\s?\d/;
 
 /* Umbrales de glucosa del texto: «<90 mg/dl», «≥ 250 mg/dl», «126–180 mg/dl». */
 function cumpleUmbral(texto: string, v: number): number {
@@ -396,6 +671,26 @@ function cumpleUmbral(texto: string, v: number): number {
   for (const m of texto.matchAll(/(\d+(?:,\d+)?)\s?[–-]\s?(\d+(?:,\d+)?)\s?mg\/dl/g)) {
     const [a, b] = [Number(m[1].replace(",", ".")), Number(m[2].replace(",", "."))];
     if (v >= a && v <= b) mejor = Math.max(mejor, 0.7);
+  }
+  return mejor;
+}
+
+/* Edades del texto: «≥ 1 año», «≥ 2 años», «< 7 años». */
+function cumpleEdad(texto: string, v: number): number {
+  let mejor = 0;
+  for (const m of normalizar(texto).matchAll(/(<|>|≤|≥)?\s?(\d{1,3})\s?anos?\b/g)) {
+    const u = Number(m[2]);
+    const ok =
+      m[1] === "<"
+        ? v < u
+        : m[1] === ">"
+          ? v > u
+          : m[1] === "≤"
+            ? v <= u
+            : m[1] === "≥"
+              ? v >= u
+              : v === u;
+    mejor = Math.max(mejor, ok ? 1.5 : 0.3);
   }
   return mejor;
 }
@@ -446,12 +741,15 @@ const nombrados = (s: string) => [
 
 /* Una frase que empieza por un conector necesita la anterior para entenderse. */
 const RE_CONECTOR =
-  /^(Por ello|Por eso|Por tanto|Esta|Este|Estas|Estos|Esto|Ello|En esa|En ese|En estos|En estas|Además|Sin embargo|Así|Hasta entonces|También|En cambio|Durante este|Su |Sus )/;
+  /^(Por ello|Por eso|Por tanto|Por el momento|Por ahora|Esta|Este|Estas|Estos|Esto|Ello|Ese|Esa|Dicho|Dicha|Ambos|Ambas|En esa|En ese|En estos|En estas|Además|Sin embargo|No obstante|Aun así|Así|Hasta entonces|También|En cambio|Durante este|Su |Sus )/;
 
 const NOMBRE_SIS = (i: number) => LISTA_TABLAS[0].columnas[i];
 
 let ATOMOS: Atomo[] | null = null;
 let PESO: Map<string, number> | null = null;
+/* Palabras del capítulo (y del léxico) por cómo suenan, y todas tal como se escriben. */
+let SONIDO: Map<string, string> | null = null;
+let SUPERFICIE: Map<string, string> | null = null;
 
 function rutaTabla(t: Tabla, fila: number, col?: number) {
   const st = SITUACIONES.find((x) => x.tabla === t.id && x.fila === fila);
@@ -512,7 +810,8 @@ export function atomos(): Atomo[] {
               contexto: k > 0 && RE_CONECTOR.test(f) ? fs[k - 1] : undefined,
               pagina: b.p,
               pagina2: b.p2,
-              ruta,
+              // «Leer en su sitio» lleva a la frase y la resalta (fraseCitada.ts).
+              ruta: fs.length > 1 ? href("capitulo", a.slug, `${id}~${k}`) : ruta,
             },
             { titulo: lead || sub, claves: a.titulo, cuerpo: f, parrafo: todo },
           ),
@@ -545,7 +844,7 @@ export function atomos(): Atomo[] {
               contexto: intro || undefined,
               pagina: b.p,
               pagina2: b.p2,
-              ruta,
+              ruta: href("capitulo", a.slug, `${id}~${k}`),
             },
             { titulo: sub, claves: `${intro} ${a.titulo}`, cuerpo: it, parrafo: items.join(" ") },
           ),
@@ -736,8 +1035,43 @@ export function atomos(): Atomo[] {
   const idf = (d: number) => Math.log((n + 1) / (d + 1));
   const medio = [...df.values()].reduce((s, d) => s + idf(d), 0) / df.size;
   PESO = new Map([...df].map(([w, d]) => [w, Math.min(2, Math.max(0.5, idf(d) / medio))]));
+  // Vocabulario para corregir faltas: la forma más frecuente de cada sonido.
+  const cuenta = new Map<string, number>();
+  for (const a of out)
+    for (const w of palabras(`${a.r.titulo} ${a.todo}`))
+      if (w.length >= 4 && !/\d/.test(w) && !STOP.has(w)) cuenta.set(w, (cuenta.get(w) ?? 0) + 1);
+  for (const w of [...Object.keys(LEXICO), ...GENERICAS]) cuenta.set(w, 1e6);
+  SONIDO = new Map();
+  SUPERFICIE = new Map();
+  for (const [w] of [...cuenta].sort((x, y) => y[1] - x[1])) {
+    const f = fonetica(w);
+    if (!SONIDO.has(f)) SONIDO.set(f, w);
+    if (!SUPERFICIE.has(w)) SUPERFICIE.set(w, raiz(w));
+  }
   ATOMOS = out;
   return out;
+}
+
+/* ¿Entiende el capítulo esta palabra? (ella, su raíz o su equivalente del léxico) */
+function conocible(w: string) {
+  if (STOP.has(w) || GENERICAS.has(w) || lexico(w) || ALIAS_SISTEMA[w] !== undefined) return true;
+  const r = raiz(w);
+  if (PESO!.has(r)) return true;
+  for (const v of PESO!.keys()) if (casa(r, v)) return true;
+  return false;
+}
+
+/* Una palabra que el capítulo no tiene: la que suena igual («bomitos» → «vomitos») o, si es
+   larga (7 letras o más), la única que está a una errata. */
+function corregir(w: string): string | null {
+  if (w.length < 4 || /\d/.test(w)) return null;
+  const f = SONIDO!.get(fonetica(w));
+  if (f && f !== w) return f;
+  if (w.length < 7) return null;
+  const cand = new Map<string, string>();
+  for (const [v, r] of SUPERFICIE!)
+    if (Math.abs(v.length - w.length) <= 1 && casiIgual(w, v) && !cand.has(r)) cand.set(r, v);
+  return cand.size === 1 ? [...cand.values()][0] : null;
 }
 
 function base0(t: Tabla) {
@@ -759,23 +1093,57 @@ interface Grupo {
   prefijo?: boolean;
   /* Añadida por una expresión: suma puntos, pero no se exige para responder. */
   bonus?: boolean;
+  /* Como se escribió (ya normalizada) y si es una palabra genérica (GENERICAS). */
+  escrita?: string;
+  generica?: boolean;
 }
 
 export function gruposDe(pregunta: string): Grupo[] {
-  let q = unificar(pregunta);
+  atomos();
+  // Primero las faltas, para que las expresiones casen («asucar alto» → «azucar alto»).
+  let q = unificar(pregunta).replace(/[a-zñ]{4,}/g, (w) => (conocible(w) ? w : (corregir(w) ?? w)));
   const extra: string[] = [];
+  q = q
+    .replace(/\b(bajadas?|bajon(es)?|hipos?)\b/g, "hipoglucemia")
+    .replace(/\b(subidas?|subidon(es)?)\b/g, "hiperglucemia");
+  // Las alternativas «a|b» viajan como una marca («zzalt0») hasta hacerse un grupo.
+  const alternativas: string[][] = [];
   for (const [re, mas, modo] of FRASES)
     if (re.test(q)) {
-      if (modo === "sustituye") q = q.replace(re, ` ${mas} `);
-      else extra.push(mas);
+      const texto = mas.replace(/\S*\|\S*/g, (alt) => {
+        alternativas.push(alt.split("|"));
+        return `zzalt${alternativas.length - 1}`;
+      });
+      if (modo === "sustituye") q = q.replace(re, ` ${texto} `);
+      else extra.push(texto);
     }
   const vistos = new Set<string>();
   const grupos: Grupo[] = [];
+  // Una edad («80 años», «hijo de 1 año»): la pregunta es por la edad o, en los extremos, por
+  // la población (mayores, pediatría). Cualquiera de esas palabras la cubre.
+  q = q.replace(/\b(\d{1,3}) (anos|ano|meses)\b/g, (_, n: string, u: string) => {
+    const v = u === "meses" ? 0 : Number(n);
+    const pob = v >= 65 ? "ancianidad fragilidad" : v < 18 ? "pediatrica pediatria" : "";
+    grupos.push({
+      palabras: [...new Set(palabras(`${pob} edad anos ano`).map(raiz))],
+      escrita: `${n} ${u}`,
+    });
+    return " ";
+  });
+  // Con la edad dicha, «hijo» o «niño» ya no añaden nada.
+  if (grupos.length) q = q.replace(/\b(hij[oa]s?|nin[oa]s?|bebes?)\b/g, " ");
   // Con glucosa en la pregunta, una cifra de 2-3 dígitos es un valor (lo miran los umbrales),
   // no una palabra que la respuesta tenga que contener.
   const hayGlucosa = /glucos|glucem|azucar|hipogluc|hipergluc|mg/.test(q);
   const meter = (w: string, bonus: boolean) => {
     if (STOP.has(w) || vistos.has(w)) return;
+    const alt = /^zzalt(\d+)$/.exec(w);
+    if (alt) {
+      vistos.add(w);
+      const ps = alternativas[Number(alt[1])].map(raiz);
+      grupos.push({ palabras: [...new Set(ps)], escrita: ps.join("|"), bonus });
+      return;
+    }
     // Las cifras sueltas de una letra («2 h», «3,5») no discriminan; las de más, sí («54», «450»).
     if (/^\d$/.test(w)) return;
     vistos.add(w);
@@ -802,10 +1170,13 @@ export function gruposDe(pregunta: string): Grupo[] {
       return;
     }
     const r = raiz(w);
+    const lex = lexico(w);
     grupos.push({
-      palabras: [...new Set([r, ...(LEXICO[w] ?? []).map(raiz)])],
-      prefijo: r === w && w.length >= 5 && !LEXICO[w],
+      palabras: [...new Set([r, ...(lex ?? []).map(raiz)])],
+      prefijo: r === w && w.length >= 5 && !lex,
       bonus,
+      escrita: w,
+      generica: GENERICAS.has(w),
     });
   };
   for (const w of palabras(q)) meter(w, false);
@@ -837,10 +1208,12 @@ function puntuarPalabra(a: Atomo, t: string, cuerpo: string[], prefijo: boolean,
 export function responder(pregunta: string, { max = 3 } = {}): Respuesta[] {
   const ats = atomos();
   const grupos = gruposDe(pregunta);
-  const utiles = grupos.filter((g) => g.sistema === undefined && !g.bonus);
+  // Las palabras genéricas no se exigen, salvo que la pregunta no tenga otras.
+  const todas = grupos.filter((g) => g.sistema === undefined && !g.bonus);
+  const especificas = todas.filter((g) => !g.generica);
+  const utiles = especificas.length ? especificas : todas;
   const conPuntos = grupos.filter((g) => g.sistema === undefined);
   if (!utiles.length) return [];
-  atomos();
   // ¿Puede el capítulo contestar esta palabra? (alguna raíz del índice casa con ella)
   const conocida = (g: Grupo) =>
     g.palabras.some((t, k) => {
@@ -851,28 +1224,39 @@ export function responder(pregunta: string, { max = 3 } = {}): Respuesta[] {
   const conocidas = utiles.filter(conocida);
   // Si casi toda la pregunta es ajena al capítulo («seguro médico privado»), no consta.
   if (!conocidas.length || conocidas.length < Math.ceil(utiles.length / 2)) return [];
+  // Ajena: una palabra con contenido que el capítulo no tiene («semaglutida»); un verbo o un
+  // plural que no casa no cuenta como ajena.
   const ajenas = utiles.filter(
     (g) =>
       !conocidas.includes(g) &&
       g.palabras[0].length >= 5 &&
-      !/(ar|er|ir|an|en|s)$/.test(g.palabras[0]),
+      !/(ar|er|ir|an|en|s)$/.test(g.palabras[0]) &&
+      !/(ar|er|ir)(me|se|lo|la|le)?$|(ando|iendo)$/.test(g.escrita ?? ""),
   );
-  if (ajenas.length >= conocidas.length) return [];
+  const hayTramo = !!tramoDeConsulta(unificar(pregunta));
+  if (ajenas.length >= conocidas.length && !hayTramo) return [];
   // Peso de cada palabra: su rareza (la de la palabra escrita o, si no está, su equivalente).
   const pesoDe = (g: Grupo) => Math.max(...g.palabras.map((t) => PESO!.get(t) ?? 0)) || 1;
-  const pesoTotal = conocidas.reduce((n, g) => n + pesoDe(g), 0);
+  // Lo ajeno pesa en contra: una pregunta sobre «semaglutida en DM1» no la cubre «DM1».
+  const pesoTotal = conocidas.reduce((n, g) => n + pesoDe(g), 0) + ajenas.length;
   const sis = grupos.find((g) => g.sistema !== undefined)?.sistema;
   const qn = normalizar(pregunta);
   const conducta = RE_CONDUCTA.test(qn);
   const definicion = RE_DEFINICION.test(qn);
   const tramo = tramoDeConsulta(unificar(pregunta))?.clave;
+  const siglasEscritas = [...qn.matchAll(RE_DESARROLLO)].map((m) => SIGLA_DE.get(m[1]) ?? "");
   // Preguntas que piden una cifra («cuánto», «a partir de qué edad», «objetivo», un valor de
   // glucosa): mejor la frase que la da.
   const pideCifra =
     /\b(cuanto|cuanta|cuantos|cuantas|que (glucosa|glucemia|cifra|valor|dosis|objetivo|edad)|a partir de|umbral|objetivos?|cuando|edad)\b/.test(
       qn,
     );
-  const cifraGlucosa = qn.replace(/\b780\b/g, "").match(/\b(\d{2,3})\b/);
+  const edad = qn.match(/\b(\d{1,3}) anos?\b/);
+  const valorEdad = edad ? Number(edad[1]) : null;
+  const cifraGlucosa = qn
+    .replace(/\b780\b/g, "")
+    .replace(/\b\d{1,3} anos?\b/g, "")
+    .match(/\b(\d{2,3})\b/);
   const valorGlucosa = cifraGlucosa ? Number(cifraGlucosa[1]) : null;
   // Cobertura: al menos la mitad de las palabras útiles (y como mucho tres exigidas).
   // Cobertura: la parte (por peso) de la pregunta que la respuesta contiene.
@@ -885,14 +1269,18 @@ export function responder(pregunta: string, { max = 3 } = {}): Respuesta[] {
     let enTitulo = 0;
     for (const g of conPuntos) {
       let mejor = { s: 0, casa: false, titulo: false };
+      let segunda = 0;
       const techo = PESO!.get(g.palabras[0]) ?? 1;
       g.palabras.forEach((t, k) => {
         const r = puntuarPalabra(a, t, cuerpo, k === 0 && !!g.prefijo, k > 0 ? techo : Infinity);
         // El equivalente del léxico vale algo menos que la palabra escrita.
         if (k > 0) r.s *= 0.85;
-        if (r.s > mejor.s) mejor = r;
+        if (r.s > mejor.s) [segunda, mejor] = [mejor.s, r];
+        else segunda = Math.max(segunda, r.s);
       });
-      score += mejor.s;
+      // Si la respuesta dice la idea de dos maneras («fallo» e «interrupción»), suma un poco.
+      const s = mejor.s + 0.25 * segunda;
+      score += g.generica && especificas.length ? 0.4 * s : s;
       if (g.bonus) continue;
       if (mejor.casa) {
         casados++;
@@ -903,7 +1291,8 @@ export function responder(pregunta: string, { max = 3 } = {}): Respuesta[] {
     return { score, casados, enTitulo, cobertura: cubierto / pesoTotal };
   };
 
-  const cand: { a: Atomo; score: number }[] = [];
+  const cand: { a: Atomo; score: number; cob: number; tit: number }[] = [];
+  const cercanas: { a: Atomo; score: number; cob: number; tit: number }[] = [];
   for (const a of ats) {
     // Fila por sistema: con sistema nombrado, su casilla; sin él, la casilla que mejor
     // responde (no la suma de las cuatro: «ejercicio» de una y «80» de otra no responden).
@@ -919,9 +1308,13 @@ export function responder(pregunta: string, { max = 3 } = {}): Respuesta[] {
     }
     let { score } = r;
     const { casados, enTitulo, cobertura } = r;
-    if (!casados || score <= 0 || cobertura < 0.5) continue;
-    // Sin coincidencia en el título, la respuesta tiene que contener casi toda la pregunta.
-    if (!enTitulo && cobertura < 0.6) continue;
+    if (!casados || score <= 0) continue;
+    // Responde si cubre la pregunta: la mitad (por peso) con el título a favor, o casi toda sin
+    // él. Si cubre al menos un tercio, vale solo como «lo más cercano», cuando nada responde.
+    const floja = cobertura < 0.5 || (!enTitulo && cobertura < 0.6);
+    if (floja && cobertura < (utiles.length >= 5 ? 0.25 : 0.34)) continue;
+    // Cuanto más de la pregunta cubre, mejor (desempata frases del mismo tema).
+    score += 1.5 * cobertura;
     // Precisión: la parte del título que casa desempata «Diatermia» frente a un título largo.
     if (enTitulo && a.titulo.length) score += 0.6 * (enTitulo / a.titulo.length);
     // Sistema nombrado: su casilla responde; un texto que nombra solo otros sistemas, no.
@@ -930,14 +1323,19 @@ export function responder(pregunta: string, { max = 3 } = {}): Respuesta[] {
       else if (a.nombra.includes(sis)) score += 1.5;
       else if (a.nombraParrafo.includes(sis)) score += 0.8;
       else if (a.nombra.length) score -= 1.5;
+      // Liberty (asa cerrada completa, no comercializado) no es ninguno de los cuatro.
+      else if (a.parrafo.includes("liberty") || a.cuerpo.includes("liberty")) score -= 1.5;
     }
     if (tramo && a.tramo) score += a.tramo === tramo ? 6 : -2;
-    if (pideCifra && /\d/.test(a.todo)) score += 1;
+    if (pideCifra && RE_CIFRA.test(normalizar(a.todo))) score += 1;
+    // La edad decide en la infancia («≥ 1 año», «≥ 2 años»); en un adulto, cualquiera la cumple.
+    if (valorEdad !== null && valorEdad < 18) score += cumpleEdad(a.todo, valorEdad);
     if (valorGlucosa !== null && /mg\/dl/.test(a.todo))
       score += 0.4 + cumpleUmbral(a.todo, valorGlucosa);
     // Palabras de la pregunta que van seguidas en la respuesta («dosis basal de respaldo»).
     const seq = celda !== undefined && a.seqSis ? a.seqSis[celda] : a.seq;
     for (let k = 0; k + 1 < conPuntos.length; k++) {
+      if (conPuntos[k].generica && conPuntos[k + 1].generica) continue;
       const [g1, g2] = [conPuntos[k].palabras, conPuntos[k + 1].palabras];
       const seguidas = (xs: string[]) => {
         for (let j = 0; j + 1 < xs.length; j++)
@@ -949,8 +1347,16 @@ export function responder(pregunta: string, { max = 3 } = {}): Respuesta[] {
     }
     // Ante «qué hago», la Figura 3 es la conducta del capítulo.
     if (conducta && enTitulo && a.r.id.startsWith("F3/")) score += 1;
+    // La sigla cuyo desarrollo ya está escrito en la pregunta («tiempo en rango»: TIR, y su
+    // variante TIRp) no aporta nada nuevo.
+    if (
+      a.sigla &&
+      (qn.includes(desarrolloDe(a)) ||
+        siglasEscritas.some((x) => normalizar(a.r.titulo).startsWith(x)))
+    )
+      score -= 8;
     // La sigla responde a «qué es»; si se pregunta algo más, la frase que lo dice va antes.
-    if (a.sigla && !definicion && utiles.length > 1) score -= 1.5;
+    if (a.sigla && !definicion && utiles.length > 1) score -= 3;
     if (a.sigla) score += definicion ? 3 : conducta ? -3 : 0;
     if (
       definicion &&
@@ -961,22 +1367,53 @@ export function responder(pregunta: string, { max = 3 } = {}): Respuesta[] {
       score += 0.5;
     // Las frases muy cortas («Ejercicio físico») no son una respuesta.
     if (a.r.tipo === "texto" && !a.r.items && a.r.texto.length < 40) score -= 2;
-    cand.push({ a, score });
+    (floja ? cercanas : cand).push({ a, score, cob: cobertura, tit: enTitulo });
   }
-  cand.sort((x, y) => y.score - x.score || x.a.r.id.localeCompare(y.a.r.id));
+  // Nada responde de lleno: lo más cercano, marcado como tal (la pregunta es sobre todo del
+  // capítulo; si las palabras ajenas eran mayoría, ya no consta).
+  const lista = cand.length ? cand : cercanas;
+  lista.sort((x, y) => y.score - x.score || x.a.r.id.localeCompare(y.a.r.id));
+  // Y si la primera cubre poco de la pregunta y apenas saca ventaja a la siguiente de otro
+  // párrafo, tampoco se presenta como «la respuesta»: así acertaba menos de la mitad de las
+  // veces en los bancos de prueba (docs/PREGUNTAS_2026-10-04.md).
+  const bloque = (c: (typeof lista)[number]) => c.a.r.ruta.replace(/~\d+$/, "") + c.a.r.titulo;
+  const rival = lista.find((c) => lista[0] && bloque(c) !== bloque(lista[0]));
+  const dudosa =
+    !!lista[0] && lista[0].cob < 0.75 && (rival ? lista[0].score - rival.score : 9) < 1;
+  const aproximada = !cand.length || dudosa;
 
   // Como mucho una respuesta por párrafo, fila o tramo.
   const vistos = new Set<string>();
   const out: Respuesta[] = [];
-  for (const c of cand) {
-    const clave = c.a.r.ruta + (c.a.r.tipo === "texto" ? "" : c.a.r.titulo);
+  for (const c of lista) {
+    const clave = c.a.r.ruta.replace(/~\d+$/, "") + (c.a.r.tipo === "texto" ? "" : c.a.r.titulo);
     if (vistos.has(clave)) continue;
     vistos.add(clave);
-    out.push(resolver(c.a, sis, c.score));
+    let r = resolver(c.a, sis, c.score);
+    // Otra frase del mismo párrafo casi igual de buena: va con ella, en el orden del texto, en
+    // vez de quedar escondida (como mucho una respuesta por párrafo).
+    const m = /^t\/(.+)\/(\d+)$/.exec(c.a.r.id);
+    const otra = m
+      ? lista.find((o) => o !== c && o.a.r.id.startsWith(`t/${m[1]}/`) && o.score >= 0.85 * c.score)
+      : undefined;
+    if (m && otra) {
+      const [k1, k2] = [Number(m[2]), Number(otra.a.r.id.split("/").pop())];
+      const [x, y] = k1 < k2 ? [c.a.r, otra.a.r] : [otra.a.r, c.a.r];
+      r = {
+        ...r,
+        texto: Math.abs(k1 - k2) === 1 ? `${x.texto} ${y.texto}` : `${x.texto} … ${y.texto}`,
+        contexto: x.contexto,
+      };
+    }
+    out.push(aproximada ? { ...r, aproximada } : r);
     if (out.length >= max) break;
   }
   return out;
 }
+
+/* El desarrollo de una sigla del glosario, sin el comentario entre paréntesis. */
+const desarrolloDe = (a: Atomo) =>
+  normalizar(a.r.texto.replace(/^[^:]*:\s*/, "").replace(/\s*\(.*$/, "")).trim();
 
 /* Con un sistema nombrado, la fila de tabla responde con su casilla. */
 function resolver(a: Atomo, sis: number | undefined, score: number): Respuesta {

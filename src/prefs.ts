@@ -201,6 +201,27 @@ export const useRepaso = () => useLectura("mseen:repaso", SIN_PROGRESO, validarR
 export const leerRepaso = () => leerJSON("mseen:repaso", SIN_PROGRESO, validarRepaso);
 export const guardarRepaso = (p: ProgresoRepaso) => guardarJSON("mseen:repaso", p);
 
+/* Guía de bienvenida de la portada: se cierra una vez y no vuelve. */
+const validarBool: Validar<boolean> = (v) => (typeof v === "boolean" ? v : undefined);
+export const useBienvenidaVista = () => useLectura("mseen:bienvenida", false, validarBool);
+export const cerrarBienvenida = () => guardarJSON("mseen:bienvenida", true);
+
+/* Búsquedas recientes (las 6 últimas), para volver a ellas desde la paleta y Buscar. Solo en
+   este navegador; se borran con «Borrar» o con «Restablecer preferencias». */
+const validarRecientes: Validar<string[]> = (v) =>
+  Array.isArray(v)
+    ? v.filter((x): x is string => typeof x === "string" && x.length <= 80).slice(0, 6)
+    : undefined;
+const SIN_RECIENTES: string[] = [];
+export const useRecientes = () => useLectura("mseen:recientes", SIN_RECIENTES, validarRecientes);
+export const guardarReciente = (q: string) => {
+  const t = q.trim();
+  if (t.length < 3) return;
+  const previas = leerJSON("mseen:recientes", SIN_RECIENTES, validarRecientes);
+  guardarJSON("mseen:recientes", [t, ...previas.filter((x) => x !== t)].slice(0, 6));
+};
+export const borrarRecientes = () => guardarJSON("mseen:recientes", []);
+
 /* Borra todas las preferencias de esta app en el navegador (botón del aviso de fallo). */
 export function restablecerPreferencias() {
   try {

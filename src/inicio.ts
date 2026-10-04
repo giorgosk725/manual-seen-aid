@@ -175,8 +175,9 @@ export function hojaDeComprobacion(sis?: number) {
   const nucleo = frasesDe("08-iniciacion", "b6", [0]);
   const seguimiento = frasesDe("08-iniciacion", "b9", [0]);
   return {
+    // El plan de seguridad (p. 7) ya empieza por la pauta de respaldo: la fila «Plan de
+    // respaldo» de la Tabla 2 lo repetiría (sigue en la fase «Inicio»).
     antes: [
-      { texto: plano(TABLAS.T2.filas[0].celdas[0]), pagina: 10 },
       ...plan.items.map((texto) => ({ texto, pagina: plan.pagina })),
       { texto: nucleo.frases[0], pagina: nucleo.pagina },
       ...lineasInicializacion(sis).map((texto) => ({ texto, pagina: 10 })),

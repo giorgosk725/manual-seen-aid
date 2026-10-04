@@ -400,8 +400,8 @@ export function Repaso({ filtro }: { filtro?: string }) {
       <Mazos filtro={filtro} />
       <h2 className="sr-only">{nombreDelMazo(filtro)}</h2>
       <div className="my-4 grid grid-cols-3 gap-2" aria-label="Tu avance en este mazo">
-        <Dato valor={r.paraHoy} etiqueta="para hoy" />
-        <Dato valor={r.sinVer} etiqueta="sin ver" />
+        <Dato valor={ronda(lista, progreso, fechaLocal()).length} etiqueta="en la ronda de hoy" />
+        <Dato valor={r.sinVer} etiqueta="por estrenar" />
         <Dato valor={`${r.aprendidas}/${r.total}`} etiqueta="aprendidas" />
       </div>
       <Ronda

@@ -10,7 +10,9 @@ import {
   Clock3,
   Droplets,
   Footprints,
+  GraduationCap,
   HeartHandshake,
+  Layers,
   LayoutGrid,
   ListChecks,
   ListOrdered,
@@ -31,6 +33,8 @@ import { marcar, paginaDe } from "../busqueda";
 import { precargarBuscador, useBuscador } from "../useBuscador";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
+import { Bienvenida } from "../componentes/Bienvenida";
+import { SinResultados } from "../componentes/SinResultados";
 import { useFavoritos, useLeidos, useUltimo } from "../prefs";
 import { CabeceraEditorial, Revelar } from "../ui";
 import { CATEGORIA_HEX, COLOR_APARTADO, FICHA_AREA, SEEN, SISTEMA_HEX } from "../tokens";
@@ -105,11 +109,11 @@ const ATAJOS = [
     s: "Cuánto dura y qué hacer",
   },
   {
-    href: href("consultar", "inicio"),
+    href: href("consultar", "inicio", "inicio"),
     icono: ListOrdered,
     color: FICHA_AREA.nutricion,
     t: "Iniciar un sistema",
-    s: "Preparación, Tabla 2 y 3 primeros meses",
+    s: "Desde MDI: Tabla 2 y parámetros iniciales",
   },
   {
     href: href("sistemas"),
@@ -133,10 +137,9 @@ function QueNecesitas() {
   const busqueda = motor && q.trim().length >= 2 ? motor.buscarConTotales(q, 5, 2) : null;
   const res = busqueda?.resultados ?? [];
   const respuestas = motor && q.trim().length >= 2 ? motor.responder(q) : [];
-  const ultimo = useUltimo();
   const favoritos = useFavoritos();
   return (
-    <section aria-labelledby="que-necesitas" className="space-y-3">
+    <section aria-labelledby="que-necesitas" className="scroll-mt-16 space-y-3">
       <h2
         id="que-necesitas"
         className="font-display text-xl font-medium uppercase tracking-[0.04em]"
@@ -158,10 +161,17 @@ function QueNecesitas() {
           <Search size={17} className="shrink-0 text-slate-500" aria-hidden="true" />
           <input
             id="portada-q"
-            onFocus={() => void precargarBuscador()}
+            onFocus={(e) => {
+              void precargarBuscador();
+              // En el móvil, el teclado tapa media pantalla: el campo sube arriba para que la
+              // respuesta quede a la vista.
+              const seccion = e.currentTarget.closest("section");
+              if (window.innerWidth < 768 && seccion)
+                window.setTimeout(() => seccion.scrollIntoView({ block: "start" }), 250);
+            }}
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Pregunta o busca: cetonas 1,2, modo sueño, TBR…"
+            placeholder="Pregunta: cetonas 1,2, modo sueño…"
             autoComplete="off"
             className="w-full bg-transparent text-base text-slate-900 placeholder:text-slate-400 focus:outline-none"
           />
@@ -185,15 +195,7 @@ function QueNecesitas() {
           </button>
         </p>
       )}
-      {motor && q.trim().length >= 2 && res.length === 0 && (
-        <p
-          role="status"
-          className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
-        >
-          Nada con esas palabras. Prueba con otra (p. ej. «sueño», «cetonemia», «TBR») o usa los
-          atajos de abajo.
-        </p>
-      )}
+      {motor && q.trim().length >= 2 && res.length === 0 && !respuestas.length && <SinResultados />}
       {res.length > 0 && (
         <ul
           className="divide-y rounded-xl border bg-white shadow-soft"
@@ -278,31 +280,8 @@ function QueNecesitas() {
           );
         })}
       </ul>
-      {(ultimo || favoritos.length > 0) && (
+      {favoritos.length > 0 && (
         <div className="grid gap-2 md:grid-cols-2">
-          {ultimo && (
-            <a
-              href={ultimo.ruta}
-              className="hidden items-center gap-3 rounded-xl border bg-white p-3 shadow-soft transition sm:flex hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-              style={{ borderColor: "#e6e6e6" }}
-            >
-              <BookOpen
-                size={18}
-                className="shrink-0"
-                style={{ color: CATEGORIA_HEX.leer.strong }}
-                aria-hidden="true"
-              />
-              <span className="min-w-0 flex-1">
-                <span className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Seguir leyendo donde lo dejaste
-                </span>
-                <span className="block truncate text-sm font-bold text-slate-900">
-                  {ultimo.titulo}
-                </span>
-              </span>
-              <ArrowRight size={15} className="shrink-0 text-slate-500" aria-hidden="true" />
-            </a>
-          )}
           {favoritos.length > 0 && (
             <div
               className="rounded-xl border bg-white p-3 shadow-soft"
@@ -363,15 +342,15 @@ function Franja({ className = "" }: { className?: string }) {
   );
 }
 
-/* «Seguir leyendo» compacto en la cabecera, solo en el móvil (en pantallas grandes ya se ve
-   debajo, en «¿Qué necesitas?»). */
-function SeguirLeyendoMovil() {
+/* «Seguir leyendo» compacto en la cabecera: a la vista sin desplazar, en el móvil y en el
+   escritorio (antes, en escritorio, quedaba bajo el pliegue). */
+function SeguirLeyendo() {
   const ultimo = useUltimo();
   if (!ultimo) return null;
   return (
     <a
       href={ultimo.ruta}
-      className="mt-3 flex min-h-11 items-center gap-2 rounded-[3px] border-l-4 bg-slate-50 px-3 py-2 text-sm sm:hidden"
+      className="mt-3 flex min-h-11 items-center gap-2 rounded-[3px] border-l-4 bg-slate-50 px-3 py-2 text-sm sm:max-w-md"
       style={{ borderLeftColor: SEEN.azulOsc }}
     >
       <BookOpen size={15} className="shrink-0 text-slate-600" aria-hidden="true" />
@@ -467,6 +446,66 @@ function IndiceMosaico() {
   );
 }
 
+/* Aprender: las tarjetas de repaso y el test, a la vista desde la portada. */
+function RepasarYAutoevaluarse() {
+  const piezas = [
+    {
+      ruta: href("repaso"),
+      icono: Layers,
+      t: "Tarjetas de repaso",
+      s: "Cifras y siglas del capítulo, con repaso espaciado",
+    },
+    {
+      ruta: href("test"),
+      icono: GraduationCap,
+      t: "Autoevaluación",
+      s: "Test con la respuesta razonada y su página",
+    },
+  ];
+  return (
+    <section aria-labelledby="aprender">
+      <h2
+        id="aprender"
+        className="mb-2 text-xs font-bold uppercase tracking-wide"
+        style={{ color: CATEGORIA_HEX.aprender.ink }}
+      >
+        Repasar y autoevaluarse
+      </h2>
+      <ul className="grid gap-2 sm:grid-cols-2">
+        {piezas.map((p) => {
+          const I = p.icono;
+          return (
+            <li key={p.t}>
+              <a
+                href={p.ruta}
+                className="hover-lift ease-brand flex h-full items-center gap-3 rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                style={{ borderColor: "#e6e6e6" }}
+              >
+                <span
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[3px] text-white"
+                  style={{ background: CATEGORIA_HEX.aprender.strong }}
+                  aria-hidden="true"
+                >
+                  <I size={19} strokeWidth={1.75} />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-sm font-bold text-slate-900">{p.t}</span>
+                  <span className="block text-xs text-slate-600">{p.s}</span>
+                </span>
+                <ArrowRight
+                  size={15}
+                  className="ml-auto shrink-0 text-slate-500"
+                  aria-hidden="true"
+                />
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
 export function Portada() {
   const ultimoCap = CAMBIOS.find((c) => c.ambito === "capitulo")!;
   const nTablas = APARTADOS.flatMap((a) => a.bloques).filter((b) => b.t === "tabla").length;
@@ -506,6 +545,16 @@ export function Portada() {
             <p className="mt-1 text-xs text-slate-500">
               {CAPITULO.sociedad.replace(/ \(SEEN\)$/, "")}
             </p>
+            <p className="mt-2 max-w-prose text-xs leading-relaxed text-slate-600">
+              Versión interactiva del capítulo, preparada por el autor. Material educativo: no es
+              producto sanitario ni publicación oficial de la SEEN.{" "}
+              <a
+                href={href("sobre")}
+                className="whitespace-nowrap font-semibold text-slate-800 underline underline-offset-2"
+              >
+                Qué es →
+              </a>
+            </p>
             <div className="mt-3 flex flex-wrap gap-2 sm:mt-5">
               <a
                 href={href("capitulo", APARTADOS[0].slug)}
@@ -521,7 +570,7 @@ export function Portada() {
                 Índice <ArrowRight size={15} aria-hidden="true" />
               </a>
             </div>
-            <SeguirLeyendoMovil />
+            <SeguirLeyendo />
             <ul className="mt-5 hidden flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600 sm:flex">
               <li>
                 <span className="font-semibold tabular-nums text-slate-900">
@@ -545,9 +594,13 @@ export function Portada() {
         </div>
       </section>
 
+      <Bienvenida />
+
       <QueNecesitas />
 
       <IndiceMosaico />
+
+      <RepasarYAutoevaluarse />
 
       <section aria-labelledby="mapa">
         <CabeceraEditorial numero="2" titulo="En cuatro bloques" hex={CATEGORIA_HEX.leer}>

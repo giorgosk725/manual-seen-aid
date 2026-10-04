@@ -4,16 +4,8 @@
    en una cara A4 (letra pequeña, dos columnas) o, a elegir, con letra grande (una columna,
    12 pt, a doble cara: dos o tres caras), y lleva un QR para abrirla en el móvil. La app no guarda nada de lo que se escribe:
    no hay campos, solo líneas en blanco para el papel. */
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import {
-  ArrowRight,
-  FileText,
-  Link2,
-  ListChecks,
-  Printer,
-  QrCode,
-  ShieldCheck,
-} from "lucide-react";
+import { useEffect, useRef, type ReactNode } from "react";
+import { ArrowRight, FileText, ListChecks, Printer, ShieldCheck } from "lucide-react";
 import { CAPITULO, FIGURA3, TABLAS, apartadoPorSlug, idDeBloque } from "../contenido";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import type { SistemaId } from "../ampliacion/tipos";
@@ -24,12 +16,13 @@ import {
   TITULO_CAPITULO_PACIENTES,
 } from "../pacientes/textos";
 import { elegirRuta, href } from "../rutas";
-import { CabeceraEditorial, Modal, Segmented, ToneCard } from "../ui";
+import { CabeceraEditorial, Segmented, ToneCard } from "../ui";
 import { guardarFormatoHoja, useFormatoHoja, type FormatoHoja } from "../prefs";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { Texto } from "../texto";
 import { abrirPlegables, imprimirRegion } from "../imprimir";
 import { QR } from "../componentes/QR";
+import { CompartirHoja } from "../componentes/CompartirHoja";
 import { direccion } from "../compartir";
 
 const hex = CATEGORIA_HEX.pacientes;
@@ -48,24 +41,7 @@ function Acciones({
   ruta: string;
   titulo: string;
 }) {
-  const [aviso, setAviso] = useState("");
-  const [verQR, setVerQR] = useState(false);
   const formato = useFormatoHoja();
-  const compartir = async () => {
-    const url = direccion(ruta);
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: titulo, url });
-        return;
-      }
-      await navigator.clipboard.writeText(url);
-      setAviso("Enlace copiado.");
-    } catch (e) {
-      // Cerrar la hoja de compartir no es un fallo; si no se pudo copiar, se muestra el enlace.
-      if (e instanceof DOMException && e.name === "AbortError") return;
-      setAviso(`Copia este enlace: ${url}`);
-    }
-  };
   return (
     <div className="no-imprimir mb-3 space-y-2">
       <div className="flex flex-wrap items-center gap-2">
@@ -94,43 +70,7 @@ function Acciones({
           <Printer size={15} aria-hidden="true" />{" "}
           {formato === "una-cara" ? "Imprimir en una cara" : "Imprimir con letra grande"}
         </button>
-        <button
-          type="button"
-          onClick={compartir}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-        >
-          <Link2 size={15} aria-hidden="true" /> Compartir el enlace
-        </button>
-        <button
-          type="button"
-          onClick={() => setVerQR(true)}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-        >
-          <QrCode size={15} aria-hidden="true" /> Mostrar el QR
-        </button>
-        <Modal open={verQR} onClose={() => setVerQR(false)} ariaLabel={`Código QR: ${titulo}`}>
-          <div className="flex flex-col items-center gap-3 p-5 text-center">
-            <QR
-              texto={direccion(ruta)}
-              tam={260}
-              titulo={`Código QR para abrir esta hoja: ${direccion(ruta)}`}
-            />
-            <p className="text-sm font-semibold text-slate-900">{titulo}</p>
-            <p className="break-all text-xs text-slate-600">{direccion(ruta)}</p>
-            <button
-              type="button"
-              onClick={() => setVerQR(false)}
-              className="min-h-11 rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:border-slate-500"
-            >
-              Cerrar
-            </button>
-          </div>
-        </Modal>
-        {aviso && (
-          <span role="status" className="break-all text-xs text-slate-600">
-            {aviso}
-          </span>
-        )}
+        <CompartirHoja ruta={ruta} titulo={titulo} />
       </div>
     </div>
   );

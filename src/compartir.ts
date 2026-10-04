@@ -28,7 +28,7 @@ const hoy = () =>
 
 export const citaDeApartado = (a: Apartado) => {
   const pags =
-    a.paginas[0] === a.paginas[1] ? `p. ${a.paginas[0]}` : `pp. ${a.paginas[0]}-${a.paginas[1]}`;
+    a.paginas[0] === a.paginas[1] ? `p. ${a.paginas[0]}` : `pp. ${a.paginas[0]}–${a.paginas[1]}`;
   return (
     `${CAPITULO.autor
       .split(" ")

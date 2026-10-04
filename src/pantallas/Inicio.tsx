@@ -10,7 +10,14 @@ import { SIS_IDS } from "../situaciones";
 import { elegirRuta, href } from "../rutas";
 import { imprimirRegion } from "../imprimir";
 import { CabeceraEditorial, PaginaBadge } from "../ui";
+import { useIrAlCambiar } from "../irAlCambiar";
+import { CAPITULO } from "../contenido";
+import { VERSION_APP } from "../contenido/cambios";
+import { direccion } from "../compartir";
+import { CompartirHoja } from "../componentes/CompartirHoja";
+import { QR } from "../componentes/QR";
 import { Lineas } from "../texto";
+import { plano } from "../marcado";
 import { VersionExtendida } from "../componentes/VersionExtendida";
 import { EnlaceEducativa } from "../componentes/Lectura";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
@@ -25,6 +32,8 @@ import {
 
 const hex = CATEGORIA_HEX.consultar;
 const NOMBRES = TABLAS.T1.columnas;
+/* En los botones, el nombre corto (el largo se cortaba en el móvil). */
+const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
 const HOJA = "hoja";
 
 const capitalizar = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -41,6 +50,55 @@ function EnlacePagina({ ruta, p }: { ruta: string; p: number }) {
 }
 
 /* Rótulo de tabla y fila, como en «Situación y sistema». */
+/* «En esta fase»: índice de las filas de tabla y los hitos de la fase, para ir a lo que se
+   busca (p. ej., la reducción de la DTD al pasar de MDI) sin recorrer varias pantallas. Los
+   rótulos son los de las filas del capítulo. */
+function rotuloDe(p: Pieza): string | null {
+  switch (p.t) {
+    case "fila":
+    case "casilla":
+      return plano(TABLAS[p.tabla].filas[p.fila].etiqueta).split("\n")[0];
+    case "inicializacion":
+      return plano(TABLAS.T2.filas[1].etiqueta).split("\n")[0];
+    case "hito":
+      return p.rotulo;
+    default:
+      return null;
+  }
+}
+
+function EnEstaFase({ piezas }: { piezas: Pieza[] }) {
+  const entradas = piezas
+    .map((p, i) => ({ i, rotulo: rotuloDe(p) }))
+    .filter((e): e is { i: number; rotulo: string } => !!e.rotulo);
+  if (entradas.length < 4) return null;
+  return (
+    <nav aria-label="En esta fase" className="no-imprimir mb-3">
+      <div className="mb-1 text-[11px] font-bold uppercase tracking-wide text-slate-500">
+        En esta fase
+      </div>
+      {/* En el móvil, una fila que se desliza (no una pantalla de botones); en grande, en varias. */}
+      <ul className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible">
+        {entradas.map((e) => (
+          <li key={e.i} className="shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById(`pieza-${e.i}`);
+                el?.scrollIntoView({ block: "start" });
+                el?.focus({ preventScroll: true });
+              }}
+              className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full border border-slate-300 bg-white px-2.5 text-xs font-semibold text-slate-700 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-8"
+            >
+              {e.rotulo}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
 function CabeceraTabla({ tabla, etiqueta }: { tabla: keyof typeof TABLAS; etiqueta: string }) {
   const t = TABLAS[tabla];
   return (
@@ -220,6 +278,8 @@ function Hoja({ sis }: { sis?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const h = hojaDeComprobacion(sis);
   const sistema = sis !== undefined ? NOMBRES[sis] : "";
+  const ruta = href("consultar", "inicio", sis !== undefined ? `hoja:${SIS_IDS[sis]}` : "hoja");
+  const titulo = `Inicio de un sistema de asa cerrada${sistema ? ` · ${sistema}` : ""}`;
   return (
     <div>
       <div className="no-imprimir mb-3 flex flex-wrap items-center gap-2">
@@ -230,6 +290,7 @@ function Hoja({ sis }: { sis?: number }) {
         >
           <Printer size={15} aria-hidden="true" /> Imprimir la hoja
         </button>
+        <CompartirHoja ruta={ruta} titulo={titulo} />
         <span className="text-xs text-slate-600">
           Una cara A4. {sistema ? "" : "Elige el sistema para que salga solo su línea de inicio."}
         </span>
@@ -239,9 +300,7 @@ function Hoja({ sis }: { sis?: number }) {
         className="hoja-inicio imprimible rounded-2xl border bg-white p-4 shadow-soft sm:p-6"
         style={{ borderColor: "#e6e6e6" }}
       >
-        <h2 className="text-base font-extrabold text-slate-900">
-          Inicio de un sistema de asa cerrada{sistema ? ` · ${sistema}` : ""}
-        </h2>
+        <h2 className="text-base font-extrabold text-slate-900">{titulo}</h2>
         <p className="text-xs text-slate-600">
           Hoja de comprobación con el texto del capítulo del Manual SEEN sobre la automatización de
           la insulinoterapia (pp. 7-12). No sustituye al juicio clínico.
@@ -308,9 +367,19 @@ function Hoja({ sis }: { sis?: number }) {
           className="mt-3 border-t pt-2 text-[11px] text-slate-500"
           style={{ borderColor: "#e6e6e6" }}
         >
-          Manual SEEN · AID — material educativo. Texto literal del capítulo con su página; los
-          rótulos de las citas son de la app.
+          Manual SEEN · AID {VERSION_APP} — material educativo. Texto literal del capítulo (texto
+          final del {CAPITULO.fechaFuente}) con su página; los rótulos de las citas son de la app.
         </p>
+        <div className="mt-2 flex items-center gap-3">
+          <QR
+            texto={direccion(ruta)}
+            tam={64}
+            titulo={`Código QR de esta hoja: ${direccion(ruta)}`}
+          />
+          <p className="break-all text-[11px] text-slate-500">
+            Esta hoja en la web: {direccion(ruta)}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -326,6 +395,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
   const fase = FASES.find((f) => f.id === actual);
   const ir = (f: string, s = sis) =>
     elegirRuta("consultar", "inicio", s !== undefined ? `${f}:${SIS_IDS[s]}` : f);
+  const alPaso = useIrAlCambiar(actual, "paso-inicio");
   return (
     <div>
       <CabeceraEditorial titulo="Iniciar un sistema" hex={hex} level={1}>
@@ -361,7 +431,9 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                 alt=""
                 className="h-8 w-8 rounded-md bg-white object-cover"
               />
-              <span className="min-w-0 truncate">{NOMBRES[c]}</span>
+              <span className="min-w-0 truncate" title={NOMBRES[c]}>
+                {CORTOS[c]}
+              </span>
               {on && <Check size={14} className="ml-auto shrink-0" aria-hidden="true" />}
             </button>
           );
@@ -400,42 +472,55 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
         })}
       </ol>
 
-      {fase ? (
-        <section
-          key={actual}
-          className="pantalla-in rounded-2xl border bg-white p-4 shadow-soft"
-          style={{ borderColor: "#e6e6e6" }}
-          aria-labelledby="fase-titulo"
-        >
-          <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
-            <h2 id="fase-titulo" className="text-lg font-extrabold text-slate-900">
-              <span className="mr-2 tabular-nums" style={{ color: hex.strong }}>
-                {n + 1}.
-              </span>
-              {capitalizar(fase.nombre)}
-            </h2>
-            <span className="pagina-badge">{fase.paginas}</span>
-          </div>
-          <div className="space-y-3">
-            {fase.piezas.map((p, i) => (
-              <PiezaVista key={i} pieza={p} sis={sis} />
-            ))}
-          </div>
-          {actual === "inicio" && (
-            <div className="mt-3">
-              <EnlaceEducativa clave="transicion" />
+      <div id="paso-inicio" tabIndex={-1} className="scroll-mt-24 focus:outline-none">
+        {fase ? (
+          <section
+            key={actual}
+            className="pantalla-in rounded-2xl border bg-white p-4 shadow-soft"
+            style={{ borderColor: "#e6e6e6" }}
+            aria-labelledby="fase-titulo"
+          >
+            <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
+              <h2 id="fase-titulo" className="text-lg font-extrabold text-slate-900">
+                <span className="mr-2 tabular-nums" style={{ color: hex.strong }}>
+                  {n + 1}.
+                </span>
+                {capitalizar(fase.nombre)}
+              </h2>
+              <span className="pagina-badge">{fase.paginas}</span>
             </div>
-          )}
-        </section>
-      ) : (
-        <Hoja sis={sis} />
-      )}
+            <EnEstaFase piezas={fase.piezas} />
+            <div className="space-y-3">
+              {fase.piezas.map((p, i) => (
+                <div
+                  key={i}
+                  id={`pieza-${i}`}
+                  tabIndex={-1}
+                  className="scroll-mt-24 focus:outline-none"
+                >
+                  <PiezaVista pieza={p} sis={sis} />
+                </div>
+              ))}
+            </div>
+            {actual === "inicio" && (
+              <div className="mt-3">
+                <EnlaceEducativa clave="transicion" />
+              </div>
+            )}
+          </section>
+        ) : (
+          <Hoja sis={sis} />
+        )}
+      </div>
 
       <div className="no-imprimir mt-4 flex items-center justify-between">
         <button
           type="button"
           disabled={n === 0}
-          onClick={() => ir(pasos[n - 1])}
+          onClick={() => {
+            alPaso();
+            ir(pasos[n - 1]);
+          }}
           className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 disabled:opacity-40"
         >
           <ChevronLeft size={14} aria-hidden="true" /> Anterior
@@ -443,7 +528,10 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
         <button
           type="button"
           disabled={n === pasos.length - 1}
-          onClick={() => ir(pasos[n + 1])}
+          onClick={() => {
+            alPaso();
+            ir(pasos[n + 1]);
+          }}
           className="inline-flex min-h-11 items-center gap-1 rounded-lg px-3 text-sm font-semibold text-white disabled:opacity-40"
           style={{ background: hex.strong }}
         >

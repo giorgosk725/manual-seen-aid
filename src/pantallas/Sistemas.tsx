@@ -61,6 +61,10 @@ function parrafosDelSistema(id: string) {
   return out;
 }
 
+const PARAMETROS_AUTO = TABLAS.T1.filas.find(
+  (f) => f.etiqueta === "Parámetros configurables en modo automático",
+);
+
 export function HubSistemas() {
   return (
     <div>
@@ -103,6 +107,21 @@ export function HubSistemas() {
                   <span className="mt-1.5 block text-sm text-slate-700">
                     <Lineas>{TABLAS.T1.filas[0].celdas[c]}</Lineas>
                   </span>
+                  {/* Lo que más se consulta de un sistema, ya en la lista (Tabla 1, p. 4). */}
+                  <span
+                    className="mt-2 block rounded-lg px-2 py-1.5 text-xs"
+                    style={{ background: h.soft }}
+                  >
+                    <span
+                      className="block font-bold uppercase tracking-wide"
+                      style={{ color: h.ink }}
+                    >
+                      Qué mueve el modo automático
+                    </span>
+                    <span className="block text-slate-800">
+                      <Lineas>{PARAMETROS_AUTO?.celdas[c] ?? ""}</Lineas>
+                    </span>
+                  </span>
                   <span
                     className="mt-2 inline-flex items-center gap-1 text-xs font-semibold"
                     style={{ color: h.ink }}
@@ -115,7 +134,10 @@ export function HubSistemas() {
           );
         })}
       </ul>
-      <p className="mt-4 text-xs text-slate-500">
+      <p className="mt-3 text-xs text-slate-600">
+        <Texto>{TABLAS.T1.notas[0]}</Texto> <PaginaBadge p={4} />
+      </p>
+      <p className="mt-2 text-xs text-slate-500">
         Fotos oficiales de producto (Medtronic, Tandem/Novalab, mylife/Ypsomed e Insulet).
       </p>
     </div>

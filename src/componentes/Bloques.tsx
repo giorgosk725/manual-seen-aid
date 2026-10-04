@@ -21,6 +21,7 @@ import { Figura1Animada } from "./Figura1Animada";
 import { DiagramaVista } from "./Diagramas";
 import { href } from "../rutas";
 import { NivelTitulo, type Nivel } from "../nivel-contexto";
+import { partirDestacado, resaltarFrase, textoCitado } from "../fraseCitada";
 
 function Ancla({ id, slug }: { id: string; slug: string }) {
   return (
@@ -154,21 +155,32 @@ export const Bloques = memo(function Bloques({
   prefijo?: string;
   nivelSub?: 2 | 3;
 }) {
-  // Enlace profundo a un bloque: se desplaza hasta él y lo destella.
+  // Enlace profundo a un bloque: se desplaza hasta él y lo destella. Con frase («b11~3», desde
+  // una respuesta del capítulo), se lleva a esa frase y se resalta (fraseCitada.ts).
   useEffect(() => {
     if (!destacado) return;
     // Solo si la dirección sigue apuntando a este bloque (nunca al salir de la pantalla).
     if (!window.location.hash.endsWith(`/${destacado}`)) return;
-    const el = document.getElementById(destacado);
+    const { bloque, frase } = partirDestacado(destacado);
+    const el = document.getElementById(bloque);
     if (!el) return;
     // Si el destino está dentro de un plegable (versión extendida), se abre.
     const plegable = el.closest("details");
     if (plegable) plegable.open = true;
     el.scrollIntoView({ block: "start" });
+    const texto = frase !== undefined ? textoCitado(apartado, bloque, frase) : null;
+    const quitar = texto ? resaltarFrase(el, texto) : null;
+    if (quitar) {
+      const t = setTimeout(quitar, 6000);
+      return () => {
+        clearTimeout(t);
+        quitar();
+      };
+    }
     el.classList.add("destello");
     const t = setTimeout(() => el.classList.remove("destello"), 2000);
     return () => clearTimeout(t);
-  }, [destacado, apartado.slug]);
+  }, [destacado, apartado]);
   return (
     <div className="space-y-5">
       {apartado.bloques.map((b, i) => {

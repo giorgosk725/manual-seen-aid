@@ -23,7 +23,8 @@ export function AvisosBusqueda({
       {children}
       {parcial && (
         <p className="mt-2 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-900">
-          Ningún texto tiene todas esas palabras: se muestran los que tienen alguna.
+          En la lista de resultados, ningún texto tiene todas esas palabras: se muestran los que
+          tienen alguna.
         </p>
       )}
     </>

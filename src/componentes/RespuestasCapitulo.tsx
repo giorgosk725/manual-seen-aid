@@ -5,7 +5,7 @@
 import { useId } from "react";
 import { ArrowRight, Quote } from "lucide-react";
 import { marcar, type Respuesta } from "../busqueda";
-import { FIGURA3 } from "../contenido";
+import { FIGURA3, LISTA_TABLAS } from "../contenido";
 import { href } from "../rutas";
 
 function Marcado({ texto, q }: { texto: string; q: string }) {
@@ -25,12 +25,24 @@ function Marcado({ texto, q }: { texto: string; q: string }) {
 }
 
 const paginas = (r: Respuesta) =>
-  r.pagina2 && r.pagina2 !== r.pagina ? `pp. ${r.pagina}-${r.pagina2}` : `p. ${r.pagina}`;
+  r.pagina2 && r.pagina2 !== r.pagina ? `pp. ${r.pagina}–${r.pagina2}` : `p. ${r.pagina}`;
 
-const conAsterisco = (r: Respuesta) =>
-  [r.texto, ...(r.items ?? []), ...(r.porSistema ?? []).map((s) => s.texto)].some((t) =>
-    t.includes("*"),
-  );
+/* La nota del asterisco es la de donde sale la respuesta: la de su tabla (la Tabla 1 marca los
+   parámetros que mueve el modo automático) o, en la Figura 3, la de las dosis. */
+function notaAsterisco(r: Respuesta): { nota: string; donde: string } | null {
+  const textos = [
+    r.titulo,
+    r.texto,
+    ...(r.items ?? []),
+    ...(r.partes ?? []).map((p) => p.texto),
+    ...(r.porSistema ?? []).map((s) => s.texto),
+  ];
+  if (!textos.some((t) => t.includes("*"))) return null;
+  if (r.id.startsWith("F3/")) return { nota: FIGURA3.notaAsterisco, donde: "Figura 3, p. 8" };
+  const t = LISTA_TABLAS.find((x) => x.id === r.id.split("/")[0]);
+  const nota = t?.notas.find((n) => n.trimStart().startsWith("*"));
+  return t && nota ? { nota, donde: `Tabla ${t.numero}, p. ${t.paginas[0]}` } : null;
+}
 
 function Tarjeta({
   r,
@@ -47,6 +59,7 @@ function Tarjeta({
 }) {
   // En una frase del texto, el título ya va en la fuente («Apartado 10 · Ejercicio físico»).
   const titulo = r.tipo === "texto" ? "" : r.titulo;
+  const asterisco = notaAsterisco(r);
   const items = compacta && r.items && r.items.length > 5 ? r.items.slice(0, 5) : r.items;
   return (
     <div
@@ -74,7 +87,7 @@ function Tarjeta({
       )}
       {r.texto && (
         <p
-          className={`mt-1 text-slate-900 ${principal ? "text-[15px] leading-relaxed" : "text-sm"}`}
+          className={`mt-1 whitespace-pre-line text-slate-900 ${principal ? "text-[15px] leading-relaxed" : "text-sm"}`}
         >
           <Marcado texto={r.texto} q={q} />
         </p>
@@ -96,7 +109,7 @@ function Tarjeta({
               <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">
                 {p.etiqueta}
               </dt>
-              <dd className="text-slate-900">
+              <dd className="whitespace-pre-line text-slate-900">
                 <Marcado texto={p.texto} q={q} />
               </dd>
             </div>
@@ -115,9 +128,9 @@ function Tarjeta({
           ))}
         </dl>
       )}
-      {conAsterisco(r) && (
+      {asterisco && (
         <p className="mt-1 text-xs text-slate-600">
-          {FIGURA3.notaAsterisco} <span className="pagina-badge">Figura 3, p. 8</span>
+          {asterisco.nota} <span className="pagina-badge">{asterisco.donde}</span>
         </p>
       )}
       <a
@@ -149,19 +162,26 @@ export function RespuestasCapitulo({
   if (!respuestas.length) return null;
   const [r, ...otras] = respuestas;
   const H = `h${nivel}` as "h2" | "h3";
+  const cercana = !!r.aproximada;
   return (
     <section
       aria-labelledby={id}
-      className="mt-3 rounded-xl border-2 bg-white p-3 sm:p-4"
-      style={{ borderColor: "#3f6e9f" }}
+      className={`mt-3 rounded-xl bg-white p-3 sm:p-4 ${cercana ? "border border-dashed" : "border-2"}`}
+      style={{ borderColor: cercana ? "#94a3b8" : "#3f6e9f" }}
     >
       <H
         id={id}
         className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"
-        style={{ color: "#2f5680" }}
+        style={{ color: cercana ? "#475569" : "#2f5680" }}
       >
-        <Quote size={14} aria-hidden="true" /> Respuesta del capítulo
+        <Quote size={14} aria-hidden="true" />{" "}
+        {cercana ? "Lo más cercano en el capítulo" : "Respuesta del capítulo"}
       </H>
+      {cercana && (
+        <p className="mb-2 text-xs text-slate-600">
+          No hay una frase que responda de lleno a la pregunta; esto es lo que más se le parece.
+        </p>
+      )}
       <Tarjeta r={r} q={q} principal compacta={compacta} onIr={onIr} />
       {compacta ? (
         <a
@@ -170,14 +190,14 @@ export function RespuestasCapitulo({
           className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-600 hover:underline"
         >
           {otras.length > 0
-            ? `Otras ${otras.length === 1 ? "respuesta" : `${otras.length} respuestas`} y todos los resultados`
+            ? `${cercana ? "Otros pasajes" : `Otras ${otras.length === 1 ? "respuesta" : `${otras.length} respuestas`}`} y todos los resultados`
             : "Todos los resultados"}
         </a>
       ) : (
         otras.length > 0 && (
           <div className="mt-3 space-y-2">
             <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-              Otras respuestas
+              {cercana ? "Otros pasajes parecidos" : "Otras respuestas"}
             </p>
             {otras.map((o) => (
               <Tarjeta key={o.id} r={o} q={q} onIr={onIr} />
