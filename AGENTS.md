@@ -146,6 +146,14 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     Leitner boxes 1-5 (1, 3, 7, 16, 35 days); progress in `mseen:repaso` (validated in
     `prefs.ts`). Screen `src/pantallas/Repaso.tsx`, routes `#/repaso[/cifras|siglas|<slug>]`.
 
+20. **Questions to the chapter (0.8.0).** `src/respuestas.ts` answers with LITERAL chapter
+    text only (sentences, list items, table rows with the named system's cell, Figura 3
+    branches, glossary) and returns nothing when the chapter does not cover the question.
+    It loads with the search index (`buscador.ts` re-exports `responder`). Vocabulary goes in
+    `LEXICO`/`FRASES` as general rules, never to fix one question. `respuestas.test.ts` holds
+    the question banks; the blind figures in docs/PREGUNTAS_2026-10-04.md were measured once:
+    to claim a new figure, write a NEW bank before looking at results and do not tune to it.
+
 ## 2. Quality gates (all must pass before a push)
 
 ```bash

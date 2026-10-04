@@ -34,6 +34,41 @@ export const normalizar = (s: string) =>
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
 
+/* Respuesta de «Preguntas al capítulo» (respuestas.ts): texto LITERAL del capítulo con su
+   página y el enlace a donde está. Aquí solo el tipo, para que la interfaz no cargue el motor. */
+export interface Respuesta {
+  id: string;
+  tipo: "texto" | "tabla" | "figura" | "sigla";
+  /* «Apartado 10 · Ejercicio físico», «Tabla 4. …», «Figura 3», «Glosario de siglas». */
+  fuente: string;
+  titulo: string;
+  texto: string;
+  /* Frase anterior, cuando la respuesta empieza por un conector («Por ello…»). */
+  contexto?: string;
+  /* Puntos de una lista, pasos de un tramo o cajas de una figura. */
+  items?: string[];
+  /* Columnas de una fila de las Tablas 2, 5 y 6, con su cabecera. */
+  partes?: { etiqueta: string; texto: string }[];
+  /* Fila de una tabla por sistema, sin sistema nombrado: las cuatro casillas. */
+  porSistema?: { nombre: string; texto: string; ruta: string }[];
+  /* Sistema de la casilla, si la pregunta lo nombra. */
+  sistema?: string;
+  pagina: number;
+  pagina2?: number;
+  ruta: string;
+  score: number;
+}
+
+/* Preguntas de ejemplo (todas con respuesta: lo comprueba respuestas.test.ts). */
+export const EJEMPLOS_PREGUNTA = [
+  "cetonas 1,2",
+  "modo ejercicio en Control-IQ",
+  "resonancia con 780G",
+  "cuánto tiempo puedo estar desconectado",
+  "hipoglucemia leve cuántos hidratos",
+  "qué es el TBR",
+];
+
 export interface Resultado {
   entrada: Entrada;
   fragmento: string;
@@ -81,11 +116,19 @@ const SINONIMOS: [RegExp, string[]][] = [
   [/^(hipo|hipoglucemias?)$/, ["hipoglucemi"]],
 ];
 
+/* Palabras vacías: no se exigen al buscar ni se resaltan («resonancia con 780G»). «no» y «sin»
+   sí cuentan («líquidos sin hidratos»). */
+const VACIAS = new Set(
+  "de del la las el los lo en con por para al un una unos unas que se le les su sus mi me te es son como cual cuando donde hay muy mas ya si y o u a".split(
+    " ",
+  ),
+);
+
 /* Palabras de la consulta, cada una con sus variantes (la propia palabra primero). */
 export function terminosDe(consulta: string): string[][] {
   return normalizar(consulta)
     .split(/\s+/)
-    .filter((t) => t.length >= 2)
+    .filter((t) => t.length >= 2 && !VACIAS.has(t))
     .map((t) => {
       const sin = SINONIMOS.find(([re]) => re.test(t));
       return sin ? [t, ...sin[1].filter((v) => v !== t)] : [t];

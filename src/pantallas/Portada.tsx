@@ -30,6 +30,7 @@ import { href, navegar } from "../rutas";
 import { marcar, paginaDe } from "../busqueda";
 import { precargarBuscador, useBuscador } from "../useBuscador";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
+import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
 import { useFavoritos, useLeidos, useUltimo } from "../prefs";
 import { CabeceraEditorial, Revelar } from "../ui";
 import { CATEGORIA_HEX, COLOR_APARTADO, FICHA_AREA, SEEN, SISTEMA_HEX } from "../tokens";
@@ -131,6 +132,7 @@ function QueNecesitas() {
   const { motor, estado, reintentar } = useBuscador(q.length > 0);
   const busqueda = motor && q.trim().length >= 2 ? motor.buscarConTotales(q, 5, 2) : null;
   const res = busqueda?.resultados ?? [];
+  const respuestas = motor && q.trim().length >= 2 ? motor.responder(q) : [];
   const ultimo = useUltimo();
   const favoritos = useFavoritos();
   return (
@@ -159,13 +161,15 @@ function QueNecesitas() {
             onFocus={() => void precargarBuscador()}
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Busca: modo sueño, glargina, cetonemia, TBR…"
+            placeholder="Pregunta o busca: cetonas 1,2, modo sueño, TBR…"
             autoComplete="off"
             className="w-full bg-transparent text-base text-slate-900 placeholder:text-slate-400 focus:outline-none"
           />
         </div>
       </form>
-      <AvisosBusqueda q={q} parcial={busqueda?.parcial} />
+      <AvisosBusqueda q={q} parcial={busqueda?.parcial} primera={respuestas[0]}>
+        <RespuestasCapitulo respuestas={respuestas} q={q} compacta nivel={3} />
+      </AvisosBusqueda>
       {estado === "error" && q.trim().length >= 2 && (
         <p
           role="status"

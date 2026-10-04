@@ -162,3 +162,40 @@ test.describe("Auditoría 0.6.1", () => {
     await expect(page).toHaveURL(/#\/consultar\/situacion\/rm/);
   });
 });
+
+test.describe("Preguntas al capítulo (0.8.0)", () => {
+  test("la paleta responde con la casilla del sistema nombrado", async ({ page }) => {
+    await page.goto("/#/");
+    await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+    await page.keyboard.press("Control+k");
+    await page
+      .getByRole("textbox", { name: "Buscar en el capítulo" })
+      .fill("modo ejercicio en control iq");
+    const respuesta = page
+      .getByRole("dialog")
+      .getByRole("region", { name: "Respuesta del capítulo" });
+    await expect(respuesta).toContainText("Tandem Control-IQ");
+    await expect(respuesta).toContainText("rango 140–160 mg/dl");
+    await respuesta.getByRole("link", { name: /Leer en su sitio/ }).click();
+    await expect(page).toHaveURL(/#\/consultar\/situacion\/ejercicio-aerobico:control-iq/);
+  });
+
+  test("Buscar: la cifra de cetonemia lleva a su tramo y lo de fuera no consta", async ({
+    page,
+  }) => {
+    await page.goto("/#/buscar/cetonas%201%2C2");
+    const respuesta = page.getByRole("region", { name: "Respuesta del capítulo" });
+    await expect(respuesta).toContainText("Cetosis significativa / probable fallo de infusión");
+    await expect(respuesta).toContainText("Dosis orientativas para personas adultas");
+    await page.getByRole("textbox", { name: "Texto a buscar" }).fill("precio del omnipod");
+    await expect(page.getByRole("region", { name: "Respuesta del capítulo" })).toHaveCount(0);
+  });
+
+  test("la caja de la portada responde con la fila de la Tabla 6", async ({ page }) => {
+    await page.goto("/#/");
+    await page.getByLabel("¿Qué necesitas? Escribe lo que buscas").fill("resonancia con 780G");
+    const respuesta = page.getByRole("region", { name: "Respuesta del capítulo" });
+    await expect(respuesta).toContainText("Resonancia magnética (RM)");
+    await expect(respuesta).toContainText("Retirar antes de entrar en la sala");
+  });
+});

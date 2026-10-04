@@ -33,6 +33,7 @@ import { ErrorBoundary, Modal } from "../ui";
 import { fueraDelCapitulo, marcar, paginaDe } from "../busqueda";
 import { useBuscador } from "../useBuscador";
 import { AvisosBusqueda } from "./AvisosBusqueda";
+import { RespuestasCapitulo } from "./RespuestasCapitulo";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
 
 /* Destinos que viven bajo #/consultar/<id>. */
@@ -71,6 +72,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { motor, estado, reintentar } = useBuscador(open);
   const busqueda = motor && q.trim().length >= 2 ? motor.buscarConTotales(q, 12) : null;
   const res = busqueda?.resultados ?? [];
+  const respuestas = motor && q.trim().length >= 2 ? motor.responder(q) : [];
   useEffect(() => {
     if (!open) setQ("");
   }, [open]);
@@ -87,7 +89,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             aria-label="Buscar en el capítulo"
-            placeholder="Buscar en el texto del capítulo…"
+            placeholder="Pregunta o busca en el capítulo…"
             className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
             autoComplete="off"
           />
@@ -95,7 +97,11 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
             Esc
           </kbd>
         </div>
-        {q.trim().length >= 2 && <AvisosBusqueda q={q} parcial={busqueda?.parcial} />}
+        {q.trim().length >= 2 && (
+          <AvisosBusqueda q={q} parcial={busqueda?.parcial} primera={respuestas[0]}>
+            <RespuestasCapitulo respuestas={respuestas} q={q} compacta onIr={onClose} />
+          </AvisosBusqueda>
+        )}
         {q.trim().length >= 2 && (
           <ul
             className="mt-2 max-h-[60vh] divide-y overflow-y-auto"

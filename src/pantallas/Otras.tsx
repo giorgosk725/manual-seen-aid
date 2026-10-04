@@ -11,6 +11,8 @@ import { CATEGORIA_HEX } from "../tokens";
 import { fueraDelCapitulo, marcar, paginaDe, type Busqueda, type Resultado } from "../busqueda";
 import { useBuscador } from "../useBuscador";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
+import { EJEMPLOS_PREGUNTA } from "../busqueda";
+import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
 import { useNocturno } from "../prefs";
 
 const fecha = (iso: string) =>
@@ -35,6 +37,7 @@ const TIPO: Record<string, string> = {
 };
 
 /* ---------- Buscar ---------- */
+
 function ListaResultados({ res, q, fuera }: { res: Resultado[]; q: string; fuera?: boolean }) {
   return (
     <ol className="mt-3 space-y-2">
@@ -108,6 +111,10 @@ export function Buscar({ inicial }: { inicial?: string }) {
     [motor, q, tope],
   );
   const res = busqueda.resultados;
+  const respuestas = useMemo(
+    () => (motor && q.trim().length >= 2 ? motor.responder(q) : []),
+    [motor, q],
+  );
   const dentro = res.filter((r) => !fueraDelCapitulo(r.entrada));
   const fueraRes = res.filter((r) => fueraDelCapitulo(r.entrada));
   const hayMas = dentro.length < busqueda.totalCapitulo || fueraRes.length < busqueda.totalFuera;
@@ -115,9 +122,11 @@ export function Buscar({ inicial }: { inicial?: string }) {
     <div>
       <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1}>
         <p className="text-sm text-slate-600">
-          Búsqueda instantánea sobre el texto literal: párrafos, tablas, figuras, diagramas,
-          bibliografía y siglas. Debajo y aparte, lo que no es del capítulo (versión extendida,
-          ampliación del autor, hojas para el paciente y test). Sin inteligencia generativa.
+          Pregunta con tus palabras («cetonas 1,2», «modo ejercicio en Control-IQ», «cuánto tiempo
+          puedo estar desconectado»): arriba, la respuesta del capítulo, literal y con su página;
+          debajo, todos los sitios donde sale y, aparte, lo que no es del capítulo (versión
+          extendida, ampliación del autor, hojas para el paciente y test). Sin inteligencia
+          generativa.
         </p>
       </CabeceraEditorial>
       <label className="sr-only" htmlFor="buscar-q">
@@ -128,11 +137,31 @@ export function Buscar({ inicial }: { inicial?: string }) {
         autoFocus
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="p. ej. cetonemia, modo sueño, glargina, TBR…"
+        placeholder="Pregunta o busca: cetonas 1,2, modo sueño, TBR…"
         className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-soft placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
         autoComplete="off"
       />
-      <AvisosBusqueda q={q} parcial={busqueda.parcial} />
+      {q.trim().length < 2 && (
+        <div className="mt-3">
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Por ejemplo</p>
+          <ul className="mt-1 flex flex-wrap gap-1.5">
+            {EJEMPLOS_PREGUNTA.map((e) => (
+              <li key={e}>
+                <button
+                  type="button"
+                  onClick={() => setQ(e)}
+                  className="inline-flex min-h-11 items-center rounded-full border border-slate-300 bg-white px-3 text-sm text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9"
+                >
+                  {e}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <AvisosBusqueda q={q} parcial={busqueda.parcial} primera={respuestas[0]}>
+        <RespuestasCapitulo respuestas={respuestas} q={q} />
+      </AvisosBusqueda>
       {estado === "error" && (
         <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-700">
           No se pudo cargar el índice de búsqueda.
