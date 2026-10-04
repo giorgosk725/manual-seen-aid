@@ -244,19 +244,28 @@ function QueNecesitas() {
             <li key={c.t}>
               <a
                 href={c.href}
-                className="hover-lift ease-brand flex h-full min-h-[3.5rem] items-center gap-3 rounded-md border bg-white p-2 pr-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                className="hover-lift ease-brand flex h-full min-h-[3.5rem] items-center gap-3 rounded-md border bg-white p-2 pr-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 lg:flex-col lg:items-start lg:gap-2 xl:flex-row xl:items-center xl:gap-3"
                 style={{ borderColor: "#e6e6e6" }}
               >
                 <span
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[3px] text-white sm:h-11 sm:w-11"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[3px] text-white sm:h-11 sm:w-11 lg:h-9 lg:w-9 xl:h-11 xl:w-11"
                   style={{ background: c.color }}
                   aria-hidden="true"
                 >
                   <I size={19} strokeWidth={1.75} />
                 </span>
-                <span className="min-w-0">
+                <span className="min-w-0 [overflow-wrap:anywhere]">
                   <span className="block text-[13px] font-bold leading-snug text-slate-900 sm:text-sm">
-                    {c.t}
+                    {/* Lo que va entre paréntesis («(β-OHB)») no se parte. */}
+                    {c.t.split(/(\([^)]*\))/).map((trozo, i) =>
+                      i % 2 ? (
+                        <span key={i} className="whitespace-nowrap">
+                          {trozo}
+                        </span>
+                      ) : (
+                        trozo
+                      ),
+                    )}
                   </span>
                   <span className="block text-xs leading-snug text-slate-500">{c.s}</span>
                 </span>
