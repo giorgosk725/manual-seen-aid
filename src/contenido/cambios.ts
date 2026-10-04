@@ -8,13 +8,21 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.6.2";
+export const VERSION_APP = "0.6.3";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-04",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — arranque más rápido en el móvil`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — precarga sin estorbar al arranque`,
+    detalle: [
+      "Las demás pantallas se precargan cuando la página ya ha terminado de cargar, no mientras se pinta la portada: en el móvil, la portada responde antes (bloqueo del hilo principal de 140 a 70 ms en Lighthouse).",
+    ],
+  },
+  {
+    fecha: "2026-10-04",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.6.2 — arranque más rápido en el móvil",
     detalle: [
       "El modo nocturno se pone antes del primer pintado sin pedir un archivo aparte: una petición menos antes de ver la portada en el móvil.",
       "«¿Qué necesitas?» en pantallas de 1024 a 1279 px: el icono va encima del texto y las palabras ya no se cortan.",

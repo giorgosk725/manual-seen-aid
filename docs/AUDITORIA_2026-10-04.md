@@ -111,6 +111,12 @@ aparte que bloqueaba el primer pintado. **0.6.2:** el script va en línea en `in
 build añade su hash a la CSP de `_headers` (`temaEnLinea` en `vite.config.ts`; falla si no puede
 hacerlo); una prueba vigila que no vuelva a ser un archivo aparte ni entre `unsafe-inline`.
 
+**Tras la 0.6.2 (producción, móvil):** portada 94, apartado 10 92, Figura 3 94, información al
+paciente 96 (antes 88); `tema.js` ya no aparece entre los recursos que bloquean. **0.6.3:** la
+precarga de pantallas esperaba solo a un momento libre y arrancaba a los 0,5 s, mientras se
+pintaba la portada; ahora espera al final de la carga y 2 s más. Portada móvil, mediana de tres
+medidas: 95 → 96, LCP 2,7 → 2,3 s, bloqueo 140 → 70 ms.
+
 ## 4. Para el autor
 
 1. Liberty: el capítulo la da como comercializada en España (corrección 2/11 y resumen) y la

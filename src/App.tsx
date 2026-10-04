@@ -47,7 +47,9 @@ const InformacionPacientes = lazy(() =>
 const PlanSeguridad = lazy(() => pacientes().then((m) => ({ default: m.PlanSeguridad })));
 const ResumenPacientes = lazy(() => pacientes().then((m) => ({ default: m.ResumenPacientes })));
 
-/* Precarga en un momento libre (sin ahorro de datos): al navegar ya no hay espera. */
+/* Precarga en un momento libre (sin ahorro de datos): al navegar ya no hay espera. Empieza
+   cuando la página ha terminado de cargar y tras un respiro, para no competir con el primer
+   pintado ni con las fuentes en un móvil lento. */
 const precargarPantallas = () => {
   const ahorro = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
     ?.saveData;
@@ -56,9 +58,14 @@ const precargarPantallas = () => {
     for (const f of [consultar, recorridos, sistemas, visual, pacientes, otras])
       f().catch(() => {});
   };
-  const w = window as Window & { requestIdleCallback?: (cb: () => void) => number };
-  if (w.requestIdleCallback) w.requestIdleCallback(cargar);
-  else setTimeout(cargar, 2500);
+  const w = window as Window & {
+    requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
+  };
+  const enReposo = () =>
+    w.requestIdleCallback ? w.requestIdleCallback(cargar, { timeout: 5000 }) : cargar();
+  const tras = () => setTimeout(enReposo, 2000);
+  if (document.readyState === "complete") tras();
+  else window.addEventListener("load", tras, { once: true });
 };
 
 /* Nombre de un sistema para el título de la pestaña: el de la Tabla 1 del capítulo. */
