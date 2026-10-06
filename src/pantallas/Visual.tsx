@@ -172,9 +172,8 @@ export function Visual() {
             })}
           </ul>
           <p className="mt-2 text-xs text-slate-500">
-            Imágenes de la maquetación del 30-9-2026 (provisionales, a falta de los archivos
-            fuente). Las correcciones editoriales están aplicadas en las transcripciones, no en las
-            imágenes.
+            Imágenes de la maquetación del 5-10-2026, que ya llevan las correcciones editoriales
+            (provisionales, a falta de los archivos fuente).
           </p>
         </section>
       )}

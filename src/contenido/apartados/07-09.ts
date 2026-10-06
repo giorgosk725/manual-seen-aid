@@ -60,14 +60,14 @@ export const A07: Apartado = {
     {
       t: "p",
       p: 8,
+      p2: 9,
       texto:
         "En determinados episodios de hipoglucemia leve, sobre todo cuando el algoritmo ya ha reducido o suspendido la infusión y no existe insulina activa relevante, pueden bastar cantidades menores que la regla clásica de 15 g: como orientación, 5-10 g ante glucemia 54-70 mg/dl con flecha estable o ascendente, reservando cantidades en torno a 15 g para glucemia < 54 mg/dl, doble flecha descendente o insulina activa significativa. Debe reevaluarse con glucosa capilar a los 15 min y evitarse el sobretratamiento; la evidencia específica en AID es aún limitada, por lo que conviene individualizar. Los hidratos para tratar la hipoglucemia no deben anunciarse como comida; en CamAPS FX existe la opción de registrarlos como “tratamiento de hipoglucemia”, que los documenta y suaviza la entrega de insulina sin contabilizarlos como ingesta.",
     },
     { t: "diagrama", p: 8, id: "hipoglucemia" },
     {
       t: "p",
-      p: 8,
-      p2: 9,
+      p: 9,
       texto:
         "La segunda regla es que toda hiperglucemia persistente sin causa clara debe hacer sospechar fallo de infusión hasta demostrar lo contrario. Esta regla debe enseñarse en el PEET, practicarse con casos y quedar por escrito.",
     },
@@ -114,11 +114,10 @@ export const A07: Apartado = {
       texto:
         "En personas con alto riesgo de abandono de la tecnología, baja alfabetización digital, idioma diferente o ausencia de cuidador entrenado, el PEET debe simplificarse y priorizar objetivos de seguridad: manejo de hipoglucemia, hiperglucemia persistente, cuerpos cetónicos, recambio del sistema y pauta alternativa. La optimización fina de parámetros puede posponerse hasta confirmar que estas competencias básicas están consolidadas.",
     },
-    { t: "h3", p: 9, id: "capacitacion", texto: "Capacitación del equipo asistencial" },
+    { t: "h3", p: 10, id: "capacitacion", texto: "Capacitación del equipo asistencial" },
     {
       t: "p",
-      p: 9,
-      p2: 10,
+      p: 10,
       texto:
         "La implementación segura no depende solo de la educación de la persona, sino de la capacitación del equipo: conocer las diferencias entre sistemas, acompañar la elección, iniciar y configurar el dispositivo, interpretar descargas, optimizar parámetros y resolver incidencias son competencias que exigen formación específica y mantenimiento. Disponer de programas formativos escalonados y circuitos asistenciales claros reduce la variabilidad en el acceso y en la calidad; esta capacitación es más decisiva cuanto menor es la experiencia del equipo con un sistema concreto o mayor la complejidad del caso.",
     },
@@ -140,7 +139,7 @@ export const A08: Apartado = {
     },
     { t: "tabla", p: 10, id: "T2" },
     { t: "diagrama", p: 10, id: "transicion" },
-    { t: "tabla", p: 10, id: "T3" },
+    { t: "tabla", p: 11, id: "T3" },
     { t: "tabla", p: 11, id: "T4" },
     {
       t: "p",
@@ -282,7 +281,7 @@ export const A09: Apartado = {
       p: 15,
       lead: "Hiperglucemia persistente y sospecha de fallo de infusión.",
       texto:
-        "Una glucemia ≥ 250 mg/dl persistente (orientativamente ≥ 2 h) o cualquier hiperglucemia inexplicada que no responde a la corrección debe interpretarse como sospecha de fallo del set. En personas tratadas con iSGLT2 —por indicación cardiorrenal o fuera de ficha técnica en la DM1— conviene rebajar este umbral a 200 mg/dl y mantener alta la sospecha de cetoacidosis, que puede cursar con glucemia solo moderadamente elevada. Los signos a considerar incluyen ardor en la zona de inserción, despegado parcial del adhesivo, lectura errática del sensor en proximidad del set o ausencia de respuesta a las autocorrecciones. La actuación recomendada combina cambio del set, determinación de cetonemia y corrección con pluma según el plan de seguridad (v. Figura 3). La regla orientativa es “ante la duda, cambia el set”.",
+        "Una glucemia ≥ 250 mg/dl persistente (orientativamente ≥ 2 h) o cualquier hiperglucemia inexplicada que no responde a la corrección debe interpretarse como sospecha de fallo del set. En personas tratadas con iSGLT2 —por indicación cardiorrenal o fuera de ficha técnica en la DM1— debe mantenerse una alta sospecha de cetoacidosis y medirse la cetonemia ante síntomas o situaciones de riesgo, con independencia del nivel de glucemia, ya que puede cursar con glucemia normal o solo moderadamente elevada. Los signos a considerar incluyen ardor en la zona de inserción, despegado parcial del adhesivo, lectura errática del sensor en proximidad del set o ausencia de respuesta a las autocorrecciones. La actuación recomendada combina cambio del set, determinación de cetonemia y corrección con pluma según el plan de seguridad (v. Figura 3). La regla orientativa es “ante la duda, cambia el set”.",
     },
     {
       t: "lista",

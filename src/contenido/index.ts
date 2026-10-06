@@ -26,8 +26,8 @@ export const CAPITULO = {
   sociedad: "Sociedad Española de Endocrinología y Nutrición (SEEN)",
   editorial: "ec-europe",
   /* Fecha de la maquetación final que sirve de fuente única a esta app. */
-  fechaFuente: "30 de septiembre de 2026",
-  fechaFuenteISO: "2026-09-30",
+  fechaFuente: "5 de octubre de 2026",
+  fechaFuenteISO: "2026-10-05",
   paginas: 25,
   /* Capítulo del Manual SEEN que precede a este (MDI), al que remite la introducción (p. 1). */
   continuaA: "Tratamiento insulínico del paciente con diabetes tipo 1: múltiples dosis de insulina",

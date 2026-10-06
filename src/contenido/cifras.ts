@@ -195,12 +195,6 @@ export const CIFRAS: Record<string, Cifra[]> = {
       ancla: "incidencias",
     },
     {
-      valor: "200 mg/dl",
-      etiqueta: "umbral rebajado en personas tratadas con iSGLT2",
-      p: 15,
-      ancla: "incidencias",
-    },
-    {
       valor: "<0,6 · 0,6–0,9 · 1,0–2,9 · ≥3,0",
       etiqueta: "β-OHB (mmol/l): los cuatro tramos operativos",
       p: 15,

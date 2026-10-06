@@ -20,7 +20,10 @@ export const BANCO: [string, RegExp][] = [
   ["dosis de insulina con pluma si no hay plan", /0,1 UI\/kg/],
   ["qué beber con cetonas y glucosa baja", /líquidos azucarados/],
   ["la insulina de la pluma la cuenta el sistema como activa", /no contabiliza|NO la contabiliza/],
-  ["umbral de glucosa para sospechar fallo con iSGLT2", /200 mg\/dl/],
+  [
+    "umbral de glucosa para sospechar fallo con iSGLT2",
+    /alta sospecha de cetoacidosis|con independencia del nivel de glucemia/,
+  ],
   ["signos de cetoacidosis", /F3\/rojo|vómitos persistentes/],
   ["regla de oro", /REGLA DE ORO/],
   ["ante la duda cambia el set", /cambia el set/],

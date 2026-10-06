@@ -13,6 +13,7 @@ import {
   F2,
 } from "./contenido";
 import { PREGUNTAS } from "./contenido/test";
+import { CIFRAS } from "./contenido/cifras";
 import { idDeBloque, posicionDeAncla } from "./contenido";
 import { plano } from "./marcado";
 import { FRAGMENTOS_EXTENDIDOS, textoDeFragmento } from "./extendida";
@@ -171,10 +172,29 @@ describe("correcciones editoriales aplicadas", () => {
     expect(r6.cita).toContain("Peters AL");
     expect(r6.cita).not.toContain("{{{");
   });
-  it("errata del autor: Control-IQ+ peso 9–200 kg, DTD 5–200 UI/día", () => {
+  it("final 1/3 (5-10-2026): Control-IQ+ peso 9–200 kg, DTD 5–200 UI/día", () => {
     const ind = TABLAS.T1.filas.find((f) => f.etiqueta === "Indicación")!;
     expect(ind.celdas[1]).toContain("Control-IQ+: ≥ 2 años, peso 9–200 kg, DTD 5–200 UI/día");
     expect(todo).not.toContain("DTD 9–200 kg");
+  });
+  it("final 2/3 (5-10-2026): iSGLT2 sin umbral rebajado a 200 mg/dl", () => {
+    expect(todo).toContain(
+      "En personas tratadas con iSGLT2 —por indicación cardiorrenal o fuera de ficha técnica en la DM1— debe mantenerse una alta sospecha de cetoacidosis y medirse la cetonemia ante síntomas o situaciones de riesgo, con independencia del nivel de glucemia, ya que puede cursar con glucemia normal o solo moderadamente elevada.",
+    );
+    expect(todo).not.toContain("rebajar este umbral");
+    const cifras = Object.values(CIFRAS).flat();
+    expect(cifras.some((c) => c.etiqueta.includes("iSGLT2"))).toBe(false);
+  });
+  it("final 3/3 (5-10-2026): DOI al final de la referencia 6", () => {
+    expect(BIBLIOGRAFIA.find((r) => r.n === 6)!.doi).toBe("10.2337/dci26-0122");
+  });
+  it("paginación de la maquetación del 5-10-2026", () => {
+    const a7 = APARTADOS.find((a) => a.n === 7)!;
+    const cap = a7.bloques.find((b) => "id" in b && b.id === "capacitacion")!;
+    expect(cap.p).toBe(10);
+    expect(TABLAS.T3.paginas).toEqual([11, 11]);
+    const t3 = APARTADOS.flatMap((a) => a.bloques).find((b) => b.t === "tabla" && b.id === "T3")!;
+    expect(t3.p).toBe(11);
   });
 });
 
@@ -435,7 +455,7 @@ describe("capas fuera del capítulo", () => {
     expect(RESUMEN_CAPITULO.parrafos).toHaveLength(6);
     const todo = JSON.stringify({ INFORMACION_PACIENTES, RESUMEN_CAPITULO });
     expect(todo).not.toMatch(/\bDT[12]\b|mg\/dL|mmol\/L|\bAIT\b/);
-    // Correcciones de la V5 frente a la maquetación del 30-9 (muestra).
+    // Correcciones de la V5 frente a la maquetación del 30-9 (muestra); la del 5-10 ya las trae.
     expect(todo).toContain("una bomba (con tubo o catéter) o un pod (sin tubo externo)");
     expect(todo).toContain("Si la glucosa es >270 mg/dl, medir cetonas y revisar el set o el pod");
   });

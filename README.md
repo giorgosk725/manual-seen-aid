@@ -62,7 +62,7 @@ de nada clínico.
 
 ## Fuente única
 
-El PDF final maquetado del 30-9-2026 (ec-europe, 25 páginas) con sus 11 correcciones editoriales anotadas,
+El PDF final maquetado del 5-10-2026 (ec-europe, 25 páginas; ya trae las 11 correcciones del 30-9) con sus 3 correcciones finales anotadas,
 aplicadas en el texto: ver [docs/CORRECCIONES.md](docs/CORRECCIONES.md). Todo el contenido vive en
 `src/contenido/` y está tipado; `src/contenido.test.ts` comprueba estructura, páginas, correcciones y
 convenciones (DM1/DM2, mg/dl, «duración de la insulina activa»).

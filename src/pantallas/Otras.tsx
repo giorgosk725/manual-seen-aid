@@ -381,6 +381,14 @@ function NotasAutor() {
 }
 
 /* ---------- Sobre esta versión ---------- */
+/* Anotadas por el autor en la maquetación del 5-10-2026; la editorial aún no las ha pasado. */
+const CORRECCIONES_FINALES = [
+  "Final 1/3 (p. 4, Tabla 1, Control-IQ+): «peso 9–200 kg, DTD 5–200 UI/día».",
+  "Final 2/3 (p. 15, Resolución de incidencias): con iSGLT2 ya no se rebaja el umbral a 200 mg/dl; «debe mantenerse una alta sospecha de cetoacidosis y medirse la cetonemia ante síntomas o situaciones de riesgo, con independencia del nivel de glucemia».",
+  "Final 3/3 (p. 25, bibliografía): «doi:10.2337/dci26-0122» al final de la referencia 6.",
+];
+
+/* Las 11 del 30-9-2026: la maquetación del 5-10-2026 ya las trae. */
 const CORRECCIONES = [
   "1/11 (p. 3): «control predictivo basado en modelo (MPC) y lógica difusa».",
   "2/11 (pp. 3–4): «Sistemas AID comercializados en España» en el texto y en el título de la Tabla 1.",
@@ -391,9 +399,8 @@ const CORRECCIONES = [
   "7/11 (p. 11, Tabla 4): fila «Ejercicio anaeróbico o de alta intensidad» reconstruida como fila normal con una celda común a los cuatro sistemas.",
   "8/11 (p. 21, Tabla 6): «Tomografía computarizada (TC)».",
   "9/11 (p. 24, infografía): «En modalidades híbridas»; «Requieren anuncio de comidas y bolo prandial»; «DM1»; «Mejora consistente del control glucémico con buen perfil de seguridad»; «Bomba de insulina o pod»; «Iniciar».",
-  "10/11 (p. 24, bibliografía): referencia 6 completa (Holt RIG et al., Diabetes Care 2026, doi:10.2337/dci26-0122).",
+  "10/11 (pp. 24–25, bibliografía): referencia 6 completa (Holt RIG et al., Diabetes Care 2026); el DOI es la corrección final 3/3.",
   "11/11 (encabezado gráfico de todas las páginas): no afecta al texto; no aplica a la app.",
-  "Errata que el autor corregirá en la editorial, ya aplicada aquí (Tabla 1, Control-IQ+): «peso 9–200 kg, DTD 5–200 UI/día».",
 ];
 
 export function Sobre() {
@@ -430,10 +437,10 @@ export function Sobre() {
         <h2 className="mt-5 text-base font-extrabold text-slate-900">Fuente única</h2>
         <p className="mt-2 text-sm">
           El texto es el del capítulo, literal, de la maquetación final del {CAPITULO.fechaFuente} (
-          {CAPITULO.editorial}, {CAPITULO.paginas} páginas), con las 11 correcciones editoriales
-          anotadas aplicadas. Cada bloque lleva la página de origen. No hay contenido inventado ni
-          traído de otras fuentes; las figuras, que en el PDF son imágenes, están transcritas caja a
-          caja.
+          {CAPITULO.editorial}, {CAPITULO.paginas} páginas), que ya incorpora las 11 correcciones
+          editoriales del 30-9-2026, con las 3 correcciones finales anotadas por el autor aplicadas.
+          Cada bloque lleva la página de origen. No hay contenido inventado ni traído de otras
+          fuentes; las figuras, que en el PDF son imágenes, están transcritas caja a caja.
         </p>
         <h2 className="mt-5 text-base font-extrabold text-slate-900">
           El capítulo y, aparte, lo que no es del capítulo
@@ -453,9 +460,9 @@ export function Sobre() {
             de cada sistema, validada en su proyecto asistente-aid, con sus fuentes.
           </li>
           <li>
-            <strong>Para el paciente</strong>: la información para pacientes (versión corregida V5
-            del autor) y el resumen del capítulo (maquetación de la editorial), literales; y el plan
-            de seguridad de cada sistema, hecho solo con texto del capítulo.
+            <strong>Para el paciente</strong>: la información para pacientes y el resumen del
+            capítulo, literales, tal como los maqueta la editorial; y el plan de seguridad de cada
+            sistema, hecho solo con texto del capítulo.
           </li>
           <li>
             <strong>Autoevaluación</strong>: las preguntas del autor, rotuladas «pendiente de
@@ -491,6 +498,24 @@ export function Sobre() {
         <h2 id="s-corr" className="text-base font-extrabold text-slate-900">
           Correcciones editoriales aplicadas
         </h2>
+        <h3 className="mt-3 text-sm font-bold text-slate-900">
+          Las 3 correcciones finales del autor (maquetación del 5-10-2026)
+        </h3>
+        <ol className="mt-2 space-y-1 text-sm text-slate-700">
+          {CORRECCIONES_FINALES.map((c, i) => (
+            <li key={i} className="flex gap-2">
+              <CheckCircle2
+                size={15}
+                className="mt-0.5 shrink-0 text-emerald-700"
+                aria-hidden="true"
+              />
+              <span>{c}</span>
+            </li>
+          ))}
+        </ol>
+        <h3 className="mt-4 text-sm font-bold text-slate-900">
+          Las 11 del 30-9-2026, que la maquetación del 5-10-2026 ya incorpora
+        </h3>
         <ol className="mt-2 space-y-1 text-sm text-slate-700">
           {CORRECCIONES.map((c, i) => (
             <li key={i} className="flex gap-2">

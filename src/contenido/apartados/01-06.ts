@@ -1,5 +1,5 @@
-/* Apartados 1–6 del capítulo. Texto literal (PDF 30-9-2026) con las correcciones
-   editoriales 1/11, 2/11 y 4/11 aplicadas (ver docs/CORRECCIONES.md). */
+/* Apartados 1–6 del capítulo. Texto literal (PDF 5-10-2026, que ya trae las correcciones
+   editoriales 1/11, 2/11 y 4/11; ver docs/CORRECCIONES.md). */
 import type { Apartado } from "../tipos";
 
 export const A01: Apartado = {

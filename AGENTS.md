@@ -19,7 +19,8 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
 ## 1. CRITICAL RULES
 
 1. **Single source = the chapter.** Every word of content in `src/contenido/` is literal text of the
-   final typeset PDF (30-9-2026, 25 pages) with the 11 editorial corrections applied
+   final typeset PDF (5-10-2026, 25 pages; it already carries the 11 corrections of 30-9) with the
+   3 final author corrections applied
    (`docs/CORRECCIONES.md`). Each block carries its source page. **Never invent content, never
    import text from other sources, never "improve" the author's wording.** Figures that are images
    in the PDF are transcribed box by box.

@@ -1,7 +1,7 @@
 /* Tipos del contenido del capítulo.
 
-   REGLA ÚNICA: todo el texto es LITERAL del capítulo (PDF maquetado del 30-9-2026) con las
-   11 correcciones editoriales anotadas aplicadas, y cada bloque lleva su página de origen.
+   REGLA ÚNICA: todo el texto es LITERAL del capítulo (PDF maquetado del 5-10-2026, que trae las
+   11 correcciones del 30-9, con las 3 finales del autor aplicadas), y cada bloque lleva su página.
    Nada de contenido inventado ni traído de otras fuentes. */
 
 import type { DiagramaId } from "./diagramas";

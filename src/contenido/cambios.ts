@@ -8,13 +8,35 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.10.0";
+export const VERSION_APP = "0.11.0";
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-06",
+    ambito: "app",
+    titulo: `Manual SEEN · AID ${VERSION_APP} — el capítulo de la maquetación del 5-10-2026`,
+    detalle: [
+      "El texto pasa a la última maquetación de la editorial (5-10-2026), que ya incorpora las 11 correcciones del 30-9. La app aplica además las 3 correcciones finales que el autor ha anotado en ella.",
+      "Resolución de incidencias (p. 15): en personas tratadas con iSGLT2 ya no se habla de rebajar el umbral a 200 mg/dl; «debe mantenerse una alta sospecha de cetoacidosis y medirse la cetonemia ante síntomas o situaciones de riesgo, con independencia del nivel de glucemia». Esa cifra sale de «Cifras del apartado» y de las tarjetas.",
+      "La Figura 3, la infografía y las Figuras 1 y 2 se ven ahora con la imagen de la nueva maquetación, más nítida y ya con las correcciones de la editorial (la columna amarilla de la cetonemia, la nota del asterisco de las dosis, «DM1», «En modalidades híbridas»…).",
+      "Páginas al día con la nueva maquetación: el final del párrafo de la hipoglucemia pasa a la p. 9, «Capacitación del equipo asistencial» a la p. 10 y la Tabla 3 a la p. 11.",
+      "La información para pacientes que maqueta la editorial el 5-10-2026 es ya, palabra por palabra, la versión V5 del autor que mostraba la app.",
+    ],
+  },
+  {
+    fecha: "2026-10-05",
+    ambito: "capitulo",
+    titulo: "Capítulo: nueva maquetación con 3 correcciones finales",
+    detalle: [
+      "La editorial (ec-europe) entrega una nueva maquetación de 25 páginas con las 11 correcciones del 30-9 incorporadas en el texto, las tablas, la Figura 3 y la infografía.",
+      "El autor anota 3 correcciones finales, que esta app ya aplica: la indicación de Control-IQ+ en la Tabla 1 («peso 9–200 kg, DTD 5–200 UI/día»), la frase sobre los iSGLT2 de la p. 15 y el DOI de la referencia 6.",
+      "La información para pacientes maquetada coincide con la versión V5 del autor.",
+    ],
+  },
+  {
     fecha: "2026-10-04",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — más fácil de usar y un buscador que entiende mejor`,
+    titulo: "Manual SEEN · AID 0.10.0 — más fácil de usar y un buscador que entiende mejor",
     detalle: [
       "El buscador entiende mejor la forma de preguntar: palabras de la calle («bajada», «me pita», «el parche», «bultos en la barriga», «hidratos de mentira»), faltas de ortografía («bomitos», «asucar»), verbos y edades («mi hijo de 1 año», «mi madre tiene 80 años»), siglas por su nombre («dosis total diaria» = DTD) y cifras de cetonemia escritas delante («0,3 de cetonas»).",
       "Si dos frases del mismo párrafo responden, salen juntas. Si nada responde de lleno, o la respuesta es dudosa, se rotula «Lo más cercano en el capítulo» en lugar de presentarla como la respuesta; y si no hay nada, propone las situaciones de «¿Qué necesitas?».",
@@ -233,12 +255,12 @@ export const CAMBIOS: Cambio[] = [
 export const PENDIENTES: string[] = [
   "El permiso de la SEEN y de la editorial (ec-europe) para esta versión web, y dónde se alojará.",
   "Que el autor valide las diez preguntas del test (hoy, «pendiente de validación del autor»).",
-  "La versión de la editorial con las 11 correcciones del capítulo (esta app ya las aplica).",
+  "Que la editorial pase al capítulo las 3 correcciones finales del autor del 5-10-2026 (esta app ya las aplica).",
   "El ISBN y la fecha de publicación del capítulo en el Manual SEEN, para «Cómo citar».",
 ];
 
 export const NOTAS_AUTOR: string[] = [
-  "Que la editorial publique la información para pacientes en la versión corregida V5 del autor, que es la que muestra esta app.",
+  "Dos detalles de la Figura 3 que pedía la corrección 5/11 y que la maquetación del 5-10-2026 no deja del todo: en la columna roja sigue «pauta especifica» sin tilde (la transcripción de la app la lleva) y las líneas que bajan a las columnas amarilla y naranja no tienen punta de flecha, a diferencia de las de los extremos.",
   "Las diferencias entre el capítulo y la ampliación del autor (asistente-aid): ratio I/HC, tipo de algoritmo de Control-IQ, autocorrección de MiniMed 780G, fecha de verificación y otras (auditoría del 2-10-2026). Llevan la marca «Difiere del capítulo» en la ficha la ratio I/HC, el tipo de algoritmo de Control-IQ y la autocorrección de la 780G; el resto, hasta que el autor decida, solo figura aquí.",
   "Tres matices de la versión extendida frente al capítulo, para que el autor decida si los deja, los precisa o los retira: E04 («ajustar si hay hiperglucemia persistente», cuando el capítulo pide descartar antes fallo de infusión), E28 («el objetivo se eleva antes de reducir el bolo, no en paralelo») y E07 (control desde el móvil, cuando en España es con el controlador).",
   "Dos frases de la información para pacientes V5 que el autor puede querer completar con el capítulo: los 5-10 g de hidratos en la hipoglucemia (sin la condición de 54-70 mg/dl y flecha estable) y la desconexión de la bomba con tubo (sin «suspender o pausar la administración»).",

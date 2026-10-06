@@ -1,5 +1,5 @@
-/* «Para el paciente»: información para pacientes (V5 del autor) y resumen (maquetación de la
-   editorial), literales; y la hoja «Plan de seguridad» de cada sistema, hecha SOLO con texto
+/* «Para el paciente»: información para pacientes (V5 del autor = maquetación del 5-10-2026) y
+   resumen (maquetación de la editorial), literales; y la hoja «Plan de seguridad» de cada sistema, hecha SOLO con texto
    del capítulo (pp. 7-9, Figura 3 y Tabla 4) y huecos para rellenar a mano. Cada hoja se imprime
    en una cara A4 (letra pequeña, dos columnas) o, a elegir, con letra grande (una columna,
    12 pt, a doble cara: dos o tres caras), y lleva un QR para abrirla en el móvil. La app no guarda nada de lo que se escribe:

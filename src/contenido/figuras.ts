@@ -1,7 +1,7 @@
 /* Figuras 1 y 2 e infografía: en el PDF son imágenes; aquí, cada caja transcrita en texto,
    en orden de lectura. La infografía lleva las seis correcciones de la anotación 9/11.
-   Las imágenes de public/figuras/ son recortes de la maquetación del 30-9-2026 (provisionales,
-   a falta de los archivos fuente de la editorial). */
+   Las imágenes de public/figuras/ son recortes de la maquetación del 5-10-2026 (vectorial,
+   a 1440 px y sin anotaciones; provisionales, a falta de los archivos fuente de la editorial). */
 import type { Figura, FiguraId } from "./tipos";
 
 export const F1: Figura = {
@@ -14,7 +14,7 @@ export const F1: Figura = {
   imagen: {
     src: "figuras/figura-1.webp",
     alt: "Figura 1 del capítulo: diagrama circular con el sensor de MCG, el algoritmo de control, la bomba de insulina o pod y la plataforma de descarga, alrededor de la persona con diabetes tipo 1, y el equipo sanitario.",
-    nota: "Imagen de la maquetación del 30-9-2026 (provisional, a falta del archivo fuente).",
+    nota: "Imagen de la maquetación del 5-10-2026 (provisional, a falta del archivo fuente).",
   },
   cajas: [
     {
@@ -64,7 +64,7 @@ export const F2: Figura = {
   imagen: {
     src: "figuras/figura-2.webp",
     alt: "Figura 2 del capítulo: el perfil de la persona y las características del sistema confluyen en la decisión compartida, que lleva al sistema de asa cerrada más adecuado, con el contexto asistencial debajo.",
-    nota: "Imagen de la maquetación del 30-9-2026 (provisional, a falta del archivo fuente).",
+    nota: "Imagen de la maquetación del 5-10-2026 (provisional, a falta del archivo fuente).",
   },
   cajas: [
     {
@@ -130,7 +130,7 @@ export const INFO: Figura = {
   imagen: {
     src: "figuras/infografia.webp",
     alt: "Infografía del capítulo en cuatro bloques: beneficios, qué es un sistema de asa cerrada, indicación e implementación y seguimiento, con el plan de seguridad y la franja «No olvides».",
-    nota: "Imagen de la maquetación del 30-9-2026 (provisional, a falta del archivo fuente; las seis correcciones de la anotación 9/11 están aplicadas en el texto, no en la imagen).",
+    nota: "Imagen de la maquetación del 5-10-2026, que ya lleva las seis correcciones de la anotación 9/11 (provisional, a falta del archivo fuente).",
   },
   cajas: [
     {

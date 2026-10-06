@@ -1,7 +1,7 @@
 /* Textos para pacientes, LITERALES, del autor del capítulo. Capa «Para el paciente»: no es
    texto del capítulo y se muestra siempre rotulada.
-   · Información para pacientes: versión corregida V5 del autor (3-10-2026). La maquetación de la
-     editorial del 30-9-2026 es anterior a sus correcciones; el autor confirma que se publicará la V5.
+   · Información para pacientes: versión corregida V5 del autor. La maquetación de la editorial
+     del 5-10-2026 es idéntica a ella palabra por palabra (la del 30-9-2026 era anterior).
    · Resumen: maquetación de la editorial del 30-9-2026 (idéntica palabra por palabra a la V6 del autor).
    Generado desde los .docx del autor; la auditoría (scripts/auditoria/fidelidad_extra.py) lo comprueba.
    No editar a mano. */
@@ -18,7 +18,7 @@ export const AUTOR_PACIENTES =
 
 export const INFORMACION_PACIENTES = {
   rotulo: "Información para pacientes",
-  fuente: "Versión corregida V5 del autor (3-10-2026)",
+  fuente: "Maquetación de la editorial (ec-europe, 5-10-2026), igual a la versión V5 del autor",
   secciones: [
     {
       pregunta: "¿Qué es un sistema de asa cerrada?",

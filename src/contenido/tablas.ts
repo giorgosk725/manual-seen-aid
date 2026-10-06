@@ -1,7 +1,7 @@
-/* Las seis tablas del capítulo, literales (PDF 30-9-2026). Correcciones aplicadas:
-   3/11 (Tabla 1, Omnipod 5, indicación), 6/11 (Tabla 3, «mg/dl»), 7/11 (Tabla 4, fila
-   «Ejercicio anaeróbico» reconstruida), 8/11 (Tabla 6, «computarizada») y la errata que
-   el autor corregirá en la editorial (Tabla 1, Control-IQ+: «peso 9–200 kg, DTD 5–200 UI/día»). */
+/* Las seis tablas del capítulo, literales (PDF 5-10-2026, que ya trae las correcciones 3/11
+   —Tabla 1, Omnipod 5, indicación—, 6/11 —Tabla 3, «mg/dl»—, 7/11 —Tabla 4, fila «Ejercicio
+   anaeróbico» reconstruida— y 8/11 —Tabla 6, «computarizada»—). Aplicada además la corrección
+   final 1/3 (Tabla 1, Control-IQ+: «peso 9–200 kg, DTD 5–200 UI/día»), anotada en el PDF. */
 import type { Tabla, TablaId } from "./tipos";
 
 export const SISTEMAS = [
@@ -209,7 +209,7 @@ export const T3: Tabla = {
   id: "T3",
   numero: 3,
   titulo: "Ajuste práctico de los parámetros clásicos por sistema",
-  paginas: [10, 11],
+  paginas: [11, 11],
   cabeceraEtiqueta: "Aspecto práctico",
   columnas: [...SISTEMAS],
   porSistema: true,
