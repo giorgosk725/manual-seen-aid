@@ -21,7 +21,10 @@ test.describe("Uso 0.10.0", () => {
 
   test("«Ver en el apartado» lleva a la frase y la resalta", async ({ page }) => {
     await page.goto("/#/buscar/cu%C3%A1nto%20tiempo%20puedo%20estar%20desconectado");
-    const respuesta = page.getByRole("region", { name: "Pasaje del capítulo" });
+    // Desde la 0.13.0 responde la pregunta frecuente; antes, el pasaje del motor.
+    const respuesta = page
+      .getByRole("region", { name: /^(Pregunta frecuente|Pasaje del capítulo)$/ })
+      .first();
     await expect(respuesta).toContainText("a partir de aproximadamente 1 h");
     await respuesta
       .getByRole("link", { name: /^Ver (en|la) / })
@@ -51,6 +54,14 @@ test.describe("Uso 0.10.0", () => {
     await expect(page.getByRole("region", { name: "Pasaje del capítulo" })).toHaveCount(0);
   });
 
+  test("pregunta frecuente: sale primero, con sus pasajes y su página", async ({ page }) => {
+    await page.goto("/#/buscar/qu%C3%A9%20debe%20incluir%20el%20plan%20de%20seguridad");
+    const frecuente = page.getByRole("region", { name: "Pregunta frecuente" });
+    await expect(frecuente).toContainText("¿Qué debe incluir el plan de seguridad?");
+    await expect(frecuente).toContainText("Glucagón.");
+    await expect(frecuente.getByRole("link", { name: /^Ver (en|la) / }).first()).toBeVisible();
+  });
+
   test("sin resultados: propone las situaciones de «¿Qué necesitas?»", async ({ page }) => {
     await page.goto("/#/buscar/zzzz%20qqqq");
     const aviso = page.getByRole("status").filter({ hasText: "No hay resultados en el capítulo" });
@@ -60,7 +71,9 @@ test.describe("Uso 0.10.0", () => {
 
   test("la nota del asterisco es la de su tabla", async ({ page }) => {
     await page.goto("/#/buscar/par%C3%A1metros%20modo%20autom%C3%A1tico%20control%20iq");
-    const respuesta = page.getByRole("region", { name: "Pasaje del capítulo" });
+    const respuesta = page
+      .getByRole("region", { name: /^(Pregunta frecuente|Pasaje del capítulo)$/ })
+      .first();
     await expect(respuesta).toContainText("Parámetro con efecto directo sobre el algoritmo");
     await expect(respuesta).not.toContainText("Dosis orientativas para personas adultas");
   });

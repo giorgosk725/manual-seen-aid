@@ -183,6 +183,14 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     `contenido.test.ts` enforces it. The home page puts consultation first (Consultar, search,
     systems, diagrams); the full chapter text stays in the app as the second door (Leer, Índice),
     because search, citations, review cards and routes all point into it.
+24. **Frequent questions (0.13.0).** `src/frecuentes.ts` holds 50 questions APPROVED by the author
+    (review page and process in `docs/FRECUENTES.md`), each with variants and the atom ids of
+    its literal passages. `preguntaFrecuente` (respuestas.ts) shows one first, as «Pregunta
+    frecuente», only when both coverages pass (70 % of the search, 60 % of the question), never
+    with a β-OHB value, never when a named system has nothing of its own in the passages, and
+    never when the search negates what the question asks. Adding or changing a question needs the
+    author's approval and a NEW blind bank to claim any improvement (`medirCiego` counts the
+    frequent questions; `scripts/auditoria/medir-ciego.mjs` compares with and without them).
 
 ## 2. Quality gates (all must pass before a push)
 

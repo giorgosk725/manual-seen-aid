@@ -36,7 +36,7 @@ import { OBJETIVOS_MCG } from "./contenido/diagramas";
 /* Lo ligero sigue disponible desde aquí para quien ya carga el índice. */
 export * from "./busqueda";
 /* «Preguntas al capítulo»: la respuesta literal (va en el mismo trozo que el índice). */
-export { responder } from "./respuestas";
+export { preguntaFrecuente, responder, type RespuestaFrecuente } from "./respuestas";
 
 const sinMarcado = (s: string) => plano(s);
 

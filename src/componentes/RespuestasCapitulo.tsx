@@ -3,8 +3,9 @@
    la app son los rótulos. Se usa en la paleta (compacta), en «¿Qué necesitas?» de la portada
    (compacta) y en la pantalla Buscar (con las otras respuestas). */
 import { useId } from "react";
-import { ArrowRight, Quote } from "lucide-react";
+import { ArrowRight, MessageCircleQuestion, Quote } from "lucide-react";
 import { marcar, type Respuesta } from "../busqueda";
+import type { RespuestaFrecuente } from "../respuestas";
 import { FIGURA3, LISTA_TABLAS } from "../contenido";
 import { href } from "../rutas";
 
@@ -154,12 +155,52 @@ function Tarjeta({
   );
 }
 
+/* «Pregunta frecuente»: la pregunta revisada que se parece a la búsqueda, con sus pasajes. */
+function BloqueFrecuente({
+  frecuente,
+  q,
+  onIr,
+  H,
+}: {
+  frecuente: RespuestaFrecuente;
+  q: string;
+  onIr?: () => void;
+  H: "h2" | "h3";
+}) {
+  const id = useId();
+  return (
+    <section
+      aria-labelledby={id}
+      className="mt-3 rounded-xl border-2 bg-white p-3 sm:p-4"
+      style={{ borderColor: "#8E254E" }}
+    >
+      <H
+        id={id}
+        className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"
+        style={{ color: "#8E254E" }}
+      >
+        <MessageCircleQuestion size={14} aria-hidden="true" /> Pregunta frecuente
+      </H>
+      <p className="mb-2 text-base font-bold text-slate-900">{frecuente.pregunta}</p>
+      <div className="space-y-2">
+        {frecuente.respuestas.map((r) => (
+          <Tarjeta key={r.id} r={r} q={q} onIr={onIr} />
+        ))}
+      </div>
+      <p className="mt-2 text-[11px] text-slate-500">
+        Pasajes del capítulo elegidos y revisados de antemano para esta pregunta.
+      </p>
+    </section>
+  );
+}
+
 export function RespuestasCapitulo({
   respuestas,
   q,
   compacta,
   onIr,
   nivel = 2,
+  frecuente,
 }: {
   respuestas: Respuesta[];
   q: string;
@@ -167,58 +208,85 @@ export function RespuestasCapitulo({
   compacta?: boolean;
   onIr?: () => void;
   nivel?: 2 | 3;
+  /* Pregunta frecuente que se parece a la búsqueda: va primero. */
+  frecuente?: RespuestaFrecuente | null;
 }) {
   const id = useId();
-  if (!respuestas.length) return null;
-  const [r, ...otras] = respuestas;
   const H = `h${nivel}` as "h2" | "h3";
+  // Con pregunta frecuente, el motor añade solo lo que ella no enseña.
+  const yaVistos = new Set(frecuente?.respuestas.map((x) => x.id) ?? []);
+  const resto = frecuente ? respuestas.filter((x) => !yaVistos.has(x.id)) : respuestas;
+  if (frecuente && (compacta || !resto.length))
+    return (
+      <>
+        <BloqueFrecuente frecuente={frecuente} q={q} onIr={onIr} H={H} />
+        {compacta && (
+          <a
+            href={href("buscar", q)}
+            onClick={onIr}
+            className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-600 hover:underline"
+          >
+            Más pasajes y todos los resultados
+          </a>
+        )}
+      </>
+    );
+  if (!resto.length) return null;
+  const [r, ...otras] = resto;
   const cercana = !!r.aproximada;
+  const titulo = frecuente
+    ? "Otros pasajes relacionados"
+    : cercana
+      ? "Coincidencia parcial en el capítulo"
+      : "Pasaje del capítulo";
   return (
-    <section
-      aria-labelledby={id}
-      className={`mt-3 rounded-xl bg-white p-3 sm:p-4 ${cercana ? "border border-dashed" : "border-2"}`}
-      style={{ borderColor: cercana ? "#94a3b8" : "#3f6e9f" }}
-    >
-      <H
-        id={id}
-        className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"
-        style={{ color: cercana ? "#475569" : "#2f5680" }}
+    <>
+      {frecuente && <BloqueFrecuente frecuente={frecuente} q={q} onIr={onIr} H={H} />}
+      <section
+        aria-labelledby={id}
+        className={`mt-3 rounded-xl bg-white p-3 sm:p-4 ${cercana ? "border border-dashed" : "border-2"}`}
+        style={{ borderColor: cercana ? "#94a3b8" : "#3f6e9f" }}
       >
-        <Quote size={14} aria-hidden="true" />{" "}
-        {cercana ? "Coincidencia parcial en el capítulo" : "Pasaje del capítulo"}
-      </H>
-      {cercana && (
-        <p className="mb-2 text-xs text-slate-600">
-          Coincide solo con parte de la búsqueda: revisa su contexto antes de usarlo.
-        </p>
-      )}
-      <Tarjeta r={r} q={q} principal compacta={compacta} onIr={onIr} />
-      {compacta ? (
-        <a
-          href={href("buscar", q)}
-          onClick={onIr}
-          className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-600 hover:underline"
+        <H
+          id={id}
+          className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"
+          style={{ color: cercana ? "#475569" : "#2f5680" }}
         >
-          {otras.length > 0
-            ? `${otras.length === 1 ? "Otro pasaje" : `Otros ${otras.length} pasajes`} y todos los resultados`
-            : "Todos los resultados"}
-        </a>
-      ) : (
-        otras.length > 0 && (
-          <div className="mt-3 space-y-2">
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-              Otros pasajes relacionados
-            </p>
-            {otras.map((o) => (
-              <Tarjeta key={o.id} r={o} q={q} onIr={onIr} />
-            ))}
-          </div>
-        )
-      )}
-      <p className="mt-2 text-[11px] text-slate-500">
-        Elegido por coincidencia de palabras: comprueba que responde a lo que buscas. Debajo, todos
-        los resultados.
-      </p>
-    </section>
+          <Quote size={14} aria-hidden="true" /> {titulo}
+        </H>
+        {cercana && !frecuente && (
+          <p className="mb-2 text-xs text-slate-600">
+            Coincide solo con parte de la búsqueda: revisa su contexto antes de usarlo.
+          </p>
+        )}
+        <Tarjeta r={r} q={q} principal compacta={compacta} onIr={onIr} />
+        {compacta ? (
+          <a
+            href={href("buscar", q)}
+            onClick={onIr}
+            className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-600 hover:underline"
+          >
+            {otras.length > 0
+              ? `${otras.length === 1 ? "Otro pasaje" : `Otros ${otras.length} pasajes`} y todos los resultados`
+              : "Todos los resultados"}
+          </a>
+        ) : (
+          otras.length > 0 && (
+            <div className="mt-3 space-y-2">
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                Otros pasajes relacionados
+              </p>
+              {otras.map((o) => (
+                <Tarjeta key={o.id} r={o} q={q} onIr={onIr} />
+              ))}
+            </div>
+          )
+        )}
+        <p className="mt-2 text-[11px] text-slate-500">
+          Elegido por coincidencia de palabras: comprueba que responde a lo que buscas. Debajo,
+          todos los resultados.
+        </p>
+      </section>
+    </>
   );
 }

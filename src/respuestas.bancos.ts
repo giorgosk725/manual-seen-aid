@@ -1,7 +1,7 @@
 /* Bancos de preguntas de «Preguntas al capítulo» (respuestas.ts) y cómo se miden. Los usan
    respuestas.test.ts (umbrales) y scripts de medición. Cada banco es [pregunta, lo que debe
    contener la primera respuesta] (null = el capítulo no lo trata: «no consta»). */
-import { responder, type Respuesta } from "./respuestas";
+import { preguntaFrecuente, responder, type Respuesta } from "./respuestas";
 import { normalizar } from "./busqueda";
 
 export const BANCO: [string, RegExp][] = [
@@ -288,18 +288,22 @@ export interface PreguntaCiega {
   aceptables: string[];
 }
 const limpio = (s: string) => normalizar(s).replace(/[·:]/g, " ").replace(/\s+/g, " ").trim();
-export function medirCiego(banco: PreguntaCiega[]) {
+/* Con `frecuentes` (por defecto), lo que ve el usuario: si salta una pregunta frecuente, sus
+   pasajes van primero y cuentan como la primera respuesta (y como directa). */
+export function medirCiego(banco: PreguntaCiega[], { frecuentes = true } = {}) {
   let primera = 0;
   let entreTres = 0;
   let equivocadas = 0;
   for (const p of banco) {
     const rs = responder(p.q);
+    const f = frecuentes ? preguntaFrecuente(p.q) : null;
     const ok = (r: Respuesta) => p.aceptables.some((a) => limpio(etiqueta(r)).includes(limpio(a)));
-    const directa = rs.some((r) => !r.aproximada);
-    const ok1 = p.aceptables.length ? !!rs[0] && ok(rs[0]) : !directa;
+    const directa = !!f || rs.some((r) => !r.aproximada);
+    const ok1 = p.aceptables.length ? (f ? f.respuestas.some(ok) : !!rs[0] && ok(rs[0])) : !directa;
     if (ok1) primera++;
-    if (p.aceptables.length ? rs.some(ok) : !directa) entreTres++;
-    if (p.aceptables.length && rs[0] && !rs[0].aproximada && !ok1) equivocadas++;
+    if (p.aceptables.length ? (f?.respuestas.some(ok) ?? false) || rs.some(ok) : !directa)
+      entreTres++;
+    if (p.aceptables.length && !ok1 && (f || (rs[0] && !rs[0].aproximada))) equivocadas++;
   }
   return {
     n: banco.length,

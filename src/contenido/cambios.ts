@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.12.0";
+export const VERSION_APP = "0.13.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-08",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — primero la consulta, búsqueda más honesta y hojas legibles`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — preguntas frecuentes en el buscador`,
+    detalle: [
+      "50 preguntas frecuentes revisadas una a una (selección e indicación, sistemas y parámetros, inicio, educación y plan de seguridad, descarga, incidencias y cetonemia, interrupción y situaciones especiales). Cuando una búsqueda se parece de verdad a una de ellas, sale primero, rotulada «Pregunta frecuente», con los pasajes del capítulo elegidos de antemano, literales y con su página; debajo siguen los demás pasajes y todos los resultados.",
+      "Si la búsqueda nombra un sistema, la pregunta frecuente enseña su casilla, o deja responder al buscador cuando no tiene nada propio de ese sistema; con una cifra de cetonemia manda la rama de la Figura 3; y lo que la búsqueda niega («sin embarazo») no la activa.",
+      "Medido con 80 preguntas nuevas escritas por otro agente sin ver el motor ni las preguntas frecuentes: el pasaje bueno sale el primero en el 57,5 % (55 % sin ellas) y las respuestas equivocadas presentadas como directas bajan del 18,8 al 17,5 %. Cuando la pregunta frecuente salta, acierta casi siempre, pero salta pocas veces con formas de preguntar muy distintas de las previstas.",
+    ],
+  },
+  {
+    fecha: "2026-10-08",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.12.0 — primero la consulta, búsqueda más honesta y hojas legibles",
     detalle: [
       "El texto es ya el del capítulo publicado en el Manual SEEN el 8-10-2026 (capítulo 89), con enlace a su página oficial desde la portada, «Sobre esta versión» y «Cómo citar»; la cita lleva el ISBN y la fecha de publicación.",
       "Portada orientada a la consulta del día a día: «Consultar» va primero, seguido del buscador, los cuatro sistemas y los diagramas; el capítulo completo sigue a un toque («Leer el capítulo» e «Índice»). El rótulo de área es «Área II. Diabetes», como en el Manual.",

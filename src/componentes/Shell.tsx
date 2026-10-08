@@ -76,6 +76,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
   const busqueda = motor && q.trim().length >= 2 ? motor.buscarConTotales(q, 12) : null;
   const res = busqueda?.resultados ?? [];
   const respuestas = motor && q.trim().length >= 2 ? motor.responder(q) : [];
+  const frecuente = motor && q.trim().length >= 2 ? motor.preguntaFrecuente(q) : null;
   // Abrir un resultado deja la búsqueda en «recientes».
   const cerrarYGuardar = () => {
     guardarReciente(q);
@@ -141,7 +142,13 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
           {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
           {q.trim().length >= 2 && (
             <AvisosBusqueda q={q} parcial={busqueda?.parcial} primera={respuestas[0]}>
-              <RespuestasCapitulo respuestas={respuestas} q={q} compacta onIr={cerrarYGuardar} />
+              <RespuestasCapitulo
+                respuestas={respuestas}
+                q={q}
+                compacta
+                onIr={cerrarYGuardar}
+                frecuente={frecuente}
+              />
             </AvisosBusqueda>
           )}
           {q.trim().length >= 2 && (
@@ -165,7 +172,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
                   </button>
                 </li>
               )}
-              {estado === "listo" && res.length === 0 && !respuestas.length && (
+              {estado === "listo" && res.length === 0 && !respuestas.length && !frecuente && (
                 <li className="px-2 pb-2">
                   <SinResultados onIr={onClose} />
                 </li>

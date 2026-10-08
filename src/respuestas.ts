@@ -29,6 +29,7 @@ import { SIS_IDS, SITUACIONES } from "./situaciones";
 import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import { frases } from "./frases";
 import { raizEs } from "./raiz";
+import { FRECUENTES, type Frecuente } from "./frecuentes";
 
 export { frases };
 
@@ -1496,4 +1497,113 @@ function resolver(a: Atomo, sis: number | undefined, score: number): Respuesta {
     };
   }
   return { ...a.r, score };
+}
+
+/* ------------------------------------------------------ preguntas frecuentes */
+
+/* Una pregunta frecuente (frecuentes.ts) responde con sus pasajes, revisados de antemano, cuando
+   la búsqueda se le parece de verdad: lo importante de la búsqueda está en la pregunta (o en una
+   de sus formas) y lo importante de la pregunta, en la búsqueda. Se compara con las mismas
+   palabras, raíces y expresiones que el resto del motor. Con una cifra de β-OHB manda la rama
+   de la Figura 3, no una pregunta general. */
+export interface RespuestaFrecuente {
+  id: string;
+  pregunta: string;
+  respuestas: Respuesta[];
+}
+
+let CANDIDATAS: { f: Frecuente; formas: { grupos: Grupo[]; negadas: Grupo[] }[] }[] | null = null;
+const UMBRAL_BUSQUEDA = 0.7;
+const UMBRAL_PREGUNTA = 0.6;
+
+const contenido = (gs: Grupo[]) => gs.filter((g) => g.sistema === undefined && !g.bonus);
+const pesoGrupo = (g: Grupo) =>
+  g.generica ? 0.3 : Math.max(...g.palabras.map((t) => PESO!.get(t) ?? 3));
+const casanGrupos = (a: Grupo, b: Grupo) =>
+  a.palabras.some((t) => b.palabras.some((u) => casa(t, u) || casa(u, t)));
+/* Parte (por peso) de `a` que tiene equivalente en `b`. */
+function cubre(a: Grupo[], b: Grupo[]) {
+  const total = a.reduce((n, g) => n + pesoGrupo(g), 0);
+  if (!total) return 0;
+  const dentro = a.filter((g) => b.some((h) => casanGrupos(g, h)));
+  return dentro.reduce((n, g) => n + pesoGrupo(g), 0) / total;
+}
+
+/* Lo que un texto niega («sin embarazo», «no hay cetonas»), cada palabra con sus equivalentes
+   (el grupo del texto: «embarazo» ~ «gestación»). */
+function negadasDe(texto: string, gs: Grupo[]): Grupo[] {
+  return [...normalizar(texto).matchAll(/\b(?:sin|no)\s+(?:hay\s+|tiene\s+)?([a-zñ]{4,})/g)].map(
+    (m) => {
+      const r = raiz(m[1]);
+      return gs.find((g) => g.escrita === m[1] || g.palabras.includes(r)) ?? { palabras: [r] };
+    },
+  );
+}
+
+/* La frecuente que más se parece, con las dos coberturas, sin umbral (para medir y afinar). */
+export function mejorFrecuente(
+  pregunta: string,
+): (RespuestaFrecuente & { deBusqueda: number; dePregunta: number }) | null {
+  const ats = atomos();
+  if (tramoDeConsulta(unificar(pregunta))) return null;
+  const grupos = gruposDe(pregunta);
+  const q = contenido(grupos);
+  if (!q.length || q.every((g) => g.generica)) return null;
+  CANDIDATAS ??= FRECUENTES.map((f) => ({
+    f,
+    formas: [f.pregunta, ...f.variantes].map((t) => {
+      const grupos = contenido(gruposDe(t));
+      return { grupos, negadas: negadasDe(t, grupos) };
+    }),
+  }));
+  const sis = grupos.find((g) => g.sistema !== undefined)?.sistema;
+  const porId = new Map(ats.map((a) => [a.r.id, a]));
+  // Lo que la búsqueda niega no puede ser lo que la pregunta frecuente pide (salvo que ella
+  // también lo niegue: «sin experiencia en MCG»).
+  const negadas = negadasDe(pregunta, q);
+  // La búsqueda tiene que estar casi entera en la pregunta y al revés: manda la menor de las dos
+  // coberturas; desempata la suma.
+  const valor = (a: number, b: number) => Math.min(a, b) + 0.5 * (a + b);
+  let mejor: { f: Frecuente; deBusqueda: number; dePregunta: number } | null = null;
+  for (const { f, formas } of CANDIDATAS) {
+    // Con un sistema nombrado, solo vale una pregunta cuyos pasajes digan algo de ese sistema
+    // (una fila por sistema o un texto que lo nombra); si no, responde el motor con lo suyo.
+    if (
+      sis !== undefined &&
+      !f.pasajes.some((id) => {
+        const a = porId.get(id);
+        return !!a && (!!a.porSis || a.nombra.includes(sis));
+      })
+    )
+      continue;
+    for (const { grupos: c, negadas: niega } of formas) {
+      const choca = (n: Grupo) =>
+        c.some((g) => casanGrupos(n, g) && !niega.some((m) => casanGrupos(m, g)));
+      if (negadas.some(choca)) continue;
+      const deBusqueda = cubre(q, c);
+      const dePregunta = cubre(c, q);
+      if (!mejor || valor(deBusqueda, dePregunta) > valor(mejor.deBusqueda, mejor.dePregunta))
+        mejor = { f, deBusqueda, dePregunta };
+    }
+  }
+  if (!mejor) return null;
+  const puntos = mejor.deBusqueda + mejor.dePregunta;
+  const respuestas = mejor.f.pasajes
+    .map((id) => porId.get(id))
+    .filter((a): a is Atomo => !!a)
+    .map((a) => resolver(a, sis, puntos));
+  if (!respuestas.length) return null;
+  return {
+    id: mejor.f.id,
+    pregunta: mejor.f.pregunta,
+    respuestas,
+    deBusqueda: mejor.deBusqueda,
+    dePregunta: mejor.dePregunta,
+  };
+}
+
+export function preguntaFrecuente(pregunta: string): RespuestaFrecuente | null {
+  const m = mejorFrecuente(pregunta);
+  if (!m || m.deBusqueda < UMBRAL_BUSQUEDA || m.dePregunta < UMBRAL_PREGUNTA) return null;
+  return { id: m.id, pregunta: m.pregunta, respuestas: m.respuestas };
 }

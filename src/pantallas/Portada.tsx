@@ -138,6 +138,7 @@ function QueNecesitas() {
   const busqueda = motor && q.trim().length >= 2 ? motor.buscarConTotales(q, 5, 2) : null;
   const res = busqueda?.resultados ?? [];
   const respuestas = motor && q.trim().length >= 2 ? motor.responder(q) : [];
+  const frecuente = motor && q.trim().length >= 2 ? motor.preguntaFrecuente(q) : null;
   const favoritos = useFavoritos();
   return (
     <section aria-labelledby="que-necesitas" className="scroll-mt-16 space-y-3">
@@ -179,7 +180,13 @@ function QueNecesitas() {
         </div>
       </form>
       <AvisosBusqueda q={q} parcial={busqueda?.parcial} primera={respuestas[0]}>
-        <RespuestasCapitulo respuestas={respuestas} q={q} compacta nivel={3} />
+        <RespuestasCapitulo
+          respuestas={respuestas}
+          q={q}
+          compacta
+          nivel={3}
+          frecuente={frecuente}
+        />
       </AvisosBusqueda>
       {estado === "error" && q.trim().length >= 2 && (
         <p
@@ -196,7 +203,9 @@ function QueNecesitas() {
           </button>
         </p>
       )}
-      {motor && q.trim().length >= 2 && res.length === 0 && !respuestas.length && <SinResultados />}
+      {motor && q.trim().length >= 2 && res.length === 0 && !respuestas.length && !frecuente && (
+        <SinResultados />
+      )}
       {res.length > 0 && (
         <ul
           className="divide-y rounded-xl border bg-white shadow-soft"

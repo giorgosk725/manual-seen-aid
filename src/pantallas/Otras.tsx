@@ -119,6 +119,10 @@ export function Buscar({ inicial }: { inicial?: string }) {
     () => (motor && q.trim().length >= 2 ? motor.responder(q) : []),
     [motor, q],
   );
+  const frecuente = useMemo(
+    () => (motor && q.trim().length >= 2 ? motor.preguntaFrecuente(q) : null),
+    [motor, q],
+  );
   const dentro = res.filter((r) => !fueraDelCapitulo(r.entrada));
   const fueraRes = res.filter((r) => fueraDelCapitulo(r.entrada));
   const hayMas = dentro.length < busqueda.totalCapitulo || fueraRes.length < busqueda.totalFuera;
@@ -163,7 +167,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
         }}
       >
         <AvisosBusqueda q={q} parcial={busqueda.parcial} primera={respuestas[0]}>
-          <RespuestasCapitulo respuestas={respuestas} q={q} />
+          <RespuestasCapitulo respuestas={respuestas} q={q} frecuente={frecuente} />
         </AvisosBusqueda>
         {estado === "error" && (
           <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-700">
@@ -186,9 +190,11 @@ export function Buscar({ inicial }: { inicial?: string }) {
                 : `${busqueda.totalCapitulo} en el capítulo${dentro.length < busqueda.totalCapitulo ? ` (se ven ${dentro.length})` : ""} · ${busqueda.totalFuera} fuera del capítulo${fueraRes.length < busqueda.totalFuera ? ` (se ven ${fueraRes.length})` : ""}`}
           </p>
         )}
-        {estado === "listo" && q.trim().length >= 2 && res.length === 0 && !respuestas.length && (
-          <SinResultados />
-        )}
+        {estado === "listo" &&
+          q.trim().length >= 2 &&
+          res.length === 0 &&
+          !respuestas.length &&
+          !frecuente && <SinResultados />}
         <ListaResultados res={dentro} q={q} />
         {fueraRes.length > 0 && (
           <section aria-labelledby="fuera" className="mt-6">
