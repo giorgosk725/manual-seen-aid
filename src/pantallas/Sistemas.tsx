@@ -413,7 +413,7 @@ function Ampliacion({ s }: { s: Sistema }) {
                       href={f.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex min-h-6 items-center gap-0.5 font-semibold text-sky-800 hover:underline"
+                      className="inline-flex min-h-7 items-center gap-0.5 font-semibold text-sky-800 hover:underline"
                     >
                       enlace <ExternalLink size={10} aria-hidden="true" />
                     </a>
