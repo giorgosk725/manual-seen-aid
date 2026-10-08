@@ -8,13 +8,24 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.13.0";
+export const VERSION_APP = "0.14.0";
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-09",
+    ambito: "app",
+    titulo: `Manual SEEN · AID ${VERSION_APP} — búsqueda también por el sentido`,
+    detalle: [
+      "Con conexión, el buscador compara además la búsqueda con los 480 pasajes del capítulo por su sentido (un modelo de lenguaje multilingüe de Cloudflare, bge-m3) y funde las dos listas: así encuentra pasajes que dicen lo mismo con otras palabras. Ayuda sobre todo con preguntas completas; con dos o tres palabras sueltas apenas cambia lo que ya da el buscador.",
+      "Lo que solo propone el sentido, sin apoyo en las palabras, va rotulado «coincidencia parcial»; con una cifra de cetonemia sigue mandando la rama de la Figura 3, y las preguntas frecuentes se siguen activando solo por las palabras. Sin conexión, o si el servicio no responde en 3 segundos, se busca solo por palabras, como hasta ahora.",
+      "Privacidad: solo se manda el texto de la búsqueda; la función que lo recibe no lo guarda ni lo registra, y la app sigue sin pedir ni guardar datos de pacientes.",
+      "Medido con 100 preguntas nuevas de residentes, adjuntos y enfermería, escritas por otro agente sin ver el motor y medidas una sola vez: el pasaje bueno sale el primero en el 70 % (66 % solo por palabras) y entre los tres primeros en el 83 % (77 %); las respuestas equivocadas presentadas como directas bajan del 18 al 15 %, y de las 12 preguntas que el capítulo no trata, 11 siguen sin pasaje directo. El buscador sigue fallando en una de cada tres preguntas: comprueba siempre el pasaje.",
+    ],
+  },
+  {
     fecha: "2026-10-08",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — preguntas frecuentes en el buscador`,
+    titulo: "Manual SEEN · AID 0.13.0 — preguntas frecuentes en el buscador",
     detalle: [
       "50 preguntas frecuentes revisadas una a una (selección e indicación, sistemas y parámetros, inicio, educación y plan de seguridad, descarga, incidencias y cetonemia, interrupción y situaciones especiales). Cuando una búsqueda se parece de verdad a una de ellas, sale primero, rotulada «Pregunta frecuente», con los pasajes del capítulo elegidos de antemano, literales y con su página; debajo siguen los demás pasajes y todos los resultados.",
       "Si la búsqueda nombra un sistema, la pregunta frecuente enseña su casilla, o deja responder al buscador cuando no tiene nada propio de ese sistema; con una cifra de cetonemia manda la rama de la Figura 3; y lo que la búsqueda niega («sin embarazo») no la activa.",

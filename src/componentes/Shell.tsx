@@ -32,6 +32,7 @@ import { VolverArriba } from "./Lectura";
 import { ErrorBoundary, Modal } from "../ui";
 import { fueraDelCapitulo, marcar, paginaDe } from "../busqueda";
 import { useBuscador } from "../useBuscador";
+import { useParecidos } from "../semantica";
 import { AvisosBusqueda } from "./AvisosBusqueda";
 import { RespuestasCapitulo } from "./RespuestasCapitulo";
 import { guardarReciente } from "../prefs";
@@ -73,9 +74,10 @@ function CargandoPantalla() {
 function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [q, setQ] = useState("");
   const { motor, estado, reintentar } = useBuscador(open);
+  const parecidos = useParecidos(q, open);
   const busqueda = motor && q.trim().length >= 2 ? motor.buscarConTotales(q, 12) : null;
   const res = busqueda?.resultados ?? [];
-  const respuestas = motor && q.trim().length >= 2 ? motor.responder(q) : [];
+  const respuestas = motor && q.trim().length >= 2 ? motor.fusionar(q, parecidos) : [];
   const frecuente = motor && q.trim().length >= 2 ? motor.preguntaFrecuente(q) : null;
   // Abrir un resultado deja la búsqueda en «recientes».
   const cerrarYGuardar = () => {

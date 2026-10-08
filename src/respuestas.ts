@@ -48,7 +48,7 @@ const STOP = new Set(
     "poco poca pocos pocas mucho mucha muchos muchas demasiado demasiada demasiados " +
     "demasiadas tanto tanta algun alguna tomo tomar llama llaman " +
     "sistemas dispositivo usar uso algo mejor pasa ocurre favor otra otro hay vez veces modo dos " +
-    "tres alta alto pacientes personas porque dispositivos tras " +
+    "tres alta alto pacientes personas porque aunque sino pues entonces dispositivos tras " +
     "significa significado definicion quiere decir"
   ).split(" "),
 );
@@ -1479,6 +1479,64 @@ export function responder(pregunta: string, { max = 3 } = {}): Respuesta[] {
   return out;
 }
 
+/* ------------------------------------------------- palabras y sentido juntos */
+
+/* Los pasajes más parecidos por el sentido (semantica.ts → /api/pasajes: ids de átomos con su
+   similitud, de más a menos) se funden con los del motor por rango recíproco: sube lo que las
+   dos listas ponen arriba. Salvaguardas: con una cifra de β-OHB manda el motor (la rama de la
+   Figura 3); con un sistema nombrado no entran pasajes que solo hablan de otros; como mucho uno
+   por párrafo; y lo que solo aporta el sentido con similitud baja va como «coincidencia
+   parcial». Si el capítulo no lo trata (el motor no da nada), el sentido solo propone, nunca
+   responde. Sin parecidos (sin conexión), es el motor de siempre. */
+const RRF = 60;
+const SENTIDO_DIRECTO = 0.7;
+const SENTIDO_MINIMO = 0.6;
+
+export function fusionar(
+  pregunta: string,
+  parecidos: { id: string; s: number }[],
+  { max = 3 } = {},
+): Respuesta[] {
+  const lex = responder(pregunta, { max: 10 });
+  if (!parecidos.length || tramoDeConsulta(unificar(pregunta))) return lex.slice(0, max);
+  const ats = atomos();
+  const porId = new Map(ats.map((a) => [a.r.id, a]));
+  const sis = gruposDe(pregunta).find((g) => g.sistema !== undefined)?.sistema;
+  const valeSentido = (a: Atomo) =>
+    sis === undefined || !!a.porSis || a.nombra.includes(sis) || !a.nombra.length;
+  const sem = parecidos
+    .filter((p) => p.s >= SENTIDO_MINIMO)
+    .map((p) => ({ a: porId.get(p.id), s: p.s }))
+    .filter((x): x is { a: Atomo; s: number } => !!x.a && valeSentido(x.a));
+  // Clave de párrafo (como en responder): una sola respuesta por párrafo, fila o tramo.
+  const clave = (r: { ruta: string; tipo: string; titulo: string }) =>
+    r.ruta.replace(/~\d+$/, "") + (r.tipo === "texto" ? "" : r.titulo);
+  const puntos = new Map<string, { r: Respuesta; s: number; lexico: boolean; sim: number }>();
+  lex.forEach((r, k) => puntos.set(clave(r), { r, s: 1 / (RRF + k), lexico: true, sim: 0 }));
+  sem.forEach(({ a, s }, k) => {
+    const c = clave(a.r);
+    const ya = puntos.get(c);
+    if (ya) {
+      ya.s += 1 / (RRF + k);
+      ya.sim = Math.max(ya.sim, s);
+    } else
+      puntos.set(c, {
+        r: { ...resolver(a, sis, 0), aproximada: !lex.length || s < SENTIDO_DIRECTO },
+        s: 1 / (RRF + k),
+        lexico: false,
+        sim: s,
+      });
+  });
+  const orden = [...puntos.values()].sort((x, y) => y.s - x.s);
+  // El capítulo no lo trata: el sentido propone, sin presentarlo como respuesta.
+  if (!lex.length)
+    return orden
+      .filter((x) => x.sim >= SENTIDO_DIRECTO)
+      .slice(0, max)
+      .map((x) => ({ ...x.r, aproximada: true }));
+  return orden.slice(0, max).map((x) => x.r);
+}
+
 /* El desarrollo de una sigla del glosario, sin el comentario entre paréntesis. */
 const desarrolloDe = (a: Atomo) =>
   normalizar(a.r.texto.replace(/^[^:]*:\s*/, "").replace(/\s*\(.*$/, "")).trim();
@@ -1606,4 +1664,34 @@ export function preguntaFrecuente(pregunta: string): RespuestaFrecuente | null {
   const m = mejorFrecuente(pregunta);
   if (!m || m.deBusqueda < UMBRAL_BUSQUEDA || m.dePregunta < UMBRAL_PREGUNTA) return null;
   return { id: m.id, pregunta: m.pregunta, respuestas: m.respuestas };
+}
+
+/* Por el sentido (semantica.ts → /api/frecuente): las preguntas frecuentes más parecidas a la
+   búsqueda, de más a menos, ya filtradas por el umbral de similitud del servicio. Aquí pasan las
+   mismas salvaguardas que por las palabras: nada con una cifra de β-OHB ni con una búsqueda solo
+   de palabras genéricas, un sistema nombrado necesita pasajes con algo suyo y lo que la búsqueda
+   niega no puede ser lo que la pregunta pide. Devuelve la primera que las pasa. */
+export function frecuentePorSentido(pregunta: string, ids: string[]): RespuestaFrecuente | null {
+  const ats = atomos();
+  if (tramoDeConsulta(unificar(pregunta))) return null;
+  const grupos = gruposDe(pregunta);
+  const q = contenido(grupos);
+  if (!q.length || q.every((g) => g.generica)) return null;
+  const sis = grupos.find((g) => g.sistema !== undefined)?.sistema;
+  const porId = new Map(ats.map((a) => [a.r.id, a]));
+  const negadas = negadasDe(pregunta, q);
+  for (const id of ids) {
+    const f = FRECUENTES.find((x) => x.id === id);
+    if (!f) continue;
+    const pasajes = f.pasajes.map((p) => porId.get(p)).filter((a): a is Atomo => !!a);
+    if (!pasajes.length) continue;
+    if (sis !== undefined && !pasajes.some((a) => !!a.porSis || a.nombra.includes(sis))) continue;
+    const propia = contenido(gruposDe(f.pregunta));
+    const niega = negadasDe(f.pregunta, propia);
+    const choca = (n: Grupo) =>
+      propia.some((g) => casanGrupos(n, g) && !niega.some((m) => casanGrupos(m, g)));
+    if (negadas.some(choca)) continue;
+    return { id: f.id, pregunta: f.pregunta, respuestas: pasajes.map((a) => resolver(a, sis, 1)) };
+  }
+  return null;
 }

@@ -191,6 +191,18 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     never when the search negates what the question asks. Adding or changing a question needs the
     author's approval and a NEW blind bank to claim any improvement (`medirCiego` counts the
     frequent questions; `scripts/auditoria/medir-ciego.mjs` compares with and without them).
+25. **Search by meaning (0.14.0).** With a connection, `src/semantica.ts` posts the query to
+    the Pages Function `functions/api/pasajes.ts` (Workers AI `@cf/baai/bge-m3`, binding `AI` in
+    `wrangler.toml`), which returns the 10 most similar atom ids from the precomputed vectors
+    `functions/_datos/vectores.ts`; `fusionar` (respuestas.ts) merges them with `responder` by
+    reciprocal rank (RRF 60). Meaning-only passages are «coincidencia parcial» unless similarity
+    ≥ 0.7 AND the words found something; with a β-OHB value the Figure 3 branch rules; frequent
+    questions stay lexical (semantic matching of them was measured and rejected). Offline, on
+    error or after 3 s, it is the lexical engine unchanged. The function never logs or stores the
+    query. **When the chapter text or the atoms change, regenerate the vectors**
+    (`npx vite-node scripts/semantica/vectores.mjs`, needs `wrangler login`); `src/semantica.test.ts`
+    fails otherwise. Thresholds were set a priori; changing them needs a NEW blind bank
+    (`scripts/semantica/fusion.mjs <bank>` compares words vs fusion). Details in `docs/SEMANTICA.md`.
 
 ## 2. Quality gates (all must pass before a push)
 
@@ -220,6 +232,7 @@ on push to main (`deploy-cloudflare.yml`, needs `CLOUDFLARE_API_TOKEN`).
 4. Update `docs/CORRECCIONES.md` and the assertions in `src/contenido.test.ts` if a correction
    changes.
 5. Bump `VERSION_APP` and add an `ambito: "app"` entry when the app itself changes.
+6. Regenerate the search vectors (`npx vite-node scripts/semantica/vectores.mjs`, rule 25).
 
 ## 4. Adding images, infographics or animations
 

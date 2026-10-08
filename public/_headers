@@ -1,5 +1,5 @@
-# Cabeceras de seguridad (Cloudflare Pages las lee de aqui). La app no tiene backend ni carga nada
-# de terceros: todo es del mismo origen. `unsafe-inline` en style-src es por los estilos en
+# Cabeceras de seguridad (Cloudflare Pages las lee de aqui). La app no carga nada de terceros: todo
+# es del mismo origen, también la única función, /api/pasajes (búsqueda por el sentido). `unsafe-inline` en style-src es por los estilos en
 # linea de las tarjetas y el mapa nocturno. En script-src, el build (vite.config.ts, temaEnLinea)
 # añade el hash del único script en línea, el del modo nocturno.
 /*

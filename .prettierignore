@@ -3,3 +3,5 @@ node_modules
 *.bak
 public/_headers
 capturas
+functions/_datos
+scripts/semantica/cache

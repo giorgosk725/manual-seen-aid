@@ -378,9 +378,9 @@ export class ErrorBoundary extends React.Component<{ children: ReactNode }, { ha
           <AlertTriangle size={24} className="mb-2 text-amber-600" />
           <p className="text-sm font-semibold text-slate-800">Algo ha fallado en esta pantalla.</p>
           <p className="mt-1 max-w-md text-sm text-slate-600">
-            Puedes reintentar o recargar la página. La app no guarda nada en ningún servidor; si el
-            fallo se repite, restablece las preferencias de lectura de este navegador (modo
-            nocturno, letra, favoritos y apartados leídos).
+            Puedes reintentar o recargar la página. Si el fallo se repite, restablece las
+            preferencias de lectura de este navegador (modo nocturno, letra, favoritos y apartados
+            leídos).
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
             <button

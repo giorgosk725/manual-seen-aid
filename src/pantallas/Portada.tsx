@@ -32,6 +32,7 @@ import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
 import { href, navegar } from "../rutas";
 import { marcar, paginaDe } from "../busqueda";
 import { precargarBuscador, useBuscador } from "../useBuscador";
+import { useParecidos } from "../semantica";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
 import { Bienvenida } from "../componentes/Bienvenida";
@@ -135,9 +136,10 @@ const ATAJOS = [
 function QueNecesitas() {
   const [q, setQ] = useState("");
   const { motor, estado, reintentar } = useBuscador(q.length > 0);
+  const parecidos = useParecidos(q, q.length > 0);
   const busqueda = motor && q.trim().length >= 2 ? motor.buscarConTotales(q, 5, 2) : null;
   const res = busqueda?.resultados ?? [];
-  const respuestas = motor && q.trim().length >= 2 ? motor.responder(q) : [];
+  const respuestas = motor && q.trim().length >= 2 ? motor.fusionar(q, parecidos) : [];
   const frecuente = motor && q.trim().length >= 2 ? motor.preguntaFrecuente(q) : null;
   const favoritos = useFavoritos();
   return (

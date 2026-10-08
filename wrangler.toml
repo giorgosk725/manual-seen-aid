@@ -1,0 +1,8 @@
+# Cloudflare Pages: la web estática (dist) y la función /api/pasajes (functions/), que usa el
+# modelo de significado de Workers AI para la búsqueda por el sentido.
+name = "manual-seen-aid"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-06-01"
+
+[ai]
+binding = "AI"

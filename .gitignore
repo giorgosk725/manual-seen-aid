@@ -13,3 +13,4 @@ _*.log
 _*.json
 /capturas/
 _*.txt
+scripts/semantica/cache/

@@ -21,6 +21,7 @@ import ciego2 from "./bancos/ciego2.json";
 import ciego3 from "./bancos/ciego3.json";
 import ciego4 from "./bancos/ciego4.json";
 import ciego5 from "./bancos/ciego5.json";
+import ciego6 from "./bancos/ciego6.json";
 
 const informe = (nombre: string, m: ReturnType<typeof medir>) =>
   console.log(
@@ -58,6 +59,9 @@ describe("Preguntas al capítulo", () => {
       // 80 preguntas nuevas, medidas una vez con el motor de la 0.13.0 ya cerrado: sin preguntas
       // frecuentes 55 %, 66,3 % y 18,8 %; con ellas, 57,5 %, 67,5 % y 17,5 %.
       ["Ciego 5", ciego5 as PreguntaCiega[], 0.56, 0.66, 0.19],
+      // 100 preguntas nuevas, medidas una vez con la 0.14.0 ya cerrada. Aquí, solo por palabras
+      // (66 %, 77 %, 18 %); con la búsqueda por el sentido, 70 %, 83 % y 15 % (docs/SEMANTICA.md).
+      ["Ciego 6", ciego6 as PreguntaCiega[], 0.65, 0.76, 0.18],
     ] as const) {
       const m = medirCiego(banco);
       console.log(

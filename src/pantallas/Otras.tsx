@@ -11,6 +11,7 @@ import { Badge, CabeceraEditorial, Revelar, ToneCard } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
 import { fueraDelCapitulo, marcar, paginaDe, type Busqueda, type Resultado } from "../busqueda";
 import { useBuscador } from "../useBuscador";
+import { useParecidos } from "../semantica";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
@@ -107,6 +108,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
   useEffect(() => setTope(12), [q]);
   // El índice llega en su trozo (useBuscador): estas pantallas no lo cargan si no se busca.
   const { motor, estado, reintentar } = useBuscador(true);
+  // Con conexión, los pasajes parecidos por el sentido se funden con los de las palabras.
+  const parecidos = useParecidos(q);
   const busqueda: Busqueda = useMemo(
     () =>
       motor && q.trim().length >= 2
@@ -116,8 +119,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
   );
   const res = busqueda.resultados;
   const respuestas = useMemo(
-    () => (motor && q.trim().length >= 2 ? motor.responder(q) : []),
-    [motor, q],
+    () => (motor && q.trim().length >= 2 ? motor.fusionar(q, parecidos) : []),
+    [motor, q, parecidos],
   );
   const frecuente = useMemo(
     () => (motor && q.trim().length >= 2 ? motor.preguntaFrecuente(q) : null),
@@ -143,8 +146,10 @@ export function Buscar({ inicial }: { inicial?: string }) {
             encaja, literal y con su página; si solo coincide en parte, se rotula «coincidencia
             parcial». Debajo, los primeros sitios donde salen esas palabras (el resto, con «Ver más
             resultados») y, aparte, lo que no es del capítulo (versión extendida, ampliación
-            técnica, hojas para el paciente y test). El pasaje se elige por coincidencia de
-            palabras: comprueba siempre que responde a lo que buscas.
+            técnica, hojas para el paciente y test). El pasaje se elige por las palabras y, con
+            conexión, también por el sentido (un modelo de lenguaje compara la búsqueda con los
+            pasajes; si solo lo propone el sentido, va como «coincidencia parcial»): comprueba
+            siempre que responde a lo que buscas.
           </p>
         </details>
       </CabeceraEditorial>
@@ -483,8 +488,11 @@ export function Sobre() {
           protocolos del centro ni el juicio clínico. Lo único que guarda el navegador son
           preferencias de lectura: modo nocturno, tamaño de letra, por dónde se iba leyendo, los
           apartados leídos, los favoritos, el avance de las tarjetas y las últimas búsquedas (se
-          borran con «Borrar»); todo se queda en este dispositivo. El plan de seguridad se rellena a
-          mano, en papel.
+          borran con «Borrar»); todo se queda en este dispositivo. Para buscar también por el
+          sentido, el texto de la búsqueda, y nada más, se manda a un modelo de lenguaje de
+          Cloudflare (el mismo servicio que aloja la app), que devuelve los pasajes más parecidos;
+          no se guarda ni se registra. Sin conexión se busca solo por palabras. El plan de seguridad
+          se rellena a mano, en papel.
         </p>
       </section>
       <section
@@ -537,9 +545,10 @@ export function Sobre() {
       >
         <h2 className="text-base font-extrabold text-slate-900">Tecnología</h2>
         <p className="mt-2">
-          Vite, React y TypeScript; PWA con uso sin conexión; sin servidor ni analítica. Código en
-          el repositorio público <code>manual-seen-aid</code>. Castellano de España; unidades mg/dl
-          y mmol/l; siglas DM1/DM2; «duración de la insulina activa».
+          Vite, React y TypeScript; PWA con uso sin conexión; sin analítica. La búsqueda por el
+          sentido es una función de Cloudflare Pages con Workers AI (bge-m3). Código en el
+          repositorio público <code>manual-seen-aid</code>. Castellano de España; unidades mg/dl y
+          mmol/l; siglas DM1/DM2; «duración de la insulina activa».
         </p>
       </section>
     </div>
