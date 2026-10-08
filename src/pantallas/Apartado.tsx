@@ -164,7 +164,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
       <header className="mb-6">
         <div className="no-imprimir mb-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
           <span className="etiqueta-area" style={{ color: SEEN.diabetesOsc }}>
-            Área Diabetes
+            Área II. Diabetes
           </span>
           <span aria-hidden="true" className="text-slate-400">
             ·

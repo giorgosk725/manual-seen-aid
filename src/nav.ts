@@ -72,7 +72,7 @@ export const DESTINOS: Destino[] = [
     icono: Cpu,
     cat: "consultar",
     descripcion:
-      "Los cuatro sistemas con foto: lo que dice el capítulo de cada uno y la ficha ampliada del autor.",
+      "Los cuatro sistemas con foto: lo que dice el capítulo de cada uno y su ficha técnica ampliada.",
   },
   {
     id: "situacion",

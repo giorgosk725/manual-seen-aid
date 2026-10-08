@@ -367,8 +367,8 @@ function Hoja({ sis }: { sis?: number }) {
           className="mt-3 border-t pt-2 text-[11px] text-slate-500"
           style={{ borderColor: "#e6e6e6" }}
         >
-          Manual SEEN · AID {VERSION_APP} — material educativo. Texto literal del capítulo (texto
-          final del {CAPITULO.fechaFuente}) con su página; los rótulos de las citas son de la app.
+          Manual SEEN · AID {VERSION_APP}. Texto literal del capítulo (texto final del{" "}
+          {CAPITULO.fechaFuente}) con su página; los rótulos de las citas son de la app.
         </p>
         <div className="mt-2 flex items-center gap-3">
           <QR

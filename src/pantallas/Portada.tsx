@@ -171,7 +171,7 @@ function QueNecesitas() {
             }}
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Pregunta: cetonas 1,2, modo sueño…"
+            placeholder="Busca: cetonas 1,2, modo sueño…"
             autoComplete="off"
             className="w-full bg-transparent text-base text-slate-900 placeholder:text-slate-400 focus:outline-none"
           />
@@ -373,7 +373,7 @@ function IndiceMosaico() {
   const info = APARTADOS.find((a) => a.n === 13)!;
   return (
     <section aria-labelledby="indice-mosaico">
-      <CabeceraEditorial numero="1" titulo="El capítulo" hex={CATEGORIA_HEX.leer}>
+      <CabeceraEditorial numero="3" titulo="El capítulo" hex={CATEGORIA_HEX.leer}>
         <p className="text-xs text-slate-500">
           Trece apartados del texto final, cada uno con su página.{" "}
           {leidos.length > 0 && (
@@ -530,7 +530,7 @@ export function Portada() {
               />
               <span>Manual SEEN</span>
               <span aria-hidden="true">·</span>
-              <span>Área Diabetes</span>
+              <span>Área II. Diabetes</span>
             </div>
             <h1
               id="titulo-capitulo"
@@ -545,27 +545,33 @@ export function Portada() {
             <p className="mt-1 text-xs text-slate-500">
               {CAPITULO.sociedad.replace(/ \(SEEN\)$/, "")}
             </p>
-            <p className="mt-2 max-w-prose text-xs leading-relaxed text-slate-600">
-              Versión interactiva del capítulo, preparada por el autor. Material educativo: no es
-              producto sanitario ni publicación oficial de la SEEN.{" "}
+            <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-700">
+              Las tablas, los algoritmos y las situaciones clínicas del capítulo, preparados para
+              consultarlos en el día a día, con el texto completo y la página de cada dato.{" "}
               <a
                 href={href("sobre")}
                 className="whitespace-nowrap font-semibold text-slate-800 underline underline-offset-2"
               >
-                Qué es →
+                Más información →
               </a>
             </p>
-            <div className="mt-3 flex flex-wrap gap-2 sm:mt-5">
+            <div className="mt-3 flex flex-wrap items-center gap-2 sm:mt-5">
               <a
-                href={href("capitulo", APARTADOS[0].slug)}
+                href={href("consultar")}
                 className="boton-seen inline-flex items-center gap-2 rounded-[3px] px-3.5 py-2 text-sm sm:px-4 sm:py-2.5 font-semibold uppercase tracking-wide text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2"
                 style={{ background: SEEN.burdeos }}
               >
-                <BookOpen size={16} aria-hidden="true" /> Leer el capítulo
+                <Table2 size={16} aria-hidden="true" /> Consultar
+              </a>
+              <a
+                href={href("capitulo", APARTADOS[0].slug)}
+                className="inline-flex items-center gap-2 rounded-[3px] border-2 border-slate-300 px-3.5 py-1.5 text-sm sm:px-4 sm:py-2 font-semibold uppercase tracking-wide text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+              >
+                <BookOpen size={15} aria-hidden="true" /> Leer el capítulo
               </a>
               <a
                 href={href("capitulo")}
-                className="inline-flex items-center gap-2 rounded-[3px] border-2 border-slate-300 px-3.5 py-1.5 text-sm sm:px-4 sm:py-2 font-semibold uppercase tracking-wide text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                className="inline-flex min-h-11 items-center gap-1 px-1 text-sm font-semibold text-slate-700 underline-offset-2 hover:underline"
               >
                 Índice <ArrowRight size={15} aria-hidden="true" />
               </a>
@@ -594,16 +600,113 @@ export function Portada() {
         </div>
       </section>
 
+      <QueNecesitas />
+
       <Bienvenida />
 
-      <QueNecesitas />
+      <section aria-labelledby="sistemas-portada">
+        <CabeceraEditorial numero="1" titulo="Los cuatro sistemas" hex={CATEGORIA_HEX.consultar}>
+          <p className="text-xs text-slate-500">
+            Lo que dice el capítulo de cada uno y, aparte, su ficha técnica ampliada.
+          </p>
+        </CabeceraEditorial>
+        <h2 id="sistemas-portada" className="sr-only">
+          Los cuatro sistemas
+        </h2>
+        <ul className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+          {ORDEN_SISTEMAS.map((id, c) => {
+            const nombre = TABLAS.T1.columnas[c];
+            const h = SISTEMA_HEX[c];
+            return (
+              <li key={id}>
+                <a
+                  href={href("sistemas", id)}
+                  className="hover-lift ease-brand flex h-full flex-col overflow-hidden rounded-[4px] border bg-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  style={{ borderColor: "#e6e6e6" }}
+                >
+                  <span className="block aspect-[4/3] w-full overflow-hidden bg-white">
+                    <img
+                      src={FOTO_SISTEMA[id]}
+                      alt=""
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="block h-1 w-full"
+                    style={{ background: h.strong }}
+                  />
+                  <span className="block px-3 py-2">
+                    <span className="block text-sm font-extrabold" style={{ color: h.ink }}>
+                      {nombre}
+                    </span>
+                    <span className="block truncate text-[11px] text-slate-500">
+                      {algoritmoDelCapitulo(c)}
+                    </span>
+                  </span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <section aria-labelledby="vistazo">
+        <CabeceraEditorial numero="2" titulo="De un vistazo" hex={CATEGORIA_HEX.consultar}>
+          <p className="text-xs text-slate-500">
+            Las cifras y los pasos más consultados del capítulo, en diagramas con su página.
+          </p>
+        </CabeceraEditorial>
+        <h2 id="vistazo" className="sr-only">
+          De un vistazo
+        </h2>
+        <ul className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+          {DIAGRAMAS.slice(0, 7).map((d, i) => {
+            const I = ICONO_DIAGRAMA[d.id];
+            return (
+              <li key={d.id}>
+                <a
+                  href={href("visual", d.id)}
+                  className="hover-lift ease-brand flex h-full flex-col gap-2 rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  style={{ borderColor: "#e6e6e6" }}
+                >
+                  <span
+                    className="flex h-10 w-10 items-center justify-center rounded-[3px] text-white"
+                    style={{ background: MOSAICO[(i + 1) % MOSAICO.length] }}
+                    aria-hidden="true"
+                  >
+                    <I size={19} strokeWidth={1.75} />
+                  </span>
+                  <span className="text-sm font-bold leading-snug text-slate-900">{d.titulo}</span>
+                  <span className="pagina-badge mt-auto">
+                    {d.paginas.length === 1 ? "p." : "pp."} {d.paginas.join(", ")}
+                  </span>
+                </a>
+              </li>
+            );
+          })}
+          <li>
+            <a
+              href={href("visual")}
+              className="flex h-full flex-col justify-center gap-1 rounded-[4px] border border-dashed p-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
+              style={{ borderColor: "#d4d4d4" }}
+            >
+              Todas las figuras y diagramas
+              <span className="inline-flex items-center gap-1 text-xs text-slate-500">
+                figuras con zoom, tablas y sistemas <ArrowRight size={12} aria-hidden="true" />
+              </span>
+            </a>
+          </li>
+        </ul>
+      </section>
 
       <IndiceMosaico />
 
       <RepasarYAutoevaluarse />
 
       <section aria-labelledby="mapa">
-        <CabeceraEditorial numero="2" titulo="En cuatro bloques" hex={CATEGORIA_HEX.leer}>
+        <CabeceraEditorial numero="4" titulo="En cuatro bloques" hex={CATEGORIA_HEX.leer}>
           <p className="text-xs text-slate-500">
             La infografía del capítulo (p. 24) como mapa de entrada: cada bloque lleva a su
             apartado.
@@ -664,103 +767,6 @@ export function Portada() {
             );
           })}
         </ol>
-      </section>
-
-      <section aria-labelledby="vistazo">
-        <CabeceraEditorial numero="3" titulo="De un vistazo" hex={CATEGORIA_HEX.consultar}>
-          <p className="text-xs text-slate-500">
-            Las cifras y los pasos más consultados del capítulo, en diagramas con su página.
-          </p>
-        </CabeceraEditorial>
-        <h2 id="vistazo" className="sr-only">
-          De un vistazo
-        </h2>
-        <ul className="grid grid-cols-2 gap-2 lg:grid-cols-4">
-          {DIAGRAMAS.slice(0, 7).map((d, i) => {
-            const I = ICONO_DIAGRAMA[d.id];
-            return (
-              <li key={d.id}>
-                <a
-                  href={href("visual", d.id)}
-                  className="hover-lift ease-brand flex h-full flex-col gap-2 rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                  style={{ borderColor: "#e6e6e6" }}
-                >
-                  <span
-                    className="flex h-10 w-10 items-center justify-center rounded-[3px] text-white"
-                    style={{ background: MOSAICO[(i + 1) % MOSAICO.length] }}
-                    aria-hidden="true"
-                  >
-                    <I size={19} strokeWidth={1.75} />
-                  </span>
-                  <span className="text-sm font-bold leading-snug text-slate-900">{d.titulo}</span>
-                  <span className="pagina-badge mt-auto">
-                    {d.paginas.length === 1 ? "p." : "pp."} {d.paginas.join(", ")}
-                  </span>
-                </a>
-              </li>
-            );
-          })}
-          <li>
-            <a
-              href={href("visual")}
-              className="flex h-full flex-col justify-center gap-1 rounded-[4px] border border-dashed p-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
-              style={{ borderColor: "#d4d4d4" }}
-            >
-              Todas las figuras y diagramas
-              <span className="inline-flex items-center gap-1 text-xs text-slate-500">
-                figuras con zoom, tablas y sistemas <ArrowRight size={12} aria-hidden="true" />
-              </span>
-            </a>
-          </li>
-        </ul>
-      </section>
-
-      <section aria-labelledby="sistemas-portada">
-        <CabeceraEditorial numero="4" titulo="Los cuatro sistemas" hex={CATEGORIA_HEX.consultar}>
-          <p className="text-xs text-slate-500">
-            Lo que dice el capítulo de cada uno y, aparte, la ficha ampliada del autor.
-          </p>
-        </CabeceraEditorial>
-        <h2 id="sistemas-portada" className="sr-only">
-          Los cuatro sistemas
-        </h2>
-        <ul className="grid grid-cols-2 gap-2 lg:grid-cols-4">
-          {ORDEN_SISTEMAS.map((id, c) => {
-            const nombre = TABLAS.T1.columnas[c];
-            const h = SISTEMA_HEX[c];
-            return (
-              <li key={id}>
-                <a
-                  href={href("sistemas", id)}
-                  className="hover-lift ease-brand flex h-full flex-col overflow-hidden rounded-[4px] border bg-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                  style={{ borderColor: "#e6e6e6" }}
-                >
-                  <span className="block aspect-[4/3] w-full overflow-hidden bg-white">
-                    <img
-                      src={FOTO_SISTEMA[id]}
-                      alt=""
-                      className="h-full w-full object-cover"
-                      loading="lazy"
-                    />
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className="block h-1 w-full"
-                    style={{ background: h.strong }}
-                  />
-                  <span className="block px-3 py-2">
-                    <span className="block text-sm font-extrabold" style={{ color: h.ink }}>
-                      {nombre}
-                    </span>
-                    <span className="block truncate text-[11px] text-slate-500">
-                      {algoritmoDelCapitulo(c)}
-                    </span>
-                  </span>
-                </a>
-              </li>
-            );
-          })}
-        </ul>
       </section>
 
       <section aria-labelledby="revision">

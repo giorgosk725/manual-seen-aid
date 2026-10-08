@@ -18,7 +18,7 @@ export const AUTOR_PACIENTES =
 
 export const INFORMACION_PACIENTES = {
   rotulo: "Información para pacientes",
-  fuente: "Maquetación de la editorial (ec-europe, 5-10-2026), igual a la versión V5 del autor",
+  fuente: "Maquetación de la editorial (ec-europe, 5-10-2026)",
   secciones: [
     {
       pregunta: "¿Qué es un sistema de asa cerrada?",

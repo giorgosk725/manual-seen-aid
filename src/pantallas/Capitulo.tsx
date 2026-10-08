@@ -88,9 +88,9 @@ export function IndiceCapitulo() {
                 {AUTOEVALUACION.titulo}
               </span>
               <span className="mt-1 block text-xs text-slate-500">
-                Diez preguntas del autor con respuesta razonada y las frases del capítulo que la
-                respaldan (pendientes de su validación). En la p. 24 del capítulo, la autoevaluación
-                aún no tiene preguntas.
+                Diez preguntas con respuesta razonada y las frases del capítulo que la respaldan
+                (pendientes de su validación). En la p. 24 del capítulo, la autoevaluación aún no
+                tiene preguntas.
               </span>
             </span>
             <span className="pagina-badge shrink-0 pt-1">fuera del capítulo</span>

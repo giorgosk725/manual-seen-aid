@@ -175,7 +175,7 @@ export function indice(): Entrada[] {
     out.push({
       id: `ext/${f.id}`,
       tipo: "extendida",
-      titulo: `Versión extendida del autor · ${f.titulo}`,
+      titulo: `Versión extendida · ${f.titulo}`,
       texto: textoDeFragmento(f),
       pagina: 0,
       ruta: href("capitulo", f.donde.apartado, `ext-${f.id}`),
@@ -194,7 +194,7 @@ export function indice(): Entrada[] {
           out.push({
             id: `amp/${s.id}/${r.k}`,
             tipo: "ampliacion",
-            titulo: `Ampliación del autor · ${s.name} · ${r.k}`,
+            titulo: `Ampliación técnica · ${s.name} · ${r.k}`,
             texto,
             pagina: 0,
             ruta,
@@ -204,7 +204,7 @@ export function indice(): Entrada[] {
       out.push({
         id: `amp/${s.id}/param/${prm.name}`,
         tipo: "ampliacion",
-        titulo: `Ampliación del autor · ${s.name} · Parámetros`,
+        titulo: `Ampliación técnica · ${s.name} · Parámetros`,
         texto: `${prm.name}: ${prm.note}`,
         pagina: 0,
         ruta,
@@ -213,7 +213,7 @@ export function indice(): Entrada[] {
       out.push({
         id: `amp/${s.id}/set/${set.name}`,
         tipo: "ampliacion",
-        titulo: `Ampliación del autor · ${s.name} · Sets de infusión`,
+        titulo: `Ampliación técnica · ${s.name} · Sets de infusión`,
         texto: `${set.name} (${set.material}, ${set.angle})`,
         pagina: 0,
         ruta,

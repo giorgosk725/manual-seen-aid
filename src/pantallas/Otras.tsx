@@ -3,7 +3,7 @@ import { guardarReciente } from "../prefs";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, CheckCircle2, ExternalLink, Moon, Sun, XCircle } from "lucide-react";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
-import { CAMBIOS, NOTAS_AUTOR, PENDIENTES, VERSION_APP } from "../contenido/cambios";
+import { CAMBIOS, PENDIENTES, VERSION_APP } from "../contenido/cambios";
 import { PREGUNTAS } from "../contenido/test";
 import { DESTINOS } from "../nav";
 import { href } from "../rutas";
@@ -138,9 +138,9 @@ export function Buscar({ inicial }: { inicial?: string }) {
             desconectado». Arriba, la frase, la fila de tabla o el tramo de la Figura 3 que mejor
             encaja, literal y con su página; si solo coincide en parte, se rotula «coincidencia
             parcial». Debajo, los primeros sitios donde salen esas palabras (el resto, con «Ver más
-            resultados») y, aparte, lo que no es del capítulo (versión extendida, ampliación del
-            autor, hojas para el paciente y test). El pasaje se elige por coincidencia de palabras:
-            comprueba siempre que responde a lo que buscas.
+            resultados») y, aparte, lo que no es del capítulo (versión extendida, ampliación
+            técnica, hojas para el paciente y test). El pasaje se elige por coincidencia de
+            palabras: comprueba siempre que responde a lo que buscas.
           </p>
         </details>
       </CabeceraEditorial>
@@ -193,11 +193,11 @@ export function Buscar({ inicial }: { inicial?: string }) {
         {fueraRes.length > 0 && (
           <section aria-labelledby="fuera" className="mt-6">
             <h2 id="fuera" className="text-sm font-bold text-amber-900">
-              Fuera del capítulo · versión extendida, ampliación del autor, hojas para el paciente y
+              Fuera del capítulo · versión extendida, ampliación técnica, hojas para el paciente y
               test
             </h2>
             <p className="text-xs text-slate-600">
-              No es el texto del capítulo: material del autor, cada capa con su rótulo (versión
+              No es el texto del capítulo: material complementario, cada capa con su rótulo (versión
               extendida en ámbar, ampliación en violeta, hojas para el paciente y test en gris).
             </p>
             <ListaResultados res={fueraRes} q={q} fuera />
@@ -341,7 +341,6 @@ export function Cambios() {
               <li key={i}>{p}</li>
             ))}
           </ul>
-          <NotasAutor />
         </ToneCard>
       </section>
       <section aria-labelledby="cambios-app" className="mt-8">
@@ -367,24 +366,8 @@ export function Cambios() {
   );
 }
 
-/* Decisiones de detalle que quedan en manos del autor: plegadas, para no cargar al lector. */
-function NotasAutor() {
-  return (
-    <details className="mt-2 text-sm text-slate-800">
-      <summary className="inline-flex min-h-11 cursor-pointer items-center font-semibold">
-        Notas para el autor ({NOTAS_AUTOR.length})
-      </summary>
-      <ul className="mt-1 list-disc space-y-1 pl-5">
-        {NOTAS_AUTOR.map((p, i) => (
-          <li key={i}>{p}</li>
-        ))}
-      </ul>
-    </details>
-  );
-}
-
 /* ---------- Sobre esta versión ---------- */
-/* Anotadas por el autor en la maquetación del 5-10-2026; la editorial aún no las ha pasado. */
+/* Anotadas en la maquetación del 5-10-2026; la editorial aún no las ha pasado. */
 const CORRECCIONES_FINALES = [
   "Final 1/3 (p. 4, Tabla 1, Control-IQ+): «peso 9–200 kg, DTD 5–200 UI/día».",
   "Final 2/3 (p. 15, Resolución de incidencias): con iSGLT2 ya no se rebaja el umbral a 200 mg/dl; «debe mantenerse una alta sospecha de cetoacidosis y medirse la cetonemia ante síntomas o situaciones de riesgo, con independencia del nivel de glucemia».",
@@ -411,7 +394,7 @@ export function Sobre() {
     <div className="space-y-4">
       <CabeceraEditorial titulo="Sobre esta versión" hex={CATEGORIA_HEX.confiar} level={1}>
         <p className="text-sm text-slate-600">
-          Manual SEEN · AID {VERSION_APP}. Qué es, de dónde sale el texto y qué no es.
+          Manual SEEN · AID {VERSION_APP}. Qué es, de dónde sale el texto y qué incluye.
         </p>
       </CabeceraEditorial>
       <section
@@ -420,7 +403,7 @@ export function Sobre() {
         aria-labelledby="s-uso"
       >
         <h2 id="s-uso" className="mb-3 text-base font-extrabold text-slate-900">
-          Cómo usar esta app
+          Guía rápida
         </h2>
         <GuiaDeUso />
       </section>
@@ -433,34 +416,35 @@ export function Sobre() {
           Qué es
         </h2>
         <p className="mt-2 text-sm">
-          Una web estática, instalable y que funciona sin conexión, para leer el capítulo «
-          {CAPITULO.titulo}» ({CAPITULO.autor}, {CAPITULO.obra}) mejor que en papel, consultarlo en
-          dos toques y ver cuándo y en qué se ha actualizado.
+          Una versión de consulta del capítulo «{CAPITULO.titulo}» ({CAPITULO.autor},{" "}
+          {CAPITULO.obra}): sus tablas, algoritmos y situaciones clínicas organizados para el día a
+          día —por sistema, por situación o con el buscador—, con el texto completo para leerlo y la
+          página de cada dato. Se instala como una aplicación y funciona sin conexión.
         </p>
-        <h2 className="mt-5 text-base font-extrabold text-slate-900">Fuente única</h2>
+        <h2 className="mt-5 text-base font-extrabold text-slate-900">De dónde sale el texto</h2>
         <p className="mt-2 text-sm">
           El texto es el del capítulo, literal, de la maquetación final del {CAPITULO.fechaFuente} (
-          {CAPITULO.editorial}, {CAPITULO.paginas} páginas), que ya incorpora las 11 correcciones
-          editoriales del 30-9-2026, con las 3 correcciones finales anotadas por el autor aplicadas.
-          Cada bloque lleva la página de origen. No hay contenido inventado ni traído de otras
-          fuentes; las figuras, que en el PDF son imágenes, están transcritas caja a caja.
+          {CAPITULO.editorial}, {CAPITULO.paginas} páginas), con sus 3 correcciones finales
+          aplicadas. Cada bloque lleva su página. Las figuras, que en el PDF son imágenes, están
+          transcritas caja a caja.
         </p>
         <h2 className="mt-5 text-base font-extrabold text-slate-900">
           El capítulo y, aparte, lo que no es del capítulo
         </h2>
         <p className="mt-2 text-sm">
           Todo lo que viene del capítulo se muestra como texto literal con su página. Lo demás va
-          siempre rotulado y separado, nunca mezclado con él, y si algo difiriera manda el capítulo:
+          siempre rotulado y separado, nunca mezclado con él; si algo difiriera, se sigue el
+          capítulo:
         </p>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
           <li>
-            <strong>Versión extendida del autor · no publicada en el Manual</strong> (ámbar,
-            plegada): fragmentos de los borradores de mayo de 2026 que no cupieron en el capítulo,
-            aprobados uno a uno por el autor, con su borrador y su fecha.
+            <strong>Versión extendida · no publicada en el Manual</strong> (ámbar, plegada):
+            fragmentos de los borradores de mayo de 2026 que no cupieron en el capítulo, revisados
+            uno a uno, con su borrador y su fecha.
           </li>
           <li>
-            <strong>Ampliación del autor · fuera del capítulo</strong> (violeta): la ficha técnica
-            de cada sistema, validada en su proyecto asistente-aid, con sus fuentes.
+            <strong>Ampliación técnica · fuera del capítulo</strong> (violeta): la ficha técnica de
+            cada sistema, con sus fuentes y su fecha de verificación.
           </li>
           <li>
             <strong>Para el paciente</strong>: la información para pacientes y el resumen del
@@ -468,8 +452,8 @@ export function Sobre() {
             sistema, hecho solo con texto del capítulo.
           </li>
           <li>
-            <strong>Autoevaluación</strong>: las preguntas del autor, rotuladas «pendiente de
-            validación del autor» hasta que dé su visto bueno.
+            <strong>Autoevaluación</strong>: diez preguntas con su explicación y las frases del
+            capítulo que la respaldan, rotuladas «pendiente de validación» hasta su revisión final.
           </li>
           <li>
             <strong>Tarjetas de repaso</strong>: las cifras de cada apartado y las siglas del
@@ -477,20 +461,15 @@ export function Sobre() {
             guarda solo en este dispositivo.
           </li>
         </ul>
-        <h2 className="mt-5 text-base font-extrabold text-slate-900">Qué no es</h2>
+        <h2 className="mt-5 text-base font-extrabold text-slate-900">Alcance y datos</h2>
         <p className="mt-2 text-sm">
-          Material educativo para profesionales (con hojas para que el profesional entregue al
-          paciente). No es un producto sanitario, no contiene calculadoras, no pide ni guarda datos
-          de pacientes y no sustituye la ficha técnica de cada sistema, los protocolos del centro ni
-          el juicio clínico. Lo único que guarda el navegador son preferencias de lectura: modo
-          nocturno, tamaño de letra, por dónde se iba leyendo, los apartados leídos, los favoritos,
-          el avance de las tarjetas y las últimas búsquedas (se borran con «Borrar»); todo se queda
-          en este dispositivo. El plan de seguridad se rellena a mano, en papel.
-        </p>
-        <p className="mt-2 text-sm">
-          Tampoco es una publicación oficial de la SEEN: es una versión interactiva preparada por el
-          autor del capítulo, pendiente del permiso de la Sociedad para su difusión. Por eso no
-          lleva el logotipo de la SEEN.
+          Pensada para profesionales, con hojas para entregar al paciente. No contiene calculadoras,
+          no pide ni guarda datos de pacientes y no sustituye la ficha técnica de cada sistema, los
+          protocolos del centro ni el juicio clínico. Lo único que guarda el navegador son
+          preferencias de lectura: modo nocturno, tamaño de letra, por dónde se iba leyendo, los
+          apartados leídos, los favoritos, el avance de las tarjetas y las últimas búsquedas (se
+          borran con «Borrar»); todo se queda en este dispositivo. El plan de seguridad se rellena a
+          mano, en papel.
         </p>
       </section>
       <section
@@ -502,7 +481,7 @@ export function Sobre() {
           Correcciones editoriales aplicadas
         </h2>
         <h3 className="mt-3 text-sm font-bold text-slate-900">
-          Las 3 correcciones finales del autor (maquetación del 5-10-2026)
+          Las 3 correcciones finales (maquetación del 5-10-2026)
         </h3>
         <ol className="mt-2 space-y-1 text-sm text-slate-700">
           {CORRECCIONES_FINALES.map((c, i) => (
@@ -538,7 +517,6 @@ export function Sobre() {
             <li key={i}>{p}</li>
           ))}
         </ul>
-        <NotasAutor />
       </ToneCard>
       <section
         className="rounded-2xl border bg-white p-4 text-sm text-slate-700 shadow-soft"
@@ -571,7 +549,7 @@ function Pregunta({
     <li className="rounded-2xl border bg-white p-4 shadow-soft" style={{ borderColor: "#e6e6e6" }}>
       <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
         <span className="font-bold">Pregunta {n}</span>
-        {!p.validada && <Badge tone="amber">Pendiente de validación del autor</Badge>}
+        {!p.validada && <Badge tone="amber">Pendiente de validación</Badge>}
       </div>
       <p className="mt-1 text-base font-semibold text-slate-900">{p.enunciado}</p>
       <ol className="mt-3 space-y-1.5">
@@ -617,8 +595,7 @@ function Pregunta({
           <div className="animate-in mt-3 space-y-2">
             <div className="rounded-xl p-3 text-sm" style={{ background: "#eef3f8" }}>
               <p className="font-bold text-slate-900">
-                {elegida === p.correcta ? "Correcto." : "Respuesta incorrecta."} Explicación del
-                autor:
+                {elegida === p.correcta ? "Correcto." : "Respuesta incorrecta."} Explicación:
               </p>
               <p className="mt-1 text-slate-800">{p.explicacion}</p>
             </div>
@@ -670,8 +647,8 @@ export function Test() {
     <div>
       <CabeceraEditorial titulo="Autoevaluación" hex={CATEGORIA_HEX.aprender} level={1}>
         <p className="text-sm text-slate-600">
-          Diez preguntas del autor. Al responder se ve su explicación y las frases del capítulo que
-          la respaldan, con su página. Para memorizar las cifras y las siglas,{" "}
+          Diez preguntas. Al responder se ve su explicación y las frases del capítulo que la
+          respaldan, con su página. Para memorizar las cifras y las siglas,{" "}
           <a href={href("repaso")} className="font-semibold text-slate-800 underline">
             tarjetas de repaso
           </a>
@@ -679,11 +656,10 @@ export function Test() {
         </p>
       </CabeceraEditorial>
       {pendientes > 0 && (
-        <ToneCard tone="amber" title="Pendiente de validación del autor" className="mb-4">
+        <ToneCard tone="amber" title="Pendiente de validación" className="mb-4">
           <p className="text-sm text-slate-800">
             Las preguntas se escribieron en mayo de 2026 y se han comprobado contra el texto final
-            del capítulo; el autor aún no ha dado su visto bueno a esta versión. Si algo difiriera,
-            manda el capítulo.
+            del capítulo; falta su validación final. Si algo difiriera, se sigue el capítulo.
           </p>
         </ToneCard>
       )}

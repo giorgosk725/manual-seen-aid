@@ -39,7 +39,7 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
    insulin units; **«DM1»/«DM2»**, never «DT1»/«DT2» (the chapter's own literal text wins where it
    says «diabetes tipo 2» spelled out); **«duración de la insulina activa»**, never «AIT».
    `src/contenido.test.ts` enforces these.
-5. **Unknowns stay visible.** Pending items (SEEN permission and hosting, the author's quiz
+5. **Unknowns stay visible.** Pending items (SEEN permission and hosting, validation of the quiz
    questions, source files of the infographic and figures) live in `src/contenido/cambios.ts`
    (`PENDIENTES`) and are shown in «Qué ha cambiado» and «Sobre esta versión». Do not fill them
    with guesses.
@@ -173,6 +173,16 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     agent without seeing the engine) and are measured with `medirCiego`; a bank is honest
     only the FIRST time it is measured, so a new claim needs a new bank. Vocabulary is
     general (lexicon, phrases, generic words, phonetic typo fix), never per question.
+
+23. **Neutral voice and consult first (0.12.0, author's request of 8-10-2026).** The UI never
+    refers to «el autor» («del autor», «preparada por el autor», «validada por el autor») and
+    does not repeat disclaimers like «material educativo / no es producto sanitario / no es
+    publicación oficial» on every screen; layers are named «Versión extendida», «Ampliación
+    técnica», «Pendiente de validación». The chapter byline (name and affiliation) stays, as on the
+    Manual. Editorial working notes live in `docs/NOTAS_EDITORIALES.md`, not in the web.
+    `contenido.test.ts` enforces it. The home page puts consultation first (Consultar, search,
+    systems, diagrams); the full chapter text stays in the app as the second door (Leer, Índice),
+    because search, citations, review cards and routes all point into it.
 
 ## 2. Quality gates (all must pass before a push)
 

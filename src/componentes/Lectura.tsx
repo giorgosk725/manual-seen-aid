@@ -302,8 +302,8 @@ export function EnlaceEducativa({ clave }: { clave: string }) {
       <span className="min-w-0 flex-1">
         <span className="block font-semibold text-slate-900">Practicar con un caso: {c.texto}</span>
         <span className="block text-xs text-slate-600">
-          Edición educativa de asistente-aid, del mismo autor (fuera del capítulo; pacientes de
-          ejemplo, sin datos reales).
+          Edición educativa de asistente-aid (fuera del capítulo; pacientes de ejemplo, sin datos
+          reales).
         </span>
       </span>
       <ExternalLink size={14} className="mt-1 shrink-0 text-slate-500" aria-hidden="true" />

@@ -1,5 +1,6 @@
 /* Integridad del contenido: estructura, páginas, correcciones editoriales aplicadas y
    convenciones de escritura. Si una corrección se pierde al editar, esto lo dice. */
+import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   APARTADOS,
@@ -20,7 +21,7 @@ import { FRAGMENTOS_EXTENDIDOS, textoDeFragmento } from "./extendida";
 import { INFORMACION_PACIENTES, RESUMEN_CAPITULO } from "./pacientes/textos";
 
 const normalizarEspacios = (s: string) => s.replace(/\s+/g, " ").trim();
-import { CAMBIOS, NOTAS_AUTOR, PENDIENTES } from "./contenido/cambios";
+import { CAMBIOS, PENDIENTES } from "./contenido/cambios";
 import { buscar, indice, normalizar } from "./buscador";
 
 const todoElTexto = () =>
@@ -251,10 +252,33 @@ describe("convenciones de escritura", () => {
   it("los cambios llevan fecha ISO y hay pendientes visibles", () => {
     for (const c of CAMBIOS) expect(c.fecha).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(PENDIENTES.length).toBeGreaterThanOrEqual(3);
-    // Lo del lector, corto y sin jerga interna; el detalle va en las notas para el autor.
+    // Lo del lector, corto, neutro y sin jerga interna (el detalle, en docs/NOTAS_EDITORIALES.md).
     expect(PENDIENTES.length).toBeLessThanOrEqual(5);
-    for (const p of PENDIENTES) expect(p).not.toMatch(/asistente-aid|E\d\d|auditoría/);
-    expect(NOTAS_AUTOR.length).toBeGreaterThan(0);
+    for (const p of PENDIENTES) expect(p).not.toMatch(/asistente-aid|E\d\d|auditoría|\bautor\b/);
+  });
+  // Tono neutro (petición del autor, 8-10-2026): la interfaz no habla «del autor» ni repite
+  // avisos de «material educativo / producto sanitario / publicación oficial».
+  it("la interfaz no se refiere al autor ni repite esos avisos", () => {
+    const ficheros = [
+      ...["src/pantallas", "src/componentes"].flatMap((d) =>
+        readdirSync(d)
+          .filter((f) => /\.tsx?$/.test(f) && !f.includes(".test."))
+          .map((f) => `${d}/${f}`),
+      ),
+      "src/nav.ts",
+      "src/buscador.ts",
+      "src/extendida/index.ts",
+      "src/pacientes/textos.ts",
+      "src/contenido/cambios.ts",
+    ];
+    for (const f of ficheros) {
+      const codigo = readFileSync(f, "utf8")
+        .replace(/\/\*[\s\S]*?\*\//g, "")
+        .replace(/^\s*\/\/.*$/gm, "");
+      expect(codigo, f).not.toMatch(
+        /\b(del|por el|al|el) autor\b|producto sanitario|publicación oficial|material educativo/i,
+      );
+    }
   });
 });
 

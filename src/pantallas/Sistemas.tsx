@@ -101,7 +101,7 @@ export function HubSistemas() {
       <CabeceraEditorial titulo="Sistemas" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
           Los cuatro sistemas AID comercializados en España: lo que dice el capítulo de cada uno y,
-          aparte, la ficha ampliada del autor.
+          aparte, su ficha técnica ampliada.
         </p>
       </CabeceraEditorial>
       <ul className="grid gap-3 sm:grid-cols-2">
@@ -189,10 +189,8 @@ const NIVEL: Record<string, { etiqueta: string; color: string }> = {
 function Difiere({ d }: { d: Discrepancia }) {
   return (
     <span className="mt-1.5 block rounded-md border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs text-red-900">
-      <span className="font-bold">
-        Difiere del capítulo: la app sigue el capítulo mientras el autor lo revisa.
-      </span>{" "}
-      {d.donde}, p. {d.p}: <q className="italic">{d.capitulo}</q>
+      <span className="font-bold">Difiere del capítulo; aquí se sigue el capítulo.</span> {d.donde},
+      p. {d.p}: <q className="italic">{d.capitulo}</q>
       {d.nota && <span className="mt-0.5 block text-red-800">{d.nota}</span>}
     </span>
   );
@@ -205,13 +203,12 @@ function Ampliacion({ s }: { s: Sistema }) {
     <section aria-labelledby="ampliacion" className="mt-8">
       <div className="mb-3 rounded-2xl border border-violet-200 bg-violet-50 p-3">
         <h2 id="ampliacion" className="text-base font-extrabold text-violet-900">
-          Ampliación del autor · fuera del capítulo
+          Ampliación técnica · fuera del capítulo
         </h2>
         <p className="mt-1 text-sm text-violet-900">
-          Ficha técnica validada por el autor en su proyecto asistente-aid, con sus fuentes al pie
-          (última verificación: {s.verified}). No forma parte del texto del Manual SEEN. La
-          disponibilidad y las condiciones pueden cambiar: confirmar siempre en la ficha técnica
-          vigente.
+          Ficha técnica con sus fuentes al pie (última verificación: {s.verified}). No forma parte
+          del texto del Manual SEEN. La disponibilidad y las condiciones pueden cambiar: confirmar
+          siempre en la ficha técnica vigente.
         </p>
       </div>
       <div className="space-y-3">
@@ -623,7 +620,7 @@ export function FichaSistema({ id }: { id?: string }) {
       </section>
 
       {extendidosDeSistema(s.id).length > 0 && (
-        <section aria-label="Versión extendida del autor" className="mt-6">
+        <section aria-label="Versión extendida" className="mt-6">
           <VersionExtendida fragmentos={extendidosDeSistema(s.id)} nivel={3} />
         </section>
       )}
@@ -633,8 +630,8 @@ export function FichaSistema({ id }: { id?: string }) {
       <ToneCard tone="slate" className="mt-6">
         <p className="text-xs text-slate-600">
           La capa «Lo que dice el capítulo» es texto literal del Manual SEEN con su página. La
-          «Ampliación del autor» es material propio del autor, fuera del capítulo, con sus fuentes;
-          no sustituye la ficha técnica vigente de cada sistema.
+          «Ampliación técnica» es material complementario, fuera del capítulo, con sus fuentes; no
+          sustituye la ficha técnica vigente de cada sistema.
         </p>
       </ToneCard>
 

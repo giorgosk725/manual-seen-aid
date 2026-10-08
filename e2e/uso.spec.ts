@@ -99,11 +99,11 @@ test.describe("Uso 0.10.0", () => {
     await expect(page.locator("main")).toBeFocused();
   });
 
-  test("la portada dice qué es y lleva a repasar y al test", async ({ page }) => {
+  test("la portada dice qué es, empieza por la consulta y lleva a repasar y al test", async ({
+    page,
+  }) => {
     await page.goto("/#/");
-    await expect(
-      page.getByText("no es producto sanitario ni publicación oficial de la SEEN"),
-    ).toBeVisible();
+    await expect(page.getByText(/preparados para consultarlos en el día a día/)).toBeVisible();
     const aprender = page.getByRole("region", { name: "Repasar y autoevaluarse" });
     await expect(aprender.getByRole("link", { name: /Tarjetas de repaso/ })).toBeVisible();
     await expect(aprender.getByRole("link", { name: /Autoevaluación/ })).toBeVisible();

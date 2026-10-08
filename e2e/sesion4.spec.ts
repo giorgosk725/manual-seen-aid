@@ -114,9 +114,7 @@ test.describe("Búsqueda y enlaces", () => {
     await expect(
       page.getByRole("heading", { name: /Fuera del capítulo · versión extendida, ampliación/ }),
     ).toBeVisible();
-    await page
-      .getByRole("link", { name: /Versión extendida del autor · DIY: Nightscout y AAPS/ })
-      .click();
+    await page.getByRole("link", { name: /Versión extendida · DIY: Nightscout y AAPS/ }).click();
     await expect(page.locator("#ext-E49")).toBeVisible();
   });
 

@@ -14,8 +14,10 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-08",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — búsqueda más honesta, condiciones a la vista y hojas legibles`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — primero la consulta, búsqueda más honesta y hojas legibles`,
     detalle: [
+      "Portada orientada a la consulta del día a día: «Consultar» va primero, seguido del buscador, los cuatro sistemas y los diagramas; el capítulo completo sigue a un toque («Leer el capítulo» e «Índice»). El rótulo de área es «Área II. Diabetes», como en el Manual.",
+      "Textos de la interfaz en tono neutro: «Guía rápida», «Ampliación técnica», «Versión extendida» y «Pendiente de validación», sin avisos repetidos en cada pantalla. Las notas de trabajo sobre el contenido dejan de mostrarse en la web.",
       "Búsqueda: arriba sale el «pasaje del capítulo» que mejor encaja (ya no «la respuesta»), o una «coincidencia parcial» si solo coincide en parte; el enlace dice adónde lleva («Ver en el apartado», «Ver la tabla», «Ver la figura»). Al principio se ven los mejores resultados y el resto con «Ver más resultados».",
       "El buscador respeta el sistema que se nombra («qué parámetros cambian el automático de Omnipod 5» da su casilla de la Tabla 1), entiende «sale mucho del automático» y «glucosa normal», y sin una cifra de cetonemia ya no elige una rama de la Figura 3. La nota de las dosis de la figura (adultos; en pediatría y gestación, su protocolo) se encuentra al preguntar por ellas.",
       "Medido con 80 preguntas nuevas de residentes, adjuntos y enfermería escritas por otro agente sin ver el motor: el pasaje bueno sale el primero en el 60 % y entre los tres primeros en el 74 %; 7 de las 10 preguntas que el capítulo no trata no reciben pasaje directo. Las mejoras corrigen los casos de la auditoría sin cambiar esa cifra general: el buscador sigue fallando a menudo.",
@@ -30,11 +32,11 @@ export const CAMBIOS: Cambio[] = [
     ambito: "app",
     titulo: "Manual SEEN · AID 0.11.0 — el capítulo de la maquetación del 5-10-2026",
     detalle: [
-      "El texto pasa a la última maquetación de la editorial (5-10-2026), que ya incorpora las 11 correcciones del 30-9. La app aplica además las 3 correcciones finales que el autor ha anotado en ella.",
+      "El texto pasa a la última maquetación de la editorial (5-10-2026), que ya incorpora las 11 correcciones del 30-9. La app aplica además las 3 correcciones finales anotadas en ella.",
       "Resolución de incidencias (p. 15): en personas tratadas con iSGLT2 ya no se habla de rebajar el umbral a 200 mg/dl; «debe mantenerse una alta sospecha de cetoacidosis y medirse la cetonemia ante síntomas o situaciones de riesgo, con independencia del nivel de glucemia». Esa cifra sale de «Cifras del apartado» y de las tarjetas.",
       "La Figura 3, la infografía y las Figuras 1 y 2 se ven ahora con la imagen de la nueva maquetación, más nítida y ya con las correcciones de la editorial (la columna amarilla de la cetonemia, la nota del asterisco de las dosis, «DM1», «En modalidades híbridas»…).",
       "Páginas al día con la nueva maquetación: el final del párrafo de la hipoglucemia pasa a la p. 9, «Capacitación del equipo asistencial» a la p. 10 y la Tabla 3 a la p. 11.",
-      "La información para pacientes que maqueta la editorial el 5-10-2026 es ya, palabra por palabra, la versión V5 del autor que mostraba la app.",
+      "La información para pacientes que maqueta la editorial el 5-10-2026 es ya, palabra por palabra, la versión V5 que mostraba la app.",
     ],
   },
   {
@@ -43,8 +45,8 @@ export const CAMBIOS: Cambio[] = [
     titulo: "Capítulo: nueva maquetación con 3 correcciones finales",
     detalle: [
       "La editorial (ec-europe) entrega una nueva maquetación de 25 páginas con las 11 correcciones del 30-9 incorporadas en el texto, las tablas, la Figura 3 y la infografía.",
-      "El autor anota 3 correcciones finales, que esta app ya aplica: la indicación de Control-IQ+ en la Tabla 1 («peso 9–200 kg, DTD 5–200 UI/día»), la frase sobre los iSGLT2 de la p. 15 y el DOI de la referencia 6.",
-      "La información para pacientes maquetada coincide con la versión V5 del autor.",
+      "La maquetación lleva anotadas 3 correcciones finales, que esta app ya aplica: la indicación de Control-IQ+ en la Tabla 1 («peso 9–200 kg, DTD 5–200 UI/día»), la frase sobre los iSGLT2 de la p. 15 y el DOI de la referencia 6.",
+      "La información para pacientes maquetada coincide con la versión V5.",
     ],
   },
   {
@@ -59,8 +61,8 @@ export const CAMBIOS: Cambio[] = [
       "Paleta (Ctrl K): Intro abre la respuesta y ↓ ↑ recorren los resultados. «Saltar al contenido» con el primer Tab.",
       "Recorridos: «Siguiente» lleva al principio del paso nuevo; al elegir sistema, su casilla queda a la vista sobre la barra inferior; «Iniciar un sistema» tiene un índice «En esta fase» (p. ej., la reducción de la DTD al pasar de MDI) y nombres de sistema cortos.",
       "La hoja de comprobación del inicio lleva QR, dirección, fecha del capítulo y versión, y se comparte como las hojas para el paciente; sale en una cara A4 con letra de 11 pt.",
-      "La portada dice qué es la app (material educativo; no es producto sanitario ni publicación oficial de la SEEN), enseña «Seguir leyendo» sin desplazar y lleva a las tarjetas y al test; «Aprender» sube en la barra lateral. Al enfocar la caja en el móvil, sube para que el teclado no tape la respuesta.",
-      "Las 55 cifras de los apartados llevan a su frase. Tarjetas: «en la ronda de hoy» y «por estrenar». Test: resultado final y «Volver a empezar». «Qué ha cambiado» se acorta: pendientes en lenguaje llano y las notas para el autor y las versiones antiguas, plegadas. Páginas siempre como «pp. 3–4».",
+      "La portada dice qué es la app, enseña «Seguir leyendo» sin desplazar y lleva a las tarjetas y al test; «Aprender» sube en la barra lateral. Al enfocar la caja en el móvil, sube para que el teclado no tape la respuesta.",
+      "Las 55 cifras de los apartados llevan a su frase. Tarjetas: «en la ronda de hoy» y «por estrenar». Test: resultado final y «Volver a empezar». «Qué ha cambiado» se acorta: pendientes en lenguaje llano y las versiones antiguas, plegadas. Páginas siempre como «pp. 3–4».",
     ],
   },
   {
@@ -148,7 +150,7 @@ export const CAMBIOS: Cambio[] = [
       "Cetonemia paso a paso: «¿Ya tienes el β-OHB? Ir a su rama» arriba del recorrido; al llegar con el tramo elegido (por ejemplo, buscando «β-OHB 1,2»), la pantalla va directa a «Actuar».",
       "Situación y sistema: rótulos «Tabla 4/6» y, debajo de la lista, las demás situaciones del capítulo (gestación, adolescencia, población mayor, enfermedad intercurrente, glucocorticoides, diálisis, hospital) con su página.",
       "Glosario: SED, TIRp, TBRp y TARp. Cifras: dosis de la Figura 3 (0,1 y 0,15 UI/kg), 50 %/50 % en el hospital y 24 h de glucemia capilar tras un sensor nuevo; todo comprobado frente al PDF.",
-      "La búsqueda encuentra también la información para pacientes, el resumen y las preguntas del test (en el grupo «fuera del capítulo»); la ampliación del autor se distingue en violeta y la versión extendida, en ámbar.",
+      "La búsqueda encuentra también la información para pacientes, el resumen y las preguntas del test (en el grupo «fuera del capítulo»); la ampliación técnica se distingue en violeta y la versión extendida, en ámbar.",
       "Móvil: «Seguir leyendo» visible en la cabecera de la portada, selectores y listas de 44 px y la «β» con la misma letra que el texto. Autoevaluación: el foco se queda en la respuesta.",
       "El código QR y «Cómo citar» llevan siempre la dirección pública (también si la hoja se imprime desde una copia de prueba), con la zona de silencio que pide la norma. Página «no encontrada» para direcciones que no existen. Publicar exige pasar también las pruebas de navegador.",
     ],
@@ -175,7 +177,7 @@ export const CAMBIOS: Cambio[] = [
     titulo: "Manual SEEN · AID 0.5.1 — hojas para el paciente con letra grande",
     detalle: [
       "Cada hoja para el paciente (información, resumen y plan de seguridad de cada sistema) se puede imprimir en dos formatos: una cara A4 con letra pequeña, como hasta ahora, o letra grande de 12 pt en una columna, a doble cara (el resumen ocupa dos caras; la información y los planes, tres). La elección se hace en la propia hoja y se recuerda en este navegador; también vale al imprimir con Ctrl+P.",
-      "La portada ya no muestra el recuadro «Pendiente» (decisión del autor): lo pendiente sigue, completo, en «Qué ha cambiado» y en «Sobre esta versión».",
+      "La portada ya no muestra el recuadro «Pendiente»: lo pendiente sigue, completo, en «Qué ha cambiado» y en «Sobre esta versión».",
     ],
   },
   {
@@ -185,7 +187,7 @@ export const CAMBIOS: Cambio[] = [
     detalle: [
       "Diseño nuevo con los colores y la tipografía del Manual SEEN: títulos en mayúsculas finas, rótulo «Área Diabetes», franja de cuatro colores, índice del capítulo en mosaico de fichas de color (como las áreas de manual.seen.es) y paginación en círculos al pie de cada apartado. Fuentes Open Sans y Oswald, alojadas en la app (licencia OFL).",
       "Auditoría extensa (contenido, técnica y uso con tres perfiles): enlaces a la Figura 3 que caían un párrafo después, páginas de relación de la versión extendida corregidas en el PDF, frases de los diagramas devueltas a su literal (regla del 1800, ejercicio anaeróbico, tramo amarillo de cetonemia completo) y calificadores recuperados en «Situación y sistema».",
-      "En la ficha de cada sistema, los datos de la ampliación del autor que no coinciden con el capítulo llevan la marca «Difiere del capítulo; manda el capítulo», con la frase literal y su página; y las notas de las tablas (el asterisco de la Tabla 1) se ven junto a la columna del sistema.",
+      "En la ficha de cada sistema, los datos de la ampliación técnica que no coinciden con el capítulo llevan la marca «Difiere del capítulo; manda el capítulo», con la frase literal y su página; y las notas de las tablas (el asterisco de la Tabla 1) se ven junto a la columna del sistema.",
       "Las remisiones del texto («v. Tabla 5», «Figura 3», «v. «Interrupción del sistema…»») son enlaces al sitio exacto del capítulo.",
       "Búsqueda: los resultados de fuera del capítulo ya no quedan ocultos tras los 60 primeros; si ninguna entrada tiene todas las palabras, busca con alguna y lo dice; una cifra de β-OHB («β-OHB 1,2») lleva a su tramo de la Figura 3.",
       "Correcciones: salir de un apartado abierto en un subapartado ya no hace saltar la pantalla siguiente ni falsea «Seguir leyendo»; unas preferencias guardadas con forma inesperada ya no dejan la app en blanco (y el aviso de fallo permite restablecerlas); imprimir con Ctrl+P ya no saca botones ni la versión extendida, y las hojas para el paciente salen igual que con su botón; «Escuchar» conserva el foco y no se queda colgado; el plan de seguridad abre en Safari antiguo.",
@@ -197,12 +199,12 @@ export const CAMBIOS: Cambio[] = [
     ambito: "app",
     titulo: "Manual SEEN · AID 0.4.0 — lo que el PDF no puede dar",
     detalle: [
-      "Versión extendida del autor: 33 fragmentos de los borradores de mayo de 2026 que no cupieron en el capítulo, aprobados uno a uno por el autor. Van plegados, en ámbar y con su borrador y fecha, al final del bloque al que pertenecen y en la ficha de cada sistema; nunca se mezclan con el texto publicado.",
+      "Versión extendida: 33 fragmentos de los borradores de mayo de 2026 que no cupieron en el capítulo, revisados uno a uno. Van plegados, en ámbar y con su borrador y fecha, al final del bloque al que pertenecen y en la ficha de cada sistema; nunca se mezclan con el texto publicado.",
       "Cinco diagramas nuevos con frases literales y su página: gestación sistema a sistema, cuándo no continuar el sistema en el hospital, la Tabla 6 como mapa de exploraciones, la Figura 2 dibujada y la interrupción del sistema según su duración.",
-      "Para el paciente: información para pacientes (versión corregida V5 del autor) y resumen del capítulo, cada uno en una cara A4 imprimible y con código QR; y un plan de seguridad por sistema, hecho solo con texto del capítulo, para rellenar a mano (la app no guarda nada).",
-      "Autoevaluación: las diez preguntas del autor, con su explicación y las frases del capítulo que la respaldan, rotuladas «pendiente de validación del autor».",
+      "Para el paciente: información para pacientes (versión V5) y resumen del capítulo, cada uno en una cara A4 imprimible y con código QR; y un plan de seguridad por sistema, hecho solo con texto del capítulo, para rellenar a mano (la app no guarda nada).",
+      "Autoevaluación: las diez preguntas, con su explicación y las frases del capítulo que la respaldan, rotuladas «pendiente de validación».",
       "Navegación: «¿Qué necesitas?» en la portada, con buscador y ocho atajos a dos toques; «Seguir leyendo»; favoritos y apartados leídos (solo en este navegador, nada clínico); «Volver arriba»; la barra lateral, agrupada en Sistemas, Situaciones y recorridos, Figuras y tablas, y Glosario.",
-      "Cada apartado: «Cómo citar» y «Escuchar» (voz del propio dispositivo). La búsqueda encuentra también la versión extendida y la ampliación del autor, en un grupo aparte y rotulado. Enlaces a los casos prácticos de la edición educativa de asistente-aid desde las situaciones que los tienen.",
+      "Cada apartado: «Cómo citar» y «Escuchar» (voz del propio dispositivo). La búsqueda encuentra también la versión extendida y la ampliación técnica, en un grupo aparte y rotulado. Enlaces a los casos prácticos de la edición educativa de asistente-aid desde las situaciones que los tienen.",
     ],
   },
   {
@@ -222,7 +224,7 @@ export const CAMBIOS: Cambio[] = [
     titulo: "Manual SEEN · AID 0.2.1 — auditoría extensa",
     detalle: [
       "Fidelidad comprobada frente al PDF: 144 de 144 párrafos y listas, 216 de 216 celdas de tabla, las 10 referencias y las 49 cifras por apartado. Corregidas las páginas de dos listas que saltan de página y las de EASD e ISPAD en el glosario.",
-      "Las cabeceras de cada sistema (ficha, portada e índice) salen ahora de la Tabla 1 del capítulo; la ampliación del autor solo se ve dentro de su bloque rotulado.",
+      "Las cabeceras de cada sistema (ficha, portada e índice) salen ahora de la Tabla 1 del capítulo; la ampliación técnica solo se ve dentro de su bloque rotulado.",
       "Impresión: el título del apartado y la cabecera de la ficha ya salen en papel, el modo nocturno se imprime en negro y las tablas salen como tabla.",
       "Navegación: elegir un tramo, paso o sistema ya no sube al principio ni llena el historial; Atrás conserva la posición y la búsqueda; los enlaces a una referencia llegan a ella.",
       "Accesibilidad y móvil: contraste corregido en cuatro elementos, sin desbordes de 360 a 1440 px y botones de paso de 44 px.",
@@ -233,7 +235,7 @@ export const CAMBIOS: Cambio[] = [
     ambito: "app",
     titulo: "Manual SEEN · AID 0.2.0 — el capítulo, más manejable",
     detalle: [
-      "Sistemas: una ficha por sistema con su foto oficial; primero lo que dice el capítulo (sus columnas de las Tablas 1, 3 y 4 y los párrafos que lo nombran, con página) y, aparte y rotulada, la «Ampliación del autor» (ficha técnica, parámetros que mueven el automático, sets de infusión, insulinas compatibles) con sus fuentes.",
+      "Sistemas: una ficha por sistema con su foto oficial; primero lo que dice el capítulo (sus columnas de las Tablas 1, 3 y 4 y los párrafos que lo nombran, con página) y, aparte y rotulada, la «Ampliación técnica» (ficha técnica, parámetros que mueven el automático, sets de infusión, insulinas compatibles) con sus fuentes.",
       "Recorridos de consulta construidos solo con el texto del capítulo: «Situación y sistema» (Tablas 4 y 6), «Revisar la descarga» (Tabla 5 en ocho pasos) e «Interrupción del sistema» (línea de tiempo).",
       "«Cifras del apartado»: los umbrales y tiempos que da cada apartado, de un vistazo y con su página; índice lateral fijo en pantallas grandes.",
       "Figura 1 como diagrama animado; fotos de los sistemas en las cabeceras de las tablas comparativas.",
@@ -258,26 +260,17 @@ export const CAMBIOS: Cambio[] = [
     titulo: "Capítulo: maquetación final con 11 correcciones editoriales",
     detalle: [
       "Versión maquetada por ec-europe (25 páginas) con 11 observaciones editoriales anotadas, ya decididas; esta app las aplica en el texto.",
-      "Además, la Tabla 1 lleva corregida la errata de Control-IQ+ que el autor comunicará a la editorial: «peso 9–200 kg, DTD 5–200 UI/día».",
+      "Además, la Tabla 1 lleva corregida la errata de Control-IQ+, pendiente de comunicar a la editorial: «peso 9–200 kg, DTD 5–200 UI/día».",
     ],
   },
 ];
 
-/* Lo que todavía no se sabe. Se muestra tal cual; no se rellena con suposiciones.
-   PENDIENTES: lo que importa al lector, en pocas palabras. NOTAS_AUTOR: decisiones de detalle
-   que quedan en manos del autor (se enseñan plegadas). */
+/* Lo que todavía no se sabe. Se muestra tal cual; no se rellena con suposiciones. Solo lo que
+   importa al lector, en pocas palabras y en tono neutro; las decisiones de detalle sobre el
+   contenido van en docs/NOTAS_EDITORIALES.md, fuera de la web. */
 export const PENDIENTES: string[] = [
-  "El permiso de la SEEN y de la editorial (ec-europe) para esta versión web, y dónde se alojará.",
-  "Que el autor valide las diez preguntas del test (hoy, «pendiente de validación del autor»).",
-  "Que la editorial pase al capítulo las 3 correcciones finales del autor del 5-10-2026 (esta app ya las aplica).",
+  "La autorización de la SEEN y de la editorial (ec-europe) para esta versión web, y su alojamiento.",
+  "La validación final de las diez preguntas del test.",
+  "La incorporación al capítulo maquetado de sus 3 correcciones finales del 5-10-2026 (esta versión ya las aplica).",
   "El ISBN y la fecha de publicación del capítulo en el Manual SEEN, para «Cómo citar».",
-];
-
-export const NOTAS_AUTOR: string[] = [
-  "Dos detalles de la Figura 3 que pedía la corrección 5/11 y que la maquetación del 5-10-2026 no deja del todo: en la columna roja sigue «pauta especifica» sin tilde (la transcripción de la app la lleva) y las líneas que bajan a las columnas amarilla y naranja no tienen punta de flecha, a diferencia de las de los extremos.",
-  "Las diferencias entre el capítulo y la ampliación del autor (asistente-aid): ratio I/HC, tipo de algoritmo de Control-IQ, autocorrección de MiniMed 780G, fecha de verificación y otras (auditoría del 2-10-2026). Llevan la marca «Difiere del capítulo» en la ficha la ratio I/HC, el tipo de algoritmo de Control-IQ y la autocorrección de la 780G; el resto, hasta que el autor decida, solo figura aquí.",
-  "Tres matices de la versión extendida frente al capítulo, para que el autor decida si los deja, los precisa o los retira: E04 («ajustar si hay hiperglucemia persistente», cuando el capítulo pide descartar antes fallo de infusión), E28 («el objetivo se eleva antes de reducir el bolo, no en paralelo») y E07 (control desde el móvil, cuando en España es con el controlador).",
-  "Dos frases de la información para pacientes V5 que el autor puede querer completar con el capítulo: los 5-10 g de hidratos en la hipoglucemia (sin la condición de 54-70 mg/dl y flecha estable) y la desconexión de la bomba con tubo (sin «suspender o pausar la administración»).",
-  "La edad de Liberty: la Tabla 1 dice «> 13 años» y el apartado 3, «menores de 13 años».",
-  "Los archivos fuente de la infografía y de las figuras (hoy, imágenes de la maquetación; el texto de cada caja ya está transcrito).",
 ];

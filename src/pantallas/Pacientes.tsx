@@ -173,7 +173,7 @@ export function HubPacientes() {
       href: href("pacientes", "informacion"),
       icono: FileText,
       t: "Información para pacientes",
-      s: "Doce preguntas y respuestas del autor y un mensaje final: qué es el sistema, qué material llevar, qué hacer si la glucosa baja o sube, ejercicio, viajes y pruebas.",
+      s: "Doce preguntas y respuestas y un mensaje final: qué es el sistema, qué material llevar, qué hacer si la glucosa baja o sube, ejercicio, viajes y pruebas.",
     },
     {
       href: href("pacientes", "resumen"),

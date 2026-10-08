@@ -396,7 +396,7 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
         {grupo("Fuentes y versión", ["bibliografia", "cambios", "sobre"])}
       </nav>
       <div className="mt-auto px-3 pt-6 text-[11px] leading-relaxed text-slate-500">
-        Material educativo. No es producto sanitario ni sustituye el juicio clínico.
+        No sustituye la ficha técnica de cada sistema ni el juicio clínico.
       </div>
     </aside>
   );
@@ -637,7 +637,7 @@ export function Shell({
             className="etiqueta-area ml-auto hidden truncate text-sm lg:block"
             style={{ color: SEEN.diabetesOsc }}
           >
-            Área · Diabetes
+            Área II. Diabetes
           </span>
           <span className="flex-1 md:hidden" />
           {enLectura && (

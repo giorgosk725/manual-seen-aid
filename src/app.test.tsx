@@ -85,7 +85,7 @@ describe("App", () => {
   it("el test razona la respuesta con la explicación del autor y el capítulo", async () => {
     render(<App />);
     await ir("#/test");
-    expect(screen.getAllByText(/Pendiente de validación del autor/).length).toBeGreaterThan(1);
+    expect(screen.getAllByText(/Pendiente de validación/).length).toBeGreaterThan(1);
     expect(screen.queryByText(/Provisional · ejemplo/)).toBeNull();
     await userEvent.click(
       screen.getByRole("button", {
@@ -115,7 +115,7 @@ describe("App", () => {
   it("la versión extendida va plegada, rotulada y aparte del texto del capítulo", async () => {
     render(<App />);
     await ir("#/capitulo/12-horizonte");
-    const capa = screen.getByText("Versión extendida del autor · no publicada en el Manual");
+    const capa = screen.getByText("Versión extendida · no publicada en el Manual");
     const det = capa.closest("details")!;
     expect(det).not.toHaveAttribute("open");
     expect(within(det).getAllByText(/Borrador V85 limpio · 31-5-2026/).length).toBeGreaterThan(0);
@@ -135,7 +135,7 @@ describe("App", () => {
     await ir("#/sistemas/op5");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Omnipod 5");
     expect(screen.getByRole("heading", { name: /Lo que dice el capítulo/ })).toBeInTheDocument();
-    expect(screen.getByText(/Ampliación del autor · fuera del capítulo/)).toBeInTheDocument();
+    expect(screen.getByText(/Ampliación técnica · fuera del capítulo/)).toBeInTheDocument();
     expect(screen.getAllByText(/sin peso mínimo; DTD ≥ 5 UI\/día/).length).toBeGreaterThan(0);
   });
 

@@ -105,8 +105,8 @@ export function VersionExtendida({
       </summary>
       <div className="border-t border-amber-200 px-4 pb-4 pt-3">
         <p className="text-xs leading-relaxed text-amber-900">
-          Texto del autor que no entró en el capítulo por espacio. No forma parte del Manual SEEN ni
-          lo sustituye: si algo no coincide, manda el texto publicado. «[…]» marca una frase de los
+          Texto que no entró en el capítulo por espacio. No forma parte del Manual SEEN ni lo
+          sustituye: si algo no coincide, manda el texto publicado. «[…]» marca una frase de los
           borradores que cambió en la versión publicada.
         </p>
         <ul className="mt-3 space-y-4">

@@ -87,7 +87,7 @@ test.describe("Recorrido básico (escritorio)", () => {
       .click();
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("myLoop CamAPS");
     await expect(page.getByRole("img", { name: /Foto oficial de myLoop CamAPS/ })).toBeVisible();
-    await expect(page.getByText("Ampliación del autor · fuera del capítulo")).toBeVisible();
+    await expect(page.getByText("Ampliación técnica · fuera del capítulo")).toBeVisible();
     await page.goto("/#/consultar/situacion");
     await page.getByRole("button", { name: /Resonancia magnética/ }).click();
     await expect(page.getByText(/retirar también el set si la cánula es metálica/)).toBeVisible();

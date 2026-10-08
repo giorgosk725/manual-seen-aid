@@ -1,4 +1,4 @@
-/* «Cómo usar esta app»: tarjeta de primera visita en la portada (se cierra y no vuelve) y la
+/* «Guía rápida»: tarjeta de primera visita en la portada (se cierra y no vuelve) y la
    misma guía en «Sobre esta versión». Texto de la app, no del capítulo. */
 import { BookOpen, HeartHandshake, Route, Search, X } from "lucide-react";
 import { href } from "../rutas";
@@ -80,7 +80,7 @@ export function Bienvenida() {
     >
       <div className="mb-3 flex items-start justify-between gap-3">
         <h2 id="bienvenida" className="text-base font-extrabold text-slate-900">
-          Cómo usar esta app
+          Guía rápida
         </h2>
         <button
           type="button"

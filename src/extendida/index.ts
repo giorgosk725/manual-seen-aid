@@ -5,7 +5,7 @@ import { FRAGMENTOS_EXTENDIDOS, type FragmentoExtendido } from "./fragmentos";
 
 export * from "./fragmentos";
 
-export const ROTULO_EXTENDIDA = "Versión extendida del autor · no publicada en el Manual";
+export const ROTULO_EXTENDIDA = "Versión extendida · no publicada en el Manual";
 
 /* Fragmentos que se muestran tras el bloque `i` del apartado. */
 export const extendidosTrasBloque = (a: Apartado, i: number): FragmentoExtendido[] =>
