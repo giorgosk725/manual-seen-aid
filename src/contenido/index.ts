@@ -22,13 +22,18 @@ export const CAPITULO = {
   autor: "Georgios Kyriakos",
   filiacion:
     "Servicio de Endocrinología y Nutrición. Hospital General Universitario Santa Lucía. Cartagena. Murcia.",
-  obra: "Manual SEEN · Actualización SEEN",
+  obra: "Manual de Endocrinología y Nutrición de la SEEN",
   sociedad: "Sociedad Española de Endocrinología y Nutrición (SEEN)",
   editorial: "ec-europe",
-  /* Fecha de la maquetación final que sirve de fuente única a esta app. */
-  fechaFuente: "5 de octubre de 2026",
-  fechaFuenteISO: "2026-10-05",
+  /* Publicación en el Manual (manual.seen.es): fuente única de esta app desde el 8-10-2026. */
+  fechaFuente: "8 de octubre de 2026",
+  fechaFuenteISO: "2026-10-08",
   paginas: 25,
+  numero: 89,
+  area: "Área II. Diabetes",
+  subseccion: "Tratamiento",
+  isbn: "978-84-606-8570-8",
+  url: "https://manual.seen.es/article?id=6ac781b3-b8f0-43a6-959e-3bc70aca0133",
   /* Capítulo del Manual SEEN que precede a este (MDI), al que remite la introducción (p. 1). */
   continuaA: "Tratamiento insulínico del paciente con diabetes tipo 1: múltiples dosis de insulina",
 } as const;

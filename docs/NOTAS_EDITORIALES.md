@@ -5,7 +5,7 @@ app («Notas para el autor»); desde la 0.12.0 viven aquí, fuera de la web (la 
 directas al autor y estas notas son de trabajo interno). Los pendientes que importan al lector siguen
 visibles en la app (`PENDIENTES`, `src/contenido/cambios.ts`).
 
-1. **Figura 3 (maquetación del 5-10-2026).** Dos detalles que pedía la corrección 5/11 y que la editorial no
+1. **Figura 3 (maquetación del 5-10-2026; igual en el capítulo publicado el 8-10).** Dos detalles que pedía la corrección 5/11 y que la editorial no
    deja del todo: en la columna roja sigue «pauta especifica» sin tilde (la transcripción de la app la lleva)
    y las líneas que bajan a las columnas amarilla y naranja no tienen punta de flecha, a diferencia de las de
    los extremos.
@@ -21,5 +21,6 @@ visibles en la app (`PENDIENTES`, `src/contenido/cambios.ts`).
    hidratos en la hipoglucemia (sin la condición de 54-70 mg/dl y flecha estable) y la desconexión de la
    bomba con tubo (sin «suspender o pausar la administración»).
 5. **Edad de Liberty.** La Tabla 1 dice «> 13 años» y el apartado 3, «menores de 13 años».
-6. **Archivos fuente** de la infografía y de las figuras (hoy, recortes de la maquetación; el texto de cada
-   caja ya está transcrito).
+6. ~~Archivos fuente de la infografía y de las figuras~~: resuelto en la práctica. Las imágenes son recortes
+   vectoriales del PDF publicado a 1440 px, nítidos con zoom; los archivos fuente solo harían falta para
+   rehacer las figuras.

@@ -19,9 +19,9 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
 ## 1. CRITICAL RULES
 
 1. **Single source = the chapter.** Every word of content in `src/contenido/` is literal text of the
-   final typeset PDF (5-10-2026, 25 pages; it already carries the 11 corrections of 30-9) with the
-   3 final author corrections applied
-   (`docs/CORRECCIONES.md`). Each block carries its source page. **Never invent content, never
+   chapter as PUBLISHED in the Manual SEEN on 8-10-2026 (chapter 89, 25-page PDF, ISBN
+   978-84-606-8570-8, https://manual.seen.es/article?id=6ac781b3-b8f0-43a6-959e-3bc70aca0133;
+   `docs/CORRECCIONES.md`; local copy `Downloads\Capitulo_AID_SEEN_PUBLICADO_08-10-2026.pdf`). Each block carries its source page. **Never invent content, never
    import text from other sources, never "improve" the author's wording.** Figures that are images
    in the PDF are transcribed box by box.
 2. **Educational, no clinical data.** No calculators, no patient inputs, no storage of anything

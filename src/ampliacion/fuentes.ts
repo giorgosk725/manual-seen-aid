@@ -256,9 +256,10 @@ export const FUENTES: Record<string, Fuente> = {
     label:
       "Kyriakos G. · Capítulo «Tratamiento insulínico del paciente con diabetes mellitus tipo 1: automatización de la insulinoterapia» (Manual SEEN)",
     kind: "guia",
-    ref: "Manual SEEN de endocrinología (ec-europe) · ISBN 978-84-606-8570-8 · maquetación final del 5-10-2026 con las correcciones editoriales del autor, pendiente de publicación · tablas de sistemas, transición desde MDI, parámetros por sistema, análisis de la descarga, Figura 3 (algoritmo de cetonemia con dosis orientativas 0,1 y 0,15 UI/kg en adultos), interrupción y pauta alternativa, situaciones especiales y Tabla 6 de exploraciones",
+    ref: "Manual SEEN de endocrinología (ec-europe) · ISBN 978-84-606-8570-8 · capítulo 89, publicado el 8-10-2026 en manual.seen.es · tablas de sistemas, transición desde MDI, parámetros por sistema, análisis de la descarga, Figura 3 (algoritmo de cetonemia con dosis orientativas 0,1 y 0,15 UI/kg en adultos), interrupción y pauta alternativa, situaciones especiales y Tabla 6 de exploraciones",
     date: "2026",
     checked: "octubre de 2026",
+    url: "https://manual.seen.es/article?id=6ac781b3-b8f0-43a6-959e-3bc70aca0133",
   },
   shah2026: {
     label: "Shah et al. · Optimización de Control-IQ+",

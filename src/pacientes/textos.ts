@@ -1,8 +1,8 @@
 /* Textos para pacientes, LITERALES, del autor del capítulo. Capa «Para el paciente»: no es
    texto del capítulo y se muestra siempre rotulada.
-   · Información para pacientes: versión corregida V5 del autor. La maquetación de la editorial
-     del 5-10-2026 es idéntica a ella palabra por palabra (la del 30-9-2026 era anterior).
-   · Resumen: maquetación de la editorial del 30-9-2026 (idéntica palabra por palabra a la V6 del autor).
+   · Información para pacientes: versión V5, idéntica palabra por palabra a la publicada en el
+     Manual el 8-10-2026 (y a la maquetación del 5-10; la del 30-9 era anterior).
+   · Resumen: V6, idéntico palabra por palabra al publicado el 8-10-2026 (y a la maquetación del 30-9).
    Generado desde los .docx del autor; la auditoría (scripts/auditoria/fidelidad_extra.py) lo comprueba.
    No editar a mano. */
 
@@ -18,7 +18,7 @@ export const AUTOR_PACIENTES =
 
 export const INFORMACION_PACIENTES = {
   rotulo: "Información para pacientes",
-  fuente: "Maquetación de la editorial (ec-europe, 5-10-2026)",
+  fuente: "Manual SEEN, publicado el 8-10-2026",
   secciones: [
     {
       pregunta: "¿Qué es un sistema de asa cerrada?",
@@ -104,7 +104,7 @@ export const INFORMACION_PACIENTES = {
 
 export const RESUMEN_CAPITULO = {
   rotulo: "Resumen",
-  fuente: "Maquetación de la editorial (ec-europe, 30-9-2026)",
+  fuente: "Manual SEEN, publicado el 8-10-2026",
   parrafos: [
     "Los sistemas de administración automatizada de insulina (AID, automated insulin delivery), también denominados sistemas de asa cerrada, integran monitorización continua de glucosa, bomba de insulina o pod y un algoritmo que ajusta dinámicamente la administración de insulina según los valores y las tendencias de la glucosa. Pueden considerarse una modalidad preferente de administración de insulina en la diabetes tipo 1 en personas capaces de utilizarlos con seguridad, por sí mismas o con apoyo, con el objetivo de aumentar el tiempo en rango, reducir la hipoglucemia y la variabilidad glucémica, mejorar la seguridad y disminuir la carga cotidiana del autocuidado.",
     "La mayoría de los sistemas AID actualmente disponibles son híbridos: automatizan gran parte de la administración de insulina y, en algunos casos, realizan autocorrecciones, pero siguen requiriendo la participación de la persona para anunciar comidas, administrar bolos prandiales, responder a alarmas, realizar recambios y actuar ante incidencias. Las modalidades de asa cerrada completa (fully closed-loop), como la modalidad Liberty de myLoop powered by CamAPS FX, reducen la necesidad de bolos para las comidas en las situaciones en las que está previsto su uso, aunque no sustituyen la educación terapéutica ni el plan de seguridad.",

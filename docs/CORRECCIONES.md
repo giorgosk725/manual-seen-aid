@@ -1,5 +1,23 @@
 # Correcciones editoriales aplicadas en la app
 
+## Capítulo publicado (8-10-2026): fuente única desde entonces
+
+Publicado en <https://manual.seen.es/article?id=6ac781b3-b8f0-43a6-959e-3bc70aca0133> como capítulo 89 (Área II,
+Diabetes · subsección Tratamiento), «Última modificación: 08/10/2026 11:43». PDF de 25 páginas con el pie
+«ec-europe - ISBN 978–84–606–8570–8 - 08/10/2026» (copia local `Downloads\Capitulo_AID_SEEN_PUBLICADO_08-10-2026.pdf`), más el
+de información para pacientes (`…_medium.pdf`, 3 páginas) y el resumen (`…_summary.pdf`, 1 página).
+
+- Trae las 3 correcciones finales del 5-10-2026 (tabla de abajo) y, además, «peso» en la indicación de
+  **Control-IQ** de la Tabla 1: «Control-IQ: ≥ 6 años, peso 25–140 kg, DTD 10–100 UI/día» (aplicado en `tablas.ts`).
+- Por lo demás, el texto es el de la maquetación del 5-10-2026 (auditoría `fidelidad.py`: 147/147 párrafos,
+  216/216 celdas, 0 divergencias). La paginación es la misma salvo saltos de línea dentro de las pp. 4–7 que no
+  mueven ningún bloque.
+- Figuras: iguales a las del 5-10-2026 (la 2 está 12 pt más abajo en la p. 6; se han vuelto a recortar las
+  cuatro del PDF publicado). Siguen los dos detalles de la Figura 3 anotados en `docs/NOTAS_EDITORIALES.md`.
+- Información para pacientes y resumen publicados: idénticos palabra por palabra a los de la app.
+
+## Maquetación del 5-10-2026
+
 Fuente única desde la 0.11.0: `Capitulo_AID_SEEN_05-10-2026_ANOTADO_3_DETALLES_FINALES.pdf` (25 páginas,
 maquetación de ec-europe del 5-10-2026; el `…_Completo.pdf` de la editorial de esa fecha tiene el mismo texto,
 sin las notas). Esta maquetación **ya incorpora** las 11 correcciones del 30-9-2026 (segunda tabla) y lleva

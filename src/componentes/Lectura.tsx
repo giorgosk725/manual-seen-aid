@@ -16,7 +16,7 @@ import {
   Star,
   Volume2,
 } from "lucide-react";
-import { idDeBloque, type Apartado } from "../contenido";
+import { CAPITULO, idDeBloque, type Apartado } from "../contenido";
 import { plano } from "../marcado";
 import { alternarFavorito, useFavoritos } from "../prefs";
 import { citaDeApartado } from "../compartir";
@@ -113,9 +113,6 @@ export function ComoCitar({ apartado }: { apartado: Apartado }) {
           className="mt-2 w-full rounded-xl border bg-white p-3 text-sm"
           style={{ borderColor: "#e6e6e6" }}
         >
-          <p className="mb-1 text-xs font-bold uppercase tracking-wide text-amber-800">
-            Cita provisional
-          </p>
           <p className="select-all text-slate-800">{texto}</p>
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <button
@@ -140,9 +137,14 @@ export function ComoCitar({ apartado }: { apartado: Apartado }) {
             <span role="status" className="text-xs text-slate-600">
               {copiado === "error" && "No se pudo copiar: selecciona el texto y cópialo a mano."}
             </span>
-            <span className="text-xs text-slate-500">
-              ISBN y fecha de publicación del Manual: pendientes de confirmar con la SEEN.
-            </span>
+            <a
+              href={CAPITULO.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-slate-700 hover:underline"
+            >
+              Ver el capítulo en el Manual SEEN <ExternalLink size={12} aria-hidden="true" />
+            </a>
           </div>
         </div>
       )}

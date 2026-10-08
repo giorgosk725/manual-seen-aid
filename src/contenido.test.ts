@@ -176,6 +176,8 @@ describe("correcciones editoriales aplicadas", () => {
   it("final 1/3 (5-10-2026): Control-IQ+ peso 9–200 kg, DTD 5–200 UI/día", () => {
     const ind = TABLAS.T1.filas.find((f) => f.etiqueta === "Indicación")!;
     expect(ind.celdas[1]).toContain("Control-IQ+: ≥ 2 años, peso 9–200 kg, DTD 5–200 UI/día");
+    // El capítulo publicado (8-10-2026) pone «peso» también en Control-IQ.
+    expect(ind.celdas[1]).toContain("Control-IQ: ≥ 6 años, peso 25–140 kg, DTD 10–100 UI/día");
     expect(todo).not.toContain("DTD 9–200 kg");
   });
   it("final 2/3 (5-10-2026): iSGLT2 sin umbral rebajado a 200 mg/dl", () => {
@@ -251,7 +253,7 @@ describe("convenciones de escritura", () => {
   });
   it("los cambios llevan fecha ISO y hay pendientes visibles", () => {
     for (const c of CAMBIOS) expect(c.fecha).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    expect(PENDIENTES.length).toBeGreaterThanOrEqual(3);
+    expect(PENDIENTES.length).toBeGreaterThanOrEqual(2);
     // Lo del lector, corto, neutro y sin jerga interna (el detalle, en docs/NOTAS_EDITORIALES.md).
     expect(PENDIENTES.length).toBeLessThanOrEqual(5);
     for (const p of PENDIENTES) expect(p).not.toMatch(/asistente-aid|E\d\d|auditoría|\bautor\b/);

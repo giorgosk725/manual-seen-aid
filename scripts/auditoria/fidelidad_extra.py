@@ -28,7 +28,7 @@ RUTAS = {
     "V79": os.environ.get("MSEEN_V79", H + r"\Capitulo SEEN\Capitulo_SEEN_AID_V79_limpio.docx"),
     "T85": os.environ.get("MSEEN_T85", H + r"\Capitulo SEEN\30 mayo\Tablas_SEEN_AID_V85_vertical.docx"),
     "V5": os.environ.get("MSEEN_V5", H + r"\Desktop\Capitulo SEEN\Informacion_pacientes_AID_SEEN_version_definitiva_V5.docx"),
-    "PDF": os.environ.get("MSEEN_PDF", r"C:\Users\giorg\Downloads\Capitulo_AID_SEEN_05-10-2026_ANOTADO_3_DETALLES_FINALES.pdf"),
+    "PDF": os.environ.get("MSEEN_PDF", r"C:\Users\giorg\Downloads\Capitulo_AID_SEEN_PUBLICADO_08-10-2026.pdf"),
 }
 
 

@@ -6,6 +6,7 @@ import { useState } from "react";
 import {
   ArrowRight,
   BookOpen,
+  ExternalLink,
   CircleCheck,
   Clock3,
   Droplets,
@@ -530,7 +531,9 @@ export function Portada() {
               />
               <span>Manual SEEN</span>
               <span aria-hidden="true">·</span>
-              <span>Área II. Diabetes</span>
+              <span>{CAPITULO.area}</span>
+              <span aria-hidden="true">·</span>
+              <span>Capítulo {CAPITULO.numero}</span>
             </div>
             <h1
               id="titulo-capitulo"
@@ -575,6 +578,14 @@ export function Portada() {
               >
                 Índice <ArrowRight size={15} aria-hidden="true" />
               </a>
+              <a
+                href={CAPITULO.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center gap-1 px-1 text-sm font-semibold text-slate-700 underline-offset-2 hover:underline"
+              >
+                En el Manual SEEN <ExternalLink size={14} aria-hidden="true" />
+              </a>
             </div>
             <SeguirLeyendo />
             <ul className="mt-5 hidden flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600 sm:flex">
@@ -591,7 +602,7 @@ export function Portada() {
                 <span className="font-semibold tabular-nums text-slate-900">3</span> figuras
               </li>
               <li>
-                Texto final del{" "}
+                Publicado el{" "}
                 <span className="font-semibold text-slate-900">{fecha(ultimoCap.fecha)}</span>
               </li>
             </ul>

@@ -172,8 +172,7 @@ export function Visual() {
             })}
           </ul>
           <p className="mt-2 text-xs text-slate-500">
-            Imágenes de la maquetación del 5-10-2026, que ya llevan las correcciones editoriales
-            (provisionales, a falta de los archivos fuente).
+            Imágenes del capítulo publicado en el Manual SEEN (8-10-2026).
           </p>
         </section>
       )}

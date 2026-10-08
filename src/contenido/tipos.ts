@@ -1,7 +1,7 @@
 /* Tipos del contenido del capítulo.
 
-   REGLA ÚNICA: todo el texto es LITERAL del capítulo (PDF maquetado del 5-10-2026, que trae las
-   11 correcciones del 30-9, con las 3 finales del autor aplicadas), y cada bloque lleva su página.
+   REGLA ÚNICA: todo el texto es LITERAL del capítulo publicado en el Manual SEEN el 8-10-2026
+   (capítulo 89, ISBN 978-84-606-8570-8), y cada bloque lleva su página del PDF.
    Nada de contenido inventado ni traído de otras fuentes. */
 
 import type { DiagramaId } from "./diagramas";

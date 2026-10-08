@@ -1,7 +1,5 @@
 /* Direcciones para compartir (QR, enlaces) y cita de un apartado. Sin React. */
 import { CAPITULO, type Apartado } from "./contenido";
-import { VERSION_APP } from "./contenido/cambios";
-import { href } from "./rutas";
 
 /* Dirección pública de la app (mientras se aloje en Cloudflare Pages). */
 export const DIRECCION_PUBLICA = "https://manual-seen-aid.pages.dev/";
@@ -26,6 +24,7 @@ export const direccion = (hash: string) => {
 const hoy = () =>
   new Date().toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
 
+/* Cita del capítulo publicado en el Manual (8-10-2026), con el apartado y sus páginas del PDF. */
 export const citaDeApartado = (a: Apartado) => {
   const pags =
     a.paginas[0] === a.paginas[1] ? `p. ${a.paginas[0]}` : `pp. ${a.paginas[0]}–${a.paginas[1]}`;
@@ -36,8 +35,8 @@ export const citaDeApartado = (a: Apartado) => {
       .join(" ")
       .replace(/^(\S+) (\S)\S*$/, "$1 $2")}. ` +
     `${CAPITULO.titulo}. Apartado ${a.n}: ${a.titulo}, ${pags}. ` +
-    `En: Manual SEEN. ${CAPITULO.sociedad}; 2026. ` +
-    `Versión web Manual SEEN · AID ${VERSION_APP} [consultado el ${hoy()}]. ` +
-    `Disponible en: ${direccion(href("capitulo", a.slug))}`
+    `En: ${CAPITULO.obra}. ${CAPITULO.sociedad}; 2026 ` +
+    `[actualizado el ${CAPITULO.fechaFuente}; consultado el ${hoy()}]. ISBN ${CAPITULO.isbn}. ` +
+    `Disponible en: ${CAPITULO.url}`
   );
 };

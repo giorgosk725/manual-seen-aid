@@ -1,4 +1,4 @@
-/* «Para el paciente»: información para pacientes (V5 del autor = maquetación del 5-10-2026) y
+/* «Para el paciente»: información para pacientes (V5 = la publicada el 8-10-2026) y
    resumen (maquetación de la editorial), literales; y la hoja «Plan de seguridad» de cada sistema, hecha SOLO con texto
    del capítulo (pp. 7-9, Figura 3 y Tabla 4) y huecos para rellenar a mano. Cada hoja se imprime
    en una cara A4 (letra pequeña, dos columnas) o, a elegir, con letra grande (una columna,
@@ -157,8 +157,7 @@ function Hoja({
           </p>
           <p className="break-all">{direccion(ruta)}</p>
           <div className="mt-1">
-            {pie} Hoja de la versión {VERSION_APP}; capítulo de la maquetación del{" "}
-            {CAPITULO.fechaFuente}.
+            {pie} Hoja de la versión {VERSION_APP}; capítulo publicado el {CAPITULO.fechaFuente}.
           </div>
         </div>
       </footer>

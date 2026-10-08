@@ -16,6 +16,7 @@ export const CAMBIOS: Cambio[] = [
     ambito: "app",
     titulo: `Manual SEEN · AID ${VERSION_APP} — primero la consulta, búsqueda más honesta y hojas legibles`,
     detalle: [
+      "El texto es ya el del capítulo publicado en el Manual SEEN el 8-10-2026 (capítulo 89), con enlace a su página oficial desde la portada, «Sobre esta versión» y «Cómo citar»; la cita lleva el ISBN y la fecha de publicación.",
       "Portada orientada a la consulta del día a día: «Consultar» va primero, seguido del buscador, los cuatro sistemas y los diagramas; el capítulo completo sigue a un toque («Leer el capítulo» e «Índice»). El rótulo de área es «Área II. Diabetes», como en el Manual.",
       "Textos de la interfaz en tono neutro: «Guía rápida», «Ampliación técnica», «Versión extendida» y «Pendiente de validación», sin avisos repetidos en cada pantalla. Las notas de trabajo sobre el contenido dejan de mostrarse en la web.",
       "Búsqueda: arriba sale el «pasaje del capítulo» que mejor encaja (ya no «la respuesta»), o una «coincidencia parcial» si solo coincide en parte; el enlace dice adónde lleva («Ver en el apartado», «Ver la tabla», «Ver la figura»). Al principio se ven los mejores resultados y el resto con «Ver más resultados».",
@@ -24,7 +25,17 @@ export const CAMBIOS: Cambio[] = [
       "Sistemas: «Qué mueve el modo automático» pasa a «Parámetros configurables en modo automático» (el rótulo de la Tabla 1), separando los de efecto directo sobre el algoritmo (*) de los que intervienen sobre todo en los bolos o en el modo manual.",
       "Figura 3: al abrir una rama, también por enlace directo, debajo van las notas comunes de la figura (insulina con pluma, situaciones especiales, registro) y a quién se refieren las dosis.",
       "Hojas para el paciente: letra grande por defecto; la de una cara queda como versión compacta. Al pie, que lo escrito a mano no aparece en la web, la versión de la hoja y la fecha del capítulo.",
-      "Lectura: en el móvil, las cifras del apartado empiezan plegadas para que el texto aparezca antes. «Cómo citar» se rotula como cita provisional. La página de tablas explica qué pregunta responde cada una. Los enlaces a la edición educativa de ejercicio, comidas y cirugía llevan a su apartado, no al catálogo general. Rótulos más precisos en tarjetas, consulta y sistemas.",
+      "Lectura: en el móvil, las cifras del apartado empiezan plegadas para que el texto aparezca antes. La página de tablas explica qué pregunta responde cada una. Los enlaces a la edición educativa de ejercicio, comidas y cirugía llevan a su apartado, no al catálogo general. Rótulos más precisos en tarjetas, consulta y sistemas.",
+    ],
+  },
+  {
+    fecha: "2026-10-08",
+    ambito: "capitulo",
+    titulo: "Capítulo publicado en el Manual SEEN (capítulo 89)",
+    detalle: [
+      "Publicado el 8 de octubre de 2026 en manual.seen.es, en el Área II (Diabetes), subsección Tratamiento, con ISBN 978-84-606-8570-8.",
+      "Lleva las 3 correcciones finales del 5-10-2026 y añade «peso» también en la indicación de Control-IQ de la Tabla 1 («peso 25–140 kg»). El resto del texto, las tablas y las figuras son los de la maquetación del 5-10-2026.",
+      "La información para pacientes y el resumen publicados son, palabra por palabra, los que muestra esta app.",
     ],
   },
   {
@@ -271,6 +282,4 @@ export const CAMBIOS: Cambio[] = [
 export const PENDIENTES: string[] = [
   "La autorización de la SEEN y de la editorial (ec-europe) para esta versión web, y su alojamiento.",
   "La validación final de las diez preguntas del test.",
-  "La incorporación al capítulo maquetado de sus 3 correcciones finales del 5-10-2026 (esta versión ya las aplica).",
-  "El ISBN y la fecha de publicación del capítulo en el Manual SEEN, para «Cómo citar».",
 ];

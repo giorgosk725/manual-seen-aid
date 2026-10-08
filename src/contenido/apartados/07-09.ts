@@ -1,4 +1,4 @@
-/* Apartados 7–9 del capítulo. Texto literal (PDF 30-9-2026). */
+/* Apartados 7–9 del capítulo. Texto literal del PDF publicado el 8-10-2026. */
 import type { Apartado } from "../tipos";
 
 export const A07: Apartado = {

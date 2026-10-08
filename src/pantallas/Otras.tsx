@@ -367,14 +367,14 @@ export function Cambios() {
 }
 
 /* ---------- Sobre esta versión ---------- */
-/* Anotadas en la maquetación del 5-10-2026; la editorial aún no las ha pasado. */
+/* Anotadas en la maquetación del 5-10-2026 y ya en el capítulo publicado el 8-10-2026. */
 const CORRECCIONES_FINALES = [
   "Final 1/3 (p. 4, Tabla 1, Control-IQ+): «peso 9–200 kg, DTD 5–200 UI/día».",
   "Final 2/3 (p. 15, Resolución de incidencias): con iSGLT2 ya no se rebaja el umbral a 200 mg/dl; «debe mantenerse una alta sospecha de cetoacidosis y medirse la cetonemia ante síntomas o situaciones de riesgo, con independencia del nivel de glucemia».",
   "Final 3/3 (p. 25, bibliografía): «doi:10.2337/dci26-0122» al final de la referencia 6.",
 ];
 
-/* Las 11 del 30-9-2026: la maquetación del 5-10-2026 ya las trae. */
+/* Las 11 del 30-9-2026: ya en la maquetación del 5-10-2026 y en el capítulo publicado. */
 const CORRECCIONES = [
   "1/11 (p. 3): «control predictivo basado en modelo (MPC) y lógica difusa».",
   "2/11 (pp. 3–4): «Sistemas AID comercializados en España» en el texto y en el título de la Tabla 1.",
@@ -423,10 +423,19 @@ export function Sobre() {
         </p>
         <h2 className="mt-5 text-base font-extrabold text-slate-900">De dónde sale el texto</h2>
         <p className="mt-2 text-sm">
-          El texto es el del capítulo, literal, de la maquetación final del {CAPITULO.fechaFuente} (
-          {CAPITULO.editorial}, {CAPITULO.paginas} páginas), con sus 3 correcciones finales
-          aplicadas. Cada bloque lleva su página. Las figuras, que en el PDF son imágenes, están
-          transcritas caja a caja.
+          El texto es el del capítulo {CAPITULO.numero} del {CAPITULO.obra} ({CAPITULO.area} ·{" "}
+          {CAPITULO.subseccion}), literal, tal como se publicó el {CAPITULO.fechaFuente} (
+          {CAPITULO.editorial}, {CAPITULO.paginas} páginas, ISBN {CAPITULO.isbn}). Cada bloque lleva
+          su página del PDF. Las figuras, que en el PDF son imágenes, están transcritas caja a caja.{" "}
+          <a
+            href={CAPITULO.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-slate-800 underline underline-offset-2"
+          >
+            Ver el capítulo en el Manual SEEN
+          </a>
+          .
         </p>
         <h2 className="mt-5 text-base font-extrabold text-slate-900">
           El capítulo y, aparte, lo que no es del capítulo
@@ -478,10 +487,10 @@ export function Sobre() {
         aria-labelledby="s-corr"
       >
         <h2 id="s-corr" className="text-base font-extrabold text-slate-900">
-          Correcciones editoriales aplicadas
+          Correcciones editoriales, ya incluidas en el capítulo publicado
         </h2>
         <h3 className="mt-3 text-sm font-bold text-slate-900">
-          Las 3 correcciones finales (maquetación del 5-10-2026)
+          Las 3 correcciones finales del 5-10-2026
         </h3>
         <ol className="mt-2 space-y-1 text-sm text-slate-700">
           {CORRECCIONES_FINALES.map((c, i) => (
@@ -495,9 +504,7 @@ export function Sobre() {
             </li>
           ))}
         </ol>
-        <h3 className="mt-4 text-sm font-bold text-slate-900">
-          Las 11 del 30-9-2026, que la maquetación del 5-10-2026 ya incorpora
-        </h3>
+        <h3 className="mt-4 text-sm font-bold text-slate-900">Las 11 del 30-9-2026</h3>
         <ol className="mt-2 space-y-1 text-sm text-slate-700">
           {CORRECCIONES.map((c, i) => (
             <li key={i} className="flex gap-2">

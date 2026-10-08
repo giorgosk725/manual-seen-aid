@@ -1,4 +1,5 @@
-"""Auditoría de fidelidad app ↔ PDF del capítulo (maquetación del 5-10-2026; antes, la del 30-9).
+"""Auditoría de fidelidad app ↔ PDF del capítulo publicado en el Manual SEEN (8-10-2026; antes, las
+maquetaciones del 5-10 y del 30-9).
 
 - Párrafos, subtítulos y listas: deben aparecer LITERALMENTE (normalizados) en el texto de su
   página (o páginas, si el párrafo salta). Se informa la primera divergencia.
@@ -14,7 +15,7 @@ import json, re, sys, unicodedata
 from collections import Counter
 import fitz
 
-PDF = sys.argv[1] if len(sys.argv) > 1 else r"C:\Users\giorg\Downloads\Capitulo_AID_SEEN_05-10-2026_ANOTADO_3_DETALLES_FINALES.pdf"
+PDF = sys.argv[1] if len(sys.argv) > 1 else r"C:\Users\giorg\Downloads\Capitulo_AID_SEEN_PUBLICADO_08-10-2026.pdf"
 APP = "_audit_contenido.json"
 OUT = "_audit_fidelidad.json"
 
@@ -69,7 +70,8 @@ for b in app["parrafos"]:
     pags = [b["p"]] + ([b["p2"]] if b.get("p2") else [])
     fuente = norm(" ".join(paginas[p] for p in pags))
     # Quitar cabecera/pie de página que se cuela entre páginas.
-    fuente = re.sub(r"ec-europe - \d\d/\d\d/\d{4} \d+ ", "", fuente)
+    # Pie: «ec-europe - 05/10/2026 9» o, en el publicado, «ec-europe - ISBN 978–… - 08/10/2026 9».
+    fuente = re.sub(r"ec-europe -( isbn \S+ -)? \d\d/\d\d/\d{4} \d+ ", "", fuente)
     t = norm(b["texto"])
     if t in fuente:
         res["parrafos_ok"] += 1

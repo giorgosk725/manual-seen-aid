@@ -1,4 +1,4 @@
-/* Las seis tablas del capítulo, literales (PDF 5-10-2026, que ya trae las correcciones 3/11
+/* Las seis tablas del capítulo, literales (PDF publicado el 8-10-2026, con las correcciones 3/11
    —Tabla 1, Omnipod 5, indicación—, 6/11 —Tabla 3, «mg/dl»—, 7/11 —Tabla 4, fila «Ejercicio
    anaeróbico» reconstruida— y 8/11 —Tabla 6, «computarizada»—). Aplicada además la corrección
    final 1/3 (Tabla 1, Control-IQ+: «peso 9–200 kg, DTD 5–200 UI/día»), anotada en el PDF. */
@@ -89,8 +89,9 @@ export const T1: Tabla = {
       etiqueta: "Indicación",
       celdas: [
         "≥ 2 años; DTD ≥ 6 UI/día\nAutorización en diabetes tipo 2 (marcado CE)",
-        // Errata corregida (autor): «peso 9–200 kg, DTD 5–200 UI/día».
-        "Control-IQ: ≥ 6 años, 25–140 kg, DTD 10–100 UI/día\nControl-IQ+: ≥ 2 años, peso 9–200 kg, DTD 5–200 UI/día; autorización en diabetes tipo 2 (FDA y marcado CE)",
+        // Corrección final 1/3 («peso 9–200 kg, DTD 5–200 UI/día»); el publicado del 8-10-2026
+        // añade también «peso» en Control-IQ.
+        "Control-IQ: ≥ 6 años, peso 25–140 kg, DTD 10–100 UI/día\nControl-IQ+: ≥ 2 años, peso 9–200 kg, DTD 5–200 UI/día; autorización en diabetes tipo 2 (FDA y marcado CE)",
         "≥ 1 año; peso ≥ 10 kg; DTD 5–350 UI/día;\nLiberty: > 13 años",
         // Corrección editorial 3/11.
         "≥ 2 años; sin peso mínimo; DTD ≥ 5 UI/día\nAutorización en diabetes tipo 2 (≥ 18 años) por la FDA",

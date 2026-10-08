@@ -62,8 +62,8 @@ de nada clínico.
 
 ## Fuente única
 
-El PDF final maquetado del 5-10-2026 (ec-europe, 25 páginas; ya trae las 11 correcciones del 30-9) con sus 3 correcciones finales anotadas,
-aplicadas en el texto: ver [docs/CORRECCIONES.md](docs/CORRECCIONES.md). Todo el contenido vive en
+El capítulo 89 tal como se publicó en el Manual SEEN el 8-10-2026 (ec-europe, 25 páginas, ISBN 978-84-606-8570-8,
+<https://manual.seen.es/article?id=6ac781b3-b8f0-43a6-959e-3bc70aca0133>): ver [docs/CORRECCIONES.md](docs/CORRECCIONES.md). Todo el contenido vive en
 `src/contenido/` y está tipado; `src/contenido.test.ts` comprueba estructura, páginas, correcciones y
 convenciones (DM1/DM2, mg/dl, «duración de la insulina activa»).
 

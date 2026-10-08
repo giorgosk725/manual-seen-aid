@@ -134,8 +134,8 @@ export function CapituloEntero() {
           {CAPITULO.autor}. {CAPITULO.filiacion}
         </p>
         <p className="text-xs">
-          Manual SEEN · texto de la maquetación del {CAPITULO.fechaFuente}, con las correcciones
-          editoriales aplicadas.
+          {CAPITULO.obra} · capítulo {CAPITULO.numero}, publicado el {CAPITULO.fechaFuente}. ISBN{" "}
+          {CAPITULO.isbn}.
         </p>
       </div>
       <div className="space-y-12">
