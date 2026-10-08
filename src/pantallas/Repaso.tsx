@@ -196,7 +196,7 @@ function TarjetaVista({
                 {t.pagina}) <ArrowRight size={14} aria-hidden="true" />
               </a>
             </div>
-            <p className="mt-4 text-sm font-semibold text-slate-800">¿Te acordabas?</p>
+            <p className="mt-4 text-sm font-semibold text-slate-800">¿Recordabas la respuesta?</p>
             <div ref={botones} className="mt-2 grid scroll-mb-24 grid-cols-2 gap-2 sm:flex">
               <button
                 type="button"
@@ -400,9 +400,9 @@ export function Repaso({ filtro }: { filtro?: string }) {
       <Mazos filtro={filtro} />
       <h2 className="sr-only">{nombreDelMazo(filtro)}</h2>
       <div className="my-4 grid grid-cols-3 gap-2" aria-label="Tu avance en este mazo">
-        <Dato valor={ronda(lista, progreso, fechaLocal()).length} etiqueta="en la ronda de hoy" />
-        <Dato valor={r.sinVer} etiqueta="por estrenar" />
-        <Dato valor={`${r.aprendidas}/${r.total}`} etiqueta="aprendidas" />
+        <Dato valor={ronda(lista, progreso, fechaLocal()).length} etiqueta="para repasar hoy" />
+        <Dato valor={r.sinVer} etiqueta="sin repasar" />
+        <Dato valor={`${r.aprendidas}/${r.total}`} etiqueta="con repaso espaciado" />
       </div>
       <Ronda
         key={`${filtro ?? ""}-${n}`}
@@ -412,8 +412,8 @@ export function Repaso({ filtro }: { filtro?: string }) {
       />
       <div className="mt-6 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
         <span>
-          {TARJETAS.length} tarjetas. «Aprendida»: la que ya no vuelve hasta dentro de una semana o
-          más.
+          {TARJETAS.length} tarjetas. «Con repaso espaciado»: la que no vuelve hasta dentro de una
+          semana o más.
         </span>
         <Borrar />
       </div>

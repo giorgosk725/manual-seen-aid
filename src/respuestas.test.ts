@@ -18,6 +18,7 @@ import {
 import ciego1 from "./bancos/ciego1.json";
 import ciego2 from "./bancos/ciego2.json";
 import ciego3 from "./bancos/ciego3.json";
+import ciego4 from "./bancos/ciego4.json";
 
 const informe = (nombre: string, m: ReturnType<typeof medir>) =>
   console.log(
@@ -48,6 +49,9 @@ describe("Preguntas al capítulo", () => {
       ["Ciego 2", ciego2 as PreguntaCiega[], 0.48, 0.53, 0.25],
       // Medido a ciegas con el motor ya cerrado (la cifra honesta de la 0.10.0).
       ["Ciego 3", ciego3 as PreguntaCiega[], 0.4, 0.5, 0.19],
+      // 80 preguntas de residentes, adjuntos y enfermería (auditoría externa del 6-10-2026),
+      // medidas una vez con el motor de la 0.12.0 ya cerrado: 60 %, 73,8 % y 17,5 %.
+      ["Ciego 4", ciego4 as PreguntaCiega[], 0.58, 0.72, 0.19],
     ] as const) {
       const m = medirCiego(banco);
       console.log(
@@ -72,5 +76,30 @@ describe("Preguntas al capítulo", () => {
   });
   it("los ejemplos de la pantalla Buscar tienen respuesta", () => {
     for (const q of EJEMPLOS_PREGUNTA) expect(responder(q).length, q).toBeGreaterThan(0);
+  });
+  // Las seis preguntas de la auditoría externa del 6-10-2026 (tres fallaban en la 0.11.0).
+  it("auditoría externa: sistema nombrado, salidas del automático y cetonas sin cifra", () => {
+    const primera = (q: string) => responder(q)[0];
+    const op5 = primera("¿Qué parámetros cambian realmente el automático de Omnipod 5?");
+    expect(op5.titulo).toBe("Parámetros configurables en modo automático");
+    expect(op5.sistema).toBe("Omnipod 5");
+    expect(primera("¿Puede el modo sueño de Tandem dar autocorrecciones?").texto).toMatch(
+      /sin bolos de autocorrección/,
+    );
+    expect(
+      primera("¿Qué revisar antes de cambiar los parámetros si sale mucho del automático?").id,
+    ).toBe("T5/0");
+    expect(primera("¿La HbA1c alta es necesaria para ofrecer AID?").texto).toMatch(
+      /no deben utilizarse como umbrales rígidos|HbA1c > 7 %/,
+    );
+    // Sin cifra de β-OHB, ninguna rama de la Figura 3 es «la respuesta».
+    const cetonas = responder("¿Qué cambia cuando aparecen cetonas con glucosa normal?");
+    expect(cetonas[0].texto).toMatch(/glucemia normal/);
+    expect(cetonas.some((r) => /^F3\/(verde|amarillo|naranja|rojo)$/.test(r.id))).toBe(false);
+    expect(primera("¿Cómo interpretar muchas autocorrecciones con TIR bueno?").titulo).toMatch(
+      /Exceso de autocorrecciones/,
+    );
+    // Con cifra, la rama sigue respondiendo.
+    expect(primera("cetonas 1,2 qué hago").id).toBe("F3/naranja");
   });
 });

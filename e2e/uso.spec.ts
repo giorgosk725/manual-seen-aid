@@ -9,9 +9,9 @@ test.describe("Uso 0.10.0", () => {
     const caja = page.getByRole("textbox", { name: "Buscar en el capítulo" });
     await caja.fill("cetonas 1,2");
     const dialogo = page.getByRole("dialog");
-    await expect(dialogo.getByRole("region", { name: "Respuesta del capítulo" })).toBeVisible();
+    await expect(dialogo.getByRole("region", { name: "Pasaje del capítulo" })).toBeVisible();
     await caja.press("ArrowDown");
-    await expect(dialogo.getByRole("link", { name: /Leer en su sitio/ })).toBeFocused();
+    await expect(dialogo.getByRole("link", { name: /^Ver (en|la) / })).toBeFocused();
     await page.keyboard.press("ArrowUp");
     await expect(caja).toBeFocused();
     await caja.press("Enter");
@@ -19,12 +19,12 @@ test.describe("Uso 0.10.0", () => {
     await expect(page.getByRole("dialog")).toHaveCount(0);
   });
 
-  test("«Leer en su sitio» lleva a la frase y la resalta", async ({ page }) => {
+  test("«Ver en el apartado» lleva a la frase y la resalta", async ({ page }) => {
     await page.goto("/#/buscar/cu%C3%A1nto%20tiempo%20puedo%20estar%20desconectado");
-    const respuesta = page.getByRole("region", { name: "Respuesta del capítulo" });
+    const respuesta = page.getByRole("region", { name: "Pasaje del capítulo" });
     await expect(respuesta).toContainText("a partir de aproximadamente 1 h");
     await respuesta
-      .getByRole("link", { name: /Leer en su sitio/ })
+      .getByRole("link", { name: /^Ver (en|la) / })
       .first()
       .click();
     await expect(page).toHaveURL(/#\/capitulo\/07-educacion\/b\d+~\d+$/);
@@ -43,24 +43,24 @@ test.describe("Uso 0.10.0", () => {
       .toContain("a partir de aproximadamente 1 h");
   });
 
-  test("sin respuesta directa: «Lo más cercano en el capítulo»", async ({ page }) => {
+  test("sin respuesta directa: «Coincidencia parcial en el capítulo»", async ({ page }) => {
     await page.goto("/#/buscar/coste-efectividad%20AID");
-    await expect(page.getByRole("region", { name: "Lo más cercano en el capítulo" })).toContainText(
-      "no depende únicamente del coste del dispositivo",
-    );
-    await expect(page.getByRole("region", { name: "Respuesta del capítulo" })).toHaveCount(0);
+    await expect(
+      page.getByRole("region", { name: "Coincidencia parcial en el capítulo" }),
+    ).toContainText("no depende únicamente del coste del dispositivo");
+    await expect(page.getByRole("region", { name: "Pasaje del capítulo" })).toHaveCount(0);
   });
 
   test("sin resultados: propone las situaciones de «¿Qué necesitas?»", async ({ page }) => {
     await page.goto("/#/buscar/zzzz%20qqqq");
-    const aviso = page.getByRole("status").filter({ hasText: "Nada en el capítulo" });
+    const aviso = page.getByRole("status").filter({ hasText: "No hay resultados en el capítulo" });
     await expect(aviso).toBeVisible();
     await expect(aviso.getByRole("link", { name: "Cetonemia (Figura 3)" })).toBeVisible();
   });
 
   test("la nota del asterisco es la de su tabla", async ({ page }) => {
     await page.goto("/#/buscar/par%C3%A1metros%20modo%20autom%C3%A1tico%20control%20iq");
-    const respuesta = page.getByRole("region", { name: "Respuesta del capítulo" });
+    const respuesta = page.getByRole("region", { name: "Pasaje del capítulo" });
     await expect(respuesta).toContainText("Parámetro con efecto directo sobre el algoritmo");
     await expect(respuesta).not.toContainText("Dosis orientativas para personas adultas");
   });

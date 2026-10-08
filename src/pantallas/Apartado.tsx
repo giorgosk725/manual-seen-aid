@@ -3,7 +3,14 @@
    apartado», barra de progreso, columna de lectura, paginación en círculos,
    anterior/siguiente e impresión. */
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, BookOpen, Image as ImageIcon, Table2 } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  ChevronDown,
+  Image as ImageIcon,
+  Table2,
+} from "lucide-react";
 import {
   APARTADOS,
   DIAGRAMAS,
@@ -114,6 +121,10 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
   const next = APARTADOS[i + 1];
   const subs = subapartados(apartado);
   const cifras = CIFRAS[apartado.slug] || [];
+  // Las cifras, abiertas salvo en el móvil (allí, plegadas para que el texto empiece antes).
+  const [cifrasAbiertas, setCifrasAbiertas] = useState(
+    () => !window.matchMedia?.("(max-width: 767px)").matches,
+  );
   // Recursos visuales del apartado (tablas, figuras, diagramas), en orden de lectura.
   const recursos = apartado.bloques.flatMap((b, i) => {
     const ancla = idDeBloque(b, i);
@@ -289,41 +300,55 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
       )}
       {cifras.length > 0 && (
         <section aria-labelledby="cifras" className="mb-6">
-          <h2 id="cifras" className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500">
-            Cifras del apartado · tal como las da el capítulo
-          </h2>
-          <ul className="grid grid-cols-2 gap-2 md:grid-cols-3">
-            {cifras.map((c, i) => (
-              <li key={i}>
-                <a
-                  href={href("capitulo", apartado.slug, c.ancla)}
-                  className="hover-lift ease-brand flex h-full flex-col rounded-xl p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                  style={{ background: hex.soft }}
-                >
-                  <span
-                    className="text-lg font-extrabold leading-tight tabular-nums"
-                    style={{ color: hex.ink }}
-                  >
-                    {c.valor}
-                  </span>
-                  <span className="mt-1 text-xs leading-snug text-slate-700">{c.etiqueta}</span>
-                  <span className="pagina-badge mt-auto pt-1.5">p. {c.p}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-          <a
-            href={href("repaso", apartado.slug)}
-            className="mt-1 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+          {/* En el móvil, plegadas: el primer párrafo aparece antes (lectura continua). */}
+          <details
+            className="group"
+            open={cifrasAbiertas}
+            onToggle={(e) => setCifrasAbiertas(e.currentTarget.open)}
           >
-            Repasar estas cifras como tarjetas <ArrowRight size={14} aria-hidden="true" />
-          </a>
-          {/* Las dosis con asterisco (Figura 3) llevan siempre su nota. */}
-          {cifras.some((c) => c.valor.includes("*")) && (
-            <p className="mt-2 text-xs text-slate-600">
-              {FIGURA3.notaAsterisco} <span className="pagina-badge">Figura 3, p. 8</span>
-            </p>
-          )}
+            <summary className="mb-2 flex min-h-11 cursor-pointer items-center gap-1 text-slate-500 sm:min-h-8">
+              <ChevronDown
+                size={15}
+                aria-hidden="true"
+                className="shrink-0 -rotate-90 transition group-open:rotate-0"
+              />
+              <h2 id="cifras" className="inline text-xs font-bold uppercase tracking-wide">
+                Cifras y objetivos del apartado ({cifras.length}) · con su página
+              </h2>
+            </summary>
+            <ul className="grid grid-cols-2 gap-2 md:grid-cols-3">
+              {cifras.map((c, i) => (
+                <li key={i}>
+                  <a
+                    href={href("capitulo", apartado.slug, c.ancla)}
+                    className="hover-lift ease-brand flex h-full flex-col rounded-xl p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                    style={{ background: hex.soft }}
+                  >
+                    <span
+                      className="text-lg font-extrabold leading-tight tabular-nums"
+                      style={{ color: hex.ink }}
+                    >
+                      {c.valor}
+                    </span>
+                    <span className="mt-1 text-xs leading-snug text-slate-700">{c.etiqueta}</span>
+                    <span className="pagina-badge mt-auto pt-1.5">p. {c.p}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <a
+              href={href("repaso", apartado.slug)}
+              className="mt-1 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+            >
+              Repasar estas cifras como tarjetas <ArrowRight size={14} aria-hidden="true" />
+            </a>
+            {/* Las dosis con asterisco (Figura 3) llevan siempre su nota. */}
+            {cifras.some((c) => c.valor.includes("*")) && (
+              <p className="mt-2 text-xs text-slate-600">
+                {FIGURA3.notaAsterisco} <span className="pagina-badge">Figura 3, p. 8</span>
+              </p>
+            )}
+          </details>
         </section>
       )}
 

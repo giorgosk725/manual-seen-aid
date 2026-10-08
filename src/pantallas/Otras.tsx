@@ -102,8 +102,9 @@ export function Buscar({ inicial }: { inicial?: string }) {
     }, 400);
     return () => clearTimeout(t);
   }, [q]);
-  const [tope, setTope] = useState(60);
-  useEffect(() => setTope(60), [q]);
+  // Pocos resultados al principio (los mejores); el resto, con «Ver más resultados».
+  const [tope, setTope] = useState(12);
+  useEffect(() => setTope(12), [q]);
   // El índice llega en su trozo (useBuscador): estas pantallas no lo cargan si no se busca.
   const { motor, estado, reintentar } = useBuscador(true);
   const busqueda: Busqueda = useMemo(
@@ -125,7 +126,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
     <div>
       <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1}>
         <p className="text-sm text-slate-600">
-          Pregunta con tus palabras: arriba, la respuesta literal del capítulo con su página.
+          Busca con tus palabras: arriba, el pasaje del capítulo que mejor encaja, con su página;
+          debajo, los demás resultados.
         </p>
         <details className="mt-1 text-sm text-slate-600">
           <summary className="inline-flex min-h-11 cursor-pointer items-center font-semibold text-slate-700 sm:min-h-8">
@@ -133,11 +135,12 @@ export function Buscar({ inicial }: { inicial?: string }) {
           </summary>
           <p className="mt-1">
             Por ejemplo «cetonas 1,2», «modo ejercicio en Control-IQ» o «cuánto tiempo puedo estar
-            desconectado». Arriba sale la frase, la fila de tabla o el tramo de la Figura 3 que
-            responde, literal y con su página; si nada responde de lleno, «lo más cercano». Debajo,
-            todos los sitios donde salen esas palabras y, aparte, lo que no es del capítulo (versión
-            extendida, ampliación del autor, hojas para el paciente y test). Sin inteligencia
-            generativa: el texto se elige por coincidencia de palabras.
+            desconectado». Arriba, la frase, la fila de tabla o el tramo de la Figura 3 que mejor
+            encaja, literal y con su página; si solo coincide en parte, se rotula «coincidencia
+            parcial». Debajo, los primeros sitios donde salen esas palabras (el resto, con «Ver más
+            resultados») y, aparte, lo que no es del capítulo (versión extendida, ampliación del
+            autor, hojas para el paciente y test). El pasaje se elige por coincidencia de palabras:
+            comprueba siempre que responde a lo que buscas.
           </p>
         </details>
       </CabeceraEditorial>
@@ -149,7 +152,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
         autoFocus
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Pregunta: cetonas 1,2, modo sueño, TBR…"
+        placeholder="Busca: cetonas 1,2, modo sueño, TBR…"
         className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-soft placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
         autoComplete="off"
       />
@@ -204,7 +207,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
       {hayMas && (
         <button
           type="button"
-          onClick={() => setTope((t) => t + 60)}
+          onClick={() => setTope((t) => t + 48)}
           className="mt-4 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
         >
           Ver más resultados
@@ -417,7 +420,7 @@ export function Sobre() {
         aria-labelledby="s-uso"
       >
         <h2 id="s-uso" className="mb-3 text-base font-extrabold text-slate-900">
-          Cómo sacarle partido
+          Cómo usar esta app
         </h2>
         <GuiaDeUso />
       </section>

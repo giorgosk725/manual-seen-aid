@@ -1,0 +1,594 @@
+[
+  {
+    "q": "¿De qué partes consta un sistema de asa cerrada? ¿es solo bomba + sensor?",
+    "perfil": "residente",
+    "aceptables": [
+      "tres elementos esenciales: bomba o pod de infusión subcutánea continua de insulina, sensor de MCG y algoritmo de control",
+      "En la práctica clínica debe añadirse un cuarto elemento funcional: la plataforma de descarga y análisis de datos"
+    ]
+  },
+  {
+    "q": "a quien se le pone un AID? solo a los que tienen mala hba1c o hipos frecuentes?",
+    "perfil": "residente",
+    "aceptables": [
+      "sustituir el modelo restrictivo —basado solo en HbA1c elevada o hipoglucemia recurrente o inadvertida— por una indicación amplia",
+      "Los sistemas AID pueden considerarse una modalidad preferente de administración de insulina en personas con DM1"
+    ]
+  },
+  {
+    "q": "Si en el hospital no hay sistemas para todos, ¿a qué pacientes priorizo?",
+    "perfil": "residente",
+    "aceptables": [
+      "Entre las situaciones que razonablemente merecen una especial prioridad se encuentran la edad pediátrica y adolescente",
+      "la planificación gestacional y el embarazo; la hipoglucemia grave, inadvertida o de repetición"
+    ]
+  },
+  {
+    "q": "Un paciente que nunca ha llevado ni sensor ni bomba, ¿se le puede poner directamente un asa cerrada o está contraindicado?",
+    "perfil": "residente",
+    "aceptables": [
+      "Su ausencia inicial no contraindica el sistema, sino que orienta el plan educativo."
+    ]
+  },
+  {
+    "q": "¿Cuál es el mejor sistema de asa cerrada de los que hay en el mercado?",
+    "perfil": "residente",
+    "aceptables": [
+      "No existe un sistema universalmente superior; la elección depende del perfil clínico",
+      "impide establecer comparaciones directas fiables entre dispositivos"
+    ]
+  },
+  {
+    "q": "Si el algoritmo ya corrige solo, ¿por qué en los híbridos hay que seguir avisando de las comidas?",
+    "perfil": "residente",
+    "aceptables": [
+      "En las modalidades híbridas el anuncio de las comidas y el bolo prandial siguen siendo necesarios para optimizar el control.",
+      "la ingesta y el ejercicio son perturbaciones rápidas que el algoritmo intenta compensar con herramientas relativamente lentas",
+      "En sistemas híbridos, el algoritmo compensa, pero no sustituye, el bolo prandial."
+    ]
+  },
+  {
+    "q": "Lectura del sensor y glucemia capilar no coinciden en un paciente ingresado, ¿con cuál me guío?",
+    "perfil": "residente",
+    "aceptables": [
+      "debe utilizarse el valor más bajo para orientar las decisiones clínicas y minimizar el riesgo de hipoglucemia"
+    ]
+  },
+  {
+    "q": "¿El Omnipod 5 pone microbolos de corrección automáticos como la 780G?",
+    "perfil": "residente",
+    "aceptables": [
+      "No; no utiliza bolos automáticos; en su lugar, incrementa la tasa basal adaptativa hasta un 400 %"
+    ]
+  },
+  {
+    "q": "¿Puedo recomendar en consulta un sistema casero tipo AndroidAPS?",
+    "perfil": "residente",
+    "aceptables": [
+      "los sistemas DIY no deben presentarse ni ofrecerse desde la consulta como tecnologías comerciales autorizadas",
+      "tampoco deben recomendarse activamente como estándar asistencial"
+    ]
+  },
+  {
+    "q": "¿Siempre hay que quitarse bomba y sensor para hacerse una resonancia?",
+    "perfil": "residente",
+    "aceptables": [
+      "la bomba o el pod debe retirarse antes de una resonancia magnética (RM) o una tomografía computarizada (TC)",
+      "El sensor/transmisor puede mantenerse en determinadas exploraciones y modelos",
+      "Retirar, salvo autorización específica del modelo; colocar uno nuevo al finalizar."
+    ]
+  },
+  {
+    "q": "A partir de cuánto tiempo desconectado de la bomba hay que hacer algo?",
+    "perfil": "residente",
+    "aceptables": [
+      "a partir de aproximadamente 1 h sin administración de insulina debe actuarse",
+      "las superiores a 1 h pueden aumentar el riesgo de hiperglucemia y cetosis"
+    ]
+  },
+  {
+    "q": "Paso de MDI a AID: ¿cuánto le bajo la dosis total diaria de entrada?",
+    "perfil": "residente",
+    "aceptables": [
+      "Valorar una reducción inicial de la DTD respecto a MDI (orientativamente del 10-20 %)",
+      "poco o nada si el control era deficiente (HbA1c > 8 %)"
+    ]
+  },
+  {
+    "q": "Cómo saco la ratio y el factor de sensibilidad iniciales si no tengo una pauta previa fiable?",
+    "perfil": "residente",
+    "aceptables": [
+      "las reglas del 450 y del 1700 sobre la DTD orientan la ratio y el factor de sensibilidad iniciales",
+      "Regla del 450: g de HC por unidad = 450/DTD",
+      "Regla del 1700: mg/dl por unidad = 1700/DTD"
+    ]
+  },
+  {
+    "q": "Qué datos hay que meter en el Control-IQ para que arranque en automático?",
+    "perfil": "residente",
+    "aceptables": [
+      "Control-IQ: iniciar modo automático tras introducir peso y DTD. Programar: tasa basal, factor de sensibilidad y ratio I/HC"
+    ]
+  },
+  {
+    "q": "Tras poner el sistema, ¿cuándo hay que ver o llamar al paciente los primeros meses?",
+    "perfil": "residente",
+    "aceptables": [
+      "un contacto remoto en las primeras 72 h y a la semana, una revisión presencial a las 2-4 semanas",
+      "y una visita a los 3 meses con determinación de HbA1c"
+    ]
+  },
+  {
+    "q": "¿Cuántos días de datos y qué porcentaje de uso del sensor necesito para fiarme de una descarga?",
+    "perfil": "residente",
+    "aceptables": [
+      "Uso de MCG ≥ 70 % en 14 días permite interpretar patrones",
+      "Datos de MCG de los últimos 14 días; % uso del sensor"
+    ]
+  },
+  {
+    "q": "Objetivos de TIR y de TBR en un adulto con DM1 no embarazada",
+    "perfil": "residente",
+    "aceptables": [
+      "El TIR 70-180 mg/dl es la métrica principal de control global (objetivo general > 70 % en adultos no gestantes)",
+      "< 70 mg/dl debe mantenerse por debajo del 4 % y < 54 mg/dl por debajo del 1 %"
+    ]
+  },
+  {
+    "q": "¿Siempre hay que perseguir un TITR alto en todos los pacientes con asa cerrada?",
+    "perfil": "residente",
+    "aceptables": [
+      "sin sustituir al TIR ni al TBR ni considerarse todavía un objetivo clínico primario universal",
+      "Solo con un TBR aceptable se buscan más TITR u objetivos más estrictos."
+    ]
+  },
+  {
+    "q": "Se le estropea la bomba y la nueva tarda días, ¿qué basal le pongo con pluma y cuánta?",
+    "perfil": "residente",
+    "aceptables": [
+      "preferentemente glargina U-100 si se busca facilitar el retorno posterior al sistema",
+      "puede orientarse en torno al 40-50 % de la DTD reciente"
+    ]
+  },
+  {
+    "q": "Se le olvidó el bolo de la comida, ¿se lo pone entero cuando se acuerda?",
+    "perfil": "residente",
+    "aceptables": [
+      "debe evitarse administrar automáticamente el bolo completo sin considerar la glucemia, la tendencia, la insulina activa",
+      "si el bolo se omite o retrasa durante la primera hora tras la ingesta, puede valorarse administrar solo una parte",
+      "transcurrido más tiempo, suele ser preferible utilizar el calculador de corrección"
+    ]
+  },
+  {
+    "q": "En hipoglucemia con AID, ¿cuándo sí hay que dar los 15 g de toda la vida?",
+    "perfil": "residente",
+    "aceptables": [
+      "reservando cantidades en torno a 15 g para glucemia < 54 mg/dl, doble flecha descendente o insulina activa significativa"
+    ]
+  },
+  {
+    "q": "Cetonemia capilar de 0,7 con glucosa alta, qué hago?",
+    "perfil": "residente",
+    "aceptables": [
+      "β-OHB 0,6–0,9 mmol/l: cetonemia leve; vigilancia estrecha, revisión del sistema y reevaluación de glucemia y cetonemia en 1–2 h",
+      "β-OHB 0,6-0,9 mmol/l Cetonemia leve (vigilancia estrecha)"
+    ]
+  },
+  {
+    "q": "Lleva un par de horas por encima de 250 y no baja con las autocorrecciones, ¿qué sospecho?",
+    "perfil": "residente",
+    "aceptables": [
+      "Una glucemia ≥ 250 mg/dl persistente (orientativamente ≥ 2 h) o cualquier hiperglucemia inexplicada que no responde a la corrección",
+      "toda hiperglucemia persistente sin causa clara debe hacer sospechar fallo de infusión hasta demostrar lo contrario",
+      "Episodios de glucosa ≥ 250 mg/dl durante ≥ 2 h o sin respuesta a una corrección"
+    ]
+  },
+  {
+    "q": "Si vomita y tiene cetonas pero la glucemia es normal, ¿le paro la insulina?",
+    "perfil": "residente",
+    "aceptables": ["la insulina no debe suspenderse, ya que es necesaria para resolver la cetosis"]
+  },
+  {
+    "q": "DM1 con dapagliflozina fuera de ficha: ¿solo mido cetonas cuando la glucosa está alta?",
+    "perfil": "residente",
+    "aceptables": [
+      "debe mantenerse una alta sospecha de cetoacidosis y medirse la cetonemia ante síntomas o situaciones de riesgo",
+      "con independencia del nivel de glucemia, ya que puede cursar con glucemia normal o solo moderadamente elevada"
+    ]
+  },
+  {
+    "q": "¿Con qué glucemia es recomendable empezar a hacer deporte llevando AID?",
+    "perfil": "residente",
+    "aceptables": [
+      "se recomienda iniciar el ejercicio con una glucemia de 126–180 mg/dl",
+      "con cifras <90 mg/dl deben administrarse hidratos de carbono y retrasar el inicio"
+    ]
+  },
+  {
+    "q": "¿El Omnipod 5 se puede dejar puesto para nadar o hay que quitarlo?",
+    "perfil": "residente",
+    "aceptables": [
+      "Omnipod 5, por su formato parche sin tubo, puede mantenerse durante la actividad acuática"
+    ]
+  },
+  {
+    "q": "¿Omnipod 5 está autorizado para usarlo en una embarazada?",
+    "perfil": "residente",
+    "aceptables": [
+      "Omnipod 5 no dispone actualmente de autorización específica para su uso durante la gestación"
+    ]
+  },
+  {
+    "q": "Objetivos de HbA1c antes de buscar embarazo y durante la gestación",
+    "perfil": "residente",
+    "aceptables": [
+      "En la planificación preconcepcional se recomienda una HbA1c <6,5 %",
+      "el objetivo ideal es una HbA1c <6,0 % si puede alcanzarse con seguridad"
+    ]
+  },
+  {
+    "q": "Adolescente que va empeorando con el asa cerrada, ¿qué factor predice más que acabe dejándolo?",
+    "perfil": "residente",
+    "aceptables": [
+      "La omisión de bolos es uno de los predictores más consistentes de empeoramiento del control y de discontinuación del sistema"
+    ]
+  },
+  {
+    "q": "780G: si toco el FSI, ¿cambian las autocorrecciones de SmartGuard?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "No interviene en SmartGuard: se usa en el calculador de bolos fuera del modo automático"
+    ]
+  },
+  {
+    "q": "En Tandem con Control-IQ, ¿el perfil basal programado influye en el modo automático?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "Sí interviene en automático; Control-IQ modula continuamente el perfil basal programado, por lo que conviene ajustarlo bien",
+      "en Control-IQ interviene directamente en el modo automático",
+      "en Tandem Control-IQ, el perfil basal sí interviene en automático"
+    ]
+  },
+  {
+    "q": "Omnipod 5 ya en automático: ¿sirve de algo modificar la basal programada?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "la basal adaptativa del primer pod; posteriormente, no influye en el modo automático",
+      "en Omnipod 5 contribuye al inicio y luego cede ante la basal adaptativa"
+    ]
+  },
+  {
+    "q": "CamAPS FX: el FSI y la duración de insulina activa que configuro, ¿los usa el algoritmo en auto?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "se utilizan en el calculador de bolos y no determinan directamente la administración automatizada",
+      "se usa en el calculador para correcciones indicadas por la persona y no ajusta directamente la modulación automática",
+      "el algoritmo estima la insulina activa de forma automática"
+    ]
+  },
+  {
+    "q": "Control-IQ: ¿con qué frecuencia máxima y a partir de qué glucosa predicha da autocorrecciones, y qué % de la dosis?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "Sí; máx. uno por hora si se predice > 180 mg/dl a 30 min",
+      "Administra el 60 % de la dosis para un objetivo de 110 mg/dl"
+    ]
+  },
+  {
+    "q": "MiniMed 780G: cada cuánto puede dar autobolos de corrección y con qué umbral de predicción?",
+    "perfil": "adjunto",
+    "aceptables": ["Sí; hasta uno cada 5 min si se predice > 120 mg/dl"]
+  },
+  {
+    "q": "Qué rango de objetivo deja configurar CamAPS FX y cuál trae por defecto?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "Por tramos, rango 80–198 mg/dl (bloques de hasta cada 30 min) De fábrica: 104 mg/dl",
+      "Objetivo configurable por tramos hasta cada 30 min (rango 80–198 mg/dl)"
+    ]
+  },
+  {
+    "q": "780G: ¿cada cuánto recalcula la basal automática y con cuántos días de dosis total?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "Posee autoaprendizaje continuo que actualiza el valor basal automático cada medianoche",
+      "basándose en la dosis total diaria (DTD) de los últimos 2–6 días"
+    ]
+  },
+  {
+    "q": "DM2 insulinizado: ¿qué sistemas AID tienen autorización?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "MiniMed 780G, Control-IQ+ y Omnipod 5 ya cuentan con autorización para su uso en este grupo"
+    ]
+  },
+  {
+    "q": "Niño de 11 años con myLoop, ¿le activo el modo Liberty?",
+    "perfil": "adjunto",
+    "aceptables": ["Por el momento no se recomienda en menores de 13 años ni en gestación."]
+  },
+  {
+    "q": "Paso de MDI a 780G: ¿puedo arrancar SmartGuard desde el primer día?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "MiniMed 780G: SmartGuard requiere 48 h previas de administración de insulina en modo manual"
+    ]
+  },
+  {
+    "q": "Viene de degludec o glargina U300 a asa cerrada: qué riesgo hay los primeros días?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "Las basales ultralargas mantienen un efecto residual durante los primeros días; coordinar la última dosis y el inicio del sistema",
+      "Posible riesgo de hipoglucemia en personas con buen control previo; vigilar estrechamente, sobre todo las primeras 48 h"
+    ]
+  },
+  {
+    "q": "Descarga de Control-IQ con un montón de autocorrecciones, ¿qué reviso?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "en Control-IQ debe revisarse además el factor de sensibilidad",
+      "puede indicar bolos omitidos o tardíos, ratios insuficientes, comidas no anunciadas o un objetivo poco intensivo"
+    ]
+  },
+  {
+    "q": "Muchos autobolos en la 780G, ¿significa que el algoritmo va de lujo?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "No es automáticamente un éxito del algoritmo",
+      "en MiniMed 780G son especialmente relevantes el objetivo y la duración de la insulina activa"
+    ]
+  },
+  {
+    "q": "¿En qué porcentaje suelo cambiar basal, ratio o FSI y cuándo reevalúo el efecto?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "pueden modificarse, cuando proceda, orientativamente en un 10–20 %",
+      "su impacto sobre el patrón glucémico debe evaluarse durante varios días antes de realizar nuevos ajustes"
+    ]
+  },
+  {
+    "q": "Hipoglucemias nocturnas en un paciente con Tandem: ¿le sirve el modo sueño?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "En Tandem, el modo sueño no autocorrige, pero ajusta basal",
+      "mantiene la modulación basal sin bolos de autocorrección"
+    ]
+  },
+  {
+    "q": "Hiperglucemia tardía tras cenas grasas en Control-IQ+, ¿puedo alargar el bolo?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "En Control-IQ el bolo extendido es limitado en la versión clásica y dispone de mayor duración en Control-IQ+",
+      "Función: bolo extendido (hasta 2 h; Control-IQ+: de 15 min a 8 h)"
+    ]
+  },
+  {
+    "q": "Comida rica en grasa con Omnipod 5 en modo automatico, ¿tiene bolo extendido?",
+    "perfil": "adjunto",
+    "aceptables": ["Función bolo extendido disponible solo en modo manual"]
+  },
+  {
+    "q": "Ejercicio anaeróbico tipo HIIT o pesas: ¿activo modo ejercicio o Boost?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "Habitualmente sin modo temporal específico; mantener el objetivo estándar para no favorecer la hiperglucemia reactiva",
+      "En CamAPS FX, no usar Boost de rutina (riesgo de hipoglucemia diferida)",
+      "suele preferirse mantener el objetivo habitual y evitar sobrecorregir la hiperglucemia reactiva"
+    ]
+  },
+  {
+    "q": "El modo ejercicio de Tandem, ¿sigue autocorrigiendo?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "Mantiene posibles autocorrecciones automáticas si se superan los umbrales del algoritmo"
+    ]
+  },
+  {
+    "q": "β-OHB 1,8 mmol/l con sospecha de fallo del set y sin plan individual: ¿cuánta insulina con pluma?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "Si β-OHB ≥1,5 mmol/l, puede considerarse 0,15 UI/kg* como dosis total de rescate, no como dosis adicional",
+      "Si no existe plan específico: 0,1 UI/kg* de insulina rápida."
+    ]
+  },
+  {
+    "q": "Tras la dosis de rescate con pluma por cetosis, ¿cuándo puedo repetirla y cuándo lo mando al hospital?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "valorar una nueva dosis según el plan o protocolo, nunca antes de 2 h desde la dosis anterior",
+      "Si tras una segunda dosis correctamente administrada persiste β-OHB ≥1,0 mmol/l o no hay mejoría: acudir a valoración hospitalaria"
+    ]
+  },
+  {
+    "q": "CamAPS FX en gestante: qué objetivo del algoritmo pongo en cada trimestre?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "alrededor de 100 mg/dl en el primer trimestre y 80–90 mg/dl a partir del segundo"
+    ]
+  },
+  {
+    "q": "Control-IQ+ en el embarazo: ¿cómo intensifico si no tiene objetivo gestacional?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "Puede utilizarse el modo sueño de forma continuada para emplear el rango de tratamiento más bajo disponible",
+      "se basa en optimizar la tasa basal, la ratio insulina/hidratos de carbono y el factor de sensibilidad"
+    ]
+  },
+  {
+    "q": "780G en gestación: ¿qué limitación tiene respecto a los objetivos?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "su objetivo mínimo configurable, de 100 mg/dl, permanece por encima de los objetivos glucémicos específicos del embarazo"
+    ]
+  },
+  {
+    "q": "Paciente ingresado con Omnipod 5 al que hay que pasar a bolo-basal: ¿cómo estimo la pauta?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "la pauta de respaldo puede estimarse a partir de la dosis total diaria",
+      "una distribución inicial aproximada del 50 % basal y 50 % prandial puede utilizarse como punto de partida"
+    ]
+  },
+  {
+    "q": "¿En qué casos NO hay que mantener el AID durante un ingreso?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "La continuación del sistema no es apropiada cuando la persona o el equipo asistencial no pueden manejarlo con seguridad",
+      "cetoacidosis diabética o estado hiperosmolar, falta de material necesario, determinadas exploraciones incompatibles"
+    ]
+  },
+  {
+    "q": "Cirugía larga o compleja en un paciente con AID: ¿qué hago con la bomba?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "En intervenciones más prolongadas o complejas, con riesgo de prolongación del procedimiento, debe realizarse transición a perfusión intravenosa de insulina",
+      "Suspender la bomba/AID y realizar transición a insulina intravenosa sin interrumpir la cobertura insulínica."
+    ]
+  },
+  {
+    "q": "Paciente con AndroidAPS en consulta: ¿le obligo a pasarse a un sistema comercial?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "No debe imponerse el cambio a un sistema comercial salvo que exista una razón clínica o de seguridad justificada",
+      "debe recibir una atención clínica no discriminatoria"
+    ]
+  },
+  {
+    "q": "Corticoides a dosis altas en paciente con asa cerrada: ¿basta con dejar el automático?",
+    "perfil": "adjunto",
+    "aceptables": [
+      "las dosis altas o los cambios rápidos de pauta pueden requerir perfiles alternativos, modo manual o insulina adicional",
+      "Pueden producir incrementos rápidos y variables de las necesidades de insulina que los algoritmos comerciales no siempre anticipan adecuadamente"
+    ]
+  },
+  {
+    "q": "Hipo de 62 con flecha plana y la bomba ya ha cortado la insulina: ¿le doy los 15 g de siempre?",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "como orientación, 5-10 g ante glucemia 54-70 mg/dl con flecha estable o ascendente",
+      "suele requerir menos hidratos que en MDI o ISCI no automatizada"
+    ]
+  },
+  {
+    "q": "Los hidratos que se toma para remontar una hipo, ¿los tiene que meter en la bomba como si fuera comida?",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "Los hidratos para tratar la hipoglucemia no deben anunciarse como comida",
+      "en CamAPS FX existe la opción de registrarlos como “tratamiento de hipoglucemia”"
+    ]
+  },
+  {
+    "q": "Qué tiene que llevar siempre encima un paciente con asa cerrada por si falla el sistema?",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "Pauta de respaldo con insulina basal y rápida en pluma, con las dosis de conversión a inyecciones ya calculadas.",
+      "Glucómetro capilar y tiras de β-hidroxibutirato (β-OHB).",
+      "Recambios de set, cánula, reservorio o pods, sensores y baterías/cargadores."
+    ]
+  },
+  {
+    "q": "¿Qué señales le explico para que sospeche que el set o el pod está fallando?",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "ardor en la zona de inserción, despegado parcial del adhesivo, lectura errática del sensor en proximidad del set",
+      "set/pod despegado, caducado; dolor, humedad o calor en la inserción"
+    ]
+  },
+  {
+    "q": "Con cetonas y la glucosa bajita, ¿le digo que beba agua o algo azucarado?",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "Si la glucemia es baja o está en descenso: aportar hidratos de carbono (líquidos azucarados)",
+      "deben aportarse hidratos de carbono, preferiblemente líquidos azucarados en cantidades pequeñas y frecuentes"
+    ]
+  },
+  {
+    "q": "¿Qué síntomas con cetonas tienen que hacer que se vaya a urgencias sin esperar?",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "vómitos persistentes, dolor abdominal, respiración rápida o profunda, somnolencia, confusión, deshidratación, imposibilidad para beber",
+      "Signos de gravedad: Vómitos persistentes. Dolor abdominal. Respiración rápida o profunda. Somnolencia o confusión."
+    ]
+  },
+  {
+    "q": "Bajadas bruscas de madrugada que se recuperan solas al darse la vuelta en la cama, ¿qué puede ser?",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "Es sugestiva una caída brusca de la glucosa seguida de la recuperación rápida al cambiar de postura",
+      "La presión sobre el sensor —típicamente al dormir sobre él— puede producir una lectura falsamente baja"
+    ]
+  },
+  {
+    "q": "Le van a hacer una gastroscopia sin bisturí eléctrico, ¿se tiene que quitar la bomba y el sensor?",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "Mantener si no interfiere con el procedimiento.",
+      "No es necesario retirar sistemáticamente toda la tecnología."
+    ]
+  },
+  {
+    "q": "Si durante el ejercicio va bajando, ¿cuántos hidratos toma y los tiene que anunciar?",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "tomar pequeñas cantidades de hidratos rápidos (orientativamente 10-20 g) si la glucosa baja de unos 126 mg/dl",
+      "si la glucosa baja de unos 126 mg/dl, sin anunciarlos al sistema"
+    ]
+  },
+  {
+    "q": "Los padres quieren seguir mirando en remoto la glucosa de su hijo de 16 y él no quiere, ¿qué hacemos?",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "pactar el alcance del seguimiento compartido, revisarlo periódicamente y aceptar su reducción progresiva conforme avanza la autonomía"
+    ]
+  },
+  {
+    "q": "¿Cuánto cuesta cada pod de Omnipod 5?",
+    "perfil": "residente",
+    "aceptables": []
+  },
+  {
+    "q": "¿Está disponible en España el iLet Bionic Pancreas y qué algoritmo usa?",
+    "perfil": "adjunto",
+    "aceptables": []
+  },
+  {
+    "q": "¿Qué dosis de semaglutida se usa como adyuvante en DM1 con AID para bajar la insulina?",
+    "perfil": "adjunto",
+    "aceptables": []
+  },
+  {
+    "q": "¿Cuántos días dura el sensor Simplera Sync antes de cambiarlo?",
+    "perfil": "residente",
+    "aceptables": []
+  },
+  {
+    "q": "¿Qué dosis de glucagón nasal se da en una hipoglucemia grave en un adulto?",
+    "perfil": "enfermeria",
+    "aceptables": []
+  },
+  {
+    "q": "¿Qué MARD tiene el Dexcom G7?",
+    "perfil": "adjunto",
+    "aceptables": []
+  },
+  {
+    "q": "¿Cuántas horas de batería da la t:slim X2 con una carga completa?",
+    "perfil": "residente",
+    "aceptables": []
+  },
+  {
+    "q": "¿Qué evidencia hay de usar pramlintida junto con un asa cerrada?",
+    "perfil": "adjunto",
+    "aceptables": []
+  },
+  {
+    "q": "¿Qué porcentaje de personas con DM1 en España lleva ya un sistema AID?",
+    "perfil": "residente",
+    "aceptables": []
+  },
+  {
+    "q": "¿Qué app de recuento de hidratos por foto recomienda el capítulo?",
+    "perfil": "enfermeria",
+    "aceptables": []
+  }
+]

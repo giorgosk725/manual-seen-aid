@@ -171,12 +171,10 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
     await page
       .getByRole("textbox", { name: "Buscar en el capítulo" })
       .fill("modo ejercicio en control iq");
-    const respuesta = page
-      .getByRole("dialog")
-      .getByRole("region", { name: "Respuesta del capítulo" });
+    const respuesta = page.getByRole("dialog").getByRole("region", { name: "Pasaje del capítulo" });
     await expect(respuesta).toContainText("Tandem Control-IQ");
     await expect(respuesta).toContainText("rango 140–160 mg/dl");
-    await respuesta.getByRole("link", { name: /Leer en su sitio/ }).click();
+    await respuesta.getByRole("link", { name: /^Ver (en|la) / }).click();
     await expect(page).toHaveURL(/#\/consultar\/situacion\/ejercicio-aerobico:control-iq/);
   });
 
@@ -184,17 +182,17 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
     page,
   }) => {
     await page.goto("/#/buscar/cetonas%201%2C2");
-    const respuesta = page.getByRole("region", { name: "Respuesta del capítulo" });
+    const respuesta = page.getByRole("region", { name: "Pasaje del capítulo" });
     await expect(respuesta).toContainText("Cetosis significativa / probable fallo de infusión");
     await expect(respuesta).toContainText("Dosis orientativas para personas adultas");
     await page.getByRole("textbox", { name: "Texto a buscar" }).fill("precio del omnipod");
-    await expect(page.getByRole("region", { name: "Respuesta del capítulo" })).toHaveCount(0);
+    await expect(page.getByRole("region", { name: "Pasaje del capítulo" })).toHaveCount(0);
   });
 
   test("la caja de la portada responde con la fila de la Tabla 6", async ({ page }) => {
     await page.goto("/#/");
     await page.getByLabel("¿Qué necesitas? Escribe lo que buscas").fill("resonancia con 780G");
-    const respuesta = page.getByRole("region", { name: "Respuesta del capítulo" });
+    const respuesta = page.getByRole("region", { name: "Pasaje del capítulo" });
     await expect(respuesta).toContainText("Resonancia magnética (RM)");
     await expect(respuesta).toContainText("Retirar antes de entrar en la sala");
   });

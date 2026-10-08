@@ -76,6 +76,7 @@ const GENERICAS = new Set(
     "pongan ponerme ponerse mandado mandaron recetado recetaron dijo dicho puse hice hago " +
     "hacen paso pasan pasado tome tomado llevo llevas noto nota notado siento sienta " +
     "estoy esta estas estaba sabado lunes " +
+    "realmente exactamente concretamente verdaderamente basicamente " +
     "aid bomba bombas diabetes diabetico diabeticos diabetica diabeticas automatica " +
     "automatico asa cerrada cerrado senal senales signo signos"
   ).split(" "),
@@ -155,6 +156,28 @@ export function palabras(s: string): string[] {
     .replace(/[^a-z0-9ñ%\s]/g, " ")
     .split(/\s+/)
     .filter((w) => w.length > 1 || /\d/.test(w));
+}
+
+/* Lo que distingue a cada tramo de la Figura 3 de los demás («leve», «cetoacidosis»…): sin una
+   cifra de β-OHB, una rama solo responde si se la nombra por ahí (lo común a todas —cetosis,
+   fallo de infusión, hiperglucemia— no basta: la conducta depende del tramo). */
+let PROPIAS_TRAMO: Map<string, string[]> | null = null;
+function propiasDeTramo(): Map<string, string[]> {
+  if (PROPIAS_TRAMO) return PROPIAS_TRAMO;
+  const comunes = new Set(palabras(`${FIGURA3.cabecera} cetonemia ohb mmol`).map(raiz));
+  const de = (tr: (typeof FIGURA3.tramos)[number]) =>
+    palabras(`${tr.rango} ${tr.titulo}`)
+      .filter((w) => !STOP.has(w) && !/\d/.test(w))
+      .map(raiz)
+      .filter((w) => !comunes.has(w));
+  const todas = FIGURA3.tramos.map((tr) => [tr.clave, de(tr)] as const);
+  PROPIAS_TRAMO = new Map(
+    todas.map(([clave, ws]) => [
+      clave,
+      ws.filter((w) => todas.every(([otra, os]) => otra === clave || !os.includes(w))),
+    ]),
+  );
+  return PROPIAS_TRAMO;
 }
 
 /* Distancia de edición ≤ 1: una errata. */
@@ -499,6 +522,30 @@ const fonetica = (w: string) =>
    sustituye, cada palabra se exige; «a|b» es una sola palabra exigida que puede ser a o b. */
 type Modo = "sustituye" | "suma";
 const FRASES: [RegExp, string, Modo][] = [
+  // «cetonas con glucosa normal»: la cetonemia con glucemia normal (iSGLT2, Figura 3).
+  [
+    /(glucosa|glucemia|azucar)\s+(normal(es)?|buena|bien|en rango|no (muy |tan )?alta)|sin hiperglucemia|euglucemi\w*/,
+    "glucemia normal|independencia",
+    "sustituye",
+  ],
+  // «sale mucho del automático»: las salidas del modo automático (Tabla 5, paso 1).
+  [
+    /\b(se )?(sale|salen|salgo|cae|caen)\s+(mucho |muchas veces |a menudo |continuamente |tanto )?(del|de) (modo )?automatico|salidas? (del|de) (modo )?automatico|caidas? (del|de) (modo )?automatico/,
+    "salidas|salida automatico",
+    "sustituye",
+  ],
+  // «antes de tocar los parámetros»: lo que el capítulo pide revisar antes de modificar ajustes.
+  [
+    /antes de (cambiar|modificar|tocar|ajustar|subir|bajar) (los |el |la |las )?(parametros?|ajustes?|configuracion|ratios?|objetivos?)/,
+    "antes modificar ajustes",
+    "suma",
+  ],
+  // «qué parámetros cambian/mueven el automático»: los configurables (Tabla 1 y su nota).
+  [
+    /(parametros?|ajustes?)\s+(que\s+)?(\w+\s+){0,2}(cambian|mueven|modifican|influyen|afectan|actuan|cuentan)\b.{0,25}?(automatico|algoritmo)|que (mueve|cambia|modifica) (el |al )?(modo )?automatico/,
+    "parametros configurables automatico",
+    "sustituye",
+  ],
   [
     /(glucosa|glucemia|azucar)\s+(muy )?(alt[oa]s?|elevad[oa]s?|subid[oa]|disparad[oa]|por encima|por las nubes|altisim[oa])|me sube (la )?(glucosa|azucar)/,
     "hiperglucemia persistente",
@@ -810,7 +857,7 @@ export function atomos(): Atomo[] {
               contexto: k > 0 && RE_CONECTOR.test(f) ? fs[k - 1] : undefined,
               pagina: b.p,
               pagina2: b.p2,
-              // «Leer en su sitio» lleva a la frase y la resalta (fraseCitada.ts).
+              // «Ver en el apartado» lleva a la frase y la resalta (fraseCitada.ts).
               ruta: fs.length > 1 ? href("capitulo", a.slug, `${id}~${k}`) : ruta,
             },
             { titulo: lead || sub, claves: a.titulo, cuerpo: f, parrafo: todo },
@@ -988,6 +1035,21 @@ export function atomos(): Atomo[] {
       ruta: href("consultar", "figura-3"),
     },
     { titulo: "regla de oro", claves: FIGURA3.cabecera, cuerpo: FIGURA3.reglaDeOro },
+  );
+  // La nota del asterisco: a quién se refieren las dosis (adultos; no en pediatría ni gestación).
+  add(
+    {
+      ...F3,
+      id: "F3/nota",
+      titulo: "Dosis orientativas de la Figura 3 (nota del asterisco)",
+      texto: plano(FIGURA3.notaAsterisco),
+      ruta: href("consultar", "figura-3"),
+    },
+    {
+      titulo: "dosis orientativas UI/kg",
+      claves: `${FIGURA3.cabecera} 0,1 0,15 UI/kg insulina pluma rescate poblacion`,
+      cuerpo: FIGURA3.notaAsterisco,
+    },
   );
 
   // Figuras 1, 2 e infografía: cada caja.
@@ -1327,6 +1389,11 @@ export function responder(pregunta: string, { max = 3 } = {}): Respuesta[] {
       else if (a.parrafo.includes("liberty") || a.cuerpo.includes("liberty")) score -= 1.5;
     }
     if (tramo && a.tramo) score += a.tramo === tramo ? 6 : -2;
+    else if (a.tramo) {
+      const propias = propiasDeTramo().get(a.tramo) ?? [];
+      if (!conPuntos.some((g) => g.palabras.some((t) => propias.some((x) => casa(t, x)))))
+        score -= 3;
+    }
     if (pideCifra && RE_CIFRA.test(normalizar(a.todo))) score += 1;
     // La edad decide en la infancia («≥ 1 año», «≥ 2 años»); en un adulto, cualquiera la cumple.
     if (valorEdad !== null && valorEdad < 18) score += cumpleEdad(a.todo, valorEdad);

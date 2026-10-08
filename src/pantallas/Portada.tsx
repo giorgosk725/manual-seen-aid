@@ -120,7 +120,7 @@ const ATAJOS = [
     icono: SlidersHorizontal,
     color: FICHA_AREA.pizarra,
     t: "Parámetros por sistema",
-    s: "Qué mueve el modo automático",
+    s: "Configurables en automático (Tabla 1)",
   },
   {
     href: href("consultar", "situacion", "rm"),

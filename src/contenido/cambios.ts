@@ -8,13 +8,27 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.11.0";
+export const VERSION_APP = "0.12.0";
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-08",
+    ambito: "app",
+    titulo: `Manual SEEN · AID ${VERSION_APP} — búsqueda más honesta, condiciones a la vista y hojas legibles`,
+    detalle: [
+      "Búsqueda: arriba sale el «pasaje del capítulo» que mejor encaja (ya no «la respuesta»), o una «coincidencia parcial» si solo coincide en parte; el enlace dice adónde lleva («Ver en el apartado», «Ver la tabla», «Ver la figura»). Al principio se ven los mejores resultados y el resto con «Ver más resultados».",
+      "El buscador respeta el sistema que se nombra («qué parámetros cambian el automático de Omnipod 5» da su casilla de la Tabla 1), entiende «sale mucho del automático» y «glucosa normal», y sin una cifra de cetonemia ya no elige una rama de la Figura 3. La nota de las dosis de la figura (adultos; en pediatría y gestación, su protocolo) se encuentra al preguntar por ellas.",
+      "Medido con 80 preguntas nuevas de residentes, adjuntos y enfermería escritas por otro agente sin ver el motor: el pasaje bueno sale el primero en el 60 % y entre los tres primeros en el 74 %; 7 de las 10 preguntas que el capítulo no trata no reciben pasaje directo. Las mejoras corrigen los casos de la auditoría sin cambiar esa cifra general: el buscador sigue fallando a menudo.",
+      "Sistemas: «Qué mueve el modo automático» pasa a «Parámetros configurables en modo automático» (el rótulo de la Tabla 1), separando los de efecto directo sobre el algoritmo (*) de los que intervienen sobre todo en los bolos o en el modo manual.",
+      "Figura 3: al abrir una rama, también por enlace directo, debajo van las notas comunes de la figura (insulina con pluma, situaciones especiales, registro) y a quién se refieren las dosis.",
+      "Hojas para el paciente: letra grande por defecto; la de una cara queda como versión compacta. Al pie, que lo escrito a mano no aparece en la web, la versión de la hoja y la fecha del capítulo.",
+      "Lectura: en el móvil, las cifras del apartado empiezan plegadas para que el texto aparezca antes. «Cómo citar» se rotula como cita provisional. La página de tablas explica qué pregunta responde cada una. Los enlaces a la edición educativa de ejercicio, comidas y cirugía llevan a su apartado, no al catálogo general. Rótulos más precisos en tarjetas, consulta y sistemas.",
+    ],
+  },
+  {
     fecha: "2026-10-06",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — el capítulo de la maquetación del 5-10-2026`,
+    titulo: "Manual SEEN · AID 0.11.0 — el capítulo de la maquetación del 5-10-2026",
     detalle: [
       "El texto pasa a la última maquetación de la editorial (5-10-2026), que ya incorpora las 11 correcciones del 30-9. La app aplica además las 3 correcciones finales que el autor ha anotado en ella.",
       "Resolución de incidencias (p. 15): en personas tratadas con iSGLT2 ya no se habla de rebajar el umbral a 200 mg/dl; «debe mantenerse una alta sospecha de cetoacidosis y medirse la cetonemia ante síntomas o situaciones de riesgo, con independencia del nivel de glucemia». Esa cifra sale de «Cifras del apartado» y de las tarjetas.",

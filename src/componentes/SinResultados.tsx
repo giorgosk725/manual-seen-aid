@@ -19,8 +19,8 @@ export function SinResultados({ onIr }: { onIr?: () => void }) {
       className="mt-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
     >
       <p>
-        Nada en el capítulo con esas palabras. Prueba con otras («sueño», «cetonemia», «TBR») o
-        entra por una situación:
+        No hay resultados en el capítulo con esas palabras. Prueba con otras («sueño», «cetonemia»,
+        «TBR») o entra por una situación:
       </p>
       <ul className="mt-2 flex flex-wrap gap-1.5">
         {PUERTAS.map((p) => (

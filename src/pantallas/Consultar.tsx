@@ -51,8 +51,8 @@ export function HubConsultar() {
     <div>
       <CabeceraEditorial titulo="Consultar" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Lo que se busca en consulta, en dos toques. El texto del capítulo va literal y con su
-          página; lo que no es del capítulo va rotulado aparte.
+          Accesos rápidos a las situaciones, tablas y recorridos del capítulo. El texto va literal y
+          con su página; lo que no es del capítulo va rotulado aparte.
         </p>
       </CabeceraEditorial>
       <div className="space-y-6">
@@ -121,7 +121,16 @@ export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   return (
     <div>
-      <CabeceraEditorial titulo="Tablas del capítulo" hex={hex} level={1} />
+      <CabeceraEditorial titulo="Tablas del capítulo" hex={hex} level={1}>
+        {/* Texto de la app: qué pregunta responde cada tabla (las tres por sistema se parecen). */}
+        <p className="text-sm text-slate-600">
+          Tres tablas comparan los cuatro sistemas, cada una para una pregunta distinta: la 1, sus
+          características (algoritmo, objetivos, indicación y parámetros configurables); la 3, cómo
+          se ajustan los parámetros clásicos; y la 4, qué herramienta usar ante situaciones
+          frecuentes. La 2 es la transición desde MDI; la 5, la revisión de la descarga; y la 6, las
+          exploraciones y la cirugía.
+        </p>
+      </CabeceraEditorial>
       <div className="no-imprimir mb-4 overflow-x-auto">
         <Segmented
           label="Elegir tabla"

@@ -110,20 +110,43 @@ function Rama({ tramo, completa }: { tramo: TramoFigura3; completa?: boolean }) 
   );
 }
 
-function Pies() {
+function NotasDelPie() {
+  return (
+    <div className="grid gap-3 sm:grid-cols-3">
+      {FIGURA3.pie.map((p, i) => (
+        <div
+          key={i}
+          className="rounded-xl border bg-white p-3 text-sm text-slate-700"
+          style={{ borderColor: "#e6e6e6" }}
+        >
+          <span className="font-bold text-slate-900">{p.titulo}</span> <Texto>{p.texto}</Texto>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* Con una rama abierta (también por enlace directo), lo que la figura dice para todas las ramas
+   va pegado a ella: la insulina con pluma, las situaciones especiales, el registro y a quién se
+   refieren las dosis con asterisco. */
+function NotasComunes() {
+  return (
+    <section aria-label="Notas comunes de la Figura 3" className="mt-3 space-y-2">
+      <div className="text-xs font-bold uppercase tracking-wide text-slate-500">
+        Notas de la figura para todas las ramas
+      </div>
+      <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
+        {FIGURA3.notaAsterisco}
+      </p>
+      <NotasDelPie />
+    </section>
+  );
+}
+
+function Pies({ sinNotas }: { sinNotas?: boolean }) {
   return (
     <div className="mt-4 space-y-3">
-      <div className="grid gap-3 sm:grid-cols-3">
-        {FIGURA3.pie.map((p, i) => (
-          <div
-            key={i}
-            className="rounded-xl border bg-white p-3 text-sm text-slate-700"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            <span className="font-bold text-slate-900">{p.titulo}</span> <Texto>{p.texto}</Texto>
-          </div>
-        ))}
-      </div>
+      {!sinNotas && <NotasDelPie />}
       <div
         className="flex items-start gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white"
         style={{ background: "linear-gradient(130deg, #15324f, #1f4e79)" }}
@@ -131,7 +154,9 @@ function Pies() {
         <Star size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
         <span>{FIGURA3.reglaDeOro}</span>
       </div>
-      <p className="text-xs leading-relaxed text-slate-600">{FIGURA3.notaAsterisco}</p>
+      {!sinNotas && (
+        <p className="text-xs leading-relaxed text-slate-600">{FIGURA3.notaAsterisco}</p>
+      )}
       <p className="text-xs text-slate-500">Abreviaturas: {FIGURA3.abreviaturas}</p>
       <p className="text-xs italic text-slate-500">{FIGURA3.titulo}</p>
     </div>
@@ -236,7 +261,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
     if (valido) actuar.current?.scrollIntoView({ block: "start" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  /* Atajo: con la cetonemia ya medida, ir directo a su rama («Actuar»). */
+  /* Atajo: con la cetonemia ya medida, ir directo a su rama («Rama de la figura»). */
   const irATramo = (t: Tramo) => {
     elegir(t);
     requestAnimationFrame(() => actuar.current?.scrollIntoView({ block: "start" }));
@@ -288,7 +313,8 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
             {FIGURA3.confirmar}
           </div>
           <div className="mb-2 text-sm text-slate-700">
-            ¿Cuál es la cetonemia (β-OHB)? Elige el tramo y verás solo esa rama.
+            ¿Cuál es la cetonemia (β-OHB)? Elige el tramo para ver su rama de la figura, con las
+            notas comunes debajo.
           </div>
           <div
             className="grid grid-cols-2 gap-2 lg:grid-cols-4"
@@ -334,11 +360,12 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-white">
               3
             </span>{" "}
-            Actuar
+            Rama de la figura
           </div>
           {actual ? (
             <div key={actual.clave} className="pantalla-in">
               <Rama tramo={actual} />
+              <NotasComunes />
             </div>
           ) : (
             <div
@@ -350,7 +377,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
           )}
         </li>
       </ol>
-      <Pies />
+      <Pies sinNotas={!!actual} />
       <ImagenFigura figura={INFO_F3} />
     </section>
   );

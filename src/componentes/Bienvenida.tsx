@@ -1,4 +1,4 @@
-/* «Cómo sacarle partido»: tarjeta de primera visita en la portada (se cierra y no vuelve) y la
+/* «Cómo usar esta app»: tarjeta de primera visita en la portada (se cierra y no vuelve) y la
    misma guía en «Sobre esta versión». Texto de la app, no del capítulo. */
 import { BookOpen, HeartHandshake, Route, Search, X } from "lucide-react";
 import { href } from "../rutas";
@@ -7,9 +7,9 @@ import { cerrarBienvenida, useBienvenidaVista } from "../prefs";
 const PASOS = [
   {
     icono: Search,
-    titulo: "Pregunta con tus palabras",
+    titulo: "Busca con tus palabras",
     texto:
-      "En la caja de «¿Qué necesitas?» o con la lupa (Ctrl K): «cetonas 1,2», «resonancia con 780G», «cuánto tiempo puedo estar desconectado». Arriba sale la respuesta del capítulo, literal y con su página.",
+      "En la caja de «¿Qué necesitas?» o con la lupa (Ctrl K): «cetonas 1,2», «resonancia con 780G», «cuánto tiempo puedo estar desconectado». Arriba, el pasaje del capítulo que mejor encaja, literal y con su página.",
     ruta: href("buscar"),
     enlace: "Buscar",
   },
@@ -80,7 +80,7 @@ export function Bienvenida() {
     >
       <div className="mb-3 flex items-start justify-between gap-3">
         <h2 id="bienvenida" className="text-base font-extrabold text-slate-900">
-          Cómo sacarle partido
+          Cómo usar esta app
         </h2>
         <button
           type="button"
@@ -102,7 +102,7 @@ export function Bienvenida() {
           Entendido
         </button>
         <span className="text-xs text-slate-500">
-          No vuelve a salir; la guía está también en «Sobre esta versión».
+          Puedes volver a verla en «Sobre esta versión».
         </span>
       </div>
     </section>

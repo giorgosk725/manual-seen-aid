@@ -401,8 +401,8 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
       <CabeceraEditorial titulo="Iniciar un sistema" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
           El apartado 8 del capítulo (pp. 10-12) en sus cuatro fases, con lo que piden los apartados
-          6, 7 y 9 en cada una. Elige el sistema para ver solo lo suyo. Todo es texto del capítulo,
-          con su página.
+          6, 7 y 9 en cada una. Elige un sistema para ver solo su contenido. Todo es texto del
+          capítulo, con su página.
         </p>
       </CabeceraEditorial>
 

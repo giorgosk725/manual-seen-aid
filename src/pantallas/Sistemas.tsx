@@ -65,6 +65,36 @@ const PARAMETROS_AUTO = TABLAS.T1.filas.find(
   (f) => f.etiqueta === "Parámetros configurables en modo automático",
 );
 
+/* La casilla del sistema en «Parámetros configurables en modo automático» (Tabla 1, p. 4),
+   separada como dice su nota: los marcados con asterisco tienen efecto directo sobre el
+   algoritmo; el resto interviene sobre todo en los bolos o en el modo manual. Los nombres son
+   literales; la agrupación y sus rótulos son de la app. */
+function ParametrosConfigurables({ c, ink }: { c: number; ink: string }) {
+  const lineas = (PARAMETROS_AUTO?.celdas[c] ?? "").split("\n").map((l) => l.trim());
+  const grupos = [
+    {
+      rotulo: "Efecto directo sobre el algoritmo (*)",
+      items: lineas.filter((l) => l.endsWith("*")),
+    },
+    {
+      rotulo: "Sobre todo en los bolos o en el modo manual",
+      items: lineas.filter((l) => l && !l.endsWith("*")),
+    },
+  ].filter((g) => g.items.length);
+  return (
+    <span className="mt-1 block space-y-1">
+      {grupos.map((g) => (
+        <span key={g.rotulo} className="block">
+          <span className="block text-[11px] font-semibold" style={{ color: ink }}>
+            {g.rotulo}
+          </span>
+          <span className="block text-slate-900">{g.items.join(" · ")}</span>
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export function HubSistemas() {
   return (
     <div>
@@ -116,11 +146,9 @@ export function HubSistemas() {
                       className="block font-bold uppercase tracking-wide"
                       style={{ color: h.ink }}
                     >
-                      Qué mueve el modo automático
+                      Parámetros configurables en modo automático
                     </span>
-                    <span className="block text-slate-800">
-                      <Lineas>{PARAMETROS_AUTO?.celdas[c] ?? ""}</Lineas>
-                    </span>
+                    <ParametrosConfigurables c={c} ink={h.ink} />
                   </span>
                   <span
                     className="mt-2 inline-flex items-center gap-1 text-xs font-semibold"
@@ -161,8 +189,10 @@ const NIVEL: Record<string, { etiqueta: string; color: string }> = {
 function Difiere({ d }: { d: Discrepancia }) {
   return (
     <span className="mt-1.5 block rounded-md border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs text-red-900">
-      <span className="font-bold">Difiere del capítulo; manda el capítulo.</span> {d.donde}, p.{" "}
-      {d.p}: <q className="italic">{d.capitulo}</q>
+      <span className="font-bold">
+        Difiere del capítulo: la app sigue el capítulo mientras el autor lo revisa.
+      </span>{" "}
+      {d.donde}, p. {d.p}: <q className="italic">{d.capitulo}</q>
       {d.nota && <span className="mt-0.5 block text-red-800">{d.nota}</span>}
     </span>
   );
@@ -402,8 +432,9 @@ function Ampliacion({ s }: { s: Sistema }) {
   );
 }
 
-/* «Qué mueve el modo automático»: la fila literal de la Tabla 1 para este sistema, con la nota
-   del asterisco. Arriba de la ficha, porque es la consulta más frecuente sobre un sistema. */
+/* «Parámetros configurables en modo automático»: la fila literal de la Tabla 1 para este
+   sistema, agrupada según la nota del asterisco y con la nota al lado. Arriba de la ficha, porque
+   es la consulta más frecuente sobre un sistema. */
 function ParametrosAutomatico({
   c,
   hexSistema,
@@ -421,10 +452,10 @@ function ParametrosAutomatico({
       style={{ borderLeftColor: hexSistema.strong }}
     >
       <div className="text-xs font-bold uppercase tracking-wide text-slate-600">
-        Qué mueve el modo automático <PaginaBadge p={4} />
+        Parámetros configurables en modo automático <PaginaBadge p={4} />
       </div>
-      <div className="mt-1 text-sm font-semibold text-slate-900">
-        <Lineas>{fila.celdas[c]}</Lineas>
+      <div className="mt-1 text-sm font-semibold">
+        <ParametrosConfigurables c={c} ink={hexSistema.ink} />
       </div>
       <p className="mt-1 text-xs text-slate-600">
         <Texto>{TABLAS.T1.notas[0]}</Texto>

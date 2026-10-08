@@ -56,11 +56,11 @@ describe("preferencias de lectura", () => {
     }
     localStorage.setItem("mseen:hoja", JSON.stringify("gigante"));
     const { unmount } = render(<Formato />);
-    expect(screen.getByText("una-cara")).toBeInTheDocument();
-    unmount();
-    localStorage.setItem("mseen:hoja", JSON.stringify("letra-grande"));
-    render(<Formato />);
     expect(screen.getByText("letra-grande")).toBeInTheDocument();
+    unmount();
+    localStorage.setItem("mseen:hoja", JSON.stringify("una-cara"));
+    render(<Formato />);
+    expect(screen.getByText("una-cara")).toBeInTheDocument();
   });
   it("restablecer borra solo las claves de la app", () => {
     localStorage.setItem("mseen:night", "1");

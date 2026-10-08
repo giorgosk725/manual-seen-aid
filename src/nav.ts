@@ -63,7 +63,7 @@ export const DESTINOS: Destino[] = [
     icono: Images,
     cat: "consultar",
     descripcion:
-      "Todo lo visual en un sitio: diagramas a partir del texto, figuras con zoom, tablas y sistemas.",
+      "Figuras, tablas y diagramas: los diagramas a partir del texto, las figuras con zoom, las tablas y los sistemas.",
   },
   {
     id: "sistemas",
@@ -136,7 +136,8 @@ export const DESTINOS: Destino[] = [
     href: href("consultar", "figura-3"),
     icono: Droplets,
     cat: "consultar",
-    descripcion: "La Figura 3 como recorrido: elige el tramo de β-OHB y ve solo tu rama.",
+    descripcion:
+      "La Figura 3 como recorrido: elige el tramo de β-OHB para ver su rama, con las notas comunes de la figura.",
   },
   {
     id: "infografia",

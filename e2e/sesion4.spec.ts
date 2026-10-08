@@ -24,7 +24,10 @@ test.describe("Para el paciente: una cara A4", () => {
     ["/#/pacientes/plan/camaps", "Plan de seguridad · CamAPS"],
     ["/#/pacientes/plan/op5", "Plan de seguridad · Omnipod 5"],
   ] as const) {
-    test(`${nombre} cabe en una cara`, async ({ page }) => {
+    test(`${nombre} cabe en una cara (versión compacta)`, async ({ page }) => {
+      await page.addInitScript(() =>
+        localStorage.setItem("mseen:hoja", JSON.stringify("una-cara")),
+      );
       await page.goto(ruta);
       await expect(page.getByRole("img", { name: /Código QR/ })).toBeVisible();
       expect(await paginasAlImprimir(page), nombre).toBe(1);
@@ -33,16 +36,19 @@ test.describe("Para el paciente: una cara A4", () => {
 });
 
 /* Letra grande (decisión del autor, 3-10-2026): 12 pt en una columna, aunque ocupe tres caras;
-   el resumen, dos. Se elige en la propia hoja y se recuerda en el navegador. */
+   el resumen, dos. Desde la 0.12.0 es el formato por defecto (auditoría externa del 6-10-2026);
+   la compacta se elige en la propia hoja y se recuerda en el navegador. */
 test.describe("Para el paciente: letra grande", () => {
-  test("el selector cambia el formato y el botón de imprimir", async ({ page }) => {
+  test("letra grande por defecto; el selector cambia el formato y el botón", async ({ page }) => {
     await page.goto("/#/pacientes/resumen");
-    await expect(page.getByRole("button", { name: "Imprimir en una cara" })).toBeVisible();
-    await page.getByRole("button", { name: /Letra grande/ }).click();
     await expect(page.getByRole("button", { name: "Imprimir con letra grande" })).toBeVisible();
     await expect(page.locator(".hoja-a4.grande")).toHaveCount(1);
+    await expect(page.getByText(/no aparece en la web/)).toBeVisible();
+    await page.getByRole("button", { name: /Compacta/ }).click();
+    await expect(page.getByRole("button", { name: "Imprimir en una cara" })).toBeVisible();
+    await expect(page.locator(".hoja-a4.grande")).toHaveCount(0);
     await page.reload();
-    await expect(page.locator(".hoja-a4.grande")).toHaveCount(1);
+    await expect(page.locator(".hoja-a4.grande")).toHaveCount(0);
   });
   for (const [ruta, nombre, maximo] of [
     ["/#/pacientes/informacion", "Información para pacientes", 3],

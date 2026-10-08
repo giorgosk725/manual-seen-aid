@@ -113,6 +113,9 @@ export function ComoCitar({ apartado }: { apartado: Apartado }) {
           className="mt-2 w-full rounded-xl border bg-white p-3 text-sm"
           style={{ borderColor: "#e6e6e6" }}
         >
+          <p className="mb-1 text-xs font-bold uppercase tracking-wide text-amber-800">
+            Cita provisional
+          </p>
           <p className="select-all text-slate-800">{texto}</p>
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <button

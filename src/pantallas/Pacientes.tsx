@@ -24,13 +24,15 @@ import { abrirPlegables, imprimirRegion } from "../imprimir";
 import { QR } from "../componentes/QR";
 import { CompartirHoja } from "../componentes/CompartirHoja";
 import { direccion } from "../compartir";
+import { VERSION_APP } from "../contenido/cambios";
 
 const hex = CATEGORIA_HEX.pacientes;
 
 /* ---------- Barra de acciones de una hoja: formato, imprimir y compartir el enlace ---------- */
+/* Para entregar al paciente, letra grande (la opción por defecto); la de una cara es compacta. */
 const FORMATOS: { id: FormatoHoja; label: string; shortLabel: string }[] = [
-  { id: "una-cara", label: "Una cara · letra pequeña", shortLabel: "Una cara" },
   { id: "letra-grande", label: "Letra grande · doble cara", shortLabel: "Letra grande" },
+  { id: "una-cara", label: "Compacta · una cara, letra pequeña", shortLabel: "Compacta" },
 ];
 function Acciones({
   hoja,
@@ -58,7 +60,7 @@ function Acciones({
       </div>
       <p className="text-xs text-slate-600">
         {formato === "una-cara"
-          ? "En papel: una cara A4, dos columnas, letra pequeña (7 pt)."
+          ? "En papel: una cara A4, dos columnas, letra pequeña (7 pt). Para entregar al paciente, mejor la letra grande."
           : "En papel: una columna con letra de 12 pt; ocupa dos o tres caras A4. Mejor a doble cara."}
       </p>
       <div className="flex flex-wrap items-center gap-2">
@@ -150,10 +152,14 @@ function Hoja({
         <QR texto={direccion(ruta)} titulo={`Código QR para abrir esta hoja: ${direccion(ruta)}`} />
         <div className="min-w-0 text-xs text-slate-600">
           <p className="font-semibold text-slate-800">
-            Abra esta hoja en el móvil con el código QR.
+            Abra esta hoja en el móvil con el código QR. Lo que se escriba a mano en el papel no
+            aparece en la web.
           </p>
           <p className="break-all">{direccion(ruta)}</p>
-          <div className="mt-1">{pie}</div>
+          <div className="mt-1">
+            {pie} Hoja de la versión {VERSION_APP}; capítulo de la maquetación del{" "}
+            {CAPITULO.fechaFuente}.
+          </div>
         </div>
       </footer>
     </div>
@@ -180,9 +186,9 @@ export function HubPacientes() {
     <div>
       <CabeceraEditorial titulo="Para el paciente" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Hojas para entregar o compartir en la consulta. Cada una cabe en una cara A4 o, con letra
-          grande (12 pt), en dos o tres caras; y lleva un código QR para abrirla en el móvil. No son
-          el texto del capítulo: van rotuladas con su origen.
+          Hojas para entregar o compartir en la consulta. Cada una se imprime con letra grande (12
+          pt, en dos o tres caras) o, en versión compacta, en una cara A4; y lleva un código QR para
+          abrirla en el móvil. No son el texto del capítulo: van rotuladas con su origen.
         </p>
       </CabeceraEditorial>
       <ul className="grid gap-3 md:grid-cols-2">

@@ -1,4 +1,4 @@
-/* «Respuesta del capítulo»: lo que devuelve «Preguntas al capítulo» (respuestas.ts), arriba de
+/* «Pasaje del capítulo»: lo que devuelve «Preguntas al capítulo» (respuestas.ts), arriba de
    los resultados de la búsqueda. Todo es texto literal del capítulo con su página; lo único de
    la app son los rótulos. Se usa en la paleta (compacta), en «¿Qué necesitas?» de la portada
    (compacta) y en la pantalla Buscar (con las otras respuestas). */
@@ -41,7 +41,8 @@ function notaAsterisco(r: Respuesta): { nota: string; donde: string } | null {
   if (r.id.startsWith("F3/")) return { nota: FIGURA3.notaAsterisco, donde: "Figura 3, p. 8" };
   const t = LISTA_TABLAS.find((x) => x.id === r.id.split("/")[0]);
   const nota = t?.notas.find((n) => n.trimStart().startsWith("*"));
-  return t && nota ? { nota, donde: `Tabla ${t.numero}, p. ${t.paginas[0]}` } : null;
+  // Las notas van al final de la tabla: su página es la última.
+  return t && nota ? { nota, donde: `Tabla ${t.numero}, p. ${t.paginas[1]}` } : null;
 }
 
 function Tarjeta({
@@ -138,7 +139,16 @@ function Tarjeta({
         onClick={onIr}
         className="mt-1 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline"
       >
-        Leer en su sitio <ArrowRight size={14} aria-hidden="true" />
+        {r.tipo === "texto"
+          ? "Ver en el apartado"
+          : r.tipo === "figura"
+            ? "Ver la figura"
+            : r.tipo === "tabla"
+              ? r.sistema
+                ? "Ver en la ficha del sistema"
+                : "Ver la tabla"
+              : "Ver en el glosario"}{" "}
+        <ArrowRight size={14} aria-hidden="true" />
       </a>
     </div>
   );
@@ -175,11 +185,11 @@ export function RespuestasCapitulo({
         style={{ color: cercana ? "#475569" : "#2f5680" }}
       >
         <Quote size={14} aria-hidden="true" />{" "}
-        {cercana ? "Lo más cercano en el capítulo" : "Respuesta del capítulo"}
+        {cercana ? "Coincidencia parcial en el capítulo" : "Pasaje del capítulo"}
       </H>
       {cercana && (
         <p className="mb-2 text-xs text-slate-600">
-          No hay una frase que responda de lleno a la pregunta; esto es lo que más se le parece.
+          Coincide solo con parte de la búsqueda: revisa su contexto antes de usarlo.
         </p>
       )}
       <Tarjeta r={r} q={q} principal compacta={compacta} onIr={onIr} />
@@ -190,14 +200,14 @@ export function RespuestasCapitulo({
           className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-600 hover:underline"
         >
           {otras.length > 0
-            ? `${cercana ? "Otros pasajes" : `Otras ${otras.length === 1 ? "respuesta" : `${otras.length} respuestas`}`} y todos los resultados`
+            ? `${otras.length === 1 ? "Otro pasaje" : `Otros ${otras.length} pasajes`} y todos los resultados`
             : "Todos los resultados"}
         </a>
       ) : (
         otras.length > 0 && (
           <div className="mt-3 space-y-2">
             <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-              {cercana ? "Otros pasajes parecidos" : "Otras respuestas"}
+              Otros pasajes relacionados
             </p>
             {otras.map((o) => (
               <Tarjeta key={o.id} r={o} q={q} onIr={onIr} />
@@ -206,8 +216,8 @@ export function RespuestasCapitulo({
         )
       )}
       <p className="mt-2 text-[11px] text-slate-500">
-        Texto literal del capítulo elegido por coincidencia de palabras, sin inteligencia
-        generativa. Si no es lo que buscas, mira los resultados de abajo.
+        Elegido por coincidencia de palabras: comprueba que responde a lo que buscas. Debajo, todos
+        los resultados.
       </p>
     </section>
   );

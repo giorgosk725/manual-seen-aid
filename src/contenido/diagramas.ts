@@ -113,7 +113,7 @@ export const DIAGRAMAS: DiagramaMeta[] = [
     id: "eleccion",
     titulo: "Elección compartida del sistema",
     resumen:
-      "La Figura 2 dibujada: perfil de la persona, características del sistema y contexto asistencial.",
+      "La Figura 2 como diagrama: perfil de la persona, características del sistema y contexto asistencial.",
     paginas: [6],
     apartado: "06-indicaciones",
     ancla: "F2",

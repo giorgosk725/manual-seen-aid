@@ -1,4 +1,4 @@
-/* «Leer en su sitio» desde una respuesta del capítulo: la ruta lleva el bloque y la frase
+/* «Ver en el apartado» desde un pasaje del capítulo: la ruta lleva el bloque y la frase
    («#/capitulo/07-educacion/b11~3»). Al llegar, la frase 3 del párrafo b11 (o el punto 3 de la
    lista) se trae a la vista y se resalta un rato con la API de resaltados de CSS; sin ella, solo
    se trae a la vista. Un párrafo largo ya no obliga a buscar la frase a ojo. */

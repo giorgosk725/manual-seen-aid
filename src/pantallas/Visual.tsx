@@ -49,7 +49,7 @@ export function Visual() {
     <div>
       <CabeceraEditorial titulo="Figuras y diagramas" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Todo lo visual del capítulo en un sitio: diagramas hechos a partir de su texto, las
+          Figuras, tablas y diagramas del capítulo: los diagramas hechos a partir de su texto, las
           figuras originales con zoom, las tablas y los sistemas.
         </p>
       </CabeceraEditorial>
@@ -206,7 +206,9 @@ export function Visual() {
                       </span>
                       <span className="block text-sm text-slate-800">{t.titulo}</span>
                       <span className="pagina-badge mt-1 block">
-                        pp. {t.paginas[0]}–{t.paginas[1]}
+                        {t.paginas[0] === t.paginas[1]
+                          ? `p. ${t.paginas[0]}`
+                          : `pp. ${t.paginas[0]}–${t.paginas[1]}`}
                         {ap ? ` · ${ap.n}. ${ap.corto}` : ""}
                       </span>
                     </span>

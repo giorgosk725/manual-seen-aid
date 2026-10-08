@@ -862,7 +862,7 @@ function Exploraciones() {
   );
 }
 
-/* ---------- 11. Elección compartida (Figura 2 dibujada) ---------- */
+/* ---------- 11. Elección compartida (la Figura 2 como diagrama) ---------- */
 function CajaEleccion({ i, tono = "azul" }: { i: number; tono?: "azul" | "centro" }) {
   const caja = F2.cajas[i];
   return (

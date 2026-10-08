@@ -168,13 +168,14 @@ export const alternarFavorito = (m: Marcador) => {
 };
 export const useFavoritos = () => useLectura("mseen:favoritos", [], validarFavoritos);
 
-/* Formato de impresión de las hojas para el paciente: una cara con letra pequeña (a dos
-   columnas) o dos caras con letra grande (una columna). */
+/* Formato de impresión de las hojas para el paciente: letra grande (una columna, dos o tres
+   caras; por defecto desde la 0.12.0, para entregar al paciente) o compacta (una cara, letra
+   pequeña, a dos columnas). */
 export type FormatoHoja = "una-cara" | "letra-grande";
 const validarFormatoHoja: Validar<FormatoHoja> = (v) =>
   v === "una-cara" || v === "letra-grande" ? v : undefined;
 export const useFormatoHoja = () =>
-  useLectura<FormatoHoja>("mseen:hoja", "una-cara", validarFormatoHoja);
+  useLectura<FormatoHoja>("mseen:hoja", "letra-grande", validarFormatoHoja);
 export const guardarFormatoHoja = (f: FormatoHoja) => guardarJSON("mseen:hoja", f);
 
 /* Tarjetas de repaso (repaso.ts): caja (1-5) y próxima fecha de cada tarjeta que se ha visto.
