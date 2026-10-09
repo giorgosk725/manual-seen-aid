@@ -1,0 +1,76 @@
+[
+  {
+    "id": "cetonas",
+    "estado": "aprobada",
+    "titulo": "Cetonas: qué hacer según el resultado",
+    "rotulo": "Tarjeta de bolsillo",
+    "fuente": "Figura 3 (p. 8) y plan de seguridad (p. 7) del capítulo, en lenguaje para el paciente",
+    "intro": "Esta tarjeta resume qué hacer según las cetonas en sangre (β-hidroxibutirato). Las dosis concretas las fija su equipo en su plan de seguridad: esta tarjeta no las sustituye.",
+    "secciones": [
+      {
+        "titulo": "Cuándo medir cetonas en sangre",
+        "items": [
+          "Si la glucosa del sensor está en 250 mg/dl o más durante 2 horas o más.",
+          "Si la glucosa no baja después de una corrección.",
+          "Si tiene síntomas de glucosa alta, vómitos, dolor de tripa, fiebre u otra enfermedad, o algún problema con el set o el pod.",
+          "Si toma gliflozinas (iSGLT2) o está embarazada: mida las cetonas aunque la glucosa no esté muy alta."
+        ]
+      },
+      {
+        "titulo": "Primero, siempre",
+        "items": [
+          "Confirme la glucosa con una medición capilar (en el dedo).",
+          "Revise la zona de inserción y el adhesivo, el reservorio o el pod, la insulina y las conexiones."
+        ]
+      },
+      {
+        "titulo": "Menos de 0,6 mmol/l",
+        "items": [
+          "No hay cetosis significativa.",
+          "Si hay una causa clara y el sistema funciona: corrección habitual con el sistema.",
+          "Si la glucosa no bajó con la corrección anterior o sospecha que la insulina no está llegando: insulina rápida con pluma según su plan, y cambie el set o el pod, el reservorio y la insulina.",
+          "Beba agua. Vuelva a medir glucosa y cetonas en 1–2 horas."
+        ]
+      },
+      {
+        "titulo": "Entre 0,6 y 0,9 mmol/l",
+        "items": [
+          "Cetonas leves: vigilancia estrecha.",
+          "Como en el tramo anterior: corrección con el sistema si hay una causa clara; con pluma y cambio de set o pod si la glucosa no responde o sospecha que la insulina no llega.",
+          "Beba agua. Vuelva a medir glucosa y cetonas en 1–2 horas.",
+          "Si las cetonas suben a 1,0 o más, la glucosa no baja o aparecen síntomas: pase al tramo siguiente."
+        ]
+      },
+      {
+        "titulo": "Entre 1,0 y 2,9 mmol/l",
+        "items": [
+          "Cetosis significativa: probablemente la insulina no está llegando.",
+          "Póngase insulina rápida con pluma, la dosis que indica su plan de seguridad.",
+          "Cambie el set o el pod, el reservorio, la insulina y la zona de inserción.",
+          "Líquidos: sin azúcar si la glucosa está alta; con azúcar, en pequeñas cantidades, si la glucosa está baja o bajando.",
+          "Vuelva a medir glucosa y cetonas en 1–2 horas. No repita la corrección antes de 2 horas, salvo que su plan lo indique.",
+          "Si después de una segunda dosis bien puesta las cetonas siguen en 1,0 o más, o no mejora: acuda a valoración hospitalaria sin esperar a encontrarse peor."
+        ]
+      },
+      {
+        "titulo": "3,0 mmol/l o más, o signos de alarma",
+        "items": [
+          "Signos de alarma: vómitos que no ceden, dolor de tripa, respiración rápida o profunda, somnolencia, confusión, deshidratación, no poder beber o mal estado general.",
+          "Acuda a urgencias de inmediato."
+        ]
+      },
+      {
+        "titulo": "Recuerde",
+        "items": [
+          "El sistema no cuenta la insulina de la pluma: hay riesgo de acumular dosis y de hipoglucemia. Siga su plan para volver al modo automático.",
+          "Anote la hora, la glucosa, las cetonas, la dosis y lo que ha hecho (cambio de set o pod, líquidos)."
+        ]
+      }
+    ],
+    "huecos": [
+      "Mi dosis de corrección con pluma, según mi plan",
+      "Teléfono de contacto de mi equipo"
+    ],
+    "nota": "Texto preparado a partir de la Figura 3 y del plan de seguridad del capítulo; las dosis y los pasos concretos los fija su equipo."
+  }
+]

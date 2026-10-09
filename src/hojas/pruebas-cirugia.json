@@ -1,0 +1,64 @@
+[
+  {
+    "id": "pruebas-cirugia",
+    "estado": "aprobada",
+    "titulo": "Antes de una prueba o una cirugía: qué hacer con la bomba y el sensor",
+    "rotulo": "Hoja para el paciente",
+    "fuente": "Tabla 6 (pp. 21–22) e «Interrupción del sistema y pauta alternativa» (p. 9) del capítulo, en lenguaje para el paciente",
+    "intro": "La bomba o el pod y el sensor se valoran por separado. La actuación con el sensor cambia según el modelo: pregunte siempre por las instrucciones de su dispositivo.",
+    "secciones": [
+      {
+        "titulo": "Antes de ir",
+        "items": [
+          "Avise con antelación a su equipo de diabetes y al servicio que hace la prueba de que lleva una bomba o un pod y un sensor.",
+          "Lleve su plan de seguridad, material de repuesto (set o pod, sensor, reservorio), insulina rápida y basal en pluma, y medidor de glucosa y de cetonas.",
+          "Pregunte por las instrucciones de su modelo concreto."
+        ]
+      },
+      {
+        "titulo": "Resonancia magnética",
+        "items": [
+          "Bomba o pod: retirar antes de entrar en la sala; con una bomba con catéter y cánula metálica, retirar también el set. Al terminar, reconectar o poner un set o un pod nuevo.",
+          "Sensor: retirar, salvo que su modelo esté autorizado; colocar uno nuevo al terminar."
+        ]
+      },
+      {
+        "titulo": "TAC (tomografía computarizada)",
+        "items": [
+          "Bomba o pod: retirar y dejar fuera de la sala.",
+          "Sensor: según el modelo, algunos pueden quedarse fuera de la zona explorada (en algunos casos con protección) y otros deben retirarse."
+        ]
+      },
+      {
+        "titulo": "Radiografía, densitometría (DEXA), PET, medicina nuclear o radioterapia",
+        "items": [
+          "Bomba o pod: retirar si lo exigen las instrucciones del dispositivo o si queda en la zona de exposición; si puede mantenerse, dejarla fuera del campo.",
+          "Sensor: según el modelo y el tipo de prueba; seguir las instrucciones del dispositivo."
+        ]
+      },
+      {
+        "titulo": "Ecografía, electrocardiograma o endoscopia sin bisturí eléctrico",
+        "items": ["Bomba o pod y sensor: pueden mantenerse si no molestan para la prueba."]
+      },
+      {
+        "titulo": "Cirugía",
+        "items": [
+          "Cirugía corta (no más de una comida sin comer), estando estable: puede mantenerse la bomba o el pod, incluso en modo automático, si el equipo lo considera adecuado y el centro tiene protocolo; el set, fuera del campo quirúrgico. El sensor puede mantenerse si funciona bien.",
+          "Cirugía larga o compleja, o si no está estable: se suspende la bomba y se pasa a insulina por vena, sin dejar de recibir insulina. El equipo decide cuándo volver al sistema."
+        ]
+      },
+      {
+        "titulo": "Si la bomba o el pod van a estar quitados más de 1 hora",
+        "items": [
+          "Siga la pauta alternativa de su plan de seguridad (insulina con pluma).",
+          "Menos de 1 hora no suele requerir nada más, si la glucosa y las cetonas están bien."
+        ]
+      }
+    ],
+    "huecos": [
+      "Mi pauta alternativa con pluma, según mi plan",
+      "Teléfono de contacto de mi equipo"
+    ],
+    "nota": "Las recomendaciones deben contrastarse con las instrucciones de uso de cada dispositivo; su equipo adapta esta hoja a su sistema."
+  }
+]

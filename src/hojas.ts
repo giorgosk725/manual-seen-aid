@@ -2,7 +2,7 @@
    situación, en lenguaje para el paciente a partir de una figura o tabla del capítulo. Como los
    casos: hasta que el autor las apruebe viven en `borradores/hojas/` (fuera del repositorio) y
    solo entran en las copias de revisión (`src/hojas-borrador/`); aprobadas, pasan a
-   `src/hojas/`. Sin archivos, no hay hojas extra y la app no las ofrece. */
+   `src/hojas/` (las dos primeras, aprobadas el 9-10-2026). Sin archivos, no hay hojas extra. */
 
 export interface SeccionHoja {
   titulo: string;

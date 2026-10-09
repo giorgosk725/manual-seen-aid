@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.19.0";
+export const VERSION_APP = "0.20.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-09",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — material para el paciente a mano y situaciones por tema`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — dos hojas más para el paciente`,
+    detalle: [
+      "«Cetonas: qué hacer según el resultado», una tarjeta de bolsillo a partir de la Figura 3 y del plan de seguridad del capítulo, en lenguaje para el paciente: cuándo medir cetonas, qué comprobar primero y qué hacer en cada tramo; sin dosis, con un hueco para la que fije el equipo.",
+      "«Antes de una prueba o una cirugía: qué hacer con la bomba y el sensor», la Tabla 6 en lenguaje para el paciente, bomba y sensor por separado, con la regla de la pauta alternativa si la bomba va a estar quitada más de una hora.",
+      "Las dos, revisadas, con letra grande, código QR y su origen en el capítulo; en «Para el paciente».",
+    ],
+  },
+  {
+    fecha: "2026-10-09",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.19.0 — material para el paciente a mano y situaciones por tema",
     detalle: [
       "«Para el paciente» es una tarea más de Consultar y de la portada. Tres hojas breves nuevas para entregar según lo que haga falta ese día, hechas solo con las preguntas y respuestas ya publicadas de la Información para pacientes: «Si la glucosa baja, o sube y no baja», «Ejercicio, viajes y pruebas médicas» y «Qué tener siempre a mano y qué hacer si el sistema falla». Con letra grande y código QR, como las demás.",
       "Situación y sistema agrupa las situaciones por tema (ejercicio y comidas; noche, enfermedad e hiperglucemia; exploraciones, cirugía e ingreso; poblaciones y situaciones especiales), junten o no tabla, en vez de por la tabla de la que salen.",
