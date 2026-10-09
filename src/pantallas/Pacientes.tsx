@@ -19,6 +19,7 @@ import { elegirRuta, href } from "../rutas";
 import { CabeceraEditorial, Segmented, ToneCard } from "../ui";
 import { guardarFormatoHoja, useFormatoHoja, type FormatoHoja } from "../prefs";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
+import { HOJAS_EXTRA, hojaExtraPorId } from "../hojas";
 import { Texto } from "../texto";
 import { abrirPlegables, imprimirRegion } from "../imprimir";
 import { QR } from "../componentes/QR";
@@ -225,6 +226,31 @@ export function HubPacientes() {
           cortas para entregar según lo que haga falta ese día.
         </p>
         <ul className="mt-3 grid gap-2 md:grid-cols-3">
+          {HOJAS_EXTRA.map((h) => (
+            <li key={h.id}>
+              <a
+                href={href("pacientes", "hoja", h.id)}
+                className="hover-lift ease-brand flex h-full flex-col rounded-xl border bg-white p-3 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                style={{ borderColor: h.estado === "borrador" ? "#e0a83e" : "#e6e6e6" }}
+              >
+                <span className="text-sm font-bold text-slate-900">{h.titulo}</span>
+                <span className="mt-1 text-xs text-slate-600">
+                  {h.rotulo} · {h.secciones.length} apartados
+                </span>
+                {h.estado === "borrador" && (
+                  <span className="mt-1 inline-block w-fit rounded-full bg-amber-100 px-2 text-[11px] font-semibold text-amber-900">
+                    Borrador en revisión
+                  </span>
+                )}
+                <span
+                  className="mt-auto inline-flex items-center gap-1 pt-2 text-xs font-semibold"
+                  style={{ color: hex.ink }}
+                >
+                  Abrir la hoja <ArrowRight size={12} aria-hidden="true" />
+                </span>
+              </a>
+            </li>
+          ))}
           {HOJAS_BREVES.map((h) => (
             <li key={h.id}>
               <a
@@ -345,6 +371,8 @@ const HOJAS_BREVES: { id: string; titulo: string; preguntas: string[] }[] = [
 export function HojaPacientes({ id }: { id?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const h = HOJAS_BREVES.find((x) => x.id === id);
+  const extra = hojaExtraPorId(id);
+  if (!h && extra) return <HojaExtraVista hoja={extra} hojaRef={ref} />;
   if (!h) return <HubPacientes />;
   const ruta = href("pacientes", "hoja", h.id);
   const secciones = h.preguntas
@@ -375,6 +403,73 @@ export function HojaPacientes({ id }: { id?: string }) {
             ))}
           </section>
         ))}
+      </Hoja>
+    </div>
+  );
+}
+
+/* Una hoja escrita por la app (hojas.ts): secciones con puntos, huecos para el papel y su
+   fuente; en borrador, con el aviso de que aún no está aprobada. */
+function HojaExtraVista({
+  hoja,
+  hojaRef,
+}: {
+  hoja: (typeof HOJAS_EXTRA)[number];
+  hojaRef: React.RefObject<HTMLDivElement>;
+}) {
+  const ruta = href("pacientes", "hoja", hoja.id);
+  return (
+    <div>
+      <Volver />
+      {hoja.estado === "borrador" && (
+        <ToneCard tone="amber" title="Borrador en revisión" className="mb-3">
+          <p className="text-sm text-slate-800">
+            Texto preparado por la app a partir del capítulo y pendiente de aprobación: no entregar
+            todavía.
+          </p>
+        </ToneCard>
+      )}
+      <Acciones hoja={hojaRef} ruta={ruta} titulo={hoja.titulo} />
+      <Hoja
+        hojaRef={hojaRef}
+        rotulo={hoja.estado === "borrador" ? `${hoja.rotulo} · borrador` : hoja.rotulo}
+        titulo={hoja.titulo}
+        subtitulo={`${TITULO_CAPITULO_PACIENTES} · ${AUTOR_PACIENTES}`}
+        ruta={ruta}
+        pie={<>Manual SEEN · {hoja.fuente}.</>}
+        holgada
+      >
+        {hoja.intro && (
+          <p className="mb-3 text-[15px] leading-relaxed text-slate-800">{hoja.intro}</p>
+        )}
+        {hoja.secciones.map((sec) => (
+          <section key={sec.titulo} className="hoja-seccion mb-3">
+            <h2 className="text-base font-extrabold" style={{ color: hex.ink }}>
+              {sec.titulo}
+            </h2>
+            {sec.parrafos?.map((par, i) => (
+              <p key={i} className="mt-1 text-[15px] leading-relaxed text-slate-800">
+                {par}
+              </p>
+            ))}
+            {sec.items && (
+              <ul className="mt-1 list-disc space-y-1 pl-5 text-[15px] leading-relaxed text-slate-800">
+                {sec.items.map((it, i) => (
+                  <li key={i}>{it}</li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))}
+        {hoja.huecos?.map((etiqueta) => (
+          <div
+            key={etiqueta}
+            className="hoja-seccion mb-2 flex items-end gap-2 text-sm text-slate-800"
+          >
+            <Hueco etiqueta={etiqueta} />
+          </div>
+        ))}
+        {hoja.nota && <p className="mt-3 text-xs text-slate-600">{hoja.nota}</p>}
       </Hoja>
     </div>
   );

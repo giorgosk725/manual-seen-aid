@@ -19,3 +19,4 @@ scripts/semantica/cache/
 src/casos-borrador/
 # Borradores de contenido (ejemplos, casos) pendientes de aprobación: fuera del repositorio
 /borradores/
+src/hojas-borrador/

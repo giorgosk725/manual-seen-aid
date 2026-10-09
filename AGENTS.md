@@ -229,8 +229,8 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
 28. **Guided cases, drafts and review builds (0.16.0).** Approved cases live in
     `src/casos/*.json` (three, approved by the author on 9-10-2026; `casos.test.tsx` checks
     every citation is literal and on its page). Any NEW case or other content written by the
-    app goes to `borradores/*.json` at the repo root (gitignored, same shape as a case) and is
-    shown only in review copies: `npm run build:revision` copies them to `src/casos-borrador/`,
+    app goes to `borradores/*.json` (cases) or `borradores/hojas/*.json` (patient sheets,
+    `src/hojas.ts`) at the repo root (gitignored) and is shown only in review copies: `npm run build:revision` copies them to `src/casos-borrador/` and `src/hojas-borrador/`,
     builds `dist-revision/` with REVISION=1 and removes the copy; if that copy is ever left
     behind, `npm run build` REFUSES to build (`scripts/guardia-borradores.mjs`). The review copy
     goes to the Pages branch `prueba`. To see drafts in `npm run dev`, copy them by hand and

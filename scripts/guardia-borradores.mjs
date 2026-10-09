@@ -3,9 +3,10 @@
 // La ejecuta `npm run build` antes de compilar; `npm run build:revision` no pasa por aquí.
 import { existsSync } from "node:fs";
 
-if (existsSync("src/casos-borrador") && !process.env.REVISION) {
+const borradores = ["src/casos-borrador", "src/hojas-borrador"].filter((d) => existsSync(d));
+if (borradores.length && !process.env.REVISION) {
   console.error(
-    "\nHay borradores en src/casos-borrador/: la construcción de producción se niega.\n" +
+    `\nHay borradores en ${borradores.join(" y ")}: la construcción de producción se niega.\n` +
       "Copia de revisión: npm run build:revision. Producción: quita o mueve esa carpeta.\n",
   );
   process.exit(1);
