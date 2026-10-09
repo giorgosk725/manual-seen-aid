@@ -1,0 +1,488 @@
+[
+  {
+    "id": "ejemplo-descarga",
+    "titulo": "Una descarga de 14 días",
+    "sistema": "MiniMed 780G",
+    "temas": "Revisar la descarga · Tabla 5, paso a paso",
+    "paginas": "pp. 13-16",
+    "escenario": "Marta, 45 años, con DM1 desde hace 20 años, lleva MiniMed 780G con SmartGuard desde hace 8 meses. Acude a la revisión programada con la descarga de los últimos 14 días. Trabaja a turnos y juega al pádel dos tardes por semana. Los datos de cada paso son ficticios y siguen el orden de la Tabla 5.",
+    "pasos": [
+      {
+        "situacion": "Paso 1 · Uso y funcionamiento. La descarga muestra 14 días: uso del sensor 92 %; tiempo en modo automático 88 %; 6 salidas del modo automático, 4 de ellas de madrugada por pérdida de señal y 2 al cambiar el sensor.",
+        "pregunta": "¿Qué concluyes de este primer paso?",
+        "opciones": [
+          {
+            "texto": "Los datos son representativos (uso ≥ 70 %) y se puede pasar a interpretar patrones; las salidas nocturnas por pérdida de señal se revisan antes de tocar ningún ajuste.",
+            "tipo": "si",
+            "comentario": "Con uso del sensor ≥ 70 % en 14 días los patrones se pueden interpretar. Las salidas se revisan como causa antes de modificar parámetros.",
+            "citas": [
+              {
+                "t": "Uso de MCG ≥ 70 % en 14 días permite interpretar patrones",
+                "p": 13,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "revisar las causas de salida antes de modificar ajustes del sistema",
+                "p": 13,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "las salidas reiteradas reducen el tiempo en automático y deben revisarse",
+                "p": 16,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Subir el objetivo nocturno para que no salga del automático por la noche.",
+            "tipo": "no",
+            "comentario": "Las salidas son por pérdida de señal, no por un ajuste: primero se resuelve la causa técnica.",
+            "citas": [
+              {
+                "t": "Resolver problemas de adhesivo, suministro, conectividad o alarmas técnicas; revisar las causas de salida antes de modificar ajustes del sistema",
+                "p": 13,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "La actuación inmediata: reiniciar Bluetooth, acercar dispositivos y verificar baterías",
+                "p": 16,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Con un 88 % en automático el sistema funciona bien: no hace falta mirar las salidas.",
+            "tipo": "no",
+            "comentario": "El tiempo fuera del automático es una métrica de salud del sistema en sí misma, y sus causas se resuelven antes de cualquier ajuste.",
+            "citas": [
+              {
+                "t": "El tiempo fuera del modo automático es una métrica de salud del sistema en sí misma",
+                "p": 15,
+                "f": "Texto"
+              },
+              {
+                "t": "antes de cualquier ajuste de parámetros debe resolverse la causa de salida",
+                "p": 15,
+                "f": "Texto"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Paso 2 · Seguridad. TBR < 70 mg/dl: 1,5 %; < 54 mg/dl: 0,2 %. Dos alertas de glucosa baja de madrugada, las dos noches después de jugar al pádel. Ninguna hipoglucemia grave.",
+        "pregunta": "¿Es seguro seguir adelante y qué anotas?",
+        "opciones": [
+          {
+            "texto": "El TBR es aceptable; las dos alertas nocturnas tienen relación con el ejercicio de la tarde y se anotan para el paso de patrones.",
+            "tipo": "si",
+            "comentario": "Con el TBR seguro se puede pasar a interpretar la hiperglucemia. La relación con el ejercicio es justo lo que la tabla pide buscar.",
+            "citas": [
+              {
+                "t": "Interpretar hiperglucemia después de confirmar que el TBR es seguro.",
+                "p": 13,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "Relación con ejercicio, alcohol, bolos correctores adicionales o sobretratamiento",
+                "p": 13,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "El riesgo de hipoglucemia diferida persiste durante varias horas tras el ejercicio, en especial por la noche.",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Configuración más conservadora para todo el día, por las dos alertas.",
+            "tipo": "no",
+            "comentario": "Dos alertas ligadas al ejercicio no son un patrón de todo el día: la actuación va a la causa y a su franja, no a un objetivo global.",
+            "citas": [
+              {
+                "t": "Un patrón repetido orienta el ajuste; un episodio aislado, no.",
+                "p": 14,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "identificar si el patrón se concentra en una franja antes de subir objetivos globalmente",
+                "p": 14,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Ignorar las alertas: un 1,5 % de TBR está dentro de objetivo.",
+            "tipo": "no",
+            "comentario": "Los episodios nocturnos y las alertas se revisan aunque el TBR sea bajo; es lo que mira este paso.",
+            "citas": [
+              { "t": "Alertas de glucosa baja/urgente", "p": 13, "f": "Tabla 5" },
+              { "t": "Episodios nocturnos", "p": 13, "f": "Tabla 5" }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Paso 3 · Control global. TIR 70–180 mg/dl: 68 %; TAR > 180: 30 %; TAR > 250: 6 %; glucosa media 162 mg/dl; GMI 7,2 %; coeficiente de variación 34 %. HbA1c del laboratorio: 7,4 %.",
+        "pregunta": "¿Qué haces con estas cifras?",
+        "opciones": [
+          {
+            "texto": "El TBR ya es seguro: la hiperglucemia se interpreta en los pasos siguientes y se priorizarán uno o dos cambios concretos; el TAR > 250 obliga a buscar episodios persistentes.",
+            "tipo": "si",
+            "comentario": "Con el TBR confirmado se interpreta la hiperglucemia. Pocos cambios, reevaluables; y el TAR > 250 remite a los episodios persistentes y al sistema de infusión.",
+            "citas": [
+              {
+                "t": "Interpretar hiperglucemia después de confirmar que el TBR es seguro.",
+                "p": 13,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "Priorizar uno o dos cambios concretos y reevaluables.",
+                "p": 13,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "Un TAR > 250 mg/dl elevado debe hacer revisar episodios de hiperglucemia persistente y descartar problemas recurrentes del sistema de infusión",
+                "p": 13,
+                "f": "Tabla 5"
+              }
+            ]
+          },
+          {
+            "texto": "Cambiar el tratamiento porque el GMI (7,2 %) y la HbA1c (7,4 %) no coinciden.",
+            "tipo": "no",
+            "comentario": "Esa discordancia es pequeña y, en cualquier caso, no justifica por sí sola un cambio: se investiga su causa.",
+            "citas": [
+              {
+                "t": "El GMI complementa la HbA1c, pero una discordancia relevante no justifica por sí sola un cambio de tratamiento; conviene investigar su causa.",
+                "p": 13,
+                "f": "Tabla 5"
+              }
+            ]
+          },
+          {
+            "texto": "Bajar el objetivo del sistema y la ratio de todas las comidas a la vez para subir el TIR.",
+            "tipo": "no",
+            "comentario": "Varios cambios a la vez no se pueden reevaluar: la tabla pide uno o dos, y el apartado, cambios orientativos del 10–20 % evaluados durante varios días.",
+            "citas": [
+              {
+                "t": "Priorizar uno o dos cambios concretos y reevaluables.",
+                "p": 13,
+                "f": "Tabla 5"
+              },
+              { "t": "orientativamente en un 10–20 %", "p": 13, "f": "Texto" },
+              {
+                "t": "su impacto sobre el patrón glucémico debe evaluarse durante varios días antes de realizar nuevos ajustes",
+                "p": 13,
+                "f": "Texto"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Paso 4 · Bolos. 2,8 bolos al día. En 14 días: 5 cenas sin bolo (todas en días de turno de tarde), 9 bolos con la dosis sugerida reducida a mano y 3 correcciones manuales adicionales después de cenar.",
+        "pregunta": "¿Qué llama la atención y qué se hace?",
+        "opciones": [
+          {
+            "texto": "Bolos omitidos en las cenas y dosis sugerida modificada de forma repetida: reforzar el bolo anticipado, revisar la insulina activa, evitar las correcciones repetidas y explorar qué pasa en los turnos de tarde.",
+            "tipo": "si",
+            "comentario": "Es la actuación de la fila: bolo anticipado, insulina activa y sin correcciones repetidas. La conducta se aborda con sus causas; la intervención educativa cuenta tanto como el ajuste.",
+            "citas": [
+              {
+                "t": "Reforzar el bolo anticipado; simplificar el contaje; revisar la insulina activa y evitar bolos correctores repetidos no justificados o hidratos fantasma.",
+                "p": 13,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "La modificación repetida de la dosis sugerida o la administración de correcciones adicionales puede aumentar el riesgo de hipoglucemia diferida",
+                "p": 13,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "la intervención educativa puede ser tan relevante como el ajuste técnico",
+                "p": 13,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Subir la ratio de la cena: con más insulina se compensan los bolos que faltan.",
+            "tipo": "no",
+            "comentario": "Un bolo omitido no se arregla con una ratio más agresiva. Es una conducta de uso y se aborda como tal, con sus creencias y emociones.",
+            "citas": [
+              {
+                "t": "identificar las conductas que explican el patrón (bolos omitidos o tardíos, sobretratamiento de hipoglucemias, hidratos fantasma, infrarrecuento) y abordarlas teniendo en cuenta las emociones y creencias subyacentes",
+                "p": 13,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Dejar que el sistema lo compense: con SmartGuard las autocorrecciones cubren la cena.",
+            "tipo": "no",
+            "comentario": "El algoritmo compensa, pero no sustituye, el bolo; y en los sistemas híbridos el cumplimiento de los bolos se asocia a mejores resultados.",
+            "citas": [
+              {
+                "t": "En sistemas híbridos, el algoritmo compensa, pero no sustituye, el bolo prandial.",
+                "p": 13,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "En las modalidades híbridas, un mayor cumplimiento de los bolos prandiales se asocia a mejores resultados, lo que refuerza la importancia de evitar su omisión o retraso.",
+                "p": 13,
+                "f": "Texto"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Paso 5 · Patrones horarios. Por franjas: noche estable salvo las dos alertas tras el pádel; ayuno entre 140 y 160 mg/dl; subida tardía (3–5 h) tras las cenas de viernes y sábado. Usó el objetivo temporal solo una de las cuatro tardes de pádel.",
+        "pregunta": "¿Qué patrón orienta el ajuste y cuál no?",
+        "opciones": [
+          {
+            "texto": "La subida tardía tras las cenas de fin de semana se repite y orienta; las dos noches del pádel se explican por el uso irregular del objetivo temporal, no por un error de configuración.",
+            "tipo": "si",
+            "comentario": "Patrón repetido frente a episodio aislado, y función temporal mal usada frente a ajuste del sistema: la distinción que pide la fila.",
+            "citas": [
+              {
+                "t": "Un patrón repetido orienta el ajuste; un episodio aislado, no.",
+                "p": 14,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "El uso inadecuado de una función temporal puede explicar hiperglucemia o hipoglucemia sin que exista un error de configuración.",
+                "p": 14,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "Distinguir conducta de uso, ajuste del sistema e incidencia técnica",
+                "p": 14,
+                "f": "Tabla 5"
+              }
+            ]
+          },
+          {
+            "texto": "Subir el objetivo nocturno todos los días por las dos alertas.",
+            "tipo": "no",
+            "comentario": "No es un patrón de todas las noches: la actuación va a la función temporal y a la educación sobre su uso, antes que a un objetivo global.",
+            "citas": [
+              {
+                "t": "reforzar la educación si el problema deriva del uso de funciones temporales",
+                "p": 14,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "Revisar primero ejercicio vespertino, alcohol, bolo tardío de cena, corrección manual, objetivo demasiado bajo o ratios agresivas, e identificar si el patrón se concentra en una franja antes de subir objetivos globalmente.",
+                "p": 14,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Cambiar la ratio de todas las comidas por la subida de los fines de semana.",
+            "tipo": "no",
+            "comentario": "El ajuste se dirige a la franja y a la conducta concretas (las cenas de fin de semana), según la Tabla 3; no a todas las comidas.",
+            "citas": [
+              {
+                "t": "Ajustar el parámetro, la conducta o la función correspondiente según el sistema, la franja horaria y la tabla 3",
+                "p": 14,
+                "f": "Tabla 5"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Paso 6 · Posprandial. Cena del viernes: pizza; bolo puesto 10 minutos después de empezar a comer, con una estimación de 60 g de hidratos; la glucosa sube hasta 240 mg/dl entre las 3 y las 5 h, y a las 2 h ella se puso una corrección manual.",
+        "pregunta": "¿Cómo lo interpretas?",
+        "opciones": [
+          {
+            "texto": "Hiperglucemia tardía por la grasa y la proteína, con un bolo algo tardío: adelantar el bolo, individualizar la estrategia para esas comidas y evitar la corrección precoz.",
+            "tipo": "si",
+            "comentario": "Ascenso a las 3–5 h: efecto de la grasa y las proteínas. En MiniMed la estrategia se individualiza con las herramientas disponibles, y sin correcciones adicionales precoces.",
+            "citas": [
+              {
+                "t": "Si el ascenso aparece 3–5 h después de la ingesta valorar el efecto de la grasa y las proteínas, un bolo insuficiente o una estrategia prandial inadecuada.",
+                "p": 14,
+                "f": "Texto"
+              },
+              {
+                "t": "En los demás sistemas, la estrategia debe individualizarse según las herramientas disponibles, la respuesta previa y el riesgo de hipoglucemia.",
+                "p": 14,
+                "f": "Texto"
+              },
+              { "t": "evitar correcciones adicionales precoces", "p": 14, "f": "Tabla 5" }
+            ]
+          },
+          {
+            "texto": "Subir la ratio de la cena: le falta insulina.",
+            "tipo": "no",
+            "comentario": "La ratio se ajusta si el patrón es consistente; la subida tardía de una comida grasa responde a su composición, no a la ratio.",
+            "citas": [
+              { "t": "ajustar la ratio I/HC si el patrón es consistente", "p": 14, "f": "Tabla 5" },
+              {
+                "t": "Las excursiones posprandiales pueden reflejar bolo tardío, ratio inadecuada o una composición de la comida que requiere una estrategia específica",
+                "p": 14,
+                "f": "Tabla 5"
+              }
+            ]
+          },
+          {
+            "texto": "Usar el bolo extendido de Control-IQ+.",
+            "tipo": "no",
+            "comentario": "Marta lleva MiniMed 780G: esa herramienta es de otro sistema. En los demás, la estrategia se individualiza.",
+            "citas": [
+              {
+                "t": "En Control-IQ el bolo extendido es limitado en la versión clásica y dispone de mayor duración en Control-IQ+; en CamAPS FX puede utilizarse la función de absorción lenta.",
+                "p": 14,
+                "f": "Texto"
+              },
+              {
+                "t": "En los demás sistemas, la estrategia debe individualizarse según las herramientas disponibles, la respuesta previa y el riesgo de hipoglucemia.",
+                "p": 14,
+                "f": "Texto"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Paso 7 · Respuesta automática y DTD. DTD 42 UI/día (al iniciar, hace 8 meses, 35). Las autocorrecciones son el 28 % de la insulina, sobre todo después de las cenas. Ha ganado 3 kg. La pauta de respaldo con plumas es la del inicio.",
+        "pregunta": "¿Qué significa esta respuesta automática y qué se actualiza?",
+        "opciones": [
+          {
+            "texto": "Autocorrecciones intensas tras las cenas: apuntan a bolos omitidos o tardíos, no a un éxito del algoritmo; con la DTD cambiada de forma sostenida, se actualiza la pauta de respaldo.",
+            "tipo": "si",
+            "comentario": "Es la interpretación de la fila 7 y del patrón «exceso de autocorrecciones», y su actuación: la pauta de respaldo al día.",
+            "citas": [
+              {
+                "t": "Una respuesta automática intensa o sostenida puede reflejar bolos omitidos o tardíos, ratio insuficiente, comida de absorción lenta, objetivo poco intensivo o mayor necesidad transitoria de insulina.",
+                "p": 14,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "No es automáticamente un éxito del algoritmo; puede señalar un problema no evidente —bolos omitidos, ratio insuficiente o mayor necesidad de insulina— y riesgo de hipoglucemia tardía si se añaden bolos manuales.",
+                "p": 15,
+                "f": "Texto"
+              },
+              {
+                "t": "Si la DTD ha cambiado de forma sostenida, reevaluar y actualizar la pauta de respaldo con insulina basal y rápida en pluma, incluyendo correcciones y actuación ante fallo del sistema",
+                "p": 14,
+                "f": "Tabla 5"
+              }
+            ]
+          },
+          {
+            "texto": "Las autocorrecciones demuestran que el sistema se adapta: no hay nada que cambiar.",
+            "tipo": "no",
+            "comentario": "Un exceso de autocorrecciones puede señalar bolos omitidos, ratio insuficiente o un objetivo poco intensivo; en MiniMed 780G, además, el objetivo y la duración de la insulina activa.",
+            "citas": [
+              {
+                "t": "En MiniMed 780G o Tandem Control-IQ, un exceso de bolos automáticos de corrección puede indicar bolos omitidos o tardíos, ratios insuficientes, comidas no anunciadas o un objetivo poco intensivo",
+                "p": 15,
+                "f": "Texto"
+              },
+              {
+                "t": "en MiniMed 780G son especialmente relevantes el objetivo y la duración de la insulina activa",
+                "p": 15,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Mantener la pauta de respaldo del inicio: las plumas solo se usan en emergencias.",
+            "tipo": "no",
+            "comentario": "La DTD ha subido un 20 %: la pauta de respaldo debe reflejarlo, incluidas las correcciones y la actuación ante fallo del sistema.",
+            "citas": [
+              {
+                "t": "Si la DTD ha cambiado de forma sostenida, reevaluar y actualizar la pauta de respaldo con insulina basal y rápida en pluma, incluyendo correcciones y actuación ante fallo del sistema",
+                "p": 14,
+                "f": "Tabla 5"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Paso 8 · Bandera roja. El día 9, glucosa ≥ 250 mg/dl durante 3 h, sin respuesta a una corrección. Marta no midió la cetonemia y cambió el set a la mañana siguiente; notaba ardor en la zona de inserción.",
+        "pregunta": "¿Qué se hace con este episodio, ya pasado?",
+        "opciones": [
+          {
+            "texto": "Reconocerlo como sospecha de fallo de infusión: revisar con ella si aplicó el plan de seguridad (no midió cetonas), actualizarlo si procede y reforzar el entrenamiento con la Figura 3.",
+            "tipo": "si",
+            "comentario": "Identificado retrospectivamente, la actuación de la tabla es revisar la aplicación del plan de seguridad, actualizarlo y reforzar el entrenamiento.",
+            "citas": [
+              {
+                "t": "Aplicar la figura 3. Si se identifica retrospectivamente, revisar si se aplicó correctamente el plan de seguridad, actualizarlo si procede y reforzar el entrenamiento",
+                "p": 14,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "Una glucemia ≥ 250 mg/dl persistente (orientativamente ≥ 2 h) o cualquier hiperglucemia inexplicada que no responde a la corrección debe interpretarse como sospecha de fallo del set.",
+                "p": 15,
+                "f": "Texto"
+              },
+              {
+                "t": "Los signos a considerar incluyen ardor en la zona de inserción, despegado parcial del adhesivo, lectura errática del sensor en proximidad del set o ausencia de respuesta a las autocorrecciones.",
+                "p": 15,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Como ya se resolvió al cambiar el set, no hace falta hacer nada.",
+            "tipo": "no",
+            "comentario": "El episodio sirve para comprobar el plan de seguridad y reforzar el entrenamiento: esa es la actuación cuando se identifica después.",
+            "citas": [
+              {
+                "t": "Si se identifica retrospectivamente, revisar si se aplicó correctamente el plan de seguridad, actualizarlo si procede y reforzar el entrenamiento",
+                "p": 14,
+                "f": "Tabla 5"
+              }
+            ]
+          },
+          {
+            "texto": "Subir el factor de sensibilidad para que las correcciones hagan más efecto.",
+            "tipo": "no",
+            "comentario": "Una hiperglucemia que no responde a la corrección se interpreta como sospecha de fallo del set, no como un parámetro que se queda corto.",
+            "citas": [
+              {
+                "t": "cualquier hiperglucemia inexplicada que no responde a la corrección debe interpretarse como sospecha de fallo del set",
+                "p": 15,
+                "f": "Texto"
+              },
+              {
+                "t": "La regla orientativa es “ante la duda, cambia el set”.",
+                "p": 15,
+                "f": "Texto"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "cierre": {
+      "texto": "Al cerrar la revisión: pocos cambios, documentados y reevaluables a las 2–4 semanas, comparados con la descarga anterior; y el informe se interpreta con Marta, no solo con los números.",
+      "citas": [
+        {
+          "t": "En cada revisión se recomienda priorizar la seguridad y realizar pocos cambios documentados, reevaluables a las 2–4 semanas.",
+          "p": 14,
+          "f": "Tabla 5"
+        },
+        {
+          "t": "Siempre que sea posible, los hallazgos deben compararse con la descarga previa y con los cambios acordados en la última visita.",
+          "p": 14,
+          "f": "Tabla 5"
+        },
+        {
+          "t": "El informe debe interpretarse siempre junto a la persona con diabetes",
+          "p": 15,
+          "f": "Texto"
+        }
+      ]
+    }
+  }
+]

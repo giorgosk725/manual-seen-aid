@@ -14,11 +14,11 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-09",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — preguntas frecuentes por temas y la fuente a un toque`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — preguntas por temas, ejemplo de descarga y la fuente a un toque`,
     detalle: [
       "Cuando la búsqueda con tus palabras no encuentra nada, hay un camino por temas: las 50 preguntas frecuentes revisadas, agrupadas (selección e indicación, sistemas y parámetros, inicio, descarga, incidencias, situaciones especiales…), cada una con los pasajes literales que la responden. Se ofrece desde «sin resultados», desde la caja de búsqueda vacía y desde Consultar.",
       "En la ficha de cada sistema, cada tabla lleva «Ver en el capítulo», que abre la tabla en su apartado; Atrás devuelve a la misma sección de la ficha.",
-      "«Revisar la descarga» enlaza cada paso con el mismo paso del ejemplo comentado, y el ejemplo devuelve al recorrido (el ejemplo está en revisión y aún no se publica).",
+      "Un ejemplo de descarga comentado, «Una descarga de 14 días» (MiniMed 780G), en los casos guiados: ocho pasos, uno por fila de la Tabla 5, con datos ficticios coherentes; en cada paso se elige una opción y se ve el veredicto, el comentario y las frases literales del capítulo con su página. «Revisar la descarga» enlaza cada paso con el mismo paso del ejemplo, y el ejemplo devuelve al recorrido.",
     ],
   },
   {

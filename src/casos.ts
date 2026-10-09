@@ -1,6 +1,6 @@
 /* Casos guiados: datos y tipos. Los casos (escenario ficticio, pasos con opciones, comentario
    y citas literales del capítulo con su página) viven en `src/casos/*.json`: los tres del
-   4-10-2026, aprobados el 9-10-2026 (casos.test.tsx comprueba que cada cita es literal y está
+   4-10-2026 y el ejemplo de descarga, aprobados el 9-10-2026 (casos.test.tsx comprueba que cada cita es literal y está
    en su página). Un caso nuevo es contenido escrito por la app: va en `src/casos-borrador/`
    (fuera del repositorio) y solo en copias de revisión hasta que se apruebe (AGENTS 28). */
 
