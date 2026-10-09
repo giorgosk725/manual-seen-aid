@@ -17,3 +17,5 @@ _*.txt
 scripts/semantica/cache/
 # Casos guiados en borrador: no se publican hasta que el autor los apruebe
 src/casos-borrador/
+# Borradores de contenido (ejemplos, casos) pendientes de aprobación: fuera del repositorio
+/borradores/

@@ -22,6 +22,13 @@ export function SinResultados({ onIr }: { onIr?: () => void }) {
         No se han encontrado resultados en el capítulo para esta búsqueda. Prueba con otras palabras
         («sueño», «cetonemia», «TBR») o entra por una consulta:
       </p>
+      <a
+        href={href("preguntas")}
+        onClick={onIr}
+        className="mt-2 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 underline underline-offset-2 sm:min-h-9"
+      >
+        Explorar las preguntas frecuentes por temas →
+      </a>
       <ul className="mt-2 flex flex-wrap gap-1.5">
         {PUERTAS.map((p) => (
           <li key={p.t}>

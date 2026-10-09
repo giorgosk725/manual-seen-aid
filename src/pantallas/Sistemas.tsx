@@ -9,6 +9,7 @@ import {
   APARTADOS,
   TABLAS,
   algoritmoDelCapitulo,
+  apartadoDeTabla,
   fichasDelCapitulo,
   idDeBloque,
   type Bloque,
@@ -479,6 +480,13 @@ const SECCIONES_FICHA = [
   { id: "ampliacion", t: "Ampliación técnica" },
 ] as const;
 
+/* La tabla en su sitio del capítulo (para comprobar la fuente y volver). */
+function rutaEnCapitulo(t: Tabla): string | null {
+  const ap = apartadoDeTabla(t.id);
+  const i = ap ? ap.bloques.findIndex((b) => b.t === "tabla" && b.id === t.id) : -1;
+  return ap && i >= 0 ? href("capitulo", ap.slug, idDeBloque(ap.bloques[i], i)) : null;
+}
+
 /* La columna de un sistema en una tabla del capítulo: filas literales, notas y página. */
 function ColumnaTabla({
   t,
@@ -523,7 +531,10 @@ function ColumnaTabla({
         </div>
       )}
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-        <span className="flex flex-wrap gap-x-4">{pie}</span>
+        <span className="flex flex-wrap gap-x-4">
+          {rutaEnCapitulo(t) && <EnlacePie ruta={rutaEnCapitulo(t)!}>Ver en el capítulo</EnlacePie>}
+          {pie}
+        </span>
         <PaginaBadge p={t.paginas[0]} p2={t.paginas[1]} />
       </div>
     </div>
@@ -786,6 +797,9 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         </ul>
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
           <span className="flex flex-wrap gap-x-4">
+            {rutaEnCapitulo(TABLAS.T4) && (
+              <EnlacePie ruta={rutaEnCapitulo(TABLAS.T4)!}>Ver en el capítulo</EnlacePie>
+            )}
             <EnlacePie ruta={href("consultar", "tablas", `T4:${slug}`)}>
               Comparar en la Tabla 4
             </EnlacePie>

@@ -25,6 +25,7 @@ import {
   LayoutGrid,
   Library,
   ListChecks,
+  MessageCircleQuestion,
   ListOrdered,
   ListTree,
   MapPinned,
@@ -187,6 +188,16 @@ export const DESTINOS: Destino[] = [
       "En el texto del capítulo por palabras y, con conexión, también por el sentido; aparte, lo que no es del capítulo.",
   },
   {
+    id: "preguntas",
+    etiqueta: "Preguntas frecuentes",
+    corto: "Preguntas",
+    href: href("preguntas"),
+    icono: MessageCircleQuestion,
+    cat: "consultar",
+    descripcion:
+      "Las preguntas revisadas, por temas, con los pasajes del capítulo que las responden: el camino cuando la búsqueda libre no da nada.",
+  },
+  {
     id: "pacientes",
     etiqueta: "Para el paciente",
     corto: "Pacientes",
@@ -257,7 +268,11 @@ export const GRUPOS_CONSULTAR: { id: string; titulo: string; ids: string[] }[] =
   { id: "sistemas", titulo: "Sistemas", ids: ["sistemas", "comparar", "parametros"] },
   { id: "seguimiento", titulo: "Inicio y seguimiento", ids: ["inicio", "descarga"] },
   { id: "situaciones", titulo: "Situaciones", ids: ["figura-3", "situacion", "interrupcion"] },
-  { id: "recursos", titulo: "Tablas, figuras y glosario", ids: ["tablas", "visual", "glosario"] },
+  {
+    id: "recursos",
+    titulo: "Tablas, figuras, glosario y preguntas",
+    ids: ["tablas", "visual", "glosario", "preguntas"],
+  },
 ];
 
 /* Navegación global: cinco áreas. Cada sección de la ruta pertenece a una sola, y el destino
@@ -273,6 +288,7 @@ const AREA_DE_SECCION: Record<string, Area> = {
   test: "leer",
   casos: "leer",
   buscar: "buscar",
+  preguntas: "buscar",
   mas: "mas",
   pacientes: "mas",
   bibliografia: "mas",

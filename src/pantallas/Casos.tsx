@@ -8,7 +8,7 @@ import { ArrowRight, Check, RotateCcw } from "lucide-react";
 import { APARTADOS, FIGURA3 } from "../contenido";
 import { CASOS, casoPorId, type Caso, type CitaCaso, type OpcionCaso } from "../casos";
 import { href } from "../rutas";
-import { CabeceraEditorial, PaginaBadge, ToneCard } from "../ui";
+import { CabeceraEditorial, PaginaBadge } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
 
 const hex = CATEGORIA_HEX.aprender;
@@ -117,9 +117,9 @@ function Escenario({ caso }: { caso: Caso }) {
 }
 
 /* Un caso, paso a paso (o entero con «Ver todo»). */
-export function CasoVista({ caso }: { caso: Caso }) {
+export function CasoVista({ caso, inicial = 0 }: { caso: Caso; inicial?: number }) {
   const [modo, setModo] = useState<"jugar" | "todo">("jugar");
-  const [paso, setPaso] = useState(0);
+  const [paso, setPaso] = useState(Math.min(Math.max(0, inicial), caso.pasos.length - 1));
   const [elegida, setElegida] = useState<number | null>(null);
   const [aciertos, setAciertos] = useState(0);
   const [fin, setFin] = useState(false);
@@ -251,6 +251,14 @@ export function CasoVista({ caso }: { caso: Caso }) {
           <p className="text-xs font-bold tabular-nums text-slate-500">
             Paso {paso + 1} de {n}
           </p>
+          {caso.id === "ejemplo-descarga" && (
+            <a
+              href={href("consultar", "descarga", String(paso + 1))}
+              className="mt-1 inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-slate-600 hover:underline sm:min-h-6"
+            >
+              Este paso en «Revisar la descarga» <ArrowRight size={12} aria-hidden="true" />
+            </a>
+          )}
           {p.situacion && (
             <p
               className="mt-1 rounded-lg px-3 py-2 text-sm text-slate-800"
@@ -352,7 +360,7 @@ function Nota() {
   );
 }
 
-export function Casos({ id }: { id?: string }) {
+export function Casos({ id, paso }: { id?: string; paso?: string }) {
   const caso = casoPorId(id);
   if (!CASOS.length)
     return (
@@ -386,7 +394,7 @@ export function Casos({ id }: { id?: string }) {
           </p>
         </CabeceraEditorial>
         <Nota />
-        <CasoVista key={caso.id} caso={caso} />
+        <CasoVista key={`${caso.id}/${paso ?? ""}`} caso={caso} inicial={Number(paso) - 1 || 0} />
       </div>
     );
   return (

@@ -1666,6 +1666,19 @@ export function preguntaFrecuente(pregunta: string): RespuestaFrecuente | null {
   return { id: m.id, pregunta: m.pregunta, respuestas: m.respuestas };
 }
 
+/* Una pregunta frecuente por su id, con sus pasajes tal cual (pantalla «Preguntas frecuentes»
+   por temas: el camino cuando la búsqueda libre no da nada). */
+export function respuestaDeFrecuente(id: string): RespuestaFrecuente | null {
+  const f = FRECUENTES.find((x) => x.id === id);
+  if (!f) return null;
+  const porId = new Map(atomos().map((a) => [a.r.id, a]));
+  const respuestas = f.pasajes
+    .map((x) => porId.get(x))
+    .filter((a): a is Atomo => !!a)
+    .map((a) => resolver(a, undefined, 2));
+  return respuestas.length ? { id: f.id, pregunta: f.pregunta, respuestas } : null;
+}
+
 /* Por el sentido (semantica.ts → /api/frecuente): las preguntas frecuentes más parecidas a la
    búsqueda, de más a menos, ya filtradas por el umbral de similitud del servicio. Aquí pasan las
    mismas salvaguardas que por las palabras: nada con una cifra de β-OHB ni con una búsqueda solo

@@ -57,4 +57,37 @@ test.describe("Comprensión", () => {
     await page.getByRole("button", { name: /Siguiente paso/ }).click();
     await expect(page.getByText("Paso 2 de 5")).toBeVisible();
   });
+
+  test("A13: sin resultados hay un camino por temas que abre una pregunta con sus pasajes", async ({
+    page,
+  }) => {
+    await page.goto("/#/buscar/zzzz%20qqqq");
+    await page.getByRole("link", { name: /Explorar las preguntas frecuentes por temas/ }).click();
+    await expect(page).toHaveURL(/#\/preguntas$/);
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Preguntas frecuentes" }),
+    ).toBeVisible();
+    await page.getByRole("link", { name: /¿Qué debe incluir el plan de seguridad\?/ }).click();
+    const frecuente = page.getByRole("region", { name: "Pregunta frecuente" });
+    await expect(frecuente).toContainText("Glucagón.");
+    await expect(frecuente.getByRole("link", { name: /^Ver (en|la) / }).first()).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /Del mismo tema|Preguntas frecuentes/ }).first(),
+    ).toBeVisible();
+  });
+
+  test("A06: desde Parámetros, «Ver en el capítulo» abre la tabla y Atrás devuelve a la sección", async ({
+    page,
+  }) => {
+    await page.goto("/#/sistemas/op5/parametros");
+    const seccion = page.getByRole("region", { name: /^Parámetros · Omnipod 5/ });
+    await seccion.getByRole("link", { name: "Ver en el capítulo" }).last().click();
+    await expect(page).toHaveURL(/#\/capitulo\/[^/]+\/b\d+$/);
+    await expect(page.getByRole("heading", { level: 1 })).not.toContainText("Omnipod 5");
+    await page.goBack();
+    await expect(page).toHaveURL(/#\/sistemas\/op5\/parametros$/);
+    await expect(
+      page.getByRole("heading", { level: 2, name: /^Parámetros · Omnipod 5/ }),
+    ).toBeInViewport();
+  });
 });

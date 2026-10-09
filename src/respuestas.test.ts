@@ -2,7 +2,7 @@
    «ciego», «final» y «quinto» se midieron a ciegas una vez (docs/PREGUNTAS_2026-10-04.md);
    aquí vigilan que lo conseguido no se pierda. */
 import { describe, expect, it } from "vitest";
-import { preguntaFrecuente, responder } from "./respuestas";
+import { preguntaFrecuente, responder, respuestaDeFrecuente } from "./respuestas";
 import { FRECUENTES } from "./frecuentes";
 import { EJEMPLOS_PREGUNTA } from "./busqueda";
 import {
@@ -115,6 +115,11 @@ describe("Preguntas al capítulo", () => {
 });
 
 describe("Preguntas frecuentes", () => {
+  it("cada pregunta se puede abrir por su id con todos sus pasajes (pantalla por temas)", () => {
+    for (const f of FRECUENTES)
+      expect(respuestaDeFrecuente(f.id)?.respuestas.length, f.id).toBe(f.pasajes.length);
+    expect(respuestaDeFrecuente("no-existe")).toBeNull();
+  });
   it("cada pregunta encuentra su ficha y todos sus pasajes existen", () => {
     for (const f of FRECUENTES) {
       const r = preguntaFrecuente(f.pregunta);

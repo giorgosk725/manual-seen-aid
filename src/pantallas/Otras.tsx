@@ -1,7 +1,17 @@
 /* Buscar, Bibliografía, Qué ha cambiado, Sobre esta versión, Autoevaluación y «Más» (móvil). */
 import { guardarReciente } from "../prefs";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, CheckCircle2, ExternalLink, Moon, Star, Sun, XCircle } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  ExternalLink,
+  MessageCircleQuestion,
+  Moon,
+  Star,
+  Sun,
+  XCircle,
+} from "lucide-react";
+import { FRECUENTES } from "../frecuentes";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
 import { CAMBIOS, PENDIENTES, VERSION_APP } from "../contenido/cambios";
 import { PREGUNTAS } from "../contenido/test";
@@ -811,6 +821,110 @@ export function Mas() {
           </button>
         </li>
       </ul>
+    </div>
+  );
+}
+
+/* ---------- Preguntas frecuentes por temas (#/preguntas[/<id>]) ----------
+   El camino cuando la búsqueda libre no da nada: las preguntas revisadas, agrupadas por tema;
+   cada una abre sus pasajes literales con el mismo bloque que en la búsqueda. */
+const TEMAS = [...new Set(FRECUENTES.map((f) => f.tema))];
+
+export function Preguntas({ id }: { id?: string }) {
+  const { motor, estado, reintentar } = useBuscador(true);
+  const f = FRECUENTES.find((x) => x.id === id);
+  const hex = CATEGORIA_HEX.consultar;
+  if (f) {
+    const r = motor?.respuestaDeFrecuente(f.id) ?? null;
+    const hermanas = FRECUENTES.filter((x) => x.tema === f.tema && x.id !== f.id);
+    return (
+      <div>
+        <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+          <a
+            href={href("preguntas")}
+            className="inline-flex min-h-11 items-center font-semibold hover:underline"
+          >
+            Preguntas frecuentes
+          </a>
+          <span aria-hidden="true">›</span>
+          <span>{f.tema}</span>
+        </div>
+        <CabeceraEditorial titulo={f.pregunta} hex={hex} level={1} />
+        {estado === "cargando" && <p className="text-sm text-slate-600">Cargando los pasajes…</p>}
+        {estado === "error" && (
+          <p className="flex flex-wrap items-center gap-2 text-sm text-slate-700">
+            No se han podido cargar los pasajes.
+            <button
+              type="button"
+              onClick={reintentar}
+              className="inline-flex min-h-9 items-center rounded-md border border-slate-300 px-2 text-xs font-semibold hover:border-slate-500"
+            >
+              Reintentar
+            </button>
+          </p>
+        )}
+        {r && <RespuestasCapitulo respuestas={[]} q={f.pregunta} frecuente={r} />}
+        {hermanas.length > 0 && (
+          <section aria-labelledby="mismo-tema" className="mt-6">
+            <h2
+              id="mismo-tema"
+              className="mb-2 text-sm font-bold uppercase tracking-wide"
+              style={{ color: hex.ink }}
+            >
+              Del mismo tema
+            </h2>
+            <ul className="space-y-1">
+              {hermanas.map((x) => (
+                <li key={x.id}>
+                  <a
+                    href={href("preguntas", x.id)}
+                    className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+                  >
+                    {x.pregunta}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </div>
+    );
+  }
+  return (
+    <div>
+      <CabeceraEditorial titulo="Preguntas frecuentes" hex={hex} level={1}>
+        <p className="text-sm text-slate-600">
+          {FRECUENTES.length} preguntas revisadas, por temas. Cada una abre los pasajes del capítulo
+          que la responden, literales y con su página. Útil cuando la búsqueda con tus palabras no
+          encuentra nada.
+        </p>
+      </CabeceraEditorial>
+      <div className="space-y-5">
+        {TEMAS.map((tema) => (
+          <section key={tema} aria-labelledby={`tema-${tema}`}>
+            <h2
+              id={`tema-${tema}`}
+              className="mb-1 flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide"
+              style={{ color: hex.ink }}
+            >
+              <MessageCircleQuestion size={14} aria-hidden="true" /> {tema}
+            </h2>
+            <ul className="divide-y rounded-xl border bg-white" style={{ borderColor: "#e6e6e6" }}>
+              {FRECUENTES.filter((x) => x.tema === tema).map((x) => (
+                <li key={x.id}>
+                  <a
+                    href={href("preguntas", x.id)}
+                    className="flex min-h-11 items-center gap-2 px-3 py-2 text-sm text-slate-800 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                  >
+                    <span className="flex-1">{x.pregunta}</span>
+                    <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
     </div>
   );
 }

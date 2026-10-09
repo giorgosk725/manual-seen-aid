@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.16.0";
+export const VERSION_APP = "0.17.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-09",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — casos guiados`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — preguntas frecuentes por temas y la fuente a un toque`,
+    detalle: [
+      "Cuando la búsqueda con tus palabras no encuentra nada, hay un camino por temas: las 50 preguntas frecuentes revisadas, agrupadas (selección e indicación, sistemas y parámetros, inicio, descarga, incidencias, situaciones especiales…), cada una con los pasajes literales que la responden. Se ofrece desde «sin resultados», desde la caja de búsqueda vacía y desde Consultar.",
+      "En la ficha de cada sistema, cada tabla lleva «Ver en el capítulo», que abre la tabla en su apartado; Atrás devuelve a la misma sección de la ficha.",
+      "«Revisar la descarga» enlaza cada paso con el mismo paso del ejemplo comentado, y el ejemplo devuelve al recorrido (el ejemplo está en revisión y aún no se publica).",
+    ],
+  },
+  {
+    fecha: "2026-10-09",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.16.0 — casos guiados",
     detalle: [
       "Tres casos guiados para practicar con el texto del capítulo, en «Leer y comprender» y en el menú: «Hiperglucemia que no baja» (Omnipod 5, Figura 3), «Salir a correr» (Control-IQ, Tabla 4 y ejercicio) e «Ingreso para una cirugía larga» (MiniMed 780G, Tabla 6 y hospitalización). En cada paso se elige una opción y se ve si es lo que indica el capítulo, con un comentario y las frases literales en las que se apoya, cada una con su página y su enlace; «Ver todo» enseña el caso entero.",
       "Los escenarios son ficticios, sin dosis calculadas ni datos reales; las 83 citas se comprueban contra el texto publicado en cada prueba del proyecto.",

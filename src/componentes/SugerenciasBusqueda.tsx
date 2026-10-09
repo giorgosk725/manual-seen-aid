@@ -2,6 +2,7 @@
    (paleta Ctrl K y pantalla Buscar). */
 import { Clock3, Sparkles } from "lucide-react";
 import { EJEMPLOS_PREGUNTA } from "../busqueda";
+import { href } from "../rutas";
 import { borrarRecientes, useRecientes } from "../prefs";
 
 function Chip({ texto, onElegir }: { texto: string; onElegir: (q: string) => void }) {
@@ -52,6 +53,12 @@ export function SugerenciasBusqueda({ onElegir }: { onElegir: (q: string) => voi
             <Chip key={e} texto={e} onElegir={onElegir} />
           ))}
         </ul>
+        <a
+          href={href("preguntas")}
+          className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+        >
+          Todas las preguntas frecuentes, por temas →
+        </a>
       </div>
     </div>
   );

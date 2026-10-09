@@ -9,6 +9,7 @@ import { APARTADOS, TABLAS, idDeBloque, type Bloque } from "../contenido";
 import { SIS_IDS, SITUACIONES } from "../situaciones";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
 import { elegirRuta, href } from "../rutas";
+import { casoPorId } from "../casos";
 import { CabeceraEditorial, PaginaBadge, Segmented } from "../ui";
 import { useIrAlCambiar } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
@@ -411,6 +412,15 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
             </div>
           ))}
         </dl>
+        {casoPorId("ejemplo-descarga") && (
+          <a
+            href={href("casos", "ejemplo-descarga", String(n))}
+            className="mt-3 inline-flex min-h-11 items-center gap-1 rounded-lg px-3 text-sm font-semibold text-white"
+            style={{ background: CATEGORIA_HEX.aprender.strong }}
+          >
+            Ver este paso en el ejemplo comentado <ArrowRight size={14} aria-hidden="true" />
+          </a>
+        )}
         {patrones.length > 0 && (
           <div className="mt-4">
             <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
