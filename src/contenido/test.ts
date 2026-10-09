@@ -1,6 +1,7 @@
-/* Test de autoevaluación: las 10 preguntas del AUTOR (cuestionario v2, mayo de 2026), con las
-   convenciones de la app (DM1, «duración de la insulina activa»). PENDIENTES DE VALIDACIÓN DEL
-   AUTOR: se muestran con ese rótulo hasta que las apruebe (`validada: true`).
+/* Test de autoevaluación: las 10 preguntas del cuestionario v2 (mayo de 2026) del autor del
+   capítulo, con las convenciones de la app (DM1, «duración de la insulina activa»). Confirmadas
+   por él el 9-10-2026 (`validada: true`): el hueco de «Autoevaluación» del PDF publicado está
+   vacío, así que estas son las preguntas del capítulo en la app.
    `explicacion` es texto del autor (no del capítulo). `citas` son frases LITERALES del capítulo
    final con su página: el test de contenido comprueba que cada una está en su bloque.
    Comprobación del 3-10-2026: las 10 respaldadas por el texto final; la 3 con un matiz
@@ -34,7 +35,7 @@ export interface Pregunta {
 export const PREGUNTAS: Pregunta[] = [
   {
     id: "q01",
-    validada: false,
+    validada: true,
     enunciado:
       "¿Cuál de las siguientes afirmaciones resume mejor los retos actuales de los sistemas AID en diabetes tipo 1?",
     opciones: [
@@ -68,7 +69,7 @@ export const PREGUNTAS: Pregunta[] = [
   },
   {
     id: "q02",
-    validada: false,
+    validada: true,
     enunciado:
       "Una paciente con DM1 sobre AID muestra en la descarga de los últimos 14 días: uso de sensor 96 %, tiempo en automático 94 %, TIR 68 %, TAR 28 %, TBR <70 mg/dl 5,3 %, TBR <54 mg/dl 1,4 % y CV 38 %. ¿Cuál es la actuación inicial más adecuada?",
     opciones: [
@@ -101,7 +102,7 @@ export const PREGUNTAS: Pregunta[] = [
   },
   {
     id: "q03",
-    validada: false,
+    validada: true,
     enunciado:
       "Un varón de 34 años con DM1, HbA1c 6,9 %, TIR 75 %, TBR <70 mg/dl 2 %, sin hipoglucemias graves, expresa interés en valorar el inicio de un sistema de asa cerrada. ¿Cuál es la respuesta clínica más adecuada?",
     opciones: [
@@ -134,7 +135,7 @@ export const PREGUNTAS: Pregunta[] = [
   },
   {
     id: "q04",
-    validada: false,
+    validada: true,
     enunciado:
       "En una visita de seguimiento, la descarga de un adolescente con AID muestra de forma reiterada bolos prandiales omitidos en almuerzo y cena, con aumento sostenido de la basal automática en las horas posteriores. ¿Cuál es la actuación inicial más adecuada?",
     opciones: [
@@ -168,7 +169,7 @@ export const PREGUNTAS: Pregunta[] = [
   },
   {
     id: "q05",
-    validada: false,
+    validada: true,
     enunciado:
       "¿Cuál de las siguientes pautas refleja mejor el tratamiento de la hipoglucemia en una persona con DM1 sobre sistema AID?",
     opciones: [
@@ -206,7 +207,7 @@ export const PREGUNTAS: Pregunta[] = [
   },
   {
     id: "q06",
-    validada: false,
+    validada: true,
     enunciado:
       "Un paciente con AID consulta por glucemia mantenida >250 mg/dl durante 3 horas, con corrección automática del algoritmo sin descenso y sin causa identificable. ¿Cuál es la actuación más adecuada?",
     opciones: [
@@ -240,7 +241,7 @@ export const PREGUNTAS: Pregunta[] = [
   },
   {
     id: "q07",
-    validada: false,
+    validada: true,
     enunciado:
       "Un paciente con AID y elevada ansiedad por la hiperglucemia administra de forma habitual bolos manuales adicionales cuando la glucemia supera 180 mg/dl, además de las autocorrecciones del sistema. ¿Cuál es la consecuencia más probable y la actuación adecuada?",
     opciones: [
@@ -273,7 +274,7 @@ export const PREGUNTAS: Pregunta[] = [
   },
   {
     id: "q08",
-    validada: false,
+    validada: true,
     enunciado:
       "Una mujer de 32 años con DM1 en tratamiento con MDI y MCG, HbA1c 7,3 %, confirma una gestación no planificada en la semana 8. ¿Cuál es la actuación más adecuada respecto al inicio de un sistema de asa cerrada?",
     opciones: [
@@ -300,7 +301,7 @@ export const PREGUNTAS: Pregunta[] = [
   },
   {
     id: "q09",
-    validada: false,
+    validada: true,
     enunciado:
       "Un paciente con AID planifica una carrera continua de 60 minutos a media tarde, 90 minutos después del almuerzo. ¿Cuál es el manejo más adecuado?",
     opciones: [
@@ -340,7 +341,7 @@ export const PREGUNTAS: Pregunta[] = [
   },
   {
     id: "q10",
-    validada: false,
+    validada: true,
     enunciado:
       "Una paciente con DM1 sobre AID inicia tratamiento con prednisona 40 mg/día por una exacerbación inflamatoria. ¿Cuál es la actuación inicial más adecuada respecto al manejo del sistema?",
     opciones: [

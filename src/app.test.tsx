@@ -83,7 +83,7 @@ describe("App", () => {
   it("el test razona la respuesta con la explicación del autor y el capítulo", async () => {
     render(<App />);
     await ir("#/test");
-    expect(screen.getAllByText(/Pendiente de validación/).length).toBeGreaterThan(1);
+    expect(screen.queryByText(/Pendiente de validación/)).toBeNull();
     expect(screen.queryByText(/Provisional · ejemplo/)).toBeNull();
     await userEvent.click(
       screen.getByRole("button", {

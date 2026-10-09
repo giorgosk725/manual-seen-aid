@@ -8,13 +8,21 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.20.1";
+export const VERSION_APP = "0.20.2";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-09",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — el resumen del capítulo, con los profesionales`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — autoevaluación confirmada`,
+    detalle: [
+      "Las diez preguntas de la autoevaluación quedan confirmadas: desaparecen el rótulo «Pendiente de validación» y ese punto de la lista de pendientes. Son las preguntas del cuestionario del capítulo (mayo de 2026), comprobadas una a una contra el texto publicado.",
+    ],
+  },
+  {
+    fecha: "2026-10-09",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.20.1 — el resumen del capítulo, con los profesionales",
     detalle: [
       "El resumen del capítulo (una página, maquetación de la editorial) sale de «Para el paciente», que queda solo con material para entregar, y pasa a «Leer capítulo» (#/capitulo/resumen); los enlaces antiguos siguen funcionando.",
     ],
@@ -381,5 +389,4 @@ export const CAMBIOS: Cambio[] = [
    contenido van en docs/NOTAS_EDITORIALES.md, fuera de la web. */
 export const PENDIENTES: string[] = [
   "La autorización de la SEEN y de la editorial (ec-europe) para esta versión web, y su alojamiento.",
-  "La validación final de las diez preguntas del test.",
 ];
