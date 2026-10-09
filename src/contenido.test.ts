@@ -219,10 +219,10 @@ describe("convenciones de escritura", () => {
     expect(new Set(GLOSARIO.map((g) => g.sigla)).size).toBe(GLOSARIO.length);
     for (const g of GLOSARIO) expect(g.pagina).toBeGreaterThan(0);
   });
-  it("el test: 10 preguntas del autor, pendientes de su validación, con citas literales del capítulo", () => {
+  it("el test: 10 preguntas confirmadas (9-10-2026), con citas literales del capítulo", () => {
     expect(PREGUNTAS).toHaveLength(10);
     for (const p of PREGUNTAS) {
-      expect(p.validada, p.id).toBe(false);
+      expect(p.validada, p.id).toBe(true);
       expect(p.opciones, p.id).toHaveLength(4);
       expect(p.correcta).toBeLessThan(p.opciones.length);
       const a = APARTADOS.find((x) => x.slug === p.apartado)!;
@@ -253,7 +253,7 @@ describe("convenciones de escritura", () => {
   });
   it("los cambios llevan fecha ISO y hay pendientes visibles", () => {
     for (const c of CAMBIOS) expect(c.fecha).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    expect(PENDIENTES.length).toBeGreaterThanOrEqual(2);
+    expect(PENDIENTES.length).toBeGreaterThanOrEqual(1);
     // Lo del lector, corto, neutro y sin jerga interna (el detalle, en docs/NOTAS_EDITORIALES.md).
     expect(PENDIENTES.length).toBeLessThanOrEqual(5);
     for (const p of PENDIENTES) expect(p).not.toMatch(/asistente-aid|E\d\d|auditoría|\bautor\b/);
