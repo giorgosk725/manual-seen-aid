@@ -107,5 +107,13 @@ export const subapartados = (a: Apartado) =>
    «copiar enlace»): h3 usa su id; el resto, su posición. */
 export const idDeBloque = (b: Bloque, i: number) => (b.t === "h3" ? b.id : `b${i + 1}`);
 
+/* La tabla en su sitio del capítulo (#/capitulo/<slug>/<bN>): la fuente exacta, no el
+   principio del apartado. */
+export const rutaDeTabla = (id: TablaId): string | undefined => {
+  const ap = apartadoDeTabla(id);
+  const i = ap ? ap.bloques.findIndex((b) => b.t === "tabla" && b.id === id) : -1;
+  return ap && i >= 0 ? `#/capitulo/${ap.slug}/${idDeBloque(ap.bloques[i], i)}` : undefined;
+};
+
 /* Página «Autoevaluación» del capítulo (índice de la p. 1; en el PDF el hueco está vacío). */
 export const AUTOEVALUACION = { titulo: "Autoevaluación", pagina: 24 } as const;

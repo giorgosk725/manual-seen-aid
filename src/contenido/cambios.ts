@@ -8,13 +8,27 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.17.0";
+export const VERSION_APP = "0.18.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-09",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — preguntas por temas, ejemplo de descarga y la fuente a un toque`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — tareas con nombre propio, fichas por sección y lectura más limpia`,
+    detalle: [
+      "«Parámetros por sistema» y «Comparar sistemas» son ahora pantallas propias: la primera pide el sistema y enseña su Tabla 3; la segunda, dos o más sistemas en la Tabla 1. La tabla es la fuente, con «Ver en el capítulo» a la tabla en su sitio, no al principio del apartado.",
+      "Consultar queda en siete tareas y una lista corta de recursos (sistemas, tablas, figuras, glosario, preguntas), sin destinos repetidos.",
+      "La ficha de un sistema abierta por una sección (parámetros, cómo funciona, situaciones…) enseña solo esa sección, con el cambio de sistema al lado y «Ficha completa» a un toque; antes eran más de diez pantallas en el móvil.",
+      "Buscar encuentra también los casos guiados y el ejemplo de descarga («ejemplo de descarga», «practicar con un caso»); las respuestas que llevan a una ficha abren la sección exacta; las citas de los casos llevan a la frase, resaltada.",
+      "Lectura: la pantalla se llama «Leer capítulo»; «Comprender y practicar» va antes del índice (cómo funciona cada sistema, casos, tarjetas, test); en los apartados solo se muestra lo que hay en el capítulo publicado (la versión extendida sigue en las fichas y en las tablas, rotulada) y queda una sola acción, Imprimir / PDF. La infografía se ve como imagen, con su transcripción plegada.",
+      "Portada con el título completo del capítulo y su firma. Preguntas frecuentes por temas plegados, con «Ver todas». En «Revisar la descarga», «Ir a un paso» por su nombre.",
+    ],
+  },
+  {
+    fecha: "2026-10-09",
+    ambito: "app",
+    titulo:
+      "Manual SEEN · AID 0.17.0 — preguntas por temas, ejemplo de descarga y la fuente a un toque",
     detalle: [
       "Cuando la búsqueda con tus palabras no encuentra nada, hay un camino por temas: las 50 preguntas frecuentes revisadas, agrupadas (selección e indicación, sistemas y parámetros, inicio, descarga, incidencias, situaciones especiales…), cada una con los pasajes literales que la responden. Se ofrece desde «sin resultados», desde la caja de búsqueda vacía y desde Consultar.",
       "En la ficha de cada sistema, cada tabla lleva «Ver en el capítulo», que abre la tabla en su apartado; Atrás devuelve a la misma sección de la ficha.",

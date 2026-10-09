@@ -32,6 +32,7 @@ import {
 } from "./busqueda";
 import { SIS_IDS, SITUACIONES } from "./situaciones";
 import { OBJETIVOS_MCG } from "./contenido/diagramas";
+import { CASOS_INDICE } from "./casos-indice";
 
 /* Lo ligero sigue disponible desde aquí para quien ya carga el índice. */
 export * from "./busqueda";
@@ -184,7 +185,7 @@ export function indice(): Entrada[] {
       titulo: `Versión extendida · ${f.titulo}`,
       texto: textoDeFragmento(f),
       pagina: 0,
-      ruta: href("capitulo", f.donde.apartado, `ext-${f.id}`),
+      ruta: href("extendida", f.id),
     });
   }
   for (const s of SISTEMAS_AMPLIACION) {
@@ -301,6 +302,17 @@ export function indice(): Entrada[] {
     ],
   ] as const)
     out.push({ id: `atajo/${ruta}`, tipo: "atajo", titulo, texto, pagina, ruta });
+  // Casos guiados y ejemplos comentados de la app: para que «ejemplo de descarga» o «practicar
+  // con un caso» lleven al caso, no a un pasaje que contiene «por ejemplo».
+  for (const c of CASOS_INDICE)
+    out.push({
+      id: `caso/${c.id}`,
+      tipo: "caso",
+      titulo: c.titulo,
+      texto: c.texto,
+      pagina: c.pagina,
+      ruta: href("casos", c.id),
+    });
   // Hojas para el paciente (V5 del autor y resumen de la editorial) y preguntas del test:
   // también fuera del capítulo, en su grupo.
   for (const s of INFORMACION_PACIENTES.secciones)
@@ -437,7 +449,7 @@ function puntuar(terminos: string[][], todas: boolean): Resultado[] {
     if (todas ? aciertos < terminos.length : aciertos === 0) continue;
     if (e.tipo === "sigla") puntos += 1;
     // Las herramientas llevan directamente a la respuesta: van delante.
-    if (e.tipo === "atajo") puntos += 4;
+    if (e.tipo === "atajo" || e.tipo === "caso") puntos += 4;
     res.push({ entrada: e, fragmento: fragmento(e.texto, primera), puntos, aciertos });
   }
   return res;

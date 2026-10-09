@@ -14,6 +14,7 @@ import type { SistemaId } from "./ampliacion/tipos";
 const consultar = () => import("./pantallas/Consultar");
 const HubConsultar = lazy(() => consultar().then((m) => ({ default: m.HubConsultar })));
 const Tablas = lazy(() => consultar().then((m) => ({ default: m.Tablas })));
+const TareaTabla = lazy(() => consultar().then((m) => ({ default: m.TareaTabla })));
 const Figura3Pantalla = lazy(() => consultar().then((m) => ({ default: m.Figura3Pantalla })));
 const Infografia = lazy(() => consultar().then((m) => ({ default: m.Infografia })));
 const Glosario = lazy(() => consultar().then((m) => ({ default: m.Glosario })));
@@ -34,6 +35,7 @@ const Mas = lazy(() => otras().then((m) => ({ default: m.Mas })));
 const Sobre = lazy(() => otras().then((m) => ({ default: m.Sobre })));
 const Test = lazy(() => otras().then((m) => ({ default: m.Test })));
 const Preguntas = lazy(() => otras().then((m) => ({ default: m.Preguntas })));
+const Extendida = lazy(() => otras().then((m) => ({ default: m.Extendida })));
 
 const casos = () => import("./pantallas/Casos");
 const Casos = lazy(() => casos().then((m) => ({ default: m.Casos })));
@@ -116,7 +118,7 @@ export default function App() {
     case "capitulo": {
       if (!ruta.sub) {
         pantalla = <IndiceCapitulo />;
-        titulo = "Leer y comprender";
+        titulo = "Leer capítulo";
       } else if (ruta.sub === "todo") {
         pantalla = <CapituloEntero />;
         titulo = "Capítulo entero";
@@ -143,6 +145,14 @@ export default function App() {
           titulo = t ? `Tabla ${t.numero}` : "Tablas";
           break;
         }
+        case "parametros":
+          pantalla = <TareaTabla tarea="parametros" seleccion={ruta.detalle} />;
+          titulo = "Parámetros por sistema";
+          break;
+        case "comparar":
+          pantalla = <TareaTabla tarea="comparar" seleccion={ruta.detalle} />;
+          titulo = "Comparar sistemas";
+          break;
         case "situacion":
           pantalla = (
             <SituacionSistema
@@ -239,6 +249,10 @@ export default function App() {
     case "preguntas":
       pantalla = <Preguntas id={ruta.sub} />;
       titulo = "Preguntas frecuentes";
+      break;
+    case "extendida":
+      pantalla = <Extendida id={ruta.sub} />;
+      titulo = "Versión extendida";
       break;
     default:
       pantalla = <NoEncontrada />;

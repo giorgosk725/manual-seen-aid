@@ -15,7 +15,8 @@ export interface Entrada {
     | "ampliacion"
     | "pacientes"
     | "test"
-    | "atajo";
+    | "atajo"
+    | "caso";
   titulo: string;
   texto: string;
   /* Página del capítulo (0 = fuera del capítulo) y, si ocupa dos, la última. */

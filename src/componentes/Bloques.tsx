@@ -1,5 +1,7 @@
 /* Renderiza los bloques de un apartado: párrafos, subapartados, listas, tablas y figuras,
-   cada uno con su página de origen y un id estable (ancla). */
+   cada uno con su página de origen y un id estable (ancla). Solo lo que hay en el capítulo
+   publicado: la versión extendida no se muestra en la lectura (decisión del autor, 9-10-2026);
+   sigue en las fichas de sistema y en las tablas, rotulada. */
 import { Fragment, memo, useEffect, useMemo } from "react";
 import { Link2 } from "lucide-react";
 import {
@@ -10,8 +12,6 @@ import {
   type Apartado,
   type Bloque,
 } from "../contenido";
-import { extendidosTrasBloque } from "../extendida";
-import { VersionExtendida } from "./VersionExtendida";
 import { TextoConRemisiones } from "./Remisiones";
 import { PaginaBadge } from "../ui";
 import { TablaVista } from "./TablaVista";
@@ -197,7 +197,6 @@ export const Bloques = memo(function Bloques({
     <div className="space-y-5">
       {apartado.bloques.map((b, i) => {
         const diagramas = diagramasTrasBloque(apartado, i);
-        const extendidos = extendidosTrasBloque(apartado, i);
         // Tablas, figuras y diagramas: al nivel de los subapartados o uno por debajo si ya
         // hay uno antes (sin saltos de encabezado).
         const haySub = apartado.bloques.slice(0, i).some((x) => x.t === "h3");
@@ -223,13 +222,6 @@ export const Bloques = memo(function Bloques({
                   <DiagramaVista id={d.id} enApartado />
                 </div>
               ))}
-              {extendidos.length > 0 && (
-                <VersionExtendida
-                  nivel={nivel}
-                  fragmentos={extendidos}
-                  id={`${prefijo ? prefijo + "-" : ""}ext-tras-${idDeBloque(b, i)}`}
-                />
-              )}
             </Fragment>
           </NivelTitulo.Provider>
         );

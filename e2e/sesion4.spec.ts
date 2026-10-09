@@ -99,7 +99,7 @@ test.describe("Nocturno en lo nuevo", () => {
       await page.goto(ruta);
       await auditar(page, nombre);
     }
-    await page.goto("/#/capitulo/12-horizonte");
+    await page.goto("/#/extendida");
     await page
       .locator("details.extendida")
       .first()
@@ -115,6 +115,7 @@ test.describe("Búsqueda y enlaces", () => {
       page.getByRole("heading", { name: /Fuera del capítulo · versión extendida, ampliación/ }),
     ).toBeVisible();
     await page.getByRole("link", { name: /Versión extendida · DIY: Nightscout y AAPS/ }).click();
+    await expect(page).toHaveURL(/#\/extendida\/E49$/);
     await expect(page.locator("#ext-E49")).toBeVisible();
   });
 
@@ -123,7 +124,7 @@ test.describe("Búsqueda y enlaces", () => {
   }) => {
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Navegación principal" });
-    for (const g of ["Consultar", "Leer y comprender", "Más recursos"])
+    for (const g of ["Consultar", "Leer capítulo", "Más recursos"])
       await expect(nav.getByText(g, { exact: true }).first()).toBeVisible();
     await expect(nav.getByRole("link", { name: "Comparar sistemas" })).toBeVisible();
     await expect(nav.getByRole("link", { name: "Para el paciente" })).toBeHidden();

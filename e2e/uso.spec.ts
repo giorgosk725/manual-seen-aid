@@ -121,9 +121,9 @@ test.describe("Uso 0.10.0", () => {
     await page.goto("/#/");
     await expect(page.getByText(/compara los sistemas y lee el texto completo/)).toBeVisible();
     await expect(page.getByRole("link", { name: "Consultar", exact: true }).first()).toBeVisible();
-    await page.getByRole("link", { name: "Leer y comprender", exact: true }).first().click();
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Leer y comprender");
-    const aprender = page.getByRole("region", { name: "Comprender y repasar" });
+    await page.getByRole("link", { name: "Leer capítulo", exact: true }).first().click();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Leer capítulo");
+    const aprender = page.getByRole("region", { name: "Comprender y practicar" });
     await expect(aprender.getByRole("link", { name: /Tarjetas de repaso/ })).toBeVisible();
     await expect(aprender.getByRole("link", { name: /Autoevaluación/ })).toBeVisible();
   });

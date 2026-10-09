@@ -80,7 +80,7 @@ export const DESTINOS: Destino[] = [
     id: "comparar",
     etiqueta: "Comparar sistemas",
     corto: "Comparar",
-    href: href("consultar", "tablas", "T1"),
+    href: href("consultar", "comparar"),
     icono: Columns3,
     cat: "consultar",
     descripcion:
@@ -90,7 +90,7 @@ export const DESTINOS: Destino[] = [
     id: "parametros",
     etiqueta: "Parámetros por sistema",
     corto: "Parámetros",
-    href: href("consultar", "tablas", "T3"),
+    href: href("consultar", "parametros"),
     icono: SlidersHorizontal,
     cat: "consultar",
     descripcion:
@@ -208,6 +208,16 @@ export const DESTINOS: Destino[] = [
       "Información para pacientes y resumen, para imprimir en una cara o compartir con QR, y el plan de seguridad de cada sistema.",
   },
   {
+    id: "extendida",
+    etiqueta: "Versión extendida",
+    corto: "Extendida",
+    href: href("extendida"),
+    icono: Telescope,
+    cat: "confiar",
+    descripcion:
+      "Fragmentos del borrador largo que no entraron en el capítulo publicado, por apartado y rotulados; no forman parte del Manual.",
+  },
+  {
     id: "bibliografia",
     etiqueta: "Bibliografía",
     href: href("bibliografia"),
@@ -265,13 +275,15 @@ export const DESTINOS: Destino[] = [
 
 /* «Consultar», agrupado por tarea (hub de Consultar). */
 export const GRUPOS_CONSULTAR: { id: string; titulo: string; ids: string[] }[] = [
-  { id: "sistemas", titulo: "Sistemas", ids: ["sistemas", "comparar", "parametros"] },
-  { id: "seguimiento", titulo: "Inicio y seguimiento", ids: ["inicio", "descarga"] },
-  { id: "situaciones", titulo: "Situaciones", ids: ["figura-3", "situacion", "interrupcion"] },
+  {
+    id: "tareas",
+    titulo: "Tareas",
+    ids: ["parametros", "comparar", "descarga", "inicio", "situacion", "figura-3", "interrupcion"],
+  },
   {
     id: "recursos",
-    titulo: "Tablas, figuras, glosario y preguntas",
-    ids: ["tablas", "visual", "glosario", "preguntas"],
+    titulo: "Recursos",
+    ids: ["sistemas", "tablas", "visual", "glosario", "preguntas"],
   },
 ];
 
@@ -292,6 +304,7 @@ const AREA_DE_SECCION: Record<string, Area> = {
   mas: "mas",
   pacientes: "mas",
   bibliografia: "mas",
+  extendida: "mas",
   cambios: "mas",
   sobre: "mas",
 };
@@ -304,8 +317,9 @@ export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
     area: "consultar",
     titulo: "Consultar",
     ids: [
-      "sistemas",
+      "parametros",
       "comparar",
+      "sistemas",
       "inicio",
       "descarga",
       "figura-3",
@@ -315,11 +329,11 @@ export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
       "visual",
     ],
   },
-  { area: "leer", titulo: "Leer y comprender", ids: ["capitulo", "casos", "repaso", "test"] },
+  { area: "leer", titulo: "Leer capítulo", ids: ["capitulo", "casos", "repaso", "test"] },
   {
     area: "mas",
     titulo: "Más recursos",
-    ids: ["pacientes", "glosario", "bibliografia", "cambios", "sobre"],
+    ids: ["pacientes", "glosario", "extendida", "bibliografia", "cambios", "sobre"],
   },
 ];
 
@@ -330,10 +344,6 @@ export function destinoActivo(
   id: string,
   ruta: { seccion: string; sub?: string; detalle?: string },
 ) {
-  const tabla = ruta.seccion === "consultar" && ruta.sub === "tablas" ? (ruta.detalle ?? "") : null;
-  if (id === "comparar") return tabla?.startsWith("T1") ?? false;
-  if (id === "parametros") return tabla?.startsWith("T3") ?? false;
-  if (id === "tablas") return tabla != null && !/^T[13]/.test(tabla);
   if (id === "capitulo") return ruta.seccion === "capitulo";
   const d = DESTINOS.find((x) => x.id === id);
   if (!d) return false;

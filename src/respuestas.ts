@@ -803,8 +803,17 @@ function rutaTabla(t: Tabla, fila: number, col?: number) {
   const st = SITUACIONES.find((x) => x.tabla === t.id && x.fila === fila);
   if (st)
     return href("consultar", "situacion", col === undefined ? st.id : `${st.id}:${SIS_IDS[col]}`);
-  if (col !== undefined && (t.id === "T1" || t.id === "T3"))
-    return href("sistemas", ORDEN_SISTEMAS[col]);
+  if (col !== undefined && (t.id === "T1" || t.id === "T3")) {
+    // La sección de la ficha que enseña esa fila: parámetros, lo esencial o cómo funciona.
+    const e = t.filas[fila]?.etiqueta ?? "";
+    const seccion =
+      t.id === "T3" || e.startsWith("Parámetros configurables")
+        ? "parametros"
+        : ["Formato", "Indicación", "Gestación: autorización y evidencia"].includes(e)
+          ? "esencial"
+          : "funciona";
+    return href("sistemas", ORDEN_SISTEMAS[col], seccion);
+  }
   return href("consultar", "tablas", t.id);
 }
 

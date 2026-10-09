@@ -12,6 +12,9 @@ import {
   XCircle,
 } from "lucide-react";
 import { FRECUENTES } from "../frecuentes";
+import { FRAGMENTOS_EXTENDIDOS, ROTULO_EXTENDIDA } from "../extendida";
+import { VersionExtendida } from "../componentes/VersionExtendida";
+import { APARTADOS } from "../contenido";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
 import { CAMBIOS, PENDIENTES, VERSION_APP } from "../contenido/cambios";
 import { PREGUNTAS } from "../contenido/test";
@@ -48,6 +51,7 @@ const TIPO: Record<string, string> = {
   pacientes: "Para el paciente",
   test: "Autoevaluación",
   atajo: "Ir a",
+  caso: "Caso guiado",
 };
 
 /* ---------- Buscar ---------- */
@@ -832,6 +836,7 @@ const TEMAS = [...new Set(FRECUENTES.map((f) => f.tema))];
 
 export function Preguntas({ id }: { id?: string }) {
   const { motor, estado, reintentar } = useBuscador(true);
+  const [todas, setTodas] = useState(false);
   const f = FRECUENTES.find((x) => x.id === id);
   const hex = CATEGORIA_HEX.consultar;
   if (f) {
@@ -899,17 +904,35 @@ export function Preguntas({ id }: { id?: string }) {
           encuentra nada.
         </p>
       </CabeceraEditorial>
-      <div className="space-y-5">
+      <button
+        type="button"
+        onClick={() => setTodas((v) => !v)}
+        aria-pressed={todas}
+        className="mb-3 inline-flex min-h-11 items-center rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 hover:border-slate-500 sm:min-h-9"
+      >
+        {todas ? "Plegar los temas" : "Ver todas las preguntas"}
+      </button>
+      <div className="space-y-2">
         {TEMAS.map((tema) => (
-          <section key={tema} aria-labelledby={`tema-${tema}`}>
-            <h2
-              id={`tema-${tema}`}
-              className="mb-1 flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide"
-              style={{ color: hex.ink }}
-            >
-              <MessageCircleQuestion size={14} aria-hidden="true" /> {tema}
-            </h2>
-            <ul className="divide-y rounded-xl border bg-white" style={{ borderColor: "#e6e6e6" }}>
+          <details
+            key={tema}
+            open={todas || undefined}
+            className="group rounded-xl border bg-white"
+            style={{ borderColor: "#e6e6e6" }}
+          >
+            <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 text-sm font-bold text-slate-900 [&::-webkit-details-marker]:hidden">
+              <MessageCircleQuestion size={15} aria-hidden="true" style={{ color: hex.strong }} />
+              <span className="flex-1">{tema}</span>
+              <span className="text-xs font-semibold text-slate-500">
+                {FRECUENTES.filter((x) => x.tema === tema).length}
+              </span>
+              <ArrowRight
+                size={14}
+                className="text-slate-400 transition group-open:rotate-90"
+                aria-hidden="true"
+              />
+            </summary>
+            <ul className="divide-y border-t" style={{ borderColor: "#e6e6e6" }}>
               {FRECUENTES.filter((x) => x.tema === tema).map((x) => (
                 <li key={x.id}>
                   <a
@@ -922,6 +945,52 @@ export function Preguntas({ id }: { id?: string }) {
                 </li>
               ))}
             </ul>
+          </details>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Versión extendida (#/extendida[/<id>]) ----------
+   Los 33 fragmentos del borrador largo que no entraron en el Manual, por apartado y rotulados
+   como siempre. Desde la 0.18.0 no se muestran en la lectura del capítulo (decisión del autor):
+   aquí, en las fichas de sistema y en las tablas. */
+export function Extendida({ id }: { id?: string }) {
+  useEffect(() => {
+    if (!id) return;
+    const el = document.getElementById(`ext-${id}`);
+    if (!el) return;
+    const d = el.closest("details");
+    if (d) d.open = true;
+    el.scrollIntoView?.({ block: "start" });
+  }, [id]);
+  const hex = CATEGORIA_HEX.confiar;
+  const porApartado = APARTADOS.map((a) => ({
+    a,
+    fs: FRAGMENTOS_EXTENDIDOS.filter((f) => f.donde.apartado === a.slug),
+  })).filter((x) => x.fs.length);
+  return (
+    <div>
+      <CabeceraEditorial titulo="Versión extendida" hex={hex} level={1}>
+        <p className="text-sm text-slate-600">
+          {ROTULO_EXTENDIDA}: {FRAGMENTOS_EXTENDIDOS.length} fragmentos del borrador largo que no
+          entraron en el capítulo publicado, por apartado. No forman parte del Manual SEEN.
+        </p>
+      </CabeceraEditorial>
+      <div className="space-y-6">
+        {porApartado.map(({ a, fs }) => (
+          <section key={a.slug} aria-labelledby={`ext-ap-${a.slug}`}>
+            <h2
+              id={`ext-ap-${a.slug}`}
+              className="mb-2 text-sm font-bold uppercase tracking-wide"
+              style={{ color: hex.ink }}
+            >
+              <a href={href("capitulo", a.slug)} className="hover:underline">
+                {a.n}. {a.titulo}
+              </a>
+            </h2>
+            <VersionExtendida fragmentos={fs} nivel={3} />
           </section>
         ))}
       </div>

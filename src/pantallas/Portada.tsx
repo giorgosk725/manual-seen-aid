@@ -43,14 +43,14 @@ const fecha = (iso: string) =>
 /* Las consultas más frecuentes; el resto, en «Todas las consultas». */
 const FRECUENTES = [
   {
-    href: href("consultar", "tablas", "T1"),
+    href: href("consultar", "comparar"),
     icono: Columns3,
     color: FICHA_AREA.pizarra,
     t: "Comparar sistemas",
     s: "Tabla 1, con los sistemas que elijas",
   },
   {
-    href: href("consultar", "tablas", "T3"),
+    href: href("consultar", "parametros"),
     icono: SlidersHorizontal,
     color: FICHA_AREA.azul,
     t: "Parámetros por sistema",
@@ -372,17 +372,12 @@ export function Portada() {
             </div>
             <h1
               id="titulo-capitulo"
-              className="titulo-manual mt-2 text-balance text-[1.7rem] leading-[1.12] sm:mt-3 sm:text-[2.4rem] lg:text-[2.8rem]"
+              className="titulo-manual mt-2 text-balance text-[1.35rem] leading-[1.15] sm:mt-3 sm:text-[2rem] lg:text-[2.3rem]"
             >
-              {CAPITULO.tituloCorto}
+              {CAPITULO.titulo}
             </h1>
             <p className="mt-2 text-sm text-slate-700">
-              Complemento interactivo del capítulo
-              <span className="hidden sm:inline"> «{CAPITULO.titulo}»</span>
-              <span className="sm:hidden"> del Manual SEEN</span>.{" "}
               <span className="font-semibold text-slate-900">{CAPITULO.autor}</span>
-              <span aria-hidden="true"> · </span>
-              <span className="text-slate-600">{CAPITULO.sociedad.replace(/ \(SEEN\)$/, "")}</span>
             </p>
             <p className="mt-3 max-w-prose text-[15px] leading-relaxed text-slate-800">
               Consulta las tablas, los algoritmos y las situaciones clínicas del capítulo, compara
@@ -400,7 +395,7 @@ export function Portada() {
                 href={href("capitulo")}
                 className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[3px] border-2 border-slate-300 px-4 text-sm font-semibold uppercase tracking-wide text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
               >
-                <BookOpen size={15} aria-hidden="true" /> Leer y comprender
+                <BookOpen size={15} aria-hidden="true" /> Leer capítulo
               </a>
             </div>
             <SeguirLeyendo />

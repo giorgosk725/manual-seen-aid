@@ -29,11 +29,11 @@ const PASOS = [
   },
   {
     icono: BookOpen,
-    titulo: "Leer y comprender",
+    titulo: "Leer capítulo",
     texto:
       "Los 13 apartados con sus tablas y figuras; la app recuerda dónde lo dejaste. Funciona sin conexión y se puede instalar.",
     ruta: href("capitulo"),
-    enlace: "Leer y comprender",
+    enlace: "Leer capítulo",
   },
 ];
 

@@ -1,4 +1,4 @@
-/* «Leer y comprender» (#/capitulo): seguir leyendo, el índice de los trece apartados con sus
+/* «Leer capítulo» (#/capitulo): seguir leyendo, el índice de los trece apartados con sus
    páginas y, aparte, lo que ayuda a comprender y repasar. Y el «capítulo entero» para imprimir
    de una vez. */
 import { useRef } from "react";
@@ -17,34 +17,60 @@ function IconoApartado({ slug }: { slug: string }) {
   return <I size={20} strokeWidth={1.5} />;
 }
 
-/* Lo que ayuda a comprender y repasar; cada cosa tiene su hogar en otra pantalla. */
-const COMPRENDER = [
-  {
-    id: "sistemas",
-    t: "Cómo funciona cada sistema",
-    s: "Lo que dice el capítulo de cada uno de los cuatro sistemas, con su ficha técnica aparte.",
-  },
-  {
-    id: "visual",
-    t: "Figuras y diagramas",
-    s: "Las figuras con zoom y los diagramas hechos con frases del capítulo, con su página.",
-  },
-  {
-    id: "casos",
-    t: "Casos guiados",
-    s: "Practicar con el texto del capítulo, paso a paso, con las frases literales y su página.",
-  },
-  {
-    id: "repaso",
-    t: "Tarjetas de repaso",
-    s: "Las cifras y las siglas del capítulo, con repaso espaciado en este dispositivo.",
-  },
-  {
-    id: "test",
-    t: "Autoevaluación",
-    s: "Diez preguntas con la respuesta razonada y su página (pendientes de validación).",
-  },
+/* Para comprender y practicar, antes del índice y en una sola fila: cómo funciona cada sistema
+   (directo a su sección), los casos guiados, las tarjetas y el test. */
+const SISTEMAS_CORTO: [string, string][] = [
+  ["mm780", "MiniMed 780G"],
+  ["ciq", "Control-IQ"],
+  ["camaps", "CamAPS"],
+  ["op5", "Omnipod 5"],
+];
+const PRACTICAR = [
+  { id: "casos", t: "Casos guiados" },
+  { id: "repaso", t: "Tarjetas de repaso" },
+  { id: "test", t: "Autoevaluación" },
 ].filter((c) => c.id !== "casos" || HAY_CASOS);
+
+function ComprenderYPracticar() {
+  const chip =
+    "inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 text-sm font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9";
+  return (
+    <section aria-labelledby="comprender" className="mb-6">
+      <h2
+        id="comprender"
+        className="mb-2 text-sm font-bold uppercase tracking-wide"
+        style={{ color: CATEGORIA_HEX.aprender.ink }}
+      >
+        Comprender y practicar
+      </h2>
+      <div className="flex flex-wrap items-center gap-1.5">
+        <span className="mr-1 text-sm text-slate-600">Cómo funciona:</span>
+        {SISTEMAS_CORTO.map(([id, nombre]) => (
+          <a
+            key={id}
+            href={href("sistemas", id, "funciona")}
+            className={chip}
+            style={{ borderColor: "#d4d4d4" }}
+          >
+            {nombre}
+          </a>
+        ))}
+      </div>
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {PRACTICAR.map((c) => {
+          const d = destino(c.id);
+          const I = d.icono;
+          return (
+            <a key={c.id} href={d.href} className={chip} style={{ borderColor: "#d4d4d4" }}>
+              <I size={14} aria-hidden="true" style={{ color: CATEGORIA_HEX[d.cat].strong }} />
+              {c.t}
+            </a>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
 
 export function IndiceCapitulo() {
   const leidos = useLeidos();
@@ -52,7 +78,7 @@ export function IndiceCapitulo() {
   const hex = CATEGORIA_HEX.leer;
   return (
     <div>
-      <CabeceraEditorial titulo="Leer y comprender" hex={hex} level={1}>
+      <CabeceraEditorial titulo="Leer capítulo" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
           {CAPITULO.titulo}. {CAPITULO.autor}. Capítulo {CAPITULO.numero} del Manual SEEN, publicado
           el {CAPITULO.fechaFuente}.
@@ -74,6 +100,7 @@ export function IndiceCapitulo() {
           <ArrowRight size={14} className="shrink-0 text-slate-500" aria-hidden="true" />
         </a>
       )}
+      <ComprenderYPracticar />
       <section aria-labelledby="indice-apartados">
         <h2
           id="indice-apartados"
@@ -131,41 +158,6 @@ export function IndiceCapitulo() {
             );
           })}
         </ol>
-      </section>
-      <section aria-labelledby="comprender" className="mt-8">
-        <h2
-          id="comprender"
-          className="mb-2 text-sm font-bold uppercase tracking-wide"
-          style={{ color: CATEGORIA_HEX.aprender.ink }}
-        >
-          Comprender y repasar
-        </h2>
-        <ul className="grid gap-2 sm:grid-cols-2">
-          {COMPRENDER.map((c) => {
-            const d = destino(c.id);
-            const I = d.icono;
-            return (
-              <li key={c.id}>
-                <a
-                  href={d.href}
-                  className="hover-lift ease-brand flex h-full items-start gap-3 rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                  style={{ borderColor: "#e6e6e6" }}
-                >
-                  <I
-                    size={18}
-                    className="mt-0.5 shrink-0"
-                    style={{ color: CATEGORIA_HEX[d.cat].strong }}
-                    aria-hidden="true"
-                  />
-                  <span className="min-w-0">
-                    <span className="block text-sm font-bold text-slate-900">{c.t}</span>
-                    <span className="block text-xs text-slate-600">{c.s}</span>
-                  </span>
-                </a>
-              </li>
-            );
-          })}
-        </ul>
       </section>
       <div className="mt-6 flex flex-wrap gap-2">
         <a

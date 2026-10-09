@@ -3,13 +3,45 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Tablas y sistemas", () => {
-  test("Consultar ofrece las tablas por la pregunta que responden", async ({ page }) => {
+  test("Parámetros por sistema conserva su nombre: pide el sistema y enseña su Tabla 3", async ({
+    page,
+  }) => {
     await page.goto("/#/consultar");
+    await page.getByRole("link", { name: /^Parámetros por sistema/ }).click();
+    await expect(page).toHaveURL(/#\/consultar\/parametros$/);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Parámetros por sistema");
+    await page.getByRole("link", { name: /^Omnipod 5/ }).click();
+    await expect(page).toHaveURL(/#\/consultar\/parametros\/omnipod-5$/);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Parámetros por sistema");
+    await expect(page.getByText("Tabla 3 · viendo Omnipod 5")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Ver en el capítulo" })).toHaveAttribute(
+      "href",
+      /#\/capitulo\/[^/]+\/b\d+$/,
+    );
+  });
+
+  test("la ficha por sección enseña solo esa sección, con el cambio de sistema a mano", async ({
+    page,
+  }) => {
+    await page.goto("/#/sistemas/op5/parametros");
+    await expect(
+      page.getByRole("heading", { level: 2, name: /^Parámetros · Omnipod 5/ }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { level: 2, name: /^Lo esencial · Omnipod 5/ }),
+    ).toBeHidden();
     await page
-      .getByRole("link", { name: /¿Cómo se ajusta cada parámetro en cada sistema\?/ })
+      .getByRole("navigation", { name: "Otro sistema, misma sección" })
+      .getByRole("link", { name: "CamAPS" })
       .click();
-    await expect(page).toHaveURL(/#\/consultar\/tablas\/T3$/);
-    await expect(page.getByText("¿Cómo se ajusta cada parámetro en cada sistema?")).toBeVisible();
+    await expect(page).toHaveURL(/#\/sistemas\/camaps\/parametros$/);
+    await expect(
+      page.getByRole("heading", { level: 2, name: /^Parámetros · myLoop CamAPS/ }),
+    ).toBeVisible();
+    await page.getByRole("link", { name: "Ficha completa" }).click();
+    await expect(
+      page.getByRole("heading", { level: 2, name: /^Lo esencial · myLoop CamAPS/ }),
+    ).toBeVisible();
   });
 
   test("UX07-UX08: dos sistemas, la selección se ve y queda en el enlace", async ({ page }) => {

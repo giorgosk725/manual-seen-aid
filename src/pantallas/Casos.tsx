@@ -5,7 +5,9 @@
    muestra el caso entero de una vez (para revisarlo). Los datos vienen de casos.ts. */
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Check, RotateCcw } from "lucide-react";
-import { APARTADOS, FIGURA3 } from "../contenido";
+import { APARTADOS, FIGURA3, idDeBloque, rutaDeTabla, type TablaId } from "../contenido";
+import { plano } from "../marcado";
+import { frases } from "../frases";
 import { CASOS, casoPorId, type Caso, type CitaCaso, type OpcionCaso } from "../casos";
 import { href } from "../rutas";
 import { CabeceraEditorial, PaginaBadge } from "../ui";
@@ -25,11 +27,30 @@ const COLOR: Record<OpcionCaso["tipo"], { borde: string; texto: string }> = {
 };
 const letra = (i: number) => String.fromCharCode(97 + i) + ")";
 
-/* Adónde lleva una cita: la tabla, la Figura 3 o el apartado de esa página. */
+/* Adónde lleva una cita: la frase exacta del capítulo (resaltada), la tabla en su sitio del
+   capítulo o la Figura 3; si no se encuentra, el apartado de esa página. */
+const limpio = (x: string) => x.replace(/\s+/g, " ").trim();
 function destinoCita(c: CitaCaso): string | null {
   const tabla = /^Tabla (\d)/.exec(c.f);
-  if (tabla) return href("consultar", "tablas", `T${tabla[1]}`);
+  if (tabla)
+    return rutaDeTabla(`T${tabla[1]}` as TablaId) ?? href("consultar", "tablas", `T${tabla[1]}`);
   if (c.f === "Figura 3") return href("consultar", "figura-3");
+  const t = limpio(c.t);
+  for (const a of APARTADOS)
+    for (let i = 0; i < a.bloques.length; i++) {
+      const b = a.bloques[i];
+      if (b.t === "p") {
+        const fs = frases(plano(b.texto));
+        const k = fs.findIndex((f) => limpio(f).includes(t));
+        if (k >= 0) return href("capitulo", a.slug, `${idDeBloque(b, i)}~${k}`);
+        if (limpio(plano(b.texto)).includes(t)) return href("capitulo", a.slug, idDeBloque(b, i));
+      } else if (b.t === "lista") {
+        const k = b.items.findIndex((it) => limpio(plano(it)).includes(t));
+        if (k >= 0) return href("capitulo", a.slug, `${idDeBloque(b, i)}~${k}`);
+        if (b.intro && limpio(plano(b.intro)).includes(t))
+          return href("capitulo", a.slug, idDeBloque(b, i));
+      }
+    }
   const a = APARTADOS.find((x) => c.p >= x.paginas[0] && c.p <= x.paginas[1]);
   return a ? href("capitulo", a.slug) : null;
 }
@@ -371,7 +392,7 @@ export function Casos({ id, paso }: { id?: string; paso?: string }) {
           href={href("capitulo")}
           className="mt-2 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
         >
-          Leer y comprender <ArrowRight size={14} aria-hidden="true" />
+          Leer capítulo <ArrowRight size={14} aria-hidden="true" />
         </a>
       </div>
     );

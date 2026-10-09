@@ -211,7 +211,11 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     compact (≤ 2.5 screens at 393 px, e2e `navegacion-movil.spec.ts`): inventories live in
     their home (index → Leer, diagrams → Figuras y diagramas, systems → Consultar). The system
     sheet has sections with their own route (`#/sistemas/<id>/<esencial|funciona|parametros|situaciones|ampliacion>`),
-    and table selections travel in the route (`T1:minimed-780g+omnipod-5`, `T6:3`).
+    and table selections travel in the route (`T1:minimed-780g+omnipod-5`, `T6:3`). Tasks with
+    their own name sit on top of the tables: `#/consultar/parametros[/<sis>]` (Tabla 3) and
+    `#/consultar/comparar[/<a+b>]` (Tabla 1), rendered by `TareaTabla`; a sheet opened by
+    section shows only that section. The chapter reading shows only the published chapter
+    (no extended version there, author's decision 9-10-2026).
 27. **Comprehension without new content (0.15.0, delivery 3 of the plan).** `src/siglas.ts`
     makes the FIRST occurrence of each glossary sigla in each apartado (paragraphs and lists)
     a `SiglaPulsable` (`componentes/Sigla.tsx`) that shows the literal glossary development and

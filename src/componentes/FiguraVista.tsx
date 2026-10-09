@@ -63,6 +63,56 @@ export function ImagenFigura({ figura, abierta = false }: { figura: Figura; abie
 }
 
 export function FiguraVista({ figura }: { figura: Figura }) {
+  // La infografía se ve tal cual (es una página maquetada); su transcripción, plegada. Las
+  // figuras 1 y 2 siguen con la transcripción caja a caja delante.
+  const infografia = !figura.numero;
+  if (infografia && figura.imagen)
+    return (
+      <section aria-label={figura.titulo} className="bloque-papel">
+        <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
+          <TituloBloque className="text-sm font-semibold text-slate-800">
+            {figura.titulo}
+          </TituloBloque>
+          <PaginaBadge p={figura.pagina} />
+        </div>
+        <AbrirEnVisor
+          imagen={{
+            src: figura.imagen.src,
+            alt: figura.imagen.alt,
+            titulo: figura.titulo,
+            nota: `p. ${figura.pagina}`,
+          }}
+          etiqueta={`Pantalla completa con zoom: ${figura.titulo}`}
+          className="block w-full overflow-hidden rounded-xl border bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+        >
+          <img src={figura.imagen.src} alt={figura.imagen.alt} className="block w-full" />
+        </AbrirEnVisor>
+        <p className="mt-1 text-xs text-slate-500">Toca la infografía para ampliarla.</p>
+        <details className="mt-3 text-sm">
+          <summary className="min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-8">
+            Texto de la infografía (transcripción)
+          </summary>
+          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            {figura.cajas.map((c, i) => (
+              <div key={i} className="rounded-xl border p-3" style={{ borderColor: "#e6e6e6" }}>
+                {c.titulo && (
+                  <div className="mb-1.5 text-sm font-bold text-slate-800">
+                    <Texto>{c.titulo}</Texto>
+                  </div>
+                )}
+                <ul className="list-disc space-y-1 pl-4 text-sm text-slate-700">
+                  {c.items.map((it, j) => (
+                    <li key={j}>
+                      <Texto>{it}</Texto>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </details>
+      </section>
+    );
   return (
     <section aria-label={figura.titulo} className="bloque-papel">
       <div className="mb-2 flex flex-wrap items-start justify-between gap-2">

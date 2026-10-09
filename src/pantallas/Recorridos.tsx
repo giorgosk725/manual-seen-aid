@@ -376,6 +376,20 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           );
         })}
       </ol>
+      <label className="no-imprimir mb-4 block max-w-md text-sm">
+        <span className="mb-1 block text-xs font-semibold text-slate-500">Ir a un paso</span>
+        <select
+          value={n}
+          onChange={(e) => ir(Number(e.target.value))}
+          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        >
+          {t.filas.map((f, i) => (
+            <option key={i} value={i + 1}>
+              {i + 1}. {f.celdas[0]}
+            </option>
+          ))}
+        </select>
+      </label>
       <section
         key={n}
         id="paso-descarga"

@@ -9,7 +9,7 @@ test.describe("Navegación y portada (393 px)", () => {
     await page.goto("/#/");
     await expect(page.getByRole("link", { name: "Consultar", exact: true }).first()).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Leer y comprender", exact: true }).first(),
+      page.getByRole("link", { name: "Leer capítulo", exact: true }).first(),
     ).toBeInViewport();
     const { alto, vh } = await page.evaluate(() => ({
       alto: document.documentElement.scrollHeight,
@@ -27,14 +27,14 @@ test.describe("Navegación y portada (393 px)", () => {
     expect(y, `el primer párrafo empieza a ${y}px`).toBeLessThan(vh - 120);
   });
 
-  test("Opciones de lectura: agrupan imprimir, favorito, escuchar y citar", async ({ page }) => {
+  test("en el apartado solo queda Imprimir / PDF (sin citar, escuchar ni favorito)", async ({
+    page,
+  }) => {
     await page.goto("/#/capitulo/02-componentes");
-    await expect(page.getByRole("button", { name: "Cómo citar" })).toBeHidden();
-    const opciones = page.getByRole("button", { name: "Opciones de lectura" });
-    await opciones.tap();
-    await expect(opciones).toHaveAttribute("aria-expanded", "true");
-    for (const b of ["Imprimir", "Favorito", "Escuchar", "Cómo citar"])
-      await expect(page.getByRole("button", { name: new RegExp(b) }).first()).toBeVisible();
+    await expect(page.getByRole("button", { name: /Imprimir \/ PDF/ })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Cómo citar" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /Escuchar/ })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /Favorito/ })).toHaveCount(0);
   });
 
   test("la barra inferior marca el área de cada pantalla", async ({ page }) => {

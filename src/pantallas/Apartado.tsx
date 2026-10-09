@@ -9,7 +9,6 @@ import {
   BookOpen,
   ChevronDown,
   Image as ImageIcon,
-  Settings2,
   Table2,
 } from "lucide-react";
 import {
@@ -26,7 +25,6 @@ import { ICONO_APARTADO, ICONO_DIAGRAMA } from "../nav";
 import { CIFRAS } from "../contenido/cifras";
 import { href } from "../rutas";
 import { BotonImprimir } from "../ui";
-import { BotonFavorito, ComoCitar, Escuchar } from "../componentes/Lectura";
 import { guardarUltimo, marcarLeido } from "../prefs";
 import { CATEGORIA_HEX, SEEN, colorApartado } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
@@ -149,9 +147,6 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
   });
   const hex = CATEGORIA_HEX.leer;
   const Icono = ICONO_APARTADO[apartado.slug] ?? BookOpen;
-  // En el móvil, imprimir, favorito, escuchar y citar van juntos tras «Opciones de lectura»
-  // para que el texto empiece antes; desde 640 px, a la vista.
-  const [opciones, setOpciones] = useState(false);
 
   return (
     <div ref={ref} className="imprimible">
@@ -209,33 +204,14 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                   : `pp. ${apartado.paginas[0]}–${apartado.paginas[1]}`}{" "}
                 del capítulo
               </span>
-              <button
-                type="button"
-                onClick={() => setOpciones((o) => !o)}
-                aria-expanded={opciones}
-                aria-controls="opciones-lectura"
-                className="no-imprimir inline-flex min-h-11 items-center gap-1.5 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:hidden"
-              >
-                <Settings2 size={15} aria-hidden="true" /> Opciones de lectura
-                <ChevronDown
-                  size={14}
-                  aria-hidden="true"
-                  className={`transition ${opciones ? "rotate-180" : ""}`}
-                />
-              </button>
-              <span
-                id="opciones-lectura"
-                className={`no-imprimir w-full flex-wrap items-center gap-1.5 sm:flex sm:w-auto ${opciones ? "flex" : "hidden"}`}
-              >
-                <BotonImprimir objetivo={ref} compacto titulo="Imprimir solo este apartado">
-                  Imprimir
+              <span className="no-imprimir flex flex-wrap items-center gap-1.5">
+                <BotonImprimir
+                  objetivo={ref}
+                  compacto
+                  titulo="Imprimir este apartado o guardarlo en PDF"
+                >
+                  Imprimir / PDF
                 </BotonImprimir>
-                <BotonFavorito
-                  ruta={href("capitulo", apartado.slug)}
-                  titulo={`${apartado.n}. ${apartado.titulo}`}
-                />
-                <Escuchar apartado={apartado} />
-                <ComoCitar apartado={apartado} />
               </span>
             </div>
           </div>

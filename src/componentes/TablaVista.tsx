@@ -244,10 +244,13 @@ export function TablaVista({
   modo = "lectura",
   seleccionInicial,
   onSeleccion,
+  ayuda,
 }: {
   tabla: Tabla;
   modo?: "lectura" | "interactiva";
   seleccionInicial?: string;
+  /* Rótulo del selector de sistemas, según la tarea («Sistema que quieres consultar»). */
+  ayuda?: string;
   /* Al cambiar la selección: los sistemas («a+b») o la fila; undefined = todo. */
   onSeleccion?: (seleccion: string | undefined) => void;
 }) {
@@ -283,7 +286,7 @@ export function TablaVista({
       {interactiva && tabla.porSistema && (
         <div className="no-imprimir mb-3">
           <div className="mb-1 text-xs font-semibold text-slate-500">
-            Elige uno o varios sistemas (uno solo = ficha de lectura)
+            {ayuda ?? "Elige uno o varios sistemas (uno solo = ficha de lectura)"}
           </div>
           <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filtrar por sistema">
             {tabla.columnas.map((nombre, c) => {

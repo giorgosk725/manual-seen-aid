@@ -9,7 +9,7 @@ import {
   APARTADOS,
   TABLAS,
   algoritmoDelCapitulo,
-  apartadoDeTabla,
+  rutaDeTabla,
   fichasDelCapitulo,
   idDeBloque,
   type Bloque,
@@ -470,6 +470,7 @@ function ParametrosAutomatico({
 /* Identificador de cada sistema en las rutas de tablas, situaciones e inicio (orden de la
    Tabla 1). */
 const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
+const SLUG_CORTO = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
 
 /* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
 const SECCIONES_FICHA = [
@@ -482,9 +483,7 @@ const SECCIONES_FICHA = [
 
 /* La tabla en su sitio del capítulo (para comprobar la fuente y volver). */
 function rutaEnCapitulo(t: Tabla): string | null {
-  const ap = apartadoDeTabla(t.id);
-  const i = ap ? ap.bloques.findIndex((b) => b.t === "tabla" && b.id === t.id) : -1;
-  return ap && i >= 0 ? href("capitulo", ap.slug, idDeBloque(ap.bloques[i], i)) : null;
+  return rutaDeTabla(t.id) ?? null;
 }
 
 /* La columna de un sistema en una tabla del capítulo: filas literales, notas y página. */
@@ -590,6 +589,9 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const prev = SISTEMAS_AMPLIACION[i - 1];
   const next = SISTEMAS_AMPLIACION[i + 1];
   const situacionesT4 = SITUACIONES.filter((x) => x.tabla === "T4");
+  // Con una sección en la ruta se enseña solo esa (la ficha entera son más de diez pantallas
+  // en el móvil); sin sección, la ficha completa.
+  const ver = (id: string) => !seccion || seccion === id;
   return (
     <div ref={ref} className="imprimible">
       <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
@@ -623,7 +625,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           </p>
           <div className="no-imprimir mt-2 flex flex-wrap gap-x-3 gap-y-1">
             <a
-              href={href("consultar", "tablas", `T1:${slug}`)}
+              href={href("consultar", "comparar", slug)}
               className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
               style={{ color: h.ink }}
             >
@@ -660,6 +662,15 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             {x.t}
           </a>
         ))}
+        {seccion && (
+          <a
+            href={href("sistemas", s.id)}
+            className="inline-flex min-h-9 shrink-0 items-center rounded-full border border-dashed px-3 text-sm font-semibold text-slate-600 hover:border-slate-500"
+            style={{ borderColor: "#d4d4d4" }}
+          >
+            Ficha completa
+          </a>
+        )}
         <span className="ml-auto flex shrink-0 items-center gap-1.5">
           <BotonImprimir objetivo={ref} compacto>
             Imprimir la ficha
@@ -668,7 +679,29 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         </span>
       </nav>
 
-      <section aria-labelledby="esencial" className="scroll-mt-20">
+      {seccion && (
+        <nav
+          aria-label="Otro sistema, misma sección"
+          className="no-imprimir mb-4 flex flex-wrap gap-1.5"
+        >
+          {SISTEMAS_AMPLIACION.map((x, c) => (
+            <a
+              key={x.id}
+              href={href("sistemas", x.id, seccion)}
+              aria-current={x.id === s.id ? "page" : undefined}
+              className={`inline-flex min-h-9 items-center rounded-full border px-3 text-xs font-bold transition ${x.id === s.id ? "text-white" : "bg-white hover:border-slate-500"}`}
+              style={
+                x.id === s.id
+                  ? { background: SISTEMA_HEX[c].ink, borderColor: SISTEMA_HEX[c].ink }
+                  : { borderColor: `${SISTEMA_HEX[c].strong}80`, color: SISTEMA_HEX[c].ink }
+              }
+            >
+              {SLUG_CORTO[c]}
+            </a>
+          ))}
+        </nav>
+      )}
+      <section aria-labelledby="esencial" className="scroll-mt-20" hidden={!ver("esencial")}>
         <TituloSeccion id="esencial" sistema={s.name} color={h.ink}>
           Lo esencial
         </TituloSeccion>
@@ -691,9 +724,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           }
           pie={
             <>
-              <EnlacePie ruta={href("consultar", "tablas", `T1:${slug}`)}>
-                Comparar en la Tabla 1
-              </EnlacePie>
+              <EnlacePie ruta={href("consultar", "comparar", slug)}>Comparar sistemas</EnlacePie>
               <a
                 href={WEB_SISTEMA[s.id]}
                 target="_blank"
@@ -707,7 +738,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         />
       </section>
 
-      <section aria-labelledby="funciona" className="mt-7 scroll-mt-20">
+      <section aria-labelledby="funciona" className="mt-7 scroll-mt-20" hidden={!ver("funciona")}>
         <TituloSeccion id="funciona" sistema={s.name} color={h.ink}>
           Cómo funciona
         </TituloSeccion>
@@ -740,7 +771,11 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         </ol>
       </section>
 
-      <section aria-labelledby="parametros" className="mt-7 scroll-mt-20">
+      <section
+        aria-labelledby="parametros"
+        className="mt-7 scroll-mt-20"
+        hidden={!ver("parametros")}
+      >
         <TituloSeccion id="parametros" sistema={s.name} color={h.ink}>
           Parámetros
         </TituloSeccion>
@@ -762,7 +797,11 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         </div>
       </section>
 
-      <section aria-labelledby="situaciones" className="mt-7 scroll-mt-20">
+      <section
+        aria-labelledby="situaciones"
+        className="mt-7 scroll-mt-20"
+        hidden={!ver("situaciones")}
+      >
         <TituloSeccion id="situaciones" sistema={s.name} color={h.ink}>
           Situaciones
         </TituloSeccion>
@@ -820,7 +859,11 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         )}
       </section>
 
-      <section aria-label="Más del capítulo sobre este sistema" className="mt-7 space-y-3">
+      <section
+        aria-label="Más del capítulo sobre este sistema"
+        className="mt-7 space-y-3"
+        hidden={!!seccion}
+      >
         <Foldable title="Párrafos del capítulo que lo nombran" count={parrafos.length}>
           <ol className="space-y-3">
             {parrafos.map((p) => (
@@ -845,7 +888,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         )}
       </section>
 
-      <Ampliacion s={s} />
+      {ver("ampliacion") && <Ampliacion s={s} />}
 
       <ToneCard tone="slate" className="mt-6">
         <p className="text-xs text-slate-600">

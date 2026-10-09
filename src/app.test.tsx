@@ -27,15 +27,13 @@ const AXE = {
 };
 
 describe("App", () => {
-  it("la portada muestra el título del capítulo, el autor y la SEEN", () => {
+  it("la portada muestra el título completo del capítulo y el autor, sin la Sociedad", () => {
     render(<App />);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      /automatización de la insulinoterapia/i,
+      /Tratamiento insulínico del paciente con diabetes mellitus tipo 1: automatización de la insulinoterapia/i,
     );
     expect(screen.getAllByText(/Georgios Kyriakos/).length).toBeGreaterThan(0);
-    expect(
-      screen.getAllByText(/Sociedad Española de Endocrinología y Nutrición/).length,
-    ).toBeGreaterThan(0);
+    expect(screen.queryByText(/Sociedad Española de Endocrinología y Nutrición/)).toBeNull();
   });
 
   it("un apartado muestra su texto íntegro, la página de origen y la tabla", async () => {
@@ -112,10 +110,12 @@ describe("App", () => {
     expect(screen.getAllByText(/Función Actividad/).length).toBeGreaterThan(0);
   });
 
-  it("la versión extendida va plegada, rotulada y aparte del texto del capítulo", async () => {
+  it("la versión extendida no está en la lectura: va aparte, plegada y rotulada", async () => {
     render(<App />);
     await ir("#/capitulo/12-horizonte");
-    const capa = screen.getByText("Versión extendida · no publicada en el Manual");
+    expect(screen.queryByText("Versión extendida · no publicada en el Manual")).toBeNull();
+    await ir("#/extendida");
+    const capa = screen.getAllByText("Versión extendida · no publicada en el Manual")[0];
     const det = capa.closest("details")!;
     expect(det).not.toHaveAttribute("open");
     expect(within(det).getAllByText(/Borrador V85 limpio · 31-5-2026/).length).toBeGreaterThan(0);
