@@ -222,6 +222,16 @@ export const DESTINOS: Destino[] = [
     descripcion: "Qué es, de dónde sale el texto, alcance y datos, y la guía rápida.",
   },
   {
+    id: "casos",
+    etiqueta: "Casos guiados",
+    corto: "Casos",
+    href: href("casos"),
+    icono: ClipboardCheck,
+    cat: "aprender",
+    descripcion:
+      "Casos para practicar con el texto del capítulo, paso a paso: cada respuesta se apoya en frases literales con su página.",
+  },
+  {
     id: "test",
     etiqueta: "Autoevaluación",
     corto: "Test",
@@ -261,6 +271,7 @@ const AREA_DE_SECCION: Record<string, Area> = {
   capitulo: "leer",
   repaso: "leer",
   test: "leer",
+  casos: "leer",
   buscar: "buscar",
   mas: "mas",
   pacientes: "mas",

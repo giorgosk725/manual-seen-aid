@@ -222,6 +222,15 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     Any explanatory text written by the app (guías de lectura, ejemplos comentados, casos)
     needs the author's approval first and stays out of the public repo until then, like the
     frequent questions and the guided cases of 4-10-2026.
+28. **Drafts and review builds.** Content awaiting the author's approval lives OUTSIDE the
+    repository: `src/casos-borrador/*.json` (gitignored) feeds the guided cases screen
+    (`src/casos.ts`, `pantallas/Casos.tsx`); without the folder the app has no cases and does
+    not offer them. While that folder exists, `npm run build` REFUSES to build (`scripts/guardia-borradores.mjs`, run by `npm run build`),
+    so a production deploy can never ship drafts; the review copy is built with
+    `npm run build:revision` (REVISION=1 → `dist-revision/`) and deployed to the Pages branch
+    `prueba`. With drafts present, run the e2e suite as `REVISION=1 npm run test:e2e`. Once
+    the author approves, the data moves into `src/casos/` and enters the repo with the
+    author's decisions recorded in the changelog.
 
 ## 2. Quality gates (all must pass before a push)
 

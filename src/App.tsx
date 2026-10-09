@@ -34,6 +34,9 @@ const Mas = lazy(() => otras().then((m) => ({ default: m.Mas })));
 const Sobre = lazy(() => otras().then((m) => ({ default: m.Sobre })));
 const Test = lazy(() => otras().then((m) => ({ default: m.Test })));
 
+const casos = () => import("./pantallas/Casos");
+const Casos = lazy(() => casos().then((m) => ({ default: m.Casos })));
+
 const repaso = () => import("./pantallas/Repaso");
 const Repaso = lazy(() => repaso().then((m) => ({ default: m.Repaso })));
 
@@ -227,6 +230,10 @@ export default function App() {
     case "mas":
       pantalla = <Mas />;
       titulo = "Más";
+      break;
+    case "casos":
+      pantalla = <Casos id={ruta.sub} />;
+      titulo = "Casos guiados";
       break;
     default:
       pantalla = <NoEncontrada />;

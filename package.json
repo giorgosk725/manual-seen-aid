@@ -6,7 +6,8 @@
   "description": "Manual SEEN · AID — el capítulo «Tratamiento insulínico del paciente con diabetes mellitus tipo 1: automatización de la insulinoterapia», hecho usable. Educativo; no es producto sanitario.",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "node scripts/guardia-borradores.mjs && tsc -b && vite build",
+    "build:revision": "node scripts/build-revision.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

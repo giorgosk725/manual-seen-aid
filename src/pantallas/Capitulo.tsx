@@ -10,6 +10,7 @@ import { BotonImprimir, CabeceraEditorial, Revelar } from "../ui";
 import { CATEGORIA_HEX, colorApartado, SEEN } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
 import { useLeidos, useUltimo } from "../prefs";
+import { HAY_CASOS } from "../casos-hay";
 
 function IconoApartado({ slug }: { slug: string }) {
   const I = ICONO_APARTADO[slug] ?? BookOpen;
@@ -29,6 +30,11 @@ const COMPRENDER = [
     s: "Las figuras con zoom y los diagramas hechos con frases del capítulo, con su página.",
   },
   {
+    id: "casos",
+    t: "Casos guiados",
+    s: "Practicar con el texto del capítulo, paso a paso, con las frases literales y su página.",
+  },
+  {
     id: "repaso",
     t: "Tarjetas de repaso",
     s: "Las cifras y las siglas del capítulo, con repaso espaciado en este dispositivo.",
@@ -38,7 +44,7 @@ const COMPRENDER = [
     t: "Autoevaluación",
     s: "Diez preguntas con la respuesta razonada y su página (pendientes de validación).",
   },
-];
+].filter((c) => c.id !== "casos" || HAY_CASOS);
 
 export function IndiceCapitulo() {
   const leidos = useLeidos();
