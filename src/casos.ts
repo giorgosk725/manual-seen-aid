@@ -1,8 +1,8 @@
-/* Casos guiados: datos y tipos. Los casos (escenario, pasos con opciones, comentario y citas
-   literales del capítulo con su página) son contenido escrito por la app y necesitan la
-   aprobación del autor: hasta entonces viven en `src/casos-borrador/*.json`, fuera del
-   repositorio (.gitignore), y solo entran en las copias de revisión. Sin archivo, no hay
-   casos y la app no los ofrece. Cuando se aprueben, el archivo pasa a `src/casos/`. */
+/* Casos guiados: datos y tipos. Los casos (escenario ficticio, pasos con opciones, comentario
+   y citas literales del capítulo con su página) viven en `src/casos/*.json`: los tres del
+   4-10-2026, aprobados el 9-10-2026 (casos.test.tsx comprueba que cada cita es literal y está
+   en su página). Un caso nuevo es contenido escrito por la app: va en `src/casos-borrador/`
+   (fuera del repositorio) y solo en copias de revisión hasta que se apruebe (AGENTS 28). */
 
 export interface CitaCaso {
   /* Texto literal del capítulo. */
@@ -41,7 +41,7 @@ export interface Caso {
   cierre: { texto: string; citas: CitaCaso[] };
 }
 
-const modulos = import.meta.glob<Caso[]>("./casos-borrador/*.json", {
+const modulos = import.meta.glob<Caso[]>(["./casos/*.json", "./casos-borrador/*.json"], {
   eager: true,
   import: "default",
 });

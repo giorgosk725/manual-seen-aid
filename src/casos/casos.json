@@ -1,0 +1,895 @@
+[
+  {
+    "id": "hiperglucemia-pod",
+    "titulo": "Hiperglucemia que no baja",
+    "sistema": "Omnipod 5",
+    "temas": "Figura 3 · hiperglucemia persistente, cetonemia, fallo de infusión",
+    "paginas": "pp. 8-9",
+    "escenario": "Laura, 34 años, con DM1, lleva Omnipod 5 en modo automático. A media tarde, la glucosa del sensor está en 285 mg/dl desde hace unas dos horas y media. Hace una hora se puso un bolo de corrección con el sistema y la glucosa no ha bajado. Se encuentra bien y no tiene vómitos.",
+    "pasos": [
+      {
+        "situacion": "",
+        "pregunta": "¿Qué haces primero?",
+        "opciones": [
+          {
+            "texto": "Otro bolo de corrección con el sistema, algo mayor.",
+            "tipo": "no",
+            "comentario": "Glucosa ≥250 mg/dl más de 2 h y que no baja tras una corrección: es justo lo que la Figura 3 manda sospechar como fallo de infusión o cetosis. Antes de corregir de nuevo hay que confirmar y medir.",
+            "citas": [
+              {
+                "t": "Glucosa del sensor ≥250 mg/dl persistente ≥2 h.",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "Glucosa que no desciende tras una corrección.",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "toda hiperglucemia persistente sin causa clara debe hacer sospechar fallo de infusión hasta demostrar lo contrario",
+                "p": 9,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Confirmar con glucemia capilar, medir la cetonemia (β-OHB) y revisar la zona de inserción, el pod y la insulina.",
+            "tipo": "si",
+            "comentario": "Es el primer paso de la Figura 3 y la regla de oro del plan de seguridad.",
+            "citas": [
+              {
+                "t": "Confirmar glucemia capilar y medir cetonemia (β-OHB)",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "Zona de inserción y adhesivo.",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "Reservorio/pod e insulina.",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "REGLA DE ORO: ante hiperglucemia persistente sin causa clara, medir cetonas y cambiar el set/pod.",
+                "p": 8,
+                "f": "Figura 3"
+              }
+            ]
+          },
+          {
+            "texto": "Esperar una hora más: el algoritmo irá subiendo la insulina.",
+            "tipo": "no",
+            "comentario": "Esperar retrasa lo que la figura pide hacer ya: medir cetonas y cambiar el pod.",
+            "citas": [
+              {
+                "t": "REGLA DE ORO: ante hiperglucemia persistente sin causa clara, medir cetonas y cambiar el set/pod.",
+                "p": 8,
+                "f": "Figura 3"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Glucemia capilar: 290 mg/dl. β-OHB: 1,3 mmol/l. El pod no muestra alarmas.",
+        "pregunta": "¿En qué tramo de la Figura 3 está y qué haces con la insulina?",
+        "opciones": [
+          {
+            "texto": "Tramo naranja: insulina rápida con pluma según su plan individual, y cambiar el pod, la insulina y la zona de inserción.",
+            "tipo": "si",
+            "comentario": "1,3 mmol/l está en el tramo de 1,0 a 2,9. La insulina va con pluma, no por el pod del que se sospecha. Si no hay plan específico, la figura da una dosis orientativa con asterisco.",
+            "citas": [
+              {
+                "t": "β-OHB 1,0-2,9 mmol/l",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "Cetosis significativa / probable fallo de infusión",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "Administrar insulina rápida con PLUMA según plan individual.",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "Si no existe plan específico: 0,1 UI/kg* de insulina rápida.",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "Cambiar set/pod, reservorio (si aplica), insulina y zona de inserción.",
+                "p": 8,
+                "f": "Figura 3"
+              }
+            ],
+            "asterisco": true
+          },
+          {
+            "texto": "Tramo amarillo: corrección habitual con el calculador del sistema.",
+            "tipo": "no",
+            "comentario": "El tramo amarillo es de 0,6 a 0,9 mmol/l. Con 1,3 mmol/l se está en el naranja: cetosis significativa y probable fallo de infusión.",
+            "citas": [
+              {
+                "t": "β-OHB 0,6-0,9 mmol/l",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "β-OHB 1,0-2,9 mmol/l",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "Cetosis significativa / probable fallo de infusión",
+                "p": 8,
+                "f": "Figura 3"
+              }
+            ]
+          },
+          {
+            "texto": "Tramo naranja: bolo de corrección por el mismo pod y vigilar.",
+            "tipo": "no",
+            "comentario": "El tramo es el correcto, pero la figura pide la insulina con pluma y el cambio de pod.",
+            "citas": [
+              {
+                "t": "Administrar insulina rápida con PLUMA según plan individual.",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "Cambiar set/pod, reservorio (si aplica), insulina y zona de inserción.",
+                "p": 8,
+                "f": "Figura 3"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Ya ha puesto la insulina con pluma y ha cambiado el pod. La glucemia sigue en 290 mg/dl.",
+        "pregunta": "¿Qué bebe mientras tanto?",
+        "opciones": [
+          {
+            "texto": "Agua u otros líquidos sin hidratos.",
+            "tipo": "si",
+            "comentario": "Con la glucemia elevada, líquidos sin hidratos.",
+            "citas": [
+              {
+                "t": "Hidratación según glucemia:",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "Si la glucemia está elevada: líquidos sin hidratos.",
+                "p": 8,
+                "f": "Figura 3"
+              }
+            ]
+          },
+          {
+            "texto": "Zumo o una bebida azucarada, para poder ponerse insulina.",
+            "tipo": "no",
+            "comentario": "Los líquidos azucarados son para cuando la glucemia es baja o está bajando. Ahora está en 290 mg/dl.",
+            "citas": [
+              {
+                "t": "Si la glucemia es baja o está en descenso: aportar hidratos de carbono (líquidos azucarados) para permitir la insulinización sin inducir hipoglucemia.",
+                "p": 8,
+                "f": "Figura 3"
+              }
+            ]
+          },
+          {
+            "texto": "Nada hasta la siguiente medición.",
+            "tipo": "no",
+            "comentario": "La hidratación es uno de los pasos del tramo naranja.",
+            "citas": [
+              {
+                "t": "Hidratación según glucemia:",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "Si la glucemia está elevada: líquidos sin hidratos.",
+                "p": 8,
+                "f": "Figura 3"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Una hora y media después de la dosis: glucemia 265 mg/dl y β-OHB 1,4 mmol/l. Sigue sin vómitos ni dolor abdominal.",
+        "pregunta": "¿Y ahora?",
+        "opciones": [
+          {
+            "texto": "Una segunda dosis con pluma ya, porque no ha mejorado.",
+            "tipo": "no",
+            "comentario": "Todavía no han pasado 2 h desde la dosis anterior.",
+            "citas": [
+              {
+                "t": "Si la glucemia no desciende, la cetonemia se mantiene o aumenta, valorar una nueva dosis según el plan o protocolo, nunca antes de 2 h desde la dosis anterior.",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "Evitar nuevas correcciones antes de 2 h, salvo pauta individualizada.",
+                "p": 8,
+                "f": "Figura 3"
+              }
+            ]
+          },
+          {
+            "texto": "Esperar a que se cumplan 2 h desde la dosis y, si sigue igual, valorar una nueva dosis según su plan.",
+            "tipo": "si",
+            "comentario": "Reevaluar en 1-2 h y, si no mejora, nueva dosis según el plan, nunca antes de 2 h.",
+            "citas": [
+              {
+                "t": "Reevaluar glucemia y β-OHB en 1-2 h.",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "Si la glucemia no desciende, la cetonemia se mantiene o aumenta, valorar una nueva dosis según el plan o protocolo, nunca antes de 2 h desde la dosis anterior.",
+                "p": 8,
+                "f": "Figura 3"
+              }
+            ]
+          },
+          {
+            "texto": "Ir a urgencias ya.",
+            "tipo": "matiz",
+            "comentario": "La figura indica la valoración hospitalaria inmediata con β-OHB ≥3,0 mmol/l o signos de gravedad, y también si tras una segunda dosis bien administrada persiste β-OHB ≥1,0 mmol/l o no hay mejoría. Ahora no se da ninguna de las dos; si la persona o su equipo lo deciden, acudir no es un error.",
+            "citas": [
+              {
+                "t": "β-OHB ≥3,0 mmol/l o signos de gravedad",
+                "p": 8,
+                "f": "Figura 3"
+              },
+              {
+                "t": "Si tras una segunda dosis correctamente administrada persiste β-OHB ≥1,0 mmol/l o no hay mejoría: acudir a valoración hospitalaria, sin esperar a los signos de gravedad.",
+                "p": 8,
+                "f": "Figura 3"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Pasadas 2 h, se pone la segunda dosis con pluma. Dos horas después: β-OHB 1,1 mmol/l y glucemia 240 mg/dl, sin síntomas nuevos.",
+        "pregunta": "¿Qué toca?",
+        "opciones": [
+          {
+            "texto": "Una tercera dosis en casa y volver a medir.",
+            "tipo": "no",
+            "comentario": "Tras una segunda dosis bien administrada, la β-OHB sigue ≥1,0 mmol/l: la figura pide valoración hospitalaria.",
+            "citas": [
+              {
+                "t": "Si tras una segunda dosis correctamente administrada persiste β-OHB ≥1,0 mmol/l o no hay mejoría: acudir a valoración hospitalaria, sin esperar a los signos de gravedad.",
+                "p": 8,
+                "f": "Figura 3"
+              }
+            ]
+          },
+          {
+            "texto": "Acudir a valoración hospitalaria, sin esperar a que aparezcan signos de gravedad.",
+            "tipo": "si",
+            "comentario": "Es lo que indica la figura en este punto.",
+            "citas": [
+              {
+                "t": "Si tras una segunda dosis correctamente administrada persiste β-OHB ≥1,0 mmol/l o no hay mejoría: acudir a valoración hospitalaria, sin esperar a los signos de gravedad.",
+                "p": 8,
+                "f": "Figura 3"
+              }
+            ]
+          },
+          {
+            "texto": "Seguir en casa: la glucemia ha bajado.",
+            "tipo": "no",
+            "comentario": "La glucemia ha bajado, pero la cetonemia sigue por encima de 1,0 mmol/l tras la segunda dosis.",
+            "citas": [
+              {
+                "t": "Si tras una segunda dosis correctamente administrada persiste β-OHB ≥1,0 mmol/l o no hay mejoría: acudir a valoración hospitalaria, sin esperar a los signos de gravedad.",
+                "p": 8,
+                "f": "Figura 3"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "cierre": {
+      "texto": "En todo el episodio: anotar cada medición y cada dosis, y recordar que la insulina de la pluma no cuenta para el sistema.",
+      "citas": [
+        {
+          "t": "anotar hora, glucemia, β-OHB, dosis de insulina administrada y acciones realizadas (cambio de set/pod, hidratación, etc.).",
+          "p": 8,
+          "f": "Figura 3"
+        },
+        {
+          "t": "el algoritmo NO la contabiliza como insulina activa, con riesgo de apilamiento e hipoglucemia.",
+          "p": 8,
+          "f": "Figura 3"
+        },
+        {
+          "t": "Esta regla debe enseñarse en el PEET, practicarse con casos y quedar por escrito.",
+          "p": 9,
+          "f": "Texto"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ejercicio-ciq",
+    "titulo": "Salir a correr",
+    "sistema": "Tandem Control-IQ",
+    "temas": "Ejercicio aeróbico planificado · Tabla 4",
+    "paginas": "pp. 11-12 y 19",
+    "escenario": "Javier, 28 años, con DM1, usa Tandem Control-IQ en modo automático. Quiere salir a correr unos 45 minutos a las 19:00. Comió a las 14:00. A las 17:30, la glucosa del sensor está en 165 mg/dl con flecha estable.",
+    "pasos": [
+      {
+        "situacion": "",
+        "pregunta": "¿Cuál es la primera medida?",
+        "opciones": [
+          {
+            "texto": "Activar el modo ejercicio del sistema 1-2 h antes de salir.",
+            "tipo": "si",
+            "comentario": "En la actividad planificada con descenso esperado, lo primero es elevar el objetivo con la función del sistema. En Control-IQ es el modo ejercicio (Tabla 4).",
+            "citas": [
+              {
+                "t": "En la actividad planificada con descenso esperado, la primera medida es elevar el objetivo glucémico mediante el modo o el objetivo temporal del sistema, iniciado 1-2 h antes de la actividad.",
+                "p": 19,
+                "f": "Texto"
+              },
+              {
+                "t": "Modo ejercicio, rango 140–160 mg/dl; reduce o suspende la administración si predice descenso.",
+                "p": 11,
+                "f": "Tabla 4"
+              }
+            ]
+          },
+          {
+            "texto": "Reducir el bolo de la merienda un 25-33 %.",
+            "tipo": "no",
+            "comentario": "Reducir el bolo es complementario, y solo si el ejercicio cae en las 2 h siguientes a una comida rica en hidratos.",
+            "citas": [
+              {
+                "t": "Solo de forma complementaria, si el ejercicio se realiza en las 2 h siguientes a una comida rica en hidratos, se reduce además el bolo prandial en un 25-33 %.",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Desconectar la bomba mientras corre.",
+            "tipo": "no",
+            "comentario": "Para correr, el capítulo empieza por elevar el objetivo. Retirar la bomba lo plantea en deportes de contacto o acuáticos, y pide evitar desconexiones prolongadas.",
+            "citas": [
+              {
+                "t": "en deportes de contacto o actividades acuáticas puede ser necesario retirar temporalmente las bombas con catéter",
+                "p": 19,
+                "f": "Texto"
+              },
+              {
+                "t": "Cuando sea necesario interrumpir la administración de insulina, deben evitarse desconexiones prolongadas",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Ha activado el modo ejercicio a las 17:30. A las 19:00, la glucosa está en 85 mg/dl con flecha descendente.",
+        "pregunta": "¿Sale a correr?",
+        "opciones": [
+          {
+            "texto": "Sí: con el modo ejercicio activado basta.",
+            "tipo": "no",
+            "comentario": "Por debajo de 90 mg/dl, el capítulo pide hidratos y retrasar el inicio.",
+            "citas": [
+              {
+                "t": "con cifras <90 mg/dl deben administrarse hidratos de carbono y retrasar el inicio.",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Toma hidratos de carbono y retrasa el inicio.",
+            "tipo": "si",
+            "comentario": "La referencia para empezar es 126–180 mg/dl.",
+            "citas": [
+              {
+                "t": "Como referencia, se recomienda iniciar el ejercicio con una glucemia de 126–180 mg/dl; con cifras <90 mg/dl deben administrarse hidratos de carbono y retrasar el inicio.",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Sale, y toma hidratos solo si baja de 70 mg/dl.",
+            "tipo": "no",
+            "comentario": "Ya está por debajo de 90 mg/dl y bajando: hidratos y retrasar el inicio.",
+            "citas": [
+              {
+                "t": "con cifras <90 mg/dl deben administrarse hidratos de carbono y retrasar el inicio.",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Sale a las 19:30 con 140 mg/dl. A los 25 minutos de carrera, el sensor marca 120 mg/dl con flecha descendente.",
+        "pregunta": "¿Qué hace?",
+        "opciones": [
+          {
+            "texto": "Toma 10-20 g de hidratos rápidos, sin anunciarlos al sistema.",
+            "tipo": "si",
+            "comentario": "Pequeñas cantidades para prevenir el descenso, sin anunciarlas. No sustituyen al tratamiento de una hipoglucemia ya establecida.",
+            "citas": [
+              {
+                "t": "tomar pequeñas cantidades de hidratos rápidos (orientativamente 10-20 g) si la glucosa baja de unos 126 mg/dl, sin anunciarlos al sistema y habitualmente en menor cantidad que sin AID porque el algoritmo ya ha reducido la insulina.",
+                "p": 19,
+                "f": "Texto"
+              },
+              {
+                "t": "Estas cantidades se refieren a la prevención del descenso glucémico durante la actividad y no sustituyen el tratamiento de una hipoglucemia ya establecida.",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Toma 15 g y los anuncia al sistema como comida.",
+            "tipo": "no",
+            "comentario": "Los hidratos durante el ejercicio no se anuncian al sistema.",
+            "citas": [
+              {
+                "t": "tomar pequeñas cantidades de hidratos rápidos (orientativamente 10-20 g) si la glucosa baja de unos 126 mg/dl, sin anunciarlos al sistema",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Nada mientras no baje de 70 mg/dl.",
+            "tipo": "no",
+            "comentario": "La toma preventiva empieza por debajo de unos 126 mg/dl.",
+            "citas": [
+              {
+                "t": "tomar pequeñas cantidades de hidratos rápidos (orientativamente 10-20 g) si la glucosa baja de unos 126 mg/dl",
+                "p": 19,
+                "f": "Texto"
+              },
+              {
+                "t": "Conviene comprobar la glucosa del sensor a los 20–30 min y repetir la ingesta si es necesario.",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Termina de correr a las 20:15.",
+        "pregunta": "¿Qué hace con el modo ejercicio?",
+        "opciones": [
+          {
+            "texto": "Lo desactiva al terminar.",
+            "tipo": "no",
+            "comentario": "El riesgo de hipoglucemia diferida dura varias horas, sobre todo por la noche.",
+            "citas": [
+              {
+                "t": "El riesgo de hipoglucemia diferida persiste durante varias horas tras el ejercicio, en especial por la noche.",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Lo mantiene un tiempo, vigila la noche y después lo desactiva.",
+            "tipo": "si",
+            "comentario": "Mantenerlo un tiempo y vigilar la noche; superada esa ventana, desactivarlo.",
+            "citas": [
+              {
+                "t": "Por ello conviene mantener el objetivo más alto o el modo de ejercicio durante un tiempo después de la actividad y vigilar la noche siguiente; superada esa ventana, debe desactivarse para no perpetuar una hiperglucemia por un objetivo elevado mantenido de más.",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Lo deja puesto hasta el día siguiente, por si acaso.",
+            "tipo": "no",
+            "comentario": "Mantenido de más, el objetivo elevado perpetúa la hiperglucemia.",
+            "citas": [
+              {
+                "t": "superada esa ventana, debe desactivarse para no perpetuar una hiperglucemia por un objetivo elevado mantenido de más.",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Otro día, antes de salir: la glucosa lleva 2 h en 285 mg/dl. Mide la cetonemia: 1,6 mmol/l.",
+        "pregunta": "¿Puede salir a correr?",
+        "opciones": [
+          {
+            "texto": "Sí: el ejercicio le bajará la glucosa.",
+            "tipo": "no",
+            "comentario": "Con cetonemia ≥1,5 mmol/l el ejercicio se evita, sea cual sea la glucemia.",
+            "citas": [
+              {
+                "t": "el ejercicio debe evitarse con cetonemia ≥1,5 mmol/l, con independencia de la glucemia, hasta corregir la cetosis y reevaluar la situación clínica.",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "No: primero el algoritmo de la Figura 3, y nada de ejercicio hasta corregir la cetosis y reevaluar.",
+            "tipo": "si",
+            "comentario": "Por encima de 270 mg/dl se mide la cetonemia y se descarta fallo de infusión; con 1,6 mmol/l se aplica la Figura 3 y no se hace ejercicio.",
+            "citas": [
+              {
+                "t": "Si la glucemia supera 270 mg/dl, debe medirse la cetonemia y descartarse un fallo de infusión.",
+                "p": 19,
+                "f": "Texto"
+              },
+              {
+                "t": "Si la β-OHB es ≥1,0 mmol/l en contexto de hiperglucemia persistente o sospecha de fallo de infusión, debe aplicarse previamente el algoritmo de la figura 3; en cualquier caso, el ejercicio debe evitarse con cetonemia ≥1,5 mmol/l, con independencia de la glucemia, hasta corregir la cetosis y reevaluar la situación clínica.",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Sí, pero un ejercicio suave y corto.",
+            "tipo": "no",
+            "comentario": "El capítulo no hace excepciones por intensidad con cetonemia ≥1,5 mmol/l.",
+            "citas": [
+              {
+                "t": "el ejercicio debe evitarse con cetonemia ≥1,5 mmol/l, con independencia de la glucemia, hasta corregir la cetosis y reevaluar la situación clínica.",
+                "p": 19,
+                "f": "Texto"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "cierre": {
+      "texto": "Cada sistema tiene su herramienta para el ejercicio; la Tabla 4 las resume.",
+      "citas": [
+        {
+          "t": "Las herramientas específicas por sistema —objetivo temporal de MiniMed, modo ejercicio de Tandem, Función Actividad de Omnipod (objetivo 150 mg/dl) y Ease-off de CamAPS FX— y su anticipación se sintetizan en la tabla 4",
+          "p": 19,
+          "f": "Texto"
+        }
+      ]
+    }
+  },
+  {
+    "id": "cirugia-780g",
+    "titulo": "Ingreso para una cirugía larga",
+    "sistema": "MiniMed 780G",
+    "temas": "Ingreso hospitalario y cirugía · Tabla 6",
+    "paginas": "pp. 20-22",
+    "escenario": "Carmen, 61 años, con DM1, usa MiniMed 780G en modo automático y lo maneja sola. Ingresa para una cirugía programada de cadera: se prevé una intervención larga y más de una comida omitida.",
+    "pasos": [
+      {
+        "situacion": "",
+        "pregunta": "Durante la cirugía, ¿qué se hace con el sistema?",
+        "opciones": [
+          {
+            "texto": "Mantener el AID en modo automático, con el set fuera del campo quirúrgico.",
+            "tipo": "no",
+            "comentario": "Eso es para la cirugía corta (no más de una comida omitida) en una persona estable.",
+            "citas": [
+              {
+                "t": "Cirugía corta (≤ 1 comida omitida), persona estable",
+                "p": 21,
+                "f": "Tabla 6"
+              },
+              {
+                "t": "En procedimientos quirúrgicos cortos —orientativamente, aquellos que no ocasionan más de una comida omitida— puede mantenerse la bomba o el AID, incluido el modo automático, si la situación clínica lo permite y existe un protocolo institucional.",
+                "p": 21,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Suspender la bomba y pasar a insulina intravenosa, sin interrumpir la cobertura insulínica.",
+            "tipo": "si",
+            "comentario": "Intervención prolongada o compleja: transición a perfusión intravenosa.",
+            "citas": [
+              {
+                "t": "Cirugía prolongada o compleja, o inestabilidad clínica",
+                "p": 21,
+                "f": "Tabla 6"
+              },
+              {
+                "t": "Suspender la bomba/AID y realizar transición a insulina intravenosa sin interrumpir la cobertura insulínica.",
+                "p": 21,
+                "f": "Tabla 6"
+              },
+              {
+                "t": "En intervenciones más prolongadas o complejas, con riesgo de prolongación del procedimiento, debe realizarse transición a perfusión intravenosa de insulina (v. Tabla 6).",
+                "p": 21,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Retirar la bomba la noche antes y no poner insulina hasta después de la cirugía.",
+            "tipo": "no",
+            "comentario": "La cobertura insulínica no se interrumpe; una retirada de más de 1 h exige la pauta alternativa.",
+            "citas": [
+              {
+                "t": "Suspender la bomba/AID y realizar transición a insulina intravenosa sin interrumpir la cobertura insulínica.",
+                "p": 21,
+                "f": "Tabla 6"
+              },
+              {
+                "t": "Si la retirada de la bomba o del pod se prolonga o se prevé que se prolongue más de aproximadamente 1 h, debe aplicarse la pauta prevista en «Interrupción del sistema y pauta alternativa»",
+                "p": 21,
+                "f": "Tabla 6"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Tras la cirugía está estable y ya come. Se decide volver al sistema desde la perfusión intravenosa.",
+        "pregunta": "¿Cómo se hace el paso?",
+        "opciones": [
+          {
+            "texto": "Parar la perfusión y, después, reanudar el sistema.",
+            "tipo": "no",
+            "comentario": "Las dos vías se solapan: así no queda un vacío de insulina.",
+            "citas": [
+              {
+                "t": "Para volver al sistema desde insulina intravenosa, una vez recuperada la estabilidad clínica, reanudar el sistema y mantener ambas vías en paralelo aproximadamente 60 min antes de suspender la perfusión, de acuerdo con el protocolo de transición utilizado.",
+                "p": 21,
+                "f": "Tabla 6"
+              }
+            ]
+          },
+          {
+            "texto": "Reanudar el sistema y mantener las dos vías en paralelo unos 60 min antes de suspender la perfusión, según el protocolo del centro.",
+            "tipo": "si",
+            "comentario": "Es lo que indica la nota de la Tabla 6.",
+            "citas": [
+              {
+                "t": "Para volver al sistema desde insulina intravenosa, una vez recuperada la estabilidad clínica, reanudar el sistema y mantener ambas vías en paralelo aproximadamente 60 min antes de suspender la perfusión, de acuerdo con el protocolo de transición utilizado.",
+                "p": 21,
+                "f": "Tabla 6"
+              }
+            ]
+          },
+          {
+            "texto": "Mantener la perfusión 24 h más con el sistema puesto.",
+            "tipo": "no",
+            "comentario": "El solapamiento que da la tabla es de unos 60 min.",
+            "citas": [
+              {
+                "t": "mantener ambas vías en paralelo aproximadamente 60 min antes de suspender la perfusión",
+                "p": 21,
+                "f": "Tabla 6"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "En planta, con un sensor que se colocó esta mañana, la MCG marca 65 mg/dl y la glucemia capilar, 98 mg/dl.",
+        "pregunta": "¿Qué valor orienta la decisión?",
+        "opciones": [
+          {
+            "texto": "La capilar (98 mg/dl): el sensor es nuevo.",
+            "tipo": "no",
+            "comentario": "Ante una discrepancia, el capítulo pide usar el valor más bajo.",
+            "citas": [
+              {
+                "t": "Ante discrepancias entre MCG y glucemia capilar, debe utilizarse el valor más bajo para orientar las decisiones clínicas y minimizar el riesgo de hipoglucemia",
+                "p": 21,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "El más bajo (65 mg/dl); si la discrepancia persiste, plantear cambiar o suspender el sensor.",
+            "tipo": "si",
+            "comentario": "Primeras 24 h de un sensor nuevo: se confirma con capilar; ante discrepancia, manda el valor más bajo.",
+            "citas": [
+              {
+                "t": "Debe confirmarse con glucemia capilar durante las primeras 24 h tras la inserción de un nuevo sensor y cuando exista discordancia con la situación clínica, valores extremos o sospecha de interferencia.",
+                "p": 21,
+                "f": "Texto"
+              },
+              {
+                "t": "Ante discrepancias entre MCG y glucemia capilar, debe utilizarse el valor más bajo para orientar las decisiones clínicas y minimizar el riesgo de hipoglucemia; si las discrepancias clínicamente relevantes persisten, debe plantearse la sustitución o suspensión del sensor.",
+                "p": 21,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "La media de los dos valores.",
+            "tipo": "no",
+            "comentario": "El capítulo no promedia: usa el valor más bajo.",
+            "citas": [
+              {
+                "t": "debe utilizarse el valor más bajo para orientar las decisiones clínicas y minimizar el riesgo de hipoglucemia",
+                "p": 21,
+                "f": "Texto"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Al tercer día, una infección la deja somnolienta y confusa: no puede manejar el sistema.",
+        "pregunta": "¿Sigue con el AID?",
+        "opciones": [
+          {
+            "texto": "Sí, en modo automático: el sistema se ajusta solo.",
+            "tipo": "no",
+            "comentario": "La alteración del nivel de conciencia que impide el autocuidado es una de las situaciones en que no se continúa.",
+            "citas": [
+              {
+                "t": "La continuación del sistema no es apropiada cuando la persona o el equipo asistencial no pueden manejarlo con seguridad, existe alteración del nivel de conciencia que impide el autocuidado —excluida la anestesia—",
+                "p": 20,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "No: se establece una pauta alternativa, sin interrumpir la cobertura insulínica.",
+            "tipo": "si",
+            "comentario": "Es lo que indica el capítulo para estas situaciones.",
+            "citas": [
+              {
+                "t": "La continuación del sistema no es apropiada cuando la persona o el equipo asistencial no pueden manejarlo con seguridad, existe alteración del nivel de conciencia que impide el autocuidado —excluida la anestesia—",
+                "p": 20,
+                "f": "Texto"
+              },
+              {
+                "t": "En estos casos debe establecerse una pauta alternativa sin interrupción de la cobertura insulínica.",
+                "p": 20,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Retirar el sistema y esperar a que mejore para decidir la insulina.",
+            "tipo": "no",
+            "comentario": "La pauta alternativa empieza sin dejar huecos de insulina.",
+            "citas": [
+              {
+                "t": "En estos casos debe establecerse una pauta alternativa sin interrupción de la cobertura insulínica.",
+                "p": 20,
+                "f": "Texto"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Otro supuesto: en planta va a faltar material del sistema, y el equipo programa el paso a una pauta subcutánea con insulina basal.",
+        "pregunta": "¿Cuándo se pone la primera dosis de basal?",
+        "opciones": [
+          {
+            "texto": "Unas 2 h antes de suspender la bomba.",
+            "tipo": "si",
+            "comentario": "Así no queda un vacío de insulinización.",
+            "citas": [
+              {
+                "t": "falta de material necesario",
+                "p": 20,
+                "f": "Texto"
+              },
+              {
+                "t": "Si la transición desde bomba/AID a una pauta subcutánea está programada, la insulina basal debe administrarse aproximadamente 2 h antes de suspender la bomba.",
+                "p": 20,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Justo al retirar la bomba.",
+            "tipo": "no",
+            "comentario": "La basal se adelanta unas 2 h.",
+            "citas": [
+              {
+                "t": "la insulina basal debe administrarse aproximadamente 2 h antes de suspender la bomba.",
+                "p": 20,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "A la mañana siguiente, en ayunas.",
+            "tipo": "no",
+            "comentario": "La basal se adelanta unas 2 h a la suspensión de la bomba.",
+            "citas": [
+              {
+                "t": "la insulina basal debe administrarse aproximadamente 2 h antes de suspender la bomba.",
+                "p": 20,
+                "f": "Texto"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "situacion": "Vuelve a haber material y no hay contraindicaciones. Su última dosis fue de una basal de duración cercana a 24 h.",
+        "pregunta": "¿Cuándo puede reanudarse el AID?",
+        "opciones": [
+          {
+            "texto": "En cuanto se encuentre bien, aunque acabe de ponerse la basal.",
+            "tipo": "no",
+            "comentario": "Hay que esperar a que disminuya el efecto de la basal, para no superponer insulina.",
+            "citas": [
+              {
+                "t": "La bomba o el AID pueden reanudarse cuando hayan desaparecido las contraindicaciones y el efecto de la insulina basal administrada haya disminuido suficientemente",
+                "p": 20,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "Cuando el efecto de la basal haya disminuido: orientativamente, unas 22 h tras la última dosis.",
+            "tipo": "si",
+            "comentario": "Orientativo e individualizado según el preparado.",
+            "citas": [
+              {
+                "t": "La bomba o el AID pueden reanudarse cuando hayan desaparecido las contraindicaciones y el efecto de la insulina basal administrada haya disminuido suficientemente; como orientación, unas 22 h tras la última dosis de una basal de duración cercana a 24 h, individualizando según el preparado utilizado.",
+                "p": 20,
+                "f": "Texto"
+              }
+            ]
+          },
+          {
+            "texto": "A las 48 h de la última basal.",
+            "tipo": "no",
+            "comentario": "La orientación del capítulo es de unas 22 h.",
+            "citas": [
+              {
+                "t": "como orientación, unas 22 h tras la última dosis de una basal de duración cercana a 24 h, individualizando según el preparado utilizado.",
+                "p": 20,
+                "f": "Texto"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "cierre": {
+      "texto": "Estas pautas son para adultos hospitalizados no críticos, y el plan de contingencia debe estar previsto desde el ingreso.",
+      "citas": [
+        {
+          "t": "Las recomendaciones siguientes se refieren a adultos hospitalizados no críticos y no deben extrapolarse directamente a población pediátrica.",
+          "p": 20,
+          "f": "Texto"
+        },
+        {
+          "t": "La hospitalización debe contemplar además un plan de contingencia ante la retirada inesperada del sistema y su reintroducción una vez recuperadas las condiciones de seguridad, siempre que sea posible antes del alta.",
+          "p": 21,
+          "f": "Texto"
+        }
+      ]
+    }
+  }
+]

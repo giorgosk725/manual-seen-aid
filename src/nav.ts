@@ -299,7 +299,7 @@ export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
       "visual",
     ],
   },
-  { area: "leer", titulo: "Leer y comprender", ids: ["capitulo", "repaso", "test"] },
+  { area: "leer", titulo: "Leer y comprender", ids: ["capitulo", "casos", "repaso", "test"] },
   {
     area: "mas",
     titulo: "Más recursos",

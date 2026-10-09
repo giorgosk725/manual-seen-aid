@@ -343,15 +343,12 @@ function Cierre({ caso }: { caso: Caso }) {
   );
 }
 
-function AvisoBorrador() {
+function Nota() {
   return (
-    <ToneCard tone="amber" title="Borrador en revisión">
-      <p className="text-sm text-slate-800">
-        Los escenarios, las opciones y los comentarios son de la app y no están publicados; cada
-        respuesta se apoya en frases literales del capítulo con su página. Las personas son
-        ficticias; no hay dosis calculadas.
-      </p>
-    </ToneCard>
+    <p className="text-xs text-slate-600">
+      Personas ficticias y sin dosis calculadas. Cada respuesta se apoya en frases literales del
+      capítulo, con su página; los escenarios y los comentarios son de la app.
+    </p>
   );
 }
 
@@ -388,7 +385,7 @@ export function Casos({ id }: { id?: string }) {
             {caso.sistema} · {caso.temas} · {caso.paginas}
           </p>
         </CabeceraEditorial>
-        <AvisoBorrador />
+        <Nota />
         <CasoVista key={caso.id} caso={caso} />
       </div>
     );
@@ -400,7 +397,7 @@ export function Casos({ id }: { id?: string }) {
           si es lo que indica el capítulo, con las frases literales en las que se apoya.
         </p>
       </CabeceraEditorial>
-      <AvisoBorrador />
+      <Nota />
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {CASOS.map((c) => (
           <li key={c.id}>

@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.15.0";
+export const VERSION_APP = "0.16.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-09",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — navegación más clara, portada compacta, fichas por secciones y siglas pulsables`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — casos guiados`,
+    detalle: [
+      "Tres casos guiados para practicar con el texto del capítulo, en «Leer y comprender» y en el menú: «Hiperglucemia que no baja» (Omnipod 5, Figura 3), «Salir a correr» (Control-IQ, Tabla 4 y ejercicio) e «Ingreso para una cirugía larga» (MiniMed 780G, Tabla 6 y hospitalización). En cada paso se elige una opción y se ve si es lo que indica el capítulo, con un comentario y las frases literales en las que se apoya, cada una con su página y su enlace; «Ver todo» enseña el caso entero.",
+      "Los escenarios son ficticios, sin dosis calculadas ni datos reales; las 83 citas se comprueban contra el texto publicado en cada prueba del proyecto.",
+    ],
+  },
+  {
+    fecha: "2026-10-09",
+    ambito: "app",
+    titulo:
+      "Manual SEEN · AID 0.15.0 — navegación más clara, portada compacta, fichas por secciones y siglas pulsables",
     detalle: [
       "Portada compacta: el título breve, qué permite hacer, las dos entradas (Consultar y Leer y comprender), el buscador, seguir leyendo, seis consultas frecuentes y los favoritos. En el móvil pasa de casi siete pantallas a menos de dos; el índice, los diagramas, los sistemas y el repaso siguen en su sitio.",
       "Barra inferior del móvil: Inicio · Consultar · Leer · Buscar · Más, con el área de cada pantalla marcada desde un único sitio (las fichas de sistema y las figuras cuentan como Consultar; el repaso y el test, como Leer). La barra lateral del escritorio queda en Inicio y tres grupos (Consultar, Leer y comprender con «seguir leyendo», y Más recursos), y la búsqueda pasa a la cabecera. El botón de menú del móvil abre el mismo menú.",

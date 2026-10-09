@@ -222,15 +222,14 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     Any explanatory text written by the app (guías de lectura, ejemplos comentados, casos)
     needs the author's approval first and stays out of the public repo until then, like the
     frequent questions and the guided cases of 4-10-2026.
-28. **Drafts and review builds.** Content awaiting the author's approval lives OUTSIDE the
-    repository: `src/casos-borrador/*.json` (gitignored) feeds the guided cases screen
-    (`src/casos.ts`, `pantallas/Casos.tsx`); without the folder the app has no cases and does
-    not offer them. While that folder exists, `npm run build` REFUSES to build (`scripts/guardia-borradores.mjs`, run by `npm run build`),
-    so a production deploy can never ship drafts; the review copy is built with
-    `npm run build:revision` (REVISION=1 → `dist-revision/`) and deployed to the Pages branch
-    `prueba`. With drafts present, run the e2e suite as `REVISION=1 npm run test:e2e`. Once
-    the author approves, the data moves into `src/casos/` and enters the repo with the
-    author's decisions recorded in the changelog.
+28. **Guided cases, drafts and review builds (0.16.0).** Approved cases live in
+    `src/casos/*.json` (three, approved by the author on 9-10-2026; `casos.test.tsx` checks
+    every citation is literal and on its page). Any NEW case or other content written by the
+    app goes to `src/casos-borrador/` (gitignored) and is shown only in review copies: while
+    that folder exists `npm run build` REFUSES to build (`scripts/guardia-borradores.mjs`),
+    `npm run build:revision` (REVISION=1 → `dist-revision/`) builds the review copy for the
+    Pages branch `prueba`, and the e2e suite runs as `REVISION=1 npm run test:e2e`. Once the
+    author approves, the file moves into `src/casos/` with a changelog entry.
 
 ## 2. Quality gates (all must pass before a push)
 

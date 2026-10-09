@@ -40,4 +40,21 @@ test.describe("Comprensión", () => {
       page.getByRole("heading", { level: 2, name: /^Parámetros · Omnipod 5/ }),
     ).toBeInViewport();
   });
+
+  test("un caso guiado: elegir enseña el veredicto, el comentario y las citas con enlace", async ({
+    page,
+  }) => {
+    await page.goto("/#/casos/hiperglucemia-pod");
+    await expect(page.getByText("Paso 1 de 5")).toBeVisible();
+    await page.getByRole("button", { name: /Otro bolo de corrección/ }).click();
+    const respuesta = page.locator("#respuesta-caso");
+    await expect(respuesta).toContainText("No es lo que indica el capítulo.");
+    await expect(respuesta).toBeFocused();
+    await expect(respuesta.getByRole("link", { name: /^Ver/ }).first()).toHaveAttribute(
+      "href",
+      "#/consultar/figura-3",
+    );
+    await page.getByRole("button", { name: /Siguiente paso/ }).click();
+    await expect(page.getByText("Paso 2 de 5")).toBeVisible();
+  });
 });
