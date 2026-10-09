@@ -5,7 +5,7 @@
    12 pt, a doble cara: dos o tres caras), y lleva un QR para abrirla en el móvil. La app no guarda nada de lo que se escribe:
    no hay campos, solo líneas en blanco para el papel. */
 import { useEffect, useRef, type ReactNode } from "react";
-import { ArrowRight, FileText, ListChecks, Printer, ShieldCheck } from "lucide-react";
+import { ArrowRight, FileText, Printer, ShieldCheck } from "lucide-react";
 import { CAPITULO, FIGURA3, TABLAS, apartadoPorSlug, idDeBloque } from "../contenido";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import type { SistemaId } from "../ampliacion/tipos";
@@ -174,12 +174,6 @@ export function HubPacientes() {
       icono: FileText,
       t: "Información para pacientes",
       s: "Doce preguntas y respuestas y un mensaje final: qué es el sistema, qué material llevar, qué hacer si la glucosa baja o sube, ejercicio, viajes y pruebas.",
-    },
-    {
-      href: href("pacientes", "resumen"),
-      icono: ListChecks,
-      t: "Resumen del capítulo",
-      s: "El capítulo en una página, tal como lo maqueta la editorial.",
     },
   ];
   return (
@@ -475,13 +469,21 @@ function HojaExtraVista({
   );
 }
 
-/* ---------- Resumen (maquetación de la editorial) ---------- */
+/* ---------- Resumen del capítulo (maquetación de la editorial): para profesionales, en
+   «Leer capítulo» (#/capitulo/resumen); no es material para el paciente. ---------- */
 export function ResumenPacientes() {
   const ref = useRef<HTMLDivElement>(null);
-  const ruta = href("pacientes", "resumen");
+  const ruta = href("capitulo", "resumen");
   return (
     <div>
-      <Volver />
+      <nav aria-label="Volver" className="no-imprimir mb-3 text-sm">
+        <a
+          href={href("capitulo")}
+          className="inline-flex min-h-11 items-center font-semibold text-slate-600 hover:underline"
+        >
+          Leer capítulo ›
+        </a>
+      </nav>
       <Acciones hoja={ref} ruta={ruta} titulo="Resumen del capítulo" />
       <Hoja
         hojaRef={ref}
@@ -506,7 +508,6 @@ function Volver() {
   const ruta = typeof window === "undefined" ? "" : window.location.hash;
   const hojas = [
     { href: href("pacientes", "informacion"), t: "Información" },
-    { href: href("pacientes", "resumen"), t: "Resumen" },
     { href: href("pacientes", "plan"), t: "Plan de seguridad" },
   ];
   return (

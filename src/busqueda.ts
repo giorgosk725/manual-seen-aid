@@ -16,7 +16,8 @@ export interface Entrada {
     | "pacientes"
     | "test"
     | "atajo"
-    | "caso";
+    | "caso"
+    | "resumen";
   titulo: string;
   texto: string;
   /* Página del capítulo (0 = fuera del capítulo) y, si ocupa dos, la última. */
@@ -27,7 +28,11 @@ export interface Entrada {
 
 /* Lo que no es texto del capítulo se muestra en un grupo aparte y rotulado. */
 export const fueraDelCapitulo = (e: Entrada) =>
-  e.tipo === "extendida" || e.tipo === "ampliacion" || e.tipo === "pacientes" || e.tipo === "test";
+  e.tipo === "extendida" ||
+  e.tipo === "ampliacion" ||
+  e.tipo === "pacientes" ||
+  e.tipo === "test" ||
+  e.tipo === "resumen";
 
 export const normalizar = (s: string) =>
   s

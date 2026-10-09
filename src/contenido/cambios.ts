@@ -8,13 +8,21 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.20.0";
+export const VERSION_APP = "0.20.1";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-09",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — dos hojas más para el paciente`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — el resumen del capítulo, con los profesionales`,
+    detalle: [
+      "El resumen del capítulo (una página, maquetación de la editorial) sale de «Para el paciente», que queda solo con material para entregar, y pasa a «Leer capítulo» (#/capitulo/resumen); los enlaces antiguos siguen funcionando.",
+    ],
+  },
+  {
+    fecha: "2026-10-09",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.20.0 — dos hojas más para el paciente",
     detalle: [
       "«Cetonas: qué hacer según el resultado», una tarjeta de bolsillo a partir de la Figura 3 y del plan de seguridad del capítulo, en lenguaje para el paciente: cuándo medir cetonas, qué comprobar primero y qué hacer en cada tramo; sin dosis, con un hueco para la que fije el equipo.",
       "«Antes de una prueba o una cirugía: qué hacer con la bomba y el sensor», la Tabla 6 en lenguaje para el paciente, bomba y sensor por separado, con la regla de la pauta alternativa si la bomba va a estar quitada más de una hora.",

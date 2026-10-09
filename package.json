@@ -1,7 +1,7 @@
 {
   "name": "manual-seen-aid",
   "private": true,
-  "version": "0.20.0",
+  "version": "0.20.1",
   "type": "module",
   "description": "Manual SEEN · AID — el capítulo «Tratamiento insulínico del paciente con diabetes mellitus tipo 1: automatización de la insulinoterapia», hecho usable. Educativo; no es producto sanitario.",
   "scripts": {

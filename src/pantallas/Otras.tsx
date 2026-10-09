@@ -49,6 +49,7 @@ const TIPO: Record<string, string> = {
   extendida: "Versión extendida",
   ampliacion: "Ampliación",
   pacientes: "Para el paciente",
+  resumen: "Resumen del capítulo",
   test: "Autoevaluación",
   atajo: "Ir a",
   caso: "Caso guiado",

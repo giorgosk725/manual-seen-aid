@@ -205,7 +205,7 @@ export const DESTINOS: Destino[] = [
     icono: HeartHandshake,
     cat: "pacientes",
     descripcion:
-      "Hojas para entregar al paciente: la información completa, hojas breves por situación, el resumen y el plan de seguridad de cada sistema; con letra grande y código QR.",
+      "Hojas para entregar al paciente: la información completa, hojas breves por situación y el plan de seguridad de cada sistema; con letra grande y código QR.",
   },
   {
     id: "extendida",

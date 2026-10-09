@@ -173,6 +173,12 @@ export function IndiceCapitulo() {
           <Printer size={14} aria-hidden="true" /> Capítulo entero (para imprimir)
         </a>
         <a
+          href={href("capitulo", "resumen")}
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-400"
+        >
+          Resumen del capítulo (una página) <ArrowRight size={14} aria-hidden="true" />
+        </a>
+        <a
           href={CAPITULO.url}
           target="_blank"
           rel="noopener noreferrer"

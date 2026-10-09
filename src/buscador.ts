@@ -326,12 +326,12 @@ export function indice(): Entrada[] {
     });
   RESUMEN_CAPITULO.parrafos.forEach((t, i) =>
     out.push({
-      id: `pac/resumen/${i}`,
-      tipo: "pacientes",
-      titulo: "Resumen del capítulo (hoja para el paciente)",
+      id: `resumen/${i}`,
+      tipo: "resumen",
+      titulo: "Resumen del capítulo (una página)",
       texto: t,
       pagina: 0,
-      ruta: href("pacientes", "resumen"),
+      ruta: href("capitulo", "resumen"),
     }),
   );
   PREGUNTAS.forEach((q, i) =>
