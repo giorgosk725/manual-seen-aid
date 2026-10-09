@@ -191,7 +191,7 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
 
   test("la caja de la portada responde con la fila de la Tabla 6", async ({ page }) => {
     await page.goto("/#/");
-    await page.getByLabel("¿Qué necesitas? Escribe lo que buscas").fill("resonancia con 780G");
+    await page.getByLabel("Busca un tema, un sistema o una pregunta").fill("resonancia con 780G");
     const respuesta = page.getByRole("region", { name: "Pasaje del capítulo" });
     await expect(respuesta).toContainText("Resonancia magnética (RM)");
     await expect(respuesta).toContainText("Retirar antes de entrar en la sala");

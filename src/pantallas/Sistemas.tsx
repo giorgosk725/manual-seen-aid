@@ -1,9 +1,10 @@
-/* Sistemas: hub con las fotos oficiales y una ficha por sistema en dos capas separadas a
-   la vista: (1) lo que dice el CAPÍTULO de ese sistema (sus columnas de las Tablas 1, 3 y 4 y
-   los párrafos que lo nombran, literales, con página) y (2) la AMPLIACIÓN DEL AUTOR (ficha
-   técnica, parámetros, sets de infusión, insulinas), fuera del capítulo y con sus fuentes. */
-import { useMemo, useRef } from "react";
-import { ArrowRight, BookOpen, Check, ExternalLink, Minus, X } from "lucide-react";
+/* Sistemas: hub con las fotos oficiales y una ficha por sistema, la misma para entender y
+   para consultar, en secciones con ruta propia (#/sistemas/<id>/<seccion>): Lo esencial
+   (Tabla 1), Parámetros (Tablas 1 y 3), Situaciones (Tabla 4), literales y con página, y
+   aparte la Ampliación técnica (ficha técnica, sets, insulinas), fuera del capítulo y con sus
+   fuentes. */
+import { useEffect, useMemo, useRef, type ReactNode } from "react";
+import { ArrowRight, Check, ExternalLink, Minus, X } from "lucide-react";
 import {
   APARTADOS,
   TABLAS,
@@ -11,6 +12,7 @@ import {
   fichasDelCapitulo,
   idDeBloque,
   type Bloque,
+  type Tabla,
 } from "../contenido";
 import {
   COMPAT_INSULINA,
@@ -39,6 +41,9 @@ import { plano } from "../marcado";
 import { VersionExtendida } from "../componentes/VersionExtendida";
 import { BotonFavorito } from "../componentes/Lectura";
 import { extendidosDeSistema } from "../extendida";
+import { SITUACIONES } from "../situaciones";
+import { comoFunciona } from "../guias";
+import { PiezaVista } from "../componentes/Piezas";
 
 const hex = CATEGORIA_HEX.consultar;
 
@@ -461,17 +466,119 @@ function ParametrosAutomatico({
   );
 }
 
-export function FichaSistema({ id }: { id?: string }) {
+/* Identificador de cada sistema en las rutas de tablas, situaciones e inicio (orden de la
+   Tabla 1). */
+const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
+
+/* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
+const SECCIONES_FICHA = [
+  { id: "esencial", t: "Lo esencial" },
+  { id: "funciona", t: "Cómo funciona" },
+  { id: "parametros", t: "Parámetros" },
+  { id: "situaciones", t: "Situaciones" },
+  { id: "ampliacion", t: "Ampliación técnica" },
+] as const;
+
+/* La columna de un sistema en una tabla del capítulo: filas literales, notas y página. */
+function ColumnaTabla({
+  t,
+  c,
+  filas,
+  pie,
+}: {
+  t: Tabla;
+  c: number;
+  filas?: (etiqueta: string, j: number) => boolean;
+  pie?: ReactNode;
+}) {
+  return (
+    <div className="rounded-xl border bg-white p-3 sm:p-4" style={{ borderColor: "#e6e6e6" }}>
+      <div className="text-xs font-semibold text-slate-600">
+        Tabla {t.numero} · {t.titulo}
+      </div>
+      <dl className="mt-1 divide-y" style={{ borderColor: "#e6e6e6" }}>
+        {t.filas.map((f, j) =>
+          filas && !filas(f.etiqueta, j) ? null : (
+            <div key={j} className="grid gap-1 py-2.5 sm:grid-cols-[13rem_1fr] sm:gap-4">
+              <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                <Lineas>{f.etiqueta}</Lineas>
+              </dt>
+              <dd className="text-sm text-slate-800">
+                <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
+              </dd>
+            </div>
+          ),
+        )}
+      </dl>
+      {t.notas.length > 0 && (
+        <div
+          className="mt-2 space-y-1 border-t pt-2 text-xs text-slate-600"
+          style={{ borderColor: "#e6e6e6" }}
+        >
+          {t.notas.map((n, k) => (
+            <p key={k}>
+              <Texto>{n}</Texto>
+            </p>
+          ))}
+        </div>
+      )}
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+        <span className="flex flex-wrap gap-x-4">{pie}</span>
+        <PaginaBadge p={t.paginas[0]} p2={t.paginas[1]} />
+      </div>
+    </div>
+  );
+}
+
+function EnlacePie({ ruta, children }: { ruta: string; children: ReactNode }) {
+  return (
+    <a
+      href={ruta}
+      className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+    >
+      {children} <ArrowRight size={13} aria-hidden="true" />
+    </a>
+  );
+}
+
+/* Título de sección con el sistema al lado: al entrar por un enlace directo, la cabecera de la
+   ficha queda arriba y fuera de la vista. */
+function TituloSeccion({
+  id,
+  sistema,
+  color,
+  children,
+}: {
+  id: string;
+  sistema: string;
+  color: string;
+  children: ReactNode;
+}) {
+  return (
+    <h2 id={id} className="mb-2 scroll-mt-20 text-base font-extrabold text-slate-900">
+      {children} <span style={{ color }}>· {sistema}</span>
+    </h2>
+  );
+}
+
+export function FichaSistema({ id, seccion }: { id?: string; seccion?: string }) {
   const s = sistemaPorId(id);
   const ref = useRef<HTMLDivElement>(null);
   const parrafos = useMemo(() => (s ? parrafosDelSistema(s.id) : []), [s]);
+  // Enlace a una sección (#/sistemas/<id>/parametros): se abre en ella, sin recorrer la ficha.
+  useEffect(() => {
+    if (!seccion) return;
+    const el = document.getElementById(seccion);
+    el?.scrollIntoView?.({ block: "start" });
+  }, [seccion, id]);
   if (!s) return <HubSistemas />;
   const c = columnaDeSistema(s.id);
   const h = SISTEMA_HEX[c];
-  const tablas = [TABLAS.T1, TABLAS.T3, TABLAS.T4];
+  const slug = SLUG_TABLA[c];
   const i = ORDEN_SISTEMAS.indexOf(s.id);
   const prev = SISTEMAS_AMPLIACION[i - 1];
   const next = SISTEMAS_AMPLIACION[i + 1];
+  const situacionesT4 = SITUACIONES.filter((x) => x.tabla === "T4");
   return (
     <div ref={ref} className="imprimible">
       <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
@@ -484,10 +591,10 @@ export function FichaSistema({ id }: { id?: string }) {
         <span aria-hidden="true">›</span>
         <span>{s.name}</span>
       </div>
-      <header className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start">
+      <header className="mb-4 flex gap-3 sm:gap-4">
         <AbrirEnVisor
           imagen={{ src: FOTO_SISTEMA[s.id], alt: `Foto oficial de ${s.name}`, titulo: s.name }}
-          className="h-40 w-40 shrink-0 overflow-hidden rounded-2xl border bg-white shadow-soft focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+          className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl border bg-white shadow-soft focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:h-32 sm:w-32"
           etiqueta={`Ampliar la foto de ${s.name}`}
         >
           <img
@@ -497,141 +604,240 @@ export function FichaSistema({ id }: { id?: string }) {
           />
         </AbrirEnVisor>
         <div className="min-w-0 flex-1">
-          <h1 className="text-3xl font-black tracking-tight" style={{ color: h.ink }}>
+          <h1 className="text-2xl font-black tracking-tight sm:text-3xl" style={{ color: h.ink }}>
             {s.name}
           </h1>
           <p className="mt-1 text-sm text-slate-600">
             {algoritmoDelCapitulo(c)} <span className="pagina-badge">· Tabla 1, p. 3</span>
           </p>
-          <dl className="mt-3 grid grid-cols-3 gap-2">
-            {fichasDelCapitulo(c).map(({ k, v }) => (
-              <div key={k} className="rounded-xl p-2.5" style={{ background: h.soft }}>
-                <dt className="text-[11px] text-slate-600">{k}</dt>
-                <dd className="text-sm font-bold leading-snug" style={{ color: h.ink }}>
-                  {v}
-                </dd>
-              </div>
-            ))}
-          </dl>
-          <ParametrosAutomatico c={c} hexSistema={h} />
-          <div className="no-imprimir mt-3 flex flex-wrap gap-2">
+          <div className="no-imprimir mt-2 flex flex-wrap gap-x-3 gap-y-1">
             <a
-              href={href(
-                "consultar",
-                "tablas",
-                `T1:${["minimed-780g", "control-iq", "camaps", "omnipod-5"][c]}`,
-              )}
-              className="inline-flex min-h-9 items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold"
-              style={{ borderColor: `${h.strong}40`, color: h.ink }}
+              href={href("consultar", "tablas", `T1:${slug}`)}
+              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
+              style={{ color: h.ink }}
             >
-              Comparar en la Tabla 1 <ArrowRight size={12} aria-hidden="true" />
+              Comparar con otros sistemas <ArrowRight size={13} aria-hidden="true" />
             </a>
             <a
-              href={href(
-                "consultar",
-                "inicio",
-                `inicio:${["minimed-780g", "control-iq", "camaps", "omnipod-5"][c]}`,
-              )}
-              className="inline-flex min-h-9 items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold"
-              style={{ borderColor: `${h.strong}40`, color: h.ink }}
+              href={href("consultar", "inicio", `inicio:${slug}`)}
+              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
+              style={{ color: h.ink }}
             >
-              Iniciar este sistema paso a paso <ArrowRight size={12} aria-hidden="true" />
+              Iniciar este sistema paso a paso <ArrowRight size={13} aria-hidden="true" />
             </a>
-            <a
-              href={WEB_SISTEMA[s.id]}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-9 items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700"
-            >
-              Web oficial <ExternalLink size={12} aria-hidden="true" />
-            </a>
-            <BotonImprimir objetivo={ref} compacto>
-              Imprimir la ficha
-            </BotonImprimir>
-            <BotonFavorito ruta={href("sistemas", s.id)} titulo={s.name} />
           </div>
         </div>
       </header>
 
-      <section aria-labelledby="del-capitulo">
-        <div className="mb-3 flex items-center gap-2">
-          <BookOpen size={16} style={{ color: h.strong }} aria-hidden="true" />
-          <h2 id="del-capitulo" className="text-base font-extrabold text-slate-900">
-            Lo que dice el capítulo
-          </h2>
-        </div>
-        <div className="space-y-3">
-          {tablas.map((t) => (
-            <Foldable
-              key={t.id}
-              title={`Tabla ${t.numero} · ${t.titulo}`}
-              subtitle={`Columna ${s.name}`}
-              open={t.id === "T1"}
-            >
-              <dl className="divide-y" style={{ borderColor: "#e6e6e6" }}>
-                {t.filas.map((f, j) => (
-                  <div key={j} className="grid gap-1 py-2.5 sm:grid-cols-[13rem_1fr] sm:gap-4">
-                    <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                      <Lineas>{f.etiqueta}</Lineas>
-                    </dt>
-                    <dd className="text-sm text-slate-800">
-                      <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-              {t.notas.length > 0 && (
-                <div
-                  className="mt-2 space-y-1 border-t pt-2 text-xs text-slate-600"
-                  style={{ borderColor: "#e6e6e6" }}
-                >
-                  {t.notas.map((n, k) => (
-                    <p key={k}>
-                      <Texto>{n}</Texto>
-                    </p>
+      <nav
+        aria-label="En esta ficha"
+        className="no-imprimir -mx-3 mb-5 flex gap-1.5 overflow-x-auto border-y px-3 py-2 sm:mx-0 sm:flex-wrap sm:rounded-lg sm:border sm:px-2"
+        style={{ borderColor: "#e6e6e6" }}
+      >
+        {SECCIONES_FICHA.map((x) => (
+          <a
+            key={x.id}
+            href={href("sistemas", s.id, x.id)}
+            aria-current={seccion === x.id ? "location" : undefined}
+            className={`inline-flex min-h-9 shrink-0 items-center rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${seccion === x.id ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
+            style={
+              seccion === x.id
+                ? { background: h.strong, borderColor: h.strong }
+                : { borderColor: "#d4d4d4" }
+            }
+          >
+            {x.t}
+          </a>
+        ))}
+        <span className="ml-auto flex shrink-0 items-center gap-1.5">
+          <BotonImprimir objetivo={ref} compacto>
+            Imprimir la ficha
+          </BotonImprimir>
+          <BotonFavorito ruta={href("sistemas", s.id)} titulo={s.name} />
+        </span>
+      </nav>
+
+      <section aria-labelledby="esencial" className="scroll-mt-20">
+        <TituloSeccion id="esencial" sistema={s.name} color={h.ink}>
+          Lo esencial
+        </TituloSeccion>
+        <dl className="mb-3 grid grid-cols-3 gap-2">
+          {fichasDelCapitulo(c).map(({ k, v }) => (
+            <div key={k} className="rounded-xl p-2.5" style={{ background: h.soft }}>
+              <dt className="text-[11px] text-slate-600">{k}</dt>
+              <dd className="text-sm font-bold leading-snug" style={{ color: h.ink }}>
+                {v}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        {/* Qué es y para quién; el algoritmo va en «Cómo funciona» y lo configurable, en «Parámetros». */}
+        <ColumnaTabla
+          t={TABLAS.T1}
+          c={c}
+          filas={(e) =>
+            ["Formato", "Indicación", "Gestación: autorización y evidencia"].includes(e)
+          }
+          pie={
+            <>
+              <EnlacePie ruta={href("consultar", "tablas", `T1:${slug}`)}>
+                Comparar en la Tabla 1
+              </EnlacePie>
+              <a
+                href={WEB_SISTEMA[s.id]}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="no-imprimir inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+              >
+                Web oficial <ExternalLink size={12} aria-hidden="true" />
+              </a>
+            </>
+          }
+        />
+      </section>
+
+      <section aria-labelledby="funciona" className="mt-7 scroll-mt-20">
+        <TituloSeccion id="funciona" sistema={s.name} color={h.ink}>
+          Cómo funciona
+        </TituloSeccion>
+        <p className="mb-3 text-sm text-slate-600">
+          Lo que dice el capítulo de este sistema, en el orden en que se entiende: qué mide, dónde
+          decide, cómo administra la insulina, hacia qué objetivo y qué queda en manos de la persona
+          y del profesional. Los rótulos de los pasos son de la app; el texto, literal y con su
+          página.
+        </p>
+        <ol className="space-y-4">
+          {comoFunciona(c, s.id).pasos.map((paso, i) => (
+            <li key={paso.rotulo} className="flex gap-3">
+              <span
+                aria-hidden="true"
+                className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-display text-sm font-medium text-white"
+                style={{ background: h.strong }}
+              >
+                {i + 1}
+              </span>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-sm font-bold text-slate-900">{paso.rotulo}</h3>
+                <div className="mt-1.5 space-y-2">
+                  {paso.piezas.map((p, j) => (
+                    <PiezaVista key={j} pieza={p} sis={c} />
                   ))}
                 </div>
-              )}
-              <div className="mt-2 text-right">
-                <PaginaBadge p={t.paginas[0]} p2={t.paginas[1]} />
               </div>
-            </Foldable>
+            </li>
           ))}
-          <Foldable title="Párrafos del capítulo que lo nombran" count={parrafos.length}>
-            <ol className="space-y-3">
-              {parrafos.map((p) => (
-                <li key={p.slug + p.ancla} className="text-sm text-slate-800">
-                  <p>
-                    {p.b.lead && <strong>{p.b.lead} </strong>}
-                    <Texto>{p.b.texto}</Texto>
-                  </p>
-                  <a
-                    href={href("capitulo", p.slug, p.ancla)}
-                    className="mt-1 inline-flex min-h-6 items-center gap-1 text-xs font-semibold text-slate-600 hover:underline"
-                  >
-                    {p.titulo} · <PaginaBadge p={p.b.p} p2={p.b.p2} />{" "}
-                    <ArrowRight size={11} aria-hidden="true" />
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </Foldable>
+        </ol>
+      </section>
+
+      <section aria-labelledby="parametros" className="mt-7 scroll-mt-20">
+        <TituloSeccion id="parametros" sistema={s.name} color={h.ink}>
+          Parámetros
+        </TituloSeccion>
+        <p className="mb-2 text-sm text-slate-600">
+          Cuáles se pueden configurar en modo automático (Tabla 1) y cómo se ajusta cada uno en este
+          sistema (Tabla 3).
+        </p>
+        <ParametrosAutomatico c={c} hexSistema={h} />
+        <div className="mt-3">
+          <ColumnaTabla
+            t={TABLAS.T3}
+            c={c}
+            pie={
+              <EnlacePie ruta={href("consultar", "tablas", `T3:${slug}`)}>
+                Comparar estos parámetros entre sistemas
+              </EnlacePie>
+            }
+          />
         </div>
       </section>
 
-      {extendidosDeSistema(s.id).length > 0 && (
-        <section aria-label="Versión extendida" className="mt-6">
+      <section aria-labelledby="situaciones" className="mt-7 scroll-mt-20">
+        <TituloSeccion id="situaciones" sistema={s.name} color={h.ink}>
+          Situaciones
+        </TituloSeccion>
+        <p className="mb-2 text-sm text-slate-600">
+          Qué herramienta del sistema usar en cada situación frecuente (Tabla 4). Cada una se abre
+          con este sistema ya elegido.
+        </p>
+        <ul className="space-y-2">
+          {situacionesT4.map((x) => {
+            const f = TABLAS.T4.filas[x.fila];
+            return (
+              <li
+                key={x.id}
+                className="rounded-xl border bg-white p-3"
+                style={{ borderColor: "#e6e6e6" }}
+              >
+                <div className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                  <Lineas>{f.etiqueta}</Lineas>
+                </div>
+                <div className="mt-1 text-sm text-slate-800">
+                  <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
+                </div>
+                <a
+                  href={href("consultar", "situacion", `${x.id}:${slug}`)}
+                  className="no-imprimir mt-1 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+                >
+                  Abrir con el texto que la explica <ArrowRight size={13} aria-hidden="true" />
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+          <span className="flex flex-wrap gap-x-4">
+            <EnlacePie ruta={href("consultar", "tablas", `T4:${slug}`)}>
+              Comparar en la Tabla 4
+            </EnlacePie>
+            <EnlacePie ruta={href("consultar", "situacion", `rm:${slug}`)}>
+              Exploraciones y cirugía (Tabla 6)
+            </EnlacePie>
+          </span>
+          <PaginaBadge p={TABLAS.T4.paginas[0]} p2={TABLAS.T4.paginas[1]} />
+        </div>
+        {TABLAS.T4.notas.length > 0 && (
+          <div className="mt-1 space-y-1 text-xs text-slate-600">
+            {TABLAS.T4.notas.map((n, k) => (
+              <p key={k}>
+                <Texto>{n}</Texto>
+              </p>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section aria-label="Más del capítulo sobre este sistema" className="mt-7 space-y-3">
+        <Foldable title="Párrafos del capítulo que lo nombran" count={parrafos.length}>
+          <ol className="space-y-3">
+            {parrafos.map((p) => (
+              <li key={p.slug + p.ancla} className="text-sm text-slate-800">
+                <p>
+                  {p.b.lead && <strong>{p.b.lead} </strong>}
+                  <Texto>{p.b.texto}</Texto>
+                </p>
+                <a
+                  href={href("capitulo", p.slug, p.ancla)}
+                  className="mt-1 inline-flex min-h-6 items-center gap-1 text-xs font-semibold text-slate-600 hover:underline"
+                >
+                  {p.titulo} · <PaginaBadge p={p.b.p} p2={p.b.p2} />{" "}
+                  <ArrowRight size={11} aria-hidden="true" />
+                </a>
+              </li>
+            ))}
+          </ol>
+        </Foldable>
+        {extendidosDeSistema(s.id).length > 0 && (
           <VersionExtendida fragmentos={extendidosDeSistema(s.id)} nivel={3} />
-        </section>
-      )}
+        )}
+      </section>
 
       <Ampliacion s={s} />
 
       <ToneCard tone="slate" className="mt-6">
         <p className="text-xs text-slate-600">
-          La capa «Lo que dice el capítulo» es texto literal del Manual SEEN con su página. La
-          «Ampliación técnica» es material complementario, fuera del capítulo, con sus fuentes; no
-          sustituye la ficha técnica vigente de cada sistema.
+          «Lo esencial», «Parámetros» y «Situaciones» son texto literal del Manual SEEN con su
+          página. La «Ampliación técnica» es material complementario, fuera del capítulo, con sus
+          fuentes; no sustituye la ficha técnica vigente de cada sistema.
         </p>
       </ToneCard>
 

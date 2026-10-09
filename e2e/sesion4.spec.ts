@@ -118,19 +118,20 @@ test.describe("Búsqueda y enlaces", () => {
     await expect(page.locator("#ext-E49")).toBeVisible();
   });
 
-  test("la barra lateral agrupa Consultar en cuatro grupos y añade Para el paciente", async ({
+  test("la barra lateral: Inicio y tres grupos; «Más recursos» plegado salvo dentro", async ({
     page,
   }) => {
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Navegación principal" });
-    for (const g of [
-      "Sistemas",
-      "Situaciones y recorridos",
-      "Figuras y tablas",
-      "Glosario",
-      "Para el paciente",
-    ])
+    for (const g of ["Consultar", "Leer y comprender", "Más recursos"])
       await expect(nav.getByText(g, { exact: true }).first()).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Comparar sistemas" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Para el paciente" })).toBeHidden();
+    await page.goto("/#/pacientes");
+    await expect(nav.getByRole("link", { name: "Para el paciente" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
   });
 });
 

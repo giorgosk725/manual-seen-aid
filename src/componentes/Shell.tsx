@@ -1,7 +1,7 @@
-/* Shell: barra superior, barra lateral de escritorio (índice del capítulo + consultar),
-   barra inferior móvil (5 destinos), paleta de búsqueda (Ctrl K) y aviso de versión nueva. */
+/* Shell: barra superior (con la búsqueda en escritorio), menú en tres grupos (barra lateral de
+   escritorio y menú del móvil), barra inferior móvil (Inicio · Consultar · Leer · Buscar · Más),
+   paleta de búsqueda (Ctrl K) y aviso de versión nueva. El destino activo sale de nav.ts. */
 import {
-  Fragment,
   Suspense,
   useCallback,
   useEffect,
@@ -14,6 +14,7 @@ import {
   AArrowDown,
   AArrowUp,
   BookOpen,
+  ChevronDown,
   CircleCheck,
   Columns3,
   Home,
@@ -25,9 +26,9 @@ import {
   X,
 } from "lucide-react";
 import { APARTADOS, CAPITULO } from "../contenido";
-import { DESTINOS, GRUPOS_CONSULTAR } from "../nav";
+import { DESTINOS, MENU, areaDe, destinoActivo, type Area } from "../nav";
 import { consumirNavegacionNueva, href, marcarNavegacionNueva, type Ruta } from "../rutas";
-import { TAMANOS, useLeidos, useNocturno, useTamanoLetra } from "../prefs";
+import { TAMANOS, useLeidos, useNocturno, useTamanoLetra, useUltimo } from "../prefs";
 import { VolverArriba } from "./Lectura";
 import { ErrorBoundary, Modal } from "../ui";
 import { fueraDelCapitulo, marcar, paginaDe } from "../busqueda";
@@ -39,22 +40,6 @@ import { guardarReciente } from "../prefs";
 import { SugerenciasBusqueda } from "./SugerenciasBusqueda";
 import { SinResultados } from "./SinResultados";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
-
-/* Destinos que viven bajo #/consultar/<id>. */
-const SUB_CONSULTAR = [
-  "tablas",
-  "figura-3",
-  "infografia",
-  "glosario",
-  "situacion",
-  "descarga",
-  "interrupcion",
-];
-
-function activo(ruta: Ruta, seccion: string, sub?: string) {
-  if (ruta.seccion !== seccion) return false;
-  return sub ? ruta.sub === sub : true;
-}
 
 /* ---------- Espera mientras llega una pantalla perezosa ---------- */
 function CargandoPantalla() {
@@ -87,8 +72,9 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
   useEffect(() => {
     if (!open) setQ("");
   }, [open]);
-  // Teclado: Intro abre la respuesta (o Buscar con todo); ↓ y ↑ recorren los enlaces de la
-  // respuesta y de los resultados, y ↑ desde el primero vuelve a la caja.
+  // Teclado: Intro abre Buscar con todos los resultados (nunca salta a escondidas al primer
+  // pasaje, que puede ser una coincidencia parcial); ↓ y ↑ recorren los enlaces y, con uno
+  // elegido, Intro lo abre; ↑ desde el primero vuelve a la caja.
   const zona = useRef<HTMLDivElement>(null);
   const entrada = useRef<HTMLInputElement>(null);
   const enlaces = () => [...(zona.current?.querySelectorAll<HTMLAnchorElement>("a[href]") ?? [])];
@@ -98,9 +84,8 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
       enlaces()[0]?.focus();
     } else if (e.key === "Enter" && q.trim().length >= 2) {
       e.preventDefault();
-      const destino = respuestas[0]?.ruta ?? href("buscar", q.trim());
       cerrarYGuardar();
-      window.location.hash = destino.replace(/^#/, "");
+      window.location.hash = href("buscar", q.trim()).replace(/^#/, "");
     }
   };
   const alMoverse = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -138,7 +123,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
           </kbd>
         </div>
         <p id="paleta-ayuda" className="mt-1 hidden text-[11px] text-slate-500 sm:block">
-          Intro abre la respuesta · ↓ ↑ recorren los resultados · Esc cierra
+          Intro abre todos los resultados · ↓ ↑ eligen uno · Esc cierra
         </p>
         <div ref={zona} onKeyDown={alMoverse}>
           {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
@@ -296,78 +281,153 @@ export function Rotulo({ compacto = false }: { compacto?: boolean }) {
   );
 }
 
-/* ---------- Barra lateral (escritorio) ---------- */
-function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
-  const enCapitulo = ruta.seccion === "capitulo";
+/* ---------- Menú: Inicio y tres grupos (barra lateral y menú del móvil) ----------
+   «Más recursos» va plegado salvo cuando se está en uno de ellos; el índice de los apartados
+   solo se despliega dentro de la lectura. */
+function MenuNavegacion({
+  ruta,
+  etiqueta,
+  onIr,
+}: {
+  ruta: Ruta;
+  etiqueta: string;
+  onIr?: () => void;
+}) {
   const leidos = useLeidos();
-  const grupo = (titulo: string, ids: string[]) => (
-    <div className="mt-4">
-      <div className="etiqueta-area px-3 text-[11px] text-slate-500">{titulo}</div>
-      <ul className="mt-1 space-y-0.5">
-        {ids.map((id) => {
-          const d = DESTINOS.find((x) => x.id === id)!;
-          const on =
-            id === "capitulo"
-              ? enCapitulo
-              : SUB_CONSULTAR.includes(id)
-                ? activo(ruta, "consultar", id)
-                : activo(ruta, id);
-          const I = d.icono;
-          const cat = CATEGORIA_HEX[d.cat];
-          return (
-            <li key={id}>
-              <a
-                href={d.href}
-                aria-current={on ? "page" : undefined}
-                className={`relative flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[13.5px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"}`}
-              >
-                {on && (
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-y-1 left-0 w-[3px] rounded-full"
-                    style={{ background: cat.strong }}
-                  />
-                )}
-                <I size={16} aria-hidden="true" style={{ color: cat.strong }} />
-                {d.etiqueta}
-              </a>
-              {id === "capitulo" && enCapitulo && (
-                <ol
-                  className="ml-4 mt-1 space-y-0.5 border-l pl-2"
-                  style={{ borderColor: "#e6e6e6" }}
-                >
-                  {APARTADOS.map((a) => {
-                    const onA = ruta.sub === a.slug;
-                    return (
-                      <li key={a.slug}>
-                        <a
-                          href={href("capitulo", a.slug)}
-                          aria-current={onA ? "page" : undefined}
-                          className={`flex gap-2 rounded-md px-2 py-1 text-[12.5px] uppercase leading-snug tracking-wide transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${onA ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
-                        >
-                          <span
-                            className={`w-5 shrink-0 tabular-nums ${onA ? "text-slate-700" : "text-slate-500"}`}
-                          >
-                            {a.n}
-                          </span>
-                          <span className="flex-1">{a.corto}</span>
-                          {leidos.includes(a.slug) && (
-                            <span className="text-emerald-700" title="Leído">
-                              <CircleCheck size={13} aria-label="Leído" />
-                            </span>
-                          )}
-                        </a>
-                      </li>
-                    );
-                  })}
-                </ol>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+  const ultimo = useUltimo();
+  const enCapitulo = ruta.seccion === "capitulo";
+  const area = areaDe(ruta.seccion);
+  const enlace = (on: boolean, color: string, contenido: ReactNode, destino: string) => (
+    <a
+      href={destino}
+      onClick={onIr}
+      aria-current={on ? "page" : undefined}
+      className={`relative flex min-h-9 items-center gap-2.5 rounded-md px-3 py-1.5 text-[13.5px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"}`}
+    >
+      {on && (
+        <span
+          aria-hidden="true"
+          className="absolute inset-y-1 left-0 w-[3px] rounded-full"
+          style={{ background: color }}
+        />
+      )}
+      {contenido}
+    </a>
   );
+  const item = (id: string) => {
+    const d = DESTINOS.find((x) => x.id === id)!;
+    const I = d.icono;
+    const cat = CATEGORIA_HEX[d.cat];
+    return (
+      <li key={id}>
+        {enlace(
+          destinoActivo(id, ruta),
+          cat.strong,
+          <>
+            <I size={16} aria-hidden="true" style={{ color: cat.strong }} className="shrink-0" />
+            {d.etiqueta}
+          </>,
+          d.href,
+        )}
+        {id === "capitulo" && enCapitulo && (
+          <ol className="ml-4 mt-1 space-y-0.5 border-l pl-2" style={{ borderColor: "#e6e6e6" }}>
+            {APARTADOS.map((a) => {
+              const onA = ruta.sub === a.slug;
+              return (
+                <li key={a.slug}>
+                  <a
+                    href={href("capitulo", a.slug)}
+                    onClick={onIr}
+                    aria-current={onA ? "page" : undefined}
+                    className={`flex gap-2 rounded-md px-2 py-1 text-[12.5px] uppercase leading-snug tracking-wide transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${onA ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
+                  >
+                    <span
+                      className={`w-5 shrink-0 tabular-nums ${onA ? "text-slate-700" : "text-slate-500"}`}
+                    >
+                      {a.n}
+                    </span>
+                    <span className="flex-1">{a.corto}</span>
+                    {leidos.includes(a.slug) && (
+                      <span className="text-emerald-700" title="Leído">
+                        <CircleCheck size={13} aria-label="Leído" />
+                      </span>
+                    )}
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
+        )}
+      </li>
+    );
+  };
+  const titulo = (t: string) => (
+    <div className="etiqueta-area px-3 text-[11px] text-slate-500">{t}</div>
+  );
+  return (
+    <nav aria-label={etiqueta}>
+      <ul className="mt-3">
+        <li>
+          {enlace(
+            area === "inicio",
+            SEEN.burdeos,
+            <>
+              <Home size={16} aria-hidden="true" className="shrink-0 text-slate-600" />
+              Inicio
+            </>,
+            "#/",
+          )}
+        </li>
+      </ul>
+      {MENU.map((g) =>
+        g.area === "mas" ? (
+          <details key={g.area} className="group mt-4" open={area === "mas" || undefined}>
+            <summary className="flex min-h-9 cursor-pointer list-none items-center justify-between rounded-md pr-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 [&::-webkit-details-marker]:hidden">
+              {titulo(g.titulo)}
+              <ChevronDown
+                size={14}
+                aria-hidden="true"
+                className="text-slate-500 transition group-open:rotate-180"
+              />
+            </summary>
+            <ul className="mt-1 space-y-0.5">{g.ids.map(item)}</ul>
+          </details>
+        ) : (
+          <div key={g.area} className="mt-4">
+            {titulo(g.titulo)}
+            <ul className="mt-1 space-y-0.5">
+              {g.area === "leer" && ultimo && !enCapitulo && (
+                <li>
+                  {enlace(
+                    false,
+                    CATEGORIA_HEX.leer.strong,
+                    <>
+                      <BookOpen
+                        size={16}
+                        aria-hidden="true"
+                        className="shrink-0"
+                        style={{ color: CATEGORIA_HEX.leer.strong }}
+                      />
+                      <span className="min-w-0">
+                        <span className="block text-[11px] text-slate-500">Seguir leyendo</span>
+                        <span className="block truncate">{ultimo.titulo}</span>
+                      </span>
+                    </>,
+                    ultimo.ruta,
+                  )}
+                </li>
+              )}
+              {g.ids.map(item)}
+            </ul>
+          </div>
+        ),
+      )}
+    </nav>
+  );
+}
+
+/* ---------- Barra lateral (escritorio) ---------- */
+function Lateral({ ruta }: { ruta: Ruta }) {
   return (
     <aside
       aria-label="Menú del capítulo"
@@ -383,27 +443,7 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
           {CAPITULO.tituloCorto}
         </span>
       </a>
-      <button
-        type="button"
-        onClick={onBuscar}
-        aria-label="Buscar en el capítulo (Ctrl K)"
-        className="mt-3 flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-left text-sm text-slate-600 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-      >
-        <Search size={15} aria-hidden="true" />
-        <span className="flex-1">Buscar</span>
-        <kbd className="rounded border border-slate-300 px-1 text-[10px] text-slate-500">
-          Ctrl K
-        </kbd>
-      </button>
-      <nav aria-label="Navegación principal">
-        {grupo("Leer", ["capitulo"])}
-        {grupo("Aprender", ["repaso", "test"])}
-        {GRUPOS_CONSULTAR.map((g) => (
-          <Fragment key={g.id}>{grupo(g.titulo, g.ids)}</Fragment>
-        ))}
-        {grupo("Para el paciente", ["pacientes"])}
-        {grupo("Fuentes y versión", ["bibliografia", "cambios", "sobre"])}
-      </nav>
+      <MenuNavegacion ruta={ruta} etiqueta="Navegación principal" />
       <div className="mt-auto px-3 pt-6 text-[11px] leading-relaxed text-slate-500">
         No sustituye la ficha técnica de cada sistema ni el juicio clínico.
       </div>
@@ -411,41 +451,17 @@ function Lateral({ ruta, onBuscar }: { ruta: Ruta; onBuscar: () => void }) {
   );
 }
 
-/* ---------- Barra inferior (móvil) ---------- */
+/* ---------- Barra inferior (móvil): las cinco áreas ---------- */
+const AREAS: { area: Area; etiqueta: string; href: string; icono: typeof Home }[] = [
+  { area: "inicio", etiqueta: "Inicio", href: "#/", icono: Home },
+  { area: "consultar", etiqueta: "Consultar", href: href("consultar"), icono: Columns3 },
+  { area: "leer", etiqueta: "Leer", href: href("capitulo"), icono: BookOpen },
+  { area: "buscar", etiqueta: "Buscar", href: href("buscar"), icono: Search },
+  { area: "mas", etiqueta: "Más", href: href("mas"), icono: MoreHorizontal },
+];
+
 function Inferior({ ruta }: { ruta: Ruta }) {
-  const items = [
-    { id: "inicio", etiqueta: "Inicio", href: "#/", icono: Home, on: ruta.seccion === "" },
-    {
-      id: "capitulo",
-      etiqueta: "Capítulo",
-      href: href("capitulo"),
-      icono: BookOpen,
-      on: ruta.seccion === "capitulo",
-    },
-    {
-      id: "consultar",
-      etiqueta: "Consultar",
-      href: href("consultar"),
-      icono: Columns3,
-      on: ruta.seccion === "consultar",
-    },
-    {
-      id: "buscar",
-      etiqueta: "Buscar",
-      href: href("buscar"),
-      icono: Search,
-      on: ruta.seccion === "buscar",
-    },
-    {
-      id: "mas",
-      etiqueta: "Más",
-      href: href("mas"),
-      icono: MoreHorizontal,
-      on: ["mas", "bibliografia", "cambios", "sobre", "test", "repaso", "pacientes"].includes(
-        ruta.seccion,
-      ),
-    },
-  ];
+  const actual = areaDe(ruta.seccion);
   return (
     <nav
       aria-label="Barra inferior"
@@ -453,15 +469,16 @@ function Inferior({ ruta }: { ruta: Ruta }) {
       style={{ borderColor: "#e6e6e6", paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <ul className="grid grid-cols-5">
-        {items.map((it) => {
+        {AREAS.map((it) => {
           const I = it.icono;
+          const on = it.area === actual;
           return (
-            <li key={it.id}>
+            <li key={it.area}>
               <a
                 href={it.href}
-                aria-current={it.on ? "page" : undefined}
-                className={`flex flex-col items-center gap-0.5 py-2 text-[11px] font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${it.on ? "text-slate-900" : "text-slate-500"}`}
-                style={it.on ? { color: SEEN.burdeos } : undefined}
+                aria-current={on ? "page" : undefined}
+                className={`flex min-h-14 flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`}
+                style={on ? { color: SEEN.burdeos } : undefined}
               >
                 <I size={20} aria-hidden="true" />
                 {it.etiqueta}
@@ -474,45 +491,23 @@ function Inferior({ ruta }: { ruta: Ruta }) {
   );
 }
 
-/* ---------- Cajón móvil con el índice ---------- */
+/* ---------- Menú del móvil (el mismo de la barra lateral) ---------- */
 function Cajon({ open, onClose, ruta }: { open: boolean; onClose: () => void; ruta: Ruta }) {
-  const leidos = useLeidos();
   return (
-    <Modal open={open} onClose={onClose} ariaLabel="Índice del capítulo" maxW="max-w-md">
+    <Modal open={open} onClose={onClose} ariaLabel="Menú" maxW="max-w-md">
       <div className="p-3">
-        <div className="mb-2 flex items-center justify-between">
-          <div className="text-sm font-bold text-slate-800">Índice del capítulo</div>
+        <div className="flex items-center justify-between">
+          <div className="px-3 text-sm font-bold text-slate-800">Menú</div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Cerrar"
-            className="rounded p-1 text-slate-600 hover:bg-slate-100"
+            aria-label="Cerrar el menú"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
-            <X size={16} />
+            <X size={18} />
           </button>
         </div>
-        <ol className="space-y-0.5">
-          {APARTADOS.map((a) => (
-            <li key={a.slug}>
-              <a
-                href={href("capitulo", a.slug)}
-                onClick={onClose}
-                aria-current={ruta.sub === a.slug ? "page" : undefined}
-                className={`flex gap-2 rounded-lg px-2 py-2 text-sm transition hover:bg-slate-50 ${ruta.sub === a.slug ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700"}`}
-              >
-                <span className="w-5 shrink-0 tabular-nums text-slate-500">{a.n}</span>
-                <span className="flex-1">{a.titulo}</span>
-                {leidos.includes(a.slug) && (
-                  <CircleCheck
-                    size={15}
-                    className="mt-0.5 shrink-0 text-emerald-700"
-                    aria-label="Leído"
-                  />
-                )}
-              </a>
-            </li>
-          ))}
-        </ol>
+        <MenuNavegacion ruta={ruta} etiqueta="Menú de navegación" onIr={onClose} />
       </div>
     </Modal>
   );
@@ -582,6 +577,7 @@ export function Shell({
     const nueva = consumirNavegacionNueva();
     const destinoProfundo =
       (ruta.seccion === "capitulo" && !!ruta.detalle) ||
+      (ruta.seccion === "sistemas" && !!ruta.detalle) ||
       (ruta.seccion === "bibliografia" && !!ruta.sub);
     if (destinoProfundo) return;
     const guardada = posiciones.current.get(clavePantalla);
@@ -618,7 +614,7 @@ export function Shell({
       >
         Saltar al contenido
       </button>
-      <Lateral ruta={ruta} onBuscar={abrirPaleta} />
+      <Lateral ruta={ruta} />
       <header
         className="cabecera sticky top-0 z-20 border-b backdrop-blur md:ml-64"
         style={{ borderColor: "#e6e6e6" }}
@@ -627,7 +623,7 @@ export function Shell({
           <button
             type="button"
             onClick={() => setCajon(true)}
-            aria-label="Índice del capítulo"
+            aria-label="Menú"
             className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
           >
             <Menu size={20} />
@@ -642,12 +638,19 @@ export function Shell({
           <span className="hidden min-w-0 flex-1 truncate text-sm text-slate-600 md:block">
             {titulo || CAPITULO.tituloCorto}
           </span>
-          <span
-            className="etiqueta-area ml-auto hidden truncate text-sm lg:block"
-            style={{ color: SEEN.diabetesOsc }}
+          {/* En escritorio, la búsqueda vive aquí (no se repite en la barra lateral). */}
+          <button
+            type="button"
+            onClick={abrirPaleta}
+            aria-label="Buscar en el capítulo (Ctrl K)"
+            className="ml-auto hidden min-h-10 w-64 shrink-0 items-center gap-2 rounded-md border border-slate-300 bg-white px-3 text-left text-sm text-slate-500 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:flex lg:w-80"
           >
-            Área II. Diabetes
-          </span>
+            <Search size={15} aria-hidden="true" className="shrink-0" />
+            <span className="flex-1 truncate">¿Qué quieres entender o consultar?</span>
+            <kbd className="rounded border border-slate-300 px-1 text-[10px] text-slate-500">
+              Ctrl K
+            </kbd>
+          </button>
           <span className="flex-1 md:hidden" />
           {enLectura && (
             <div
@@ -679,7 +682,7 @@ export function Shell({
             type="button"
             onClick={abrirPaleta}
             aria-label="Buscar"
-            className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
           >
             <Search size={18} />
           </button>

@@ -3,7 +3,8 @@
      md cada fila se muestra como tarjeta (una tabla de 5 columnas no cabe en un teléfono).
    - interactiva: además, filtros. En las tablas por sistema se eligen uno o varios sistemas
      (1 = fichas grandes; 2–3 = columnas elegidas; todos = tabla completa). En las demás, un
-     filtro por fila (p. ej. Tabla 6, por procedimiento). */
+     filtro por fila (p. ej. Tabla 6, por procedimiento). La selección viaja en la ruta
+     (`T1:minimed-780g+omnipod-5`, `T6:3`) para poder compartirla. */
 import { useMemo, useState } from "react";
 import { Check, ExternalLink } from "lucide-react";
 import type { Tabla } from "../contenido";
@@ -15,6 +16,11 @@ import { href } from "../rutas";
 import { TituloBloque } from "../nivel";
 
 const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
+const slugDe = (c: number) => CORTOS[c].toLowerCase().replace(/\s/g, "-");
+
+/* «Viendo: MiniMed 780G y Omnipod 5»: qué selección está activa, con palabras. */
+const listaNombres = (n: string[]) =>
+  n.length < 2 ? n.join("") : `${n.slice(0, -1).join(", ")} y ${n[n.length - 1]}`;
 
 export function CabeceraTabla({
   tabla,
@@ -237,19 +243,28 @@ export function TablaVista({
   tabla,
   modo = "lectura",
   seleccionInicial,
+  onSeleccion,
 }: {
   tabla: Tabla;
   modo?: "lectura" | "interactiva";
   seleccionInicial?: string;
+  /* Al cambiar la selección: los sistemas («a+b») o la fila; undefined = todo. */
+  onSeleccion?: (seleccion: string | undefined) => void;
 }) {
   const todas = tabla.columnas.map((_, i) => i);
-  const [sel, setSel] = useState<number[]>(() => {
+  const [sel, setSelInterna] = useState<number[]>(() => {
     if (tabla.porSistema && seleccionInicial) {
-      const i = CORTOS.findIndex((c) => c.toLowerCase().replace(/\s/g, "-") === seleccionInicial);
-      if (i >= 0) return [i];
+      const ids = seleccionInicial.split("+");
+      const cs = CORTOS.map((_, c) => c).filter((c) => ids.includes(slugDe(c)));
+      if (cs.length) return cs;
     }
     return [];
   });
+  const setSel = (f: (s: number[]) => number[]) => {
+    const nueva = f(sel);
+    setSelInterna(nueva);
+    onSeleccion?.(nueva.length ? nueva.map(slugDe).join("+") : undefined);
+  };
   const [fila, setFila] = useState<number | null>(() => {
     if (!tabla.porSistema && seleccionInicial) {
       const n = Number(seleccionInicial);
@@ -296,13 +311,18 @@ export function TablaVista({
             {sel.length > 0 && (
               <button
                 type="button"
-                onClick={() => setSel([])}
+                onClick={() => setSel(() => [])}
                 className="tap-44 rounded-full px-3 py-1.5 text-sm font-semibold text-slate-600 underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
                 Ver todos
               </button>
             )}
           </div>
+          <p className="mt-1.5 text-xs text-slate-600" aria-live="polite">
+            {sel.length
+              ? `Tabla ${tabla.numero} · viendo ${listaNombres(sel.map((c) => tabla.columnas[c]))}`
+              : `Tabla ${tabla.numero} · los cuatro sistemas`}
+          </p>
         </div>
       )}
       {interactiva && !tabla.porSistema && (
@@ -316,7 +336,11 @@ export function TablaVista({
           <select
             id={`filtro-${tabla.id}`}
             value={fila ?? ""}
-            onChange={(e) => setFila(e.target.value === "" ? null : Number(e.target.value))}
+            onChange={(e) => {
+              const n = e.target.value === "" ? null : Number(e.target.value);
+              setFila(n);
+              onSeleccion?.(n == null ? undefined : String(n));
+            }}
             className="w-full max-w-md rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             <option value="">Todas las filas</option>

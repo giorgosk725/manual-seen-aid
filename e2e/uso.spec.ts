@@ -2,7 +2,7 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Uso 0.10.0", () => {
-  test("paleta: Intro abre la respuesta y ↓ recorre los enlaces", async ({ page }) => {
+  test("paleta: ↓ recorre los enlaces e Intro abre todos los resultados", async ({ page }) => {
     await page.goto("/#/");
     await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
     await page.keyboard.press("Control+k");
@@ -14,8 +14,9 @@ test.describe("Uso 0.10.0", () => {
     await expect(dialogo.getByRole("link", { name: /^Ver (en|la) / })).toBeFocused();
     await page.keyboard.press("ArrowUp");
     await expect(caja).toBeFocused();
+    // Intro no salta a escondidas al primer pasaje: abre Buscar con la búsqueda.
     await caja.press("Enter");
-    await expect(page).toHaveURL(/#\/consultar\/figura-3\/naranja/);
+    await expect(page).toHaveURL(/#\/buscar\/cetonas%201%2C2$/);
     await expect(page.getByRole("dialog")).toHaveCount(0);
   });
 
@@ -62,9 +63,11 @@ test.describe("Uso 0.10.0", () => {
     await expect(frecuente.getByRole("link", { name: /^Ver (en|la) / }).first()).toBeVisible();
   });
 
-  test("sin resultados: propone las situaciones de «¿Qué necesitas?»", async ({ page }) => {
+  test("sin resultados: propone las consultas más frecuentes", async ({ page }) => {
     await page.goto("/#/buscar/zzzz%20qqqq");
-    const aviso = page.getByRole("status").filter({ hasText: "No hay resultados en el capítulo" });
+    const aviso = page
+      .getByRole("status")
+      .filter({ hasText: "No se han encontrado resultados en el capítulo" });
     await expect(aviso).toBeVisible();
     await expect(aviso.getByRole("link", { name: "Cetonemia (Figura 3)" })).toBeVisible();
   });
@@ -112,12 +115,15 @@ test.describe("Uso 0.10.0", () => {
     await expect(page.locator("main")).toBeFocused();
   });
 
-  test("la portada dice qué es, empieza por la consulta y lleva a repasar y al test", async ({
+  test("la portada dice qué es y lleva a Consultar y a Leer; el repaso y el test, en Leer", async ({
     page,
   }) => {
     await page.goto("/#/");
-    await expect(page.getByText(/preparados para consultarlos en el día a día/)).toBeVisible();
-    const aprender = page.getByRole("region", { name: "Repasar y autoevaluarse" });
+    await expect(page.getByText(/compara los sistemas y lee el texto completo/)).toBeVisible();
+    await expect(page.getByRole("link", { name: "Consultar", exact: true }).first()).toBeVisible();
+    await page.getByRole("link", { name: "Leer y comprender", exact: true }).first().click();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Leer y comprender");
+    const aprender = page.getByRole("region", { name: "Comprender y repasar" });
     await expect(aprender.getByRole("link", { name: /Tarjetas de repaso/ })).toBeVisible();
     await expect(aprender.getByRole("link", { name: /Autoevaluación/ })).toBeVisible();
   });

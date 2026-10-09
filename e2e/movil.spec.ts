@@ -15,19 +15,19 @@ test.describe("Móvil (393 px)", () => {
   test("barra inferior con cinco destinos y sin barra lateral", async ({ page }) => {
     await page.goto("/");
     const barra = page.getByRole("navigation", { name: /Barra inferior/ });
-    for (const e of ["Inicio", "Capítulo", "Consultar", "Buscar", "Más"]) {
+    for (const e of ["Inicio", "Consultar", "Leer", "Buscar", "Más"]) {
       await expect(barra.getByRole("link", { name: e })).toBeVisible();
     }
     await expect(page.getByRole("navigation", { name: /Navegación principal/ })).toBeHidden();
     await sinScrollHorizontal(page, "Portada");
   });
 
-  test("el cajón del índice abre un apartado; la tabla se ve como fichas", async ({ page }) => {
+  test("el menú abre un apartado; la tabla se ve como fichas", async ({ page }) => {
     await page.goto("/#/capitulo");
-    await page.getByRole("button", { name: "Índice del capítulo" }).click();
+    await page.getByRole("button", { name: "Menú" }).click();
     await page
       .getByRole("dialog")
-      .getByRole("link", { name: /Sistemas AID comercializados/ })
+      .getByRole("link", { name: /Sistemas en España/i })
       .click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Sistemas AID");
     await expect(page.getByRole("table")).toBeHidden();

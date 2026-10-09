@@ -202,11 +202,6 @@ export const useRepaso = () => useLectura("mseen:repaso", SIN_PROGRESO, validarR
 export const leerRepaso = () => leerJSON("mseen:repaso", SIN_PROGRESO, validarRepaso);
 export const guardarRepaso = (p: ProgresoRepaso) => guardarJSON("mseen:repaso", p);
 
-/* Guía de bienvenida de la portada: se cierra una vez y no vuelve. */
-const validarBool: Validar<boolean> = (v) => (typeof v === "boolean" ? v : undefined);
-export const useBienvenidaVista = () => useLectura("mseen:bienvenida", false, validarBool);
-export const cerrarBienvenida = () => guardarJSON("mseen:bienvenida", true);
-
 /* Búsquedas recientes (las 6 últimas), para volver a ellas desde la paleta y Buscar. Solo en
    este navegador; se borran con «Borrar» o con «Restablecer preferencias». */
 const validarRecientes: Validar<string[]> = (v) =>

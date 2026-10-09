@@ -1,11 +1,11 @@
 /* Buscar, Bibliografía, Qué ha cambiado, Sobre esta versión, Autoevaluación y «Más» (móvil). */
 import { guardarReciente } from "../prefs";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, CheckCircle2, ExternalLink, Moon, Sun, XCircle } from "lucide-react";
+import { ArrowRight, CheckCircle2, ExternalLink, Moon, Star, Sun, XCircle } from "lucide-react";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
 import { CAMBIOS, PENDIENTES, VERSION_APP } from "../contenido/cambios";
 import { PREGUNTAS } from "../contenido/test";
-import { DESTINOS } from "../nav";
+import { DESTINOS, MENU } from "../nav";
 import { href } from "../rutas";
 import { Badge, CabeceraEditorial, Revelar, ToneCard } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
@@ -17,7 +17,7 @@ import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
 import { SinResultados } from "../componentes/SinResultados";
 import { GuiaDeUso } from "../componentes/Bienvenida";
-import { useNocturno } from "../prefs";
+import { useFavoritos, useNocturno } from "../prefs";
 
 const fecha = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("es-ES", {
@@ -733,10 +733,40 @@ export function Test() {
 /* ---------- Más (móvil): el resto de destinos y las preferencias ---------- */
 export function Mas() {
   const [night, toggle] = useNocturno();
-  const ids = ["pacientes", "bibliografia", "cambios", "sobre", "test", "repaso"];
+  const favoritos = useFavoritos();
+  // Los mismos «Más recursos» del menú; el repaso y el test viven en «Leer y comprender».
+  const ids = MENU.find((g) => g.area === "mas")!.ids;
   return (
     <div>
       <CabeceraEditorial titulo="Más" hex={CATEGORIA_HEX.confiar} level={1} />
+      <section aria-labelledby="mas-favoritos" className="mb-5">
+        <h2
+          id="mas-favoritos"
+          className="mb-2 flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-slate-600"
+        >
+          <Star size={14} className="fill-amber-400 text-amber-500" aria-hidden="true" />
+          Favoritos
+        </h2>
+        {favoritos.length ? (
+          <ul className="flex flex-wrap gap-1.5">
+            {favoritos.map((f) => (
+              <li key={f.ruta}>
+                <a
+                  href={f.ruta}
+                  className="inline-flex min-h-11 items-center rounded-full border bg-white px-3 text-sm font-semibold text-slate-700 hover:border-slate-400 sm:min-h-9"
+                  style={{ borderColor: "#d4d4d4" }}
+                >
+                  {f.titulo}
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-slate-600">
+            Aún no hay favoritos: se guardan con la estrella de cada apartado.
+          </p>
+        )}
+      </section>
       <ul className="space-y-2">
         {ids.map((id) => {
           const d = DESTINOS.find((x) => x.id === id)!;

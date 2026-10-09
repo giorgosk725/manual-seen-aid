@@ -112,7 +112,7 @@ export default function App() {
     case "capitulo": {
       if (!ruta.sub) {
         pantalla = <IndiceCapitulo />;
-        titulo = "Índice del capítulo";
+        titulo = "Leer y comprender";
       } else if (ruta.sub === "todo") {
         pantalla = <CapituloEntero />;
         titulo = "Capítulo entero";
@@ -182,7 +182,7 @@ export default function App() {
       titulo = DIAGRAMAS.find((d) => d.id === ruta.sub)?.titulo ?? "Figuras y diagramas";
       break;
     case "sistemas":
-      pantalla = ruta.sub ? <FichaSistema id={ruta.sub} /> : <HubSistemas />;
+      pantalla = ruta.sub ? <FichaSistema id={ruta.sub} seccion={ruta.detalle} /> : <HubSistemas />;
       titulo = nombreDeSistema(ruta.sub) ?? "Sistemas";
       break;
     case "buscar":

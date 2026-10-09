@@ -8,13 +8,29 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.14.0";
+export const VERSION_APP = "0.15.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-09",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — búsqueda también por el sentido`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — navegación más clara, portada compacta, fichas por secciones y siglas pulsables`,
+    detalle: [
+      "Portada compacta: el título breve, qué permite hacer, las dos entradas (Consultar y Leer y comprender), el buscador, seguir leyendo, seis consultas frecuentes y los favoritos. En el móvil pasa de casi siete pantallas a menos de dos; el índice, los diagramas, los sistemas y el repaso siguen en su sitio.",
+      "Barra inferior del móvil: Inicio · Consultar · Leer · Buscar · Más, con el área de cada pantalla marcada desde un único sitio (las fichas de sistema y las figuras cuentan como Consultar; el repaso y el test, como Leer). La barra lateral del escritorio queda en Inicio y tres grupos (Consultar, Leer y comprender con «seguir leyendo», y Más recursos), y la búsqueda pasa a la cabecera. El botón de menú del móvil abre el mismo menú.",
+      "«Leer y comprender» reúne seguir leyendo, el índice de los trece apartados y, aparte, cómo funciona cada sistema, las figuras y diagramas, las tarjetas de repaso y la autoevaluación.",
+      "En el móvil, imprimir, favorito, escuchar y citar van juntos en «Opciones de lectura», y el índice y los recursos del apartado en una fila: el texto empieza en la primera pantalla.",
+      "Ficha de cada sistema en secciones con enlace propio: Lo esencial (Tabla 1), Parámetros (los configurables en automático y cómo se ajusta cada uno, Tabla 3), Situaciones (Tabla 4, cada una abre con el sistema ya elegido) y Ampliación técnica. Un enlace como #/sistemas/ciq/parametros abre directamente esa sección.",
+      "Tablas por la pregunta que responden («¿Qué características diferencian a los sistemas?», «¿Cómo se ajusta cada parámetro en cada sistema?»…), con el título del capítulo debajo. Al elegir sistemas se ve qué se está mirando («Tabla 1 · viendo MiniMed 780G y Omnipod 5») y la selección queda en el enlace para compartirla.",
+      "En la búsqueda rápida (Ctrl K), Intro abre todos los resultados en vez de saltar al primer pasaje, que podía ser una coincidencia parcial; con las flechas se elige uno. La guía rápida deja de aparecer al entrar y sigue en «Sobre esta versión».",
+      "Siglas pulsables en la lectura: la primera vez que aparece una sigla del glosario en cada apartado (TIR, β-OHB, MDI…) se puede pulsar y enseña su desarrollo, literal y con la página en la que el capítulo lo da, con enlace al glosario; con teclado (Intro abre, Esc cierra y devuelve el foco) y, en el móvil, como una hoja al pie. El texto del capítulo no cambia.",
+      "«Cómo funciona» en la ficha de cada sistema (#/sistemas/<id>/funciona): lo que dice el capítulo del sistema en el orden en que se entiende (qué información utiliza, dónde está el algoritmo y cómo decide, cómo administra la insulina, hacia qué objetivo, qué sigue haciendo la persona, qué puede ajustar el profesional, qué lo distingue en la práctica y qué información devuelve), con las casillas de la Tabla 1 y frases de los apartados 2, 3 y 4, literales y con su página. Los rótulos de los pasos son de la app; no hay explicación nueva.",
+    ],
+  },
+  {
+    fecha: "2026-10-09",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.14.0 — búsqueda también por el sentido",
     detalle: [
       "Con conexión, el buscador compara además la búsqueda con los 480 pasajes del capítulo por su sentido (un modelo de lenguaje multilingüe de Cloudflare, bge-m3) y funde las dos listas: así encuentra pasajes que dicen lo mismo con otras palabras. Ayuda sobre todo con preguntas completas; con dos o tres palabras sueltas apenas cambia lo que ya da el buscador.",
       "Lo que solo propone el sentido, sin apoyo en las palabras, va rotulado «coincidencia parcial»; con una cifra de cetonemia sigue mandando la rama de la Figura 3, y las preguntas frecuentes se siguen activando solo por las palabras. Sin conexión, o si el servicio no responde en 3 segundos, se busca solo por palabras, como hasta ahora.",

@@ -1534,6 +1534,54 @@ html.night .remision {
     text-decoration: none;
   }
 }
+/* Sigla pulsable (Sigla.tsx): la propia sigla, con subrayado de puntos en mostaza. Un <button>
+   siempre se calcula inline-block; el relleno con margen negativo agranda el objetivo táctil
+   (≥ 24 px también en «CE» o «UI») sin mover ni una letra. */
+.sigla {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 3px 4px;
+  margin: -3px -4px;
+  cursor: pointer;
+  border-radius: 2px;
+  text-decoration: underline dotted;
+  text-decoration-color: #8a5e10;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+.sigla:hover {
+  text-decoration-style: solid;
+}
+.sigla:focus-visible {
+  outline: 2px solid #8a5e10;
+  outline-offset: 2px;
+}
+html.night .sigla {
+  text-decoration-color: #e0a83e;
+}
+html.night .sigla:focus-visible {
+  outline-color: #e0a83e;
+}
+/* En el móvil, hoja al pie sobre la barra inferior; desde 640 px, junto a la sigla (posición
+   calculada en línea). */
+.sigla-panel {
+  left: 0;
+  right: 0;
+  bottom: calc(3.5rem + env(safe-area-inset-bottom));
+}
+@media (min-width: 640px) {
+  .sigla-panel {
+    right: auto;
+    bottom: auto;
+  }
+}
+@media print {
+  .sigla {
+    text-decoration: none;
+  }
+}
 html.night .bg-orange-50 {
   background-color: #2f1a0c;
 }

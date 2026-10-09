@@ -134,7 +134,8 @@ describe("App", () => {
     render(<App />);
     await ir("#/sistemas/op5");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Omnipod 5");
-    expect(screen.getByRole("heading", { name: /Lo que dice el capítulo/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /^Lo esencial · Omnipod 5/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /^Parámetros · Omnipod 5/ })).toBeInTheDocument();
     expect(screen.getByText(/Ampliación técnica · fuera del capítulo/)).toBeInTheDocument();
     expect(screen.getAllByText(/sin peso mínimo; DTD ≥ 5 UI\/día/).length).toBeGreaterThan(0);
   });

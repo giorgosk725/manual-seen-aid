@@ -9,6 +9,7 @@ import {
   BookOpen,
   ChevronDown,
   Image as ImageIcon,
+  Settings2,
   Table2,
 } from "lucide-react";
 import {
@@ -148,6 +149,9 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
   });
   const hex = CATEGORIA_HEX.leer;
   const Icono = ICONO_APARTADO[apartado.slug] ?? BookOpen;
+  // En el móvil, imprimir, favorito, escuchar y citar van juntos tras «Opciones de lectura»
+  // para que el texto empiece antes; desde 640 px, a la vista.
+  const [opciones, setOpciones] = useState(false);
 
   return (
     <div ref={ref} className="imprimible">
@@ -161,7 +165,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
           style={{ background: hex.strong, transform: "scaleX(0)" }}
         />
       </div>
-      <header className="mb-6">
+      <header className="mb-4 sm:mb-6">
         <div className="no-imprimir mb-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
           <span className="etiqueta-area" style={{ color: SEEN.diabetesOsc }}>
             Área II. Diabetes
@@ -173,7 +177,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
             href={href("capitulo")}
             className="inline-flex min-h-11 items-center font-semibold text-slate-600 hover:underline"
           >
-            Capítulo
+            Índice
           </a>
           <span aria-hidden="true" className="text-slate-400">
             ›
@@ -205,7 +209,24 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                   : `pp. ${apartado.paginas[0]}–${apartado.paginas[1]}`}{" "}
                 del capítulo
               </span>
-              <span className="no-imprimir flex flex-wrap items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setOpciones((o) => !o)}
+                aria-expanded={opciones}
+                aria-controls="opciones-lectura"
+                className="no-imprimir inline-flex min-h-11 items-center gap-1.5 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:hidden"
+              >
+                <Settings2 size={15} aria-hidden="true" /> Opciones de lectura
+                <ChevronDown
+                  size={14}
+                  aria-hidden="true"
+                  className={`transition ${opciones ? "rotate-180" : ""}`}
+                />
+              </button>
+              <span
+                id="opciones-lectura"
+                className={`no-imprimir w-full flex-wrap items-center gap-1.5 sm:flex sm:w-auto ${opciones ? "flex" : "hidden"}`}
+              >
                 <BotonImprimir objetivo={ref} compacto titulo="Imprimir solo este apartado">
                   Imprimir
                 </BotonImprimir>
@@ -226,16 +247,16 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         {subs.length > 0 && (
           <nav
             aria-label="En este apartado"
-            className="no-imprimir mt-3 flex flex-wrap items-center gap-1.5"
+            className="no-imprimir -mx-3 mt-3 flex items-center gap-1.5 overflow-x-auto px-3 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0"
           >
-            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <span className="sr-only text-xs font-semibold uppercase tracking-wide text-slate-500 sm:not-sr-only">
               En este apartado
             </span>
             {subs.map((s) => (
               <a
                 key={s.id}
                 href={href("capitulo", apartado.slug, s.id)}
-                className="inline-flex min-h-9 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                className="inline-flex min-h-9 shrink-0 items-center whitespace-nowrap rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 sm:whitespace-normal"
               >
                 {s.texto}
               </a>
@@ -243,18 +264,18 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
           </nav>
         )}
         {recursos.length > 0 && (
-          <nav aria-label="Recursos visuales del apartado" className="no-imprimir mt-3">
-            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <nav aria-label="Recursos visuales del apartado" className="no-imprimir mt-2 sm:mt-3">
+            <div className="sr-only mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:not-sr-only">
               Tablas, figuras y diagramas
             </div>
-            <ul className="flex gap-2 overflow-x-auto pb-1">
+            <ul className="-mx-3 flex gap-2 overflow-x-auto px-3 pb-1 sm:mx-0 sm:px-0">
               {recursos.map((r) => {
                 const I = r.icono;
                 return (
                   <li key={r.ancla} className="shrink-0">
                     <a
                       href={href("capitulo", apartado.slug, r.ancla)}
-                      className="hover-lift ease-brand flex items-center gap-2 rounded-[4px] border bg-white px-3 py-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                      className="hover-lift ease-brand flex items-center gap-2 rounded-[4px] border bg-white px-2.5 py-1.5 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:px-3 sm:py-2"
                       style={{ borderColor: "#e6e6e6" }}
                     >
                       <span

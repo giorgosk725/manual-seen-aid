@@ -30,8 +30,9 @@ export const href = (seccion: string, sub?: string, detalle?: string) =>
   "#/" +
   [seccion, sub, detalle]
     .filter((x): x is string => !!x)
-    // Los dos puntos («situacion:sistema», «T1:omnipod-5») se dejan legibles en la URL.
-    .map((x) => encodeURIComponent(x).replace(/%3A/g, ":"))
+    // Los dos puntos («situacion:sistema», «T1:omnipod-5») y el «+» de varios sistemas
+    // («T1:minimed-780g+omnipod-5») se dejan legibles en la URL.
+    .map((x) => encodeURIComponent(x).replace(/%3A/g, ":").replace(/%2B/g, "+"))
     .join("/");
 
 /* Navegación «nueva» (enlace o botón que lleva a otra pantalla): la Shell sube al principio.

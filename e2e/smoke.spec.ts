@@ -8,9 +8,9 @@ test.describe("Recorrido básico (escritorio)", () => {
     page.on("pageerror", (e) => errores.push(String(e)));
     await page.goto("/");
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      "automatización de la insulinoterapia",
+      /automatización de la insulinoterapia/i,
     );
-    await page.getByRole("link", { name: "Índice", exact: true }).click();
+    await page.getByRole("link", { name: "Leer y comprender", exact: true }).click();
     await expect(page).toHaveURL(/#\/capitulo$/);
     await page.getByRole("link", { name: /Educación terapéutica y plan de seguridad/ }).click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Educación terapéutica");

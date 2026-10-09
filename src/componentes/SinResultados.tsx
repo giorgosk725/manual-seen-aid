@@ -1,5 +1,5 @@
 /* Cuando no hay nada con esas palabras (portada, paleta y Buscar): en vez de un callejón sin
-   salida, las puertas de «¿Qué necesitas?». */
+   salida, las consultas más frecuentes. */
 import { href } from "../rutas";
 
 const PUERTAS = [
@@ -19,8 +19,8 @@ export function SinResultados({ onIr }: { onIr?: () => void }) {
       className="mt-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
     >
       <p>
-        No hay resultados en el capítulo con esas palabras. Prueba con otras («sueño», «cetonemia»,
-        «TBR») o entra por una situación:
+        No se han encontrado resultados en el capítulo para esta búsqueda. Prueba con otras palabras
+        («sueño», «cetonemia», «TBR») o entra por una consulta:
       </p>
       <ul className="mt-2 flex flex-wrap gap-1.5">
         {PUERTAS.map((p) => (

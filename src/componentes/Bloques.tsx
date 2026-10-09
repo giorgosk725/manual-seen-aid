@@ -1,6 +1,6 @@
 /* Renderiza los bloques de un apartado: párrafos, subapartados, listas, tablas y figuras,
    cada uno con su página de origen y un id estable (ancla). */
-import { Fragment, memo, useEffect } from "react";
+import { Fragment, memo, useEffect, useMemo } from "react";
 import { Link2 } from "lucide-react";
 import {
   FIGURAS,
@@ -22,6 +22,7 @@ import { DiagramaVista } from "./Diagramas";
 import { href } from "../rutas";
 import { NivelTitulo, type Nivel } from "../nivel-contexto";
 import { partirDestacado, resaltarFrase, textoCitado } from "../fraseCitada";
+import { claveSigla, primerasSiglas } from "../siglas";
 
 function Ancla({ id, slug }: { id: string; slug: string }) {
   return (
@@ -72,12 +73,15 @@ function BloqueVista({
   slug,
   prefijo,
   nivelSub,
+  siglas,
 }: {
   b: Bloque;
   i: number;
   slug: string;
   prefijo?: string;
   nivelSub: 2 | 3;
+  /* Siglas cuya primera aparición en el apartado está en cada texto de este bloque. */
+  siglas: Map<string, string[]>;
 }) {
   const ancla = idDeBloque(b, i);
   // En «Capítulo entero» varios apartados conviven en la página: ids con prefijo.
@@ -89,7 +93,9 @@ function BloqueVista({
         <Marco id={id} ancla={ancla} slug={slug} p={b.p} p2={b.p2}>
           <p className="bloque-papel">
             {b.lead && <strong>{b.lead} </strong>}
-            <TextoConRemisiones>{b.texto}</TextoConRemisiones>
+            <TextoConRemisiones siglas={siglas.get(claveSigla(i, "p"))}>
+              {b.texto}
+            </TextoConRemisiones>
           </p>
         </Marco>
       );
@@ -105,13 +111,17 @@ function BloqueVista({
           <div className="bloque-papel">
             {b.intro && (
               <p>
-                <TextoConRemisiones>{b.intro}</TextoConRemisiones>
+                <TextoConRemisiones siglas={siglas.get(claveSigla(i, "intro"))}>
+                  {b.intro}
+                </TextoConRemisiones>
               </p>
             )}
             <ul className="mt-2 list-disc space-y-1.5 pl-6">
               {b.items.map((it, j) => (
                 <li key={j}>
-                  <TextoConRemisiones>{it}</TextoConRemisiones>
+                  <TextoConRemisiones siglas={siglas.get(claveSigla(i, j))}>
+                    {it}
+                  </TextoConRemisiones>
                 </li>
               ))}
             </ul>
@@ -181,6 +191,8 @@ export const Bloques = memo(function Bloques({
     const t = setTimeout(() => el.classList.remove("destello"), 2000);
     return () => clearTimeout(t);
   }, [destacado, apartado]);
+  // La primera aparición de cada sigla del glosario en el apartado se vuelve pulsable.
+  const siglas = useMemo(() => primerasSiglas(apartado), [apartado]);
   return (
     <div className="space-y-5">
       {apartado.bloques.map((b, i) => {
@@ -193,7 +205,14 @@ export const Bloques = memo(function Bloques({
         return (
           <NivelTitulo.Provider key={i} value={nivel}>
             <Fragment>
-              <BloqueVista b={b} i={i} slug={apartado.slug} prefijo={prefijo} nivelSub={nivelSub} />
+              <BloqueVista
+                b={b}
+                i={i}
+                slug={apartado.slug}
+                prefijo={prefijo}
+                nivelSub={nivelSub}
+                siglas={siglas}
+              />
               {/* Diagramas posteriores a la 0.3.0: tras su ancla, sin mover las anclas b1, b2… */}
               {diagramas.map((d) => (
                 <div

@@ -2,8 +2,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Table2 } from "lucide-react";
 import { GLOSARIO, INFO, LISTA_TABLAS, TABLAS, apartadoDeTabla, type TablaId } from "../contenido";
-import { DESTINOS, GRUPOS_CONSULTAR } from "../nav";
-import { href } from "../rutas";
+import { DESTINOS, GRUPOS_CONSULTAR, PREGUNTA_TABLA } from "../nav";
+import { elegirRuta, href } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Revelar, Segmented } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
 import { TablaVista } from "../componentes/TablaVista";
@@ -26,22 +26,23 @@ export function HubConsultar() {
       <Revelar as="li" key={id}>
         <a
           href={d.href}
-          className="hover-lift ease-brand flex h-full gap-3 rounded-2xl border bg-white p-4 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-          style={{
-            borderColor: "#e6e6e6",
-            background: `linear-gradient(160deg, ${hex.soft}, #ffffff 60%)`,
-          }}
+          className="hover-lift ease-brand flex h-full items-start gap-3 rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+          style={{ borderColor: "#e6e6e6" }}
         >
           <span
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white shadow-sm"
-            style={{ background: `linear-gradient(135deg, ${hex.strong}, ${hex.strong2})` }}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[3px] text-white"
+            style={{ background: hex.strong }}
             aria-hidden="true"
           >
-            <I size={20} />
+            <I size={18} />
           </span>
           <span className="min-w-0">
-            <span className="block text-base font-bold text-slate-900">{d.etiqueta}</span>
-            <span className="mt-0.5 block text-sm text-slate-600">{d.descripcion}</span>
+            <span className="block text-[15px] font-bold leading-snug text-slate-900">
+              {d.etiqueta}
+            </span>
+            <span className="mt-0.5 block text-xs leading-snug text-slate-600">
+              {d.descripcion}
+            </span>
           </span>
         </a>
       </Revelar>
@@ -51,11 +52,11 @@ export function HubConsultar() {
     <div>
       <CabeceraEditorial titulo="Consultar" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Accesos rápidos a las situaciones, tablas y recorridos del capítulo. El texto va literal y
-          con su página; lo que no es del capítulo va rotulado aparte.
+          Los sistemas, las situaciones, los recorridos y las tablas del capítulo, por tarea. El
+          texto va literal y con su página; lo que no es del capítulo va rotulado aparte.
         </p>
       </CabeceraEditorial>
-      <div className="space-y-6">
+      <div className="space-y-5">
         {GRUPOS_CONSULTAR.map((g) => (
           <section key={g.id} aria-labelledby={`grupo-${g.id}`}>
             <h2
@@ -65,7 +66,7 @@ export function HubConsultar() {
             >
               {g.titulo}
             </h2>
-            <ul className="grid gap-3 sm:grid-cols-2">{g.ids.map(tarjeta)}</ul>
+            <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{g.ids.map(tarjeta)}</ul>
           </section>
         ))}
         <section aria-labelledby="grupo-pacientes">
@@ -76,11 +77,15 @@ export function HubConsultar() {
           >
             Para el paciente
           </h2>
-          <ul className="grid gap-3 sm:grid-cols-2">{tarjeta("pacientes")}</ul>
+          <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{tarjeta("pacientes")}</ul>
         </section>
       </div>
-      <h2 className="mt-8 text-sm font-bold uppercase tracking-wide text-slate-500">
-        Las seis tablas
+      <h2
+        id="tablas-por-pregunta"
+        className="mt-8 text-sm font-bold uppercase tracking-wide"
+        style={{ color: hex.ink }}
+      >
+        Las tablas, por la pregunta que responden
       </h2>
       <ul className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {LISTA_TABLAS.map((t) => (
@@ -97,14 +102,12 @@ export function HubConsultar() {
                 aria-hidden="true"
               />
               <span className="min-w-0">
-                <span
-                  className="block text-xs font-bold uppercase tracking-wide"
-                  style={{ color: hex.ink }}
-                >
-                  Tabla {t.numero} ·{" "}
-                  {t.porSistema ? "por sistema" : t.id === "T6" ? "por procedimiento" : "lectura"}
+                <span className="block text-sm font-bold text-slate-900">
+                  {PREGUNTA_TABLA[t.id]}
                 </span>
-                <span className="block text-sm text-slate-800">{t.titulo}</span>
+                <span className="block text-xs text-slate-600">
+                  Tabla {t.numero} · {t.titulo}
+                </span>
               </span>
             </a>
           </li>
@@ -122,13 +125,9 @@ export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
   return (
     <div>
       <CabeceraEditorial titulo="Tablas del capítulo" hex={hex} level={1}>
-        {/* Texto de la app: qué pregunta responde cada tabla (las tres por sistema se parecen). */}
         <p className="text-sm text-slate-600">
-          Tres tablas comparan los cuatro sistemas, cada una para una pregunta distinta: la 1, sus
-          características (algoritmo, objetivos, indicación y parámetros configurables); la 3, cómo
-          se ajustan los parámetros clásicos; y la 4, qué herramienta usar ante situaciones
-          frecuentes. La 2 es la transición desde MDI; la 5, la revisión de la descarga; y la 6, las
-          exploraciones y la cirugía.
+          Las seis tablas, literales y con su página. Las de sistemas se filtran por sistema, y la
+          selección queda en el enlace para compartirla.
         </p>
       </CabeceraEditorial>
       <div className="no-imprimir mb-4 overflow-x-auto">
@@ -144,6 +143,8 @@ export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
             window.location.hash = href("consultar", "tablas", v);
           }}
         />
+        {/* La pregunta que responde la tabla elegida (las tres por sistema se parecen). */}
+        <p className="mt-2 text-base font-semibold text-slate-900">{PREGUNTA_TABLA[tid]}</p>
       </div>
       <div
         ref={ref}
@@ -152,7 +153,12 @@ export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
         key={tid}
       >
         <NivelTitulo.Provider value={2}>
-          <TablaVista tabla={tabla} modo="interactiva" seleccionInicial={seleccion} />
+          <TablaVista
+            tabla={tabla}
+            modo="interactiva"
+            seleccionInicial={seleccion}
+            onSeleccion={(x) => elegirRuta("consultar", "tablas", x ? `${tid}:${x}` : tid)}
+          />
         </NivelTitulo.Provider>
         <div className="mt-4">
           <VersionExtendida fragmentos={extendidosDeTabla(tid)} />

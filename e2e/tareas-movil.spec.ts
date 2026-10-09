@@ -2,8 +2,8 @@ import { test, expect, type Page } from "@playwright/test";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { auditar } from "./axe";
 
-/* Sesión 4 · móvil (393 px): tres consultas frecuentes, cada una a DOS toques desde la portada,
-   cronometradas; y las pantallas nuevas sin desbordes ni violaciones de axe. Los tiempos se
+/* Sesión 4 · móvil (393 px): tres consultas frecuentes, a dos o tres toques desde la portada
+   (desde la 0.15.0, «Situaciones» lleva al elegir situación y después sistema), cronometradas; y las pantallas nuevas sin desbordes ni violaciones de axe. Los tiempos se
    escriben en test-results/tareas-movil.json para el informe. */
 
 const tiempos: Record<string, { toques: number; ms: number }> = {};
@@ -24,9 +24,10 @@ test.describe("Tareas en dos toques (393 px)", () => {
 
   test("conducta de Omnipod 5 en ejercicio aeróbico", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: "¿Qué necesitas?" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Consultas frecuentes" })).toBeVisible();
     const t0 = Date.now();
-    await page.getByRole("link", { name: /Ejercicio y sistema/ }).tap();
+    await page.getByRole("link", { name: /^Situaciones/ }).tap();
+    await page.getByRole("button", { name: /^Ejercicio aeróbico/ }).tap();
     await page
       .getByRole("group", { name: "Sistema" })
       .getByRole("button", { name: /Omnipod 5/ })
@@ -34,7 +35,7 @@ test.describe("Tareas en dos toques (393 px)", () => {
     await expect(
       page.getByText(/Función Actividad, objetivo 150 mg\/dl; reduce la administración automática/),
     ).toBeVisible();
-    tiempos["Omnipod 5 · ejercicio aeróbico"] = { toques: 2, ms: Date.now() - t0 };
+    tiempos["Omnipod 5 · ejercicio aeróbico"] = { toques: 3, ms: Date.now() - t0 };
   });
 
   test("qué hacer con β-OHB 1,2 mmol/l", async ({ page }) => {
@@ -46,8 +47,8 @@ test.describe("Tareas en dos toques (393 px)", () => {
     tiempos["β-OHB 1,2 mmol/l"] = { toques: 2, ms: Date.now() - t0 };
   });
 
-  test("objetivos de MCG en la gestación", async ({ page }) => {
-    await page.goto("/");
+  test("objetivos de MCG en la gestación (desde Figuras y diagramas)", async ({ page }) => {
+    await page.goto("/#/visual");
     const t0 = Date.now();
     await page
       .getByRole("link", { name: /Objetivos de MCG/ })

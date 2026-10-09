@@ -32,6 +32,7 @@ import {
   Route,
   ScanLine,
   Search,
+  SlidersHorizontal,
   SpellCheck,
   Table2,
   Target,
@@ -73,6 +74,26 @@ export const DESTINOS: Destino[] = [
     cat: "consultar",
     descripcion:
       "Los cuatro sistemas con foto: lo que dice el capítulo de cada uno y su ficha técnica ampliada.",
+  },
+  {
+    id: "comparar",
+    etiqueta: "Comparar sistemas",
+    corto: "Comparar",
+    href: href("consultar", "tablas", "T1"),
+    icono: Columns3,
+    cat: "consultar",
+    descripcion:
+      "La Tabla 1 con los sistemas que elijas: cada característica con los sistemas uno junto a otro.",
+  },
+  {
+    id: "parametros",
+    etiqueta: "Parámetros por sistema",
+    corto: "Parámetros",
+    href: href("consultar", "tablas", "T3"),
+    icono: SlidersHorizontal,
+    cat: "consultar",
+    descripcion:
+      "Cómo se ajustan los parámetros clásicos en cada sistema (Tabla 3) y cuáles son configurables en automático.",
   },
   {
     id: "situacion",
@@ -124,7 +145,7 @@ export const DESTINOS: Destino[] = [
   {
     id: "tablas",
     etiqueta: "Tablas",
-    href: href("consultar", "tablas", "T1"),
+    href: href("consultar", "tablas"),
     icono: Table2,
     cat: "consultar",
     descripcion: "Las seis tablas del capítulo; las de sistemas se filtran por sistema.",
@@ -163,7 +184,7 @@ export const DESTINOS: Destino[] = [
     icono: Search,
     cat: "consultar",
     descripcion:
-      "Búsqueda instantánea en el texto del capítulo y, en un grupo aparte, en lo que no es del capítulo (sin IA generativa).",
+      "En el texto del capítulo por palabras y, con conexión, también por el sentido; aparte, lo que no es del capítulo.",
   },
   {
     id: "pacientes",
@@ -198,7 +219,7 @@ export const DESTINOS: Destino[] = [
     href: href("sobre"),
     icono: Info,
     cat: "confiar",
-    descripcion: "Alcance, fuente única, correcciones aplicadas y descargo educativo.",
+    descripcion: "Qué es, de dónde sale el texto, alcance y datos, y la guía rápida.",
   },
   {
     id: "test",
@@ -221,17 +242,89 @@ export const DESTINOS: Destino[] = [
   },
 ];
 
-/* «Consultar», agrupado (barra lateral, hub de Consultar y «Más»). */
+/* «Consultar», agrupado por tarea (hub de Consultar). */
 export const GRUPOS_CONSULTAR: { id: string; titulo: string; ids: string[] }[] = [
-  { id: "sistemas", titulo: "Sistemas", ids: ["sistemas"] },
-  {
-    id: "situaciones",
-    titulo: "Situaciones y recorridos",
-    ids: ["inicio", "situacion", "figura-3", "descarga", "interrupcion"],
-  },
-  { id: "figuras", titulo: "Figuras y tablas", ids: ["visual", "tablas", "infografia"] },
-  { id: "glosario", titulo: "Glosario", ids: ["glosario"] },
+  { id: "sistemas", titulo: "Sistemas", ids: ["sistemas", "comparar", "parametros"] },
+  { id: "seguimiento", titulo: "Inicio y seguimiento", ids: ["inicio", "descarga"] },
+  { id: "situaciones", titulo: "Situaciones", ids: ["figura-3", "situacion", "interrupcion"] },
+  { id: "recursos", titulo: "Tablas, figuras y glosario", ids: ["tablas", "visual", "glosario"] },
 ];
+
+/* Navegación global: cinco áreas. Cada sección de la ruta pertenece a una sola, y el destino
+   activo de la barra inferior y de la lateral sale de aquí (no de comprobaciones sueltas). */
+export type Area = "inicio" | "consultar" | "leer" | "buscar" | "mas";
+const AREA_DE_SECCION: Record<string, Area> = {
+  "": "inicio",
+  consultar: "consultar",
+  sistemas: "consultar",
+  visual: "consultar",
+  capitulo: "leer",
+  repaso: "leer",
+  test: "leer",
+  buscar: "buscar",
+  mas: "mas",
+  pacientes: "mas",
+  bibliografia: "mas",
+  cambios: "mas",
+  sobre: "mas",
+};
+export const areaDe = (seccion: string): Area => AREA_DE_SECCION[seccion] ?? "inicio";
+
+/* Menú (barra lateral de escritorio y menú del móvil): tres grupos breves. El índice de los
+   apartados solo se despliega dentro de la lectura. */
+export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
+  {
+    area: "consultar",
+    titulo: "Consultar",
+    ids: [
+      "sistemas",
+      "comparar",
+      "inicio",
+      "descarga",
+      "figura-3",
+      "situacion",
+      "interrupcion",
+      "tablas",
+      "visual",
+    ],
+  },
+  { area: "leer", titulo: "Leer y comprender", ids: ["capitulo", "repaso", "test"] },
+  {
+    area: "mas",
+    titulo: "Más recursos",
+    ids: ["pacientes", "glosario", "bibliografia", "cambios", "sobre"],
+  },
+];
+
+/* ¿Está activo este destino en esta ruta? (un único criterio para lateral, menú y hubs).
+   Comparar (Tabla 1) y Parámetros (Tabla 3) son vistas de Tablas: cada una se marca con su
+   tabla, y «Tablas» con las demás. */
+export function destinoActivo(
+  id: string,
+  ruta: { seccion: string; sub?: string; detalle?: string },
+) {
+  const tabla = ruta.seccion === "consultar" && ruta.sub === "tablas" ? (ruta.detalle ?? "") : null;
+  if (id === "comparar") return tabla?.startsWith("T1") ?? false;
+  if (id === "parametros") return tabla?.startsWith("T3") ?? false;
+  if (id === "tablas") return tabla != null && !/^T[13]/.test(tabla);
+  if (id === "capitulo") return ruta.seccion === "capitulo";
+  const d = DESTINOS.find((x) => x.id === id);
+  if (!d) return false;
+  const [seccion, sub] = d.href.replace(/^#\//, "").split("/");
+  if (seccion !== ruta.seccion) return false;
+  return sub ? ruta.sub === sub : true;
+}
+
+/* Entrada a las tablas por la pregunta que responde cada una (texto de la app; el título y
+   el contenido son los del capítulo). Las tres por sistema se parecen: así se distinguen. */
+export const PREGUNTA_TABLA: Record<"T1" | "T2" | "T3" | "T4" | "T5" | "T6", string> = {
+  T1: "¿Qué características diferencian a los sistemas?",
+  T2: "¿Cómo se pasa de MDI a un sistema?",
+  T3: "¿Cómo se ajusta cada parámetro en cada sistema?",
+  T4: "¿Qué herramienta del sistema usar en cada situación?",
+  T5: "¿Cómo se revisa la descarga, paso a paso?",
+  T6: "¿Qué hacer con el sistema ante una exploración o una cirugía?",
+};
 
 export const ICONO_CAPITULO = BookOpen;
 /* Icono de cada apartado (índice en mosaico de la portada y cabecera del apartado). */

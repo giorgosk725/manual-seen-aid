@@ -1,15 +1,14 @@
-/* «Guía rápida»: tarjeta de primera visita en la portada (se cierra y no vuelve) y la
-   misma guía en «Sobre esta versión». Texto de la app, no del capítulo. */
-import { BookOpen, HeartHandshake, Route, Search, X } from "lucide-react";
+/* «Guía rápida», en «Sobre esta versión» (voluntaria: la portada ya explica la app con su
+   contenido, sin una bienvenida que haya que cerrar). Texto de la app, no del capítulo. */
+import { BookOpen, HeartHandshake, Route, Search } from "lucide-react";
 import { href } from "../rutas";
-import { cerrarBienvenida, useBienvenidaVista } from "../prefs";
 
 const PASOS = [
   {
     icono: Search,
     titulo: "Busca con tus palabras",
     texto:
-      "En la caja de «¿Qué necesitas?» o con la lupa (Ctrl K): «cetonas 1,2», «resonancia con 780G», «cuánto tiempo puedo estar desconectado». Arriba, el pasaje del capítulo que mejor encaja, literal y con su página.",
+      "En el buscador de la portada o con la lupa (Ctrl K): «cetonas 1,2», «resonancia con 780G», «cuánto tiempo puedo estar desconectado». Arriba, el pasaje del capítulo que mejor encaja, literal y con su página.",
     ruta: href("buscar"),
     enlace: "Buscar",
   },
@@ -30,11 +29,11 @@ const PASOS = [
   },
   {
     icono: BookOpen,
-    titulo: "El capítulo entero",
+    titulo: "Leer y comprender",
     texto:
       "Los 13 apartados con sus tablas y figuras; la app recuerda dónde lo dejaste. Funciona sin conexión y se puede instalar.",
     ruta: href("capitulo"),
-    enlace: "Índice",
+    enlace: "Leer y comprender",
   },
 ];
 
@@ -66,45 +65,5 @@ export function GuiaDeUso({ nivel = 3 }: { nivel?: 2 | 3 }) {
         );
       })}
     </ul>
-  );
-}
-
-export function Bienvenida() {
-  const vista = useBienvenidaVista();
-  if (vista) return null;
-  return (
-    <section
-      aria-labelledby="bienvenida"
-      className="rounded-xl border-2 bg-white p-4 sm:p-5"
-      style={{ borderColor: "#3f6e9f" }}
-    >
-      <div className="mb-3 flex items-start justify-between gap-3">
-        <h2 id="bienvenida" className="text-base font-extrabold text-slate-900">
-          Guía rápida
-        </h2>
-        <button
-          type="button"
-          onClick={cerrarBienvenida}
-          aria-label="Cerrar la guía de bienvenida"
-          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-        >
-          <X size={18} aria-hidden="true" />
-        </button>
-      </div>
-      <GuiaDeUso />
-      <div className="mt-3 flex flex-wrap items-center gap-3">
-        <button
-          type="button"
-          onClick={cerrarBienvenida}
-          className="inline-flex min-h-11 items-center rounded-lg px-4 text-sm font-bold text-white"
-          style={{ background: "#3f6e9f" }}
-        >
-          Entendido
-        </button>
-        <span className="text-xs text-slate-500">
-          Puedes volver a verla en «Sobre esta versión».
-        </span>
-      </div>
-    </section>
   );
 }

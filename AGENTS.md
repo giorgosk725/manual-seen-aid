@@ -203,6 +203,25 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     (`npx vite-node scripts/semantica/vectores.mjs`, needs `wrangler login`); `src/semantica.test.ts`
     fails otherwise. Thresholds were set a priori; changing them needs a NEW blind bank
     (`scripts/semantica/fusion.mjs <bank>` compares words vs fusion). Details in `docs/SEMANTICA.md`.
+26. **Navigation map (0.15.0, plan in `docs/PLAN_2026-10-09.md`).** Five areas — Inicio,
+    Consultar, Leer, Buscar, Más — and every route section belongs to exactly one
+    (`AREA_DE_SECCION`/`areaDe` in `nav.ts`); the bottom bar, the side menu (`MENU`) and the
+    mobile menu read it from there, and `destinoActivo` decides the active item (never ad hoc
+    string checks in components). New screens are added to that map. The home page stays
+    compact (≤ 2.5 screens at 393 px, e2e `navegacion-movil.spec.ts`): inventories live in
+    their home (index → Leer, diagrams → Figuras y diagramas, systems → Consultar). The system
+    sheet has sections with their own route (`#/sistemas/<id>/<esencial|funciona|parametros|situaciones|ampliacion>`),
+    and table selections travel in the route (`T1:minimed-780g+omnipod-5`, `T6:3`).
+27. **Comprehension without new content (0.15.0, delivery 3 of the plan).** `src/siglas.ts`
+    makes the FIRST occurrence of each glossary sigla in each apartado (paragraphs and lists)
+    a `SiglaPulsable` (`componentes/Sigla.tsx`) that shows the literal glossary development and
+    its page; the chapter text never changes, and the search index and audits read the data,
+    not the DOM. `src/guias/` holds reading guides BY REFERENCE (the same `Pieza` as inicio.ts,
+    rendered by `componentes/Piezas.tsx`): the step labels are app text, everything else is
+    literal chapter text with its page; `guias.test.tsx` fails if a reference stops existing.
+    Any explanatory text written by the app (guías de lectura, ejemplos comentados, casos)
+    needs the author's approval first and stays out of the public repo until then, like the
+    frequent questions and the guided cases of 4-10-2026.
 
 ## 2. Quality gates (all must pass before a push)
 

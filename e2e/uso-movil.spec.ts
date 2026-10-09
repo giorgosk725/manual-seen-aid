@@ -6,7 +6,7 @@ test.describe("Uso 0.10.0 en el móvil", () => {
     page,
   }) => {
     await page.goto("/#/");
-    const caja = page.getByLabel("¿Qué necesitas? Escribe lo que buscas");
+    const caja = page.getByLabel("Busca un tema, un sistema o una pregunta");
     await caja.focus();
     await expect
       .poll(async () => (await caja.boundingBox())?.y ?? 9999, { timeout: 3000 })
