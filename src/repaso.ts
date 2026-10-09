@@ -7,7 +7,7 @@
    (1, 3, 7, 16 y 35 días); lo que no, vuelve a la caja 1 y se repite en la misma ronda. El
    progreso se guarda solo en este dispositivo (prefs.ts, «mseen:repaso»). */
 import { CIFRAS, type Cifra } from "./contenido/cifras";
-import { GLOSARIO, apartadoPorSlug } from "./contenido";
+import { GLOSARIO, apartadoDePagina, apartadoPorSlug } from "./contenido";
 import { href } from "./rutas";
 import type { ProgresoRepaso } from "./prefs";
 
@@ -19,7 +19,7 @@ export interface Tarjeta {
   pregunta: string;
   respuesta: string;
   pagina: number;
-  /* Dónde leerla: el apartado (o su subapartado) o la sigla en el glosario. */
+  /* Dónde leerla: el apartado (o su subapartado) o el apartado en que se desarrolla la sigla. */
   ruta: string;
   /* Dosis orientativas de la Figura 3: la respuesta lleva su nota. */
   asterisco: boolean;
@@ -56,7 +56,7 @@ export const TARJETAS: Tarjeta[] = [
     pregunta: g.sigla,
     respuesta: g.desarrollo,
     pagina: g.pagina,
-    ruta: href("consultar", "glosario", g.sigla),
+    ruta: href("capitulo", apartadoDePagina(g.pagina)?.slug ?? "01-introduccion"),
     asterisco: false,
   })),
 ];

@@ -8,13 +8,24 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.20.2";
+export const VERSION_APP = "0.21.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-09",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — autoevaluación confirmada`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — más operativa: menos capas, el paciente a mano`,
+    detalle: [
+      "«Para el paciente» pasa a primer plano: tercera entrada de la portada, tercera tarea de Consultar y en el menú.",
+      "Se retira la versión extendida (los fragmentos del borrador largo que no entraron en el capítulo) de las fichas, las tablas y el buscador: la app muestra el capítulo publicado y, aparte y rotulada, la ampliación técnica de cada sistema, ahora con enlace a la ficha del mismo sistema en la edición educativa de asistente-aid para el detalle.",
+      "Se retira el glosario como pantalla: las siglas siguen explicándose al pulsarlas en el texto, en las tarjetas de repaso y en el buscador, y llevan al apartado donde el capítulo las desarrolla.",
+      "«Sobre esta versión» y «Qué ha cambiado» se unen en una sola pantalla corta, «Sobre esta app»: qué es, qué hay además del capítulo, datos, lo pendiente y, plegados, el historial de versiones y las correcciones editoriales.",
+    ],
+  },
+  {
+    fecha: "2026-10-09",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.20.2 — autoevaluación confirmada",
     detalle: [
       "Las diez preguntas de la autoevaluación quedan confirmadas: desaparecen el rótulo «Pendiente de validación» y ese punto de la lista de pendientes. Son las preguntas del cuestionario del capítulo (mayo de 2026), comprobadas una a una contra el texto publicado.",
     ],

@@ -9,7 +9,6 @@ const PUERTAS = [
   { t: "Iniciar un sistema", ruta: href("consultar", "inicio") },
   { t: "Revisar la descarga", ruta: href("consultar", "descarga", "1") },
   { t: "Comparar sistemas (Tabla 1)", ruta: href("consultar", "tablas", "T1") },
-  { t: "Glosario de siglas", ruta: href("consultar", "glosario") },
 ];
 
 export function SinResultados({ onIr }: { onIr?: () => void }) {

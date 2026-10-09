@@ -133,7 +133,7 @@ describe("pantalla de tarjetas", () => {
     const primera = mazo("siglas")[0];
     expect(screen.getByText(primera.respuesta)).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /Verla en el glosario \(p\. \d+\)/ }),
+      screen.getByRole("link", { name: /Leerla en el apartado \(p\. \d+\)/ }),
     ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /^Sí/ }));
     expect(screen.getByText("2 de 10")).toBeInTheDocument();

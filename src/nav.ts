@@ -17,7 +17,6 @@ import {
   GraduationCap,
   Handshake,
   HeartHandshake,
-  History,
   Hospital,
   Images,
   Info,
@@ -34,7 +33,6 @@ import {
   ScanLine,
   Search,
   SlidersHorizontal,
-  SpellCheck,
   Table2,
   Target,
   Telescope,
@@ -170,15 +168,6 @@ export const DESTINOS: Destino[] = [
     descripcion: "El mapa del capítulo en cuatro bloques, con enlace a cada apartado.",
   },
   {
-    id: "glosario",
-    etiqueta: "Glosario de siglas",
-    corto: "Glosario",
-    href: href("consultar", "glosario"),
-    icono: SpellCheck,
-    cat: "consultar",
-    descripcion: "Las siglas del capítulo, con el desarrollo que da el propio capítulo.",
-  },
-  {
     id: "buscar",
     etiqueta: "Buscar",
     href: href("buscar"),
@@ -208,16 +197,6 @@ export const DESTINOS: Destino[] = [
       "Hojas para entregar al paciente: la información completa, hojas breves por situación y el plan de seguridad de cada sistema; con letra grande y código QR.",
   },
   {
-    id: "extendida",
-    etiqueta: "Versión extendida",
-    corto: "Extendida",
-    href: href("extendida"),
-    icono: Telescope,
-    cat: "confiar",
-    descripcion:
-      "Fragmentos del borrador largo que no entraron en el capítulo publicado, por apartado y rotulados; no forman parte del Manual.",
-  },
-  {
     id: "bibliografia",
     etiqueta: "Bibliografía",
     href: href("bibliografia"),
@@ -226,21 +205,13 @@ export const DESTINOS: Destino[] = [
     descripcion: "Las diez referencias del capítulo, con su enlace.",
   },
   {
-    id: "cambios",
-    etiqueta: "Qué ha cambiado",
-    href: href("cambios"),
-    icono: History,
-    cat: "confiar",
-    descripcion: "Fecha de cada revisión del capítulo y de la app, y lo pendiente.",
-  },
-  {
     id: "sobre",
-    etiqueta: "Sobre esta versión",
+    etiqueta: "Sobre esta app",
     corto: "Sobre",
     href: href("sobre"),
     icono: Info,
     cat: "confiar",
-    descripcion: "Qué es, de dónde sale el texto, alcance y datos, y la guía rápida.",
+    descripcion: "Qué es, de dónde sale el texto, datos, lo pendiente y el historial de versiones.",
   },
   {
     id: "casos",
@@ -281,18 +252,18 @@ export const GRUPOS_CONSULTAR: { id: string; titulo: string; ids: string[] }[] =
     ids: [
       "parametros",
       "comparar",
+      "pacientes",
       "descarga",
       "inicio",
       "situacion",
       "figura-3",
       "interrupcion",
-      "pacientes",
     ],
   },
   {
     id: "recursos",
     titulo: "Recursos",
-    ids: ["sistemas", "tablas", "visual", "glosario", "preguntas"],
+    ids: ["sistemas", "tablas", "visual", "preguntas"],
   },
 ];
 
@@ -311,9 +282,8 @@ const AREA_DE_SECCION: Record<string, Area> = {
   buscar: "buscar",
   preguntas: "buscar",
   mas: "mas",
-  pacientes: "mas",
+  pacientes: "consultar",
   bibliografia: "mas",
-  extendida: "mas",
   cambios: "mas",
   sobre: "mas",
 };
@@ -328,6 +298,7 @@ export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
     ids: [
       "parametros",
       "comparar",
+      "pacientes",
       "sistemas",
       "inicio",
       "descarga",
@@ -342,7 +313,7 @@ export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
   {
     area: "mas",
     titulo: "Más recursos",
-    ids: ["pacientes", "glosario", "extendida", "bibliografia", "cambios", "sobre"],
+    ids: ["bibliografia", "sobre"],
   },
 ];
 

@@ -107,6 +107,10 @@ export const subapartados = (a: Apartado) =>
    «copiar enlace»): h3 usa su id; el resto, su posición. */
 export const idDeBloque = (b: Bloque, i: number) => (b.t === "h3" ? b.id : `b${i + 1}`);
 
+/* El apartado en el que cae una página del PDF (para llevar una sigla o una cita a su sitio). */
+export const apartadoDePagina = (p: number): Apartado | undefined =>
+  APARTADOS.find((a) => p >= a.paginas[0] && p <= a.paginas[1]);
+
 /* La tabla en su sitio del capítulo (#/capitulo/<slug>/<bN>): la fuente exacta, no el
    principio del apartado. */
 export const rutaDeTabla = (id: TablaId): string | undefined => {

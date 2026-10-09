@@ -128,15 +128,12 @@ describe("App", () => {
     expect(screen.queryByText("¿Qué es un sistema de asa cerrada?")).toBeNull();
   });
 
-  it("la versión extendida no está en la lectura: va aparte, plegada y rotulada", async () => {
+  it("la versión extendida no se muestra (ni en la lectura ni en las fichas)", async () => {
     render(<App />);
     await ir("#/capitulo/12-horizonte");
     expect(screen.queryByText("Versión extendida · no publicada en el Manual")).toBeNull();
-    await ir("#/extendida");
-    const capa = screen.getAllByText("Versión extendida · no publicada en el Manual")[0];
-    const det = capa.closest("details")!;
-    expect(det).not.toHaveAttribute("open");
-    expect(within(det).getAllByText(/Borrador V85 limpio · 31-5-2026/).length).toBeGreaterThan(0);
+    await ir("#/sistemas/op5");
+    expect(screen.queryByText("Versión extendida · no publicada en el Manual")).toBeNull();
   });
 
   it("los diagramas nuevos se muestran en su apartado sin mover las anclas", async () => {

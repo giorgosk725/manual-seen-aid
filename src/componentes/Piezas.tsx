@@ -1,13 +1,10 @@
 /* Pinta una «pieza» por referencia (inicio.ts): frases de un párrafo, una lista, una fila de
-   tabla, la casilla de un sistema, la línea de inicialización, un hito, fragmentos extendidos
-   o un enlace. La usan «Iniciar un sistema» y las guías por referencias (guias/) de la ficha
+   tabla, la casilla de un sistema, la línea de inicialización, un hito o un enlace. La usan «Iniciar un sistema» y las guías por referencias (guias/) de la ficha
    de cada sistema. Aquí no hay texto propio: todo sale del capítulo con su página. */
 import { ArrowRight } from "lucide-react";
 import { TABLAS } from "../contenido";
-import { FRAGMENTOS_EXTENDIDOS } from "../extendida";
 import { PaginaBadge } from "../ui";
 import { Lineas } from "../texto";
-import { VersionExtendida } from "./VersionExtendida";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { frasesDe, lineasInicializacion, listaDe, type Pieza } from "../inicio";
 
@@ -181,10 +178,6 @@ export function PiezaVista({ pieza, sis }: { pieza: Pieza; sis?: number }) {
           </div>
         </div>
       );
-    }
-    case "extendida": {
-      const fs = FRAGMENTOS_EXTENDIDOS.filter((f) => pieza.ids.includes(f.id));
-      return <VersionExtendida fragmentos={fs} nivel={3} />;
     }
     case "enlace":
       return (

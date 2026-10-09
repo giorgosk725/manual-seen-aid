@@ -1,8 +1,7 @@
-/* Consultar: hub + tablas (filtrables) + Figura 3 (recorrido) + infografía (mapa) + glosario. */
-import { useEffect, useMemo, useRef, useState } from "react";
+/* Consultar: hub + tablas (filtrables) + Figura 3 (recorrido) + infografía (mapa). */
+import { useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import {
-  GLOSARIO,
   INFO,
   LISTA_TABLAS,
   TABLAS,
@@ -18,10 +17,7 @@ import { TablaVista } from "../componentes/TablaVista";
 import { Figura3Recorrido } from "../componentes/Figura3Vista";
 import { ImagenFigura } from "../componentes/FiguraVista";
 import { Texto } from "../texto";
-import { normalizar } from "../busqueda";
-import { VersionExtendida } from "../componentes/VersionExtendida";
 import { EnlaceEducativa } from "../componentes/Lectura";
-import { extendidosDeTabla } from "../extendida";
 import { NivelTitulo } from "../nivel-contexto";
 
 const hex = CATEGORIA_HEX.consultar;
@@ -262,9 +258,6 @@ export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
             onSeleccion={(x) => elegirRuta("consultar", "tablas", x ? `${tid}:${x}` : tid)}
           />
         </NivelTitulo.Provider>
-        <div className="mt-4">
-          <VersionExtendida fragmentos={extendidosDeTabla(tid)} />
-        </div>
         <div
           className="no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3"
           style={{ borderColor: "#e6e6e6" }}
@@ -424,63 +417,6 @@ export function Infografia() {
         Infografía del capítulo (apartado 13), p. {INFO.pagina}.
       </p>
       <ImagenFigura figura={INFO} />
-    </div>
-  );
-}
-
-export function Glosario({ sigla }: { sigla?: string }) {
-  const [q, setQ] = useState(sigla ?? "");
-  // La sigla de la URL (desde la búsqueda o con Atrás) manda sobre el filtro.
-  useEffect(() => setQ(sigla ?? ""), [sigla]);
-  const lista = useMemo(() => {
-    const n = normalizar(q.trim());
-    if (!n) return GLOSARIO;
-    return GLOSARIO.filter(
-      (g) => normalizar(g.sigla).includes(n) || normalizar(g.desarrollo).includes(n),
-    );
-  }, [q]);
-  return (
-    <div>
-      <CabeceraEditorial titulo="Glosario de siglas" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          Las siglas del capítulo, con el desarrollo que da el propio capítulo y la página en la que
-          lo hace.
-        </p>
-      </CabeceraEditorial>
-      <label className="sr-only" htmlFor="glos-q">
-        Filtrar siglas
-      </label>
-      <input
-        id="glos-q"
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        placeholder="Filtrar (p. ej. TBR, β-OHB…)"
-        className="mb-3 w-full max-w-md rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-      />
-      <dl className="grid gap-2 sm:grid-cols-2">
-        {lista.map((g) => (
-          <div
-            key={g.sigla}
-            id={`sigla-${g.sigla}`}
-            className="flex items-start gap-3 rounded-xl border bg-white p-3 shadow-soft"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            <dt
-              className="shrink-0 rounded-lg px-2 py-1 text-sm font-extrabold"
-              style={{ background: hex.soft, color: hex.ink }}
-            >
-              {g.sigla}
-            </dt>
-            <dd className="min-w-0 flex-1 text-sm text-slate-800">
-              {g.desarrollo}
-              <span className="pagina-badge ml-2">p. {g.pagina}</span>
-            </dd>
-          </div>
-        ))}
-      </dl>
-      {lista.length === 0 && (
-        <p className="text-sm text-slate-600">Ninguna sigla del capítulo coincide.</p>
-      )}
     </div>
   );
 }

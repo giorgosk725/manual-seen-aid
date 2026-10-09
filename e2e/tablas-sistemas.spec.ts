@@ -7,7 +7,10 @@ test.describe("Tablas y sistemas", () => {
     page,
   }) => {
     await page.goto("/#/consultar");
-    await page.getByRole("link", { name: /^Parámetros por sistema/ }).click();
+    await page
+      .getByRole("main")
+      .getByRole("link", { name: /^Parámetros por sistema/ })
+      .click();
     await expect(page).toHaveURL(/#\/consultar\/parametros$/);
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Parámetros por sistema");
     await page.getByRole("link", { name: /^Omnipod 5/ }).click();

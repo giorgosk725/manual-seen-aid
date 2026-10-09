@@ -54,3 +54,11 @@ export const CASO_EDUCATIVO: Record<string, CasoEducativo> = {
     texto: "Programación inicial: pacientes de ejemplo",
   },
 };
+
+/* Ficha de cada sistema en la edición educativa (el detalle técnico vive allí). */
+export const FICHA_SISTEMA_EDUCATIVA: Record<string, string> = {
+  mm780: EDUCATIVA + "#/sistemas/mm780",
+  ciq: EDUCATIVA + "#/sistemas/ciq",
+  camaps: EDUCATIVA + "#/sistemas/camaps",
+  op5: EDUCATIVA + "#/sistemas/op5",
+};

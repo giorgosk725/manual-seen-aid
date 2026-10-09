@@ -46,8 +46,8 @@ test.describe("Navegación y portada (393 px)", () => {
       ["/#/capitulo/04-sistemas", "Leer"],
       ["/#/test", "Leer"],
       ["/#/repaso", "Leer"],
-      ["/#/pacientes", "Más"],
-      ["/#/cambios", "Más"],
+      ["/#/pacientes", "Consultar"],
+      ["/#/sobre", "Más"],
     ]) {
       await page.goto(ruta);
       await expect(barra.getByRole("link", { name: area }), ruta).toHaveAttribute(

@@ -78,9 +78,7 @@ test.describe("Para el paciente: letra grande", () => {
 });
 
 test.describe("Nocturno en lo nuevo", () => {
-  test("pacientes, plan, test, diagramas nuevos y versión extendida sin violaciones", async ({
-    page,
-  }) => {
+  test("pacientes, plan, test, diagramas nuevos y Sobre sin violaciones", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("button", { name: "Modo nocturno" }).first().click();
     await expect(page.locator("html")).toHaveClass(/night/);
@@ -100,24 +98,23 @@ test.describe("Nocturno en lo nuevo", () => {
       await page.goto(ruta);
       await auditar(page, nombre);
     }
-    await page.goto("/#/extendida");
-    await page
-      .locator("details.extendida")
-      .first()
-      .evaluate((d) => ((d as HTMLDetailsElement).open = true));
-    await auditar(page, "Versión extendida abierta");
+    await page.goto("/#/sobre");
+    await auditar(page, "Sobre esta app");
   });
 });
 
 test.describe("Búsqueda y enlaces", () => {
   test("lo que no es del capítulo sale aparte y rotulado", async ({ page }) => {
-    await page.goto("/#/buscar/Nightscout");
+    await page.goto("/#/buscar/urgencias");
     await expect(
-      page.getByRole("heading", { name: /Fuera del capítulo · versión extendida, ampliación/ }),
+      page.getByRole("heading", { name: /Fuera del capítulo · ampliación/ }),
     ).toBeVisible();
-    await page.getByRole("link", { name: /Versión extendida · DIY: Nightscout y AAPS/ }).click();
-    await expect(page).toHaveURL(/#\/extendida\/E49$/);
-    await expect(page.locator("#ext-E49")).toBeVisible();
+    await page
+      .getByRole("link", {
+        name: /Información para pacientes · ¿Cuándo se debe acudir a urgencias\?/,
+      })
+      .click();
+    await expect(page).toHaveURL(/#\/pacientes\/informacion$/);
   });
 
   test("la barra lateral: Inicio y tres grupos; «Más recursos» plegado salvo dentro", async ({
@@ -128,7 +125,7 @@ test.describe("Búsqueda y enlaces", () => {
     for (const g of ["Consultar", "Leer capítulo", "Más recursos"])
       await expect(nav.getByText(g, { exact: true }).first()).toBeVisible();
     await expect(nav.getByRole("link", { name: "Comparar sistemas" })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Para el paciente" })).toBeHidden();
+    await expect(nav.getByRole("link", { name: "Para el paciente" })).toBeVisible();
     await page.goto("/#/pacientes");
     await expect(nav.getByRole("link", { name: "Para el paciente" })).toHaveAttribute(
       "aria-current",

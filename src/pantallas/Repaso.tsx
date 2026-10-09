@@ -192,7 +192,7 @@ function TarjetaVista({
                 href={t.ruta}
                 className="mt-2 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline"
               >
-                {t.mazo === "cifras" ? "Leerlo en el apartado" : "Verla en el glosario"} (p.{" "}
+                {t.mazo === "cifras" ? "Leerlo en el apartado" : "Leerla en el apartado"} (p.{" "}
                 {t.pagina}) <ArrowRight size={14} aria-hidden="true" />
               </a>
             </div>

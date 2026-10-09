@@ -148,7 +148,7 @@ function Tarjeta({
               ? r.sistema
                 ? "Ver en la ficha del sistema"
                 : "Ver la tabla"
-              : "Ver en el glosario"}{" "}
+              : "Ver en el apartado"}{" "}
         <ArrowRight size={14} aria-hidden="true" />
       </a>
     </div>

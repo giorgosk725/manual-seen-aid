@@ -85,13 +85,6 @@ const FRECUENTES = [
     t: "Iniciar un sistema",
     s: "Desde MDI, en cuatro fases",
   },
-  {
-    href: href("pacientes"),
-    icono: HeartHandshake,
-    color: FICHA_AREA.rosa,
-    t: "Para el paciente",
-    s: "Hojas para entregar: información, situaciones, plan de seguridad",
-  },
 ];
 
 /* Franja de cuatro colores (azul, burdeos, mostaza y rosa del Manual). */
@@ -406,6 +399,13 @@ export function Portada() {
               >
                 <BookOpen size={15} aria-hidden="true" /> Leer capítulo
               </a>
+              <a
+                href={href("pacientes")}
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[3px] border-2 px-4 text-sm font-semibold uppercase tracking-wide transition hover:bg-rose-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                style={{ borderColor: FICHA_AREA.rosa, color: SEEN.diabetesOsc }}
+              >
+                <HeartHandshake size={15} aria-hidden="true" /> Para el paciente
+              </a>
             </div>
             <SeguirLeyendo />
           </div>
@@ -433,10 +433,10 @@ export function Portada() {
           <ExternalLink size={13} aria-hidden="true" />
         </a>
         <a
-          href={href("cambios")}
+          href={href("sobre")}
           className="inline-flex min-h-11 items-center gap-1 font-semibold text-slate-700 hover:underline"
         >
-          App {VERSION_APP} · Qué ha cambiado <ArrowRight size={14} aria-hidden="true" />
+          App {VERSION_APP} · Sobre esta app <ArrowRight size={14} aria-hidden="true" />
         </a>
       </footer>
     </div>

@@ -1,12 +1,13 @@
 /* Búsqueda instantánea sobre el texto LITERAL del capítulo (sin IA generativa).
    Índice en memoria: un registro por párrafo, celda de tabla, caja de figura y referencia.
-   Aparte, en su propio grupo y rotuladas (decisión del autor, 3-10-2026): la versión
-   extendida del autor y la ampliación del autor (fichas de sistemas). Nunca se mezclan con
+   Aparte, en su propio grupo y rotulada: la ampliación técnica (fichas de sistemas), las
+   hojas para el paciente, los casos y el test. Nunca se mezclan con
    el capítulo: van detrás y con su rótulo.
    Comparación sin tildes ni mayúsculas; todos los términos deben aparecer. */
 import {
   APARTADOS,
   DIAGRAMAS,
+  apartadoDePagina,
   BIBLIOGRAFIA,
   FIGURA3,
   FIGURAS,
@@ -17,7 +18,6 @@ import {
 } from "./contenido";
 import { href } from "./rutas";
 import { plano } from "./marcado";
-import { FRAGMENTOS_EXTENDIDOS, textoDeFragmento } from "./extendida";
 import { CRITERIOS, FICHA_FILAS, SETS_INFUSION, SISTEMAS_AMPLIACION } from "./ampliacion";
 import { INFORMACION_PACIENTES, RESUMEN_CAPITULO } from "./pacientes/textos";
 import { PREGUNTAS } from "./contenido/test";
@@ -171,23 +171,13 @@ export function indice(): Entrada[] {
     out.push({
       id: `sigla/${g.sigla}`,
       tipo: "sigla",
-      titulo: "Glosario",
+      titulo: "Sigla del capítulo",
       texto: `${g.sigla}: ${g.desarrollo}`,
       pagina: g.pagina,
-      ruta: href("consultar", "glosario", g.sigla),
+      ruta: href("capitulo", apartadoDePagina(g.pagina)?.slug ?? APARTADOS[0].slug),
     });
   }
   // Fuera del capítulo (grupo aparte, rotulado).
-  for (const f of FRAGMENTOS_EXTENDIDOS) {
-    out.push({
-      id: `ext/${f.id}`,
-      tipo: "extendida",
-      titulo: `Versión extendida · ${f.titulo}`,
-      texto: textoDeFragmento(f),
-      pagina: 0,
-      ruta: href("extendida", f.id),
-    });
-  }
   for (const s of SISTEMAS_AMPLIACION) {
     const ruta = href("sistemas", s.id);
     for (const g of FICHA_FILAS)

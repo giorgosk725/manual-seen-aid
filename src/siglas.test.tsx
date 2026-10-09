@@ -55,10 +55,6 @@ describe("Siglas pulsables", () => {
     const panel = screen.getByRole("dialog", { name: "Sigla MCG" });
     expect(panel).toHaveTextContent("monitorización continua de glucosa");
     expect(panel).toHaveTextContent("p. 1");
-    expect(screen.getByRole("link", { name: /Ver en el glosario/ })).toHaveAttribute(
-      "href",
-      "#/consultar/glosario/MCG",
-    );
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(boton).toHaveFocus();

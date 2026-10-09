@@ -1,13 +1,12 @@
 /* Una sigla pulsable dentro del texto del capítulo: el botón es la propia sigla (subrayado de
    puntos, como las remisiones) y abre un panel breve con su desarrollo literal, la página y
-   «Ver en el glosario». Teclado: Intro o espacio abre, Esc cierra y devuelve el foco a la sigla;
+   Teclado: Intro o espacio abre, Esc cierra y devuelve el foco a la sigla;
    un toque fuera cierra. En el móvil, el panel es una hoja al pie, sobre la barra inferior; en
    pantallas grandes, junto a la sigla. No apila historial (es una ayuda rápida, no un diálogo). */
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowRight, X } from "lucide-react";
+import { X } from "lucide-react";
 import { desarrolloDe } from "../siglas";
-import { href } from "../rutas";
 
 const ANCHO_PANEL = 320;
 /* Pantalla grande (desde 640 px): el panel va junto a la sigla. Sin matchMedia (jsdom), móvil. */
@@ -121,12 +120,6 @@ export function SiglaPulsable({ sigla }: { sigla: string }) {
             <p className="mt-1.5 text-[15px] leading-snug sm:text-sm">
               {g.desarrollo} <span className="pagina-badge ml-1">p. {g.pagina}</span>
             </p>
-            <a
-              href={href("consultar", "glosario", sigla)}
-              className="mt-1 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
-            >
-              Ver en el glosario <ArrowRight size={13} aria-hidden="true" />
-            </a>
           </div>,
           document.body,
         )}

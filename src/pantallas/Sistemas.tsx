@@ -2,7 +2,7 @@
    para consultar, en secciones con ruta propia (#/sistemas/<id>/<seccion>): Lo esencial
    (Tabla 1), Parámetros (Tablas 1 y 3), Situaciones (Tabla 4), literales y con página, y
    aparte la Ampliación técnica (ficha técnica, sets, insulinas), fuera del capítulo y con sus
-   fuentes. */
+   fuentes, con enlace a la ficha del mismo sistema en asistente-aid para el detalle. */
 import { useEffect, useMemo, useRef, type ReactNode } from "react";
 import { ArrowRight, Check, ExternalLink, Minus, X } from "lucide-react";
 import {
@@ -39,10 +39,9 @@ import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { plano } from "../marcado";
-import { VersionExtendida } from "../componentes/VersionExtendida";
 import { BotonFavorito } from "../componentes/Lectura";
-import { extendidosDeSistema } from "../extendida";
 import { SITUACIONES } from "../situaciones";
+import { FICHA_SISTEMA_EDUCATIVA } from "../enlaces";
 import { comoFunciona } from "../guias";
 import { PiezaVista } from "../componentes/Piezas";
 
@@ -214,7 +213,16 @@ function Ampliacion({ s }: { s: Sistema }) {
         <p className="mt-1 text-sm text-violet-900">
           Ficha técnica con sus fuentes al pie (última verificación: {s.verified}). No forma parte
           del texto del Manual SEEN. La disponibilidad y las condiciones pueden cambiar: confirmar
-          siempre en la ficha técnica vigente.
+          siempre en la ficha técnica vigente.{" "}
+          <a
+            href={FICHA_SISTEMA_EDUCATIVA[s.id]}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold underline underline-offset-2"
+          >
+            Más detalle en la edición educativa de asistente-aid
+          </a>
+          .
         </p>
       </div>
       <div className="space-y-3">
@@ -883,9 +891,6 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             ))}
           </ol>
         </Foldable>
-        {extendidosDeSistema(s.id).length > 0 && (
-          <VersionExtendida fragmentos={extendidosDeSistema(s.id)} nivel={3} />
-        )}
       </section>
 
       {ver("ampliacion") && <Ampliacion s={s} />}

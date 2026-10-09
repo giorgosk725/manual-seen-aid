@@ -1,4 +1,4 @@
-/* Buscar, Bibliografía, Qué ha cambiado, Sobre esta versión, Autoevaluación y «Más» (móvil). */
+/* Buscar, Bibliografía, Sobre esta app, Autoevaluación, Preguntas frecuentes y «Más» (móvil). */
 import { guardarReciente } from "../prefs";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -12,9 +12,6 @@ import {
   XCircle,
 } from "lucide-react";
 import { FRECUENTES } from "../frecuentes";
-import { FRAGMENTOS_EXTENDIDOS, ROTULO_EXTENDIDA } from "../extendida";
-import { VersionExtendida } from "../componentes/VersionExtendida";
-import { APARTADOS } from "../contenido";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
 import { CAMBIOS, PENDIENTES, VERSION_APP } from "../contenido/cambios";
 import { PREGUNTAS } from "../contenido/test";
@@ -29,7 +26,6 @@ import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
 import { SinResultados } from "../componentes/SinResultados";
-import { GuiaDeUso } from "../componentes/Bienvenida";
 import { useFavoritos, useNocturno } from "../prefs";
 
 const fecha = (iso: string) =>
@@ -219,8 +215,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
         {fueraRes.length > 0 && (
           <section aria-labelledby="fuera" className="mt-6">
             <h2 id="fuera" className="text-sm font-bold text-amber-900">
-              Fuera del capítulo · versión extendida, ampliación técnica, hojas para el paciente y
-              test
+              Fuera del capítulo · ampliación técnica, hojas para el paciente y test
             </h2>
             <p className="text-xs text-slate-600">
               No es el texto del capítulo: material complementario, cada capa con su rótulo (versión
@@ -308,151 +303,46 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
 
 /* ---------- Qué ha cambiado ---------- */
 /* Línea de tiempo de cambios (capítulo o app). */
-function LineaCambios({ cambios }: { cambios: typeof CAMBIOS }) {
-  return (
-    <ol className="relative space-y-4 border-l-2 pl-5" style={{ borderColor: "#e6e6e6" }}>
-      {cambios.map((c, i) => (
-        <Revelar as="li" key={i} className="relative">
-          <span
-            aria-hidden="true"
-            className="absolute -left-[27px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-white"
-            style={{
-              background:
-                c.ambito === "capitulo" ? CATEGORIA_HEX.leer.strong : CATEGORIA_HEX.confiar.strong,
-            }}
-          />
-          <div className="rounded-[4px] border bg-white p-3" style={{ borderColor: "#e6e6e6" }}>
-            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-              <Badge tone={c.ambito === "capitulo" ? "sky" : "emerald"}>
-                {c.ambito === "capitulo" ? "Capítulo" : "App"}
-              </Badge>
-              <time dateTime={c.fecha}>{fecha(c.fecha)}</time>
-            </div>
-            <h3 className="mt-1 text-sm font-bold text-slate-900">{c.titulo}</h3>
-            <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm text-slate-700">
-              {c.detalle.map((d, j) => (
-                <li key={j}>{d}</li>
-              ))}
-            </ul>
-          </div>
-        </Revelar>
-      ))}
-    </ol>
-  );
-}
-
-/* Primero lo clínico (cambios del capítulo) y lo pendiente; después, las versiones de la app. */
-export function Cambios() {
-  const delCapitulo = CAMBIOS.filter((c) => c.ambito === "capitulo");
-  const deLaApp = CAMBIOS.filter((c) => c.ambito !== "capitulo");
-  return (
-    <div>
-      <CabeceraEditorial titulo="Qué ha cambiado" hex={CATEGORIA_HEX.confiar} level={1}>
-        <p className="text-sm text-slate-600">
-          Primero, los cambios del texto del capítulo y lo que aún está pendiente; después, cada
-          versión de la app, con su fecha.
-        </p>
-      </CabeceraEditorial>
-      <section aria-labelledby="cambios-capitulo">
-        <h2
-          id="cambios-capitulo"
-          className="mb-3 font-display text-base font-medium uppercase tracking-[0.04em] text-slate-800"
-        >
-          Cambios del capítulo
-        </h2>
-        <LineaCambios cambios={delCapitulo} />
-        <ToneCard tone="amber" title="Pendiente" className="mt-3">
-          <ul className="list-disc space-y-1 pl-5 text-sm text-slate-800">
-            {PENDIENTES.map((p, i) => (
-              <li key={i}>{p}</li>
-            ))}
-          </ul>
-        </ToneCard>
-      </section>
-      <section aria-labelledby="cambios-app" className="mt-8">
-        <h2
-          id="cambios-app"
-          className="mb-3 font-display text-base font-medium uppercase tracking-[0.04em] text-slate-800"
-        >
-          Versiones de la app
-        </h2>
-        <LineaCambios cambios={deLaApp.slice(0, 3)} />
-        {deLaApp.length > 3 && (
-          <details className="mt-4">
-            <summary className="inline-flex min-h-11 cursor-pointer items-center text-sm font-semibold text-slate-700">
-              Versiones anteriores ({deLaApp.length - 3})
-            </summary>
-            <div className="mt-3">
-              <LineaCambios cambios={deLaApp.slice(3)} />
-            </div>
-          </details>
-        )}
-      </section>
-    </div>
-  );
-}
-
-/* ---------- Sobre esta versión ---------- */
-/* Anotadas en la maquetación del 5-10-2026 y ya en el capítulo publicado el 8-10-2026. */
-const CORRECCIONES_FINALES = [
-  "Final 1/3 (p. 4, Tabla 1, Control-IQ+): «peso 9–200 kg, DTD 5–200 UI/día».",
-  "Final 2/3 (p. 15, Resolución de incidencias): con iSGLT2 ya no se rebaja el umbral a 200 mg/dl; «debe mantenerse una alta sospecha de cetoacidosis y medirse la cetonemia ante síntomas o situaciones de riesgo, con independencia del nivel de glucemia».",
-  "Final 3/3 (p. 25, bibliografía): «doi:10.2337/dci26-0122» al final de la referencia 6.",
-];
-
-/* Las 11 del 30-9-2026: ya en la maquetación del 5-10-2026 y en el capítulo publicado. */
+/* ---------- Sobre esta app: qué es, de dónde sale, datos, pendiente e historial ---------- */
+/* Correcciones editoriales ya incluidas en el capítulo publicado (3 finales del 5-10 y 11 del 30-9). */
 const CORRECCIONES = [
+  "Final 1/3 (p. 4, Tabla 1, Control-IQ+): «peso 9–200 kg, DTD 5–200 UI/día».",
+  "Final 2/3 (p. 15): con iSGLT2 ya no se rebaja el umbral a 200 mg/dl; «alta sospecha de cetoacidosis y medirse la cetonemia ante síntomas o situaciones de riesgo, con independencia del nivel de glucemia».",
+  "Final 3/3 (p. 25, bibliografía): «doi:10.2337/dci26-0122» en la referencia 6.",
   "1/11 (p. 3): «control predictivo basado en modelo (MPC) y lógica difusa».",
-  "2/11 (pp. 3–4): «Sistemas AID comercializados en España» en el texto y en el título de la Tabla 1.",
+  "2/11 (pp. 3–4): «Sistemas AID comercializados en España» en el texto y en la Tabla 1.",
   "3/11 (p. 4, Tabla 1): indicación de Omnipod 5 «≥ 2 años; sin peso mínimo; DTD ≥ 5 UI/día».",
   "4/11 (p. 5): sin guion tras «Omnipod 5».",
-  "5/11 (p. 8, Figura 3): cabecera de la columna amarilla «β-OHB 0,6-0,9 mmol/l»; nota al pie de las dosis con asterisco; «Precisan atención urgente» en negrita; «iSGLT2»; acentos y «β-OHB» unificado.",
+  "5/11 (p. 8, Figura 3): columna amarilla «β-OHB 0,6-0,9 mmol/l»; nota de las dosis con asterisco; «Precisan atención urgente» en negrita; «iSGLT2»; acentos y «β-OHB» unificado.",
   "6/11 (p. 11, Tabla 3): modo ejercicio «140–160 mg/dl».",
-  "7/11 (p. 11, Tabla 4): fila «Ejercicio anaeróbico o de alta intensidad» reconstruida como fila normal con una celda común a los cuatro sistemas.",
+  "7/11 (p. 11, Tabla 4): «Ejercicio anaeróbico o de alta intensidad» como fila normal con una celda común.",
   "8/11 (p. 21, Tabla 6): «Tomografía computarizada (TC)».",
   "9/11 (p. 24, infografía): «En modalidades híbridas»; «Requieren anuncio de comidas y bolo prandial»; «DM1»; «Mejora consistente del control glucémico con buen perfil de seguridad»; «Bomba de insulina o pod»; «Iniciar».",
-  "10/11 (pp. 24–25, bibliografía): referencia 6 completa (Holt RIG et al., Diabetes Care 2026); el DOI es la corrección final 3/3.",
-  "11/11 (encabezado gráfico de todas las páginas): no afecta al texto; no aplica a la app.",
+  "10/11 (pp. 24–25, bibliografía): referencia 6 completa (Holt RIG et al., Diabetes Care 2026).",
+  "11/11 (encabezado gráfico): no afecta al texto.",
 ];
 
 export function Sobre() {
+  const ultimoCap = CAMBIOS.find((c) => c.ambito === "capitulo")!;
+  const caja = "rounded-2xl border bg-white p-4 shadow-soft";
+  const borde = { borderColor: "#e6e6e6" };
   return (
     <div className="space-y-4">
-      <CabeceraEditorial titulo="Sobre esta versión" hex={CATEGORIA_HEX.confiar} level={1}>
+      <CabeceraEditorial titulo="Sobre esta app" hex={CATEGORIA_HEX.confiar} level={1}>
         <p className="text-sm text-slate-600">
-          Manual SEEN · AID {VERSION_APP}. Qué es, de dónde sale el texto y qué incluye.
+          Versión {VERSION_APP} ({fecha(CAMBIOS[0].fecha)}) · capítulo publicado el{" "}
+          {fecha(ultimoCap.fecha)}.
         </p>
       </CabeceraEditorial>
-      <section
-        className="rounded-2xl border bg-white p-4 shadow-soft"
-        style={{ borderColor: "#e6e6e6" }}
-        aria-labelledby="s-uso"
-      >
-        <h2 id="s-uso" className="mb-3 text-base font-extrabold text-slate-900">
-          Guía rápida
-        </h2>
-        <GuiaDeUso />
-      </section>
-      <section
-        className="prosa rounded-2xl border bg-white p-4 shadow-soft"
-        style={{ borderColor: "#e6e6e6" }}
-        aria-labelledby="s-que"
-      >
+      <section className={`prosa ${caja}`} style={borde} aria-labelledby="s-que">
         <h2 id="s-que" className="text-base font-extrabold text-slate-900">
           Qué es
         </h2>
         <p className="mt-2 text-sm">
-          Una versión de consulta del capítulo «{CAPITULO.titulo}» ({CAPITULO.autor},{" "}
-          {CAPITULO.obra}): sus tablas, algoritmos y situaciones clínicas organizados para el día a
-          día —por sistema, por situación o con el buscador—, con el texto completo para leerlo y la
-          página de cada dato. Se instala como una aplicación y funciona sin conexión.
-        </p>
-        <h2 className="mt-5 text-base font-extrabold text-slate-900">De dónde sale el texto</h2>
-        <p className="mt-2 text-sm">
-          El texto es el del capítulo {CAPITULO.numero} del {CAPITULO.obra} ({CAPITULO.area} ·{" "}
-          {CAPITULO.subseccion}), literal, tal como se publicó el {CAPITULO.fechaFuente} (
-          {CAPITULO.editorial}, {CAPITULO.paginas} páginas, ISBN {CAPITULO.isbn}). Cada bloque lleva
-          su página del PDF. Las figuras, que en el PDF son imágenes, están transcritas caja a caja.{" "}
+          El capítulo «{CAPITULO.titulo}» ({CAPITULO.obra}, capítulo {CAPITULO.numero}), preparado
+          para consultarlo en el día a día: por sistema, por situación o con el buscador, con el
+          texto completo y la página de cada dato. Se instala como aplicación y funciona sin
+          conexión.{" "}
           <a
             href={CAPITULO.url}
             target="_blank"
@@ -463,78 +353,70 @@ export function Sobre() {
           </a>
           .
         </p>
-        <h2 className="mt-5 text-base font-extrabold text-slate-900">
-          El capítulo y, aparte, lo que no es del capítulo
+        <h2 className="mt-4 text-base font-extrabold text-slate-900">
+          Qué hay además del capítulo
         </h2>
-        <p className="mt-2 text-sm">
-          Todo lo que viene del capítulo se muestra como texto literal con su página. Lo demás va
-          siempre rotulado y separado, nunca mezclado con él; si algo difiriera, se sigue el
-          capítulo:
-        </p>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
           <li>
-            <strong>Versión extendida · no publicada en el Manual</strong> (ámbar, plegada):
-            fragmentos de los borradores de mayo de 2026 que no cupieron en el capítulo, revisados
-            uno a uno, con su borrador y su fecha.
+            <strong>Ampliación técnica</strong>, en cada ficha de sistema: datos de ficha técnica
+            con sus fuentes y su fecha, rotulada «fuera del capítulo».
           </li>
           <li>
-            <strong>Ampliación técnica · fuera del capítulo</strong> (violeta): la ficha técnica de
-            cada sistema, con sus fuentes y su fecha de verificación.
+            <strong>Para el paciente</strong>: la información publicada, hojas breves, el plan de
+            seguridad de cada sistema y hojas a partir de la Figura 3 y la Tabla 6.
           </li>
           <li>
-            <strong>Para el paciente</strong>: la información para pacientes y el resumen del
-            capítulo, literales, tal como los maqueta la editorial; y el plan de seguridad de cada
-            sistema, hecho solo con texto del capítulo.
-          </li>
-          <li>
-            <strong>Autoevaluación</strong>: diez preguntas con su explicación y las frases del
-            capítulo que la respaldan, rotuladas «pendiente de validación» hasta su revisión final.
-          </li>
-          <li>
-            <strong>Tarjetas de repaso</strong>: las cifras de cada apartado y las siglas del
-            glosario, tal como las da el capítulo y con su página; no añaden texto. El avance se
-            guarda solo en este dispositivo.
+            <strong>Casos guiados, preguntas frecuentes y autoevaluación</strong>: material de la
+            app, revisado, que cita siempre la frase literal del capítulo con su página.
           </li>
         </ul>
-        <h2 className="mt-5 text-base font-extrabold text-slate-900">Alcance y datos</h2>
+        <h2 className="mt-4 text-base font-extrabold text-slate-900">Datos</h2>
         <p className="mt-2 text-sm">
-          Pensada para profesionales, con hojas para entregar al paciente. No contiene calculadoras,
-          no pide ni guarda datos de pacientes y no sustituye la ficha técnica de cada sistema, los
-          protocolos del centro ni el juicio clínico. Lo único que guarda el navegador son
-          preferencias de lectura: modo nocturno, tamaño de letra, por dónde se iba leyendo, los
-          apartados leídos, los favoritos, el avance de las tarjetas y las últimas búsquedas (se
-          borran con «Borrar»); todo se queda en este dispositivo. Para buscar también por el
-          sentido, el texto de la búsqueda, y nada más, se manda a un modelo de lenguaje de
-          Cloudflare (el mismo servicio que aloja la app), que devuelve los pasajes más parecidos;
-          no se guarda ni se registra. Sin conexión se busca solo por palabras. El plan de seguridad
-          se rellena a mano, en papel.
+          No pide ni guarda datos de pacientes. En este dispositivo se guardan solo preferencias de
+          lectura (modo nocturno, letra, por dónde se iba, favoritos, repaso y últimas búsquedas).
+          Para buscar por el sentido, el texto de la búsqueda se envía a un modelo de lenguaje de
+          Cloudflare, que no lo guarda; sin conexión se busca por palabras. No sustituye la ficha
+          técnica de cada sistema, los protocolos del centro ni el juicio clínico.
         </p>
+        <h2 className="mt-4 text-base font-extrabold text-slate-900">Pendiente</h2>
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+          {PENDIENTES.map((x, i) => (
+            <li key={i}>{x}</li>
+          ))}
+        </ul>
       </section>
-      <section
-        className="rounded-2xl border bg-white p-4 shadow-soft"
-        style={{ borderColor: "#e6e6e6" }}
-        aria-labelledby="s-corr"
-      >
-        <h2 id="s-corr" className="text-base font-extrabold text-slate-900">
-          Correcciones editoriales, ya incluidas en el capítulo publicado
-        </h2>
-        <h3 className="mt-3 text-sm font-bold text-slate-900">
-          Las 3 correcciones finales del 5-10-2026
-        </h3>
-        <ol className="mt-2 space-y-1 text-sm text-slate-700">
-          {CORRECCIONES_FINALES.map((c, i) => (
-            <li key={i} className="flex gap-2">
-              <CheckCircle2
-                size={15}
-                className="mt-0.5 shrink-0 text-emerald-700"
-                aria-hidden="true"
-              />
-              <span>{c}</span>
+      <details className={caja} style={borde}>
+        <summary className="min-h-11 cursor-pointer text-base font-extrabold text-slate-900 sm:min-h-8">
+          Historial de versiones ({CAMBIOS.length})
+        </summary>
+        <ol className="mt-3 space-y-3">
+          {CAMBIOS.map((c, i) => (
+            <li key={i}>
+              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                <Badge tone={c.ambito === "capitulo" ? "sky" : "emerald"}>
+                  {c.ambito === "capitulo" ? "Capítulo" : "App"}
+                </Badge>
+                <time dateTime={c.fecha}>{fecha(c.fecha)}</time>
+              </div>
+              <details className="mt-0.5">
+                <summary className="min-h-11 cursor-pointer text-sm font-bold text-slate-900 sm:min-h-7">
+                  {c.titulo}
+                </summary>
+                <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-slate-700">
+                  {c.detalle.map((d, j) => (
+                    <li key={j}>{d}</li>
+                  ))}
+                </ul>
+              </details>
             </li>
           ))}
         </ol>
-        <h3 className="mt-4 text-sm font-bold text-slate-900">Las 11 del 30-9-2026</h3>
-        <ol className="mt-2 space-y-1 text-sm text-slate-700">
+      </details>
+      <details className={caja} style={borde}>
+        <summary className="min-h-11 cursor-pointer text-base font-extrabold text-slate-900 sm:min-h-8">
+          Correcciones editoriales, ya en el capítulo publicado ({CORRECCIONES.length})
+        </summary>
+        <ol className="mt-3 space-y-1 text-sm text-slate-700">
           {CORRECCIONES.map((c, i) => (
             <li key={i} className="flex gap-2">
               <CheckCircle2
@@ -546,26 +428,11 @@ export function Sobre() {
             </li>
           ))}
         </ol>
-      </section>
-      <ToneCard tone="amber" title="Pendiente (no se ha inventado nada para rellenarlo)">
-        <ul className="list-disc space-y-1 pl-5 text-sm text-slate-800">
-          {PENDIENTES.map((p, i) => (
-            <li key={i}>{p}</li>
-          ))}
-        </ul>
-      </ToneCard>
-      <section
-        className="rounded-2xl border bg-white p-4 text-sm text-slate-700 shadow-soft"
-        style={{ borderColor: "#e6e6e6" }}
-      >
-        <h2 className="text-base font-extrabold text-slate-900">Tecnología</h2>
-        <p className="mt-2">
-          Vite, React y TypeScript; PWA con uso sin conexión; sin analítica. La búsqueda por el
-          sentido es una función de Cloudflare Pages con Workers AI (bge-m3). Código en el
-          repositorio público <code>manual-seen-aid</code>. Castellano de España; unidades mg/dl y
-          mmol/l; siglas DM1/DM2; «duración de la insulina activa».
-        </p>
-      </section>
+      </details>
+      <p className="text-xs text-slate-500">
+        Vite, React y TypeScript; sin analítica. Código en el repositorio público{" "}
+        <code>manual-seen-aid</code>.
+      </p>
     </div>
   );
 }
@@ -947,52 +814,6 @@ export function Preguntas({ id }: { id?: string }) {
               ))}
             </ul>
           </details>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ---------- Versión extendida (#/extendida[/<id>]) ----------
-   Los 33 fragmentos del borrador largo que no entraron en el Manual, por apartado y rotulados
-   como siempre. Desde la 0.18.0 no se muestran en la lectura del capítulo (decisión del autor):
-   aquí, en las fichas de sistema y en las tablas. */
-export function Extendida({ id }: { id?: string }) {
-  useEffect(() => {
-    if (!id) return;
-    const el = document.getElementById(`ext-${id}`);
-    if (!el) return;
-    const d = el.closest("details");
-    if (d) d.open = true;
-    el.scrollIntoView?.({ block: "start" });
-  }, [id]);
-  const hex = CATEGORIA_HEX.confiar;
-  const porApartado = APARTADOS.map((a) => ({
-    a,
-    fs: FRAGMENTOS_EXTENDIDOS.filter((f) => f.donde.apartado === a.slug),
-  })).filter((x) => x.fs.length);
-  return (
-    <div>
-      <CabeceraEditorial titulo="Versión extendida" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          {ROTULO_EXTENDIDA}: {FRAGMENTOS_EXTENDIDOS.length} fragmentos del borrador largo que no
-          entraron en el capítulo publicado, por apartado. No forman parte del Manual SEEN.
-        </p>
-      </CabeceraEditorial>
-      <div className="space-y-6">
-        {porApartado.map(({ a, fs }) => (
-          <section key={a.slug} aria-labelledby={`ext-ap-${a.slug}`}>
-            <h2
-              id={`ext-ap-${a.slug}`}
-              className="mb-2 text-sm font-bold uppercase tracking-wide"
-              style={{ color: hex.ink }}
-            >
-              <a href={href("capitulo", a.slug)} className="hover:underline">
-                {a.n}. {a.titulo}
-              </a>
-            </h2>
-            <VersionExtendida fragmentos={fs} nivel={3} />
-          </section>
         ))}
       </div>
     </div>

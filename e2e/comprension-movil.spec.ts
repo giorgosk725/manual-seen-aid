@@ -1,11 +1,9 @@
 /* Entrega 3 del plan del 9-10-2026, en el móvil (Pixel 5): la sigla abre una hoja al pie sobre
-   la barra inferior y lleva al glosario; «Cómo funciona» cabe sin desbordar. */
+   la barra inferior y se cierra; «Cómo funciona» cabe sin desbordar. */
 import { expect, test } from "@playwright/test";
 
 test.describe("Comprensión en el móvil", () => {
-  test("la sigla abre una hoja al pie, sobre la barra inferior, y lleva al glosario", async ({
-    page,
-  }) => {
+  test("la sigla abre una hoja al pie, sobre la barra inferior, y se cierra", async ({ page }) => {
     await page.goto("/#/capitulo/02-componentes");
     await page.getByRole("button", { name: "MCG", exact: true }).tap();
     const panel = page.getByRole("dialog", { name: "Sigla MCG" });
@@ -13,9 +11,9 @@ test.describe("Comprensión en el móvil", () => {
     const barra = await page.getByRole("navigation", { name: "Barra inferior" }).boundingBox();
     const caja = await panel.boundingBox();
     expect(caja && barra && caja.y + caja.height <= barra.y + 1).toBe(true);
-    await panel.getByRole("link", { name: /Ver en el glosario/ }).tap();
-    await expect(page).toHaveURL(/#\/consultar\/glosario\/MCG$/);
-    await expect(page.locator("#sigla-MCG")).toContainText("monitorización continua de glucosa");
+    await expect(panel).toContainText("monitorización continua de glucosa");
+    await panel.getByRole("button", { name: "Cerrar" }).tap();
+    await expect(panel).toBeHidden();
   });
 
   test("Cómo funciona de un sistema cabe en el móvil", async ({ page }) => {

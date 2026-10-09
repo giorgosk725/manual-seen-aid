@@ -17,7 +17,6 @@ const Tablas = lazy(() => consultar().then((m) => ({ default: m.Tablas })));
 const TareaTabla = lazy(() => consultar().then((m) => ({ default: m.TareaTabla })));
 const Figura3Pantalla = lazy(() => consultar().then((m) => ({ default: m.Figura3Pantalla })));
 const Infografia = lazy(() => consultar().then((m) => ({ default: m.Infografia })));
-const Glosario = lazy(() => consultar().then((m) => ({ default: m.Glosario })));
 
 const inicio = () => import("./pantallas/Inicio");
 const IniciarSistema = lazy(() => inicio().then((m) => ({ default: m.IniciarSistema })));
@@ -30,12 +29,10 @@ const Interrupcion = lazy(() => recorridos().then((m) => ({ default: m.Interrupc
 const otras = () => import("./pantallas/Otras");
 const Bibliografia = lazy(() => otras().then((m) => ({ default: m.Bibliografia })));
 const Buscar = lazy(() => otras().then((m) => ({ default: m.Buscar })));
-const Cambios = lazy(() => otras().then((m) => ({ default: m.Cambios })));
 const Mas = lazy(() => otras().then((m) => ({ default: m.Mas })));
 const Sobre = lazy(() => otras().then((m) => ({ default: m.Sobre })));
 const Test = lazy(() => otras().then((m) => ({ default: m.Test })));
 const Preguntas = lazy(() => otras().then((m) => ({ default: m.Preguntas })));
-const Extendida = lazy(() => otras().then((m) => ({ default: m.Extendida })));
 
 const casos = () => import("./pantallas/Casos");
 const Casos = lazy(() => casos().then((m) => ({ default: m.Casos })));
@@ -186,10 +183,6 @@ export default function App() {
           pantalla = <Infografia />;
           titulo = "Infografía";
           break;
-        case "glosario":
-          pantalla = <Glosario sigla={ruta.detalle} />;
-          titulo = "Glosario de siglas";
-          break;
         default:
           pantalla = <NoEncontrada />;
       }
@@ -212,12 +205,12 @@ export default function App() {
       titulo = "Bibliografía";
       break;
     case "cambios":
-      pantalla = <Cambios />;
-      titulo = "Qué ha cambiado";
+      pantalla = <Sobre />;
+      titulo = "Sobre esta app";
       break;
     case "sobre":
       pantalla = <Sobre />;
-      titulo = "Sobre esta versión";
+      titulo = "Sobre esta app";
       break;
     case "test":
       pantalla = <Test />;
@@ -256,10 +249,6 @@ export default function App() {
     case "preguntas":
       pantalla = <Preguntas id={ruta.sub} />;
       titulo = "Preguntas frecuentes";
-      break;
-    case "extendida":
-      pantalla = <Extendida id={ruta.sub} />;
-      titulo = "Versión extendida";
       break;
     default:
       pantalla = <NoEncontrada />;

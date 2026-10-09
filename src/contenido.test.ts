@@ -486,11 +486,8 @@ describe("capas fuera del capítulo", () => {
     expect(todo).toContain("Si la glucosa es >270 mg/dl, medir cetonas y revisar el set o el pod");
   });
   it("la búsqueda pone el capítulo primero y lo de fuera rotulado, detrás", () => {
-    const res = buscar("Nightscout");
-    expect(res.length).toBeGreaterThan(0);
-    expect(
-      res.every((r) => r.entrada.tipo === "extendida" || r.entrada.tipo === "ampliacion"),
-    ).toBe(true);
+    const res = buscar("plan de seguridad");
+    expect(res.some((r) => r.entrada.tipo === "pacientes")).toBe(true);
     const mezcla = buscar("glargina");
     const primeraFuera = mezcla.findIndex((r) => r.entrada.pagina === 0);
     if (primeraFuera >= 0)

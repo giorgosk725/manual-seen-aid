@@ -21,8 +21,6 @@ export type Pieza =
   | { t: "inicializacion" }
   /* Un hito del seguimiento: rótulo corto y la frase del capítulo que lo dice. */
   | { t: "hito"; rotulo: string; apartado: string; bloque: string; k: number[] }
-  /* Fragmentos de la versión extendida (fuera del capítulo, rotulados). */
-  | { t: "extendida"; ids: string[] }
   | { t: "enlace"; texto: string; ruta: string };
 
 export interface Fase {
@@ -71,7 +69,6 @@ export const FASES: Fase[] = [
       { t: "casilla", tabla: "T1", fila: 10 },
       { t: "frase", apartado: "08-iniciacion", bloque: "b7", k: [1] },
       { t: "fila", tabla: "T2", fila: 8 },
-      { t: "extendida", ids: ["E17", "E18"] },
       { t: "enlace", texto: "Transición desde MDI (diagrama)", ruta: href("visual", "transicion") },
       { t: "enlace", texto: "Tabla 2 completa", ruta: href("consultar", "tablas", "T2") },
     ],
