@@ -6,7 +6,7 @@
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
 import { ArrowRight, Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque } from "../contenido";
-import { SIS_IDS, SITUACIONES } from "../situaciones";
+import { SIS_IDS, SITUACIONES, type Situacion } from "../situaciones";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
 import { elegirRuta, href } from "../rutas";
 import { casoPorId } from "../casos";
@@ -19,6 +19,103 @@ import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 const hex = CATEGORIA_HEX.consultar;
 
 /* ---------- Situación y sistema ---------- */
+
+/* Las situaciones, por tema (no por la tabla de la que salen): las filas de las Tablas 4 y 6 y
+   los subapartados del apartado 10 que no tienen tabla, juntos. Los nombres de los temas son de
+   la app; cada entrada conserva su rótulo del capítulo y su página o tabla. */
+const TEMAS_SITUACION: { t: string; ids: string[]; subs: RegExp }[] = [
+  {
+    t: "Ejercicio y comidas",
+    ids: ["ejercicio-aerobico", "ejercicio-anaerobico", "comida-grasa"],
+    subs: /^$/,
+  },
+  {
+    t: "Noche, enfermedad e hiperglucemia",
+    ids: ["sueno", "necesidad-transitoria", "hiperglucemia-puntual", "hiperglucemia-persistente"],
+    subs: /enfermedad|glucocorticoide/i,
+  },
+  {
+    t: "Exploraciones, cirugía e ingreso",
+    ids: ["rm", "tc", "rx", "pet", "diatermia", "eco", "cirugia-corta", "cirugia-larga"],
+    subs: /ingreso|hospital/i,
+  },
+  { t: "Poblaciones y situaciones especiales", ids: [], subs: /./ },
+];
+
+function ListaSituaciones({ sit, sistema }: { sit: Situacion | null; sistema?: string }) {
+  const a = APARTADOS.find((x) => x.slug === "10-situaciones")!;
+  let subs = a.bloques.filter(
+    (b): b is Extract<Bloque, { t: "h3" }> =>
+      b.t === "h3" && b.id !== "ejercicio" && b.id !== "exploraciones",
+  );
+  const enlace =
+    "flex min-h-11 w-full items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500";
+  return (
+    <div id="lista-situaciones" className="scroll-mt-20 space-y-4">
+      {TEMAS_SITUACION.map((tema) => {
+        const mios = subs.filter((b) => tema.subs.test(b.texto));
+        subs = subs.filter((b) => !mios.includes(b));
+        const sits = tema.ids
+          .map((id) => SITUACIONES.find((x) => x.id === id))
+          .filter((x): x is Situacion => !!x);
+        if (!sits.length && !mios.length) return null;
+        return (
+          <section key={tema.t} aria-label={tema.t}>
+            <h2 className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
+              {tema.t}
+            </h2>
+            <ul className="space-y-1" role="list">
+              {sits.map((s) => {
+                const on = sit?.id === s.id;
+                return (
+                  <li key={s.id}>
+                    <button
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() =>
+                        elegirRuta(
+                          "consultar",
+                          "situacion",
+                          on ? undefined : s.id + (sistema ? ":" + sistema : ""),
+                        )
+                      }
+                      className={`${enlace} ${on ? "text-white" : "bg-white text-slate-800 hover:border-slate-400"}`}
+                      style={
+                        on
+                          ? { background: hex.strong, borderColor: hex.strong }
+                          : { borderColor: "#e6e6e6" }
+                      }
+                    >
+                      {on && <Check size={14} aria-hidden="true" />}
+                      <span className="flex-1">{s.etiqueta}</span>
+                      <span
+                        className={`shrink-0 text-[11px] ${on ? "text-white/80" : "text-slate-500"}`}
+                      >
+                        Tabla {s.tabla.slice(1)}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+              {mios.map((b) => (
+                <li key={b.id}>
+                  <a
+                    href={href("capitulo", a.slug, b.id)}
+                    className={`${enlace} bg-white text-slate-800 hover:border-slate-400`}
+                    style={{ borderColor: "#e6e6e6" }}
+                  >
+                    <span className="flex-1">{b.texto}</span>
+                    <span className="pagina-badge shrink-0">p. {b.p}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
 
 export function SituacionSistema({ situacion, sistema }: { situacion?: string; sistema?: string }) {
   const sit = SITUACIONES.find((s) => s.id === situacion) || null;
@@ -44,41 +141,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
           <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
             1 · Situación
           </div>
-          <ul id="lista-situaciones" className="scroll-mt-20 space-y-1" role="list">
-            {SITUACIONES.map((s) => {
-              const on = sit?.id === s.id;
-              return (
-                <li key={s.id}>
-                  <button
-                    type="button"
-                    aria-pressed={on}
-                    onClick={() =>
-                      elegirRuta(
-                        "consultar",
-                        "situacion",
-                        on ? undefined : s.id + (sistema ? ":" + sistema : ""),
-                      )
-                    }
-                    className={`flex min-h-11 w-full items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "bg-white text-slate-800 hover:border-slate-400"}`}
-                    style={
-                      on
-                        ? { background: hex.strong, borderColor: hex.strong }
-                        : { borderColor: "#e6e6e6" }
-                    }
-                  >
-                    {on && <Check size={14} aria-hidden="true" />}
-                    <span className="flex-1">{s.etiqueta}</span>
-                    <span
-                      className={`shrink-0 text-[11px] ${on ? "text-white/80" : "text-slate-500"}`}
-                    >
-                      Tabla {s.tabla.slice(1)}
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-          <OtrasSituaciones />
+          <ListaSituaciones sit={sit} sistema={sistema} />
         </div>
         <div aria-live="polite" className={sit ? "order-first lg:order-none" : undefined}>
           {!sit && (
@@ -279,37 +342,6 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
         </div>
       </div>
     </div>
-  );
-}
-
-/* Situaciones especiales del capítulo que no están en las Tablas 4 y 6: se leen en su
-   subapartado del apartado 10 (el ejercicio y las exploraciones ya están en la lista). */
-function OtrasSituaciones() {
-  const a = APARTADOS.find((x) => x.slug === "10-situaciones")!;
-  const subs = a.bloques.filter(
-    (b): b is Extract<typeof b, { t: "h3" }> =>
-      b.t === "h3" && b.id !== "ejercicio" && b.id !== "exploraciones",
-  );
-  return (
-    <nav aria-label="Otras situaciones del capítulo" className="mt-4">
-      <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-        Otras situaciones (sin tabla)
-      </div>
-      <ul className="space-y-1">
-        {subs.map((b) => (
-          <li key={b.id}>
-            <a
-              href={href("capitulo", a.slug, b.id)}
-              className="flex min-h-11 items-center gap-2 rounded-lg border bg-white px-3 py-2 text-sm text-slate-800 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-              style={{ borderColor: "#e6e6e6" }}
-            >
-              <span className="flex-1">{b.texto}</span>
-              <span className="pagina-badge shrink-0">p. {b.p}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
   );
 }
 

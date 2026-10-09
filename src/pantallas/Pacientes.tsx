@@ -216,6 +216,38 @@ export function HubPacientes() {
           );
         })}
       </ul>
+      <section aria-labelledby="hojas-breves" className="mt-6">
+        <h2 id="hojas-breves" className="text-base font-extrabold text-slate-900">
+          Hojas breves por situación
+        </h2>
+        <p className="mt-1 text-sm text-slate-600">
+          Las mismas preguntas y respuestas de la Información para pacientes, tal cual, en hojas
+          cortas para entregar según lo que haga falta ese día.
+        </p>
+        <ul className="mt-3 grid gap-2 md:grid-cols-3">
+          {HOJAS_BREVES.map((h) => (
+            <li key={h.id}>
+              <a
+                href={href("pacientes", "hoja", h.id)}
+                className="hover-lift ease-brand flex h-full flex-col rounded-xl border bg-white p-3 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                style={{ borderColor: "#e6e6e6" }}
+              >
+                <span className="text-sm font-bold text-slate-900">{h.titulo}</span>
+                <span className="mt-1 text-xs text-slate-600">
+                  {h.preguntas.length} preguntas ·{" "}
+                  {h.preguntas.map((q) => q.replace(/^¿|\?$/g, "")).join(" · ")}
+                </span>
+                <span
+                  className="mt-auto inline-flex items-center gap-1 pt-2 text-xs font-semibold"
+                  style={{ color: hex.ink }}
+                >
+                  Abrir la hoja <ArrowRight size={12} aria-hidden="true" />
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
       <section aria-labelledby="planes" className="mt-6">
         <h2 id="planes" className="flex items-center gap-2 text-base font-extrabold text-slate-900">
           <ShieldCheck size={18} style={{ color: hex.strong }} aria-hidden="true" /> Plan de
@@ -270,6 +302,75 @@ export function InformacionPacientes() {
             {s.parrafos.map((p, i) => (
               <p key={i} className="mt-1 text-[15px] leading-relaxed text-slate-800">
                 {p}
+              </p>
+            ))}
+          </section>
+        ))}
+      </Hoja>
+    </div>
+  );
+}
+
+/* ---------- Hojas breves por situación (#/pacientes/hoja/<id>) ----------
+   Extractos de la Información para pacientes: las mismas preguntas y respuestas, tal cual, en
+   hojas cortas para entregar según lo que haga falta ese día. Sin texto nuevo. */
+const HOJAS_BREVES: { id: string; titulo: string; preguntas: string[] }[] = [
+  {
+    id: "glucosa",
+    titulo: "Si la glucosa baja, o sube y no baja",
+    preguntas: [
+      "¿Qué hacer si se tiene hipoglucemia?",
+      "¿Qué hacer si la glucosa está alta y no baja?",
+      "¿Cuándo se debe acudir a urgencias?",
+    ],
+  },
+  {
+    id: "ejercicio-viajes",
+    titulo: "Ejercicio, viajes y pruebas médicas",
+    preguntas: [
+      "¿Qué se debe tener en cuenta con el ejercicio?",
+      "¿Qué pasa si se viaja o se tiene una prueba médica?",
+    ],
+  },
+  {
+    id: "material",
+    titulo: "Qué tener siempre a mano y qué hacer si el sistema falla",
+    preguntas: [
+      "¿Qué material se debe tener siempre disponible?",
+      "¿Qué hacer si hay que interrumpir el sistema o si falla?",
+    ],
+  },
+];
+
+export function HojaPacientes({ id }: { id?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const h = HOJAS_BREVES.find((x) => x.id === id);
+  if (!h) return <HubPacientes />;
+  const ruta = href("pacientes", "hoja", h.id);
+  const secciones = h.preguntas
+    .map((q) => INFORMACION_PACIENTES.secciones.find((x) => x.pregunta === q))
+    .filter((x): x is (typeof INFORMACION_PACIENTES.secciones)[number] => !!x);
+  return (
+    <div>
+      <Volver />
+      <Acciones hoja={ref} ruta={ruta} titulo={h.titulo} />
+      <Hoja
+        hojaRef={ref}
+        rotulo={`${INFORMACION_PACIENTES.rotulo} · extracto`}
+        titulo={h.titulo}
+        subtitulo={`${TITULO_CAPITULO_PACIENTES} · ${AUTOR_PACIENTES}`}
+        ruta={ruta}
+        pie={<>Manual SEEN · {INFORMACION_PACIENTES.fuente}.</>}
+        holgada
+      >
+        {secciones.map((sec) => (
+          <section key={sec.pregunta} className="hoja-seccion mb-3">
+            <h2 className="text-base font-extrabold" style={{ color: hex.ink }}>
+              {sec.pregunta}
+            </h2>
+            {sec.parrafos.map((par, i) => (
+              <p key={i} className="mt-1 text-[15px] leading-relaxed text-slate-800">
+                {par}
               </p>
             ))}
           </section>

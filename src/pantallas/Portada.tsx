@@ -11,6 +11,7 @@ import {
   Droplets,
   ExternalLink,
   Footprints,
+  HeartHandshake,
   ListChecks,
   ListOrdered,
   Route,
@@ -83,6 +84,13 @@ const FRECUENTES = [
     color: FICHA_AREA.nutricion,
     t: "Iniciar un sistema",
     s: "Desde MDI, en cuatro fases",
+  },
+  {
+    href: href("pacientes"),
+    icono: HeartHandshake,
+    color: FICHA_AREA.rosa,
+    t: "Para el paciente",
+    s: "Hojas para entregar: información, situaciones, plan de seguridad",
   },
 ];
 
@@ -379,6 +387,7 @@ export function Portada() {
             <p className="mt-2 text-sm text-slate-700">
               <span className="font-semibold text-slate-900">{CAPITULO.autor}</span>
             </p>
+            <p className="mt-0.5 text-xs leading-snug text-slate-600">{CAPITULO.filiacion}</p>
             <p className="mt-3 max-w-prose text-[15px] leading-relaxed text-slate-800">
               Consulta las tablas, los algoritmos y las situaciones clínicas del capítulo, compara
               los sistemas y lee el texto completo con la página de cada dato.

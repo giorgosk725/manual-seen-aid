@@ -89,6 +89,7 @@ test.describe("Nocturno en lo nuevo", () => {
       ["/#/pacientes", "Para el paciente"],
       ["/#/pacientes/informacion", "Información para pacientes"],
       ["/#/pacientes/plan/op5", "Plan de seguridad"],
+      ["/#/pacientes/hoja/glucosa", "Hoja breve · glucosa"],
       ["/#/test", "Autoevaluación"],
       ["/#/visual/gestacion-sistemas", "Gestación por sistema"],
       ["/#/visual/hospital", "Hospital"],

@@ -110,6 +110,24 @@ describe("App", () => {
     expect(screen.getAllByText(/Función Actividad/).length).toBeGreaterThan(0);
   });
 
+  it("las hojas breves para el paciente son extractos literales de la Información", async () => {
+    render(<App />);
+    await ir("#/pacientes/hoja/glucosa");
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Si la glucosa baja, o sube y no baja" }),
+    ).toBeInTheDocument();
+    for (const q of [
+      "¿Qué hacer si se tiene hipoglucemia?",
+      "¿Qué hacer si la glucosa está alta y no baja?",
+      "¿Cuándo se debe acudir a urgencias?",
+    ])
+      expect(screen.getByRole("heading", { level: 2, name: q })).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/sospechar fallo de infusión hasta demostrar lo contrario/).length,
+    ).toBeGreaterThan(0);
+    expect(screen.queryByText("¿Qué es un sistema de asa cerrada?")).toBeNull();
+  });
+
   it("la versión extendida no está en la lectura: va aparte, plegada y rotulada", async () => {
     render(<App />);
     await ir("#/capitulo/12-horizonte");

@@ -57,6 +57,7 @@ const InformacionPacientes = lazy(() =>
   pacientes().then((m) => ({ default: m.InformacionPacientes })),
 );
 const PlanSeguridad = lazy(() => pacientes().then((m) => ({ default: m.PlanSeguridad })));
+const HojaPacientes = lazy(() => pacientes().then((m) => ({ default: m.HojaPacientes })));
 const ResumenPacientes = lazy(() => pacientes().then((m) => ({ default: m.ResumenPacientes })));
 
 /* Precarga en un momento libre (sin ahorro de datos): al navegar ya no hay espera. Empieza
@@ -233,6 +234,9 @@ export default function App() {
       } else if (ruta.sub === "plan") {
         pantalla = <PlanSeguridad sistema={ruta.detalle} />;
         titulo = "Plan de seguridad";
+      } else if (ruta.sub === "hoja") {
+        pantalla = <HojaPacientes id={ruta.detalle} />;
+        titulo = "Hoja para el paciente";
       } else if (!ruta.sub) {
         pantalla = <HubPacientes />;
         titulo = "Para el paciente";

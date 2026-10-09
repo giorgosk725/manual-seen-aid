@@ -8,13 +8,24 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.18.0";
+export const VERSION_APP = "0.19.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-09",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — tareas con nombre propio, fichas por sección y lectura más limpia`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — material para el paciente a mano y situaciones por tema`,
+    detalle: [
+      "«Para el paciente» es una tarea más de Consultar y de la portada. Tres hojas breves nuevas para entregar según lo que haga falta ese día, hechas solo con las preguntas y respuestas ya publicadas de la Información para pacientes: «Si la glucosa baja, o sube y no baja», «Ejercicio, viajes y pruebas médicas» y «Qué tener siempre a mano y qué hacer si el sistema falla». Con letra grande y código QR, como las demás.",
+      "Situación y sistema agrupa las situaciones por tema (ejercicio y comidas; noche, enfermedad e hiperglucemia; exploraciones, cirugía e ingreso; poblaciones y situaciones especiales), junten o no tabla, en vez de por la tabla de la que salen.",
+      "Portada con la afiliación tal como figura en el capítulo. Texto de favoritos al día en Más.",
+    ],
+  },
+  {
+    fecha: "2026-10-09",
+    ambito: "app",
+    titulo:
+      "Manual SEEN · AID 0.18.0 — tareas con nombre propio, fichas por sección y lectura más limpia",
     detalle: [
       "«Parámetros por sistema» y «Comparar sistemas» son ahora pantallas propias: la primera pide el sistema y enseña su Tabla 3; la segunda, dos o más sistemas en la Tabla 1. La tabla es la fuente, con «Ver en el capítulo» a la tabla en su sitio, no al principio del apartado.",
       "Consultar queda en siete tareas y una lista corta de recursos (sistemas, tablas, figuras, glosario, preguntas), sin destinos repetidos.",

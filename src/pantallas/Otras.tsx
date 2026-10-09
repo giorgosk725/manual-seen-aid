@@ -777,7 +777,7 @@ export function Mas() {
           </ul>
         ) : (
           <p className="text-sm text-slate-600">
-            Aún no hay favoritos: se guardan con la estrella de cada apartado.
+            Aún no hay favoritos: se guardan con la estrella de cada ficha de sistema.
           </p>
         )}
       </section>

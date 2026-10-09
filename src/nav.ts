@@ -205,7 +205,7 @@ export const DESTINOS: Destino[] = [
     icono: HeartHandshake,
     cat: "pacientes",
     descripcion:
-      "Información para pacientes y resumen, para imprimir en una cara o compartir con QR, y el plan de seguridad de cada sistema.",
+      "Hojas para entregar al paciente: la información completa, hojas breves por situación, el resumen y el plan de seguridad de cada sistema; con letra grande y código QR.",
   },
   {
     id: "extendida",
@@ -278,7 +278,16 @@ export const GRUPOS_CONSULTAR: { id: string; titulo: string; ids: string[] }[] =
   {
     id: "tareas",
     titulo: "Tareas",
-    ids: ["parametros", "comparar", "descarga", "inicio", "situacion", "figura-3", "interrupcion"],
+    ids: [
+      "parametros",
+      "comparar",
+      "descarga",
+      "inicio",
+      "situacion",
+      "figura-3",
+      "interrupcion",
+      "pacientes",
+    ],
   },
   {
     id: "recursos",

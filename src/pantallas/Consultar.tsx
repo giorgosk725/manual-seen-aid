@@ -106,12 +106,6 @@ export function HubConsultar() {
             );
           })}
         </ul>
-        <a
-          href={href("pacientes")}
-          className="mt-2 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
-        >
-          Material para el paciente (en Más) <ArrowRight size={14} aria-hidden="true" />
-        </a>
       </section>
     </div>
   );
