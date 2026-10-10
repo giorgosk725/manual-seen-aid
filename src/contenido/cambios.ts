@@ -8,13 +8,24 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.33.0";
+export const VERSION_APP = "0.34.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — consulta breve (auditoría de la 0.31, entrega 2)`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — navegación pulida (auditoría de la 0.31, entrega 3)`,
+    detalle: [
+      "Portada más compacta en el móvil: cabecera con menos altura, la afiliación pasa al pie y el buscador queda antes. «Lo último que consultaste» añade el contexto (tramo de la Figura 3, paso de la descarga, fase y sistema de Iniciar, situación, sección de la ficha) para distinguir dos visitas con el mismo título.",
+      "Sistemas: «Los cuatro» es un estado explícito del selector, marcado cuando no hay ninguno elegido. En la portada, «Comparar sistemas (lo esencial)» y «Comparar los parámetros» dicen que son el mismo espacio.",
+      "Preguntas frecuentes en ocho grupos sin solape: las de «Descarga e incidencias» pasan a «Incidencias y cetonemia» o «Descarga y seguimiento».",
+      "Expresiones: «Pregunta al capítulo · pasajes y recursos del capítulo»; «Ver esta situación» cuando la fila abre una situación; «Ver fuente» en los casos; «Sistema» en los chips de la tarjeta.",
+    ],
+  },
+  {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.33.0 — consulta breve (auditoría de la 0.31, entrega 2)",
     detalle: [
       "Buscar con una sola jerarquía: el acceso pedido, el pasaje principal con su contexto, y debajo, plegados, «Más pasajes del capítulo» y «Todos los resultados» (abiertos solo cuando no hay respuesta). Las pestañas separan texto del capítulo, tablas y figuras y recursos de la app (accesos, ampliación, hojas, casos, test). Con dos temas, «También sobre …» solo cuando la otra parte añade algo distinto de lo ya enseñado.",
       "Criterios de elección: sin «Coincide en X de Y»; cada sistema enseña por separado los factores clínicos y regulatorios y las preferencias o compatibilidades, estado a estado. El formulario sigue abierto mientras se marcan criterios; «Ver resultados» lo pliega.",

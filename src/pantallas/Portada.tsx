@@ -54,7 +54,10 @@ function Recientes() {
               className="inline-flex min-h-11 max-w-[18rem] items-center rounded-full border bg-white px-3 text-sm font-semibold text-slate-800 hover:border-slate-500 sm:min-h-9"
               style={{ borderColor: "#d4d4d4" }}
             >
-              <span className="truncate">{v.titulo}</span>
+              <span className="truncate">
+                {v.titulo}
+                {v.detalle && <span className="font-normal text-slate-600"> · {v.detalle}</span>}
+              </span>
             </a>
           </li>
         ))}
@@ -85,7 +88,10 @@ function Buscador() {
         className="text-xs font-bold uppercase tracking-wide"
         style={{ color: CATEGORIA_HEX.consultar.ink }}
       >
-        Pregunta al capítulo
+        Pregunta al capítulo{" "}
+        <span className="font-normal normal-case tracking-normal text-slate-500">
+          · pasajes y recursos del capítulo
+        </span>
       </h2>
       <form
         role="search"
@@ -210,14 +216,14 @@ function Buscador() {
 export function Portada() {
   const ultimoCap = CAMBIOS.find((c) => c.ambito === "capitulo")!;
   return (
-    <div className="space-y-7 sm:space-y-9">
+    <div className="space-y-5 sm:space-y-9">
       <section
         className="cabecera-manual relative overflow-hidden rounded-[4px] border bg-white"
         style={{ borderColor: "#e6e6e6" }}
         aria-labelledby="titulo-capitulo"
       >
         <Franja />
-        <div className="px-4 py-4 sm:px-8 sm:py-8 lg:px-10 lg:py-8">
+        <div className="px-4 py-3 sm:px-8 sm:py-8 lg:px-10 lg:py-8">
           <div className="min-w-0">
             <div
               className="etiqueta-area flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] sm:text-xs"
@@ -234,15 +240,18 @@ export function Portada() {
             </div>
             <h1
               id="titulo-capitulo"
-              className="titulo-manual mt-2 text-balance text-[1.15rem] leading-[1.15] sm:mt-3 sm:text-[2rem] lg:text-[2.3rem]"
+              className="titulo-manual mt-1.5 text-balance text-[1.05rem] leading-[1.15] sm:mt-3 sm:text-[2rem] lg:text-[2.3rem]"
             >
               {CAPITULO.titulo}
             </h1>
-            <p className="mt-2 text-sm text-slate-700">
+            <p className="mt-1.5 text-sm text-slate-700 sm:mt-2">
               <span className="font-semibold text-slate-900">{CAPITULO.autor}</span>
             </p>
-            <p className="mt-0.5 text-xs leading-snug text-slate-600">{CAPITULO.filiacion}</p>
-            <div className="mt-4 grid gap-2 min-[400px]:flex min-[400px]:flex-wrap min-[400px]:items-center">
+            {/* En el móvil la afiliación va al pie: la primera pantalla es para consultar. */}
+            <p className="mt-0.5 hidden text-xs leading-snug text-slate-600 sm:block">
+              {CAPITULO.filiacion}
+            </p>
+            <div className="mt-3 grid gap-2 min-[400px]:flex min-[400px]:flex-wrap min-[400px]:items-center sm:mt-4">
               <a
                 href={href("capitulo")}
                 className="boton-seen inline-flex min-h-11 items-center justify-center gap-2 rounded-[3px] px-4 text-sm font-semibold uppercase tracking-wide text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2"
@@ -272,6 +281,7 @@ export function Portada() {
         className="flex flex-col gap-1 border-t pt-4 text-sm text-slate-600 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5"
         style={{ borderColor: "#e6e6e6" }}
       >
+        <span className="sm:hidden">{CAPITULO.filiacion}</span>
         <a
           href={CAPITULO.url}
           target="_blank"

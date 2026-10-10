@@ -195,11 +195,7 @@ function Tarjeta({
         </div>
       )}
       {casillas && !compacta && (
-        <div
-          className="mt-2 flex flex-wrap gap-1.5"
-          role="group"
-          aria-label="Sistema de la casilla"
-        >
+        <div className="mt-2 flex flex-wrap gap-1.5" role="group" aria-label="Sistema">
           {casillas.map((c, i) => (
             <Chip key={c.nombre} on={sel === i} onClick={() => setSel(sel === i ? null : i)}>
               {c.nombre}
@@ -306,7 +302,9 @@ function Tarjeta({
               : r.tipo === "tabla"
                 ? casilla
                   ? "Ver en la ficha del sistema"
-                  : "Ver la tabla"
+                  : ruta.includes("/situacion/")
+                    ? "Ver esta situación"
+                    : "Ver la tabla"
                 : "Ver en el apartado"}{" "}
           <ArrowRight size={14} aria-hidden="true" />
         </a>

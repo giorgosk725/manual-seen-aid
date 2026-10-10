@@ -81,7 +81,7 @@ function Citas({ citas, asterisco }: { citas: CitaCaso[]; asterisco?: boolean })
                   href={destino}
                   className="ml-2 inline-flex min-h-11 items-center gap-0.5 text-xs font-semibold text-slate-600 hover:underline sm:min-h-6"
                 >
-                  Ver <ArrowRight size={11} aria-hidden="true" />
+                  Ver fuente <ArrowRight size={11} aria-hidden="true" />
                 </a>
               )}
             </li>

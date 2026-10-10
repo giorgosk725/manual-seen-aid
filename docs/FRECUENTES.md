@@ -100,11 +100,11 @@ primeras.
 | --- | ----------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | f51 | Educación y plan de seguridad | ¿Qué hacer si la bomba falla o se queda sin insulina?         | `t/07-educacion/b11/0`; `t/07-educacion/b11/4`; `t/07-educacion/b13/0`       |
 | f52 | Educación y plan de seguridad | ¿Cuándo confirmar la glucosa con glucemia capilar?            | `t/02-componentes/b4/1`; `t/10-situaciones/b38/2`                            |
-| f53 | Descarga e incidencias        | El sensor pierde la señal: ¿qué hacer?                        | `t/09-descarga/b22/0`; `t/09-descarga/b22/1`; `t/02-componentes/b4/2`        |
-| f54 | Descarga e incidencias        | ¿Qué hacer si el adhesivo se despega o irrita la piel?        | `t/09-descarga/b24/2`; `t/09-descarga/b24/1`; `t/09-descarga/b24/4`          |
-| f55 | Descarga e incidencias        | Fallos de infusión repetidos: ¿qué revisar y qué cánula usar? | `t/09-descarga/b25/0`; `t/09-descarga/b25/1`                                 |
-| f56 | Descarga e incidencias        | ¿Cuánto esperar antes de volver a corregir?                   | `F3/pie/0`; `l/09-descarga/b28/0`                                            |
-| f57 | Descarga e incidencias        | ¿Cómo manejar una comida rica en grasa o proteína?            | `T4/5`; `t/09-descarga/b6/0`; `t/09-descarga/b6/1`; `t/09-descarga/b6/2`     |
+| f53 | Incidencias y cetonemia       | El sensor pierde la señal: ¿qué hacer?                        | `t/09-descarga/b22/0`; `t/09-descarga/b22/1`; `t/02-componentes/b4/2`        |
+| f54 | Incidencias y cetonemia       | ¿Qué hacer si el adhesivo se despega o irrita la piel?        | `t/09-descarga/b24/2`; `t/09-descarga/b24/1`; `t/09-descarga/b24/4`          |
+| f55 | Incidencias y cetonemia       | Fallos de infusión repetidos: ¿qué revisar y qué cánula usar? | `t/09-descarga/b25/0`; `t/09-descarga/b25/1`                                 |
+| f56 | Incidencias y cetonemia       | ¿Cuánto esperar antes de volver a corregir?                   | `F3/pie/0`; `l/09-descarga/b28/0`                                            |
+| f57 | Descarga y seguimiento        | ¿Cómo manejar una comida rica en grasa o proteína?            | `T4/5`; `t/09-descarga/b6/0`; `t/09-descarga/b6/1`; `t/09-descarga/b6/2`     |
 | f58 | Situaciones especiales        | ¿Qué hacer en un viaje o en el control del aeropuerto?        | `t/10-situaciones/b43/0`; `l/07-educacion/b3/4`                              |
-| f59 | Descarga e incidencias        | Demasiadas alarmas: ¿qué hacer con la fatiga por alarmas?     | `t/09-descarga/b26/0`; `t/09-descarga/b26/1`                                 |
+| f59 | Incidencias y cetonemia       | Demasiadas alarmas: ¿qué hacer con la fatiga por alarmas?     | `t/09-descarga/b26/0`; `t/09-descarga/b26/1`                                 |
 | f60 | Situaciones especiales        | ¿Qué hacer ante una enfermedad intercurrente (gripe, fiebre)? | `t/10-situaciones/b27/0`; `t/10-situaciones/b27/1`; `t/10-situaciones/b27/3` |

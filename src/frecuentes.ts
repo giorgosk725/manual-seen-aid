@@ -551,7 +551,7 @@ export const FRECUENTES: Frecuente[] = [
   },
   {
     id: "f53",
-    tema: "Descarga e incidencias",
+    tema: "Incidencias y cetonemia",
     pregunta: "El sensor pierde la señal: ¿qué hacer?",
     variantes: [
       "pérdida de señal del sensor",
@@ -562,7 +562,7 @@ export const FRECUENTES: Frecuente[] = [
   },
   {
     id: "f54",
-    tema: "Descarga e incidencias",
+    tema: "Incidencias y cetonemia",
     pregunta: "¿Qué hacer si el adhesivo se despega o irrita la piel?",
     variantes: [
       "se me cae el pod",
@@ -574,7 +574,7 @@ export const FRECUENTES: Frecuente[] = [
   },
   {
     id: "f55",
-    tema: "Descarga e incidencias",
+    tema: "Incidencias y cetonemia",
     pregunta: "Fallos de infusión repetidos: ¿qué revisar y qué cánula usar?",
     variantes: [
       "la cánula se dobla",
@@ -586,7 +586,7 @@ export const FRECUENTES: Frecuente[] = [
   },
   {
     id: "f56",
-    tema: "Descarga e incidencias",
+    tema: "Incidencias y cetonemia",
     pregunta: "¿Cuánto esperar antes de volver a corregir?",
     variantes: [
       "cuánto tiempo entre correcciones",
@@ -598,7 +598,7 @@ export const FRECUENTES: Frecuente[] = [
   },
   {
     id: "f57",
-    tema: "Descarga e incidencias",
+    tema: "Descarga y seguimiento",
     pregunta: "¿Cómo manejar una comida rica en grasa o proteína?",
     variantes: [
       "hiperglucemia tardía tras la pizza",
@@ -620,7 +620,7 @@ export const FRECUENTES: Frecuente[] = [
   },
   {
     id: "f59",
-    tema: "Descarga e incidencias",
+    tema: "Incidencias y cetonemia",
     pregunta: "Demasiadas alarmas: ¿qué hacer con la fatiga por alarmas?",
     variantes: ["fatiga por alarmas", "el paciente apaga las alarmas", "sobrecarga de alertas"],
     pasajes: ["t/09-descarga/b26/0", "t/09-descarga/b26/1"],

@@ -87,6 +87,8 @@ const EVENTO = "mseen:lectura";
 export interface Marcador {
   ruta: string;
   titulo: string;
+  /* Contexto breve (tramo, paso, sistema…) para distinguir dos visitas con el mismo título. */
+  detalle?: string;
 }
 type Validar<T> = (v: unknown) => T | undefined;
 

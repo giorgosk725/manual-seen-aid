@@ -91,7 +91,7 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "comparar",
-    etiqueta: "Comparar sistemas",
+    etiqueta: "Comparar sistemas (lo esencial)",
     corto: "Comparar",
     href: href("sistemas", "todos", "esencial"),
     icono: Columns3,
@@ -102,7 +102,7 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "parametros",
-    etiqueta: "Parámetros por sistema",
+    etiqueta: "Comparar los parámetros",
     corto: "Parámetros",
     href: href("sistemas", "todos", "parametros"),
     icono: SlidersHorizontal,

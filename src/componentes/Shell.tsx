@@ -24,6 +24,7 @@ import {
   X,
 } from "lucide-react";
 import { APARTADOS, CAPITULO } from "../contenido";
+import { contextoDeRuta } from "../contexto";
 import { DESTINOS, MENU, areaDe, destinoActivo, type Area } from "../nav";
 import { consumirNavegacionNueva, href, marcarNavegacionNueva, type Ruta } from "../rutas";
 import { TAMANOS, guardarVisita, useNocturno, useTamanoLetra } from "../prefs";
@@ -607,8 +608,13 @@ export function Shell({
     document.title = titulo ? `${titulo} · Manual SEEN · AID` : "Manual SEEN · AID";
     // «Lo último que consultaste» (portada): pantallas con título, salvo portada y búsqueda.
     if (titulo && !["", "buscar", "mas", "cambios", "sobre"].includes(ruta.seccion))
-      guardarVisita({ ruta: window.location.hash || "#/", titulo });
-  }, [titulo, ruta.seccion]);
+      guardarVisita({
+        ruta: window.location.hash || "#/",
+        titulo,
+        detalle: contextoDeRuta(ruta),
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [titulo, ruta.seccion, ruta.sub, ruta.detalle]);
 
   const enLectura = ruta.seccion === "capitulo" && !!ruta.sub;
   const cat =

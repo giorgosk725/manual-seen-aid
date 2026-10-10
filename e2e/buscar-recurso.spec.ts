@@ -47,7 +47,7 @@ test.describe("Buscar con más mano (0.28.0)", () => {
 
   test("una fila por sistema se cambia de sistema dentro de la tarjeta", async ({ page }) => {
     await page.goto("/#/buscar/modo sueño");
-    const chips = page.getByRole("group", { name: "Sistema de la casilla" }).first();
+    const chips = page.getByRole("group", { name: "Sistema", exact: true }).first();
     await expect(chips).toBeVisible();
     await chips.getByRole("button", { name: "Omnipod 5" }).click();
     await expect(chips.getByRole("button", { name: "Omnipod 5" })).toHaveAttribute(

@@ -9,7 +9,7 @@ test.describe("Tablas y sistemas", () => {
     await page.goto("/#/");
     await page
       .getByRole("main")
-      .getByRole("link", { name: /^Parámetros por sistema/ })
+      .getByRole("link", { name: /^Comparar los parámetros/ })
       .click();
     await expect(page).toHaveURL(/#\/sistemas\/todos\/parametros$/);
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Sistemas");

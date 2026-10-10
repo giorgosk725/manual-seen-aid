@@ -866,7 +866,7 @@ function BarraSistemas({
     );
   const pista =
     ids.length === 0
-      ? "Marca uno para abrir su ficha, o varios para compararlos"
+      ? "A la vista los cuatro: marca uno para su ficha, o varios para compararlos"
       : ids.length === 1
         ? "Marca otro para compararlos"
         : "Quita uno para dejar su ficha";
@@ -910,6 +910,21 @@ function BarraSistemas({
           seleccion={ids.map((id) => columnaDeSistema(id as SistemaId))}
           onToggle={(c) => alternar(IDS_SISTEMA[c])}
           pista={pista}
+          extra={
+            <button
+              type="button"
+              aria-pressed={ids.length === 0}
+              onClick={() => window.location.replace(rutaCon([]))}
+              className="tap-44 inline-flex items-center rounded-md border px-2.5 py-1 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+              style={
+                ids.length === 0
+                  ? { borderColor: SEEN.burdeos, background: "#f7eff3", color: "#1e293b" }
+                  : { borderColor: "#d4d4d4", background: "#fff", color: "#334155" }
+              }
+            >
+              Los cuatro
+            </button>
+          }
         />
       )}
       <nav
