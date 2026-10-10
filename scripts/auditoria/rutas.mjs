@@ -34,6 +34,8 @@ const RUTAS = [
   ...["verde", "amarillo", "naranja", "rojo"].map((t) => `#/consultar/figura-3/${t}`),
   "#/consultar/infografia",
   "#/sistemas/todos/parametros",
+  "#/sistemas/elegir",
+  "#/sistemas/elegir/edad:4+peso:18+gestacion",
   "#/sistemas/mm780+op5/esencial",
   "#/consultar/situacion",
   "#/consultar/situacion/comida-grasa:camaps",

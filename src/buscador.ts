@@ -285,6 +285,12 @@ export function indice(): Entrada[] {
       href("capitulo", "11-diy"),
     ],
     [
+      "Elegir un sistema (criterios de elección)",
+      "Elegir, elección, qué sistema le pongo, cuál conviene, indicación por edad, peso, dosis total diaria, gestación, diabetes tipo 2, pod o bomba con catéter, sensor compatible: los criterios del apartado 6 contrastados con la Tabla 1",
+      6,
+      href("sistemas", "elegir"),
+    ],
+    [
       "Tarjetas de repaso",
       "Tarjetas, repasar, estudiar, memorizar, aprender las cifras y las siglas del capítulo, con su página",
       0,

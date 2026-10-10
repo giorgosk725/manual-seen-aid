@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.23.0";
+export const VERSION_APP = "0.24.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-10",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — una sola pantalla de Sistemas y un mapa de consulta`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — Elegir un sistema: los criterios del capítulo, sistema a sistema`,
+    detalle: [
+      "Nueva pantalla dentro de Sistemas: se marcan los factores que el apartado 6 pide integrar (edad, peso, dosis total diaria, gestación o planificación, diabetes tipo 2, formato de bomba, sensor, control desde el móvil) y cada sistema enseña la celda literal de la Tabla 1 que responde a cada uno, con «cumple», «fuera» o «no consta»; las variantes (Control-IQ y Control-IQ+, CamAPS FX y Liberty) se distinguen. Los criterios van en la dirección, para enlazarlos.",
+      "Los umbrales están copiados de la Tabla 1 y una prueba comprueba que cada uno sigue en su celda. Lo que la tabla no dice queda como «no consta»: la pantalla orienta la decisión compartida, no la sustituye; debajo, el párrafo del capítulo sobre la elección (p. 6) y la Figura 2.",
+      "Entrada en la portada (¿Qué sistema? · Elegir un sistema) y en Sistemas.",
+    ],
+  },
+  {
+    fecha: "2026-10-10",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.23.0 — una sola pantalla de Sistemas y un mapa de consulta",
     detalle: [
       "Sistemas, Comparar sistemas y Parámetros por sistema eran cuatro puertas al mismo material (las Tablas 1, 3 y 4 por sistema). Ahora son una pantalla: un sistema marcado es su ficha por secciones; dos o más, la misma sección con un sistema junto a otro; «Comparar» y «Parámetros» son esa pantalla con los cuatro. Las direcciones antiguas siguen funcionando.",
       "Cetonemia paso a paso (Figura 3) e Interrupción del sistema (p. 9) se encuentran también dentro de Situaciones, que agrupa por tema todo lo que responde a «¿qué hago en…?».",

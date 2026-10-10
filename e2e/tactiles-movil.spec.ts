@@ -13,6 +13,7 @@ const RUTAS = [
   "#/consultar/tablas/T1",
   "#/sistemas",
   "#/sistemas/ciq",
+  "#/sistemas/elegir/edad:4+gestacion",
   "#/pacientes",
   "#/pacientes/informacion",
   "#/pacientes/plan/op5",

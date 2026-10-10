@@ -79,6 +79,17 @@ export const DESTINOS: Destino[] = [
     fuente: "Tablas 1, 3 y 4 · ficha técnica",
   },
   {
+    id: "elegir",
+    etiqueta: "Elegir un sistema",
+    corto: "Elegir",
+    href: href("sistemas", "elegir"),
+    icono: Handshake,
+    cat: "consultar",
+    descripcion:
+      "Los factores del apartado 6 (edad, peso, dosis, gestación, formato, sensor…) contrastados con la Tabla 1, sistema a sistema.",
+    fuente: "Apartado 6 y Tabla 1",
+  },
+  {
     id: "comparar",
     etiqueta: "Comparar sistemas",
     corto: "Comparar",
@@ -269,14 +280,18 @@ export const DESTINOS: Destino[] = [
 
 /* El mapa de consulta (portada): cuatro bloques, cada uno con la pregunta que responde. */
 export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[] }[] = [
-  { id: "sistemas", titulo: "¿Qué sistema?", ids: ["sistemas", "comparar", "parametros"] },
+  {
+    id: "sistemas",
+    titulo: "¿Qué sistema?",
+    ids: ["sistemas", "elegir", "comparar", "parametros"],
+  },
   {
     id: "situaciones",
     titulo: "¿Qué hago en esta situación?",
     ids: ["situacion", "figura-3", "interrupcion"],
   },
   { id: "en-consulta", titulo: "En la consulta", ids: ["inicio", "descarga"] },
-  { id: "pacientes", titulo: "Para el paciente", ids: ["pacientes", "plan"] },
+  { id: "pacientes", titulo: "Para el paciente", ids: ["pacientes"] },
 ];
 
 /* Navegación global: cuatro áreas en la barra inferior (Inicio · Leer · Paciente · Buscar).

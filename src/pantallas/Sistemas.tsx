@@ -5,7 +5,7 @@
    (#/sistemas/<a+b|todos>/<seccion>) = la misma sección, un sistema junto a otro: eso son
    «Comparar sistemas» y «Parámetros por sistema». */
 import { useEffect, useMemo, useRef, type ReactNode } from "react";
-import { ArrowRight, Check, ExternalLink, Minus, X } from "lucide-react";
+import { ArrowRight, Check, ExternalLink, Handshake, Minus, X } from "lucide-react";
 import {
   APARTADOS,
   TABLAS,
@@ -46,6 +46,9 @@ import { FICHA_SISTEMA_EDUCATIVA } from "../enlaces";
 import type { SistemaId } from "../ampliacion/tipos";
 import { TablaVista } from "../componentes/TablaVista";
 import { NivelTitulo } from "../nivel-contexto";
+import { Elegir } from "./Elegir";
+
+export { Elegir };
 import { comoFunciona } from "../guias";
 import { PiezaVista } from "../componentes/Piezas";
 
@@ -113,6 +116,25 @@ export function HubSistemas() {
           aparte, su ficha técnica ampliada. Abre uno, o compáralos.
         </p>
       </CabeceraEditorial>
+      <a
+        href={href("sistemas", "elegir")}
+        className="mb-3 flex min-h-11 items-center gap-3 rounded-xl border bg-white px-3 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
+        style={{ borderColor: "#e6e6e6" }}
+      >
+        <Handshake
+          size={18}
+          className="shrink-0"
+          style={{ color: hex.strong }}
+          aria-hidden="true"
+        />
+        <span className="min-w-0 flex-1">
+          Elegir un sistema para una persona
+          <span className="block text-xs font-normal text-slate-500">
+            Edad, peso, dosis, gestación, formato, sensor… contrastados con la Tabla 1
+          </span>
+        </span>
+        <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+      </a>
       <nav aria-label="Comparar los cuatro" className="mb-4 flex flex-wrap gap-x-4 gap-y-1">
         {(
           [
@@ -978,6 +1000,7 @@ function leerSeleccion(sel?: string): string[] {
 
 export function Sistemas({ sel, seccion }: { sel?: string; seccion?: string }) {
   if (sel === undefined) return <HubSistemas />;
+  if (sel === "elegir") return <Elegir q={seccion} />;
   const ids = leerSeleccion(sel);
   if (!ids.length && sel !== "todos") return <HubSistemas />;
   const sec = SECCIONES_FICHA.some((x) => x.id === seccion) ? seccion : undefined;

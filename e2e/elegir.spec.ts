@@ -1,0 +1,45 @@
+/* Elegir un sistema (0.24.0): los criterios van en la ruta; cada sistema enseña la celda literal
+   de la Tabla 1 y su veredicto; las variantes (Control-IQ / Control-IQ+) se distinguen. */
+import { expect, test } from "@playwright/test";
+
+test.describe("Elegir un sistema", () => {
+  test("edad 4 y gestación: Control-IQ fuera, Control-IQ+ cumple, Omnipod 5 fuera; la ruta guarda los criterios", async ({
+    page,
+  }) => {
+    await page.goto("/#/sistemas/elegir");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Elegir un sistema");
+    await page.getByLabel(/^Edad/).fill("4");
+    await page.getByLabel("Gestación o planificación gestacional").check();
+    await expect(page).toHaveURL(/#\/sistemas\/elegir\/edad:4\+gestacion$/);
+    const resultado = page.getByRole("region", { name: "Resultado por sistema" });
+    const ciq = resultado.getByRole("listitem").filter({ hasText: "Tandem Control-IQ" });
+    await expect(ciq.getByText("Control-IQ: fuera").first()).toBeVisible();
+    await expect(ciq.getByText("Control-IQ+: cumple").first()).toBeVisible();
+    await expect(
+      ciq.getByText("Control-IQ: ≥ 6 años, peso 25–140 kg, DTD 10–100 UI/día"),
+    ).toBeVisible();
+    const op5 = resultado.getByRole("listitem").filter({ hasText: "Omnipod 5" });
+    await expect(op5.getByText("Fuera").first()).toBeVisible();
+    // Un enlace con los mismos criterios reproduce el resultado.
+    await page.goto("/#/sistemas/elegir/edad:4+gestacion+formato:pod");
+    await expect(page.getByLabel(/^Edad/)).toHaveValue("4");
+    await expect(page.getByRole("button", { name: "Pod sin tubo" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await page.getByRole("button", { name: "Borrar criterios" }).click();
+    await expect(page).toHaveURL(/#\/sistemas\/elegir$/);
+  });
+
+  test("se llega desde la portada y desde Sistemas", async ({ page }) => {
+    await page.goto("/#/");
+    await page
+      .getByRole("main")
+      .getByRole("link", { name: /^Elegir un sistema/ })
+      .click();
+    await expect(page).toHaveURL(/#\/sistemas\/elegir$/);
+    await page.goto("/#/sistemas");
+    await page.getByRole("link", { name: /^Elegir un sistema/ }).click();
+    await expect(page).toHaveURL(/#\/sistemas\/elegir$/);
+  });
+});
