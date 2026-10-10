@@ -10,6 +10,7 @@ import { plano } from "../marcado";
 import { frases } from "../frases";
 import { CASOS, casoPorId, type Caso, type CitaCaso, type OpcionCaso } from "../casos";
 import { href } from "../rutas";
+import { guardarProgresoCaso, useProgresoCasos } from "../prefs";
 import { CabeceraEditorial, PaginaBadge } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
 
@@ -164,6 +165,10 @@ export function CasoVista({ caso, inicial = 0 }: { caso: Caso; inicial?: number 
   }, [fin]);
   const p = caso.pasos[paso];
   const n = caso.pasos.length;
+  // El paso alcanzado se guarda en este navegador («Continuar» en la lista de casos).
+  useEffect(() => {
+    guardarProgresoCaso(caso.id, { paso, total: n, hecho: fin });
+  }, [caso.id, paso, n, fin]);
   return (
     <div className="space-y-4">
       <div
@@ -383,6 +388,7 @@ function Nota() {
 
 export function Casos({ id, paso }: { id?: string; paso?: string }) {
   const caso = casoPorId(id);
+  const progreso = useProgresoCasos();
   if (!CASOS.length)
     return (
       <div>
@@ -427,27 +433,38 @@ export function Casos({ id, paso }: { id?: string; paso?: string }) {
         </p>
       </CabeceraEditorial>
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {CASOS.map((c) => (
-          <li key={c.id}>
-            <a
-              href={href("casos", c.id)}
-              className="hover-lift ease-brand flex h-full flex-col rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-              style={{ borderColor: "#e6e6e6" }}
-            >
-              <span className="text-[15px] font-bold leading-snug text-slate-900">{c.titulo}</span>
-              <span className="mt-1 text-xs text-slate-600">
-                {c.sistema} · {c.pasos.length} pasos · {c.paginas}
-              </span>
-              <span className="mt-2 text-xs text-slate-600">{c.temas}</span>
-              <span
-                className="mt-auto inline-flex items-center gap-1 pt-2 text-sm font-semibold"
-                style={{ color: hex.ink }}
+        {CASOS.map((c) => {
+          const pr = progreso[c.id];
+          const aMedias = pr && !pr.hecho && pr.paso > 0;
+          return (
+            <li key={c.id}>
+              <a
+                href={aMedias ? href("casos", c.id, String(pr.paso + 1)) : href("casos", c.id)}
+                className="hover-lift ease-brand flex h-full flex-col rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                style={{ borderColor: "#e6e6e6" }}
               >
-                Empezar <ArrowRight size={13} aria-hidden="true" />
-              </span>
-            </a>
-          </li>
-        ))}
+                <span className="text-[15px] font-bold leading-snug text-slate-900">
+                  {c.titulo}
+                </span>
+                <span className="mt-1 text-xs text-slate-600">
+                  {c.sistema} · {c.pasos.length} pasos · {c.paginas}
+                </span>
+                <span className="mt-2 text-xs text-slate-600">{c.temas}</span>
+                <span
+                  className="mt-auto inline-flex items-center gap-1 pt-2 text-sm font-semibold"
+                  style={{ color: hex.ink }}
+                >
+                  {pr?.hecho
+                    ? "Hecho · Repetir"
+                    : aMedias
+                      ? `Paso ${pr.paso + 1} de ${c.pasos.length} · Continuar`
+                      : "Empezar"}{" "}
+                  <ArrowRight size={13} aria-hidden="true" />
+                </span>
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

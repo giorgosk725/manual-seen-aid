@@ -143,6 +143,36 @@ function Hoja({
 }
 
 /* ---------- Hub ---------- */
+/* Una hoja como fila: título, para qué sirve y la flecha; toda la fila abre. */
+function FilaHoja({
+  href: destino,
+  titulo,
+  detalle,
+  borrador = false,
+}: {
+  href: string;
+  titulo: string;
+  detalle: string;
+  borrador?: boolean;
+}) {
+  return (
+    <a
+      href={destino}
+      className="flex min-h-11 items-center gap-3 px-3 py-2 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+    >
+      <span className="min-w-0 flex-1">
+        <span className="block font-semibold text-slate-900">{titulo}</span>
+        <span className="block text-xs text-slate-600">{detalle}</span>
+        {borrador && (
+          <span className="mt-1 inline-block rounded-full bg-amber-100 px-2 text-[11px] font-semibold text-amber-900">
+            Borrador en revisión
+          </span>
+        )}
+      </span>
+      <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+    </a>
+  );
+}
 export function HubPacientes() {
   const tarjetas = [
     {
@@ -160,84 +190,40 @@ export function HubPacientes() {
           A4.
         </p>
       </CabeceraEditorial>
-      <ul className="grid gap-3 md:grid-cols-2">
-        {tarjetas.map((c) => {
-          const I = c.icono;
-          return (
-            <li key={c.t}>
-              <a
-                href={c.href}
-                className="hover-lift ease-brand flex h-full gap-3 rounded-2xl border bg-white p-4 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{ borderColor: "#e6e6e6" }}
-              >
-                <span
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white"
-                  style={{ background: hex.strong }}
-                  aria-hidden="true"
-                >
-                  <I size={18} />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-base font-extrabold text-slate-900">{c.t}</span>
-                  <span className="mt-0.5 block text-sm text-slate-600">{c.s}</span>
-                </span>
-              </a>
-            </li>
-          );
-        })}
+      <ul className="divide-y rounded-xl border bg-white" style={{ borderColor: "#e6e6e6" }}>
+        {tarjetas.map((c) => (
+          <li key={c.t}>
+            <FilaHoja href={c.href} titulo={c.t} detalle={c.s} />
+          </li>
+        ))}
       </ul>
       <section aria-labelledby="hojas-breves" className="mt-6">
         <h2 id="hojas-breves" className="text-base font-extrabold text-slate-900">
           Hojas breves por situación
         </h2>
         <p className="mt-1 text-sm text-slate-600">
-          Hojas cortas para entregar según lo que haga falta ese día: dos a partir de la Figura 3 y
-          de la Tabla 6 del capítulo (cetonas; pruebas y cirugía) y tres con las mismas preguntas y
-          respuestas de la Información para pacientes, tal cual.
+          Para entregar según lo que haga falta ese día: dos a partir de la Figura 3 y de la Tabla 6
+          (cetonas; pruebas y cirugía) y tres con las mismas preguntas y respuestas de la
+          Información para pacientes.
         </p>
-        <ul className="mt-3 grid gap-2 md:grid-cols-3">
+        <ul className="mt-3 divide-y rounded-xl border bg-white" style={{ borderColor: "#e6e6e6" }}>
           {HOJAS_EXTRA.map((h) => (
             <li key={h.id}>
-              <a
+              <FilaHoja
                 href={href("pacientes", "hoja", h.id)}
-                className="hover-lift ease-brand flex h-full flex-col rounded-xl border bg-white p-3 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{ borderColor: h.estado === "borrador" ? "#e0a83e" : "#e6e6e6" }}
-              >
-                <span className="text-sm font-bold text-slate-900">{h.titulo}</span>
-                <span className="mt-1 text-xs text-slate-600">{h.rotulo}</span>
-                {h.estado === "borrador" && (
-                  <span className="mt-1 inline-block w-fit rounded-full bg-amber-100 px-2 text-[11px] font-semibold text-amber-900">
-                    Borrador en revisión
-                  </span>
-                )}
-                <span
-                  className="mt-auto inline-flex items-center gap-1 pt-2 text-xs font-semibold"
-                  style={{ color: hex.ink }}
-                >
-                  Abrir la hoja <ArrowRight size={12} aria-hidden="true" />
-                </span>
-              </a>
+                titulo={h.titulo}
+                detalle={h.rotulo}
+                borrador={h.estado === "borrador"}
+              />
             </li>
           ))}
           {HOJAS_BREVES.map((h) => (
             <li key={h.id}>
-              <a
+              <FilaHoja
                 href={href("pacientes", "hoja", h.id)}
-                className="hover-lift ease-brand flex h-full flex-col rounded-xl border bg-white p-3 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{ borderColor: "#e6e6e6" }}
-              >
-                <span className="text-sm font-bold text-slate-900">{h.titulo}</span>
-                <span className="mt-1 text-xs text-slate-600">
-                  {h.preguntas.length} preguntas ·{" "}
-                  {h.preguntas.map((q) => q.replace(/^¿|\?$/g, "")).join(" · ")}
-                </span>
-                <span
-                  className="mt-auto inline-flex items-center gap-1 pt-2 text-xs font-semibold"
-                  style={{ color: hex.ink }}
-                >
-                  Abrir la hoja <ArrowRight size={12} aria-hidden="true" />
-                </span>
-              </a>
+                titulo={h.titulo}
+                detalle={h.preguntas.map((q) => q.replace(/^¿|\?$/g, "")).join(" · ")}
+              />
             </li>
           ))}
         </ul>

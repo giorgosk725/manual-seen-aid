@@ -2,7 +2,7 @@
    capítulo y Para el paciente), el buscador, seguir leyendo, el mapa de consulta en cuatro
    bloques (componentes/MapaConsulta) y el capítulo publicado. */
 import { useState } from "react";
-import { ArrowRight, BookOpen, ExternalLink, HeartHandshake, Search } from "lucide-react";
+import { History, ArrowRight, BookOpen, ExternalLink, HeartHandshake, Search } from "lucide-react";
 import { CAPITULO } from "../contenido";
 import { MapaConsulta } from "../componentes/MapaConsulta";
 import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
@@ -16,7 +16,7 @@ import { RecursosPedidos } from "../componentes/RecursosPedidos";
 import { Autocompletar } from "../componentes/Autocompletar";
 import { SinResultados } from "../componentes/SinResultados";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
-import { useUltimo } from "../prefs";
+import { useUltimo, useVisitas } from "../prefs";
 import { FICHA_AREA, SEEN } from "../tokens";
 
 const fecha = (iso: string) =>
@@ -55,6 +55,32 @@ function SeguirLeyendo() {
       </span>
       <ArrowRight size={14} className="shrink-0 text-slate-500" aria-hidden="true" />
     </a>
+  );
+}
+
+/* Las últimas pantallas consultadas (prefs.ts, guardarVisita): volver en un toque. */
+function Recientes() {
+  const visitas = useVisitas();
+  if (!visitas.length) return null;
+  return (
+    <nav aria-label="Lo último que consultaste" className="-mt-3">
+      <p className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">
+        <History size={13} aria-hidden="true" /> Lo último que consultaste
+      </p>
+      <ul className="flex flex-wrap gap-1.5">
+        {visitas.map((v) => (
+          <li key={v.ruta}>
+            <a
+              href={v.ruta}
+              className="inline-flex min-h-11 max-w-[18rem] items-center rounded-full border bg-white px-3 text-sm font-semibold text-slate-800 hover:border-slate-500 sm:min-h-9"
+              style={{ borderColor: "#d4d4d4" }}
+            >
+              <span className="truncate">{v.titulo}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
 
@@ -257,6 +283,8 @@ export function Portada() {
       </section>
 
       <Buscador />
+
+      <Recientes />
 
       <MapaConsulta />
 

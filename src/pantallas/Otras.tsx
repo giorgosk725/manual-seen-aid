@@ -13,9 +13,16 @@ import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
 import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
 import { PREGUNTAS } from "../contenido/test";
 import { href } from "../rutas";
-import { Badge, CabeceraEditorial, Revelar, ToneCard } from "../ui";
+import { Badge, CabeceraEditorial, Revelar, Segmented, ToneCard } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
-import { fueraDelCapitulo, marcar, paginaDe, type Busqueda, type Resultado } from "../busqueda";
+import {
+  fueraDelCapitulo,
+  marcar,
+  normalizar,
+  paginaDe,
+  type Busqueda,
+  type Resultado,
+} from "../busqueda";
 import { useBuscador } from "../useBuscador";
 import { useParecidos } from "../semantica";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
@@ -150,6 +157,15 @@ export function Buscar({ inicial }: { inicial?: string }) {
   const cercanas = motor && !respuestas.length && !frecuente ? motor.faqsCercanas(parecidos) : [];
   const dentro = res.filter((r) => !fueraDelCapitulo(r.entrada));
   const fueraRes = res.filter((r) => fueraDelCapitulo(r.entrada));
+  // Pestañas por tipo de fuente: texto del capítulo · tablas y figuras · fuera del capítulo.
+  const esTabla = (r: Resultado) =>
+    ["tabla", "figura", "diagrama", "referencia"].includes(r.entrada.tipo);
+  const textoRes = dentro.filter((r) => !esTabla(r));
+  const tablasRes = dentro.filter(esTabla);
+  const [pestana, setPestana] = useState<"texto" | "tablas" | "fuera">("texto");
+  useEffect(() => setPestana("texto"), [q]);
+  const activa =
+    pestana === "texto" && !textoRes.length ? (tablasRes.length ? "tablas" : "fuera") : pestana;
   const hayMas = dentro.length < busqueda.totalCapitulo || fueraRes.length < busqueda.totalFuera;
   return (
     <div>
@@ -232,11 +248,27 @@ export function Buscar({ inicial }: { inicial?: string }) {
           res.length === 0 &&
           !respuestas.length &&
           !frecuente && <SinResultados q={q} cercanas={cercanas} />}
-        <ListaResultados res={dentro} q={qEf} />
-        {fueraRes.length > 0 && (
-          <section aria-labelledby="fuera" className="mt-6">
-            <h2 id="fuera" className="text-sm font-bold text-amber-900">
-              Fuera del capítulo · ampliación técnica, hojas para el paciente y test
+        {res.length > 0 && (
+          <div className="mt-3">
+            <Segmented
+              label="Tipo de resultado"
+              wrap
+              value={activa}
+              onChange={(v) => setPestana(v)}
+              options={[
+                { id: "texto", label: `Texto (${textoRes.length})` },
+                { id: "tablas", label: `Tablas y figuras (${tablasRes.length})` },
+                { id: "fuera", label: `Fuera del capítulo (${fueraRes.length})` },
+              ]}
+            />
+          </div>
+        )}
+        {activa === "texto" && <ListaResultados res={textoRes} q={qEf} />}
+        {activa === "tablas" && <ListaResultados res={tablasRes} q={qEf} />}
+        {activa === "fuera" && fueraRes.length > 0 && (
+          <section aria-labelledby="fuera" className="mt-3">
+            <h2 id="fuera" className="sr-only">
+              Fuera del capítulo
             </h2>
             <p className="text-xs text-slate-600">
               No es el texto del capítulo: material complementario, cada entrada con su rótulo
@@ -564,6 +596,14 @@ const TEMAS = [...new Set(FRECUENTES.map((f) => f.tema))];
 export function Preguntas({ id }: { id?: string }) {
   const { motor, estado, reintentar } = useBuscador(true);
   const [todas, setTodas] = useState(false);
+  const [filtro, setFiltro] = useState("");
+  const nf = normalizar(filtro).trim();
+  const filtradas =
+    nf.length >= 2
+      ? FRECUENTES.filter((x) =>
+          [x.pregunta, ...x.variantes].some((t) => normalizar(t).includes(nf)),
+        )
+      : null;
   const f = FRECUENTES.find((x) => x.id === id);
   const hex = CATEGORIA_HEX.consultar;
   if (f) {
@@ -630,15 +670,48 @@ export function Preguntas({ id }: { id?: string }) {
           responden.
         </p>
       </CabeceraEditorial>
-      <button
-        type="button"
-        onClick={() => setTodas((v) => !v)}
-        aria-pressed={todas}
-        className="mb-3 inline-flex min-h-11 items-center rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 hover:border-slate-500 sm:min-h-9"
-      >
-        {todas ? "Plegar los temas" : "Ver todas las preguntas"}
-      </button>
-      <div className="space-y-2">
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <input
+          type="search"
+          aria-label="Filtrar preguntas"
+          placeholder="Filtrar: cetonas, gestación, descarga…"
+          value={filtro}
+          onChange={(e) => setFiltro(e.target.value)}
+          className="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10 sm:max-w-md"
+        />
+        <button
+          type="button"
+          onClick={() => setTodas((v) => !v)}
+          aria-pressed={todas}
+          className="inline-flex min-h-11 items-center rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 hover:border-slate-500 sm:min-h-9"
+        >
+          {todas ? "Plegar los temas" : "Ver todas las preguntas"}
+        </button>
+      </div>
+      {filtradas && (
+        <ul
+          className="divide-y rounded-xl border bg-white"
+          style={{ borderColor: "#e6e6e6" }}
+          aria-label="Preguntas que coinciden"
+        >
+          {filtradas.length === 0 && (
+            <li className="px-3 py-2 text-sm text-slate-600">Ninguna pregunta contiene eso.</li>
+          )}
+          {filtradas.map((x) => (
+            <li key={x.id}>
+              <a
+                href={href("preguntas", x.id)}
+                className="flex min-h-11 items-center gap-2 px-3 py-2 text-sm text-slate-800 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+              >
+                <span className="flex-1">{x.pregunta}</span>
+                <span className="shrink-0 text-xs text-slate-500">{x.tema}</span>
+                <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div className={filtradas ? "hidden" : "space-y-2"}>
         {TEMAS.map((tema) => (
           <details
             key={tema}

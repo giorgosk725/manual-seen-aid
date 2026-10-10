@@ -8,13 +8,26 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.28.0";
+export const VERSION_APP = "0.29.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — buscar y responder con más mano`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — listas y tarjetas`,
+    detalle: [
+      "Buscar separa los resultados en pestañas: Texto · Tablas y figuras · Fuera del capítulo, con su cuenta.",
+      "Situaciones y Preguntas frecuentes se filtran escribiendo («resonancia», «gestación»): la lista se acorta mientras se escribe.",
+      "Un solo selector de sistema en toda la app (casillas con marca y punto de color), también en Situaciones y en Iniciar un sistema.",
+      "Para el paciente: las hojas como filas (título, para qué sirve, flecha), sin tarjetas.",
+      "Casos guiados: cada caso recuerda el paso alcanzado en este navegador («Paso 3 de 5 · Continuar»; «Hecho · Repetir»).",
+      "Portada: «Lo último que consultaste», las cuatro últimas pantallas, para volver en un toque.",
+    ],
+  },
+  {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.28.0 — buscar y responder con más mano",
     detalle: [
       "Sugerencias mientras se escribe: a partir de tres letras, preguntas frecuentes, situaciones, sistemas, herramientas, hojas y siglas que empiezan por lo escrito; una pregunta rellena la caja y lo demás abre su pantalla.",
       "La tarjeta de respuesta cambia: cuando responde una lista, el punto que coincide va primero y la lista entera queda plegada; en una fila por sistema, los cuatro sistemas se cambian con un toque dentro de la tarjeta (y vienen marcados si la búsqueda nombraba uno); en la Figura 3, el tramo se cambia igual; «Ver en contexto» despliega la frase anterior y la siguiente sin salir; y según de dónde sale la respuesta, enlaces a los cuatro sistemas en esa tabla o a la hoja para el paciente (cetonas; pruebas y cirugía).",

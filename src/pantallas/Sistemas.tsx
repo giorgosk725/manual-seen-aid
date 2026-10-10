@@ -43,6 +43,7 @@ import { SITUACIONES } from "../situaciones";
 import { FICHA_SISTEMA_EDUCATIVA } from "../enlaces";
 import type { SistemaId } from "../ampliacion/tipos";
 import { TablaVista } from "../componentes/TablaVista";
+import { CasillasSistema } from "../componentes/CasillasSistema";
 import { NivelTitulo } from "../nivel-contexto";
 import { Elegir } from "./Elegir";
 
@@ -899,46 +900,12 @@ function BarraSistemas({
           </span>
         </button>
       ) : (
-        <div role="group" aria-label="Sistemas" className="flex flex-wrap items-center gap-1.5">
-          {SISTEMAS_AMPLIACION.map((s, c) => {
-            const on = ids.includes(s.id);
-            const h = SISTEMA_HEX[c];
-            return (
-              <button
-                key={s.id}
-                type="button"
-                aria-pressed={on}
-                onClick={() => alternar(s.id)}
-                className="tap-44 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-sm font-semibold text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                style={
-                  on
-                    ? { borderColor: SEEN.burdeos, background: "#f7eff3" }
-                    : { borderColor: "#d4d4d4", background: "#fff" }
-                }
-              >
-                <span
-                  aria-hidden="true"
-                  className="grid h-4 w-4 shrink-0 place-items-center rounded-sm border"
-                  style={
-                    on
-                      ? { background: SEEN.burdeos, borderColor: SEEN.burdeos }
-                      : { background: "#fff", borderColor: "#9ca3af" }
-                  }
-                >
-                  {on && <Check size={12} color="#fff" />}
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="h-2 w-2 shrink-0 rounded-full"
-                  style={{ background: h.strong }}
-                />
-                <span className="sm:hidden">{SLUG_CORTO[c]}</span>
-                <span className="hidden sm:inline">{s.name}</span>
-              </button>
-            );
-          })}
-          <span className="text-xs text-slate-500">{pista}</span>
-        </div>
+        <CasillasSistema
+          etiqueta="Sistemas"
+          seleccion={ids.map((id) => columnaDeSistema(id as SistemaId))}
+          onToggle={(c) => alternar(IDS_SISTEMA[c])}
+          pista={pista}
+        />
       )}
       <nav
         aria-label="Sección"

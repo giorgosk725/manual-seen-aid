@@ -4,7 +4,7 @@
 import { useRef } from "react";
 import { ArrowRight, Check, ChevronLeft, ChevronRight, Printer } from "lucide-react";
 import { TABLAS } from "../contenido";
-import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { SIS_IDS } from "../situaciones";
 import { elegirRuta, href } from "../rutas";
 import { imprimirRegion } from "../imprimir";
@@ -13,9 +13,10 @@ import { useIrAlCambiar } from "../irAlCambiar";
 import { CAPITULO } from "../contenido";
 import { VERSION_APP } from "../contenido/cambios";
 import { Lineas } from "../texto";
+import { CasillasSistema } from "../componentes/CasillasSistema";
 import { plano } from "../marcado";
 import { PiezaVista } from "../componentes/Piezas";
-import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
+import { CATEGORIA_HEX } from "../tokens";
 import { FASES, hojaDeComprobacion, type Pieza } from "../inicio";
 
 const hex = CATEGORIA_HEX.consultar;
@@ -207,35 +208,12 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
       <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
         Sistema (opcional)
       </div>
-      <div className="mb-4 grid grid-cols-2 gap-2 xl:grid-cols-4" role="group" aria-label="Sistema">
-        {ORDEN_SISTEMAS.map((id, c) => {
-          const on = sis === c;
-          const h = SISTEMA_HEX[c];
-          return (
-            <button
-              key={id}
-              type="button"
-              aria-pressed={on}
-              onClick={() => ir(actual, on ? undefined : c)}
-              className="hover-lift ease-brand flex min-h-11 items-center gap-2 rounded-xl border p-2 text-left text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-              style={
-                on
-                  ? { background: h.ink, borderColor: h.ink, color: "#fff" }
-                  : { background: h.soft, borderColor: `${h.strong}40`, color: h.ink }
-              }
-            >
-              <img
-                src={FOTO_SISTEMA[id]}
-                alt=""
-                className="h-8 w-8 rounded-md bg-white object-cover"
-              />
-              <span className="min-w-0 truncate" title={NOMBRES[c]}>
-                {CORTOS[c]}
-              </span>
-              {on && <Check size={14} className="ml-auto shrink-0" aria-hidden="true" />}
-            </button>
-          );
-        })}
+      <div className="mb-4">
+        <CasillasSistema
+          seleccion={sis !== undefined ? [sis] : []}
+          onToggle={(c) => ir(actual, sis === c ? undefined : c)}
+          nombres={CORTOS}
+        />
       </div>
 
       <ol

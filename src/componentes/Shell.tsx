@@ -27,7 +27,14 @@ import {
 import { APARTADOS, CAPITULO } from "../contenido";
 import { DESTINOS, MENU, areaDe, destinoActivo, type Area } from "../nav";
 import { consumirNavegacionNueva, href, marcarNavegacionNueva, type Ruta } from "../rutas";
-import { TAMANOS, useLeidos, useNocturno, useTamanoLetra, useUltimo } from "../prefs";
+import {
+  TAMANOS,
+  guardarVisita,
+  useLeidos,
+  useNocturno,
+  useTamanoLetra,
+  useUltimo,
+} from "../prefs";
 import { VolverArriba } from "./Lectura";
 import { ErrorBoundary, Modal } from "../ui";
 import { fueraDelCapitulo, marcar, paginaDe } from "../busqueda";
@@ -626,7 +633,10 @@ export function Shell({
 
   useEffect(() => {
     document.title = titulo ? `${titulo} · Manual SEEN · AID` : "Manual SEEN · AID";
-  }, [titulo]);
+    // «Lo último que consultaste» (portada): pantallas con título, salvo portada y búsqueda.
+    if (titulo && !["", "buscar", "mas", "cambios", "sobre"].includes(ruta.seccion))
+      guardarVisita({ ruta: window.location.hash || "#/", titulo });
+  }, [titulo, ruta.seccion]);
 
   const enLectura = ruta.seccion === "capitulo" && !!ruta.sub;
   const cat =

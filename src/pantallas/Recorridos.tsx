@@ -4,13 +4,16 @@
    - Revisar la descarga: la Tabla 5 paso a paso (8 pasos), con el patrón relacionado.
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
+import { useState } from "react";
 import { ArrowRight, Check, ChevronLeft, ChevronRight, HeartHandshake } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque } from "../contenido";
 import { SIS_IDS, SITUACIONES, type Situacion } from "../situaciones";
-import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
+
 import { elegirRuta, href } from "../rutas";
 import { casoPorId } from "../casos";
 import { CabeceraEditorial, PaginaBadge, Segmented } from "../ui";
+import { CasillasSistema } from "../componentes/CasillasSistema";
+import { normalizar } from "../busqueda";
 import { useIrAlCambiar } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
@@ -57,11 +60,22 @@ const TEMAS_SITUACION: { t: string; ids: string[]; subs: RegExp; extras?: Extra[
   { t: "Poblaciones y situaciones especiales", ids: [], subs: /./ },
 ];
 
-function ListaSituaciones({ sit, sistema }: { sit: Situacion | null; sistema?: string }) {
+function ListaSituaciones({
+  sit,
+  sistema,
+  filtro = "",
+}: {
+  sit: Situacion | null;
+  sistema?: string;
+  /* Texto escrito en «Filtrar»: solo las filas que lo contienen. */
+  filtro?: string;
+}) {
   const a = APARTADOS.find((x) => x.slug === "10-situaciones")!;
+  const f = normalizar(filtro).trim();
+  const pasa = (t: string) => !f || normalizar(t).includes(f);
   let subs = a.bloques.filter(
     (b): b is Extract<Bloque, { t: "h3" }> =>
-      b.t === "h3" && b.id !== "ejercicio" && b.id !== "exploraciones",
+      b.t === "h3" && b.id !== "ejercicio" && b.id !== "exploraciones" && pasa(b.texto),
   );
   const enlace =
     "flex min-h-11 w-full items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500";
@@ -72,8 +86,8 @@ function ListaSituaciones({ sit, sistema }: { sit: Situacion | null; sistema?: s
         subs = subs.filter((b) => !mios.includes(b));
         const sits = tema.ids
           .map((id) => SITUACIONES.find((x) => x.id === id))
-          .filter((x): x is Situacion => !!x);
-        const extras = tema.extras ?? [];
+          .filter((x): x is Situacion => !!x && pasa(x.etiqueta));
+        const extras = (tema.extras ?? []).filter((x) => pasa(x.t));
         if (!sits.length && !mios.length && !extras.length) return null;
         return (
           <section key={tema.t} aria-label={tema.t}>
@@ -146,6 +160,7 @@ function ListaSituaciones({ sit, sistema }: { sit: Situacion | null; sistema?: s
 }
 
 export function SituacionSistema({ situacion, sistema }: { situacion?: string; sistema?: string }) {
+  const [filtro, setFiltro] = useState("");
   const sit = SITUACIONES.find((s) => s.id === situacion) || null;
   const sisIdx = sistema ? SIS_IDS.indexOf(sistema) : -1;
   const tabla = sit ? TABLAS[sit.tabla] : null;
@@ -168,7 +183,15 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
           <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
             1 · Situación
           </div>
-          <ListaSituaciones sit={sit} sistema={sistema} />
+          <input
+            type="search"
+            aria-label="Filtrar situaciones"
+            placeholder="Filtrar: resonancia, ejercicio, sueño…"
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+            className="mb-2 min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10"
+          />
+          <ListaSituaciones sit={sit} sistema={sistema} filtro={filtro} />
         </div>
         <div aria-live="polite" className={sit ? "order-first lg:order-none" : undefined}>
           {!sit && (
@@ -217,45 +240,17 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                   <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
                     2 · Sistema
                   </div>
-                  <div
-                    className="grid grid-cols-2 gap-2 sm:grid-cols-4"
-                    role="group"
-                    aria-label="Sistema"
-                  >
-                    {ORDEN_SISTEMAS.map((id, c) => {
-                      const on = sisIdx === c;
-                      const h = SISTEMA_HEX[c];
-                      const s = SISTEMAS_AMPLIACION[c];
-                      return (
-                        <button
-                          key={id}
-                          type="button"
-                          aria-pressed={on}
-                          onClick={() => {
-                            aLaCasilla();
-                            elegirRuta(
-                              "consultar",
-                              "situacion",
-                              sit.id + (on ? "" : ":" + SIS_IDS[c]),
-                            );
-                          }}
-                          className="hover-lift ease-brand flex items-center gap-2 rounded-xl border p-2 text-left text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                          style={
-                            on
-                              ? { background: h.ink, borderColor: h.ink, color: "#fff" }
-                              : { background: h.soft, borderColor: `${h.strong}40`, color: h.ink }
-                          }
-                        >
-                          <img
-                            src={FOTO_SISTEMA[id]}
-                            alt=""
-                            className="h-8 w-8 rounded-md bg-white object-cover"
-                          />
-                          <span className="min-w-0 truncate">{s.short}</span>
-                        </button>
+                  <CasillasSistema
+                    seleccion={sisIdx >= 0 ? [sisIdx] : []}
+                    onToggle={(c) => {
+                      aLaCasilla();
+                      elegirRuta(
+                        "consultar",
+                        "situacion",
+                        sit.id + (sisIdx === c ? "" : ":" + SIS_IDS[c]),
                       );
-                    })}
-                  </div>
+                    }}
+                  />
                 </div>
               )}
               <section

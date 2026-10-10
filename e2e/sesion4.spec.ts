@@ -105,9 +105,11 @@ test.describe("Nocturno en lo nuevo", () => {
 test.describe("Búsqueda y enlaces", () => {
   test("lo que no es del capítulo sale aparte y rotulado", async ({ page }) => {
     await page.goto("/#/buscar/urgencias");
-    await expect(
-      page.getByRole("heading", { name: /Fuera del capítulo · ampliación/ }),
-    ).toBeVisible();
+    await page
+      .getByRole("group", { name: "Tipo de resultado" })
+      .getByRole("button", { name: /^Fuera del capítulo \(\d+\)/ })
+      .click();
+    await expect(page.getByText(/No es el texto del capítulo/)).toBeVisible();
     await page
       .getByRole("link", {
         name: /Información para pacientes · ¿Cuándo se debe acudir a urgencias\?/,

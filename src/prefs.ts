@@ -151,6 +151,27 @@ function useLectura<T>(clave: string, defecto: T, validar: Validar<T>): T {
 export const guardarUltimo = (m: Marcador & { slug: string }) => guardarJSON("mseen:ultimo", m);
 export const useUltimo = () => useLectura("mseen:ultimo", null, validarUltimo);
 
+/* Casos guiados: el paso alcanzado y si se terminó (solo ids y números, en este navegador). */
+export type ProgresoCasos = Record<string, { paso: number; total: number; hecho: boolean }>;
+const validarCasos: Validar<ProgresoCasos> = (v) =>
+  v && typeof v === "object" && !Array.isArray(v) ? (v as ProgresoCasos) : undefined;
+export const useProgresoCasos = () => useLectura("mseen:casos", {} as ProgresoCasos, validarCasos);
+export const guardarProgresoCaso = (
+  id: string,
+  p: { paso: number; total: number; hecho: boolean },
+) => {
+  const c = leerJSON("mseen:casos", {} as ProgresoCasos, validarCasos);
+  guardarJSON("mseen:casos", { ...c, [id]: p });
+};
+
+/* Lo último que se consultó: las cuatro últimas pantallas (ruta y título de interfaz), sin la
+   portada ni la búsqueda. Para volver en un toque desde la portada. */
+export const useVisitas = () => useLectura("mseen:visitas", [], validarFavoritos);
+export const guardarVisita = (m: Marcador) => {
+  const v = leerJSON("mseen:visitas", [], validarFavoritos);
+  guardarJSON("mseen:visitas", [m, ...v.filter((x) => x.ruta !== m.ruta)].slice(0, 4));
+};
+
 /* Apartados leídos (se marcan al llegar al final). */
 export const marcarLeido = (slug: string) => {
   const l = leerJSON("mseen:leidos", [], validarLeidos);
