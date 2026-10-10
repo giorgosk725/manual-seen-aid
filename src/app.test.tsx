@@ -67,7 +67,7 @@ describe("App", () => {
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
     expect(screen.getByText(/sin peso mínimo; DTD ≥ 5 UI\/día/)).toBeInTheDocument();
     expect(screen.queryByText(/Guardian 4/)).not.toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: /Ver todos/ }));
+    await userEvent.click(screen.getByRole("button", { name: /Los cuatro/ }));
     expect(screen.getByRole("table")).toBeInTheDocument();
   });
 

@@ -740,7 +740,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
                   href={href("consultar", "situacion", `${x.id}:${slug}`)}
                   className="no-imprimir mt-1 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
                 >
-                  Abrir con el texto que la explica <ArrowRight size={13} aria-hidden="true" />
+                  Ver la situación con su texto <ArrowRight size={13} aria-hidden="true" />
                 </a>
               </li>
             );

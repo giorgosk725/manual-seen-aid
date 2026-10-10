@@ -111,7 +111,7 @@ test.describe("Tablas y sistemas", () => {
     const otra = await page.context().newPage();
     await otra.goto("/#/consultar/tablas/T1:minimed-780g+omnipod-5");
     await expect(otra.getByText("Tabla 1 · viendo MiniMed 780G y Omnipod 5")).toBeVisible();
-    await grupo.getByRole("button", { name: "Ver todos" }).click();
+    await grupo.getByRole("button", { name: "Los cuatro" }).click();
     await expect(page).toHaveURL(/#\/consultar\/tablas\/T1$/);
     await expect(page.getByText("Tabla 1 · los cuatro sistemas")).toBeVisible();
   });
@@ -146,7 +146,7 @@ test.describe("Tablas y sistemas", () => {
     // Cada situación se abre con el sistema ya elegido.
     await page
       .getByRole("region", { name: /Situaciones/ })
-      .getByRole("link", { name: /Abrir con el texto que la explica/ })
+      .getByRole("link", { name: /Ver la situación con su texto/ })
       .first()
       .click();
     await expect(page).toHaveURL(/#\/consultar\/situacion\/ejercicio-aerobico:minimed-780g$/);

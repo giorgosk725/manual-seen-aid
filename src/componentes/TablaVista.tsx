@@ -6,13 +6,14 @@
      filtro por fila (p. ej. Tabla 6, por procedimiento). La selección viaja en la ruta
      (`T1:minimed-780g+omnipod-5`, `T6:3`) para poder compartirla. */
 import { useMemo, useState } from "react";
-import { Check, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import type { Tabla } from "../contenido";
 import { Lineas, Texto } from "../texto";
 import { Enlace, PaginaBadge } from "../ui";
 import { BRAND_ACCENT, SISTEMA_HEX } from "../tokens";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
+import { CasillasSistema } from "./CasillasSistema";
 import { TituloBloque } from "../nivel";
 
 const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
@@ -48,7 +49,7 @@ export function CabeceraTabla({
             className="no-imprimir inline-flex items-center gap-1 rounded-full border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             <ExternalLink size={12} aria-hidden="true" />
-            {tabla.porSistema ? "Filtrar por sistema" : "Abrir en Consultar"}
+            {tabla.porSistema ? "Ver por sistema" : "Abrir la tabla"}
           </Enlace>
         )}
       </div>
@@ -283,41 +284,24 @@ export function TablaVista({
       {interactiva && tabla.porSistema && !columnasFijas && (
         <div className="no-imprimir mb-3">
           <div className="mb-1 text-xs font-semibold text-slate-500">
-            {ayuda ?? "Elige uno o varios sistemas (uno solo = ficha de lectura)"}
+            {ayuda ?? "Marca uno (su ficha de lectura) o varios (compararlos)"}
           </div>
-          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filtrar por sistema">
-            {tabla.columnas.map((nombre, c) => {
-              const on = sel.includes(c);
-              const hex = SISTEMA_HEX[c];
-              return (
+          <CasillasSistema
+            etiqueta="Filtrar por sistema"
+            seleccion={sel}
+            onToggle={toggle}
+            extra={
+              sel.length > 0 && (
                 <button
-                  key={c}
                   type="button"
-                  aria-pressed={on}
-                  onClick={() => toggle(c)}
-                  className="tap-44 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                  style={
-                    on
-                      ? { background: hex.ink, borderColor: hex.ink, color: "#fff" }
-                      : { background: hex.soft, borderColor: `${hex.strong}40`, color: hex.ink }
-                  }
+                  onClick={() => setSel(() => [])}
+                  className="tap-44 rounded-md px-3 py-1.5 text-sm font-semibold text-slate-600 underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                 >
-                  {on && <Check size={14} aria-hidden="true" />}
-                  <span className="sm:hidden">{CORTOS[c]}</span>
-                  <span className="hidden sm:inline">{nombre}</span>
+                  Los cuatro
                 </button>
-              );
-            })}
-            {sel.length > 0 && (
-              <button
-                type="button"
-                onClick={() => setSel(() => [])}
-                className="tap-44 rounded-full px-3 py-1.5 text-sm font-semibold text-slate-600 underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-              >
-                Ver todos
-              </button>
-            )}
-          </div>
+              )
+            }
+          />
           <p className="mt-1.5 text-xs text-slate-600" aria-live="polite">
             {sel.length
               ? `Tabla ${tabla.numero} · viendo ${listaNombres(sel.map((c) => tabla.columnas[c]))}`

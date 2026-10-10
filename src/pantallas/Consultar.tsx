@@ -11,7 +11,7 @@ import {
 } from "../contenido";
 import { PREGUNTA_TABLA } from "../nav";
 import { elegirRuta, href } from "../rutas";
-import { BotonImprimir, CabeceraEditorial, Revelar, Segmented } from "../ui";
+import { BotonImprimir, CabeceraEditorial, PaginaBadge, Revelar, Segmented } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
 import { TablaVista } from "../componentes/TablaVista";
 import { Figura3Recorrido } from "../componentes/Figura3Vista";
@@ -21,21 +21,71 @@ import { NivelTitulo } from "../nivel-contexto";
 
 const hex = CATEGORIA_HEX.consultar;
 
+/* Las seis tablas como filas: número, título y la pregunta que responde cada una. */
+function IndiceTablas() {
+  return (
+    <div>
+      <CabeceraEditorial titulo="Tablas del capítulo" hex={hex} level={1}>
+        <p className="text-sm text-slate-600">
+          Las seis tablas, con la pregunta que responde cada una; las de sistemas se filtran por
+          sistema.
+        </p>
+      </CabeceraEditorial>
+      <ul className="divide-y rounded-xl border bg-white" style={{ borderColor: "#e6e6e6" }}>
+        {LISTA_TABLAS.map((t) => (
+          <li key={t.id}>
+            <a
+              href={href("consultar", "tablas", t.id)}
+              className="flex min-h-11 items-center gap-3 px-3 py-2 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            >
+              <span
+                className="w-16 shrink-0 text-xs font-bold uppercase tracking-wide"
+                style={{ color: hex.ink }}
+              >
+                Tabla {t.numero}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-semibold text-slate-900">{t.titulo}</span>
+                <span className="block text-xs text-slate-600">{PREGUNTA_TABLA[t.id]}</span>
+              </span>
+              <PaginaBadge p={t.paginas[0]} p2={t.paginas[1]} />
+              <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
-  const tid = (id && id in TABLAS ? id : "T1") as TablaId;
+  const tid = (id && id in TABLAS ? id : null) as TablaId | null;
+  if (!tid) return <IndiceTablas />;
+  return <TablaPantalla tid={tid} seleccion={seleccion} />;
+}
+
+function TablaPantalla({ tid, seleccion }: { tid: TablaId; seleccion?: string }) {
   const tabla = TABLAS[tid];
   const ap = apartadoDeTabla(tid);
   const ref = useRef<HTMLDivElement>(null);
   return (
     <div>
-      <CabeceraEditorial titulo="Tablas del capítulo" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          Las seis tablas del capítulo; las de sistemas se filtran por sistema.
-        </p>
+      <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
+        <a
+          href={href("consultar", "tablas")}
+          className="inline-flex min-h-11 items-center font-semibold hover:underline"
+        >
+          Tablas del capítulo
+        </a>
+        <span aria-hidden="true">›</span>
+        <span>Tabla {tabla.numero}</span>
+      </div>
+      <CabeceraEditorial titulo={`Tabla ${tabla.numero}`} hex={hex} level={1}>
+        <p className="text-sm text-slate-600">{PREGUNTA_TABLA[tid]}</p>
       </CabeceraEditorial>
       <div className="no-imprimir mb-4 overflow-x-auto">
         <Segmented
-          label="Elegir tabla"
+          label="Otra tabla"
           options={LISTA_TABLAS.map((t) => ({
             id: t.id,
             label: `Tabla ${t.numero}`,
@@ -46,8 +96,6 @@ export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
             window.location.hash = href("consultar", "tablas", v);
           }}
         />
-        {/* La pregunta que responde la tabla elegida (las tres por sistema se parecen). */}
-        <p className="mt-2 text-base font-semibold text-slate-900">{PREGUNTA_TABLA[tid]}</p>
       </div>
       <div
         ref={ref}

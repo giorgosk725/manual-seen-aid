@@ -282,7 +282,7 @@ export const DESTINOS: Destino[] = [
 export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[] }[] = [
   {
     id: "sistemas",
-    titulo: "¿Qué sistema?",
+    titulo: "¿Qué sistema y cómo se ajusta?",
     ids: ["sistemas", "elegir", "comparar", "parametros"],
   },
   {

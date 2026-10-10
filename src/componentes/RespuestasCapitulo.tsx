@@ -373,7 +373,7 @@ function BloqueFrecuente({
         })}
       </div>
       <p className="mt-2 text-[11px] text-slate-500">
-        Pasajes del capítulo elegidos y revisados de antemano para esta pregunta.
+        Pasajes del capítulo revisados para esta pregunta.
       </p>
     </section>
   );

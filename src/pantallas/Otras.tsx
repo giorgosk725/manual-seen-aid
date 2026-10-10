@@ -171,8 +171,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
     <div>
       <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1}>
         <p className="text-sm text-slate-600">
-          Busca con tus palabras: arriba, el pasaje del capítulo que mejor encaja, con su página;
-          debajo, los demás resultados.
+          Escribe una duda con tus palabras: arriba, el pasaje que mejor la responde, con su página;
+          debajo, el resto.
         </p>
       </CabeceraEditorial>
       <label className="sr-only" htmlFor="buscar-q">

@@ -1,6 +1,7 @@
 /* El selector de sistema de toda la app (Sistemas AID, Situaciones, Iniciar un sistema): una
    casilla por sistema (cuadro con marca y punto de su color). Uno o varios según quien lo use;
    el nombre corto en el móvil y el completo en pantallas grandes, salvo que se den nombres. */
+import type { ReactNode } from "react";
 import { Check } from "lucide-react";
 import { TABLAS } from "../contenido";
 import { SEEN, SISTEMA_HEX } from "../tokens";
@@ -13,6 +14,7 @@ export function CasillasSistema({
   etiqueta = "Sistema",
   nombres,
   pista,
+  extra,
 }: {
   /* Columnas (0-3, orden de la Tabla 1) marcadas. */
   seleccion: number[];
@@ -22,6 +24,8 @@ export function CasillasSistema({
   nombres?: string[];
   /* Texto breve al lado («Marca otro para compararlos»). */
   pista?: string;
+  /* Un control más dentro del grupo (p. ej. «Los cuatro»). */
+  extra?: ReactNode;
 }) {
   return (
     <div role="group" aria-label={etiqueta} className="flex flex-wrap items-center gap-1.5">
@@ -68,6 +72,7 @@ export function CasillasSistema({
           </button>
         );
       })}
+      {extra}
       {pista && <span className="text-xs text-slate-500">{pista}</span>}
     </div>
   );
