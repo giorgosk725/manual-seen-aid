@@ -61,7 +61,7 @@ test.describe("Producción con service worker", () => {
 });
 
 test.describe("Primera visita a un enlace profundo", () => {
-  /* El QR de una hoja abre, por ejemplo, #/pacientes/resumen en un móvil que nunca ha
+  /* Un enlace a una hoja abre, por ejemplo, #/pacientes/resumen en un móvil que nunca ha
      visitado la app: el script de arranque pide ya el trozo de esa pantalla, a la vez que la
      entrada. Se comprueba que precarga justo el trozo que la pantalla usa (si App.tsx cambia
      una ruta de pantalla y vite.config.ts no, esto falla). */

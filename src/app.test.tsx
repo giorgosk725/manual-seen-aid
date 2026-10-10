@@ -102,7 +102,6 @@ describe("App", () => {
     render(<App />);
     await ir("#/pacientes/informacion");
     expect(screen.getByText("¿Qué es un sistema de asa cerrada?")).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: /Código QR/ })).toBeInTheDocument();
     await ir("#/pacientes/plan/op5");
     expect(screen.getByText(/Plan de seguridad · Omnipod 5/)).toBeInTheDocument();
     // La hoja se rellena a mano: no hay ni un campo de texto.

@@ -52,6 +52,8 @@ export interface Destino {
   /* Categoría (color por función; tokens.CATEGORIA_HEX). */
   cat: "leer" | "consultar" | "confiar" | "aprender" | "pacientes";
   descripcion: string;
+  /* De dónde sale (tabla, figura o apartado): lo único que acompaña al nombre en las tarjetas. */
+  fuente?: string;
 }
 
 export const DESTINOS: Destino[] = [
@@ -83,6 +85,7 @@ export const DESTINOS: Destino[] = [
     cat: "consultar",
     descripcion:
       "La Tabla 1 con los sistemas que elijas: cada característica con los sistemas uno junto a otro.",
+    fuente: "Tabla 1",
   },
   {
     id: "parametros",
@@ -93,6 +96,7 @@ export const DESTINOS: Destino[] = [
     cat: "consultar",
     descripcion:
       "Cómo se ajustan los parámetros clásicos en cada sistema (Tabla 3) y cuáles son configurables en automático.",
+    fuente: "Tabla 3",
   },
   {
     id: "situacion",
@@ -103,6 +107,7 @@ export const DESTINOS: Destino[] = [
     cat: "consultar",
     descripcion:
       "Elige la situación (ejercicio, enfermedad, exploración…) y el sistema: la conducta que da el capítulo.",
+    fuente: "Tablas 4 y 6",
   },
   {
     id: "inicio",
@@ -113,6 +118,7 @@ export const DESTINOS: Destino[] = [
     cat: "consultar",
     descripcion:
       "El apartado 8 en sus cuatro fases, sistema a sistema, y la hoja de comprobación del inicio para imprimir.",
+    fuente: "Apartado 8 y Tabla 2",
   },
   {
     id: "descarga",
@@ -122,6 +128,7 @@ export const DESTINOS: Destino[] = [
     icono: ListChecks,
     cat: "consultar",
     descripcion: "La Tabla 5 en ocho pasos, con el patrón del capítulo que corresponde a cada uno.",
+    fuente: "Tabla 5",
   },
   {
     id: "interrupcion",
@@ -131,6 +138,7 @@ export const DESTINOS: Destino[] = [
     icono: Clock3,
     cat: "consultar",
     descripcion: "Cuánto va a durar la interrupción y qué dice el capítulo para ese caso.",
+    fuente: "Apartado 7",
   },
   {
     id: "capitulo",
@@ -158,6 +166,7 @@ export const DESTINOS: Destino[] = [
     cat: "consultar",
     descripcion:
       "La Figura 3 como recorrido: elige el tramo de β-OHB para ver su rama, con las notas comunes de la figura.",
+    fuente: "Figura 3",
   },
   {
     id: "infografia",
@@ -194,7 +203,8 @@ export const DESTINOS: Destino[] = [
     icono: HeartHandshake,
     cat: "pacientes",
     descripcion:
-      "Hojas para entregar al paciente: la información completa, hojas breves por situación y el plan de seguridad de cada sistema; con letra grande y código QR.",
+      "Hojas para entregar al paciente: la información completa, hojas breves por situación y el plan de seguridad de cada sistema; con letra grande.",
+    fuente: "Hojas para imprimir",
   },
   {
     id: "bibliografia",

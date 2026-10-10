@@ -48,42 +48,42 @@ const FRECUENTES = [
     icono: Columns3,
     color: FICHA_AREA.pizarra,
     t: "Comparar sistemas",
-    s: "Tabla 1, con los sistemas que elijas",
+    s: "Tabla 1",
   },
   {
     href: href("consultar", "parametros"),
     icono: SlidersHorizontal,
     color: FICHA_AREA.azul,
     t: "Parámetros por sistema",
-    s: "Cómo se ajusta cada uno (Tabla 3)",
+    s: "Tabla 3",
   },
   {
     href: href("consultar", "figura-3"),
     icono: Droplets,
     color: FICHA_AREA.diabetes,
     t: "Cetonemia (β-OHB)",
-    s: "Qué hacer según el tramo (Figura 3)",
+    s: "Figura 3",
   },
   {
     href: href("consultar", "situacion"),
     icono: Route,
     color: FICHA_AREA.obesidad,
     t: "Situaciones",
-    s: "Ejercicio, enfermedad, exploraciones…",
+    s: "Tablas 4 y 6",
   },
   {
     href: href("consultar", "descarga", "1"),
     icono: ListChecks,
     color: FICHA_AREA.mineral,
     t: "Revisar la descarga",
-    s: "Tabla 5 en ocho pasos",
+    s: "Tabla 5",
   },
   {
     href: href("consultar", "inicio", "inicio"),
     icono: ListOrdered,
     color: FICHA_AREA.nutricion,
     t: "Iniciar un sistema",
-    s: "Desde MDI, en cuatro fases",
+    s: "Apartado 8 y Tabla 2",
   },
 ];
 
@@ -294,7 +294,7 @@ function ConsultasFrecuentes() {
                       ),
                     )}
                   </span>
-                  <span className="block text-xs leading-snug text-slate-600">{c.s}</span>
+                  <span className="block text-xs leading-snug text-slate-500">{c.s}</span>
                 </span>
               </a>
             </li>

@@ -211,7 +211,7 @@ describe("pantallas perezosas", () => {
 });
 
 describe("dirección pública y modo nocturno (auditoría 0.6.0)", () => {
-  it("las copias de trabajo usan la dirección pública en QR y citas", async () => {
+  it("las copias de trabajo usan la dirección pública en las citas", async () => {
     const { esCopiaDeTrabajo } = await import("./compartir");
     for (const h of ["localhost", "127.0.0.1", "[::1]", "ede24dc8.manual-seen-aid.pages.dev"])
       expect(esCopiaDeTrabajo(h), h).toBe(true);

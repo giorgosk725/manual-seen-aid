@@ -29,7 +29,7 @@ test.describe("Para el paciente: una cara A4", () => {
         localStorage.setItem("mseen:hoja", JSON.stringify("una-cara")),
       );
       await page.goto(ruta);
-      await expect(page.getByRole("img", { name: /Código QR/ })).toBeVisible();
+      await expect(page.locator(".hoja-a4")).toBeVisible();
       expect(await paginasAlImprimir(page), nombre).toBe(1);
     });
   }
@@ -43,7 +43,6 @@ test.describe("Para el paciente: letra grande", () => {
     await page.goto("/#/pacientes/resumen");
     await expect(page.getByRole("button", { name: "Imprimir con letra grande" })).toBeVisible();
     await expect(page.locator(".hoja-a4.grande")).toHaveCount(1);
-    await expect(page.getByText(/no aparece en la web/)).toBeVisible();
     await page.getByRole("button", { name: /Compacta/ }).click();
     await expect(page.getByRole("button", { name: "Imprimir en una cara" })).toBeVisible();
     await expect(page.locator(".hoja-a4.grande")).toHaveCount(0);
@@ -61,7 +60,7 @@ test.describe("Para el paciente: letra grande", () => {
         localStorage.setItem("mseen:hoja", JSON.stringify("letra-grande")),
       );
       await page.goto(ruta);
-      await expect(page.getByRole("img", { name: /Código QR/ })).toBeVisible();
+      await expect(page.locator(".hoja-a4")).toBeVisible();
       await page.emulateMedia({ media: "print" });
       await page.evaluate(() => document.documentElement.classList.add("imprimiendo"));
       const letra = await page.evaluate(

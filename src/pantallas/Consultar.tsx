@@ -44,9 +44,9 @@ export function HubConsultar() {
             <span className="block text-[15px] font-bold leading-snug text-slate-900">
               {d.etiqueta}
             </span>
-            <span className="mt-0.5 block text-xs leading-snug text-slate-600">
-              {d.descripcion}
-            </span>
+            {d.fuente && (
+              <span className="mt-0.5 block text-xs leading-snug text-slate-500">{d.fuente}</span>
+            )}
           </span>
         </a>
       </Revelar>
@@ -92,10 +92,7 @@ export function HubConsultar() {
                     style={{ color: hex.strong }}
                     aria-hidden="true"
                   />
-                  <span className="min-w-0 flex-1">
-                    <span className="block font-semibold text-slate-900">{d.etiqueta}</span>
-                    <span className="block text-xs text-slate-600">{d.descripcion}</span>
-                  </span>
+                  <span className="min-w-0 flex-1 font-semibold text-slate-900">{d.etiqueta}</span>
                   <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
                 </a>
               </li>

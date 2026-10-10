@@ -666,9 +666,8 @@ export function Mas() {
                   style={{ color: CATEGORIA_HEX[d.cat].strong }}
                   aria-hidden="true"
                 />
-                <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-bold text-slate-900">{d.etiqueta}</span>
-                  <span className="block text-xs text-slate-500">{d.descripcion}</span>
+                <span className="min-w-0 flex-1 text-sm font-bold text-slate-900">
+                  {d.etiqueta}
                 </span>
               </a>
             </li>

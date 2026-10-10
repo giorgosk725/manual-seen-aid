@@ -1,4 +1,4 @@
-/* Direcciones para compartir (QR, enlaces) y cita de un apartado. Sin React. */
+/* Dirección pública de la app y cita de un apartado. Sin React. */
 import { CAPITULO, type Apartado } from "./contenido";
 
 /* Dirección pública de la app (mientras se aloje en Cloudflare Pages). */
@@ -11,8 +11,7 @@ export const esCopiaDeTrabajo = (host: string) =>
   host === "[::1]" ||
   /^[0-9a-f]{8}\.manual-seen-aid\.pages\.dev$/.test(host);
 
-/* Dirección completa de una pantalla de la app (para el QR y para compartir). Desde una copia
-   de trabajo se usa la pública: una hoja impresa en pruebas no debe llevar a localhost. */
+/* Dirección completa de una pantalla de la app. Desde una copia de trabajo se usa la pública. */
 export const direccion = (hash: string) => {
   if (typeof window === "undefined") return hash;
   if (esCopiaDeTrabajo(window.location.hostname)) return `${DIRECCION_PUBLICA}${hash}`;

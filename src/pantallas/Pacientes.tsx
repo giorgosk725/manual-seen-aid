@@ -2,7 +2,7 @@
    resumen (maquetación de la editorial), literales; y la hoja «Plan de seguridad» de cada sistema, hecha SOLO con texto
    del capítulo (pp. 7-9, Figura 3 y Tabla 4) y huecos para rellenar a mano. Cada hoja se imprime
    en una cara A4 (letra pequeña, dos columnas) o, a elegir, con letra grande (una columna,
-   12 pt, a doble cara: dos o tres caras), y lleva un QR para abrirla en el móvil. La app no guarda nada de lo que se escribe:
+   12 pt, a doble cara: dos o tres caras). La app no guarda nada de lo que se escribe:
    no hay campos, solo líneas en blanco para el papel. */
 import { useEffect, useRef, type ReactNode } from "react";
 import { ArrowRight, FileText, Printer, ShieldCheck } from "lucide-react";
@@ -22,28 +22,17 @@ import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { HOJAS_EXTRA, hojaExtraPorId } from "../hojas";
 import { Texto } from "../texto";
 import { abrirPlegables, imprimirRegion } from "../imprimir";
-import { QR } from "../componentes/QR";
-import { CompartirHoja } from "../componentes/CompartirHoja";
-import { direccion } from "../compartir";
 import { VERSION_APP } from "../contenido/cambios";
 
 const hex = CATEGORIA_HEX.pacientes;
 
-/* ---------- Barra de acciones de una hoja: formato, imprimir y compartir el enlace ---------- */
+/* ---------- Barra de acciones de una hoja: formato e imprimir ---------- */
 /* Para entregar al paciente, letra grande (la opción por defecto); la de una cara es compacta. */
 const FORMATOS: { id: FormatoHoja; label: string; shortLabel: string }[] = [
   { id: "letra-grande", label: "Letra grande · doble cara", shortLabel: "Letra grande" },
   { id: "una-cara", label: "Compacta · una cara, letra pequeña", shortLabel: "Compacta" },
 ];
-function Acciones({
-  hoja,
-  ruta,
-  titulo,
-}: {
-  hoja: React.RefObject<HTMLElement | null>;
-  ruta: string;
-  titulo: string;
-}) {
+function Acciones({ hoja }: { hoja: React.RefObject<HTMLElement | null> }) {
   const formato = useFormatoHoja();
   return (
     <div className="no-imprimir mb-3 space-y-2">
@@ -73,7 +62,6 @@ function Acciones({
           <Printer size={15} aria-hidden="true" />{" "}
           {formato === "una-cara" ? "Imprimir en una cara" : "Imprimir con letra grande"}
         </button>
-        <CompartirHoja ruta={ruta} titulo={titulo} />
       </div>
     </div>
   );
@@ -114,7 +102,6 @@ function Hoja({
   rotulo,
   titulo,
   subtitulo,
-  ruta,
   pie,
   children,
   holgada = false,
@@ -124,7 +111,6 @@ function Hoja({
   rotulo: string;
   titulo: string;
   subtitulo?: ReactNode;
-  ruta: string;
   pie: ReactNode;
   children: ReactNode;
 }) {
@@ -147,20 +133,10 @@ function Hoja({
       </header>
       <div className="hoja-cuerpo">{children}</div>
       <footer
-        className="hoja-pie mt-4 flex items-center gap-3 border-t pt-3"
+        className="hoja-pie mt-4 border-t pt-3 text-xs text-slate-600"
         style={{ borderColor: "#e6e6e6" }}
       >
-        <QR texto={direccion(ruta)} titulo={`Código QR para abrir esta hoja: ${direccion(ruta)}`} />
-        <div className="min-w-0 text-xs text-slate-600">
-          <p className="font-semibold text-slate-800">
-            Abra esta hoja en el móvil con el código QR. Lo que se escriba a mano en el papel no
-            aparece en la web.
-          </p>
-          <p className="break-all">{direccion(ruta)}</p>
-          <div className="mt-1">
-            {pie} Hoja de la versión {VERSION_APP}; capítulo publicado el {CAPITULO.fechaFuente}.
-          </div>
-        </div>
+        {pie} Hoja de la versión {VERSION_APP}; capítulo publicado el {CAPITULO.fechaFuente}.
       </footer>
     </div>
   );
@@ -181,8 +157,8 @@ export function HubPacientes() {
       <CabeceraEditorial titulo="Para el paciente" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
           Hojas para entregar o compartir en la consulta. Cada una se imprime con letra grande (12
-          pt, en dos o tres caras) o, en versión compacta, en una cara A4; y lleva un código QR para
-          abrirla en el móvil. No son el texto del capítulo: van rotuladas con su origen.
+          pt, en dos o tres caras) o, en versión compacta, en una cara A4. No son el texto del
+          capítulo: van rotuladas con su origen.
         </p>
       </CabeceraEditorial>
       <ul className="grid gap-3 md:grid-cols-2">
@@ -301,17 +277,15 @@ export function HubPacientes() {
 /* ---------- Información para pacientes (V5 del autor) ---------- */
 export function InformacionPacientes() {
   const ref = useRef<HTMLDivElement>(null);
-  const ruta = href("pacientes", "informacion");
   return (
     <div>
       <Volver />
-      <Acciones hoja={ref} ruta={ruta} titulo="Información para pacientes" />
+      <Acciones hoja={ref} />
       <Hoja
         hojaRef={ref}
         rotulo={INFORMACION_PACIENTES.rotulo}
         titulo={TITULO_CAPITULO_PACIENTES}
         subtitulo={AUTOR_PACIENTES}
-        ruta={ruta}
         pie={<>Manual SEEN · {INFORMACION_PACIENTES.fuente}.</>}
       >
         {INFORMACION_PACIENTES.secciones.map((s) => (
@@ -368,20 +342,18 @@ export function HojaPacientes({ id }: { id?: string }) {
   const extra = hojaExtraPorId(id);
   if (!h && extra) return <HojaExtraVista hoja={extra} hojaRef={ref} />;
   if (!h) return <HubPacientes />;
-  const ruta = href("pacientes", "hoja", h.id);
   const secciones = h.preguntas
     .map((q) => INFORMACION_PACIENTES.secciones.find((x) => x.pregunta === q))
     .filter((x): x is (typeof INFORMACION_PACIENTES.secciones)[number] => !!x);
   return (
     <div>
       <Volver />
-      <Acciones hoja={ref} ruta={ruta} titulo={h.titulo} />
+      <Acciones hoja={ref} />
       <Hoja
         hojaRef={ref}
         rotulo={`${INFORMACION_PACIENTES.rotulo} · extracto`}
         titulo={h.titulo}
         subtitulo={`${TITULO_CAPITULO_PACIENTES} · ${AUTOR_PACIENTES}`}
-        ruta={ruta}
         pie={<>Manual SEEN · {INFORMACION_PACIENTES.fuente}.</>}
         holgada
       >
@@ -411,7 +383,6 @@ function HojaExtraVista({
   hoja: (typeof HOJAS_EXTRA)[number];
   hojaRef: React.RefObject<HTMLDivElement>;
 }) {
-  const ruta = href("pacientes", "hoja", hoja.id);
   return (
     <div>
       <Volver />
@@ -423,13 +394,12 @@ function HojaExtraVista({
           </p>
         </ToneCard>
       )}
-      <Acciones hoja={hojaRef} ruta={ruta} titulo={hoja.titulo} />
+      <Acciones hoja={hojaRef} />
       <Hoja
         hojaRef={hojaRef}
         rotulo={hoja.estado === "borrador" ? `${hoja.rotulo} · borrador` : hoja.rotulo}
         titulo={hoja.titulo}
         subtitulo={`${TITULO_CAPITULO_PACIENTES} · ${AUTOR_PACIENTES}`}
-        ruta={ruta}
         pie={<>Manual SEEN · {hoja.fuente}.</>}
         holgada
       >
@@ -473,7 +443,6 @@ function HojaExtraVista({
    «Leer capítulo» (#/capitulo/resumen); no es material para el paciente. ---------- */
 export function ResumenPacientes() {
   const ref = useRef<HTMLDivElement>(null);
-  const ruta = href("capitulo", "resumen");
   return (
     <div>
       <nav aria-label="Volver" className="no-imprimir mb-3 text-sm">
@@ -484,13 +453,12 @@ export function ResumenPacientes() {
           Leer capítulo ›
         </a>
       </nav>
-      <Acciones hoja={ref} ruta={ruta} titulo="Resumen del capítulo" />
+      <Acciones hoja={ref} />
       <Hoja
         hojaRef={ref}
         rotulo={RESUMEN_CAPITULO.rotulo}
         titulo={TITULO_CAPITULO_PACIENTES}
         subtitulo={AUTOR_PACIENTES}
-        ruta={ruta}
         pie={<>Manual SEEN · {RESUMEN_CAPITULO.fuente}.</>}
         holgada
       >
@@ -605,7 +573,6 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
     );
   const c = ORDEN_SISTEMAS.indexOf(s.id as SistemaId);
   const nombre = TABLAS.T1.columnas[c];
-  const ruta = href("pacientes", "plan", s.id);
   const plan = bloque("07-educacion", "b4");
   const reglas = [
     fraseCon(textoDe("07-educacion", "b6"), "La primera es"),
@@ -640,7 +607,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
           </button>
         ))}
       </div>
-      <Acciones hoja={ref} ruta={ruta} titulo={`Plan de seguridad · ${nombre}`} />
+      <Acciones hoja={ref} />
       <Hoja
         hojaRef={ref}
         rotulo={`Plan de seguridad · ${nombre}`}
@@ -651,7 +618,6 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
             mano; la app no guarda nada.
           </>
         }
-        ruta={ruta}
         pie={<>Manual SEEN · {CAPITULO.autor}. Texto literal del capítulo con su página.</>}
       >
         <div className="hoja-seccion mb-3 flex flex-wrap gap-x-4 gap-y-2">

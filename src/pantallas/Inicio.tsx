@@ -12,9 +12,6 @@ import { CabeceraEditorial } from "../ui";
 import { useIrAlCambiar } from "../irAlCambiar";
 import { CAPITULO } from "../contenido";
 import { VERSION_APP } from "../contenido/cambios";
-import { direccion } from "../compartir";
-import { CompartirHoja } from "../componentes/CompartirHoja";
-import { QR } from "../componentes/QR";
 import { Lineas } from "../texto";
 import { plano } from "../marcado";
 import { EnlaceEducativa } from "../componentes/Lectura";
@@ -85,7 +82,6 @@ function Hoja({ sis }: { sis?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const h = hojaDeComprobacion(sis);
   const sistema = sis !== undefined ? NOMBRES[sis] : "";
-  const ruta = href("consultar", "inicio", sis !== undefined ? `hoja:${SIS_IDS[sis]}` : "hoja");
   const titulo = `Inicio de un sistema de asa cerrada${sistema ? ` · ${sistema}` : ""}`;
   return (
     <div>
@@ -97,7 +93,6 @@ function Hoja({ sis }: { sis?: number }) {
         >
           <Printer size={15} aria-hidden="true" /> Imprimir la hoja
         </button>
-        <CompartirHoja ruta={ruta} titulo={titulo} />
         <span className="text-xs text-slate-600">
           Una cara A4. {sistema ? "" : "Elige el sistema para que salga solo su línea de inicio."}
         </span>
@@ -177,16 +172,6 @@ function Hoja({ sis }: { sis?: number }) {
           Manual SEEN · AID {VERSION_APP}. Texto literal del capítulo (texto final del{" "}
           {CAPITULO.fechaFuente}) con su página; los rótulos de las citas son de la app.
         </p>
-        <div className="mt-2 flex items-center gap-3">
-          <QR
-            texto={direccion(ruta)}
-            tam={64}
-            titulo={`Código QR de esta hoja: ${direccion(ruta)}`}
-          />
-          <p className="break-all text-[11px] text-slate-500">
-            Esta hoja en la web: {direccion(ruta)}
-          </p>
-        </div>
       </div>
     </div>
   );

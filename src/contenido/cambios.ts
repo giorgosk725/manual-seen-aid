@@ -8,13 +8,22 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.21.0";
+export const VERSION_APP = "0.22.0";
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-10",
+    ambito: "app",
+    titulo: `Manual SEEN · AID ${VERSION_APP} — hojas sin código QR; tarjetas sin frases`,
+    detalle: [
+      "Las hojas para el paciente y la hoja de comprobación del inicio ya no llevan código QR ni «Compartir el enlace» / «Mostrar el QR»: la app es para quien atiende al paciente, no para el paciente; las hojas se imprimen y se entregan en papel.",
+      "Las tarjetas de la portada y de Consultar llevan solo el nombre y de dónde sale (Tabla 1, Tabla 3, Figura 3…); desaparecen las frases de explicación, que repetían lo que ya dice el nombre.",
+    ],
+  },
+  {
     fecha: "2026-10-09",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — más operativa: menos capas, el paciente a mano`,
+    titulo: "Manual SEEN · AID 0.21.0 — más operativa: menos capas, el paciente a mano",
     detalle: [
       "«Para el paciente» pasa a primer plano: tercera entrada de la portada, tercera tarea de Consultar y en el menú.",
       "Se retira la versión extendida (los fragmentos del borrador largo que no entraron en el capítulo) de las fichas, las tablas y el buscador: la app muestra el capítulo publicado y, aparte y rotulada, la ampliación técnica de cada sistema, ahora con enlace a la ficha del mismo sistema en la edición educativa de asistente-aid para el detalle.",
