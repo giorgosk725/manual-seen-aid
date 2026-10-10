@@ -1,5 +1,5 @@
 /* Utilidades de lectura: favorito, volver arriba, cómo citar y escuchar el apartado.
-   Nada de esto guarda datos clínicos: favoritos y lectura son rutas de la app (src/prefs.ts) y
+   Nada de esto guarda datos clínicos: la lectura guarda rutas de la app (src/prefs.ts) y
    la voz es la del propio dispositivo (Web Speech), que funciona sin conexión si hay una voz
    en español instalada. */
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -13,39 +13,15 @@ import {
   Play,
   Quote,
   Square,
-  Star,
   Volume2,
 } from "lucide-react";
 import { CAPITULO, idDeBloque, type Apartado } from "../contenido";
 import { plano } from "../marcado";
-import { alternarFavorito, useFavoritos } from "../prefs";
 import { citaDeApartado } from "../compartir";
 import { CASO_EDUCATIVO, EDUCATIVA } from "../enlaces";
 
 const BOTON =
   "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600";
-
-/* ---------- Favorito ---------- */
-export function BotonFavorito({ ruta, titulo }: { ruta: string; titulo: string }) {
-  const favoritos = useFavoritos();
-  const on = favoritos.some((f) => f.ruta === ruta);
-  return (
-    <button
-      type="button"
-      onClick={() => alternarFavorito({ ruta, titulo })}
-      aria-pressed={on}
-      title={on ? "Quitar de favoritos" : "Guardar en favoritos (solo en este navegador)"}
-      className={BOTON}
-    >
-      <Star
-        size={14}
-        aria-hidden="true"
-        className={on ? "fill-amber-400 text-amber-500" : undefined}
-      />
-      Favorito
-    </button>
-  );
-}
 
 /* ---------- Volver arriba (pantallas largas) ----------
    Aparece al desplazarse hacia arriba lejos del principio y se esconde al seguir leyendo

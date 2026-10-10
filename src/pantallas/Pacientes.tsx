@@ -192,8 +192,9 @@ export function HubPacientes() {
           Hojas breves por situación
         </h2>
         <p className="mt-1 text-sm text-slate-600">
-          Las mismas preguntas y respuestas de la Información para pacientes, tal cual, en hojas
-          cortas para entregar según lo que haga falta ese día.
+          Hojas cortas para entregar según lo que haga falta ese día: dos a partir de la Figura 3 y
+          de la Tabla 6 del capítulo (cetonas; pruebas y cirugía) y tres con las mismas preguntas y
+          respuestas de la Información para pacientes, tal cual.
         </p>
         <ul className="mt-3 grid gap-2 md:grid-cols-3">
           {HOJAS_EXTRA.map((h) => (

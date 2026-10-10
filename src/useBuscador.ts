@@ -1,4 +1,4 @@
-/* El índice de búsqueda (buscador.ts, con la versión extendida, la ampliación del autor y las
+/* El índice de búsqueda (buscador.ts, con la ampliación técnica y las
    hojas para el paciente) va en su propio trozo: se pide la primera vez que alguien abre la
    paleta o escribe en la portada, y desde entonces queda en memoria. Con el service worker ya
    está en el dispositivo, así que también funciona sin conexión. Si la carga falla (red

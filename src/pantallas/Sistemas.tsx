@@ -40,7 +40,6 @@ import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { plano } from "../marcado";
-import { BotonFavorito } from "../componentes/Lectura";
 import { SITUACIONES } from "../situaciones";
 import { FICHA_SISTEMA_EDUCATIVA } from "../enlaces";
 import type { SistemaId } from "../ampliacion/tipos";
@@ -436,6 +435,13 @@ function ColumnaTabla({
   filas?: (etiqueta: string, j: number) => boolean;
   pie?: ReactNode;
 }) {
+  // La nota del asterisco solo si alguna celda mostrada lo lleva; la lista de siglas, plegada.
+  const vistas = t.filas.filter((f, j) => !filas || filas(f.etiqueta, j));
+  const hayAsterisco = vistas.some((f) => (f.unida ? f.celdas[0] : f.celdas[c]).includes("*"));
+  const esAsterisco = (n: string) => n.trimStart().startsWith("*");
+  const esSiglas = (n: string) => /^[A-ZÁÉÍÓÚ/]{2,}: /.test(n.trim());
+  const notas = t.notas.filter((n) => (esAsterisco(n) ? hayAsterisco : !esSiglas(n)));
+  const siglas = t.notas.filter(esSiglas);
   return (
     <div className="rounded-xl border bg-white p-3 sm:p-4" style={{ borderColor: "#e6e6e6" }}>
       <div className="text-xs font-semibold text-slate-600">
@@ -455,17 +461,29 @@ function ColumnaTabla({
           ),
         )}
       </dl>
-      {t.notas.length > 0 && (
+      {notas.length > 0 && (
         <div
           className="mt-2 space-y-1 border-t pt-2 text-xs text-slate-600"
           style={{ borderColor: "#e6e6e6" }}
         >
-          {t.notas.map((n, k) => (
+          {notas.map((n, k) => (
             <p key={k}>
               <Texto>{n}</Texto>
             </p>
           ))}
         </div>
+      )}
+      {siglas.length > 0 && (
+        <details className="mt-2 text-xs text-slate-600">
+          <summary className="min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-6">
+            Siglas de la tabla
+          </summary>
+          {siglas.map((n, k) => (
+            <p key={k} className="mt-1">
+              <Texto>{n}</Texto>
+            </p>
+          ))}
+        </details>
       )}
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
         <span className="flex flex-wrap gap-x-4">
@@ -516,6 +534,13 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const s = sistemaPorId(id);
   const ref = useRef<HTMLDivElement>(null);
   const parrafos = useMemo(() => (s ? parrafosDelSistema(s.id) : []), [s]);
+  const completa = seccion === "completa";
+  // Enlace a una sección concreta (#/sistemas/<id>/parametros): se abre en ella; la barra con
+  // el sistema y la sección queda pegada arriba (scroll-mt de la sección deja sitio).
+  useEffect(() => {
+    if (!seccion || completa) return;
+    document.getElementById(seccion)?.scrollIntoView?.({ block: "start" });
+  }, [seccion, id, completa]);
   if (!s) return <Comparacion ids={[]} />;
   const c = columnaDeSistema(s.id);
   const h = SISTEMA_HEX[c];
@@ -526,15 +551,8 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const situacionesT4 = SITUACIONES.filter((x) => x.tabla === "T4");
   // Se enseña una sección (la entera son más de diez pantallas en el móvil); «Lo esencial» si
   // la ruta no dice otra; /completa, la ficha entera (para leer o imprimir).
-  const completa = seccion === "completa";
   const sec = completa ? undefined : (seccion ?? "esencial");
   const ver = (x: string) => completa || sec === x;
-  // Enlace a una sección concreta (#/sistemas/<id>/parametros): se abre en ella; la barra con
-  // el sistema y la sección queda pegada arriba (scroll-mt de la sección deja sitio).
-  useEffect(() => {
-    if (!seccion || completa) return;
-    document.getElementById(seccion)?.scrollIntoView?.({ block: "start" });
-  }, [seccion, id, completa]);
   return (
     <div ref={ref} className="imprimible">
       <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
@@ -585,13 +603,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         </div>
       </header>
 
-      <BarraSistemas
-        ids={[s.id]}
-        seccion={sec}
-        completa={completa}
-        refImprimir={ref}
-        favorito={<BotonFavorito ruta={href("sistemas", s.id)} titulo={s.name} />}
-      />
+      <BarraSistemas ids={[s.id]} seccion={sec} completa={completa} refImprimir={ref} />
       <section
         aria-labelledby="esencial"
         className="scroll-mt-56 sm:scroll-mt-44"
@@ -869,13 +881,11 @@ function BarraSistemas({
   seccion,
   completa = false,
   refImprimir,
-  favorito,
 }: {
   ids: string[];
   seccion?: string;
   completa?: boolean;
   refImprimir: React.RefObject<HTMLDivElement>;
-  favorito?: ReactNode;
 }) {
   const sec = completa ? "completa" : seccion;
   const selStr = ids.length ? ids.join("+") : "todos";
@@ -959,12 +969,13 @@ function BarraSistemas({
             {completa ? "Por secciones" : "Ficha completa"}
           </a>
         )}
-        <span className="ml-auto flex shrink-0 items-center gap-1.5">
-          <BotonImprimir objetivo={refImprimir} compacto>
-            Imprimir
-          </BotonImprimir>
-          {favorito}
-        </span>
+        {sec && (
+          <span className="ml-auto flex shrink-0 items-center gap-1.5">
+            <BotonImprimir objetivo={refImprimir} compacto>
+              Imprimir
+            </BotonImprimir>
+          </span>
+        )}
       </nav>
     </div>
   );

@@ -8,13 +8,25 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.25.0";
+export const VERSION_APP = "0.25.1";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-10",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — terminar los recorridos: selección, contexto y buscador`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — limpieza tras la revisión`,
+    detalle: [
+      "Buscar ya no menciona la versión extendida (retirada en la 0.21.0) al explicar lo que queda fuera del capítulo.",
+      "En «Lo esencial» de cada ficha, la nota del asterisco de la Tabla 1 solo sale si alguna celda lo lleva, y la lista de siglas de la tabla va plegada.",
+      "«Para el paciente» describe bien las hojas breves: dos a partir de la Figura 3 y la Tabla 6 y tres de la Información para pacientes.",
+      "Sin favoritos: se habían quitado de los apartados y seguían en las fichas, los diagramas y la portada; ahora no hay favoritos en ningún sitio (lo guardado en el navegador no se usa).",
+      "El botón Imprimir de Sistemas solo aparece con una sección abierta.",
+    ],
+  },
+  {
+    fecha: "2026-10-10",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.25.0 — terminar los recorridos: selección, contexto y buscador",
     detalle: [
       "Sistemas AID: el mismo selector en la ficha y en la comparación; marcar añade un sistema (dos = comparados en la misma sección), desmarcar lo quita; el sistema y la sección quedan pegados arriba al desplazarse; Anterior/Siguiente conservan la sección. La ficha abre por «Lo esencial»; la ficha completa es una opción para leer o imprimir. La entrada de Sistemas es ese mismo espacio, sin catálogo aparte.",
       "Portada en el móvil: el mapa de consulta entra en la primera pantalla; las sugerencias y las búsquedas recientes aparecen al tocar el buscador.",

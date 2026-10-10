@@ -38,7 +38,6 @@ const TIPO: Record<string, string> = {
   figura: "Figura",
   referencia: "Bibliografía",
   sigla: "Sigla",
-  extendida: "Versión extendida",
   ampliacion: "Ampliación",
   pacientes: "Para el paciente",
   resumen: "Resumen del capítulo",
@@ -154,11 +153,11 @@ export function Buscar({ inicial }: { inicial?: string }) {
             desconectado». Arriba, la frase, la fila de tabla o el tramo de la Figura 3 que mejor
             encaja, literal y con su página; si solo coincide en parte, se rotula «coincidencia
             parcial». Debajo, los primeros sitios donde salen esas palabras (el resto, con «Ver más
-            resultados») y, aparte, lo que no es del capítulo (versión extendida, ampliación
-            técnica, hojas para el paciente y test). El pasaje se elige por las palabras y, con
-            conexión, también por el sentido (un modelo de lenguaje compara la búsqueda con los
-            pasajes; si solo lo propone el sentido, va como «coincidencia parcial»): comprueba
-            siempre que responde a lo que buscas.
+            resultados») y, aparte, lo que no es del capítulo (ampliación técnica, hojas para el
+            paciente, casos y test). El pasaje se elige por las palabras y, con conexión, también
+            por el sentido (un modelo de lenguaje compara la búsqueda con los pasajes; si solo lo
+            propone el sentido, va como «coincidencia parcial»): comprueba siempre que responde a lo
+            que buscas.
           </p>
         </details>
       </CabeceraEditorial>
@@ -217,8 +216,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
               Fuera del capítulo · ampliación técnica, hojas para el paciente y test
             </h2>
             <p className="text-xs text-slate-600">
-              No es el texto del capítulo: material complementario, cada capa con su rótulo (versión
-              extendida en ámbar, ampliación en violeta, hojas para el paciente y test en gris).
+              No es el texto del capítulo: material complementario, cada entrada con su rótulo
+              (ampliación técnica en violeta; hojas para el paciente, casos y test en gris).
             </p>
             <ListaResultados res={fueraRes} q={q} fuera />
           </section>
@@ -273,7 +272,7 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
                     href={`https://doi.org/${r.doi}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-1 inline-flex min-h-6 items-center gap-1 text-xs font-semibold text-sky-800 hover:underline"
+                    className="mt-1 inline-flex min-h-7 items-center gap-1 text-xs font-semibold text-sky-800 hover:underline"
                   >
                     doi.org/{r.doi} <ExternalLink size={12} aria-hidden="true" />
                   </a>
@@ -282,7 +281,7 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
                     href={r.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-1 inline-flex min-h-6 max-w-full items-center gap-1 text-xs font-semibold text-sky-800 hover:underline"
+                    className="mt-1 inline-flex min-h-7 max-w-full items-center gap-1 text-xs font-semibold text-sky-800 hover:underline"
                   >
                     <span className="min-w-0 break-all">{r.url.replace(/^https?:\/\//, "")}</span>{" "}
                     <ExternalLink size={12} aria-hidden="true" />
@@ -372,10 +371,10 @@ export function Sobre() {
         <h2 className="mt-4 text-base font-extrabold text-slate-900">Datos</h2>
         <p className="mt-2 text-sm">
           No pide ni guarda datos de pacientes. En este dispositivo se guardan solo preferencias de
-          lectura (modo nocturno, letra, por dónde se iba, favoritos, repaso y últimas búsquedas).
-          Para buscar por el sentido, el texto de la búsqueda se envía a un modelo de lenguaje de
-          Cloudflare, que no lo guarda; sin conexión se busca por palabras. No sustituye la ficha
-          técnica de cada sistema, los protocolos del centro ni el juicio clínico.
+          lectura (modo nocturno, letra, por dónde se iba, repaso y últimas búsquedas). Para buscar
+          por el sentido, el texto de la búsqueda se envía a un modelo de lenguaje de Cloudflare,
+          que no lo guarda; sin conexión se busca por palabras. No sustituye la ficha técnica de
+          cada sistema, los protocolos del centro ni el juicio clínico.
         </p>
         <h2 className="mt-4 text-base font-extrabold text-slate-900">Pendiente</h2>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">

@@ -18,7 +18,6 @@ import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { DiagramaVista } from "../componentes/Diagramas";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { href } from "../rutas";
-import { BotonFavorito } from "../componentes/Lectura";
 import { CabeceraEditorial, Revelar, Segmented } from "../ui";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 
@@ -285,9 +284,6 @@ export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }
         <span aria-hidden="true">›</span>
         <span>
           Diagrama {i + 1} de {DIAGRAMAS.length}
-        </span>
-        <span className="ml-auto">
-          <BotonFavorito ruta={href("visual", DIAGRAMAS[i].id)} titulo={DIAGRAMAS[i].titulo} />
         </span>
       </div>
       <h1 className="sr-only">{DIAGRAMAS[i].titulo}</h1>

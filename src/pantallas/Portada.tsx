@@ -1,6 +1,6 @@
 /* Portada = Consultar: identidad del Manual y título del capítulo, las dos entradas (Leer
    capítulo y Para el paciente), el buscador, seguir leyendo, el mapa de consulta en cuatro
-   bloques (componentes/MapaConsulta), hasta tres favoritos y el capítulo publicado. */
+   bloques (componentes/MapaConsulta) y el capítulo publicado. */
 import { useState } from "react";
 import {
   ArrowRight,
@@ -12,7 +12,6 @@ import {
   HeartHandshake,
   ListChecks,
   Search,
-  Star,
   Target,
 } from "lucide-react";
 import { CAPITULO } from "../contenido";
@@ -27,7 +26,7 @@ import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
 import { RecursosPedidos } from "../componentes/RecursosPedidos";
 import { SinResultados } from "../componentes/SinResultados";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
-import { useFavoritos, useUltimo } from "../prefs";
+import { useUltimo } from "../prefs";
 import { FICHA_AREA, SEEN } from "../tokens";
 
 const fecha = (iso: string) =>
@@ -197,45 +196,6 @@ function Buscador() {
   );
 }
 
-function Favoritos() {
-  const favoritos = useFavoritos();
-  if (!favoritos.length) return null;
-  return (
-    <section aria-labelledby="favoritos-portada">
-      <h2
-        id="favoritos-portada"
-        className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-600"
-      >
-        <Star size={13} className="fill-amber-400 text-amber-500" aria-hidden="true" /> Tus
-        favoritos
-      </h2>
-      <ul className="mt-1.5 flex flex-wrap gap-1.5">
-        {favoritos.slice(0, 3).map((f) => (
-          <li key={f.ruta}>
-            <a
-              href={f.ruta}
-              className="inline-flex min-h-11 items-center rounded-full border bg-white px-3 text-sm font-semibold text-slate-700 hover:border-slate-400 sm:min-h-9"
-              style={{ borderColor: "#d4d4d4" }}
-            >
-              {f.titulo}
-            </a>
-          </li>
-        ))}
-        {favoritos.length > 3 && (
-          <li>
-            <a
-              href={href("mas")}
-              className="inline-flex min-h-11 items-center gap-1 px-2 text-sm font-semibold text-slate-700 hover:underline sm:min-h-9"
-            >
-              Todos los favoritos ({favoritos.length}) <ArrowRight size={14} aria-hidden="true" />
-            </a>
-          </li>
-        )}
-      </ul>
-    </section>
-  );
-}
-
 export function Portada() {
   const ultimoCap = CAMBIOS.find((c) => c.ambito === "capitulo")!;
   return (
@@ -298,8 +258,6 @@ export function Portada() {
       <Buscador />
 
       <MapaConsulta />
-
-      <Favoritos />
 
       <footer
         className="flex flex-col gap-1 border-t pt-4 text-sm text-slate-600 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5"
