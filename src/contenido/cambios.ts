@@ -8,13 +8,21 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.29.2";
+export const VERSION_APP = "0.29.3";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — tablas con índice y expresiones afinadas`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — lo que enseñó la prueba simulada`,
+    detalle: [
+      "Cincuenta consultas de diez perfiles (residentes, adjuntos y especialistas) sobre las tareas del guion: «paso 7 de la descarga» abre ese paso; «descarga comentada», «practicar descarga» o «caso práctico de la descarga» abren el ejemplo comentado; «qué puedo cambiar en Omnipod 5 en automático» abre sus parámetros. Los ocho pasos de la descarga entran en el buscador.",
+    ],
+  },
+  {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.29.2 — tablas con índice y expresiones afinadas",
     detalle: [
       "Tablas del capítulo abre con las seis en filas (número, título y la pregunta que responde cada una); dentro de una tabla, «Otra tabla» para cambiar y la miga para volver al índice. El selector de sistema de las tablas es el mismo de toda la app, con «Los cuatro» para volver a verlos todos.",
       "Expresiones: «¿Qué sistema y cómo se ajusta?» en la portada; «Marca uno (su ficha de lectura) o varios (compararlos)» en las tablas; «Ver por sistema» y «Abrir la tabla» en las tablas del texto; «Sistema (para ver solo el suyo)» en Iniciar; «Ver la situación con su texto» en la ficha; la entradilla de Buscar en una frase.",

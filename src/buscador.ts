@@ -230,6 +230,18 @@ export function indice(): Entrada[] {
   // de los sistemas, para que «resonancia 780G» o «ejercicio omnipod» los encuentren.
   const NOMBRES =
     "MiniMed 780G Medtronic Tandem Control-IQ t:slim myLoop CamAPS FX mylife YpsoPump Omnipod 5 Insulet";
+  // Los ocho pasos de «Revisar la descarga» (Tabla 5): «paso 7», «respuesta automática DTD»…
+  TABLAS.T5.filas.forEach((f, i) => {
+    out.push({
+      id: `atajo/descarga/${i + 1}`,
+      tipo: "atajo",
+      titulo: `Revisar la descarga · paso ${i + 1}: ${f.celdas[0]}`,
+      texto: `Paso ${i + 1} de la descarga. ${f.celdas.join(" ")}`,
+      pagina: TABLAS.T5.paginas[0],
+      pagina2: TABLAS.T5.paginas[1],
+      ruta: href("consultar", "descarga", String(i + 1)),
+    });
+  });
   for (const st of SITUACIONES) {
     const t = TABLAS[st.tabla];
     const fila = t.filas[st.fila];
@@ -404,7 +416,7 @@ const ALIAS_SISTEMA: RegExp[] = [
 /* Si la consulta nombra un recurso de la app (un caso, una herramienta, la sección de la ficha
    de un sistema), ese recurso va el primero («Abrir …»), encima de los pasajes. */
 const SECCION_PEDIDA: [RegExp, string, string][] = [
-  [/par[aá]metro/, "parametros", "Parámetros"],
+  [/par[aá]metro|configur|ajust|cambiar/, "parametros", "Parámetros"],
   [/c[oó]mo funciona|algoritmo/, "funciona", "Cómo funciona"],
   [/situaci/, "situaciones", "Situaciones"],
   [/ficha t[eé]cnica|ampliaci/, "ampliacion", "Ampliación técnica"],
@@ -432,11 +444,42 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
       });
     }
   }
+  // «paso 7» pide ese paso, no los ocho.
+  const paso = consulta.toLowerCase().match(/paso\s*(\d)/)?.[1];
+  // Las palabras casan por su raíz (seis letras): «comentada» encuentra «comentado»; en los casos
+  // cuenta también su descripción («practicar», «caso»).
+  const raiz = (w: string) => w.slice(0, 6);
+  // «paso 7 de la descarga»: ese paso de la Tabla 5, aunque no esté entre los resultados.
+  if (paso && /descarga/.test(normalizar(consulta))) {
+    const f = TABLAS.T5.filas[Number(paso) - 1];
+    if (f)
+      out.push({
+        entrada: {
+          id: `recurso/descarga/${paso}`,
+          tipo: "atajo",
+          titulo: `Revisar la descarga · paso ${paso}: ${f.celdas[0]}`,
+          texto: "",
+          pagina: TABLAS.T5.paginas[0],
+          pagina2: TABLAS.T5.paginas[1],
+          ruta: href("consultar", "descarga", paso),
+        },
+        fragmento: "",
+        puntos: 0,
+      });
+  }
   const nombrados = res
     .filter((r) => r.entrada.tipo === "atajo" || r.entrada.tipo === "caso")
+    .filter(
+      (r) =>
+        !paso || !/paso \d/.test(r.entrada.titulo) || r.entrada.titulo.includes(`paso ${paso}`),
+    )
     .map((r) => {
-      const t = normalizar(r.entrada.titulo);
-      return { r, f: terminos.filter((x) => t.includes(x)).length / terminos.length };
+      const t = normalizar(
+        r.entrada.tipo === "caso" ? `${r.entrada.titulo} ${r.entrada.texto}` : r.entrada.titulo,
+      )
+        .split(/[^a-z0-9ñ]+/)
+        .map(raiz);
+      return { r, f: terminos.filter((x) => t.includes(raiz(x))).length / terminos.length };
     })
     .filter((x) => x.f >= 0.6)
     .sort((a, b) => b.f - a.f || b.r.puntos - a.r.puntos)

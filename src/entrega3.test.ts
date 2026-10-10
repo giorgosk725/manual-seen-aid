@@ -1,7 +1,13 @@
 /* Entrega 3 (0.28.0): sugerencias mientras se escribe, seguimiento con el tema anterior,
    contexto de una frase, preguntas cercanas y relacionadas, respuesta por id. */
 import { describe, expect, it } from "vitest";
-import { sugerir, recordarTema, consultaEfectiva } from "./buscador";
+import {
+  buscarConTotales,
+  consultaEfectiva,
+  recordarTema,
+  recursosPedidos,
+  sugerir,
+} from "./buscador";
 import {
   conContexto,
   contextoDe,
@@ -85,5 +91,19 @@ describe("Contexto, preguntas cercanas y relacionadas", () => {
     expect(r?.sistema).toBe("Omnipod 5");
     expect(r?.casillas?.length).toBe(4);
     expect(respuestaPorId("no-existe")).toBeNull();
+  });
+});
+
+describe("Recurso pedido (prueba simulada del 10-10)", () => {
+  const rec = (q: string) => recursosPedidos(q, buscarConTotales(q, 12).resultados);
+  it("«paso 7 de la descarga» abre ese paso; «descarga comentada» y «practicar descarga», el ejemplo", () => {
+    expect(rec("paso 7 de la descarga")[0].entrada.ruta).toBe("#/consultar/descarga/7");
+    expect(rec("descarga comentada")[0].entrada.titulo).toMatch(/Ejemplo comentado/);
+    expect(rec("practicar descarga")[0].entrada.titulo).toMatch(/Ejemplo comentado/);
+  });
+  it("«qué puedo cambiar en Omnipod 5 en automático» abre sus parámetros", () => {
+    expect(rec("que puedo cambiar en omnipod 5 en automatico")[0].entrada.ruta).toBe(
+      "#/sistemas/op5/parametros",
+    );
   });
 });
