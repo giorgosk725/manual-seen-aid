@@ -187,6 +187,8 @@ describe("Entrega 1 de la auditoría de la 0.31 (0.32.0)", () => {
     expect(rec("qué entregar al paciente con cetonas")[0].entrada.ruta).toBe(
       "#/pacientes/hoja/cetonas",
     );
+    // El sistema nombrado no resta: «resonancia 780G» abre la situación con el sistema.
+    expect(rec("resonancia 780G")[0].entrada.ruta).toMatch(/situacion\/rm/);
   });
   it("«iniciar Omnipod 5 desde múltiples dosis» abre Iniciar para Omnipod 5 y no responde con siglas", () => {
     expect(rec("iniciar Omnipod 5 desde múltiples dosis")[0].entrada.ruta).toBe(

@@ -1082,8 +1082,9 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
           {seccion === "funciona" && (
             <>
               <p className="mb-3 text-sm text-slate-600">
-                El algoritmo de cada uno, tal como lo nombra la Tabla 1; el recorrido completo («qué
-                mide, dónde decide, cómo administra la insulina») se lee sistema a sistema.
+                Lectura por sistema, no comparación por aspectos: aquí, el algoritmo de cada uno tal
+                como lo nombra la Tabla 1; el recorrido completo («qué mide, dónde decide, cómo
+                administra la insulina») se lee en la ficha de cada sistema.
               </p>
               <ul className="grid gap-3 sm:grid-cols-2">
                 {cols.map((c) => (

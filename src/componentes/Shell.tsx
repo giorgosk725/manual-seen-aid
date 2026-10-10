@@ -590,7 +590,16 @@ export function Shell({
     const guardada = posiciones.current.get(clavePantalla);
     // Enlace profundo: la pantalla hace su propio scroll; al volver atrás, se restaura.
     if (destinoProfundo && (nueva || guardada == null)) return;
-    window.scrollTo({ top: !nueva && guardada != null ? guardada : 0 });
+    const destino = !nueva && guardada != null ? guardada : 0;
+    window.scrollTo({ top: destino });
+    // Al volver atrás, la pantalla perezosa puede no haber crecido aún: se reintenta un momento
+    // después, solo si la posición no ha llegado (el lector no ha tocado nada).
+    if (destino > 0) {
+      const t = setTimeout(() => {
+        if (Math.abs(window.scrollY - destino) > 4) window.scrollTo({ top: destino });
+      }, 250);
+      return () => clearTimeout(t);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clavePantalla]);
 

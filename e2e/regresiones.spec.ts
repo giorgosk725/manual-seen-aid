@@ -23,6 +23,9 @@ test.describe("Navegación e historial", () => {
     await page.goto("/#/buscar");
     await page.getByLabel("Texto a buscar").fill("glargina");
     await expect(page).toHaveURL(/#\/buscar\/glargina$/);
+    // Los resultados van plegados cuando hay respuesta: se abren para pulsar uno.
+    const todos = page.getByTestId("todos-los-resultados");
+    if (!(await todos.getAttribute("open"))) await todos.locator("summary").click();
     // El primer enlace al capítulo que nombra la glargina (no una pregunta relacionada).
     await page
       .locator('a[href^="#/capitulo/"]', { hasText: /glargina/i })

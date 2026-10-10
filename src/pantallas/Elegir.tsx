@@ -2,8 +2,8 @@
    contrastados con la Tabla 1. Cada sistema enseña, criterio a criterio, la celda literal de la
    tabla con lo que dice de ese criterio («dentro del criterio», «sin autorización», «no consta
    en la tabla»…); nada se calcula fuera de lo que la tabla dice (eleccion.ts) y no hay un
-   veredicto global: solo en cuántos criterios marcados coincide cada uno. Los criterios viven
-   en la ruta para poder enlazarlos. */
+   veredicto global ni un recuento: los factores clínicos y regulatorios y las preferencias se
+   enseñan por separado, estado a estado. Los criterios viven en la ruta para poder enlazarlos. */
 import { useEffect, useState } from "react";
 import { ArrowRight, Check, HelpCircle, X } from "lucide-react";
 import { APARTADOS, TABLAS, rutaDeTabla } from "../contenido";
@@ -34,6 +34,13 @@ const hex = CATEGORIA_HEX.consultar;
 const campo =
   "min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-base text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10 sm:text-sm";
 const casilla = "h-6 w-6 shrink-0 rounded border-slate-400 text-slate-800 focus:ring-slate-500";
+/* Dos dimensiones que no se suman: lo clínico y regulatorio (edad, peso, dosis, gestación, DM2)
+   y las preferencias o compatibilidades (formato, sensor, móvil). */
+const CLINICOS: Clave[] = ["edad", "peso", "dtd", "gestacion", "dm2"];
+const DIMENSIONES: [string, (k: Clave) => boolean][] = [
+  ["Clínicos y regulatorios", (k) => CLINICOS.includes(k)],
+  ["Preferencias y compatibilidad", (k) => !CLINICOS.includes(k)],
+];
 
 const TONO: Record<Estado, { color: string; fondo: string; Icono: typeof Check }> = {
   cumple: { color: "#166534", fondo: "#f0fdf4", Icono: Check },
@@ -112,13 +119,18 @@ export function Elegir({ q }: { q?: string }) {
   // Los criterios viven en la ruta; la copia local responde al instante y la ruta la sigue.
   const [c, setC] = useState<Criterios>(() => leerCriterios(q));
   useEffect(() => setC(leerCriterios(q)), [q]);
-  // El formulario se pliega en el móvil en cuanto hay criterios: el resultado, a la vista.
+  // El formulario queda abierto mientras se edita; se pliega con «Ver resultados» o a mano.
   const [abierto, setAbierto] = useState(() => !hayCriterios(leerCriterios(q)));
   const poner = (cambio: Partial<Criterios>) => {
     const nuevo = { ...c, ...cambio };
     setC(nuevo);
     elegirRuta("sistemas", "elegir", escribirCriterios(nuevo));
-    if (hayCriterios(nuevo) && window.innerWidth < 640) setAbierto(false);
+  };
+  const verResultados = () => {
+    setAbierto(false);
+    requestAnimationFrame(() =>
+      document.getElementById("resultado-elegir")?.scrollIntoView({ block: "start" }),
+    );
   };
   const quitar = (k: Clave) => poner({ [k]: undefined });
   const activos = CLAVES_CRITERIO.filter(
@@ -267,23 +279,38 @@ export function Elegir({ q }: { q?: string }) {
               Control desde el móvil (algoritmo en la app del smartphone)
             </label>
             {hayCriterios(c) && (
-              <button
-                type="button"
-                onClick={() => {
-                  setC({});
-                  elegirRuta("sistemas", "elegir");
-                }}
-                className="inline-flex min-h-11 items-center rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-500 sm:min-h-9"
-              >
-                Borrar criterios
-              </button>
+              <span className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setC({});
+                    elegirRuta("sistemas", "elegir");
+                  }}
+                  className="inline-flex min-h-11 items-center rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-500 sm:min-h-9"
+                >
+                  Borrar criterios
+                </button>
+                <button
+                  type="button"
+                  onClick={verResultados}
+                  className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-white sm:min-h-9"
+                  style={{ background: hex.strong }}
+                >
+                  Ver resultados
+                </button>
+              </span>
             )}
           </div>
         </form>
       </details>
 
       {resultados ? (
-        <section aria-label="Resultado por sistema" className="mt-4" aria-live="polite">
+        <section
+          id="resultado-elegir"
+          aria-label="Resultado por sistema"
+          className="mt-4 scroll-mt-24"
+          aria-live="polite"
+        >
           <ul className="mb-3 flex flex-wrap items-center gap-1.5" aria-label="Criterios aplicados">
             {activos.map((k) => (
               <li key={k}>
@@ -314,55 +341,64 @@ export function Elegir({ q }: { q?: string }) {
                     <h3 className="text-base font-extrabold" style={{ color: h.ink }}>
                       {r.nombre}
                     </h3>
-                    <p className="text-xs text-slate-600">
-                      {r.variantes
-                        .map((v) => {
-                          const coincide = activos.length - v.fuera.length - v.sinDato.length;
-                          const base = `${coincide} de ${activos.length}`;
-                          const extra = v.sinDato.length ? ` (${v.sinDato.length} no consta)` : "";
-                          return `${v.nombre ? `${v.nombre}: ` : "Coincide en "}${base}${extra}`;
-                        })
-                        .join(" · ")}
-                    </p>
+                    {variantes.length > 1 && (
+                      <p className="text-xs text-slate-600">
+                        {variantes.map((v) => v.nombre).join(" · ")}
+                      </p>
+                    )}
                   </div>
-                  <dl className="mt-3 space-y-3">
-                    {activos.map((k) => {
-                      const fila = FILA_CRITERIO[k];
-                      const texto = celdaT1(fila, col);
-                      const estados = variantes.map((v) => ({
-                        nombre: v.nombre,
-                        e: evaluar(r.id, v, k, c),
-                      }));
-                      return (
-                        <div key={k}>
-                          <dt className="flex flex-wrap items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">
-                            {ETIQUETA_CRITERIO[k]}
-                            <span className="font-normal normal-case tracking-normal">
-                              · Tabla 1, {fila.toLowerCase()}
-                            </span>
-                          </dt>
-                          <dd className="mt-1 flex flex-wrap items-start gap-2">
-                            <span className="min-w-0 flex-1 text-sm text-slate-800">
-                              <Lineas>{texto}</Lineas>
-                            </span>
-                            <span className="flex shrink-0 flex-wrap gap-1">
-                              {estados.map(
-                                (x) =>
-                                  x.e && (
-                                    <Etiqueta
-                                      key={x.nombre ?? "unica"}
-                                      clave={k}
-                                      estado={x.e}
-                                      nombre={variantes.length > 1 ? x.nombre : undefined}
-                                    />
-                                  ),
-                              )}
-                            </span>
-                          </dd>
-                        </div>
-                      );
-                    })}
-                  </dl>
+                  {DIMENSIONES.map(([dim, es]) => {
+                    const claves = activos.filter(es);
+                    if (!claves.length) return null;
+                    return (
+                      <div key={dim} className="mt-3">
+                        <h4
+                          className="text-[11px] font-bold uppercase tracking-wide"
+                          style={{ color: h.ink }}
+                        >
+                          {dim}
+                        </h4>
+                        <dl className="mt-1.5 space-y-3">
+                          {claves.map((k) => {
+                            const fila = FILA_CRITERIO[k];
+                            const texto = celdaT1(fila, col);
+                            const estados = variantes.map((v) => ({
+                              nombre: v.nombre,
+                              e: evaluar(r.id, v, k, c),
+                            }));
+                            return (
+                              <div key={k}>
+                                <dt className="flex flex-wrap items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">
+                                  {ETIQUETA_CRITERIO[k]}
+                                  <span className="font-normal normal-case tracking-normal">
+                                    · Tabla 1, {fila.toLowerCase()}
+                                  </span>
+                                </dt>
+                                <dd className="mt-1 flex flex-wrap items-start gap-2">
+                                  <span className="min-w-0 flex-1 text-sm text-slate-800">
+                                    <Lineas>{texto}</Lineas>
+                                  </span>
+                                  <span className="flex shrink-0 flex-wrap gap-1">
+                                    {estados.map(
+                                      (x) =>
+                                        x.e && (
+                                          <Etiqueta
+                                            key={x.nombre ?? "unica"}
+                                            clave={k}
+                                            estado={x.e}
+                                            nombre={variantes.length > 1 ? x.nombre : undefined}
+                                          />
+                                        ),
+                                    )}
+                                  </span>
+                                </dd>
+                              </div>
+                            );
+                          })}
+                        </dl>
+                      </div>
+                    );
+                  })}
                   <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                     <a
                       href={href("sistemas", r.id)}

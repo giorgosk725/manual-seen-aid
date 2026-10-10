@@ -8,13 +8,24 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.32.0";
+export const VERSION_APP = "0.33.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — confianza y continuidad (auditoría de la 0.31, entrega 1)`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — consulta breve (auditoría de la 0.31, entrega 2)`,
+    detalle: [
+      "Buscar con una sola jerarquía: el acceso pedido, el pasaje principal con su contexto, y debajo, plegados, «Más pasajes del capítulo» y «Todos los resultados» (abiertos solo cuando no hay respuesta). Las pestañas separan texto del capítulo, tablas y figuras y recursos de la app (accesos, ampliación, hojas, casos, test). Con dos temas, «También sobre …» solo cuando la otra parte añade algo distinto de lo ya enseñado.",
+      "Criterios de elección: sin «Coincide en X de Y»; cada sistema enseña por separado los factores clínicos y regulatorios y las preferencias o compatibilidades, estado a estado. El formulario sigue abierto mientras se marcan criterios; «Ver resultados» lo pliega.",
+      "Iniciar un sistema: «En esta fase» abre solo el aspecto elegido (su recomendación, notas y fuente) y «Ver la fase completa» devuelve la lectura seguida. «Elige un sistema para ver sus indicaciones junto con los criterios comunes de inicio».",
+      "Sistemas comparados: «Cómo funciona» dice que es lectura por sistema, no comparación por aspectos.",
+    ],
+  },
+  {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.32.0 — confianza y continuidad (auditoría de la 0.31, entrega 1)",
     detalle: [
       "Buscador: una consulta que nombra un sistema que el capítulo no trata (iLet, Diabeloop, Medtrum…) lo dice antes de dar nada general; «paso 7 de la descarga» abre un solo acceso y enseña ese paso como pasaje principal; «iniciar Omnipod 5 desde múltiples dosis» abre Iniciar para ese sistema y «múltiples dosis» se entiende como MDI.",
       "Volver desde «Ver en el capítulo» con Atrás devuelve al mismo punto de la ficha de sistema o de la Figura 3, en vez de al principio de la sección. Parámetros comparados y Revisar la descarga enlazan su fuente («Ver en el capítulo · Tabla 3, p. 11»; «Tabla 5, pp. 13–14»).",

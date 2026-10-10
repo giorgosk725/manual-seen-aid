@@ -410,11 +410,46 @@ export function RespuestasCapitulo({
   // Con pregunta frecuente, el motor añade solo lo que ella no enseña.
   const yaVistos = new Set(frecuente?.respuestas.map((x) => x.id) ?? []);
   const resto = frecuente ? respuestas.filter((x) => !yaVistos.has(x.id)) : respuestas;
-  if (frecuente && (compacta || !resto.length))
+  const Relacionadas =
+    !compacta && relacionadas && relacionadas.length > 0 ? (
+      <nav aria-label="Preguntas relacionadas" className="mt-3">
+        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+          Preguntas relacionadas
+        </p>
+        <ul className="mt-1 space-y-0.5">
+          {relacionadas.map((f) => (
+            <li key={f.id}>
+              <a
+                href={href("preguntas", f.id)}
+                onClick={onIr}
+                className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+              >
+                {f.pregunta} <ArrowRight size={13} aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    ) : null;
+  // Lo que no responde de entrada va plegado: el lector decide si lo abre.
+  const masPasajes = (lista: Respuesta[]) =>
+    lista.length > 0 && (
+      <details className="mt-3">
+        <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
+          Más pasajes del capítulo ({lista.length})
+        </summary>
+        <div className="mt-2 space-y-2">
+          {lista.map((o) => (
+            <Tarjeta key={o.id} r={o} q={q} onIr={onIr} />
+          ))}
+        </div>
+      </details>
+    );
+  if (frecuente)
     return (
       <>
         <BloqueFrecuente frecuente={frecuente} q={q} onIr={onIr} H={H} sinPregunta={sinPregunta} />
-        {compacta && (
+        {compacta ? (
           <a
             href={href("buscar", q)}
             onClick={onIr}
@@ -422,22 +457,18 @@ export function RespuestasCapitulo({
           >
             Más pasajes y todos los resultados
           </a>
+        ) : (
+          masPasajes(resto)
         )}
+        {Relacionadas}
       </>
     );
   if (!resto.length) return null;
   const [r, ...otras] = resto;
   const cercana = !!r.aproximada;
-  const titulo = frecuente
-    ? "Otros pasajes relacionados"
-    : cercana
-      ? "Coincidencia parcial en el capítulo"
-      : "Pasaje del capítulo";
+  const titulo = cercana ? "Coincidencia parcial en el capítulo" : "Pasaje del capítulo";
   return (
     <>
-      {frecuente && (
-        <BloqueFrecuente frecuente={frecuente} q={q} onIr={onIr} H={H} sinPregunta={sinPregunta} />
-      )}
       <section
         aria-labelledby={id}
         className={`mt-3 rounded-xl bg-white p-3 sm:p-4 ${cercana ? "border border-dashed" : "border-2"}`}
@@ -475,42 +506,13 @@ export function RespuestasCapitulo({
               : "Todos los resultados"}
           </a>
         ) : (
-          otras.length > 0 && (
-            <div className="mt-3 space-y-2">
-              <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                Otros pasajes relacionados
-              </p>
-              {otras.map((o) => (
-                <Tarjeta key={o.id} r={o} q={q} onIr={onIr} />
-              ))}
-            </div>
-          )
+          masPasajes(otras)
         )}
         <p className="mt-2 text-[11px] text-slate-500">
-          Elegido por coincidencia de palabras: comprueba que responde a lo que buscas. Debajo,
-          todos los resultados.
+          Elegido por coincidencia de palabras: comprueba que responde a lo que buscas.
         </p>
       </section>
-      {!compacta && relacionadas && relacionadas.length > 0 && (
-        <nav aria-label="Preguntas relacionadas" className="mt-3">
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-            Preguntas relacionadas
-          </p>
-          <ul className="mt-1 space-y-0.5">
-            {relacionadas.map((f) => (
-              <li key={f.id}>
-                <a
-                  href={href("preguntas", f.id)}
-                  onClick={onIr}
-                  className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
-                >
-                  {f.pregunta} <ArrowRight size={13} aria-hidden="true" />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
+      {Relacionadas}
     </>
   );
 }

@@ -159,14 +159,15 @@ export function Buscar({ inicial }: { inicial?: string }) {
     const partes = motor && qEf.trim().length >= 2 ? motor.partesDe(qEf) : null;
     if (!motor || !partes) return [];
     const vistos = new Set(todas.map((r) => r.id));
+    // Solo la parte cuya mejor respuesta no está ya arriba: si la principal ya la cubre, no se
+    // repite el tema con otro párrafo.
     return partes
-      .map((parte) => ({
-        parte,
-        respuestas: motor
-          .responder(parte)
-          .filter((r) => !r.aproximada && r.tipo !== "sigla" && !vistos.has(r.id))
-          .slice(0, 2),
-      }))
+      .map((parte) => {
+        const rs = motor.responder(parte).filter((r) => r.tipo !== "sigla");
+        const mejor = rs[0];
+        if (!mejor || mejor.aproximada || vistos.has(mejor.id)) return { parte, respuestas: [] };
+        return { parte, respuestas: rs.filter((r) => !vistos.has(r.id)).slice(0, 2) };
+      })
       .filter((x) => x.respuestas.length > 0);
   }, [motor, qEf, todas]);
   // Un sistema que el capítulo no trata (iLet, Diabeloop…): se dice antes de dar nada general.
@@ -188,9 +189,12 @@ export function Buscar({ inicial }: { inicial?: string }) {
       )
     : [];
   const cercanas = motor && !respuestas.length && !frecuente ? motor.faqsCercanas(parecidos) : [];
-  const dentro = res.filter((r) => !fueraDelCapitulo(r.entrada));
-  const fueraRes = res.filter((r) => fueraDelCapitulo(r.entrada));
-  // Pestañas por tipo de fuente: texto del capítulo · tablas y figuras · fuera del capítulo.
+  // Recursos de la app (ampliación, hojas, casos, test, accesos): aparte del texto del capítulo.
+  const esRecurso = (r: Resultado) =>
+    fueraDelCapitulo(r.entrada) || r.entrada.tipo === "atajo" || r.entrada.tipo === "caso";
+  const dentro = res.filter((r) => !esRecurso(r));
+  const fueraRes = res.filter(esRecurso);
+  // Pestañas por tipo de fuente: texto del capítulo · tablas y figuras · recursos de la app.
   const esTabla = (r: Resultado) =>
     ["tabla", "figura", "diagrama", "referencia"].includes(r.entrada.tipo);
   const textoRes = dentro.filter((r) => !esTabla(r));
@@ -200,6 +204,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
   const activa =
     pestana === "texto" && !textoRes.length ? (tablasRes.length ? "tablas" : "fuera") : pestana;
   const hayMas = dentro.length < busqueda.totalCapitulo || fueraRes.length < busqueda.totalFuera;
+  const hayRespuesta = !!frecuente || respuestas.length > 0 || extras.length > 0;
   return (
     <div>
       <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1}>
@@ -309,13 +314,9 @@ export function Buscar({ inicial }: { inicial?: string }) {
             </button>
           </p>
         )}
-        {q.trim().length >= 2 && estado !== "error" && (
+        {q.trim().length >= 2 && estado !== "error" && estado !== "listo" && (
           <p className="mt-2 text-xs text-slate-500" aria-live="polite">
-            {estado !== "listo"
-              ? "Cargando el índice…"
-              : res.length === 0
-                ? ""
-                : `${busqueda.totalCapitulo} en el capítulo${dentro.length < busqueda.totalCapitulo ? ` (se ven ${dentro.length})` : ""} · ${busqueda.totalFuera} fuera del capítulo${fueraRes.length < busqueda.totalFuera ? ` (se ven ${fueraRes.length})` : ""}`}
+            Cargando el índice…
           </p>
         )}
         {estado === "listo" &&
@@ -324,44 +325,57 @@ export function Buscar({ inicial }: { inicial?: string }) {
           !respuestas.length &&
           !frecuente && <SinResultados q={q} cercanas={cercanas} />}
         {res.length > 0 && (
-          <div className="mt-3">
-            <Segmented
-              label="Tipo de resultado"
-              wrap
-              value={activa}
-              onChange={(v) => setPestana(v)}
-              options={[
-                { id: "texto", label: `Texto (${textoRes.length})` },
-                { id: "tablas", label: `Tablas y figuras (${tablasRes.length})` },
-                { id: "fuera", label: `Fuera del capítulo (${fueraRes.length})` },
-              ]}
-            />
-          </div>
-        )}
-        {activa === "texto" && <ListaResultados res={textoRes} q={qEf} />}
-        {activa === "tablas" && <ListaResultados res={tablasRes} q={qEf} />}
-        {activa === "fuera" && fueraRes.length > 0 && (
-          <section aria-labelledby="fuera" className="mt-3">
-            <h2 id="fuera" className="sr-only">
-              Fuera del capítulo
-            </h2>
-            <p className="text-xs text-slate-600">
-              No es el texto del capítulo: material complementario, cada entrada con su rótulo
-              (ampliación técnica en violeta; hojas para el paciente, casos y test en gris).
-            </p>
-            <ListaResultados res={fueraRes} q={q} fuera />
-          </section>
+          /* Todos los resultados, plegados cuando ya hay una respuesta arriba (la clave hace que
+             el pliegue se decida de nuevo con cada búsqueda). */
+          <details
+            key={`${qEf}|${hayRespuesta}`}
+            className="mt-4"
+            open={!hayRespuesta}
+            data-testid="todos-los-resultados"
+          >
+            <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-9">
+              Todos los resultados ({res.length}
+              {hayMas ? ` de ${busqueda.totalCapitulo + busqueda.totalFuera}` : ""})
+            </summary>
+            <div className="mt-2">
+              <Segmented
+                label="Tipo de resultado"
+                wrap
+                value={activa}
+                onChange={(v) => setPestana(v)}
+                options={[
+                  { id: "texto", label: `Texto del capítulo (${textoRes.length})` },
+                  { id: "tablas", label: `Tablas y figuras (${tablasRes.length})` },
+                  { id: "fuera", label: `Recursos de la app (${fueraRes.length})` },
+                ]}
+              />
+            </div>
+            {activa === "texto" && <ListaResultados res={textoRes} q={qEf} />}
+            {activa === "tablas" && <ListaResultados res={tablasRes} q={qEf} />}
+            {activa === "fuera" && fueraRes.length > 0 && (
+              <section aria-labelledby="fuera" className="mt-3">
+                <h2 id="fuera" className="sr-only">
+                  Recursos de la app
+                </h2>
+                <p className="text-xs text-slate-600">
+                  No es el texto del capítulo: accesos, ampliación técnica (en violeta), hojas para
+                  el paciente, casos y test (en gris), cada entrada con su rótulo.
+                </p>
+                <ListaResultados res={fueraRes} q={q} fuera />
+              </section>
+            )}
+            {hayMas && (
+              <button
+                type="button"
+                onClick={() => setTope((t) => t + 48)}
+                className="mt-4 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+              >
+                Ver más resultados
+              </button>
+            )}
+          </details>
         )}
       </div>
-      {hayMas && (
-        <button
-          type="button"
-          onClick={() => setTope((t) => t + 48)}
-          className="mt-4 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-        >
-          Ver más resultados
-        </button>
-      )}
     </div>
   );
 }

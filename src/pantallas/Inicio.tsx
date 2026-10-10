@@ -1,7 +1,7 @@
 /* Recorrido «Iniciar un sistema» (#/consultar/inicio/<fase>[:<sistema>]): el apartado 8 en sus
    cuatro fases, con el sistema elegido o los cuatro, y la hoja de comprobación para imprimir.
    El contenido sale de inicio.ts (referencias al texto literal); aquí solo se pinta. */
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Check, ChevronLeft, ChevronRight, Printer } from "lucide-react";
 import { TABLAS } from "../contenido";
 import { ORDEN_SISTEMAS } from "../ampliacion/ids";
@@ -27,9 +27,9 @@ const HOJA = "hoja";
 
 const capitalizar = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-/* «En esta fase»: índice de las filas de tabla y los hitos de la fase, para ir a lo que se
-   busca (p. ej., la reducción de la DTD al pasar de MDI) sin recorrer varias pantallas. Los
-   rótulos son los de las filas del capítulo. */
+/* «En esta fase»: índice de las filas de tabla y los hitos de la fase. Elegir uno abre solo ese
+   aspecto (con su recomendación, notas y fuente); «Ver la fase completa» devuelve la lectura
+   seguida. Los rótulos son los de las filas del capítulo. */
 function rotuloDe(p: Pieza): string | null {
   switch (p.t) {
     case "fila":
@@ -44,28 +44,55 @@ function rotuloDe(p: Pieza): string | null {
   }
 }
 
-function EnEstaFase({ piezas }: { piezas: Pieza[] }) {
-  const entradas = piezas
+function entradasDeFase(piezas: Pieza[]) {
+  return piezas
     .map((p, i) => ({ i, rotulo: rotuloDe(p) }))
     .filter((e): e is { i: number; rotulo: string } => !!e.rotulo);
+}
+
+function EnEstaFase({
+  piezas,
+  activo,
+  onElegir,
+}: {
+  piezas: Pieza[];
+  activo: number | null;
+  onElegir: (i: number | null) => void;
+}) {
+  const entradas = entradasDeFase(piezas);
   if (entradas.length < 4) return null;
+  const chip = (on: boolean) =>
+    `inline-flex min-h-11 items-center whitespace-nowrap rounded-full border px-2.5 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-8 ${on ? "text-white" : "border-slate-300 bg-white text-slate-700 hover:border-slate-500"}`;
   return (
     <nav aria-label="En esta fase" className="no-imprimir mb-3">
       <div className="mb-1 text-[11px] font-bold uppercase tracking-wide text-slate-500">
-        En esta fase
+        En esta fase · elige un aspecto o lee la fase entera
       </div>
       {/* En el móvil, una fila que se desliza (no una pantalla de botones); en grande, en varias. */}
       <ul className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible">
+        <li className="shrink-0">
+          <button
+            type="button"
+            aria-pressed={activo === null}
+            onClick={() => onElegir(null)}
+            className={chip(activo === null)}
+            style={
+              activo === null ? { background: hex.strong, borderColor: hex.strong } : undefined
+            }
+          >
+            Fase completa
+          </button>
+        </li>
         {entradas.map((e) => (
           <li key={e.i} className="shrink-0">
             <button
               type="button"
-              onClick={() => {
-                const el = document.getElementById(`pieza-${e.i}`);
-                el?.scrollIntoView({ block: "start" });
-                el?.focus({ preventScroll: true });
-              }}
-              className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full border border-slate-300 bg-white px-2.5 text-xs font-semibold text-slate-700 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-8"
+              aria-pressed={activo === e.i}
+              onClick={() => onElegir(activo === e.i ? null : e.i)}
+              className={chip(activo === e.i)}
+              style={
+                activo === e.i ? { background: hex.strong, borderColor: hex.strong } : undefined
+              }
             >
               {e.rotulo}
             </button>
@@ -196,17 +223,22 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
   const ir = (f: string, s = sis) =>
     elegirRuta("consultar", "inicio", s !== undefined ? `${f}:${SIS_IDS[s]}` : f);
   const alPaso = useIrAlCambiar(actual, "paso-inicio");
+  // Aspecto elegido dentro de la fase (índice de pieza); se olvida al cambiar de fase o sistema.
+  const [aspecto, setAspecto] = useState<number | null>(null);
+  useEffect(() => setAspecto(null), [actual, sis]);
+  const piezasVisibles =
+    fase && aspecto !== null && fase.piezas[aspecto] ? [aspecto] : fase?.piezas.map((_, i) => i);
   return (
     <div>
       <CabeceraEditorial titulo="Iniciar un sistema" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
           El apartado 8 (pp. 10-12) en cuatro fases, con lo que piden los apartados 6, 7 y 9. Elige
-          un sistema para ver solo su contenido.
+          un sistema para ver sus indicaciones junto con los criterios comunes de inicio.
         </p>
       </CabeceraEditorial>
 
       <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-        Sistema (para ver solo el suyo)
+        Sistema (sus indicaciones y los criterios comunes)
       </div>
       <div className="mb-4">
         <CasillasSistema
@@ -265,19 +297,28 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
               </h2>
               <span className="pagina-badge">{fase.paginas}</span>
             </div>
-            <EnEstaFase piezas={fase.piezas} />
-            <div className="space-y-3">
-              {fase.piezas.map((p, i) => (
+            <EnEstaFase piezas={fase.piezas} activo={aspecto} onElegir={setAspecto} />
+            <div className="space-y-3" aria-live="polite">
+              {(piezasVisibles ?? []).map((i) => (
                 <div
                   key={i}
                   id={`pieza-${i}`}
                   tabIndex={-1}
                   className="scroll-mt-24 focus:outline-none"
                 >
-                  <PiezaVista pieza={p} sis={sis} />
+                  <PiezaVista pieza={fase.piezas[i]} sis={sis} />
                 </div>
               ))}
             </div>
+            {aspecto !== null && (
+              <button
+                type="button"
+                onClick={() => setAspecto(null)}
+                className="mt-3 inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 hover:border-slate-500"
+              >
+                Ver la fase completa <ArrowRight size={13} aria-hidden="true" />
+              </button>
+            )}
           </section>
         ) : (
           <Hoja sis={sis} />

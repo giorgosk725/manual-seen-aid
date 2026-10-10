@@ -105,9 +105,11 @@ test.describe("Nocturno en lo nuevo", () => {
 test.describe("Búsqueda y enlaces", () => {
   test("lo que no es del capítulo sale aparte y rotulado", async ({ page }) => {
     await page.goto("/#/buscar/urgencias");
+    const todos = page.getByTestId("todos-los-resultados");
+    if (!(await todos.getAttribute("open"))) await todos.locator("summary").click();
     await page
       .getByRole("group", { name: "Tipo de resultado" })
-      .getByRole("button", { name: /^Fuera del capítulo \(\d+\)/ })
+      .getByRole("button", { name: /^Recursos de la app \(\d+\)/ })
       .click();
     await expect(page.getByText(/No es el texto del capítulo/)).toBeVisible();
     await page

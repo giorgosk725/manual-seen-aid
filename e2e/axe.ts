@@ -18,6 +18,10 @@ const DESACTIVADAS = {
 type Violacion = { id: string; impact?: string; nodes: { target: string[] }[] };
 
 export async function auditar(page: Page, pantalla: string) {
+  // La pantalla puede ser perezosa (su trozo llega despues de goto): sin esperar, axe mediria
+  // el contraste de la animacion de entrada a medias.
+  await page.waitForLoadState("networkidle").catch(() => undefined);
+  await page.waitForTimeout(150);
   // Las tarjetas entran con animacion (`animate-in`): mientras dura, la opacidad es < 1 y
   // axe mide el contraste del color ya mezclado con el fondo. Se espera a que terminen.
   await page.evaluate(

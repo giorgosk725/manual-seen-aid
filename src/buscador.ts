@@ -430,7 +430,10 @@ const SECCION_PEDIDA: [RegExp, string, string][] = [
   [/ficha t[eé]cnica|ampliaci/, "ampliacion", "Ampliación técnica"],
 ];
 export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[] {
-  const terminos = terminosDe(consulta).map((v) => v[0]);
+  // El sistema nombrado no es una palabra del recurso: va en la ruta («…:minimed-780g»).
+  const terminos = terminosDe(consulta)
+    .map((v) => v[0])
+    .filter((w) => !ALIAS_SISTEMA.some((re) => re.test(w)) && w !== "5");
   if (!terminos.length) return [];
   const out: Resultado[] = [];
   const sis = sistemaDeConsulta(consulta);

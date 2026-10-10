@@ -7,9 +7,11 @@ test.describe("Listas y tarjetas (0.29.0)", () => {
     page,
   }) => {
     await page.goto("/#/buscar/insulina");
+    const todos = page.getByTestId("todos-los-resultados");
+    if (!(await todos.getAttribute("open"))) await todos.locator("summary").click();
     const tipo = page.getByRole("group", { name: "Tipo de resultado" });
-    await expect(tipo.getByRole("button", { name: /^Texto \(\d+\)/ })).toBeVisible();
-    await tipo.getByRole("button", { name: /^Fuera del capítulo/ }).click();
+    await expect(tipo.getByRole("button", { name: /^Texto del capítulo \(\d+\)/ })).toBeVisible();
+    await tipo.getByRole("button", { name: /^Recursos de la app/ }).click();
     await expect(page.getByText(/No es el texto del capítulo/)).toBeVisible();
   });
 
