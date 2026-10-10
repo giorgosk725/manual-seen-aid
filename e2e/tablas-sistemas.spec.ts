@@ -18,7 +18,7 @@ test.describe("Tablas y sistemas", () => {
       "location",
     );
     await page
-      .getByRole("group", { name: "Sistemas que se comparan" })
+      .getByRole("group", { name: "Sistemas" })
       .getByRole("button", { name: /Omnipod 5/ })
       .click();
     await expect(page).toHaveURL(/#\/sistemas\/op5\/parametros$/);
@@ -37,7 +37,7 @@ test.describe("Tablas y sistemas", () => {
     await page.goto("/#/consultar/comparar/minimed-780g+omnipod-5");
     await expect(page).toHaveURL(/#\/sistemas\/mm780\+op5\/esencial$/);
     await expect(page.getByText(/Comparando MiniMed 780G y Omnipod 5/)).toBeVisible();
-    const grupo = page.getByRole("group", { name: "Sistemas que se comparan" });
+    const grupo = page.getByRole("group", { name: "Sistemas" });
     await expect(grupo.getByRole("button", { name: /Omnipod 5/ })).toHaveAttribute(
       "aria-pressed",
       "true",
@@ -53,7 +53,7 @@ test.describe("Tablas y sistemas", () => {
     ).toBeVisible();
   });
 
-  test("la ficha por sección enseña solo esa sección, con el cambio de sistema a mano", async ({
+  test("la ficha por sección enseña solo esa; el selector añade otro (comparación) o lo quita", async ({
     page,
   }) => {
     await page.goto("/#/sistemas/op5/parametros");
@@ -63,18 +63,46 @@ test.describe("Tablas y sistemas", () => {
     await expect(
       page.getByRole("heading", { level: 2, name: /^Lo esencial · Omnipod 5/ }),
     ).toBeHidden();
-    await page
-      .getByRole("navigation", { name: "Otro sistema, misma sección" })
-      .getByRole("link", { name: "CamAPS" })
-      .click();
+    const grupo = page.getByRole("group", { name: "Sistemas" });
+    await expect(grupo.getByRole("button", { name: /Omnipod 5/ })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await grupo.getByRole("button", { name: /CamAPS/ }).click();
+    await expect(page).toHaveURL(/#\/sistemas\/camaps\+op5\/parametros$/);
+    await expect(page.getByText(/Comparando myLoop CamAPS y Omnipod 5/)).toBeVisible();
+    await expect(page.getByRole("link", { name: "Parámetros", exact: true })).toHaveAttribute(
+      "aria-current",
+      "location",
+    );
+    await grupo.getByRole("button", { name: /Omnipod 5/ }).click();
     await expect(page).toHaveURL(/#\/sistemas\/camaps\/parametros$/);
     await expect(
       page.getByRole("heading", { level: 2, name: /^Parámetros · myLoop CamAPS/ }),
     ).toBeVisible();
     await page.getByRole("link", { name: "Ficha completa" }).click();
+    await expect(page).toHaveURL(/#\/sistemas\/camaps\/completa$/);
     await expect(
       page.getByRole("heading", { level: 2, name: /^Lo esencial · myLoop CamAPS/ }),
     ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { level: 2, name: /^Parámetros · myLoop CamAPS/ }),
+    ).toBeVisible();
+  });
+
+  test("la ficha abre por «Lo esencial» y conserva la sección al pasar al siguiente sistema", async ({
+    page,
+  }) => {
+    await page.goto("/#/sistemas/op5");
+    await expect(
+      page.getByRole("heading", { level: 2, name: /^Lo esencial · Omnipod 5/ }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { level: 2, name: /^Parámetros · Omnipod 5/ }),
+    ).toBeHidden();
+    await page.goto("/#/sistemas/camaps/situaciones");
+    await page.getByRole("link", { name: /Siguiente/ }).click();
+    await expect(page).toHaveURL(/#\/sistemas\/op5\/situaciones$/);
   });
 
   test("UX07-UX08: dos sistemas, la selección se ve y queda en el enlace", async ({ page }) => {
@@ -97,9 +125,10 @@ test.describe("Tablas y sistemas", () => {
     await page.goto("/#/sistemas/ciq/parametros");
     const titulo = page.getByRole("heading", { level: 2, name: /^Parámetros · Tandem Control-IQ/ });
     await expect(titulo).toBeInViewport();
-    await expect(
-      page.getByRole("link", { name: /Comparar estos parámetros entre sistemas/ }),
-    ).toHaveAttribute("href", "#/sistemas/todos/parametros");
+    await expect(page.getByRole("link", { name: /Los cuatro en la Tabla 3/ })).toHaveAttribute(
+      "href",
+      "#/sistemas/todos/parametros",
+    );
     await expect(page.getByRole("link", { name: "Parámetros", exact: true })).toHaveAttribute(
       "aria-current",
       "location",
@@ -109,7 +138,7 @@ test.describe("Tablas y sistemas", () => {
   test("la ficha separa lo esencial, los parámetros, las situaciones y la ampliación", async ({
     page,
   }) => {
-    await page.goto("/#/sistemas/mm780");
+    await page.goto("/#/sistemas/mm780/completa");
     for (const h of [
       /^Lo esencial · MiniMed 780G/,
       /^Parámetros · MiniMed 780G/,

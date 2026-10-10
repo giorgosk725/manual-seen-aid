@@ -10,7 +10,7 @@ import { href } from "./rutas";
 
 export type Pieza =
   /* Frases `k` (en orden) de un párrafo. */
-  | { t: "frase"; apartado: string; bloque: string; k: number[] }
+  | { t: "frase"; apartado: string; bloque: string; k: number[]; trozo?: RegExp }
   /* Una lista entera, con su introducción. */
   | { t: "lista"; apartado: string; bloque: string }
   /* Fila de una tabla que no va por sistema (Tabla 2), con sus columnas. */
@@ -134,13 +134,23 @@ function bloqueDe(apartado: string, bloque: string): { b: Bloque; ruta: string }
 }
 
 /* Las frases pedidas de un párrafo, con su página, su entradilla y dónde leerlo. */
-export function frasesDe(apartado: string, bloque: string, k: number[]) {
+export function frasesDe(apartado: string, bloque: string, k: number[], trozo?: RegExp) {
   const { b, ruta } = bloqueDe(apartado, bloque);
   if (b.t !== "p") throw new Error(`inicio.ts: ${apartado}/${bloque} no es un párrafo`);
   const fs = frases(plano(b.texto));
-  const elegidas = k.map((n) => fs[n]);
+  let elegidas = k.map((n) => fs[n]);
   if (elegidas.some((f) => !f))
     throw new Error(`inicio.ts: faltan frases en ${apartado}/${bloque}`);
+  // Solo un trozo de la frase (p. ej. la parte sobre un sistema en una enumeración de los
+  // cuatro), literal y con puntos suspensivos donde se corta.
+  if (trozo) {
+    const todo = elegidas.join(" ");
+    const m = todo.match(trozo);
+    if (!m || m.index === undefined)
+      throw new Error(`inicio.ts: ${apartado}/${bloque} no contiene el trozo ${trozo}`);
+    const fin = m.index + m[0].length;
+    elegidas = [(m.index > 0 ? "… " : "") + m[0] + (fin < todo.length ? " …" : "")];
+  }
   return {
     // La entradilla («Configuración inicial (v. Tabla 2).») solo con la primera frase.
     lead: k[0] === 0 && b.lead ? plano(b.lead) : "",

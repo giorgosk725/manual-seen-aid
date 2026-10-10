@@ -61,7 +61,7 @@ export function PiezaVista({ pieza, sis }: { pieza: Pieza; sis?: number }) {
   const borde = { borderColor: "#e6e6e6" };
   switch (pieza.t) {
     case "frase": {
-      const f = frasesDe(pieza.apartado, pieza.bloque, pieza.k);
+      const f = frasesDe(pieza.apartado, pieza.bloque, pieza.k, pieza.trozo);
       return (
         <p className="prosa">
           {f.lead && <strong>{f.lead} </strong>}

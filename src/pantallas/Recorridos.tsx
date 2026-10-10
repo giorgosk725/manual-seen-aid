@@ -4,7 +4,7 @@
    - Revisar la descarga: la Tabla 5 paso a paso (8 pasos), con el patrón relacionado.
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
-import { ArrowRight, Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, Check, ChevronLeft, ChevronRight, HeartHandshake } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque } from "../contenido";
 import { SIS_IDS, SITUACIONES, type Situacion } from "../situaciones";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS, SISTEMAS_AMPLIACION } from "../ampliacion";
@@ -338,6 +338,26 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                   </dl>
                 )}
               </section>
+              {(sit.tabla === "T6" || sit.id.startsWith("hiperglucemia")) && (
+                <a
+                  href={href(
+                    "pacientes",
+                    "hoja",
+                    sit.tabla === "T6" ? "pruebas-cirugia" : "cetonas",
+                  )}
+                  className="inline-flex min-h-11 items-center gap-2 rounded-lg border bg-white px-3 text-sm font-semibold text-slate-800 transition hover:border-slate-500"
+                  style={{ borderColor: "#e6e6e6" }}
+                >
+                  <HeartHandshake
+                    size={15}
+                    aria-hidden="true"
+                    style={{ color: CATEGORIA_HEX.pacientes.strong }}
+                  />
+                  Hoja para entregar al paciente:{" "}
+                  {sit.tabla === "T6" ? "pruebas y cirugía" : "cetonas"}{" "}
+                  <ArrowRight size={13} aria-hidden="true" />
+                </a>
+              )}
               <div>
                 <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
                   Leer en el capítulo

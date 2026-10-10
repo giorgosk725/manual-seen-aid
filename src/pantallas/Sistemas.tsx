@@ -35,7 +35,7 @@ import {
   type Sistema,
 } from "../ampliacion";
 import { href } from "../rutas";
-import { BotonImprimir, CabeceraEditorial, Foldable, PaginaBadge, Revelar, ToneCard } from "../ui";
+import { BotonImprimir, CabeceraEditorial, Foldable, PaginaBadge, ToneCard } from "../ui";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
@@ -104,120 +104,6 @@ function ParametrosConfigurables({ c, ink }: { c: number; ink: string }) {
         </span>
       ))}
     </span>
-  );
-}
-
-export function HubSistemas() {
-  return (
-    <div>
-      <CabeceraEditorial titulo="Sistemas" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          Los cuatro sistemas AID comercializados en España: lo que dice el capítulo de cada uno y,
-          aparte, su ficha técnica ampliada. Abre uno, o compáralos.
-        </p>
-      </CabeceraEditorial>
-      <a
-        href={href("sistemas", "elegir")}
-        className="mb-3 flex min-h-11 items-center gap-3 rounded-xl border bg-white px-3 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
-        style={{ borderColor: "#e6e6e6" }}
-      >
-        <Handshake
-          size={18}
-          className="shrink-0"
-          style={{ color: hex.strong }}
-          aria-hidden="true"
-        />
-        <span className="min-w-0 flex-1">
-          Elegir un sistema para una persona
-          <span className="block text-xs font-normal text-slate-500">
-            Edad, peso, dosis, gestación, formato, sensor… contrastados con la Tabla 1
-          </span>
-        </span>
-        <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
-      </a>
-      <nav aria-label="Comparar los cuatro" className="mb-4 flex flex-wrap gap-x-4 gap-y-1">
-        {(
-          [
-            ["esencial", "Comparar lo esencial", "Tabla 1"],
-            ["parametros", "Comparar los parámetros", "Tabla 3"],
-            ["situaciones", "Comparar en las situaciones", "Tablas 4 y 6"],
-          ] as const
-        ).map(([sec, t, f]) => (
-          <a
-            key={sec}
-            href={href("sistemas", "todos", sec)}
-            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
-          >
-            {t} <span className="text-xs font-normal text-slate-500">({f})</span>{" "}
-            <ArrowRight size={13} aria-hidden="true" />
-          </a>
-        ))}
-      </nav>
-      <ul className="grid gap-3 sm:grid-cols-2">
-        {SISTEMAS_AMPLIACION.map((s) => {
-          const c = columnaDeSistema(s.id);
-          const h = SISTEMA_HEX[c];
-          return (
-            <Revelar as="li" key={s.id}>
-              <a
-                href={href("sistemas", s.id)}
-                className="hover-lift ease-brand flex h-full gap-3 rounded-2xl border bg-white p-3 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{
-                  borderColor: "#e6e6e6",
-                  boxShadow: `inset 0 3px 0 0 ${h.strong}, 0 8px 24px rgba(15,23,42,0.05)`,
-                }}
-              >
-                <span
-                  className="h-24 w-24 shrink-0 overflow-hidden rounded-xl border bg-white"
-                  style={{ borderColor: "#e6e6e6" }}
-                >
-                  <img
-                    src={FOTO_SISTEMA[s.id]}
-                    alt=""
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block text-base font-extrabold" style={{ color: h.ink }}>
-                    {s.name}
-                  </span>
-                  <span className="block text-xs text-slate-500">{algoritmoDelCapitulo(c)}</span>
-                  <span className="mt-1.5 block text-sm text-slate-700">
-                    <Lineas>{TABLAS.T1.filas[0].celdas[c]}</Lineas>
-                  </span>
-                  {/* Lo que más se consulta de un sistema, ya en la lista (Tabla 1, p. 4). */}
-                  <span
-                    className="mt-2 block rounded-lg px-2 py-1.5 text-xs"
-                    style={{ background: h.soft }}
-                  >
-                    <span
-                      className="block font-bold uppercase tracking-wide"
-                      style={{ color: h.ink }}
-                    >
-                      Parámetros configurables en modo automático
-                    </span>
-                    <ParametrosConfigurables c={c} ink={h.ink} />
-                  </span>
-                  <span
-                    className="mt-2 inline-flex items-center gap-1 text-xs font-semibold"
-                    style={{ color: h.ink }}
-                  >
-                    Ver ficha <ArrowRight size={12} aria-hidden="true" />
-                  </span>
-                </span>
-              </a>
-            </Revelar>
-          );
-        })}
-      </ul>
-      <p className="mt-3 text-xs text-slate-600">
-        <Texto>{TABLAS.T1.notas[0]}</Texto> <PaginaBadge p={4} />
-      </p>
-      <p className="mt-2 text-xs text-slate-500">
-        Fotos oficiales de producto (Medtronic, Tandem/Novalab, mylife/Ypsomed e Insulet).
-      </p>
-    </div>
   );
 }
 
@@ -617,7 +503,10 @@ function TituloSeccion({
   children: ReactNode;
 }) {
   return (
-    <h2 id={id} className="mb-2 scroll-mt-20 text-base font-extrabold text-slate-900">
+    <h2
+      id={id}
+      className="mb-2 scroll-mt-56 text-base font-extrabold text-slate-900 sm:scroll-mt-44"
+    >
       {children} <span style={{ color }}>· {sistema}</span>
     </h2>
   );
@@ -627,13 +516,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const s = sistemaPorId(id);
   const ref = useRef<HTMLDivElement>(null);
   const parrafos = useMemo(() => (s ? parrafosDelSistema(s.id) : []), [s]);
-  // Enlace a una sección (#/sistemas/<id>/parametros): se abre en ella, sin recorrer la ficha.
-  useEffect(() => {
-    if (!seccion) return;
-    const el = document.getElementById(seccion);
-    el?.scrollIntoView?.({ block: "start" });
-  }, [seccion, id]);
-  if (!s) return <HubSistemas />;
+  if (!s) return <Comparacion ids={[]} />;
   const c = columnaDeSistema(s.id);
   const h = SISTEMA_HEX[c];
   const slug = SLUG_TABLA[c];
@@ -641,9 +524,17 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const prev = SISTEMAS_AMPLIACION[i - 1];
   const next = SISTEMAS_AMPLIACION[i + 1];
   const situacionesT4 = SITUACIONES.filter((x) => x.tabla === "T4");
-  // Con una sección en la ruta se enseña solo esa (la ficha entera son más de diez pantallas
-  // en el móvil); sin sección, la ficha completa.
-  const ver = (id: string) => !seccion || seccion === id;
+  // Se enseña una sección (la entera son más de diez pantallas en el móvil); «Lo esencial» si
+  // la ruta no dice otra; /completa, la ficha entera (para leer o imprimir).
+  const completa = seccion === "completa";
+  const sec = completa ? undefined : (seccion ?? "esencial");
+  const ver = (x: string) => completa || sec === x;
+  // Enlace a una sección concreta (#/sistemas/<id>/parametros): se abre en ella; la barra con
+  // el sistema y la sección queda pegada arriba (scroll-mt de la sección deja sitio).
+  useEffect(() => {
+    if (!seccion || completa) return;
+    document.getElementById(seccion)?.scrollIntoView?.({ block: "start" });
+  }, [seccion, id, completa]);
   return (
     <div ref={ref} className="imprimible">
       <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
@@ -651,7 +542,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           href={href("sistemas")}
           className="inline-flex min-h-11 items-center font-semibold hover:underline"
         >
-          Sistemas
+          Sistemas AID
         </a>
         <span aria-hidden="true">›</span>
         <span>{s.name}</span>
@@ -677,83 +568,35 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           </p>
           <div className="no-imprimir mt-2 flex flex-wrap gap-x-3 gap-y-1">
             <a
-              href={href("sistemas", "todos", seccion ?? "esencial")}
-              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
-              style={{ color: h.ink }}
-            >
-              Comparar con otros sistemas <ArrowRight size={13} aria-hidden="true" />
-            </a>
-            <a
               href={href("consultar", "inicio", `inicio:${slug}`)}
               className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
               style={{ color: h.ink }}
             >
               Iniciar este sistema paso a paso <ArrowRight size={13} aria-hidden="true" />
             </a>
+            <a
+              href={href("pacientes", "plan", s.id)}
+              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
+              style={{ color: h.ink }}
+            >
+              Plan de seguridad para entregar <ArrowRight size={13} aria-hidden="true" />
+            </a>
           </div>
         </div>
       </header>
 
-      <nav
-        aria-label="En esta ficha"
-        className="no-imprimir -mx-3 mb-5 flex gap-1.5 overflow-x-auto border-y px-3 py-2 sm:mx-0 sm:flex-wrap sm:rounded-lg sm:border sm:px-2"
-        style={{ borderColor: "#e6e6e6" }}
+      <BarraSistemas
+        ids={[s.id]}
+        seccion={sec}
+        completa={completa}
+        refImprimir={ref}
+        favorito={<BotonFavorito ruta={href("sistemas", s.id)} titulo={s.name} />}
+      />
+      <section
+        aria-labelledby="esencial"
+        className="scroll-mt-56 sm:scroll-mt-44"
+        hidden={!ver("esencial")}
       >
-        {SECCIONES_FICHA.map((x) => (
-          <a
-            key={x.id}
-            href={href("sistemas", s.id, x.id)}
-            aria-current={seccion === x.id ? "location" : undefined}
-            className={`inline-flex min-h-9 shrink-0 items-center rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${seccion === x.id ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
-            style={
-              seccion === x.id
-                ? { background: h.strong, borderColor: h.strong }
-                : { borderColor: "#d4d4d4" }
-            }
-          >
-            {x.t}
-          </a>
-        ))}
-        {seccion && (
-          <a
-            href={href("sistemas", s.id)}
-            className="inline-flex min-h-9 shrink-0 items-center rounded-full border border-dashed px-3 text-sm font-semibold text-slate-600 hover:border-slate-500"
-            style={{ borderColor: "#d4d4d4" }}
-          >
-            Ficha completa
-          </a>
-        )}
-        <span className="ml-auto flex shrink-0 items-center gap-1.5">
-          <BotonImprimir objetivo={ref} compacto>
-            Imprimir la ficha
-          </BotonImprimir>
-          <BotonFavorito ruta={href("sistemas", s.id)} titulo={s.name} />
-        </span>
-      </nav>
-
-      {
-        <nav
-          aria-label="Otro sistema, misma sección"
-          className="no-imprimir mb-4 flex flex-wrap gap-1.5"
-        >
-          {SISTEMAS_AMPLIACION.map((x, c) => (
-            <a
-              key={x.id}
-              href={href("sistemas", x.id, seccion)}
-              aria-current={x.id === s.id ? "page" : undefined}
-              className={`inline-flex min-h-9 items-center rounded-full border px-3 text-xs font-bold transition ${x.id === s.id ? "text-white" : "bg-white hover:border-slate-500"}`}
-              style={
-                x.id === s.id
-                  ? { background: SISTEMA_HEX[c].ink, borderColor: SISTEMA_HEX[c].ink }
-                  : { borderColor: `${SISTEMA_HEX[c].strong}80`, color: SISTEMA_HEX[c].ink }
-              }
-            >
-              {SLUG_CORTO[c]}
-            </a>
-          ))}
-        </nav>
-      }
-      <section aria-labelledby="esencial" className="scroll-mt-20" hidden={!ver("esencial")}>
         <TituloSeccion id="esencial" sistema={s.name} color={h.ink}>
           Lo esencial
         </TituloSeccion>
@@ -776,7 +619,9 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           }
           pie={
             <>
-              <EnlacePie ruta={href("sistemas", "todos", "esencial")}>Comparar sistemas</EnlacePie>
+              <EnlacePie ruta={href("sistemas", "todos", "esencial")}>
+                Los cuatro en la Tabla 1
+              </EnlacePie>
               <a
                 href={WEB_SISTEMA[s.id]}
                 target="_blank"
@@ -790,7 +635,11 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         />
       </section>
 
-      <section aria-labelledby="funciona" className="mt-7 scroll-mt-20" hidden={!ver("funciona")}>
+      <section
+        aria-labelledby="funciona"
+        className="mt-7 scroll-mt-56 sm:scroll-mt-44"
+        hidden={!ver("funciona")}
+      >
         <TituloSeccion id="funciona" sistema={s.name} color={h.ink}>
           Cómo funciona
         </TituloSeccion>
@@ -825,7 +674,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
 
       <section
         aria-labelledby="parametros"
-        className="mt-7 scroll-mt-20"
+        className="mt-7 scroll-mt-56 sm:scroll-mt-44"
         hidden={!ver("parametros")}
       >
         <TituloSeccion id="parametros" sistema={s.name} color={h.ink}>
@@ -842,7 +691,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             c={c}
             pie={
               <EnlacePie ruta={href("sistemas", "todos", "parametros")}>
-                Comparar estos parámetros entre sistemas
+                Los cuatro en la Tabla 3
               </EnlacePie>
             }
           />
@@ -851,7 +700,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
 
       <section
         aria-labelledby="situaciones"
-        className="mt-7 scroll-mt-20"
+        className="mt-7 scroll-mt-56 sm:scroll-mt-44"
         hidden={!ver("situaciones")}
       >
         <TituloSeccion id="situaciones" sistema={s.name} color={h.ink}>
@@ -892,7 +741,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
               <EnlacePie ruta={rutaEnCapitulo(TABLAS.T4)!}>Ver en el capítulo</EnlacePie>
             )}
             <EnlacePie ruta={href("sistemas", "todos", "situaciones")}>
-              Comparar en la Tabla 4
+              Los cuatro en la Tabla 4
             </EnlacePie>
             <EnlacePie ruta={href("consultar", "situacion", `rm:${slug}`)}>
               Exploraciones y cirugía (Tabla 6)
@@ -914,7 +763,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       <section
         aria-label="Más del capítulo sobre este sistema"
         className="mt-7 space-y-3"
-        hidden={!!seccion}
+        hidden={!completa}
       >
         <Foldable title="Párrafos del capítulo que lo nombran" count={parrafos.length}>
           <ol className="space-y-3">
@@ -950,7 +799,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       <nav aria-label="Otro sistema" className="no-imprimir mt-6 grid gap-2 sm:grid-cols-2">
         {prev ? (
           <a
-            href={href("sistemas", prev.id)}
+            href={href("sistemas", prev.id, seccion)}
             className="flex min-w-0 items-center gap-2 overflow-hidden rounded-xl border bg-white p-3 shadow-soft"
             style={{ borderColor: "#e6e6e6" }}
           >
@@ -967,7 +816,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         )}
         {next && (
           <a
-            href={href("sistemas", next.id)}
+            href={href("sistemas", next.id, seccion)}
             className="flex min-w-0 items-center justify-end gap-2 overflow-hidden rounded-xl border bg-white p-3 text-right shadow-soft"
             style={{ borderColor: "#e6e6e6" }}
           >
@@ -985,10 +834,12 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   );
 }
 
-/* ---------- Sistemas: uno (su ficha) o varios (comparados), con las mismas secciones ---------- */
-/* La selección vive en la ruta: #/sistemas/<id> (ficha), #/sistemas/<a+b>/<seccion> (dos o tres
-   comparados) y #/sistemas/todos/<seccion> (los cuatro). «Comparar sistemas» y «Parámetros por
-   sistema» son esta pantalla con los cuatro y la sección elegida. */
+/* ---------- Sistemas: un solo espacio para uno (su ficha) o varios (comparados) ---------- */
+/* La selección vive en la ruta: #/sistemas (entrada), #/sistemas/<id>[/seccion] (ficha por
+   secciones; /completa, entera), #/sistemas/<a+b>/<seccion> (dos o tres comparados) y
+   #/sistemas/todos/<seccion> (los cuatro). «Comparar sistemas» y «Parámetros por sistema» son
+   esta pantalla con los cuatro y la sección elegida. El selector es el mismo en todas las
+   vistas: marcar añade, desmarcar quita; con uno, se ve su ficha. */
 const IDS_SISTEMA = ORDEN_SISTEMAS as readonly string[];
 const listaNombres = (n: string[]) =>
   n.length < 2 ? n.join("") : `${n.slice(0, -1).join(", ")} y ${n[n.length - 1]}`;
@@ -999,13 +850,201 @@ function leerSeleccion(sel?: string): string[] {
 }
 
 export function Sistemas({ sel, seccion }: { sel?: string; seccion?: string }) {
-  if (sel === undefined) return <HubSistemas />;
   if (sel === "elegir") return <Elegir q={seccion} />;
-  const ids = leerSeleccion(sel);
-  if (!ids.length && sel !== "todos") return <HubSistemas />;
-  const sec = SECCIONES_FICHA.some((x) => x.id === seccion) ? seccion : undefined;
+  const ids = sel === undefined ? [] : leerSeleccion(sel);
+  if (sel !== undefined && sel !== "todos" && !ids.length) return <Comparacion ids={[]} />;
+  const sec = SECCIONES_FICHA.some((x) => x.id === seccion)
+    ? seccion
+    : seccion === "completa"
+      ? "completa"
+      : undefined;
   if (ids.length === 1) return <FichaSistema id={ids[0]} seccion={sec} />;
-  return <Comparacion ids={ids} seccion={sec ?? "esencial"} />;
+  return <Comparacion ids={ids} seccion={sec === "completa" ? "esencial" : sec} />;
+}
+
+/* Selector de sistemas y pestañas de sección, pegados arriba al desplazarse: el sistema y la
+   sección que se consultan quedan siempre a mano. */
+function BarraSistemas({
+  ids,
+  seccion,
+  completa = false,
+  refImprimir,
+  favorito,
+}: {
+  ids: string[];
+  seccion?: string;
+  completa?: boolean;
+  refImprimir: React.RefObject<HTMLDivElement>;
+  favorito?: ReactNode;
+}) {
+  const sec = completa ? "completa" : seccion;
+  const selStr = ids.length ? ids.join("+") : "todos";
+  const rutaCon = (nuevos: string[]) =>
+    nuevos.length === 1
+      ? href("sistemas", nuevos[0], sec ?? "esencial")
+      : href(
+          "sistemas",
+          nuevos.length ? nuevos.join("+") : "todos",
+          sec === "completa" || !sec ? "esencial" : sec,
+        );
+  const alternar = (id: string) =>
+    window.location.replace(
+      rutaCon(
+        ids.includes(id)
+          ? ids.filter((x) => x !== id)
+          : IDS_SISTEMA.filter((x) => ids.includes(x) || x === id),
+      ),
+    );
+  const pista =
+    ids.length === 0
+      ? "Marca uno para abrir su ficha, o varios para compararlos"
+      : ids.length === 1
+        ? "Marca otro para compararlos"
+        : "Quita uno para dejar su ficha";
+  return (
+    <div
+      className="cabecera no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 py-2 sm:mx-0 sm:rounded-lg sm:border sm:px-3"
+      style={{ borderColor: "#e6e6e6" }}
+    >
+      <div role="group" aria-label="Sistemas" className="flex flex-wrap items-center gap-1.5">
+        {SISTEMAS_AMPLIACION.map((s, c) => {
+          const on = ids.includes(s.id);
+          const h = SISTEMA_HEX[c];
+          return (
+            <button
+              key={s.id}
+              type="button"
+              aria-pressed={on}
+              onClick={() => alternar(s.id)}
+              className="tap-44 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+              style={
+                on
+                  ? { background: h.ink, borderColor: h.ink, color: "#fff" }
+                  : { background: h.soft, borderColor: `${h.strong}40`, color: h.ink }
+              }
+            >
+              {on && <Check size={14} aria-hidden="true" />}
+              <span className="sm:hidden">{SLUG_CORTO[c]}</span>
+              <span className="hidden sm:inline">{s.name}</span>
+            </button>
+          );
+        })}
+        <span className="text-xs text-slate-500">{pista}</span>
+      </div>
+      <nav
+        aria-label="Sección"
+        className="-mx-3 mt-2 flex items-center gap-1.5 overflow-x-auto px-3 sm:mx-0 sm:flex-wrap sm:px-0"
+      >
+        {SECCIONES_FICHA.map((x) => (
+          <a
+            key={x.id}
+            href={href("sistemas", selStr, x.id)}
+            aria-current={sec === x.id ? "location" : undefined}
+            className={`inline-flex min-h-9 shrink-0 items-center rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${sec === x.id ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
+            style={
+              sec === x.id
+                ? { background: hex.strong, borderColor: hex.strong }
+                : { borderColor: "#d4d4d4" }
+            }
+          >
+            {x.t}
+          </a>
+        ))}
+        {ids.length === 1 && (
+          <a
+            href={href("sistemas", ids[0], completa ? "esencial" : "completa")}
+            className="inline-flex min-h-9 shrink-0 items-center rounded-full border border-dashed px-3 text-sm font-semibold text-slate-600 hover:border-slate-500"
+            style={{ borderColor: "#d4d4d4" }}
+          >
+            {completa ? "Por secciones" : "Ficha completa"}
+          </a>
+        )}
+        <span className="ml-auto flex shrink-0 items-center gap-1.5">
+          <BotonImprimir objetivo={refImprimir} compacto>
+            Imprimir
+          </BotonImprimir>
+          {favorito}
+        </span>
+      </nav>
+    </div>
+  );
+}
+
+/* Entrada de Sistemas (#/sistemas): los cuatro con su foto y su algoritmo (Tabla 1), los
+   criterios de elección y la comparación de los cuatro por sección. */
+function EntradaSistemas() {
+  return (
+    <div className="space-y-4">
+      <ul className="grid gap-2 sm:grid-cols-2">
+        {SISTEMAS_AMPLIACION.map((s, c) => {
+          const h = SISTEMA_HEX[c];
+          return (
+            <li key={s.id}>
+              <a
+                href={href("sistemas", s.id)}
+                className="hover-lift ease-brand flex items-center gap-3 rounded-xl border bg-white p-2.5 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                style={{ borderColor: "#e6e6e6", boxShadow: `inset 0 3px 0 0 ${h.strong}` }}
+              >
+                <img
+                  src={FOTO_SISTEMA[s.id]}
+                  alt=""
+                  className="h-14 w-14 shrink-0 rounded-lg border object-cover"
+                  style={{ borderColor: "#e6e6e6" }}
+                  loading="lazy"
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-base font-extrabold" style={{ color: h.ink }}>
+                    {s.name}
+                  </span>
+                  <span className="block text-xs text-slate-600">
+                    {algoritmoDelCapitulo(c)} · Tabla 1, p. 3
+                  </span>
+                </span>
+                <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+      <a
+        href={href("sistemas", "elegir")}
+        className="flex min-h-11 items-center gap-3 rounded-xl border bg-white px-3 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
+        style={{ borderColor: "#e6e6e6" }}
+      >
+        <Handshake
+          size={18}
+          className="shrink-0"
+          style={{ color: hex.strong }}
+          aria-hidden="true"
+        />
+        <span className="min-w-0 flex-1">
+          Criterios de elección
+          <span className="block text-xs font-normal text-slate-500">
+            Edad, peso, dosis, gestación, formato, sensor… contrastados con la Tabla 1
+          </span>
+        </span>
+        <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+      </a>
+      <nav aria-label="Comparar los cuatro" className="flex flex-wrap gap-x-4 gap-y-1">
+        {(
+          [
+            ["esencial", "Comparar lo esencial", "Tabla 1"],
+            ["parametros", "Comparar los parámetros", "Tabla 3"],
+            ["situaciones", "Comparar en las situaciones", "Tablas 4 y 6"],
+          ] as const
+        ).map(([sec, t, f]) => (
+          <a
+            key={sec}
+            href={href("sistemas", "todos", sec)}
+            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+          >
+            {t} <span className="text-xs font-normal text-slate-500">({f})</span>{" "}
+            <ArrowRight size={13} aria-hidden="true" />
+          </a>
+        ))}
+      </nav>
+    </div>
+  );
 }
 
 /* Tarjeta de un sistema dentro de la comparación, para lo que no cabe en columnas
@@ -1042,187 +1081,117 @@ function TarjetaSistema({
   );
 }
 
-function Comparacion({ ids, seccion }: { ids: string[]; seccion: string }) {
+function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const cols = ids.length ? ids.map((id) => columnaDeSistema(id as SistemaId)) : [0, 1, 2, 3];
-  const sel = ids.length ? ids.join("+") : "todos";
-  const rutaCon = (nuevos: string[]) =>
-    nuevos.length === 1
-      ? href("sistemas", nuevos[0], seccion)
-      : href("sistemas", nuevos.length ? nuevos.join("+") : "todos", seccion);
-  const alternar = (id: string) =>
-    window.location.replace(
-      rutaCon(
-        ids.includes(id)
-          ? ids.filter((x) => x !== id)
-          : IDS_SISTEMA.filter((x) => [...ids, id].includes(x)),
-      ),
-    );
   const nombres = cols.map((c) => TABLAS.T1.columnas[c]);
   return (
     <div ref={ref} className="imprimible">
-      <CabeceraEditorial titulo="Sistemas" hex={hex} level={1}>
+      <CabeceraEditorial titulo="Sistemas AID" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          {ids.length
-            ? `Comparando ${listaNombres(nombres)}`
-            : "Los cuatro sistemas, uno junto a otro"}
-          , con el texto literal del capítulo y su página. Deja marcado uno solo para abrir su
-          ficha.
+          {!seccion
+            ? "Los cuatro sistemas comercializados en España, con el texto literal del capítulo y su página: lo esencial, cómo funciona, parámetros y situaciones, de uno en uno o comparados."
+            : ids.length
+              ? `Comparando ${listaNombres(nombres)}, con el texto literal del capítulo y su página.`
+              : "Los cuatro sistemas, uno junto a otro, con el texto literal del capítulo y su página."}
         </p>
       </CabeceraEditorial>
-      <div
-        role="group"
-        aria-label="Sistemas que se comparan"
-        className="no-imprimir mb-3 flex flex-wrap gap-1.5"
-      >
-        {SISTEMAS_AMPLIACION.map((s, c) => {
-          const on = ids.includes(s.id);
-          const h = SISTEMA_HEX[c];
-          return (
-            <button
-              key={s.id}
-              type="button"
-              aria-pressed={on}
-              onClick={() => alternar(s.id)}
-              className="tap-44 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-              style={
-                on
-                  ? { background: h.ink, borderColor: h.ink, color: "#fff" }
-                  : { background: h.soft, borderColor: `${h.strong}40`, color: h.ink }
-              }
-            >
-              {on && <Check size={14} aria-hidden="true" />}
-              <span className="sm:hidden">{SLUG_CORTO[c]}</span>
-              <span className="hidden sm:inline">{s.name}</span>
-            </button>
-          );
-        })}
-        {ids.length > 0 && (
-          <a
-            href={href("sistemas", "todos", seccion)}
-            className="tap-44 inline-flex items-center rounded-full px-3 py-1.5 text-sm font-semibold text-slate-600 underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-          >
-            Los cuatro
-          </a>
-        )}
-      </div>
-      <nav
-        aria-label="Sección"
-        className="no-imprimir -mx-3 mb-5 flex gap-1.5 overflow-x-auto border-y px-3 py-2 sm:mx-0 sm:flex-wrap sm:rounded-lg sm:border sm:px-2"
-        style={{ borderColor: "#e6e6e6" }}
-      >
-        {SECCIONES_FICHA.map((x) => (
-          <a
-            key={x.id}
-            href={href("sistemas", sel, x.id)}
-            aria-current={seccion === x.id ? "location" : undefined}
-            className={`inline-flex min-h-9 shrink-0 items-center rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${seccion === x.id ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
-            style={
-              seccion === x.id
-                ? { background: hex.strong, borderColor: hex.strong }
-                : { borderColor: "#d4d4d4" }
-            }
-          >
-            {x.t}
-          </a>
-        ))}
-        <span className="ml-auto flex shrink-0 items-center gap-1.5">
-          <BotonImprimir objetivo={ref} compacto>
-            Imprimir
-          </BotonImprimir>
-        </span>
-      </nav>
-      <section
-        key={seccion}
-        className="pantalla-in"
-        aria-label={SECCIONES_FICHA.find((x) => x.id === seccion)?.t}
-      >
-        {seccion === "esencial" && (
-          <NivelTitulo.Provider value={2}>
-            <TablaVista tabla={TABLAS.T1} columnasFijas={cols} />
-          </NivelTitulo.Provider>
-        )}
-        {seccion === "funciona" && (
-          <>
-            <p className="mb-3 text-sm text-slate-600">
-              El algoritmo de cada uno, tal como lo nombra la Tabla 1; el recorrido completo («qué
-              mide, dónde decide, cómo administra la insulina») se lee sistema a sistema.
-            </p>
-            <ul className="grid gap-3 sm:grid-cols-2">
-              {cols.map((c) => (
-                <TarjetaSistema
-                  key={c}
-                  c={c}
-                  seccion="funciona"
-                  texto={
-                    <>
-                      {algoritmoDelCapitulo(c)}{" "}
-                      <span className="pagina-badge">· Tabla 1, p. 3</span>
-                    </>
-                  }
-                  enlace="Cómo funciona, paso a paso"
-                />
-              ))}
-            </ul>
-          </>
-        )}
-        {seccion === "parametros" && (
-          <>
-            <p className="mb-2 text-sm text-slate-600">
-              Cuáles se pueden configurar en modo automático (Tabla 1) y cómo se ajusta cada uno
-              (Tabla 3).
-            </p>
-            <div className="mb-3 grid gap-2 sm:grid-cols-2">
-              {cols.map((c) => (
-                <div key={c}>
-                  <div
-                    className="mb-1 text-sm font-extrabold"
-                    style={{ color: SISTEMA_HEX[c].ink }}
-                  >
-                    {TABLAS.T1.columnas[c]}
+      <BarraSistemas ids={ids} seccion={seccion} refImprimir={ref} />
+      {!seccion ? (
+        <EntradaSistemas />
+      ) : (
+        <section
+          key={seccion}
+          className="pantalla-in"
+          aria-label={SECCIONES_FICHA.find((x) => x.id === seccion)?.t}
+        >
+          {seccion === "esencial" && (
+            <NivelTitulo.Provider value={2}>
+              <TablaVista tabla={TABLAS.T1} columnasFijas={cols} />
+            </NivelTitulo.Provider>
+          )}
+          {seccion === "funciona" && (
+            <>
+              <p className="mb-3 text-sm text-slate-600">
+                El algoritmo de cada uno, tal como lo nombra la Tabla 1; el recorrido completo («qué
+                mide, dónde decide, cómo administra la insulina») se lee sistema a sistema.
+              </p>
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {cols.map((c) => (
+                  <TarjetaSistema
+                    key={c}
+                    c={c}
+                    seccion="funciona"
+                    texto={
+                      <>
+                        {algoritmoDelCapitulo(c)}{" "}
+                        <span className="pagina-badge">· Tabla 1, p. 3</span>
+                      </>
+                    }
+                    enlace="Cómo funciona, paso a paso"
+                  />
+                ))}
+              </ul>
+            </>
+          )}
+          {seccion === "parametros" && (
+            <>
+              <p className="mb-2 text-sm text-slate-600">
+                Cuáles se pueden configurar en modo automático (Tabla 1) y cómo se ajusta cada uno
+                (Tabla 3).
+              </p>
+              <div className="mb-3 grid gap-2 sm:grid-cols-2">
+                {cols.map((c) => (
+                  <div key={c}>
+                    <div
+                      className="mb-1 text-sm font-extrabold"
+                      style={{ color: SISTEMA_HEX[c].ink }}
+                    >
+                      {TABLAS.T1.columnas[c]}
+                    </div>
+                    <ParametrosAutomatico c={c} hexSistema={SISTEMA_HEX[c]} />
                   </div>
-                  <ParametrosAutomatico c={c} hexSistema={SISTEMA_HEX[c]} />
-                </div>
-              ))}
+                ))}
+              </div>
+              <NivelTitulo.Provider value={2}>
+                <TablaVista tabla={TABLAS.T3} columnasFijas={cols} />
+              </NivelTitulo.Provider>
+            </>
+          )}
+          {seccion === "situaciones" && (
+            <div className="space-y-4">
+              <NivelTitulo.Provider value={2}>
+                <TablaVista tabla={TABLAS.T4} columnasFijas={cols} />
+              </NivelTitulo.Provider>
+              <NivelTitulo.Provider value={2}>
+                <TablaVista tabla={TABLAS.T6} />
+              </NivelTitulo.Provider>
+              <EnlacePie ruta={href("consultar", "situacion")}>
+                Una situación concreta, con el texto que la explica
+              </EnlacePie>
             </div>
-            <NivelTitulo.Provider value={2}>
-              <TablaVista tabla={TABLAS.T3} columnasFijas={cols} />
-            </NivelTitulo.Provider>
-          </>
-        )}
-        {seccion === "situaciones" && (
-          <div className="space-y-4">
-            <NivelTitulo.Provider value={2}>
-              <TablaVista tabla={TABLAS.T4} columnasFijas={cols} />
-            </NivelTitulo.Provider>
-            <NivelTitulo.Provider value={2}>
-              <TablaVista tabla={TABLAS.T6} />
-            </NivelTitulo.Provider>
-            <EnlacePie ruta={href("consultar", "situacion")}>
-              Una situación concreta, con el texto que la explica
-            </EnlacePie>
-          </div>
-        )}
-        {seccion === "ampliacion" && (
-          <>
-            <p className="mb-3 text-sm text-slate-600">
-              Ficha técnica de cada sistema con sus fuentes, fuera del capítulo; se consulta sistema
-              a sistema.
-            </p>
-            <ul className="grid gap-3 sm:grid-cols-2">
-              {cols.map((c) => (
-                <TarjetaSistema
-                  key={c}
-                  c={c}
-                  seccion="ampliacion"
-                  texto={`Última verificación: ${SISTEMAS_AMPLIACION[c].verified}.`}
-                  enlace="Ampliación técnica"
-                />
-              ))}
-            </ul>
-          </>
-        )}
-      </section>
+          )}
+          {seccion === "ampliacion" && (
+            <>
+              <p className="mb-3 text-sm text-slate-600">
+                Ficha técnica de cada sistema con sus fuentes, fuera del capítulo; se consulta
+                sistema a sistema.
+              </p>
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {cols.map((c) => (
+                  <TarjetaSistema
+                    key={c}
+                    c={c}
+                    seccion="ampliacion"
+                    texto={`Última verificación: ${SISTEMAS_AMPLIACION[c].verified}.`}
+                    enlace="Ampliación técnica"
+                  />
+                ))}
+              </ul>
+            </>
+          )}
+        </section>
+      )}
     </div>
   );
 }

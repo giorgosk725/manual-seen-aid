@@ -70,18 +70,18 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "sistemas",
-    etiqueta: "Sistemas",
+    etiqueta: "Sistemas AID",
     href: href("sistemas"),
     icono: Cpu,
     cat: "consultar",
     descripcion:
       "Los cuatro sistemas con foto: lo que dice el capítulo de cada uno y su ficha técnica ampliada.",
-    fuente: "Tablas 1, 3 y 4 · ficha técnica",
+    fuente: "Tablas 1, 3 y 4",
   },
   {
     id: "elegir",
-    etiqueta: "Elegir un sistema",
-    corto: "Elegir",
+    etiqueta: "Criterios de elección",
+    corto: "Criterios",
     href: href("sistemas", "elegir"),
     icono: Handshake,
     cat: "consultar",

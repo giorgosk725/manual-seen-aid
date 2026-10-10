@@ -87,6 +87,8 @@ test.describe("Recorrido básico (escritorio)", () => {
       .click();
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("myLoop CamAPS");
     await expect(page.getByRole("img", { name: /Foto oficial de myLoop CamAPS/ })).toBeVisible();
+    await page.getByRole("link", { name: "Ampliación técnica", exact: true }).click();
+    await expect(page).toHaveURL(/#\/sistemas\/camaps\/ampliacion$/);
     await expect(page.getByText("Ampliación técnica · fuera del capítulo")).toBeVisible();
     await page.goto("/#/consultar/situacion");
     await page.getByRole("button", { name: /Resonancia magnética/ }).click();

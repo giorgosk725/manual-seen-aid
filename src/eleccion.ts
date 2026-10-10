@@ -154,6 +154,45 @@ export const ETIQUETA_CRITERIO: Record<Clave, string> = {
   movil: "Control desde el móvil",
 };
 
+/* Lo que se dice de cada criterio, por criterio: nada de «cumple / fuera» globales. Para las
+   preferencias (formato, sensor, móvil) es una coincidencia; para los umbrales, si el valor cae
+   dentro de lo que la tabla da; para gestación y DM2, lo que dice la celda. */
+const UMBRAL = {
+  cumple: "Dentro del criterio",
+  fuera: "Fuera del criterio",
+  "no-consta": "No consta en la tabla",
+};
+export const ETIQUETA_ESTADO: Record<Clave, Record<Estado, string>> = {
+  edad: UMBRAL,
+  peso: UMBRAL,
+  dtd: UMBRAL,
+  gestacion: {
+    cumple: "Autorizado",
+    fuera: "Sin autorización",
+    "no-consta": "No consta en la tabla",
+  },
+  dm2: {
+    cumple: "Con autorización",
+    fuera: "Sin autorización",
+    "no-consta": "No consta en la tabla",
+  },
+  formato: {
+    cumple: "Coincide con la preferencia",
+    fuera: "Formato diferente",
+    "no-consta": "No consta en la tabla",
+  },
+  sensor: {
+    cumple: "Sensor compatible",
+    fuera: "Sensor no listado",
+    "no-consta": "No consta en la tabla",
+  },
+  movil: {
+    cumple: "En la app del móvil",
+    fuera: "En la bomba",
+    "no-consta": "Según el país (ver la celda)",
+  },
+};
+
 /* Fila de la Tabla 1 de la que sale cada criterio (lo que se enseña, literal). */
 export const FILA_CRITERIO: Record<Clave, string> = {
   edad: "Indicación",

@@ -52,12 +52,15 @@ function Tarjeta({
   principal,
   compacta,
   onIr,
+  sinNota = false,
 }: {
   r: Respuesta;
   q: string;
   principal?: boolean;
   compacta?: boolean;
   onIr?: () => void;
+  /* La nota del asterisco ya se ha enseñado en un pasaje anterior del mismo bloque. */
+  sinNota?: boolean;
 }) {
   // En una frase del texto, el título ya va en la fuente («Apartado 10 · Ejercicio físico»).
   const titulo = r.tipo === "texto" ? "" : r.titulo;
@@ -130,7 +133,7 @@ function Tarjeta({
           ))}
         </dl>
       )}
-      {asterisco && (
+      {asterisco && !sinNota && (
         <p className="mt-1 text-xs text-slate-600">
           {asterisco.nota} <span className="pagina-badge">{asterisco.donde}</span>
         </p>
@@ -161,13 +164,18 @@ function BloqueFrecuente({
   q,
   onIr,
   H,
+  sinPregunta = false,
 }: {
   frecuente: RespuestaFrecuente;
   q: string;
   onIr?: () => void;
   H: "h2" | "h3";
+  /* En la pantalla de la pregunta, el título ya es la pregunta. */
+  sinPregunta?: boolean;
 }) {
   const id = useId();
+  // La misma nota (p. ej. la del asterisco de la Tabla 1) se enseña una vez por bloque.
+  const notasVistas = new Set<string>();
   return (
     <section
       aria-labelledby={id}
@@ -181,11 +189,16 @@ function BloqueFrecuente({
       >
         <MessageCircleQuestion size={14} aria-hidden="true" /> Pregunta frecuente
       </H>
-      <p className="mb-2 text-base font-bold text-slate-900">{frecuente.pregunta}</p>
+      {!sinPregunta && (
+        <p className="mb-2 text-base font-bold text-slate-900">{frecuente.pregunta}</p>
+      )}
       <div className="space-y-2">
-        {frecuente.respuestas.map((r) => (
-          <Tarjeta key={r.id} r={r} q={q} onIr={onIr} />
-        ))}
+        {frecuente.respuestas.map((r) => {
+          const nota = notaAsterisco(r)?.nota;
+          const repetida = !!nota && notasVistas.has(nota);
+          if (nota) notasVistas.add(nota);
+          return <Tarjeta key={r.id} r={r} q={q} onIr={onIr} sinNota={repetida} />;
+        })}
       </div>
       <p className="mt-2 text-[11px] text-slate-500">
         Pasajes del capítulo elegidos y revisados de antemano para esta pregunta.
@@ -201,6 +214,7 @@ export function RespuestasCapitulo({
   onIr,
   nivel = 2,
   frecuente,
+  sinPregunta,
 }: {
   respuestas: Respuesta[];
   q: string;
@@ -210,6 +224,7 @@ export function RespuestasCapitulo({
   nivel?: 2 | 3;
   /* Pregunta frecuente que se parece a la búsqueda: va primero. */
   frecuente?: RespuestaFrecuente | null;
+  sinPregunta?: boolean;
 }) {
   const id = useId();
   const H = `h${nivel}` as "h2" | "h3";
@@ -219,7 +234,7 @@ export function RespuestasCapitulo({
   if (frecuente && (compacta || !resto.length))
     return (
       <>
-        <BloqueFrecuente frecuente={frecuente} q={q} onIr={onIr} H={H} />
+        <BloqueFrecuente frecuente={frecuente} q={q} onIr={onIr} H={H} sinPregunta={sinPregunta} />
         {compacta && (
           <a
             href={href("buscar", q)}
@@ -241,7 +256,9 @@ export function RespuestasCapitulo({
       : "Pasaje del capítulo";
   return (
     <>
-      {frecuente && <BloqueFrecuente frecuente={frecuente} q={q} onIr={onIr} H={H} />}
+      {frecuente && (
+        <BloqueFrecuente frecuente={frecuente} q={q} onIr={onIr} H={H} sinPregunta={sinPregunta} />
+      )}
       <section
         aria-labelledby={id}
         className={`mt-3 rounded-xl bg-white p-3 sm:p-4 ${cercana ? "border border-dashed" : "border-2"}`}

@@ -68,7 +68,7 @@ describe("Guías por referencias: «Cómo funciona»", () => {
       screen.getByRole("heading", { level: 2, name: /^Cómo funciona · myLoop CamAPS/ }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { level: 3, name: "Qué información utiliza" }),
+      screen.getByRole("heading", { level: 3, name: "Sensor y señal de glucosa" }),
     ).toBeInTheDocument();
     expect(screen.getAllByText(/^CamAPS Liberty es una función de CamAPS FX/).length).toBe(1);
     expect(await axe(container, AXE)).toHaveNoViolations();

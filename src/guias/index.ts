@@ -24,9 +24,6 @@ export interface Guia {
   pasos: PasoGuia[];
 }
 
-/* Identificador de cada sistema en las rutas de tablas (orden de la Tabla 1). */
-const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
-
 /* Índice de una fila de la Tabla 1 por su rótulo: si el capítulo cambia, falla aquí y lo
    recoge la prueba, no se cita otra fila en silencio. */
 export function filaT1(etiqueta: string): number {
@@ -40,21 +37,30 @@ const casilla = (etiqueta: string): Pieza => ({
   tabla: "T1",
   fila: filaT1(etiqueta),
 });
-const frase = (apartado: string, bloque: string, k: number[]): Pieza => ({
+const frase = (apartado: string, bloque: string, k: number[], trozo?: RegExp): Pieza => ({
   t: "frase",
   apartado,
   bloque,
   k,
+  ...(trozo ? { trozo } : {}),
 });
 
+/* En «las principales diferencias entre sistemas incluyen: MiniMed 780G, con…; Tandem, con…;
+   myLoop, con…; y Omnipod 5, con…» (p. 4), el trozo de cada sistema. */
+const TROZO_DISTINGUE: Record<SistemaId, RegExp> = {
+  mm780: /MiniMed 780G, con[^;]*/,
+  ciq: /Tandem, con[^;]*/,
+  camaps: /myLoop, con[^;]*/,
+  op5: /Omnipod 5, con.*$/,
+};
+
 export function comoFunciona(c: number, id: SistemaId): Guia {
-  const slug = SLUG_TABLA[c];
   return {
     id: `funciona-${id}`,
     titulo: "Cómo funciona",
     pasos: [
       {
-        rotulo: "Qué información utiliza",
+        rotulo: "Sensor y señal de glucosa",
         piezas: [casilla("Sensores compatibles"), frase("02-componentes", "b4", [2])],
       },
       {
@@ -96,11 +102,12 @@ export function comoFunciona(c: number, id: SistemaId): Guia {
       {
         rotulo: "Qué lo distingue en la práctica",
         piezas: [
-          frase("04-sistemas", "b4", [1]),
+          // De la enumeración de los cuatro sistemas (p. 4), solo el trozo de este.
+          frase("04-sistemas", "b4", [1], TROZO_DISTINGUE[id]),
           {
             t: "enlace",
-            texto: "Comparar con otros sistemas (Tabla 1)",
-            ruta: href("consultar", "tablas", `T1:${slug}`),
+            texto: "Los cuatro en la Tabla 1",
+            ruta: href("sistemas", "todos", "esencial"),
           },
         ],
       },

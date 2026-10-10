@@ -35,6 +35,7 @@ import { useBuscador } from "../useBuscador";
 import { useParecidos } from "../semantica";
 import { AvisosBusqueda } from "./AvisosBusqueda";
 import { RespuestasCapitulo } from "./RespuestasCapitulo";
+import { RecursosPedidos } from "./RecursosPedidos";
 import { guardarReciente } from "../prefs";
 import { SugerenciasBusqueda } from "./SugerenciasBusqueda";
 import { SinResultados } from "./SinResultados";
@@ -126,6 +127,9 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
         </p>
         <div ref={zona} onKeyDown={alMoverse}>
           {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
+          {motor && q.trim().length >= 2 && (
+            <RecursosPedidos items={motor.recursosPedidos(q, res)} onIr={cerrarYGuardar} />
+          )}
           {q.trim().length >= 2 && (
             <AvisosBusqueda q={q} parcial={busqueda?.parcial} primera={respuestas[0]}>
               <RespuestasCapitulo

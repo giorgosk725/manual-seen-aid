@@ -35,6 +35,7 @@ const RUTAS = [
   "#/consultar/infografia",
   "#/sistemas/todos/parametros",
   "#/sistemas/elegir",
+  "#/sistemas/ciq/completa",
   "#/sistemas/elegir/edad:4+peso:18+gestacion",
   "#/sistemas/mm780+op5/esencial",
   "#/consultar/situacion",

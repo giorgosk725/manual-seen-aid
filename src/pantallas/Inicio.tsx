@@ -2,7 +2,7 @@
    cuatro fases, con el sistema elegido o los cuatro, y la hoja de comprobación para imprimir.
    El contenido sale de inicio.ts (referencias al texto literal); aquí solo se pinta. */
 import { useRef } from "react";
-import { Check, ChevronLeft, ChevronRight, Printer } from "lucide-react";
+import { ArrowRight, Check, ChevronLeft, ChevronRight, Printer } from "lucide-react";
 import { TABLAS } from "../contenido";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { SIS_IDS } from "../situaciones";
@@ -93,6 +93,14 @@ function Hoja({ sis }: { sis?: number }) {
         >
           <Printer size={15} aria-hidden="true" /> Imprimir la hoja
         </button>
+        {sis !== undefined && (
+          <a
+            href={href("pacientes", "plan", ORDEN_SISTEMAS[sis])}
+            className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 hover:border-slate-500"
+          >
+            Plan de seguridad para entregar <ArrowRight size={13} aria-hidden="true" />
+          </a>
+        )}
         <span className="text-xs text-slate-600">
           Una cara A4. {sistema ? "" : "Elige el sistema para que salga solo su línea de inicio."}
         </span>

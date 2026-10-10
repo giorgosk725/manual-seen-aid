@@ -146,7 +146,7 @@ describe("App", () => {
 
   it("la ficha de un sistema separa el capítulo de la ampliación del autor", async () => {
     render(<App />);
-    await ir("#/sistemas/op5");
+    await ir("#/sistemas/op5/completa");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Omnipod 5");
     expect(screen.getByRole("heading", { name: /^Lo esencial · Omnipod 5/ })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /^Parámetros · Omnipod 5/ })).toBeInTheDocument();

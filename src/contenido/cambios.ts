@@ -8,13 +8,27 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.24.0";
+export const VERSION_APP = "0.25.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-10",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — Elegir un sistema: los criterios del capítulo, sistema a sistema`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — terminar los recorridos: selección, contexto y buscador`,
+    detalle: [
+      "Sistemas AID: el mismo selector en la ficha y en la comparación; marcar añade un sistema (dos = comparados en la misma sección), desmarcar lo quita; el sistema y la sección quedan pegados arriba al desplazarse; Anterior/Siguiente conservan la sección. La ficha abre por «Lo esencial»; la ficha completa es una opción para leer o imprimir. La entrada de Sistemas es ese mismo espacio, sin catálogo aparte.",
+      "Portada en el móvil: el mapa de consulta entra en la primera pantalla; las sugerencias y las búsquedas recientes aparecen al tocar el buscador.",
+      "Buscador: cuando la consulta nombra un recurso (el ejemplo comentado, los parámetros de un sistema, una situación), va el primero como «Abrir …», encima de los pasajes; sin aviso de «ninguna palabra» cuando ya hay una respuesta.",
+      "Criterios de elección (antes «Elegir un sistema»): lo que se dice de cada criterio es lo que dice la celda («dentro del criterio», «sin autorización», «sensor compatible», «no consta en la tabla»), sin veredicto global; en cuántos criterios coincide cada sistema; formulario plegable, criterios aplicados a la vista y cada uno se quita con un toque.",
+      "Menos repetición: la nota del asterisco una sola vez por bloque en las preguntas frecuentes y la pregunta no se repite; «Sensor y señal de glucosa» en «Cómo funciona»; en «Qué lo distingue», solo el trozo de la enumeración que habla de ese sistema.",
+      "Enlaces a las hojas desde donde hacen falta: la hoja de pruebas y cirugía desde esas situaciones, la de cetonas desde la hiperglucemia y la Figura 3, el plan de seguridad desde la ficha y desde Iniciar un sistema.",
+    ],
+  },
+  {
+    fecha: "2026-10-10",
+    ambito: "app",
+    titulo:
+      "Manual SEEN · AID 0.24.0 — Elegir un sistema: los criterios del capítulo, sistema a sistema",
     detalle: [
       "Nueva pantalla dentro de Sistemas: se marcan los factores que el apartado 6 pide integrar (edad, peso, dosis total diaria, gestación o planificación, diabetes tipo 2, formato de bomba, sensor, control desde el móvil) y cada sistema enseña la celda literal de la Tabla 1 que responde a cada uno, con «cumple», «fuera» o «no consta»; las variantes (Control-IQ y Control-IQ+, CamAPS FX y Liberty) se distinguen. Los criterios van en la dirección, para enlazarlos.",
       "Los umbrales están copiados de la Tabla 1 y una prueba comprueba que cada uno sigue en su celda. Lo que la tabla no dice queda como «no consta»: la pantalla orienta la decisión compartida, no la sustituye; debajo, el párrafo del capítulo sobre la elección (p. 6) y la Figura 2.",

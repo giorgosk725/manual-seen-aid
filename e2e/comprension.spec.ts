@@ -29,7 +29,7 @@ test.describe("Comprensión", () => {
       page.getByRole("heading", { level: 2, name: /^Cómo funciona · Omnipod 5/ }),
     ).toBeInViewport();
     await expect(
-      page.getByRole("heading", { level: 3, name: "Qué información utiliza" }),
+      page.getByRole("heading", { level: 3, name: "Sensor y señal de glucosa" }),
     ).toBeVisible();
     await expect(
       page.getByText(/^De su precisión depende la seguridad del algoritmo/),

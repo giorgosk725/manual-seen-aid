@@ -24,10 +24,11 @@ import { precargarBuscador, useBuscador } from "../useBuscador";
 import { useParecidos } from "../semantica";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
+import { RecursosPedidos } from "../componentes/RecursosPedidos";
 import { SinResultados } from "../componentes/SinResultados";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
 import { useFavoritos, useUltimo } from "../prefs";
-import { CATEGORIA_HEX, FICHA_AREA, SEEN } from "../tokens";
+import { FICHA_AREA, SEEN } from "../tokens";
 
 const fecha = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("es-ES", {
@@ -71,6 +72,9 @@ function SeguirLeyendo() {
 /* El buscador transversal: el mismo motor que la paleta y la pantalla Buscar. */
 function Buscador() {
   const [q, setQ] = useState("");
+  // Las sugerencias y las búsquedas recientes aparecen al tocar la caja: así el mapa de consulta
+  // queda a la vista en la primera pantalla del móvil.
+  const [sugerir, setSugerir] = useState(false);
   const { motor, estado, reintentar } = useBuscador(q.length > 0);
   const parecidos = useParecidos(q, q.length > 0);
   const busqueda = motor && q.trim().length >= 2 ? motor.buscarConTotales(q, 5, 2) : null;
@@ -79,11 +83,7 @@ function Buscador() {
   const frecuente = motor && q.trim().length >= 2 ? motor.preguntaFrecuente(q) : null;
   return (
     <section aria-labelledby="portada-buscar" className="scroll-mt-16 space-y-3">
-      <h2
-        id="portada-buscar"
-        className="font-display text-lg font-medium uppercase tracking-[0.04em] sm:text-xl"
-        style={{ color: CATEGORIA_HEX.consultar.ink }}
-      >
+      <h2 id="portada-buscar" className="sr-only">
         ¿Qué quieres entender o consultar?
       </h2>
       <form
@@ -101,6 +101,7 @@ function Buscador() {
           <input
             id="portada-q"
             onFocus={(e) => {
+              setSugerir(true);
               void precargarBuscador();
               // En el móvil, el teclado tapa media pantalla: el campo sube arriba para que la
               // respuesta quede a la vista.
@@ -116,7 +117,8 @@ function Buscador() {
           />
         </div>
       </form>
-      {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
+      {sugerir && q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
+      {motor && q.trim().length >= 2 && <RecursosPedidos items={motor.recursosPedidos(q, res)} />}
       <AvisosBusqueda q={q} parcial={busqueda?.parcial} primera={respuestas[0]}>
         <RespuestasCapitulo
           respuestas={respuestas}
@@ -263,7 +265,7 @@ export function Portada() {
             </div>
             <h1
               id="titulo-capitulo"
-              className="titulo-manual mt-2 text-balance text-[1.35rem] leading-[1.15] sm:mt-3 sm:text-[2rem] lg:text-[2.3rem]"
+              className="titulo-manual mt-2 text-balance text-[1.15rem] leading-[1.15] sm:mt-3 sm:text-[2rem] lg:text-[2.3rem]"
             >
               {CAPITULO.titulo}
             </h1>

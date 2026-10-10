@@ -392,6 +392,49 @@ const ALIAS_SISTEMA: RegExp[] = [
   /^(camaps|ypsopump|mylife|myloop)$/,
   /^(omnipod|op5|insulet|smartadjust)$/,
 ];
+/* Si la consulta nombra un recurso de la app (un caso, una herramienta, la sección de la ficha
+   de un sistema), ese recurso va el primero («Abrir …»), encima de los pasajes. */
+const SECCION_PEDIDA: [RegExp, string, string][] = [
+  [/par[aá]metro/, "parametros", "Parámetros"],
+  [/c[oó]mo funciona|algoritmo/, "funciona", "Cómo funciona"],
+  [/situaci/, "situaciones", "Situaciones"],
+  [/ficha t[eé]cnica|ampliaci/, "ampliacion", "Ampliación técnica"],
+];
+export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[] {
+  const terminos = terminosDe(consulta).map((v) => v[0]);
+  if (!terminos.length) return [];
+  const out: Resultado[] = [];
+  const sis = sistemaDeConsulta(consulta);
+  if (sis >= 0) {
+    const sec = SECCION_PEDIDA.find(([re]) => re.test(normalizar(consulta)));
+    if (sec) {
+      const s = SISTEMAS_AMPLIACION[sis];
+      out.push({
+        entrada: {
+          id: `recurso/${s.id}/${sec[1]}`,
+          tipo: "atajo",
+          titulo: `${sec[2]} · ${s.name}`,
+          texto: "",
+          pagina: TABLAS.T1.paginas[0],
+          ruta: href("sistemas", s.id, sec[1]),
+        },
+        fragmento: "",
+        puntos: 0,
+      });
+    }
+  }
+  const nombrados = res
+    .filter((r) => r.entrada.tipo === "atajo" || r.entrada.tipo === "caso")
+    .map((r) => {
+      const t = normalizar(r.entrada.titulo);
+      return { r, f: terminos.filter((x) => t.includes(x)).length / terminos.length };
+    })
+    .filter((x) => x.f >= 0.6)
+    .sort((a, b) => b.f - a.f || b.r.puntos - a.r.puntos)
+    .map((x) => x.r);
+  return [...out, ...nombrados].slice(0, 2);
+}
+
 function sistemaDeConsulta(consulta: string): number {
   const palabras = normalizar(consulta).split(/\s+/);
   return ALIAS_SISTEMA.findIndex((re) => palabras.some((w) => re.test(w)));

@@ -110,6 +110,12 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
             Leer en su apartado: 7. Educación terapéutica y plan de seguridad{" "}
             <ArrowRight size={14} aria-hidden="true" />
           </a>
+          <a
+            href={href("pacientes", "hoja", "cetonas")}
+            className="ml-4 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+          >
+            Hoja para entregar al paciente: cetonas <ArrowRight size={14} aria-hidden="true" />
+          </a>
         </div>
       </div>
       <div className="mt-3">

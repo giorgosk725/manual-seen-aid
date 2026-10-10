@@ -110,7 +110,7 @@ test.describe("Auditoría 0.5.0", () => {
     await page.waitForTimeout(1000);
     await page
       .getByRole("navigation", { name: "Navegación principal" })
-      .getByRole("link", { name: "Sistemas", exact: true })
+      .getByRole("link", { name: "Sistemas AID", exact: true })
       .click();
     await expect(page).toHaveURL(/#\/sistemas$/);
     await page.waitForTimeout(500);

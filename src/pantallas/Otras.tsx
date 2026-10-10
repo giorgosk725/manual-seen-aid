@@ -20,6 +20,7 @@ import { useBuscador } from "../useBuscador";
 import { useParecidos } from "../semantica";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
+import { RecursosPedidos } from "../componentes/RecursosPedidos";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
 import { SinResultados } from "../componentes/SinResultados";
 
@@ -105,7 +106,9 @@ export function Buscar({ inicial }: { inicial?: string }) {
   useEffect(() => {
     const t = setTimeout(() => {
       const destino = href("buscar", q || undefined);
-      if (window.location.hash !== destino) window.location.replace(destino);
+      // Solo si se sigue en Buscar: si el lector ya ha abierto un resultado, no se le trae de vuelta.
+      if (window.location.hash.startsWith("#/buscar") && window.location.hash !== destino)
+        window.location.replace(destino);
     }, 400);
     return () => clearTimeout(t);
   }, [q]);
@@ -177,6 +180,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
           if ((e.target as HTMLElement).closest("a")) guardarReciente(q);
         }}
       >
+        {motor && q.trim().length >= 2 && <RecursosPedidos items={motor.recursosPedidos(q, res)} />}
         <AvisosBusqueda q={q} parcial={busqueda.parcial} primera={respuestas[0]}>
           <RespuestasCapitulo respuestas={respuestas} q={q} frecuente={frecuente} />
         </AvisosBusqueda>
@@ -646,7 +650,7 @@ export function Preguntas({ id }: { id?: string }) {
             </button>
           </p>
         )}
-        {r && <RespuestasCapitulo respuestas={[]} q={f.pregunta} frecuente={r} />}
+        {r && <RespuestasCapitulo respuestas={[]} q={f.pregunta} frecuente={r} sinPregunta />}
         {hermanas.length > 0 && (
           <section aria-labelledby="mismo-tema" className="mt-6">
             <h2

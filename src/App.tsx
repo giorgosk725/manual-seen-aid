@@ -208,7 +208,9 @@ export default function App() {
     case "sistemas":
       pantalla = <Sistemas sel={ruta.sub} seccion={ruta.detalle} />;
       titulo =
-        ruta.sub === "elegir" ? "Elegir un sistema" : (nombreDeSistema(ruta.sub) ?? "Sistemas");
+        ruta.sub === "elegir"
+          ? "Criterios de elección"
+          : (nombreDeSistema(ruta.sub) ?? "Sistemas AID");
       break;
     case "buscar":
       pantalla = <Buscar inicial={ruta.sub} />;

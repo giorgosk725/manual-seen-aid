@@ -1,7 +1,9 @@
-/* Elegir un sistema (#/sistemas/elegir[/criterios]): los criterios del apartado 6 contrastados
-   con la Tabla 1. Cada sistema enseña, criterio a criterio, la celda literal de la tabla con un
-   veredicto («cumple», «fuera», «no consta»); nada se calcula fuera de lo que la tabla dice
-   (eleccion.ts). Los criterios viven en la ruta para poder enlazarlos. */
+/* Criterios de elección (#/sistemas/elegir[/criterios]): los factores del apartado 6
+   contrastados con la Tabla 1. Cada sistema enseña, criterio a criterio, la celda literal de la
+   tabla con lo que dice de ese criterio («dentro del criterio», «sin autorización», «no consta
+   en la tabla»…); nada se calcula fuera de lo que la tabla dice (eleccion.ts) y no hay un
+   veredicto global: solo en cuántos criterios marcados coincide cada uno. Los criterios viven
+   en la ruta para poder enlazarlos. */
 import { useEffect, useState } from "react";
 import { ArrowRight, Check, HelpCircle, X } from "lucide-react";
 import { APARTADOS, TABLAS, rutaDeTabla } from "../contenido";
@@ -9,6 +11,7 @@ import { ORDEN_SISTEMAS } from "../ampliacion/ids";
 import {
   CLAVES_CRITERIO,
   ETIQUETA_CRITERIO,
+  ETIQUETA_ESTADO,
   FILA_CRITERIO,
   SENSORES,
   VARIANTES,
@@ -18,6 +21,7 @@ import {
   hayCriterios,
   leerCriterios,
   veredictos,
+  type Clave,
   type Criterios,
   type Estado,
 } from "../eleccion";
@@ -31,11 +35,29 @@ const campo =
   "min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-base text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10 sm:text-sm";
 const casilla = "h-6 w-6 shrink-0 rounded border-slate-400 text-slate-800 focus:ring-slate-500";
 
-const TONO: Record<Estado, { texto: string; color: string; fondo: string; Icono: typeof Check }> = {
-  cumple: { texto: "Cumple", color: "#166534", fondo: "#f0fdf4", Icono: Check },
-  fuera: { texto: "Fuera", color: "#991b1b", fondo: "#fef2f2", Icono: X },
-  "no-consta": { texto: "No consta", color: "#475569", fondo: "#f8fafc", Icono: HelpCircle },
+const TONO: Record<Estado, { color: string; fondo: string; Icono: typeof Check }> = {
+  cumple: { color: "#166534", fondo: "#f0fdf4", Icono: Check },
+  fuera: { color: "#9a3412", fondo: "#fff7ed", Icono: X },
+  "no-consta": { color: "#475569", fondo: "#f8fafc", Icono: HelpCircle },
 };
+
+/* Cómo se enseña cada criterio marcado («Edad 4 años», «Pod sin tubo»). */
+function textoCriterio(k: Clave, c: Criterios): string {
+  switch (k) {
+    case "edad":
+      return `Edad ${c.edad} años`;
+    case "peso":
+      return `Peso ${c.peso} kg`;
+    case "dtd":
+      return `${c.dtd} UI/día`;
+    case "formato":
+      return c.formato === "pod" ? "Pod sin tubo" : "Bomba con catéter";
+    case "sensor":
+      return c.sensor ?? "";
+    default:
+      return ETIQUETA_CRITERIO[k];
+  }
+}
 
 function Numero({
   id,
@@ -72,15 +94,16 @@ function Numero({
   );
 }
 
-function Veredicto({ estado, nombre }: { estado: Estado; nombre?: string }) {
+function Etiqueta({ clave, estado, nombre }: { clave: Clave; estado: Estado; nombre?: string }) {
   const t = TONO[estado];
+  const texto = ETIQUETA_ESTADO[clave][estado];
   return (
     <span
       className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold"
       style={{ color: t.color, background: t.fondo }}
     >
       <t.Icono size={12} aria-hidden="true" />
-      {nombre ? `${nombre}: ${t.texto.toLowerCase()}` : t.texto}
+      {nombre ? `${nombre}: ${texto.toLowerCase()}` : texto}
     </span>
   );
 }
@@ -89,11 +112,15 @@ export function Elegir({ q }: { q?: string }) {
   // Los criterios viven en la ruta; la copia local responde al instante y la ruta la sigue.
   const [c, setC] = useState<Criterios>(() => leerCriterios(q));
   useEffect(() => setC(leerCriterios(q)), [q]);
+  // El formulario se pliega en el móvil en cuanto hay criterios: el resultado, a la vista.
+  const [abierto, setAbierto] = useState(() => !hayCriterios(leerCriterios(q)));
   const poner = (cambio: Partial<Criterios>) => {
     const nuevo = { ...c, ...cambio };
     setC(nuevo);
     elegirRuta("sistemas", "elegir", escribirCriterios(nuevo));
+    if (hayCriterios(nuevo) && window.innerWidth < 640) setAbierto(false);
   };
+  const quitar = (k: Clave) => poner({ [k]: undefined });
   const activos = CLAVES_CRITERIO.filter(
     (k) => c[k] !== undefined && c[k] !== false && c[k] !== "",
   );
@@ -107,12 +134,12 @@ export function Elegir({ q }: { q?: string }) {
           href={href("sistemas")}
           className="inline-flex min-h-11 items-center font-semibold hover:underline"
         >
-          Sistemas
+          Sistemas AID
         </a>
         <span aria-hidden="true">›</span>
-        <span>Elegir un sistema</span>
+        <span>Criterios de elección</span>
       </div>
-      <CabeceraEditorial titulo="Elegir un sistema" hex={hex} level={1}>
+      <CabeceraEditorial titulo="Criterios de elección" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
           Los factores que el capítulo pide integrar (apartado 6, p. 6), contrastados con la Tabla 1
           (pp. 3–4). Cada sistema enseña la celda literal de la tabla; lo que la tabla no dice queda
@@ -120,125 +147,158 @@ export function Elegir({ q }: { q?: string }) {
         </p>
       </CabeceraEditorial>
 
-      <form
-        className="no-imprimir rounded-2xl border bg-white p-4 shadow-soft"
+      <details
+        className="no-imprimir rounded-2xl border bg-white shadow-soft"
         style={{ borderColor: "#e6e6e6" }}
-        onSubmit={(e) => e.preventDefault()}
-        aria-label="Criterios"
+        open={abierto}
+        onToggle={(e) => setAbierto(e.currentTarget.open)}
       >
-        <h2 className="text-xs font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
-          Factores clínicos
-        </h2>
-        <div className="mt-2 grid gap-3 sm:grid-cols-3">
-          <Numero
-            id="edad"
-            etiqueta="Edad"
-            unidad="años"
-            valor={c.edad}
-            onChange={(v) => poner({ edad: v })}
-          />
-          <Numero
-            id="peso"
-            etiqueta="Peso"
-            unidad="kg"
-            valor={c.peso}
-            onChange={(v) => poner({ peso: v })}
-          />
-          <Numero
-            id="dtd"
-            etiqueta="Dosis total diaria"
-            unidad="UI/día"
-            valor={c.dtd}
-            onChange={(v) => poner({ dtd: v })}
-          />
-        </div>
-        <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-          <label className="inline-flex min-h-11 items-center gap-2 sm:min-h-8">
-            <input
-              type="checkbox"
-              className={casilla}
-              checked={!!c.gestacion}
-              onChange={(e) => poner({ gestacion: e.target.checked || undefined })}
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 px-4 py-2 text-sm font-bold text-slate-900 [&::-webkit-details-marker]:hidden">
+          <span>
+            Criterios{" "}
+            {activos.length > 0 && (
+              <span className="font-normal text-slate-500">
+                · {activos.length} {activos.length === 1 ? "marcado" : "marcados"}
+              </span>
+            )}
+          </span>
+          <span className="text-xs font-semibold text-slate-600">
+            {abierto ? "Plegar" : "Cambiar"}
+          </span>
+        </summary>
+        <form
+          className="border-t px-4 pb-4 pt-3"
+          style={{ borderColor: "#e6e6e6" }}
+          onSubmit={(e) => e.preventDefault()}
+          aria-label="Criterios"
+        >
+          <h2 className="text-xs font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
+            Factores clínicos
+          </h2>
+          <div className="mt-2 grid gap-3 sm:grid-cols-3">
+            <Numero
+              id="edad"
+              etiqueta="Edad"
+              unidad="años"
+              valor={c.edad}
+              onChange={(v) => poner({ edad: v })}
             />
-            Gestación o planificación gestacional
-          </label>
-          <label className="inline-flex min-h-11 items-center gap-2 sm:min-h-8">
-            <input
-              type="checkbox"
-              className={casilla}
-              checked={!!c.dm2}
-              onChange={(e) => poner({ dm2: e.target.checked || undefined })}
+            <Numero
+              id="peso"
+              etiqueta="Peso"
+              unidad="kg"
+              valor={c.peso}
+              onChange={(v) => poner({ peso: v })}
             />
-            Diabetes tipo 2
-          </label>
-        </div>
-        <h2 className="mt-5 text-xs font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
-          Factores personales
-        </h2>
-        <div className="mt-2 grid gap-3 sm:grid-cols-2">
-          <div className="text-sm">
-            <span className="mb-1 block font-semibold text-slate-800">Formato</span>
-            <Segmented
-              label="Formato"
-              wrap
-              options={[
-                { id: "cualquiera", label: "Cualquiera" },
-                { id: "cateter", label: "Bomba con catéter" },
-                { id: "pod", label: "Pod sin tubo" },
-              ]}
-              value={c.formato ?? "cualquiera"}
-              onChange={(v) =>
-                poner({ formato: v === "cualquiera" ? undefined : (v as "cateter" | "pod") })
-              }
+            <Numero
+              id="dtd"
+              etiqueta="Dosis total diaria"
+              unidad="UI/día"
+              valor={c.dtd}
+              onChange={(v) => poner({ dtd: v })}
             />
           </div>
-          <label className="block text-sm">
-            <span className="mb-1 block font-semibold text-slate-800">
-              Sensor que usa o prefiere
-            </span>
-            <select
-              className={campo}
-              value={c.sensor ?? ""}
-              onChange={(e) => poner({ sensor: e.target.value || undefined })}
-            >
-              <option value="">Cualquiera</option>
-              {SENSORES.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-sm">
-          <label className="inline-flex min-h-11 items-center gap-2 sm:min-h-8">
-            <input
-              type="checkbox"
-              className={casilla}
-              checked={!!c.movil}
-              onChange={(e) => poner({ movil: e.target.checked || undefined })}
-            />
-            Control desde el móvil (algoritmo en la app del smartphone)
-          </label>
-          {hayCriterios(c) && (
-            <button
-              type="button"
-              onClick={() => elegirRuta("sistemas", "elegir")}
-              className="inline-flex min-h-11 items-center rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-500 sm:min-h-9"
-            >
-              Borrar criterios
-            </button>
-          )}
-        </div>
-      </form>
+          <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+            <label className="inline-flex min-h-11 items-center gap-2 sm:min-h-8">
+              <input
+                type="checkbox"
+                className={casilla}
+                checked={!!c.gestacion}
+                onChange={(e) => poner({ gestacion: e.target.checked || undefined })}
+              />
+              Gestación o planificación gestacional
+            </label>
+            <label className="inline-flex min-h-11 items-center gap-2 sm:min-h-8">
+              <input
+                type="checkbox"
+                className={casilla}
+                checked={!!c.dm2}
+                onChange={(e) => poner({ dm2: e.target.checked || undefined })}
+              />
+              Diabetes tipo 2
+            </label>
+          </div>
+          <h2 className="mt-5 text-xs font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
+            Factores personales
+          </h2>
+          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            <div className="text-sm">
+              <span className="mb-1 block font-semibold text-slate-800">Formato</span>
+              <Segmented
+                label="Formato"
+                wrap
+                options={[
+                  { id: "cualquiera", label: "Cualquiera" },
+                  { id: "cateter", label: "Bomba con catéter" },
+                  { id: "pod", label: "Pod sin tubo" },
+                ]}
+                value={c.formato ?? "cualquiera"}
+                onChange={(v) =>
+                  poner({ formato: v === "cualquiera" ? undefined : (v as "cateter" | "pod") })
+                }
+              />
+            </div>
+            <label className="block text-sm">
+              <span className="mb-1 block font-semibold text-slate-800">
+                Sensor que usa o prefiere
+              </span>
+              <select
+                className={campo}
+                value={c.sensor ?? ""}
+                onChange={(e) => poner({ sensor: e.target.value || undefined })}
+              >
+                <option value="">Cualquiera</option>
+                {SENSORES.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-sm">
+            <label className="inline-flex min-h-11 items-center gap-2 sm:min-h-8">
+              <input
+                type="checkbox"
+                className={casilla}
+                checked={!!c.movil}
+                onChange={(e) => poner({ movil: e.target.checked || undefined })}
+              />
+              Control desde el móvil (algoritmo en la app del smartphone)
+            </label>
+            {hayCriterios(c) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setC({});
+                  elegirRuta("sistemas", "elegir");
+                }}
+                className="inline-flex min-h-11 items-center rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-500 sm:min-h-9"
+              >
+                Borrar criterios
+              </button>
+            )}
+          </div>
+        </form>
+      </details>
 
       {resultados ? (
-        <section aria-label="Resultado por sistema" className="mt-5" aria-live="polite">
-          <p className="mb-2 text-sm text-slate-600">
-            {activos.length === 1 ? "Criterio marcado" : "Criterios marcados"}:{" "}
-            {activos.map((k) => ETIQUETA_CRITERIO[k].toLowerCase()).join(", ")}. Primero los
-            sistemas cuya fila de la Tabla 1 los cumple.
-          </p>
+        <section aria-label="Resultado por sistema" className="mt-4" aria-live="polite">
+          <ul className="mb-3 flex flex-wrap items-center gap-1.5" aria-label="Criterios aplicados">
+            {activos.map((k) => (
+              <li key={k}>
+                <button
+                  type="button"
+                  onClick={() => quitar(k)}
+                  className="inline-flex min-h-9 items-center gap-1 rounded-full border bg-white px-3 text-xs font-semibold text-slate-800 hover:border-slate-500"
+                  style={{ borderColor: "#d4d4d4" }}
+                  aria-label={`Quitar: ${textoCriterio(k, c)}`}
+                >
+                  {textoCriterio(k, c)} <X size={12} aria-hidden="true" />
+                </button>
+              </li>
+            ))}
+          </ul>
           <ul className="grid gap-3 lg:grid-cols-2">
             {resultados.map((r) => {
               const col = ORDEN_SISTEMAS.indexOf(r.id);
@@ -250,15 +310,20 @@ export function Elegir({ q }: { q?: string }) {
                   className="rounded-2xl border bg-white p-4"
                   style={{ borderColor: "#e6e6e6", boxShadow: `inset 0 3px 0 0 ${h.strong}` }}
                 >
-                  <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
                     <h3 className="text-base font-extrabold" style={{ color: h.ink }}>
                       {r.nombre}
                     </h3>
-                    <div className="flex flex-wrap gap-1">
-                      {r.variantes.map((v) => (
-                        <Veredicto key={v.nombre ?? "unica"} estado={v.estado} nombre={v.nombre} />
-                      ))}
-                    </div>
+                    <p className="text-xs text-slate-600">
+                      {r.variantes
+                        .map((v) => {
+                          const coincide = activos.length - v.fuera.length - v.sinDato.length;
+                          const base = `${coincide} de ${activos.length}`;
+                          const extra = v.sinDato.length ? ` (${v.sinDato.length} no consta)` : "";
+                          return `${v.nombre ? `${v.nombre}: ` : "Coincide en "}${base}${extra}`;
+                        })
+                        .join(" · ")}
+                    </p>
                   </div>
                   <dl className="mt-3 space-y-3">
                     {activos.map((k) => {
@@ -284,8 +349,9 @@ export function Elegir({ q }: { q?: string }) {
                               {estados.map(
                                 (x) =>
                                   x.e && (
-                                    <Veredicto
+                                    <Etiqueta
                                       key={x.nombre ?? "unica"}
+                                      clave={k}
                                       estado={x.e}
                                       nombre={variantes.length > 1 ? x.nombre : undefined}
                                     />
@@ -314,7 +380,7 @@ export function Elegir({ q }: { q?: string }) {
       ) : (
         <p className="mt-4 text-sm text-slate-600">
           Marca uno o varios criterios: cada sistema enseñará la celda de la Tabla 1 que responde a
-          ese criterio y si la cumple.
+          ese criterio y lo que dice de él.
         </p>
       )}
 

@@ -121,7 +121,7 @@ test.describe("Búsqueda y enlaces", () => {
     const nav = page.getByRole("navigation", { name: "Navegación principal" });
     for (const g of ["Consultar", "Leer capítulo", "Aprender"])
       await expect(nav.getByText(g, { exact: true }).first()).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Sistemas", exact: true })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Sistemas AID", exact: true })).toBeVisible();
     await expect(nav.getByRole("link", { name: "Sobre esta app" })).toBeVisible();
     await expect(nav.getByRole("link", { name: "Para el paciente" })).toBeVisible();
     await page.goto("/#/pacientes");
