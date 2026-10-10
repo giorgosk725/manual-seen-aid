@@ -1046,10 +1046,10 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
       <CabeceraEditorial titulo="Sistemas AID" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
           {!seccion
-            ? "Los cuatro sistemas comercializados en España, con el texto literal del capítulo y su página: lo esencial, cómo funciona, parámetros y situaciones, de uno en uno o comparados."
+            ? "Los cuatro sistemas comercializados en España, de uno en uno o comparados."
             : ids.length
-              ? `Comparando ${listaNombres(nombres)}, con el texto literal del capítulo y su página.`
-              : "Los cuatro sistemas, uno junto a otro, con el texto literal del capítulo y su página."}
+              ? `Comparando ${listaNombres(nombres)}.`
+              : "Los cuatro sistemas, uno junto a otro."}
         </p>
       </CabeceraEditorial>
       <BarraSistemas ids={ids} seccion={seccion} refImprimir={ref} />

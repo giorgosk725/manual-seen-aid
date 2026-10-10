@@ -392,9 +392,8 @@ export function Repaso({ filtro }: { filtro?: string }) {
     <div>
       <CabeceraEditorial titulo="Tarjetas de repaso" hex={HEX} level={1}>
         <p className="text-sm text-slate-600">
-          Las cifras y las siglas del capítulo, tal como las da, con su página. Lo que recuerdas
-          vuelve más adelante; lo que no, en la misma ronda. Tu avance se guarda solo en este
-          dispositivo.
+          Las cifras y las siglas del capítulo, con su página. Lo que recuerdas vuelve más adelante;
+          lo que no, en la misma ronda.
         </p>
       </CabeceraEditorial>
       <Mazos filtro={filtro} />

@@ -30,8 +30,7 @@ export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
     <div>
       <CabeceraEditorial titulo="Tablas del capítulo" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Las seis tablas, literales y con su página. Las de sistemas se filtran por sistema, y la
-          selección queda en el enlace para compartirla.
+          Las seis tablas del capítulo; las de sistemas se filtran por sistema.
         </p>
       </CabeceraEditorial>
       <div className="no-imprimir mb-4 overflow-x-auto">

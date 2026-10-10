@@ -144,17 +144,6 @@ export function Buscar({ inicial }: { inicial?: string }) {
           Busca con tus palabras: arriba, el pasaje del capítulo que mejor encaja, con su página;
           debajo, los demás resultados.
         </p>
-        <details className="mt-1 text-sm text-slate-600">
-          <summary className="inline-flex min-h-11 cursor-pointer items-center font-semibold text-slate-700 sm:min-h-8">
-            Cómo funciona
-          </summary>
-          <p className="mt-1">
-            Arriba, el pasaje del capítulo que mejor encaja, literal y con su página («coincidencia
-            parcial» si solo coincide en parte). Debajo, los demás resultados y, aparte, lo que no
-            es del capítulo. Con conexión se busca también por el sentido: comprueba siempre que el
-            pasaje responde a lo que buscas.
-          </p>
-        </details>
       </CabeceraEditorial>
       <label className="sr-only" htmlFor="buscar-q">
         Texto a buscar
@@ -467,8 +456,8 @@ export function Test() {
     <div>
       <CabeceraEditorial titulo="Autoevaluación" hex={CATEGORIA_HEX.aprender} level={1}>
         <p className="text-sm text-slate-600">
-          Diez preguntas. Al responder se ve su explicación y las frases del capítulo que la
-          respaldan, con su página. Para memorizar las cifras y las siglas,{" "}
+          Diez preguntas; al responder, la explicación y las frases del capítulo que la respaldan.
+          Para las cifras y las siglas,{" "}
           <a href={href("repaso")} className="font-semibold text-slate-800 underline">
             tarjetas de repaso
           </a>
@@ -598,9 +587,8 @@ export function Preguntas({ id }: { id?: string }) {
     <div>
       <CabeceraEditorial titulo="Preguntas frecuentes" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          {FRECUENTES.length} preguntas revisadas, por temas. Cada una abre los pasajes del capítulo
-          que la responden, literales y con su página. Útil cuando la búsqueda con tus palabras no
-          encuentra nada.
+          {FRECUENTES.length} preguntas, por temas; cada una abre los pasajes del capítulo que la
+          responden.
         </p>
       </CabeceraEditorial>
       <button

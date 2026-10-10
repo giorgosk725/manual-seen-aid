@@ -156,9 +156,8 @@ export function HubPacientes() {
     <div>
       <CabeceraEditorial titulo="Para el paciente" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Hojas para entregar o compartir en la consulta. Cada una se imprime con letra grande (12
-          pt, en dos o tres caras) o, en versión compacta, en una cara A4. No son el texto del
-          capítulo: van rotuladas con su origen.
+          Hojas para entregar en la consulta; se imprimen con letra grande o, compactas, en una cara
+          A4.
         </p>
       </CabeceraEditorial>
       <ul className="grid gap-3 md:grid-cols-2">

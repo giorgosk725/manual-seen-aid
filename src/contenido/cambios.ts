@@ -8,13 +8,21 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.25.4";
+export const VERSION_APP = "0.25.5";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-10",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — sin bloques repetidos`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — entradillas más cortas`,
+    detalle: [
+      "Las frases de presentación de cada pantalla (Sistemas, Situaciones, Iniciar, Tablas, Casos, Preguntas, Repaso, Autoevaluación, Para el paciente) se quedan en una línea; fuera el plegable «Cómo funciona» de Buscar y el rótulo de área en la cabecera de cada apartado.",
+    ],
+  },
+  {
+    fecha: "2026-10-10",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.25.4 — sin bloques repetidos",
     detalle: [
       "Fuera los bloques «Practicar con un caso» que enlazaban a la edición educativa de asistente-aid al pie de Situaciones, Revisar la descarga, Interrupción, Cetonemia e Iniciar un sistema; el enlace a asistente-aid sigue en la ampliación técnica de cada ficha.",
       "Fuera las tarjetas Anterior / Siguiente al pie de la ficha de sistema: el selector de arriba ya cambia de sistema conservando la sección.",

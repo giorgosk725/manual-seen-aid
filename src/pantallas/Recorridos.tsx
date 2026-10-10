@@ -160,8 +160,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
     <div>
       <CabeceraEditorial titulo="Situaciones" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Elige la situación y, si la conducta depende del sistema, el sistema. La respuesta es la
-          celda literal de las Tablas 4 o 6 del capítulo, con los párrafos que la explican.
+          Elige la situación y, si la conducta depende del sistema, el sistema.
         </p>
       </CabeceraEditorial>
       <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">

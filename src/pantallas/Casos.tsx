@@ -422,11 +422,10 @@ export function Casos({ id, paso }: { id?: string; paso?: string }) {
     <div className="space-y-4">
       <CabeceraEditorial titulo="Casos guiados" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Practicar con el texto del capítulo, paso a paso: en cada paso se elige una opción y se ve
-          si es lo que indica el capítulo, con las frases literales en las que se apoya.
+          En cada paso se elige una opción y se ve lo que indica el capítulo, con sus frases
+          literales. Personas ficticias, sin dosis calculadas.
         </p>
       </CabeceraEditorial>
-      <Nota />
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {CASOS.map((c) => (
           <li key={c.id}>
