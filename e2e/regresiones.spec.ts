@@ -155,9 +155,7 @@ test.describe("Auditoría 0.6.1", () => {
     page,
   }) => {
     await page.goto("/#/buscar/resonancia%20780G");
-    const atajo = page
-      .getByRole("link", { name: /Situación y sistema · Resonancia magnética/ })
-      .first();
+    const atajo = page.getByRole("link", { name: /Situaciones · Resonancia magnética/ }).first();
     await expect(atajo).toBeVisible();
     // La lista se vuelve a pintar cuando llega la búsqueda por el sentido (o su fallo): un
     // respiro antes de pulsar, para no pulsar un enlace que se está sustituyendo.

@@ -4,11 +4,11 @@ import { href } from "../rutas";
 
 const PUERTAS = [
   { t: "Cetonemia (Figura 3)", ruta: href("consultar", "figura-3") },
-  { t: "Situación y sistema", ruta: href("consultar", "situacion") },
+  { t: "Situaciones", ruta: href("consultar", "situacion") },
   { t: "Interrupción del sistema", ruta: href("consultar", "interrupcion") },
   { t: "Iniciar un sistema", ruta: href("consultar", "inicio") },
   { t: "Revisar la descarga", ruta: href("consultar", "descarga", "1") },
-  { t: "Comparar sistemas (Tabla 1)", ruta: href("consultar", "tablas", "T1") },
+  { t: "Comparar sistemas (Tabla 1)", ruta: href("sistemas", "todos", "esencial") },
 ];
 
 export function SinResultados({ onIr }: { onIr?: () => void }) {

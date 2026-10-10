@@ -1,4 +1,4 @@
-/* Consultar: hub + tablas (filtrables) + Figura 3 (recorrido) + infografía (mapa). */
+/* Consultar: tablas (filtrables), Figura 3 (recorrido) e infografía (mapa). El hub es la portada; «Comparar» y «Parámetros» viven en Sistemas. */
 import { useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import {
@@ -9,10 +9,10 @@ import {
   rutaDeTabla,
   type TablaId,
 } from "../contenido";
-import { DESTINOS, GRUPOS_CONSULTAR, PREGUNTA_TABLA } from "../nav";
+import { PREGUNTA_TABLA } from "../nav";
 import { elegirRuta, href } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Revelar, Segmented } from "../ui";
-import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
+import { CATEGORIA_HEX } from "../tokens";
 import { TablaVista } from "../componentes/TablaVista";
 import { Figura3Recorrido } from "../componentes/Figura3Vista";
 import { ImagenFigura } from "../componentes/FiguraVista";
@@ -21,196 +21,6 @@ import { EnlaceEducativa } from "../componentes/Lectura";
 import { NivelTitulo } from "../nivel-contexto";
 
 const hex = CATEGORIA_HEX.consultar;
-
-export function HubConsultar() {
-  const tarjeta = (id: string) => {
-    const d = DESTINOS.find((x) => x.id === id)!;
-    const I = d.icono;
-    return (
-      <Revelar as="li" key={id}>
-        <a
-          href={d.href}
-          className="hover-lift ease-brand flex h-full items-start gap-3 rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-          style={{ borderColor: "#e6e6e6" }}
-        >
-          <span
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[3px] text-white"
-            style={{ background: hex.strong }}
-            aria-hidden="true"
-          >
-            <I size={18} />
-          </span>
-          <span className="min-w-0">
-            <span className="block text-[15px] font-bold leading-snug text-slate-900">
-              {d.etiqueta}
-            </span>
-            {d.fuente && (
-              <span className="mt-0.5 block text-xs leading-snug text-slate-500">{d.fuente}</span>
-            )}
-          </span>
-        </a>
-      </Revelar>
-    );
-  };
-  const tareas = GRUPOS_CONSULTAR.find((g) => g.id === "tareas")!;
-  const recursos = GRUPOS_CONSULTAR.find((g) => g.id === "recursos")!;
-  return (
-    <div>
-      <CabeceraEditorial titulo="Consultar" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          Las tareas del día a día con el capítulo. El texto va literal y con su página; lo que no
-          es del capítulo va rotulado aparte.
-        </p>
-      </CabeceraEditorial>
-      <section aria-labelledby="grupo-tareas">
-        <h2 id="grupo-tareas" className="sr-only">
-          {tareas.titulo}
-        </h2>
-        <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{tareas.ids.map(tarjeta)}</ul>
-      </section>
-      <section aria-labelledby="grupo-recursos" className="mt-6">
-        <h2
-          id="grupo-recursos"
-          className="mb-2 text-sm font-bold uppercase tracking-wide"
-          style={{ color: hex.ink }}
-        >
-          {recursos.titulo}
-        </h2>
-        <ul className="divide-y rounded-xl border bg-white" style={{ borderColor: "#e6e6e6" }}>
-          {recursos.ids.map((id) => {
-            const d = DESTINOS.find((x) => x.id === id)!;
-            const I = d.icono;
-            return (
-              <li key={id}>
-                <a
-                  href={d.href}
-                  className="flex min-h-11 items-center gap-3 px-3 py-2 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                >
-                  <I
-                    size={16}
-                    className="shrink-0"
-                    style={{ color: hex.strong }}
-                    aria-hidden="true"
-                  />
-                  <span className="min-w-0 flex-1 font-semibold text-slate-900">{d.etiqueta}</span>
-                  <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
-    </div>
-  );
-}
-
-/* Tareas con nombre propio sobre las tablas por sistema: «Parámetros por sistema» (Tabla 3,
-   un sistema) y «Comparar sistemas» (Tabla 1, dos o más). La tabla es la fuente, no el título. */
-const SLUGS = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
-const IDS_SIS = ["mm780", "ciq", "camaps", "op5"];
-
-export function TareaTabla({
-  tarea,
-  seleccion,
-}: {
-  tarea: "parametros" | "comparar";
-  seleccion?: string;
-}) {
-  const parametros = tarea === "parametros";
-  const tid: TablaId = parametros ? "T3" : "T1";
-  const tabla = TABLAS[tid];
-  const sis = parametros ? SLUGS.indexOf(seleccion ?? "") : -1;
-  const enlace =
-    "inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline";
-  return (
-    <div>
-      <CabeceraEditorial
-        titulo={parametros ? "Parámetros por sistema" : "Comparar sistemas"}
-        hex={hex}
-        level={1}
-      >
-        <p className="text-sm text-slate-600">
-          {parametros
-            ? "Cómo se ajusta cada parámetro clásico en el sistema que elijas. "
-            : "La misma característica, sistema junto a sistema. "}
-          Fuente: Tabla {tabla.numero},{" "}
-          {tabla.paginas[0] === tabla.paginas[1]
-            ? `p. ${tabla.paginas[0]}`
-            : `pp. ${tabla.paginas[0]}–${tabla.paginas[1]}`}
-          .
-        </p>
-      </CabeceraEditorial>
-      {parametros && sis < 0 ? (
-        <section
-          aria-labelledby="elige-sistema"
-          className="rounded-xl border bg-white p-4"
-          style={{ borderColor: "#e6e6e6" }}
-        >
-          <h2 id="elige-sistema" className="text-base font-bold text-slate-900">
-            Elige el sistema que quieres consultar
-          </h2>
-          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-            {tabla.columnas.map((nombre, c) => (
-              <li key={nombre}>
-                <a
-                  href={href("consultar", "parametros", SLUGS[c])}
-                  className="flex min-h-11 items-center gap-2 rounded-lg border-2 px-3 text-sm font-bold transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                  style={{ borderColor: SISTEMA_HEX[c].strong, color: SISTEMA_HEX[c].ink }}
-                >
-                  {nombre} <ArrowRight size={14} aria-hidden="true" />
-                </a>
-              </li>
-            ))}
-          </ul>
-          <a href={href("consultar", "tablas", "T3")} className={`mt-3 ${enlace}`}>
-            Ver la Tabla 3 completa, los cuatro sistemas <ArrowRight size={14} aria-hidden="true" />
-          </a>
-        </section>
-      ) : (
-        <div
-          className="rounded-2xl border bg-white p-4 shadow-soft"
-          style={{ borderColor: "#e6e6e6" }}
-        >
-          <NivelTitulo.Provider value={2}>
-            <TablaVista
-              tabla={tabla}
-              modo="interactiva"
-              seleccionInicial={seleccion}
-              ayuda={
-                parametros
-                  ? "Sistema que quieres consultar (varios, para compararlos)"
-                  : "Elige dos o más sistemas para compararlos; uno solo, para consultarlo"
-              }
-              onSeleccion={(x) => elegirRuta("consultar", tarea, x)}
-            />
-          </NivelTitulo.Provider>
-          <div
-            className="no-imprimir mt-4 flex flex-wrap items-center gap-x-5 gap-y-1 border-t pt-3"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            {rutaDeTabla(tid) && (
-              <a href={rutaDeTabla(tid)} className={enlace}>
-                Ver en el capítulo <ArrowRight size={14} aria-hidden="true" />
-              </a>
-            )}
-            {sis >= 0 && (
-              <a href={href("sistemas", IDS_SIS[sis], "parametros")} className={enlace}>
-                Ficha de {tabla.columnas[sis]} <ArrowRight size={14} aria-hidden="true" />
-              </a>
-            )}
-            <a href={href("consultar", parametros ? "comparar" : "parametros")} className={enlace}>
-              {parametros ? "Comparar sistemas" : "Parámetros por sistema"}{" "}
-              <ArrowRight size={14} aria-hidden="true" />
-            </a>
-            <a href={href("consultar", "tablas", tid)} className={enlace}>
-              Todas las tablas <ArrowRight size={14} aria-hidden="true" />
-            </a>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
   const tid = (id && id in TABLAS ? id : "T1") as TablaId;

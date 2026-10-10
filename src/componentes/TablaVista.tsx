@@ -245,10 +245,13 @@ export function TablaVista({
   seleccionInicial,
   onSeleccion,
   ayuda,
+  columnasFijas,
 }: {
   tabla: Tabla;
   modo?: "lectura" | "interactiva";
   seleccionInicial?: string;
+  /* Columnas (sistemas) decididas fuera, sin selector propio (comparación de Sistemas). */
+  columnasFijas?: number[];
   /* Rótulo del selector de sistemas, según la tarea («Sistema que quieres consultar»). */
   ayuda?: string;
   /* Al cambiar la selección: los sistemas («a+b») o la fila; undefined = todo. */
@@ -256,6 +259,7 @@ export function TablaVista({
 }) {
   const todas = tabla.columnas.map((_, i) => i);
   const [sel, setSelInterna] = useState<number[]>(() => {
+    if (columnasFijas) return columnasFijas;
     if (tabla.porSistema && seleccionInicial) {
       const ids = seleccionInicial.split("+");
       const cs = CORTOS.map((_, c) => c).filter((c) => ids.includes(slugDe(c)));
@@ -282,8 +286,8 @@ export function TablaVista({
   const interactiva = modo === "interactiva";
   return (
     <section aria-label={`Tabla ${tabla.numero}`} className="bloque-papel">
-      <CabeceraTabla tabla={tabla} enlaceConsultar={!interactiva} />
-      {interactiva && tabla.porSistema && (
+      <CabeceraTabla tabla={tabla} enlaceConsultar={!interactiva && !columnasFijas} />
+      {interactiva && tabla.porSistema && !columnasFijas && (
         <div className="no-imprimir mb-3">
           <div className="mb-1 text-xs font-semibold text-slate-500">
             {ayuda ?? "Elige uno o varios sistemas (uno solo = ficha de lectura)"}

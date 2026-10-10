@@ -116,14 +116,13 @@ test.describe("Búsqueda y enlaces", () => {
     await expect(page).toHaveURL(/#\/pacientes\/informacion$/);
   });
 
-  test("la barra lateral: Inicio y tres grupos; «Más recursos» plegado salvo dentro", async ({
-    page,
-  }) => {
+  test("la barra lateral: Inicio, tres grupos y Sobre esta app", async ({ page }) => {
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Navegación principal" });
-    for (const g of ["Consultar", "Leer capítulo", "Más recursos"])
+    for (const g of ["Consultar", "Leer capítulo", "Aprender"])
       await expect(nav.getByText(g, { exact: true }).first()).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Comparar sistemas" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Sistemas", exact: true })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Sobre esta app" })).toBeVisible();
     await expect(nav.getByRole("link", { name: "Para el paciente" })).toBeVisible();
     await page.goto("/#/pacientes");
     await expect(nav.getByRole("link", { name: "Para el paciente" })).toHaveAttribute(

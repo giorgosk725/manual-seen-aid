@@ -227,7 +227,7 @@ export function indice(): Entrada[] {
     out.push({
       id: `atajo/sit/${st.id}`,
       tipo: "atajo",
-      titulo: `Situación y sistema · ${st.etiqueta}`,
+      titulo: `Situaciones · ${st.etiqueta}`,
       texto: `${st.etiqueta}. ${fila.etiqueta.replace(/\n/g, " ")} (Tabla ${t.numero}). ${NOMBRES}`,
       pagina: t.paginas[0],
       pagina2: t.paginas[1],

@@ -3,7 +3,7 @@
    la primera vez que se visitan (el service worker ya las tiene para usar sin conexión). */
 import { lazy, useEffect } from "react";
 import { apartadoPorSlug, DIAGRAMAS, TABLAS } from "./contenido";
-import { useRuta } from "./rutas";
+import { href, useRuta } from "./rutas";
 import { Shell } from "./componentes/Shell";
 import { Portada } from "./pantallas/Portada";
 import { CapituloEntero, IndiceCapitulo } from "./pantallas/Capitulo";
@@ -12,9 +12,7 @@ import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import type { SistemaId } from "./ampliacion/tipos";
 
 const consultar = () => import("./pantallas/Consultar");
-const HubConsultar = lazy(() => consultar().then((m) => ({ default: m.HubConsultar })));
 const Tablas = lazy(() => consultar().then((m) => ({ default: m.Tablas })));
-const TareaTabla = lazy(() => consultar().then((m) => ({ default: m.TareaTabla })));
 const Figura3Pantalla = lazy(() => consultar().then((m) => ({ default: m.Figura3Pantalla })));
 const Infografia = lazy(() => consultar().then((m) => ({ default: m.Infografia })));
 
@@ -29,7 +27,6 @@ const Interrupcion = lazy(() => recorridos().then((m) => ({ default: m.Interrupc
 const otras = () => import("./pantallas/Otras");
 const Bibliografia = lazy(() => otras().then((m) => ({ default: m.Bibliografia })));
 const Buscar = lazy(() => otras().then((m) => ({ default: m.Buscar })));
-const Mas = lazy(() => otras().then((m) => ({ default: m.Mas })));
 const Sobre = lazy(() => otras().then((m) => ({ default: m.Sobre })));
 const Test = lazy(() => otras().then((m) => ({ default: m.Test })));
 const Preguntas = lazy(() => otras().then((m) => ({ default: m.Preguntas })));
@@ -41,8 +38,7 @@ const repaso = () => import("./pantallas/Repaso");
 const Repaso = lazy(() => repaso().then((m) => ({ default: m.Repaso })));
 
 const sistemas = () => import("./pantallas/Sistemas");
-const FichaSistema = lazy(() => sistemas().then((m) => ({ default: m.FichaSistema })));
-const HubSistemas = lazy(() => sistemas().then((m) => ({ default: m.HubSistemas })));
+const Sistemas = lazy(() => sistemas().then((m) => ({ default: m.Sistemas })));
 
 const visual = () => import("./pantallas/Visual");
 const DiagramaPantalla = lazy(() => visual().then((m) => ({ default: m.DiagramaPantalla })));
@@ -83,6 +79,26 @@ const nombreDeSistema = (id: string | undefined) => {
   const c = ORDEN_SISTEMAS.indexOf(id as SistemaId);
   return c >= 0 ? TABLAS.T1.columnas[c] : undefined;
 };
+
+/* Rutas antiguas que siguen en enlaces y favoritos: se sustituyen sin apilar historial. */
+function Redireccion({ a }: { a: string }) {
+  useEffect(() => {
+    window.location.replace(a);
+  }, [a]);
+  return null;
+}
+const ID_DE_SLUG: Record<string, string> = {
+  "minimed-780g": "mm780",
+  "control-iq": "ciq",
+  camaps: "camaps",
+  "omnipod-5": "op5",
+};
+const idsDeSlugs = (s?: string) =>
+  s
+    ?.split("+")
+    .map((x) => ID_DE_SLUG[x])
+    .filter(Boolean)
+    .join("+") || "todos";
 
 function NoEncontrada() {
   return (
@@ -135,8 +151,7 @@ export default function App() {
     case "consultar": {
       switch (ruta.sub) {
         case undefined:
-          pantalla = <HubConsultar />;
-          titulo = "Consultar";
+          pantalla = <Redireccion a="#/" />;
           break;
         case "tablas": {
           pantalla = (
@@ -147,12 +162,10 @@ export default function App() {
           break;
         }
         case "parametros":
-          pantalla = <TareaTabla tarea="parametros" seleccion={ruta.detalle} />;
-          titulo = "Parámetros por sistema";
+          pantalla = <Redireccion a={href("sistemas", idsDeSlugs(ruta.detalle), "parametros")} />;
           break;
         case "comparar":
-          pantalla = <TareaTabla tarea="comparar" seleccion={ruta.detalle} />;
-          titulo = "Comparar sistemas";
+          pantalla = <Redireccion a={href("sistemas", idsDeSlugs(ruta.detalle), "esencial")} />;
           break;
         case "situacion":
           pantalla = (
@@ -161,7 +174,7 @@ export default function App() {
               sistema={ruta.detalle?.split(":")[1]}
             />
           );
-          titulo = "Situación y sistema";
+          titulo = "Situaciones";
           break;
         case "inicio":
           pantalla = <IniciarSistema detalle={ruta.detalle} />;
@@ -193,7 +206,7 @@ export default function App() {
       titulo = DIAGRAMAS.find((d) => d.id === ruta.sub)?.titulo ?? "Figuras y diagramas";
       break;
     case "sistemas":
-      pantalla = ruta.sub ? <FichaSistema id={ruta.sub} seccion={ruta.detalle} /> : <HubSistemas />;
+      pantalla = <Sistemas sel={ruta.sub} seccion={ruta.detalle} />;
       titulo = nombreDeSistema(ruta.sub) ?? "Sistemas";
       break;
     case "buscar":
@@ -239,8 +252,8 @@ export default function App() {
       } else pantalla = <NoEncontrada />;
       break;
     case "mas":
-      pantalla = <Mas />;
-      titulo = "Más";
+      pantalla = <Sobre />;
+      titulo = "Sobre esta app";
       break;
     case "casos":
       pantalla = <Casos id={ruta.sub} paso={ruta.detalle} />;

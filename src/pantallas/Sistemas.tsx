@@ -1,8 +1,9 @@
-/* Sistemas: hub con las fotos oficiales y una ficha por sistema, la misma para entender y
-   para consultar, en secciones con ruta propia (#/sistemas/<id>/<seccion>): Lo esencial
-   (Tabla 1), Parámetros (Tablas 1 y 3), Situaciones (Tabla 4), literales y con página, y
-   aparte la Ampliación técnica (ficha técnica, sets, insulinas), fuera del capítulo y con sus
-   fuentes, con enlace a la ficha del mismo sistema en asistente-aid para el detalle. */
+/* Sistemas: una sola pantalla para uno o varios. Uno = su ficha, la misma para entender y para
+   consultar, en secciones con ruta propia (#/sistemas/<id>/<seccion>): Lo esencial (Tabla 1),
+   Cómo funciona, Parámetros (Tablas 1 y 3), Situaciones (Tabla 4), literales y con página, y
+   aparte la Ampliación técnica, fuera del capítulo y con sus fuentes. Varios o todos
+   (#/sistemas/<a+b|todos>/<seccion>) = la misma sección, un sistema junto a otro: eso son
+   «Comparar sistemas» y «Parámetros por sistema». */
 import { useEffect, useMemo, useRef, type ReactNode } from "react";
 import { ArrowRight, Check, ExternalLink, Minus, X } from "lucide-react";
 import {
@@ -42,6 +43,9 @@ import { plano } from "../marcado";
 import { BotonFavorito } from "../componentes/Lectura";
 import { SITUACIONES } from "../situaciones";
 import { FICHA_SISTEMA_EDUCATIVA } from "../enlaces";
+import type { SistemaId } from "../ampliacion/tipos";
+import { TablaVista } from "../componentes/TablaVista";
+import { NivelTitulo } from "../nivel-contexto";
 import { comoFunciona } from "../guias";
 import { PiezaVista } from "../componentes/Piezas";
 
@@ -106,9 +110,27 @@ export function HubSistemas() {
       <CabeceraEditorial titulo="Sistemas" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
           Los cuatro sistemas AID comercializados en España: lo que dice el capítulo de cada uno y,
-          aparte, su ficha técnica ampliada.
+          aparte, su ficha técnica ampliada. Abre uno, o compáralos.
         </p>
       </CabeceraEditorial>
+      <nav aria-label="Comparar los cuatro" className="mb-4 flex flex-wrap gap-x-4 gap-y-1">
+        {(
+          [
+            ["esencial", "Comparar lo esencial", "Tabla 1"],
+            ["parametros", "Comparar los parámetros", "Tabla 3"],
+            ["situaciones", "Comparar en las situaciones", "Tablas 4 y 6"],
+          ] as const
+        ).map(([sec, t, f]) => (
+          <a
+            key={sec}
+            href={href("sistemas", "todos", sec)}
+            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+          >
+            {t} <span className="text-xs font-normal text-slate-500">({f})</span>{" "}
+            <ArrowRight size={13} aria-hidden="true" />
+          </a>
+        ))}
+      </nav>
       <ul className="grid gap-3 sm:grid-cols-2">
         {SISTEMAS_AMPLIACION.map((s) => {
           const c = columnaDeSistema(s.id);
@@ -633,7 +655,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           </p>
           <div className="no-imprimir mt-2 flex flex-wrap gap-x-3 gap-y-1">
             <a
-              href={href("consultar", "comparar", slug)}
+              href={href("sistemas", "todos", seccion ?? "esencial")}
               className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
               style={{ color: h.ink }}
             >
@@ -687,7 +709,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         </span>
       </nav>
 
-      {seccion && (
+      {
         <nav
           aria-label="Otro sistema, misma sección"
           className="no-imprimir mb-4 flex flex-wrap gap-1.5"
@@ -708,7 +730,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             </a>
           ))}
         </nav>
-      )}
+      }
       <section aria-labelledby="esencial" className="scroll-mt-20" hidden={!ver("esencial")}>
         <TituloSeccion id="esencial" sistema={s.name} color={h.ink}>
           Lo esencial
@@ -732,7 +754,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           }
           pie={
             <>
-              <EnlacePie ruta={href("consultar", "comparar", slug)}>Comparar sistemas</EnlacePie>
+              <EnlacePie ruta={href("sistemas", "todos", "esencial")}>Comparar sistemas</EnlacePie>
               <a
                 href={WEB_SISTEMA[s.id]}
                 target="_blank"
@@ -797,7 +819,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             t={TABLAS.T3}
             c={c}
             pie={
-              <EnlacePie ruta={href("consultar", "tablas", `T3:${slug}`)}>
+              <EnlacePie ruta={href("sistemas", "todos", "parametros")}>
                 Comparar estos parámetros entre sistemas
               </EnlacePie>
             }
@@ -847,7 +869,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             {rutaEnCapitulo(TABLAS.T4) && (
               <EnlacePie ruta={rutaEnCapitulo(TABLAS.T4)!}>Ver en el capítulo</EnlacePie>
             )}
-            <EnlacePie ruta={href("consultar", "tablas", `T4:${slug}`)}>
+            <EnlacePie ruta={href("sistemas", "todos", "situaciones")}>
               Comparar en la Tabla 4
             </EnlacePie>
             <EnlacePie ruta={href("consultar", "situacion", `rm:${slug}`)}>
@@ -937,6 +959,247 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           </a>
         )}
       </nav>
+    </div>
+  );
+}
+
+/* ---------- Sistemas: uno (su ficha) o varios (comparados), con las mismas secciones ---------- */
+/* La selección vive en la ruta: #/sistemas/<id> (ficha), #/sistemas/<a+b>/<seccion> (dos o tres
+   comparados) y #/sistemas/todos/<seccion> (los cuatro). «Comparar sistemas» y «Parámetros por
+   sistema» son esta pantalla con los cuatro y la sección elegida. */
+const IDS_SISTEMA = ORDEN_SISTEMAS as readonly string[];
+const listaNombres = (n: string[]) =>
+  n.length < 2 ? n.join("") : `${n.slice(0, -1).join(", ")} y ${n[n.length - 1]}`;
+
+function leerSeleccion(sel?: string): string[] {
+  if (!sel || sel === "todos") return [];
+  return IDS_SISTEMA.filter((id) => sel.split("+").includes(id));
+}
+
+export function Sistemas({ sel, seccion }: { sel?: string; seccion?: string }) {
+  if (sel === undefined) return <HubSistemas />;
+  const ids = leerSeleccion(sel);
+  if (!ids.length && sel !== "todos") return <HubSistemas />;
+  const sec = SECCIONES_FICHA.some((x) => x.id === seccion) ? seccion : undefined;
+  if (ids.length === 1) return <FichaSistema id={ids[0]} seccion={sec} />;
+  return <Comparacion ids={ids} seccion={sec ?? "esencial"} />;
+}
+
+/* Tarjeta de un sistema dentro de la comparación, para lo que no cabe en columnas
+   («Cómo funciona» y la ampliación técnica se leen sistema a sistema). */
+function TarjetaSistema({
+  c,
+  seccion,
+  texto,
+  enlace,
+}: {
+  c: number;
+  seccion: string;
+  texto: ReactNode;
+  enlace: string;
+}) {
+  const s = SISTEMAS_AMPLIACION[c];
+  const h = SISTEMA_HEX[c];
+  return (
+    <li
+      className="rounded-xl border bg-white p-3"
+      style={{ borderColor: "#e6e6e6", boxShadow: `inset 0 3px 0 0 ${h.strong}` }}
+    >
+      <div className="text-base font-extrabold" style={{ color: h.ink }}>
+        {s.name}
+      </div>
+      <div className="mt-1 text-sm text-slate-800">{texto}</div>
+      <a
+        href={href("sistemas", s.id, seccion)}
+        className="mt-2 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+      >
+        {enlace} <ArrowRight size={13} aria-hidden="true" />
+      </a>
+    </li>
+  );
+}
+
+function Comparacion({ ids, seccion }: { ids: string[]; seccion: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const cols = ids.length ? ids.map((id) => columnaDeSistema(id as SistemaId)) : [0, 1, 2, 3];
+  const sel = ids.length ? ids.join("+") : "todos";
+  const rutaCon = (nuevos: string[]) =>
+    nuevos.length === 1
+      ? href("sistemas", nuevos[0], seccion)
+      : href("sistemas", nuevos.length ? nuevos.join("+") : "todos", seccion);
+  const alternar = (id: string) =>
+    window.location.replace(
+      rutaCon(
+        ids.includes(id)
+          ? ids.filter((x) => x !== id)
+          : IDS_SISTEMA.filter((x) => [...ids, id].includes(x)),
+      ),
+    );
+  const nombres = cols.map((c) => TABLAS.T1.columnas[c]);
+  return (
+    <div ref={ref} className="imprimible">
+      <CabeceraEditorial titulo="Sistemas" hex={hex} level={1}>
+        <p className="text-sm text-slate-600">
+          {ids.length
+            ? `Comparando ${listaNombres(nombres)}`
+            : "Los cuatro sistemas, uno junto a otro"}
+          , con el texto literal del capítulo y su página. Deja marcado uno solo para abrir su
+          ficha.
+        </p>
+      </CabeceraEditorial>
+      <div
+        role="group"
+        aria-label="Sistemas que se comparan"
+        className="no-imprimir mb-3 flex flex-wrap gap-1.5"
+      >
+        {SISTEMAS_AMPLIACION.map((s, c) => {
+          const on = ids.includes(s.id);
+          const h = SISTEMA_HEX[c];
+          return (
+            <button
+              key={s.id}
+              type="button"
+              aria-pressed={on}
+              onClick={() => alternar(s.id)}
+              className="tap-44 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+              style={
+                on
+                  ? { background: h.ink, borderColor: h.ink, color: "#fff" }
+                  : { background: h.soft, borderColor: `${h.strong}40`, color: h.ink }
+              }
+            >
+              {on && <Check size={14} aria-hidden="true" />}
+              <span className="sm:hidden">{SLUG_CORTO[c]}</span>
+              <span className="hidden sm:inline">{s.name}</span>
+            </button>
+          );
+        })}
+        {ids.length > 0 && (
+          <a
+            href={href("sistemas", "todos", seccion)}
+            className="tap-44 inline-flex items-center rounded-full px-3 py-1.5 text-sm font-semibold text-slate-600 underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+          >
+            Los cuatro
+          </a>
+        )}
+      </div>
+      <nav
+        aria-label="Sección"
+        className="no-imprimir -mx-3 mb-5 flex gap-1.5 overflow-x-auto border-y px-3 py-2 sm:mx-0 sm:flex-wrap sm:rounded-lg sm:border sm:px-2"
+        style={{ borderColor: "#e6e6e6" }}
+      >
+        {SECCIONES_FICHA.map((x) => (
+          <a
+            key={x.id}
+            href={href("sistemas", sel, x.id)}
+            aria-current={seccion === x.id ? "location" : undefined}
+            className={`inline-flex min-h-9 shrink-0 items-center rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${seccion === x.id ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
+            style={
+              seccion === x.id
+                ? { background: hex.strong, borderColor: hex.strong }
+                : { borderColor: "#d4d4d4" }
+            }
+          >
+            {x.t}
+          </a>
+        ))}
+        <span className="ml-auto flex shrink-0 items-center gap-1.5">
+          <BotonImprimir objetivo={ref} compacto>
+            Imprimir
+          </BotonImprimir>
+        </span>
+      </nav>
+      <section
+        key={seccion}
+        className="pantalla-in"
+        aria-label={SECCIONES_FICHA.find((x) => x.id === seccion)?.t}
+      >
+        {seccion === "esencial" && (
+          <NivelTitulo.Provider value={2}>
+            <TablaVista tabla={TABLAS.T1} columnasFijas={cols} />
+          </NivelTitulo.Provider>
+        )}
+        {seccion === "funciona" && (
+          <>
+            <p className="mb-3 text-sm text-slate-600">
+              El algoritmo de cada uno, tal como lo nombra la Tabla 1; el recorrido completo («qué
+              mide, dónde decide, cómo administra la insulina») se lee sistema a sistema.
+            </p>
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {cols.map((c) => (
+                <TarjetaSistema
+                  key={c}
+                  c={c}
+                  seccion="funciona"
+                  texto={
+                    <>
+                      {algoritmoDelCapitulo(c)}{" "}
+                      <span className="pagina-badge">· Tabla 1, p. 3</span>
+                    </>
+                  }
+                  enlace="Cómo funciona, paso a paso"
+                />
+              ))}
+            </ul>
+          </>
+        )}
+        {seccion === "parametros" && (
+          <>
+            <p className="mb-2 text-sm text-slate-600">
+              Cuáles se pueden configurar en modo automático (Tabla 1) y cómo se ajusta cada uno
+              (Tabla 3).
+            </p>
+            <div className="mb-3 grid gap-2 sm:grid-cols-2">
+              {cols.map((c) => (
+                <div key={c}>
+                  <div
+                    className="mb-1 text-sm font-extrabold"
+                    style={{ color: SISTEMA_HEX[c].ink }}
+                  >
+                    {TABLAS.T1.columnas[c]}
+                  </div>
+                  <ParametrosAutomatico c={c} hexSistema={SISTEMA_HEX[c]} />
+                </div>
+              ))}
+            </div>
+            <NivelTitulo.Provider value={2}>
+              <TablaVista tabla={TABLAS.T3} columnasFijas={cols} />
+            </NivelTitulo.Provider>
+          </>
+        )}
+        {seccion === "situaciones" && (
+          <div className="space-y-4">
+            <NivelTitulo.Provider value={2}>
+              <TablaVista tabla={TABLAS.T4} columnasFijas={cols} />
+            </NivelTitulo.Provider>
+            <NivelTitulo.Provider value={2}>
+              <TablaVista tabla={TABLAS.T6} />
+            </NivelTitulo.Provider>
+            <EnlacePie ruta={href("consultar", "situacion")}>
+              Una situación concreta, con el texto que la explica
+            </EnlacePie>
+          </div>
+        )}
+        {seccion === "ampliacion" && (
+          <>
+            <p className="mb-3 text-sm text-slate-600">
+              Ficha técnica de cada sistema con sus fuentes, fuera del capítulo; se consulta sistema
+              a sistema.
+            </p>
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {cols.map((c) => (
+                <TarjetaSistema
+                  key={c}
+                  c={c}
+                  seccion="ampliacion"
+                  texto={`Última verificación: ${SISTEMAS_AMPLIACION[c].verified}.`}
+                  enlace="Ampliación técnica"
+                />
+              ))}
+            </ul>
+          </>
+        )}
+      </section>
     </div>
   );
 }

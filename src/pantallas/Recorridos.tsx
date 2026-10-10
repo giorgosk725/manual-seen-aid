@@ -1,5 +1,5 @@
 /* Recorridos de consulta construidos solo con el texto del capítulo:
-   - Situación y sistema: eliges una situación (filas de las Tablas 4 y 6) y, si procede, un
+   - Situaciones: eliges una situación (filas de las Tablas 4 y 6) y, si procede, un
      sistema, y ves la celda exacta más los párrafos del capítulo que la desarrollan.
    - Revisar la descarga: la Tabla 5 paso a paso (8 pasos), con el patrón relacionado.
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
@@ -23,7 +23,8 @@ const hex = CATEGORIA_HEX.consultar;
 /* Las situaciones, por tema (no por la tabla de la que salen): las filas de las Tablas 4 y 6 y
    los subapartados del apartado 10 que no tienen tabla, juntos. Los nombres de los temas son de
    la app; cada entrada conserva su rótulo del capítulo y su página o tabla. */
-const TEMAS_SITUACION: { t: string; ids: string[]; subs: RegExp }[] = [
+type Extra = { t: string; fuente: string; ruta: string };
+const TEMAS_SITUACION: { t: string; ids: string[]; subs: RegExp; extras?: Extra[] }[] = [
   {
     t: "Ejercicio y comidas",
     ids: ["ejercicio-aerobico", "ejercicio-anaerobico", "comida-grasa"],
@@ -33,11 +34,26 @@ const TEMAS_SITUACION: { t: string; ids: string[]; subs: RegExp }[] = [
     t: "Noche, enfermedad e hiperglucemia",
     ids: ["sueno", "necesidad-transitoria", "hiperglucemia-puntual", "hiperglucemia-persistente"],
     subs: /enfermedad|glucocorticoide/i,
+    extras: [
+      { t: "Cetonemia paso a paso", fuente: "Figura 3", ruta: href("consultar", "figura-3") },
+    ],
   },
   {
     t: "Exploraciones, cirugía e ingreso",
     ids: ["rm", "tc", "rx", "pet", "diatermia", "eco", "cirugia-corta", "cirugia-larga"],
     subs: /ingreso|hospital/i,
+  },
+  {
+    t: "Interrupción del sistema",
+    ids: [],
+    subs: /^$/,
+    extras: [
+      {
+        t: "Cuánto va a durar la interrupción y qué hacer",
+        fuente: "p. 9",
+        ruta: href("consultar", "interrupcion"),
+      },
+    ],
   },
   { t: "Poblaciones y situaciones especiales", ids: [], subs: /./ },
 ];
@@ -58,7 +74,8 @@ function ListaSituaciones({ sit, sistema }: { sit: Situacion | null; sistema?: s
         const sits = tema.ids
           .map((id) => SITUACIONES.find((x) => x.id === id))
           .filter((x): x is Situacion => !!x);
-        if (!sits.length && !mios.length) return null;
+        const extras = tema.extras ?? [];
+        if (!sits.length && !mios.length && !extras.length) return null;
         return (
           <section key={tema.t} aria-label={tema.t}>
             <h2 className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
@@ -97,6 +114,18 @@ function ListaSituaciones({ sit, sistema }: { sit: Situacion | null; sistema?: s
                   </li>
                 );
               })}
+              {extras.map((x) => (
+                <li key={x.ruta}>
+                  <a
+                    href={x.ruta}
+                    className={`${enlace} bg-white text-slate-800 hover:border-slate-400`}
+                    style={{ borderColor: "#e6e6e6" }}
+                  >
+                    <span className="flex-1">{x.t}</span>
+                    <span className="shrink-0 text-[11px] text-slate-500">{x.fuente}</span>
+                  </a>
+                </li>
+              ))}
               {mios.map((b) => (
                 <li key={b.id}>
                   <a
@@ -130,7 +159,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
   });
   return (
     <div>
-      <CabeceraEditorial titulo="Situación y sistema" hex={hex} level={1}>
+      <CabeceraEditorial titulo="Situaciones" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
           Elige la situación y, si la conducta depende del sistema, el sistema. La respuesta es la
           celda literal de las Tablas 4 o 6 del capítulo, con los párrafos que la explican.

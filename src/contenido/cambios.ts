@@ -8,13 +8,24 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.22.0";
+export const VERSION_APP = "0.23.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-10",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — hojas sin código QR; tarjetas sin frases`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — una sola pantalla de Sistemas y un mapa de consulta`,
+    detalle: [
+      "Sistemas, Comparar sistemas y Parámetros por sistema eran cuatro puertas al mismo material (las Tablas 1, 3 y 4 por sistema). Ahora son una pantalla: un sistema marcado es su ficha por secciones; dos o más, la misma sección con un sistema junto a otro; «Comparar» y «Parámetros» son esa pantalla con los cuatro. Las direcciones antiguas siguen funcionando.",
+      "Cetonemia paso a paso (Figura 3) e Interrupción del sistema (p. 9) se encuentran también dentro de Situaciones, que agrupa por tema todo lo que responde a «¿qué hago en…?».",
+      "La portada es el mapa de consulta: el buscador y cuatro bloques en filas (¿Qué sistema?, ¿Qué hago en esta situación?, En la consulta, Para el paciente); desaparece la pantalla «Consultar» intermedia y las tarjetas. Las Tablas y las Figuras pasan a «Leer capítulo».",
+      "Barra del móvil con cuatro destinos (Inicio · Leer · Paciente · Buscar) y menú lateral con tres grupos (Consultar, Leer capítulo, Aprender) más «Sobre esta app»; desaparece «Más».",
+    ],
+  },
+  {
+    fecha: "2026-10-10",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.22.0 — hojas sin código QR; tarjetas sin frases",
     detalle: [
       "Las hojas para el paciente y la hoja de comprobación del inicio ya no llevan código QR ni «Compartir el enlace» / «Mostrar el QR»: la app es para quien atiende al paciente, no para el paciente; las hojas se imprimen y se entregan en papel.",
       "Las tarjetas de la portada y de Consultar llevan solo el nombre y de dónde sale (Tabla 1, Tabla 3, Figura 3…); desaparecen las frases de explicación, que repetían lo que ya dice el nombre.",

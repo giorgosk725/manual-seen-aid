@@ -12,10 +12,10 @@ const sinScrollHorizontal = async (page: Page, pantalla: string) => {
 };
 
 test.describe("Móvil (393 px)", () => {
-  test("barra inferior con cinco destinos y sin barra lateral", async ({ page }) => {
+  test("barra inferior con cuatro destinos y sin barra lateral", async ({ page }) => {
     await page.goto("/");
     const barra = page.getByRole("navigation", { name: /Barra inferior/ });
-    for (const e of ["Inicio", "Consultar", "Leer", "Buscar", "Más"]) {
+    for (const e of ["Inicio", "Leer", "Paciente", "Buscar"]) {
       await expect(barra.getByRole("link", { name: e })).toBeVisible();
     }
     await expect(page.getByRole("navigation", { name: /Navegación principal/ })).toBeHidden();

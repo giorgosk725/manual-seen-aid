@@ -3,11 +3,13 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Navegación y portada (393 px)", () => {
-  test("UX01: la portada cabe en dos pantallas y media, con Consultar, Leer y Buscar a la vista", async ({
+  test("UX01: la portada cabe en dos pantallas y media, con Leer, Paciente y Buscar a la vista", async ({
     page,
   }) => {
     await page.goto("/#/");
-    await expect(page.getByRole("link", { name: "Consultar", exact: true }).first()).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Para el paciente", exact: true }).first(),
+    ).toBeVisible();
     await expect(
       page.getByRole("link", { name: "Leer capítulo", exact: true }).first(),
     ).toBeInViewport();
@@ -40,14 +42,15 @@ test.describe("Navegación y portada (393 px)", () => {
   test("la barra inferior marca el área de cada pantalla", async ({ page }) => {
     const barra = page.getByRole("navigation", { name: "Barra inferior" });
     for (const [ruta, area] of [
-      ["/#/sistemas/op5", "Consultar"],
-      ["/#/visual", "Consultar"],
-      ["/#/consultar/tablas/T3", "Consultar"],
+      ["/#/sistemas/op5", "Inicio"],
+      ["/#/sistemas/todos/parametros", "Inicio"],
+      ["/#/visual", "Leer"],
+      ["/#/consultar/tablas/T3", "Inicio"],
       ["/#/capitulo/04-sistemas", "Leer"],
       ["/#/test", "Leer"],
       ["/#/repaso", "Leer"],
-      ["/#/pacientes", "Consultar"],
-      ["/#/sobre", "Más"],
+      ["/#/pacientes", "Paciente"],
+      ["/#/buscar/insulina", "Buscar"],
     ]) {
       await page.goto(ruta);
       await expect(barra.getByRole("link", { name: area }), ruta).toHaveAttribute(

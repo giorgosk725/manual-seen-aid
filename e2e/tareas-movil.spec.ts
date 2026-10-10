@@ -24,7 +24,7 @@ test.describe("Tareas en dos toques (393 px)", () => {
 
   test("conducta de Omnipod 5 en ejercicio aeróbico", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: "Consultas frecuentes" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Consultar", exact: true })).toBeVisible();
     const t0 = Date.now();
     await page.getByRole("link", { name: /^Situaciones/ }).tap();
     await page.getByRole("button", { name: /^Ejercicio aeróbico/ }).tap();
@@ -41,7 +41,7 @@ test.describe("Tareas en dos toques (393 px)", () => {
   test("qué hacer con β-OHB 1,2 mmol/l", async ({ page }) => {
     await page.goto("/");
     const t0 = Date.now();
-    await page.getByRole("link", { name: /Cetonemia \(β-OHB\)/ }).tap();
+    await page.getByRole("link", { name: /^Cetonemia paso a paso/ }).tap();
     await page.getByRole("button", { name: /^β-OHB 1,0-2,9 mmol\/l/ }).tap();
     await expect(page.getByText(/0,1 UI\/kg/).first()).toBeVisible();
     tiempos["β-OHB 1,2 mmol/l"] = { toques: 2, ms: Date.now() - t0 };

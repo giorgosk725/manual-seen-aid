@@ -1,5 +1,5 @@
 /* Shell: barra superior (con la búsqueda en escritorio), menú en tres grupos (barra lateral de
-   escritorio y menú del móvil), barra inferior móvil (Inicio · Consultar · Leer · Buscar · Más),
+   escritorio y menú del móvil), barra inferior móvil (Inicio · Leer · Paciente · Buscar),
    paleta de búsqueda (Ctrl K) y aviso de versión nueva. El destino activo sale de nav.ts. */
 import {
   Suspense,
@@ -16,10 +16,9 @@ import {
   BookOpen,
   ChevronDown,
   CircleCheck,
-  Columns3,
+  HeartHandshake,
   Home,
   Menu,
-  MoreHorizontal,
   Moon,
   Search,
   Sun,
@@ -422,6 +421,7 @@ function MenuNavegacion({
           </div>
         ),
       )}
+      <ul className="mt-4 space-y-0.5">{item("sobre")}</ul>
     </nav>
   );
 }
@@ -451,13 +451,12 @@ function Lateral({ ruta }: { ruta: Ruta }) {
   );
 }
 
-/* ---------- Barra inferior (móvil): las cinco áreas ---------- */
+/* ---------- Barra inferior (móvil): las cuatro áreas ---------- */
 const AREAS: { area: Area; etiqueta: string; href: string; icono: typeof Home }[] = [
   { area: "inicio", etiqueta: "Inicio", href: "#/", icono: Home },
-  { area: "consultar", etiqueta: "Consultar", href: href("consultar"), icono: Columns3 },
   { area: "leer", etiqueta: "Leer", href: href("capitulo"), icono: BookOpen },
+  { area: "pacientes", etiqueta: "Paciente", href: href("pacientes"), icono: HeartHandshake },
   { area: "buscar", etiqueta: "Buscar", href: href("buscar"), icono: Search },
-  { area: "mas", etiqueta: "Más", href: href("mas"), icono: MoreHorizontal },
 ];
 
 function Inferior({ ruta }: { ruta: Ruta }) {
@@ -468,7 +467,7 @@ function Inferior({ ruta }: { ruta: Ruta }) {
       className="fixed inset-x-0 bottom-0 z-30 border-t bg-white md:hidden"
       style={{ borderColor: "#e6e6e6", paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <ul className="grid grid-cols-5">
+      <ul className="grid grid-cols-4">
         {AREAS.map((it) => {
           const I = it.icono;
           const on = it.area === actual;

@@ -119,8 +119,7 @@ test.describe("Uso 0.10.0", () => {
     page,
   }) => {
     await page.goto("/#/");
-    await expect(page.getByText(/compara los sistemas y lee el texto completo/)).toBeVisible();
-    await expect(page.getByRole("link", { name: "Consultar", exact: true }).first()).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Consultar", exact: true })).toBeVisible();
     await page.getByRole("link", { name: "Leer capítulo", exact: true }).first().click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Leer capítulo");
     const aprender = page.getByRole("region", { name: "Comprender y practicar" });

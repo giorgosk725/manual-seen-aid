@@ -1,4 +1,4 @@
-/* Buscar, Bibliografía, Sobre esta app, Autoevaluación, Preguntas frecuentes y «Más» (móvil). */
+/* Buscar, Bibliografía, Sobre esta app, Autoevaluación y Preguntas frecuentes. */
 import { guardarReciente } from "../prefs";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -6,16 +6,12 @@ import {
   CheckCircle2,
   ExternalLink,
   MessageCircleQuestion,
-  Moon,
-  Star,
-  Sun,
   XCircle,
 } from "lucide-react";
 import { FRECUENTES } from "../frecuentes";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
 import { CAMBIOS, PENDIENTES, VERSION_APP } from "../contenido/cambios";
 import { PREGUNTAS } from "../contenido/test";
-import { DESTINOS, MENU } from "../nav";
 import { href } from "../rutas";
 import { Badge, CabeceraEditorial, Revelar, ToneCard } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
@@ -26,7 +22,6 @@ import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
 import { SinResultados } from "../componentes/SinResultados";
-import { useFavoritos, useNocturno } from "../prefs";
 
 const fecha = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("es-ES", {
@@ -608,90 +603,6 @@ export function Test() {
           </button>
         </section>
       )}
-    </div>
-  );
-}
-
-/* ---------- Más (móvil): el resto de destinos y las preferencias ---------- */
-export function Mas() {
-  const [night, toggle] = useNocturno();
-  const favoritos = useFavoritos();
-  // Los mismos «Más recursos» del menú; el repaso y el test viven en «Leer y comprender».
-  const ids = MENU.find((g) => g.area === "mas")!.ids;
-  return (
-    <div>
-      <CabeceraEditorial titulo="Más" hex={CATEGORIA_HEX.confiar} level={1} />
-      <section aria-labelledby="mas-favoritos" className="mb-5">
-        <h2
-          id="mas-favoritos"
-          className="mb-2 flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-slate-600"
-        >
-          <Star size={14} className="fill-amber-400 text-amber-500" aria-hidden="true" />
-          Favoritos
-        </h2>
-        {favoritos.length ? (
-          <ul className="flex flex-wrap gap-1.5">
-            {favoritos.map((f) => (
-              <li key={f.ruta}>
-                <a
-                  href={f.ruta}
-                  className="inline-flex min-h-11 items-center rounded-full border bg-white px-3 text-sm font-semibold text-slate-700 hover:border-slate-400 sm:min-h-9"
-                  style={{ borderColor: "#d4d4d4" }}
-                >
-                  {f.titulo}
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-slate-600">
-            Aún no hay favoritos: se guardan con la estrella de cada ficha de sistema.
-          </p>
-        )}
-      </section>
-      <ul className="space-y-2">
-        {ids.map((id) => {
-          const d = DESTINOS.find((x) => x.id === id)!;
-          const I = d.icono;
-          return (
-            <li key={id}>
-              <a
-                href={d.href}
-                className="flex items-center gap-3 rounded-xl border bg-white p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{ borderColor: "#e6e6e6" }}
-              >
-                <I
-                  size={18}
-                  className="shrink-0"
-                  style={{ color: CATEGORIA_HEX[d.cat].strong }}
-                  aria-hidden="true"
-                />
-                <span className="min-w-0 flex-1 text-sm font-bold text-slate-900">
-                  {d.etiqueta}
-                </span>
-              </a>
-            </li>
-          );
-        })}
-        <li>
-          <button
-            type="button"
-            onClick={toggle}
-            aria-pressed={night}
-            className="flex w-full items-center gap-3 rounded-xl border bg-white p-3 text-left shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            {night ? (
-              <Sun size={18} className="shrink-0" aria-hidden="true" />
-            ) : (
-              <Moon size={18} className="shrink-0" aria-hidden="true" />
-            )}
-            <span className="text-sm font-bold text-slate-900">
-              {night ? "Modo día" : "Modo nocturno"}
-            </span>
-          </button>
-        </li>
-      </ul>
     </div>
   );
 }

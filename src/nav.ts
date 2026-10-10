@@ -32,6 +32,7 @@ import {
   Route,
   ScanLine,
   Search,
+  ShieldCheck,
   SlidersHorizontal,
   Table2,
   Target,
@@ -75,12 +76,13 @@ export const DESTINOS: Destino[] = [
     cat: "consultar",
     descripcion:
       "Los cuatro sistemas con foto: lo que dice el capítulo de cada uno y su ficha técnica ampliada.",
+    fuente: "Tablas 1, 3 y 4 · ficha técnica",
   },
   {
     id: "comparar",
     etiqueta: "Comparar sistemas",
     corto: "Comparar",
-    href: href("consultar", "comparar"),
+    href: href("sistemas", "todos", "esencial"),
     icono: Columns3,
     cat: "consultar",
     descripcion:
@@ -91,7 +93,7 @@ export const DESTINOS: Destino[] = [
     id: "parametros",
     etiqueta: "Parámetros por sistema",
     corto: "Parámetros",
-    href: href("consultar", "parametros"),
+    href: href("sistemas", "todos", "parametros"),
     icono: SlidersHorizontal,
     cat: "consultar",
     descripcion:
@@ -100,14 +102,14 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "situacion",
-    etiqueta: "Situación y sistema",
+    etiqueta: "Situaciones",
     corto: "Situación",
     href: href("consultar", "situacion"),
     icono: Route,
     cat: "consultar",
     descripcion:
       "Elige la situación (ejercicio, enfermedad, exploración…) y el sistema: la conducta que da el capítulo.",
-    fuente: "Tablas 4 y 6",
+    fuente: "Tablas 4 y 6 · apartado 10",
   },
   {
     id: "inicio",
@@ -207,6 +209,17 @@ export const DESTINOS: Destino[] = [
     fuente: "Hojas para imprimir",
   },
   {
+    id: "plan",
+    etiqueta: "Plan de seguridad por sistema",
+    corto: "Plan",
+    href: href("pacientes", "plan"),
+    icono: ShieldCheck,
+    cat: "pacientes",
+    descripcion:
+      "La hoja del plan de seguridad de cada sistema, hecha solo con texto del capítulo, para rellenar a mano.",
+    fuente: "Figura 3 y Tabla 4",
+  },
+  {
     id: "bibliografia",
     etiqueta: "Bibliografía",
     href: href("bibliografia"),
@@ -254,37 +267,27 @@ export const DESTINOS: Destino[] = [
   },
 ];
 
-/* «Consultar», agrupado por tarea (hub de Consultar). */
-export const GRUPOS_CONSULTAR: { id: string; titulo: string; ids: string[] }[] = [
+/* El mapa de consulta (portada): cuatro bloques, cada uno con la pregunta que responde. */
+export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[] }[] = [
+  { id: "sistemas", titulo: "¿Qué sistema?", ids: ["sistemas", "comparar", "parametros"] },
   {
-    id: "tareas",
-    titulo: "Tareas",
-    ids: [
-      "parametros",
-      "comparar",
-      "pacientes",
-      "descarga",
-      "inicio",
-      "situacion",
-      "figura-3",
-      "interrupcion",
-    ],
+    id: "situaciones",
+    titulo: "¿Qué hago en esta situación?",
+    ids: ["situacion", "figura-3", "interrupcion"],
   },
-  {
-    id: "recursos",
-    titulo: "Recursos",
-    ids: ["sistemas", "tablas", "visual", "preguntas"],
-  },
+  { id: "en-consulta", titulo: "En la consulta", ids: ["inicio", "descarga"] },
+  { id: "pacientes", titulo: "Para el paciente", ids: ["pacientes", "plan"] },
 ];
 
-/* Navegación global: cinco áreas. Cada sección de la ruta pertenece a una sola, y el destino
-   activo de la barra inferior y de la lateral sale de aquí (no de comprobaciones sueltas). */
-export type Area = "inicio" | "consultar" | "leer" | "buscar" | "mas";
+/* Navegación global: cuatro áreas en la barra inferior (Inicio · Leer · Paciente · Buscar).
+   Cada sección de la ruta pertenece a una, y el destino activo sale de aquí. «Aprender» y «mas»
+   son grupos del menú sin botón propio. */
+export type Area = "inicio" | "leer" | "aprender" | "pacientes" | "buscar" | "mas";
 const AREA_DE_SECCION: Record<string, Area> = {
   "": "inicio",
-  consultar: "consultar",
-  sistemas: "consultar",
-  visual: "consultar",
+  consultar: "inicio",
+  sistemas: "inicio",
+  visual: "leer",
   capitulo: "leer",
   repaso: "leer",
   test: "leer",
@@ -292,39 +295,23 @@ const AREA_DE_SECCION: Record<string, Area> = {
   buscar: "buscar",
   preguntas: "buscar",
   mas: "mas",
-  pacientes: "consultar",
-  bibliografia: "mas",
+  pacientes: "pacientes",
+  bibliografia: "leer",
   cambios: "mas",
   sobre: "mas",
 };
 export const areaDe = (seccion: string): Area => AREA_DE_SECCION[seccion] ?? "inicio";
 
-/* Menú (barra lateral de escritorio y menú del móvil): tres grupos breves. El índice de los
-   apartados solo se despliega dentro de la lectura. */
+/* Menú (barra lateral de escritorio y menú del móvil): tres grupos, el esqueleto del mapa de
+   consulta. El índice de los apartados solo se despliega dentro de la lectura. */
 export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
   {
-    area: "consultar",
+    area: "inicio",
     titulo: "Consultar",
-    ids: [
-      "parametros",
-      "comparar",
-      "pacientes",
-      "sistemas",
-      "inicio",
-      "descarga",
-      "figura-3",
-      "situacion",
-      "interrupcion",
-      "tablas",
-      "visual",
-    ],
+    ids: ["sistemas", "situacion", "inicio", "descarga", "pacientes"],
   },
-  { area: "leer", titulo: "Leer capítulo", ids: ["capitulo", "casos", "repaso", "test"] },
-  {
-    area: "mas",
-    titulo: "Más recursos",
-    ids: ["bibliografia", "sobre"],
-  },
+  { area: "leer", titulo: "Leer capítulo", ids: ["capitulo", "tablas", "visual", "bibliografia"] },
+  { area: "aprender", titulo: "Aprender", ids: ["preguntas", "casos", "repaso", "test"] },
 ];
 
 /* ¿Está activo este destino en esta ruta? (un único criterio para lateral, menú y hubs).

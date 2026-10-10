@@ -1,27 +1,22 @@
-/* Portada compacta (plan del 9-10-2026, entrega 1): identidad del Manual y título breve, qué
-   permite hacer, las dos entradas (Consultar y Leer y comprender), el buscador, seguir leyendo,
-   seis consultas frecuentes, hasta tres favoritos y el capítulo publicado. Los inventarios
-   (índice, diagramas, sistemas, repaso) viven en su sitio: Leer, Figuras y diagramas, Consultar. */
+/* Portada = Consultar: identidad del Manual y título del capítulo, las dos entradas (Leer
+   capítulo y Para el paciente), el buscador, seguir leyendo, el mapa de consulta en cuatro
+   bloques (componentes/MapaConsulta), hasta tres favoritos y el capítulo publicado. */
 import { useState } from "react";
 import {
   ArrowRight,
   BookOpen,
   Clock3,
-  Columns3,
   Droplets,
   ExternalLink,
   Footprints,
   HeartHandshake,
   ListChecks,
-  ListOrdered,
-  Route,
   Search,
-  SlidersHorizontal,
   Star,
-  Table2,
   Target,
 } from "lucide-react";
 import { CAPITULO } from "../contenido";
+import { MapaConsulta } from "../componentes/MapaConsulta";
 import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
 import { href, navegar } from "../rutas";
 import { marcar, paginaDe } from "../busqueda";
@@ -40,52 +35,6 @@ const fecha = (iso: string) =>
     month: "long",
     year: "numeric",
   });
-
-/* Las consultas más frecuentes; el resto, en «Todas las consultas». */
-const FRECUENTES = [
-  {
-    href: href("consultar", "comparar"),
-    icono: Columns3,
-    color: FICHA_AREA.pizarra,
-    t: "Comparar sistemas",
-    s: "Tabla 1",
-  },
-  {
-    href: href("consultar", "parametros"),
-    icono: SlidersHorizontal,
-    color: FICHA_AREA.azul,
-    t: "Parámetros por sistema",
-    s: "Tabla 3",
-  },
-  {
-    href: href("consultar", "figura-3"),
-    icono: Droplets,
-    color: FICHA_AREA.diabetes,
-    t: "Cetonemia (β-OHB)",
-    s: "Figura 3",
-  },
-  {
-    href: href("consultar", "situacion"),
-    icono: Route,
-    color: FICHA_AREA.obesidad,
-    t: "Situaciones",
-    s: "Tablas 4 y 6",
-  },
-  {
-    href: href("consultar", "descarga", "1"),
-    icono: ListChecks,
-    color: FICHA_AREA.mineral,
-    t: "Revisar la descarga",
-    s: "Tabla 5",
-  },
-  {
-    href: href("consultar", "inicio", "inicio"),
-    icono: ListOrdered,
-    color: FICHA_AREA.nutricion,
-    t: "Iniciar un sistema",
-    s: "Apartado 8 y Tabla 2",
-  },
-];
 
 /* Franja de cuatro colores (azul, burdeos, mostaza y rosa del Manual). */
 function Franja() {
@@ -246,65 +195,6 @@ function Buscador() {
   );
 }
 
-function ConsultasFrecuentes() {
-  return (
-    <section aria-labelledby="consultas-frecuentes">
-      <div className="mb-2 flex items-baseline justify-between gap-3">
-        <h2
-          id="consultas-frecuentes"
-          className="font-display text-lg font-medium uppercase tracking-[0.04em] sm:text-xl"
-          style={{ color: CATEGORIA_HEX.consultar.ink }}
-        >
-          Consultas frecuentes
-        </h2>
-        <a
-          href={href("consultar")}
-          className="inline-flex min-h-11 shrink-0 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
-        >
-          Todas las consultas <ArrowRight size={14} aria-hidden="true" />
-        </a>
-      </div>
-      <ul className="grid grid-cols-2 gap-2 lg:grid-cols-3">
-        {FRECUENTES.map((c) => {
-          const I = c.icono;
-          return (
-            <li key={c.t}>
-              <a
-                href={c.href}
-                className="hover-lift ease-brand flex h-full min-h-[3.5rem] items-center gap-3 rounded-md border bg-white p-2 pr-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{ borderColor: "#e6e6e6" }}
-              >
-                <span
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[3px] text-white sm:h-11 sm:w-11"
-                  style={{ background: c.color }}
-                  aria-hidden="true"
-                >
-                  <I size={19} strokeWidth={1.75} />
-                </span>
-                <span className="min-w-0 [overflow-wrap:anywhere]">
-                  <span className="block text-[13px] font-bold leading-snug text-slate-900 sm:text-sm">
-                    {/* Lo que va entre paréntesis («(β-OHB)») no se parte. */}
-                    {c.t.split(/(\([^)]*\))/).map((trozo, i) =>
-                      i % 2 ? (
-                        <span key={i} className="whitespace-nowrap">
-                          {trozo}
-                        </span>
-                      ) : (
-                        trozo
-                      ),
-                    )}
-                  </span>
-                  <span className="block text-xs leading-snug text-slate-500">{c.s}</span>
-                </span>
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  );
-}
-
 function Favoritos() {
   const favoritos = useFavoritos();
   if (!favoritos.length) return null;
@@ -381,21 +271,11 @@ export function Portada() {
               <span className="font-semibold text-slate-900">{CAPITULO.autor}</span>
             </p>
             <p className="mt-0.5 text-xs leading-snug text-slate-600">{CAPITULO.filiacion}</p>
-            <p className="mt-3 max-w-prose text-[15px] leading-relaxed text-slate-800">
-              Consulta las tablas, los algoritmos y las situaciones clínicas del capítulo, compara
-              los sistemas y lee el texto completo con la página de cada dato.
-            </p>
             <div className="mt-4 grid gap-2 min-[400px]:flex min-[400px]:flex-wrap min-[400px]:items-center">
               <a
-                href={href("consultar")}
+                href={href("capitulo")}
                 className="boton-seen inline-flex min-h-11 items-center justify-center gap-2 rounded-[3px] px-4 text-sm font-semibold uppercase tracking-wide text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2"
                 style={{ background: SEEN.burdeos }}
-              >
-                <Table2 size={16} aria-hidden="true" /> Consultar
-              </a>
-              <a
-                href={href("capitulo")}
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[3px] border-2 border-slate-300 px-4 text-sm font-semibold uppercase tracking-wide text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
               >
                 <BookOpen size={15} aria-hidden="true" /> Leer capítulo
               </a>
@@ -415,7 +295,7 @@ export function Portada() {
 
       <Buscador />
 
-      <ConsultasFrecuentes />
+      <MapaConsulta />
 
       <Favoritos />
 
