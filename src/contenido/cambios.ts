@@ -8,13 +8,21 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.25.1";
+export const VERSION_APP = "0.25.2";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-10",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — limpieza tras la revisión`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — portada más limpia`,
+    detalle: [
+      "Las filas del mapa de consulta llevan solo el nombre; la tabla o el apartado de donde sale cada cosa se ve al entrar.",
+    ],
+  },
+  {
+    fecha: "2026-10-10",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.25.1 — limpieza tras la revisión",
     detalle: [
       "Buscar ya no menciona la versión extendida (retirada en la 0.21.0) al explicar lo que queda fuera del capítulo.",
       "En «Lo esencial» de cada ficha, la nota del asterisco de la Tabla 1 solo sale si alguna celda lo lleva, y la lista de siglas de la tabla va plegada.",

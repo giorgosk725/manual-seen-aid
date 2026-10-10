@@ -1,5 +1,5 @@
 /* El mapa de consulta: cuatro bloques, cada uno con la pregunta que responde y sus entradas en
-   filas (nombre y de dónde sale). Es la portada misma: no hay otra pantalla «Consultar». */
+   filas (solo el nombre: la fuente se ve al entrar). Es la portada misma: no hay otra pantalla «Consultar». */
 import { ArrowRight } from "lucide-react";
 import { DESTINOS, MAPA_CONSULTA } from "../nav";
 import { CATEGORIA_HEX } from "../tokens";
@@ -49,11 +49,6 @@ export function MapaConsulta() {
                       <span className="min-w-0 flex-1 font-semibold text-slate-900">
                         {d.etiqueta}
                       </span>
-                      {d.fuente && (
-                        <span className="shrink-0 text-right text-xs text-slate-500">
-                          {d.fuente}
-                        </span>
-                      )}
                       <ArrowRight
                         size={14}
                         className="shrink-0 text-slate-400"
