@@ -83,14 +83,15 @@ export const TRAMO_HEX = {
 } as const;
 
 // Categorías de la navegación (color por FUNCIÓN, con los tonos de área del Manual SEEN):
-// leer = azul del Manual; consultar = malva del área Diabetes; confiar = pizarra;
-// aprender = mostaza; pacientes = salmón.
+// leer = azul del Manual; consultar = burdeos del rótulo (también el único acento de
+// interacción: botones, pestañas y selección activas); confiar = pizarra; aprender = mostaza;
+// pacientes = salmón. Los colores de categoría son acentos pequeños (icono, filete), no fondos.
 export const CATEGORIA_HEX: Record<
   string,
   { soft: string; strong: string; strong2: string; ink: string }
 > = {
   leer: { soft: "#eef3f9", strong: "#3f6e9f", strong2: "#2f5680", ink: "#2f5680" },
-  consultar: { soft: "#f7eff3", strong: "#94496e", strong2: "#7e3d5e", ink: "#6e3452" },
+  consultar: { soft: "#f7eff3", strong: "#8E254E", strong2: "#731d3f", ink: "#6b1c3b" },
   confiar: { soft: "#eff3f6", strong: "#5b7b95", strong2: "#4a657b", ink: "#3e566a" },
   aprender: { soft: "#fbf4e6", strong: "#8a5e10", strong2: "#73500e", ink: "#6b4a0d" },
   pacientes: { soft: "#fbeeeb", strong: "#a8473a", strong2: "#8e3b30", ink: "#7f3128" },

@@ -5,6 +5,8 @@ export default {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      // Notas, fuentes y rótulos pequeños a 13 px (auditoría de diseño del 10-10-2026).
+      fontSize: { xs: ["0.8125rem", { lineHeight: "1.2rem" }] },
       // Tipografía del Manual SEEN (0.5.0): Open Sans para el texto y los títulos (en ligera
       // y mayúsculas, como los capítulos del Manual) y Oswald, condensada, para el rótulo y
       // las etiquetas. Ambas autoalojadas (src/index.css), con pila de sistema de respaldo.

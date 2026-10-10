@@ -431,43 +431,28 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           causa y al plan de cambios.
         </p>
       </CabeceraEditorial>
-      <ol className="mb-4 flex flex-wrap gap-1.5" aria-label="Pasos">
-        {t.filas.map((f, i) => {
-          const on = i + 1 === n;
-          return (
-            <li key={i}>
-              <button
-                type="button"
-                aria-current={on ? "step" : undefined}
-                onClick={() => ir(i + 1)}
-                className={`flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "border border-slate-300 bg-white text-slate-600 hover:border-slate-500"}`}
-                style={
-                  on
-                    ? { background: `linear-gradient(135deg, ${hex.strong}, ${hex.strong2})` }
-                    : undefined
-                }
-                title={f.celdas[0]}
-              >
-                {i + 1}
-              </button>
-            </li>
-          );
-        })}
-      </ol>
-      <label className="no-imprimir mb-4 block max-w-md text-sm">
-        <span className="mb-1 block text-xs font-semibold text-slate-500">Ir a un paso</span>
-        <select
-          value={n}
-          onChange={(e) => ir(Number(e.target.value))}
-          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-        >
-          {t.filas.map((f, i) => (
-            <option key={i} value={i + 1}>
-              {i + 1}. {f.celdas[0]}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className="no-imprimir mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+        <span className="font-semibold text-slate-900">
+          Paso {n} de {t.filas.length}
+        </span>
+        <label className="inline-flex min-h-11 items-center gap-2 sm:min-h-9">
+          <span className="text-xs font-semibold" style={{ color: hex.strong }}>
+            Cambiar paso
+          </span>
+          <select
+            aria-label="Cambiar paso"
+            value={n}
+            onChange={(e) => ir(Number(e.target.value))}
+            className="max-w-[60vw] rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:max-w-md"
+          >
+            {t.filas.map((f, i) => (
+              <option key={i} value={i + 1}>
+                {i + 1}. {f.celdas[0]}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
       <section
         key={n}
         id="paso-descarga"
@@ -485,20 +470,19 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           </h2>
           <PaginaBadge p={t.paginas[0]} p2={t.paginas[1]} />
         </div>
-        <dl className="mt-3 grid gap-3 md:grid-cols-3">
+        <dl
+          className="mt-3 divide-y md:grid md:grid-cols-3 md:gap-4 md:divide-y-0"
+          style={{ borderColor: "#e6e6e6" }}
+        >
           {t.columnas.slice(1).map((col, j) => (
-            <div
-              key={col}
-              className="rounded-xl p-3"
-              style={{ background: j === 2 ? hex.soft : "#f8fafc" }}
-            >
+            <div key={col} className="py-2.5 md:py-0">
               <dt
                 className="mb-1 text-xs font-bold uppercase tracking-wide"
                 style={{ color: j === 2 ? hex.ink : "#475569" }}
               >
                 {col}
               </dt>
-              <dd className="text-sm text-slate-800">
+              <dd className="text-[15px] text-slate-800">
                 <Lineas>{fila.celdas[j + 1]}</Lineas>
               </dd>
             </div>
@@ -507,18 +491,17 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
         {casoPorId("ejemplo-descarga") && (
           <a
             href={href("casos", "ejemplo-descarga", String(n))}
-            className="mt-3 inline-flex min-h-11 items-center gap-1 rounded-lg px-3 text-sm font-semibold text-white"
-            style={{ background: CATEGORIA_HEX.aprender.strong }}
+            className="mt-3 inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 hover:border-slate-500"
           >
             Ver este paso en el ejemplo comentado <ArrowRight size={14} aria-hidden="true" />
           </a>
         )}
         {patrones.length > 0 && (
-          <div className="mt-4">
-            <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-              Patrón relacionado (del capítulo)
-            </div>
-            <ul className="space-y-2">
+          <details className="mt-4">
+            <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
+              Patrones relacionados del capítulo ({patrones.length})
+            </summary>
+            <ul className="mt-2 space-y-2">
               {patrones.map((p) => (
                 <li
                   key={p.ancla}
@@ -536,13 +519,13 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                 </li>
               ))}
             </ul>
-          </div>
+          </details>
         )}
         {n === 8 && (
           <a
             href={href("consultar", "figura-3")}
             className="mt-4 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-white"
-            style={{ background: `linear-gradient(135deg, ${hex.strong}, ${hex.strong2})` }}
+            style={{ background: hex.strong }}
           >
             Aplicar la Figura 3 paso a paso <ArrowRight size={14} aria-hidden="true" />
           </a>

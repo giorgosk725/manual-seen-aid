@@ -172,7 +172,7 @@ export function HubPacientes() {
               >
                 <span
                   className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white"
-                  style={{ background: `linear-gradient(135deg, ${hex.strong}, ${hex.strong2})` }}
+                  style={{ background: hex.strong }}
                   aria-hidden="true"
                 >
                   <I size={18} />
@@ -204,9 +204,7 @@ export function HubPacientes() {
                 style={{ borderColor: h.estado === "borrador" ? "#e0a83e" : "#e6e6e6" }}
               >
                 <span className="text-sm font-bold text-slate-900">{h.titulo}</span>
-                <span className="mt-1 text-xs text-slate-600">
-                  {h.rotulo} · {h.secciones.length} apartados
-                </span>
+                <span className="mt-1 text-xs text-slate-600">{h.rotulo}</span>
                 {h.estado === "borrador" && (
                   <span className="mt-1 inline-block w-fit rounded-full bg-amber-100 px-2 text-[11px] font-semibold text-amber-900">
                     Borrador en revisión

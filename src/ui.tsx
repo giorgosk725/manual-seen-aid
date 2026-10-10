@@ -277,11 +277,7 @@ export function Segmented<T extends string>({
             onClick={() => onChange(o.id)}
             aria-pressed={on}
             className={`flex min-h-11 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-semibold transition sm:min-h-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 ${wrap ? "" : "flex-1"} ${on ? "text-white shadow-sm" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
-            style={
-              on
-                ? { background: o.gradient || "linear-gradient(135deg, #3f6e9f, #2f5680)" }
-                : undefined
-            }
+            style={on ? { background: o.gradient || "#8E254E" } : undefined}
           >
             {I && <I size={15} aria-hidden="true" />}
             {o.shortLabel ? (

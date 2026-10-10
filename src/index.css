@@ -654,6 +654,21 @@ main .note-soft {
     color: #cbd5e1 !important;
     filter: none !important;
   }
+  /* Burdeos del Manual (acento de interacción: CATEGORIA_HEX.consultar strong/strong2/ink). */
+  html.night [style^="color: rgb(142, 37, 78)"],
+  html.night [style*="; color: rgb(142, 37, 78)"],
+  html.night [style^="color: rgb(115, 29, 63)"],
+  html.night [style*="; color: rgb(115, 29, 63)"],
+  html.night [style^="color: rgb(107, 28, 59)"],
+  html.night [style*="; color: rgb(107, 28, 59)"] {
+    color: #f0a8c4 !important;
+    filter: none;
+  }
+  /* Casilla de sistema marcada (fondo rosado del Manual). */
+  html.night [style*="background: rgb(247, 239, 243)"] {
+    background: #34202a !important;
+    color: #e2e8f0 !important;
+  }
   /* Chips de sistema de la tabla comparativa (ACCENT.text sobre ACCENT.soft): los fondos 50
      ya se oscurecen arriba; el texto 700 se aclara al 300 del mismo matiz. */
   html.night .text-blue-700 {
@@ -1007,12 +1022,12 @@ html.night .pagina-badge {
     }
   }
   .pantalla-in {
-    animation: ms-pantalla 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: ms-pantalla 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
   /* Pasos del recorrido de la Figura 3: entran escalonados. */
   .paso-in {
     animation: ms-pantalla 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-    animation-delay: calc(var(--i, 0) * 70ms);
+    animation-delay: calc(var(--i, 0) * 40ms);
   }
   /* Barra de progreso de lectura. */
   .progreso {
@@ -1097,6 +1112,13 @@ html.night .pagina-badge {
 }
 html.night .cabecera {
   background: rgba(15, 23, 42, 0.9);
+}
+/* Barra pegada de Sistemas: opaca, para que el contenido no se transparente por detrás. */
+.barra-pegada {
+  background: #fafafa;
+}
+html.night .barra-pegada {
+  background: #0b1220;
 }
 
 /* Barra lateral de escritorio: papel blanco con filete, como el índice de los capítulos del

@@ -87,7 +87,7 @@ export function Visual() {
                     <span
                       className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white shadow-sm"
                       style={{
-                        background: `linear-gradient(135deg, ${hex.strong}, ${hex.strong2})`,
+                        background: hex.strong,
                       }}
                       aria-hidden="true"
                     >

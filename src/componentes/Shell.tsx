@@ -397,7 +397,7 @@ function MenuNavegacion({
       <ul className="mt-3">
         <li>
           {enlace(
-            area === "inicio",
+            ruta.seccion === "",
             SEEN.burdeos,
             <>
               <Home size={16} aria-hidden="true" className="shrink-0 text-slate-600" />

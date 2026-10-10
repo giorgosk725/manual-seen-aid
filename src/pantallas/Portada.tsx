@@ -2,18 +2,7 @@
    capítulo y Para el paciente), el buscador, seguir leyendo, el mapa de consulta en cuatro
    bloques (componentes/MapaConsulta) y el capítulo publicado. */
 import { useState } from "react";
-import {
-  ArrowRight,
-  BookOpen,
-  Clock3,
-  Droplets,
-  ExternalLink,
-  Footprints,
-  HeartHandshake,
-  ListChecks,
-  Search,
-  Target,
-} from "lucide-react";
+import { ArrowRight, BookOpen, ExternalLink, HeartHandshake, Search } from "lucide-react";
 import { CAPITULO } from "../contenido";
 import { MapaConsulta } from "../componentes/MapaConsulta";
 import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
@@ -206,7 +195,7 @@ export function Portada() {
         aria-labelledby="titulo-capitulo"
       >
         <Franja />
-        <div className="grid items-center gap-8 px-4 py-4 sm:px-8 sm:py-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:px-10 lg:py-10">
+        <div className="px-4 py-4 sm:px-8 sm:py-8 lg:px-10 lg:py-8">
           <div className="min-w-0">
             <div
               className="etiqueta-area flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] sm:text-xs"
@@ -251,7 +240,6 @@ export function Portada() {
             </div>
             <SeguirLeyendo />
           </div>
-          <MosaicoDecorativo />
         </div>
       </section>
 
@@ -285,29 +273,3 @@ export function Portada() {
 
 /* Composición decorativa de la cabecera (solo escritorio): fichas de color con iconos del
    capítulo, al modo del mosaico de áreas del Manual. */
-function MosaicoDecorativo() {
-  const piezas = [
-    { c: FICHA_AREA.endocrino, I: Droplets },
-    { c: FICHA_AREA.diabetes, I: Target },
-    { c: FICHA_AREA.lipidos, I: null },
-    { c: FICHA_AREA.mineral, I: null },
-    { c: SEEN.burdeos, I: BookOpen },
-    { c: FICHA_AREA.azul, I: Clock3 },
-    { c: FICHA_AREA.lavanda, I: Footprints },
-    { c: FICHA_AREA.obesidad, I: null },
-    { c: FICHA_AREA.nutricion, I: ListChecks },
-  ];
-  return (
-    <div aria-hidden="true" className="hidden grid-cols-3 gap-1.5 lg:grid">
-      {piezas.map((p, i) => (
-        <span
-          key={i}
-          className="mosaico-pieza flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[3px] text-white xl:h-20 xl:w-20"
-          style={{ background: p.c, animationDelay: `${i * 60}ms` }}
-        >
-          {p.I && <p.I size={28} strokeWidth={1.5} />}
-        </span>
-      ))}
-    </div>
-  );
-}

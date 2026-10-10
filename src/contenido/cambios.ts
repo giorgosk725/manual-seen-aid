@@ -8,13 +8,25 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.25.5";
+export const VERSION_APP = "0.26.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-10",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — entradillas más cortas`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — cada control, una forma; un solo acento`,
+    detalle: [
+      "Un único acento de interacción, el burdeos del Manual: botones, pestañas y selección activas se ven igual en toda la app; los colores de categoría quedan como acentos pequeños y desaparecen los degradados.",
+      "En Sistemas AID, los sistemas se marcan como casillas (marca y punto de color) y las secciones son pestañas subrayadas; al desplazarse, la barra se pliega a una línea («Control-IQ + Omnipod 5 · Cambiar») con fondo opaco; Ficha completa e Imprimir pasan a la cabecera.",
+      "En el menú de escritorio, Inicio solo se marca en la portada (antes salía marcado junto a Sistemas AID).",
+      "Revisar la descarga: «Paso n de 8 · Cambiar paso» y Anterior/Siguiente al final; Qué mirar, Interpretación y Actuación en una sola superficie; los patrones relacionados, plegados.",
+      "En los apartados, los subapartados y los recursos se ven completos, sin deslizar en horizontal. Fuera el mosaico decorativo de la portada de escritorio. Notas y fuentes a 13 px; transiciones más breves.",
+    ],
+  },
+  {
+    fecha: "2026-10-10",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.25.5 — entradillas más cortas",
     detalle: [
       "Las frases de presentación de cada pantalla (Sistemas, Situaciones, Iniciar, Tablas, Casos, Preguntas, Repaso, Autoevaluación, Para el paciente) se quedan en una línea; fuera el plegable «Cómo funciona» de Buscar y el rótulo de área en la cabecera de cada apartado.",
     ],

@@ -124,6 +124,10 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
   const [cifrasAbiertas, setCifrasAbiertas] = useState(
     () => !window.matchMedia?.("(max-width: 767px)").matches,
   );
+  // Lo mismo para «En este apartado» (subapartados y recursos).
+  const [localAbierto, setLocalAbierto] = useState(
+    () => !window.matchMedia?.("(max-width: 767px)").matches,
+  );
   // Recursos visuales del apartado (tablas, figuras, diagramas), en orden de lectura.
   const recursos = apartado.bloques.flatMap((b, i) => {
     const ancla = idDeBloque(b, i);
@@ -214,61 +218,67 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
           <span className="w-16" style={{ background: colorApartado(apartado.n) }} />
           <span className="flex-1" />
         </div>
-        {subs.length > 0 && (
-          <nav
-            aria-label="En este apartado"
-            className="no-imprimir -mx-3 mt-3 flex items-center gap-1.5 overflow-x-auto px-3 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0"
+        {(subs.length > 0 || recursos.length > 0) && (
+          <details
+            className="group no-imprimir mt-3"
+            open={localAbierto}
+            onToggle={(e) => setLocalAbierto(e.currentTarget.open)}
           >
-            <span className="sr-only text-xs font-semibold uppercase tracking-wide text-slate-500 sm:not-sr-only">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center gap-1 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:min-h-8 [&::-webkit-details-marker]:hidden">
+              <ChevronDown
+                size={15}
+                aria-hidden="true"
+                className="shrink-0 -rotate-90 transition group-open:rotate-0"
+              />
               En este apartado
-            </span>
-            {subs.map((s) => (
-              <a
-                key={s.id}
-                href={href("capitulo", apartado.slug, s.id)}
-                className="inline-flex min-h-9 shrink-0 items-center whitespace-nowrap rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 sm:whitespace-normal"
-              >
-                {s.texto}
-              </a>
-            ))}
-          </nav>
-        )}
-        {recursos.length > 0 && (
-          <nav aria-label="Recursos visuales del apartado" className="no-imprimir mt-2 sm:mt-3">
-            <div className="sr-only mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:not-sr-only">
-              Tablas, figuras y diagramas
-            </div>
-            <ul className="-mx-3 flex gap-2 overflow-x-auto px-3 pb-1 sm:mx-0 sm:px-0">
-              {recursos.map((r) => {
-                const I = r.icono;
-                return (
-                  <li key={r.ancla} className="shrink-0">
+              <span className="font-normal normal-case tracking-normal">
+                {" "}
+                ·{" "}
+                {[
+                  subs.length && `${subs.length} subapartados`,
+                  recursos.length && `${recursos.length} tablas, figuras o diagramas`,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </span>
+            </summary>
+            <div className="mt-2 space-y-2">
+              {subs.length > 0 && (
+                <nav aria-label="Subapartados" className="flex flex-wrap items-center gap-1.5">
+                  {subs.map((s) => (
                     <a
-                      href={href("capitulo", apartado.slug, r.ancla)}
-                      className="hover-lift ease-brand flex items-center gap-2 rounded-[4px] border bg-white px-2.5 py-1.5 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:px-3 sm:py-2"
-                      style={{ borderColor: "#e6e6e6" }}
+                      key={s.id}
+                      href={href("capitulo", apartado.slug, s.id)}
+                      className="inline-flex min-h-9 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
                     >
-                      <span
-                        className="flex h-7 w-7 items-center justify-center rounded-[3px] text-white"
-                        style={{ background: SEEN.azulOsc }}
-                        aria-hidden="true"
-                      >
-                        <I size={15} />
-                      </span>
-                      <span>
-                        <span className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-                          {r.tipo}
-                        </span>
-                        <span className="block whitespace-nowrap font-semibold text-slate-900">
-                          {r.texto}
-                        </span>
-                      </span>
+                      {s.texto}
                     </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
+                  ))}
+                </nav>
+              )}
+              {recursos.length > 0 && (
+                <nav aria-label="Recursos visuales del apartado">
+                  <ul className="flex flex-wrap gap-2">
+                    {recursos.map((r) => {
+                      const I = r.icono;
+                      return (
+                        <li key={r.ancla}>
+                          <a
+                            href={href("capitulo", apartado.slug, r.ancla)}
+                            className="inline-flex min-h-9 items-center gap-1.5 rounded-full border bg-white px-2.5 text-xs font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                            style={{ borderColor: "#e6e6e6" }}
+                          >
+                            <I size={14} aria-hidden="true" style={{ color: SEEN.azulOsc }} />
+                            <span className="text-slate-500">{r.tipo}</span> {r.texto}
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </nav>
+              )}
+            </div>
+          </details>
         )}
       </header>
 

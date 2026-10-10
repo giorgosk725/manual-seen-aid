@@ -4,7 +4,7 @@
    aparte la Ampliación técnica, fuera del capítulo y con sus fuentes. Varios o todos
    (#/sistemas/<a+b|todos>/<seccion>) = la misma sección, un sistema junto a otro: eso son
    «Comparar sistemas» y «Parámetros por sistema». */
-import { useEffect, useMemo, useRef, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ArrowRight, Check, ExternalLink, Handshake, Minus, X } from "lucide-react";
 import {
   APARTADOS,
@@ -37,7 +37,7 @@ import { href } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Foldable, PaginaBadge } from "../ui";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
-import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
+import { CATEGORIA_HEX, SEEN, SISTEMA_HEX } from "../tokens";
 import { plano } from "../marcado";
 import { SITUACIONES } from "../situaciones";
 import { FICHA_SISTEMA_EDUCATIVA } from "../enlaces";
@@ -587,11 +587,21 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             >
               Plan de seguridad para entregar <ArrowRight size={13} aria-hidden="true" />
             </a>
+            <a
+              href={href("sistemas", s.id, completa ? "esencial" : "completa")}
+              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-600 hover:underline sm:min-h-8"
+            >
+              {completa ? "Por secciones" : "Ficha completa"}{" "}
+              <ArrowRight size={13} aria-hidden="true" />
+            </a>
+            <BotonImprimir objetivo={ref} compacto>
+              Imprimir
+            </BotonImprimir>
           </div>
         </div>
       </header>
 
-      <BarraSistemas ids={[s.id]} seccion={sec} completa={completa} refImprimir={ref} />
+      <BarraSistemas ids={[s.id]} seccion={sec} completa={completa} />
       <section
         aria-labelledby="esencial"
         className="scroll-mt-56 sm:scroll-mt-44"
@@ -825,12 +835,10 @@ function BarraSistemas({
   ids,
   seccion,
   completa = false,
-  refImprimir,
 }: {
   ids: string[];
   seccion?: string;
   completa?: boolean;
-  refImprimir: React.RefObject<HTMLDivElement>;
 }) {
   const sec = completa ? "completa" : seccion;
   const selStr = ids.length ? ids.join("+") : "todos";
@@ -856,71 +864,97 @@ function BarraSistemas({
       : ids.length === 1
         ? "Marca otro para compararlos"
         : "Quita uno para dejar su ficha";
+  // Al desplazarse, la barra se pliega a una línea («Control-IQ + Omnipod 5 · Cambiar») y las
+  // pestañas; «Cambiar» vuelve a abrir el selector hasta el siguiente desplazamiento.
+  const [plegada, setPlegada] = useState(false);
+  const [abierta, setAbierta] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const lejos = window.scrollY > 220;
+      setPlegada((p) => (p !== lejos ? lejos : p));
+      if (lejos) setAbierta(false);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  const compacta = plegada && !abierta;
+  const resumen = ids.length
+    ? ids.map((id) => SLUG_CORTO[columnaDeSistema(id as SistemaId)]).join(" + ")
+    : "Los cuatro sistemas";
   return (
     <div
-      className="cabecera no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 py-2 sm:mx-0 sm:rounded-lg sm:border sm:px-3"
+      className="barra-pegada no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 pt-2 sm:mx-0 sm:rounded-lg sm:border sm:px-3"
       style={{ borderColor: "#e6e6e6" }}
     >
-      <div role="group" aria-label="Sistemas" className="flex flex-wrap items-center gap-1.5">
-        {SISTEMAS_AMPLIACION.map((s, c) => {
-          const on = ids.includes(s.id);
-          const h = SISTEMA_HEX[c];
-          return (
-            <button
-              key={s.id}
-              type="button"
-              aria-pressed={on}
-              onClick={() => alternar(s.id)}
-              className="tap-44 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-              style={
-                on
-                  ? { background: h.ink, borderColor: h.ink, color: "#fff" }
-                  : { background: h.soft, borderColor: `${h.strong}40`, color: h.ink }
-              }
-            >
-              {on && <Check size={14} aria-hidden="true" />}
-              <span className="sm:hidden">{SLUG_CORTO[c]}</span>
-              <span className="hidden sm:inline">{s.name}</span>
-            </button>
-          );
-        })}
-        <span className="text-xs text-slate-500">{pista}</span>
-      </div>
+      {compacta ? (
+        <button
+          type="button"
+          onClick={() => setAbierta(true)}
+          className="flex min-h-9 w-full items-center gap-2 text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+          aria-expanded={false}
+        >
+          <span className="min-w-0 flex-1 truncate font-semibold text-slate-900">{resumen}</span>
+          <span className="shrink-0 text-xs font-semibold" style={{ color: SEEN.burdeos }}>
+            Cambiar
+          </span>
+        </button>
+      ) : (
+        <div role="group" aria-label="Sistemas" className="flex flex-wrap items-center gap-1.5">
+          {SISTEMAS_AMPLIACION.map((s, c) => {
+            const on = ids.includes(s.id);
+            const h = SISTEMA_HEX[c];
+            return (
+              <button
+                key={s.id}
+                type="button"
+                aria-pressed={on}
+                onClick={() => alternar(s.id)}
+                className="tap-44 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-sm font-semibold text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                style={
+                  on
+                    ? { borderColor: SEEN.burdeos, background: "#f7eff3" }
+                    : { borderColor: "#d4d4d4", background: "#fff" }
+                }
+              >
+                <span
+                  aria-hidden="true"
+                  className="grid h-4 w-4 shrink-0 place-items-center rounded-sm border"
+                  style={
+                    on
+                      ? { background: SEEN.burdeos, borderColor: SEEN.burdeos }
+                      : { background: "#fff", borderColor: "#9ca3af" }
+                  }
+                >
+                  {on && <Check size={12} color="#fff" />}
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="h-2 w-2 shrink-0 rounded-full"
+                  style={{ background: h.strong }}
+                />
+                <span className="sm:hidden">{SLUG_CORTO[c]}</span>
+                <span className="hidden sm:inline">{s.name}</span>
+              </button>
+            );
+          })}
+          <span className="text-xs text-slate-500">{pista}</span>
+        </div>
+      )}
       <nav
         aria-label="Sección"
-        className="-mx-3 mt-2 flex items-center gap-1.5 overflow-x-auto px-3 sm:mx-0 sm:flex-wrap sm:px-0"
+        className="-mx-3 mt-1 flex items-center gap-1 overflow-x-auto px-3 sm:mx-0 sm:flex-wrap sm:px-0"
       >
         {SECCIONES_FICHA.map((x) => (
           <a
             key={x.id}
             href={href("sistemas", selStr, x.id)}
             aria-current={sec === x.id ? "location" : undefined}
-            className={`inline-flex min-h-9 shrink-0 items-center rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${sec === x.id ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
-            style={
-              sec === x.id
-                ? { background: hex.strong, borderColor: hex.strong }
-                : { borderColor: "#d4d4d4" }
-            }
+            className={`inline-flex min-h-10 shrink-0 items-center border-b-2 px-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${sec === x.id ? "font-bold" : "border-transparent font-semibold text-slate-600 hover:text-slate-900"}`}
+            style={sec === x.id ? { borderColor: SEEN.burdeos, color: SEEN.burdeos } : undefined}
           >
             {x.t}
           </a>
         ))}
-        {ids.length === 1 && (
-          <a
-            href={href("sistemas", ids[0], completa ? "esencial" : "completa")}
-            className="inline-flex min-h-9 shrink-0 items-center rounded-full border border-dashed px-3 text-sm font-semibold text-slate-600 hover:border-slate-500"
-            style={{ borderColor: "#d4d4d4" }}
-          >
-            {completa ? "Por secciones" : "Ficha completa"}
-          </a>
-        )}
-        {sec && (
-          <span className="ml-auto flex shrink-0 items-center gap-1.5">
-            <BotonImprimir objetivo={refImprimir} compacto>
-              Imprimir
-            </BotonImprimir>
-          </span>
-        )}
       </nav>
     </div>
   );
@@ -1051,8 +1085,15 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
               ? `Comparando ${listaNombres(nombres)}.`
               : "Los cuatro sistemas, uno junto a otro."}
         </p>
+        {seccion && (
+          <div className="no-imprimir mt-2">
+            <BotonImprimir objetivo={ref} compacto>
+              Imprimir
+            </BotonImprimir>
+          </div>
+        )}
       </CabeceraEditorial>
-      <BarraSistemas ids={ids} seccion={seccion} refImprimir={ref} />
+      <BarraSistemas ids={ids} seccion={seccion} />
       {!seccion ? (
         <EntradaSistemas />
       ) : (
