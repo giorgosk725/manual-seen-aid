@@ -8,13 +8,24 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.25.2";
+export const VERSION_APP = "0.25.3";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-10",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — portada más limpia`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — menos texto de app`,
+    detalle: [
+      "«Sobre esta app» se queda con qué es y qué hay además del capítulo; fuera el historial de versiones, las correcciones editoriales, lo pendiente y la nota técnica.",
+      "En la ampliación técnica, donde un dato no coincidía con el capítulo se enseña directamente la frase del capítulo con su página, sin la marca «Difiere del capítulo»; la ratio insulina/HC pierde la etiqueta de nivel que el capítulo no le da.",
+      "En el menú lateral, pulsar otra vez «Índice del capítulo» pliega el índice.",
+      "Fuera la tarjeta repetida al pie de cada ficha y el texto largo de «Cómo funciona» del buscador.",
+    ],
+  },
+  {
+    fecha: "2026-10-10",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.25.2 — portada más limpia",
     detalle: [
       "Las filas del mapa de consulta llevan solo el nombre; la tabla o el apartado de donde sale cada cosa se ve al entrar.",
     ],

@@ -1,7 +1,8 @@
-/* Datos de la ampliación del autor que no coinciden con el capítulo (auditorías del 2-10-2026,
-   §3, y del 3-10-2026). Hasta que el autor decida, la ficha los muestra con la marca «Difiere
-   del capítulo» y la frase literal del capítulo con su página: manda el capítulo. Cuando el
-   autor corrija la ampliación o el capítulo, se quita la entrada. */
+/* Datos de la ampliación que no coinciden con el capítulo (auditorías del 2-10-2026, §3, y del
+   3-10-2026). Manda el capítulo: en la ficha, el campo enseña la frase literal del capítulo con
+   su página en vez del dato de la ampliación, y el parámetro pierde la etiqueta de nivel
+   (decisión del 10-10-2026, sin marca «Difiere» a la vista). Cuando se corrija la ampliación,
+   se quita la entrada. */
 import type { SistemaId } from "./tipos";
 
 export interface Discrepancia {

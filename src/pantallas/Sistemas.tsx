@@ -31,11 +31,10 @@ import {
   WEB_SISTEMA,
   columnaDeSistema,
   sistemaPorId,
-  type Discrepancia,
   type Sistema,
 } from "../ampliacion";
 import { href } from "../rutas";
-import { BotonImprimir, CabeceraEditorial, Foldable, PaginaBadge, ToneCard } from "../ui";
+import { BotonImprimir, CabeceraEditorial, Foldable, PaginaBadge } from "../ui";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
@@ -120,16 +119,6 @@ const NIVEL: Record<string, { etiqueta: string; color: string }> = {
 };
 
 /* Marca de un dato de la ampliación que no coincide con el capítulo: manda el capítulo. */
-function Difiere({ d }: { d: Discrepancia }) {
-  return (
-    <span className="mt-1.5 block rounded-md border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs text-red-900">
-      <span className="font-bold">Difiere del capítulo; aquí se sigue el capítulo.</span> {d.donde},
-      p. {d.p}: <q className="italic">{d.capitulo}</q>
-      {d.nota && <span className="mt-0.5 block text-red-800">{d.nota}</span>}
-    </span>
-  );
-}
-
 function Ampliacion({ s }: { s: Sistema }) {
   const sets = SETS_INFUSION[s.id] || [];
   const fuentes = s.sources.map((id) => ({ id, f: FUENTES[id] })).filter((x) => x.f);
@@ -160,14 +149,18 @@ function Ampliacion({ s }: { s: Sistema }) {
             <dl className="divide-y" style={{ borderColor: "#e6e6e6" }}>
               {g.rows.map((r) => {
                 let valor: React.ReactNode = null;
+                // Donde la ampliación no coincide con el capítulo, se enseña la frase del capítulo.
                 const dif = r.f ? DIFIERE_CAMPO[s.id]?.[r.f] : undefined;
-                if (r.f)
+                if (dif)
                   valor = (
                     <>
-                      <Lineas>{s.detail[r.f] || "—"}</Lineas>
-                      {dif && <Difiere d={dif} />}
+                      <Lineas>{dif.capitulo}</Lineas>{" "}
+                      <span className="pagina-badge">
+                        {dif.donde}, p. {dif.p}
+                      </span>
                     </>
                   );
+                else if (r.f) valor = <Lineas>{s.detail[r.f] || "—"}</Lineas>;
                 else if (r.crit) {
                   const c = CRITERIOS.find((x) => x.id === r.crit);
                   const cel = c?.s[s.id];
@@ -196,11 +189,7 @@ function Ampliacion({ s }: { s: Sistema }) {
         ))}
         <Foldable
           title="Parámetros: cuáles mueven el modo automático"
-          subtitle={`Resumen de la ampliación: ${s.takeaway}${
-            DIFIERE_PARAM[s.id]
-              ? ` · Difiere del capítulo: ${Object.keys(DIFIERE_PARAM[s.id]!).join(", ")} (Tabla 1, p. 4)`
-              : ""
-          }`}
+          subtitle={`Resumen de la ampliación: ${s.takeaway}`}
         >
           <ul className="space-y-2">
             {s.params.map((p) => {
@@ -213,12 +202,14 @@ function Ampliacion({ s }: { s: Sistema }) {
                 >
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-sm font-bold text-slate-900">{p.name}</span>
-                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700">
-                      {n.etiqueta}
-                    </span>
+                    {/* Si el capítulo no le da efecto directo (sin asterisco en la Tabla 1), sin etiqueta de nivel. */}
+                    {!DIFIERE_PARAM[s.id]?.[p.name] && (
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700">
+                        {n.etiqueta}
+                      </span>
+                    )}
                   </div>
                   <p className="mt-0.5 text-sm text-slate-700">{p.note}</p>
-                  {DIFIERE_PARAM[s.id]?.[p.name] && <Difiere d={DIFIERE_PARAM[s.id]![p.name]} />}
                   {p.modes && (
                     <ul className="mt-1 space-y-1 text-sm text-slate-700">
                       {p.modes.map((m) => (
@@ -799,14 +790,6 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       </section>
 
       {ver("ampliacion") && <Ampliacion s={s} />}
-
-      <ToneCard tone="slate" className="mt-6">
-        <p className="text-xs text-slate-600">
-          «Lo esencial», «Parámetros» y «Situaciones» son texto literal del Manual SEEN con su
-          página. La «Ampliación técnica» es material complementario, fuera del capítulo, con sus
-          fuentes; no sustituye la ficha técnica vigente de cada sistema.
-        </p>
-      </ToneCard>
 
       <nav aria-label="Otro sistema" className="no-imprimir mt-6 grid gap-2 sm:grid-cols-2">
         {prev ? (

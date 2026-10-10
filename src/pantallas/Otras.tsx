@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { FRECUENTES } from "../frecuentes";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
-import { CAMBIOS, PENDIENTES, VERSION_APP } from "../contenido/cambios";
+import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
 import { PREGUNTAS } from "../contenido/test";
 import { href } from "../rutas";
 import { Badge, CabeceraEditorial, Revelar, ToneCard } from "../ui";
@@ -149,15 +149,10 @@ export function Buscar({ inicial }: { inicial?: string }) {
             Cómo funciona
           </summary>
           <p className="mt-1">
-            Por ejemplo «cetonas 1,2», «modo ejercicio en Control-IQ» o «cuánto tiempo puedo estar
-            desconectado». Arriba, la frase, la fila de tabla o el tramo de la Figura 3 que mejor
-            encaja, literal y con su página; si solo coincide en parte, se rotula «coincidencia
-            parcial». Debajo, los primeros sitios donde salen esas palabras (el resto, con «Ver más
-            resultados») y, aparte, lo que no es del capítulo (ampliación técnica, hojas para el
-            paciente, casos y test). El pasaje se elige por las palabras y, con conexión, también
-            por el sentido (un modelo de lenguaje compara la búsqueda con los pasajes; si solo lo
-            propone el sentido, va como «coincidencia parcial»): comprueba siempre que responde a lo
-            que buscas.
+            Arriba, el pasaje del capítulo que mejor encaja, literal y con su página («coincidencia
+            parcial» si solo coincide en parte). Debajo, los demás resultados y, aparte, lo que no
+            es del capítulo. Con conexión se busca también por el sentido: comprueba siempre que el
+            pasaje responde a lo que buscas.
           </p>
         </details>
       </CabeceraEditorial>
@@ -299,40 +294,21 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
   );
 }
 
-/* ---------- Qué ha cambiado ---------- */
-/* Línea de tiempo de cambios (capítulo o app). */
-/* ---------- Sobre esta app: qué es, de dónde sale, datos, pendiente e historial ---------- */
-/* Correcciones editoriales ya incluidas en el capítulo publicado (3 finales del 5-10 y 11 del 30-9). */
-const CORRECCIONES = [
-  "Final 1/3 (p. 4, Tabla 1, Control-IQ+): «peso 9–200 kg, DTD 5–200 UI/día».",
-  "Final 2/3 (p. 15): con iSGLT2 ya no se rebaja el umbral a 200 mg/dl; «alta sospecha de cetoacidosis y medirse la cetonemia ante síntomas o situaciones de riesgo, con independencia del nivel de glucemia».",
-  "Final 3/3 (p. 25, bibliografía): «doi:10.2337/dci26-0122» en la referencia 6.",
-  "1/11 (p. 3): «control predictivo basado en modelo (MPC) y lógica difusa».",
-  "2/11 (pp. 3–4): «Sistemas AID comercializados en España» en el texto y en la Tabla 1.",
-  "3/11 (p. 4, Tabla 1): indicación de Omnipod 5 «≥ 2 años; sin peso mínimo; DTD ≥ 5 UI/día».",
-  "4/11 (p. 5): sin guion tras «Omnipod 5».",
-  "5/11 (p. 8, Figura 3): columna amarilla «β-OHB 0,6-0,9 mmol/l»; nota de las dosis con asterisco; «Precisan atención urgente» en negrita; «iSGLT2»; acentos y «β-OHB» unificado.",
-  "6/11 (p. 11, Tabla 3): modo ejercicio «140–160 mg/dl».",
-  "7/11 (p. 11, Tabla 4): «Ejercicio anaeróbico o de alta intensidad» como fila normal con una celda común.",
-  "8/11 (p. 21, Tabla 6): «Tomografía computarizada (TC)».",
-  "9/11 (p. 24, infografía): «En modalidades híbridas»; «Requieren anuncio de comidas y bolo prandial»; «DM1»; «Mejora consistente del control glucémico con buen perfil de seguridad»; «Bomba de insulina o pod»; «Iniciar».",
-  "10/11 (pp. 24–25, bibliografía): referencia 6 completa (Holt RIG et al., Diabetes Care 2026).",
-  "11/11 (encabezado gráfico): no afecta al texto.",
-];
-
+/* ---------- Sobre esta app: qué es y qué hay además del capítulo ---------- */
 export function Sobre() {
   const ultimoCap = CAMBIOS.find((c) => c.ambito === "capitulo")!;
-  const caja = "rounded-2xl border bg-white p-4 shadow-soft";
-  const borde = { borderColor: "#e6e6e6" };
   return (
     <div className="space-y-4">
       <CabeceraEditorial titulo="Sobre esta app" hex={CATEGORIA_HEX.confiar} level={1}>
         <p className="text-sm text-slate-600">
-          Versión {VERSION_APP} ({fecha(CAMBIOS[0].fecha)}) · capítulo publicado el{" "}
-          {fecha(ultimoCap.fecha)}.
+          Versión {VERSION_APP} · capítulo publicado el {fecha(ultimoCap.fecha)}.
         </p>
       </CabeceraEditorial>
-      <section className={`prosa ${caja}`} style={borde} aria-labelledby="s-que">
+      <section
+        className="prosa rounded-2xl border bg-white p-4 shadow-soft"
+        style={{ borderColor: "#e6e6e6" }}
+        aria-labelledby="s-que"
+      >
         <h2 id="s-que" className="text-base font-extrabold text-slate-900">
           Qué es
         </h2>
@@ -368,69 +344,11 @@ export function Sobre() {
             app, revisado, que cita siempre la frase literal del capítulo con su página.
           </li>
         </ul>
-        <h2 className="mt-4 text-base font-extrabold text-slate-900">Datos</h2>
-        <p className="mt-2 text-sm">
-          No pide ni guarda datos de pacientes. En este dispositivo se guardan solo preferencias de
-          lectura (modo nocturno, letra, por dónde se iba, repaso y últimas búsquedas). Para buscar
-          por el sentido, el texto de la búsqueda se envía a un modelo de lenguaje de Cloudflare,
-          que no lo guarda; sin conexión se busca por palabras. No sustituye la ficha técnica de
-          cada sistema, los protocolos del centro ni el juicio clínico.
+        <p className="mt-4 text-sm text-slate-600">
+          No pide ni guarda datos de pacientes. No sustituye la ficha técnica de cada sistema, los
+          protocolos del centro ni el juicio clínico.
         </p>
-        <h2 className="mt-4 text-base font-extrabold text-slate-900">Pendiente</h2>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
-          {PENDIENTES.map((x, i) => (
-            <li key={i}>{x}</li>
-          ))}
-        </ul>
       </section>
-      <details className={caja} style={borde}>
-        <summary className="min-h-11 cursor-pointer text-base font-extrabold text-slate-900 sm:min-h-8">
-          Historial de versiones ({CAMBIOS.length})
-        </summary>
-        <ol className="mt-3 space-y-3">
-          {CAMBIOS.map((c, i) => (
-            <li key={i}>
-              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                <Badge tone={c.ambito === "capitulo" ? "sky" : "emerald"}>
-                  {c.ambito === "capitulo" ? "Capítulo" : "App"}
-                </Badge>
-                <time dateTime={c.fecha}>{fecha(c.fecha)}</time>
-              </div>
-              <details className="mt-0.5">
-                <summary className="min-h-11 cursor-pointer text-sm font-bold text-slate-900 sm:min-h-7">
-                  {c.titulo}
-                </summary>
-                <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-slate-700">
-                  {c.detalle.map((d, j) => (
-                    <li key={j}>{d}</li>
-                  ))}
-                </ul>
-              </details>
-            </li>
-          ))}
-        </ol>
-      </details>
-      <details className={caja} style={borde}>
-        <summary className="min-h-11 cursor-pointer text-base font-extrabold text-slate-900 sm:min-h-8">
-          Correcciones editoriales, ya en el capítulo publicado ({CORRECCIONES.length})
-        </summary>
-        <ol className="mt-3 space-y-1 text-sm text-slate-700">
-          {CORRECCIONES.map((c, i) => (
-            <li key={i} className="flex gap-2">
-              <CheckCircle2
-                size={15}
-                className="mt-0.5 shrink-0 text-emerald-700"
-                aria-hidden="true"
-              />
-              <span>{c}</span>
-            </li>
-          ))}
-        </ol>
-      </details>
-      <p className="text-xs text-slate-500">
-        Vite, React y TypeScript; sin analítica. Código en el repositorio público{" "}
-        <code>manual-seen-aid</code>.
-      </p>
     </div>
   );
 }

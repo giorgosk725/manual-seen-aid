@@ -300,10 +300,22 @@ function MenuNavegacion({
   const ultimo = useUltimo();
   const enCapitulo = ruta.seccion === "capitulo";
   const area = areaDe(ruta.seccion);
-  const enlace = (on: boolean, color: string, contenido: ReactNode, destino: string) => (
+  // El índice de los apartados se despliega dentro de la lectura; pulsar otra vez «Índice del
+  // capítulo» estando ya en ella lo pliega (y vuelve a desplegarlo).
+  const [indiceAbierto, setIndiceAbierto] = useState(true);
+  const enlace = (
+    on: boolean,
+    color: string,
+    contenido: ReactNode,
+    destino: string,
+    onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void,
+  ) => (
     <a
       href={destino}
-      onClick={onIr}
+      onClick={(e) => {
+        onClick?.(e);
+        if (!e.defaultPrevented) onIr?.();
+      }}
       aria-current={on ? "page" : undefined}
       className={`relative flex min-h-9 items-center gap-2.5 rounded-md px-3 py-1.5 text-[13.5px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"}`}
     >
@@ -329,10 +341,23 @@ function MenuNavegacion({
           <>
             <I size={16} aria-hidden="true" style={{ color: cat.strong }} className="shrink-0" />
             {d.etiqueta}
+            {id === "capitulo" && enCapitulo && (
+              <ChevronDown
+                size={14}
+                aria-hidden="true"
+                className={`ml-auto text-slate-500 transition ${indiceAbierto ? "rotate-180" : ""}`}
+              />
+            )}
           </>,
           d.href,
+          id === "capitulo" && enCapitulo
+            ? (e) => {
+                e.preventDefault();
+                setIndiceAbierto((v) => !v);
+              }
+            : undefined,
         )}
-        {id === "capitulo" && enCapitulo && (
+        {id === "capitulo" && enCapitulo && indiceAbierto && (
           <ol className="ml-4 mt-1 space-y-0.5 border-l pl-2" style={{ borderColor: "#e6e6e6" }}>
             {APARTADOS.map((a) => {
               const onA = ruta.sub === a.slug;
