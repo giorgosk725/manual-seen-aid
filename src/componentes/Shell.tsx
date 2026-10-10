@@ -125,7 +125,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
             onKeyDown={alTeclear}
             aria-describedby="paleta-ayuda"
             aria-label="Buscar en el capítulo"
-            placeholder="Pregunta o busca en el capítulo…"
+            placeholder="Una duda: cetonas 1,2, modo sueño en Control-IQ…"
             className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
             autoComplete="off"
           />
@@ -687,19 +687,22 @@ export function Shell({
           <span className="hidden min-w-0 flex-1 truncate text-sm text-slate-600 md:block">
             {titulo || CAPITULO.tituloCorto}
           </span>
-          {/* En escritorio, la búsqueda vive aquí (no se repite en la barra lateral). */}
-          <button
-            type="button"
-            onClick={abrirPaleta}
-            aria-label="Buscar en el capítulo (Ctrl K)"
-            className="ml-auto hidden min-h-10 w-64 shrink-0 items-center gap-2 rounded-md border border-slate-300 bg-white px-3 text-left text-sm text-slate-500 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:flex lg:w-80"
-          >
-            <Search size={15} aria-hidden="true" className="shrink-0" />
-            <span className="flex-1 truncate">¿Qué quieres entender o consultar?</span>
-            <kbd className="rounded border border-slate-300 px-1 text-[10px] text-slate-500">
-              Ctrl K
-            </kbd>
-          </button>
+          {/* En escritorio, la búsqueda vive aquí (no se repite en la barra lateral). En la
+              portada no: allí está el buscador grande, y dos cajas confunden. */}
+          {ruta.seccion !== "" && (
+            <button
+              type="button"
+              onClick={abrirPaleta}
+              aria-label="Buscar en el capítulo (Ctrl K)"
+              className="ml-auto hidden min-h-10 w-64 shrink-0 items-center gap-2 rounded-md border border-slate-300 bg-white px-3 text-left text-sm text-slate-500 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:flex lg:w-80"
+            >
+              <Search size={15} aria-hidden="true" className="shrink-0" />
+              <span className="flex-1 truncate">Pregunta al capítulo</span>
+              <kbd className="rounded border border-slate-300 px-1 text-[10px] text-slate-500">
+                Ctrl K
+              </kbd>
+            </button>
+          )}
           <span className="flex-1 md:hidden" />
           {enLectura && (
             <div
@@ -727,14 +730,16 @@ export function Shell({
               </button>
             </div>
           )}
-          <button
-            type="button"
-            onClick={abrirPaleta}
-            aria-label="Buscar"
-            className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
-          >
-            <Search size={18} />
-          </button>
+          {ruta.seccion !== "" && (
+            <button
+              type="button"
+              onClick={abrirPaleta}
+              aria-label="Buscar"
+              className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
+            >
+              <Search size={18} />
+            </button>
+          )}
           <button
             type="button"
             onClick={toggleNight}

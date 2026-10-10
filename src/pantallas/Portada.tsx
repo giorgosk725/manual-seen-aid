@@ -17,7 +17,7 @@ import { Autocompletar } from "../componentes/Autocompletar";
 import { SinResultados } from "../componentes/SinResultados";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
 import { useUltimo, useVisitas } from "../prefs";
-import { FICHA_AREA, SEEN } from "../tokens";
+import { CATEGORIA_HEX, FICHA_AREA, SEEN } from "../tokens";
 
 const fecha = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("es-ES", {
@@ -101,8 +101,12 @@ function Buscador() {
   if (motor && (respuestas.length || frecuente)) motor.recordarTema(qEf);
   return (
     <section aria-labelledby="portada-buscar" className="scroll-mt-16 space-y-3">
-      <h2 id="portada-buscar" className="sr-only">
-        ¿Qué quieres entender o consultar?
+      <h2
+        id="portada-buscar"
+        className="text-xs font-bold uppercase tracking-wide"
+        style={{ color: CATEGORIA_HEX.consultar.ink }}
+      >
+        Pregunta al capítulo
       </h2>
       <form
         role="search"
@@ -129,7 +133,7 @@ function Buscador() {
             }}
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Tema, sistema o pregunta…"
+            placeholder="Una duda: cetonas 1,2, modo sueño en Control-IQ, resonancia con 780G…"
             autoComplete="off"
             className="w-full bg-transparent text-base text-slate-900 placeholder:text-slate-500 focus:outline-none"
           />
@@ -245,11 +249,9 @@ export function Portada() {
                 className="inline-block h-2.5 w-2.5"
                 style={{ background: SEEN.diabetes }}
               />
-              <span>Manual SEEN</span>
+              <span>Capítulo {CAPITULO.numero} del Manual SEEN</span>
               <span aria-hidden="true">·</span>
               <span>{CAPITULO.area}</span>
-              <span aria-hidden="true">·</span>
-              <span>Capítulo {CAPITULO.numero}</span>
             </div>
             <h1
               id="titulo-capitulo"

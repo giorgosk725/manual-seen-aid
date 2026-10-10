@@ -8,13 +8,22 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.29.0";
+export const VERSION_APP = "0.29.1";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — listas y tarjetas`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — un solo buscador en la portada`,
+    detalle: [
+      "En la portada solo hay un buscador: desaparece la caja de la barra superior (en escritorio) y la lupa (en el móvil) mientras se está en ella; en las demás pantallas siguen, y Ctrl K también.",
+      "La portada dice mejor lo que hace: «Pregunta al capítulo» sobre la caja, con ejemplos de dudas en el hueco, y una línea bajo «Consultar» que explica los cuatro bloques; la cabecera dice «Capítulo 89 del Manual SEEN · Área II. Diabetes».",
+    ],
+  },
+  {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.29.0 — listas y tarjetas",
     detalle: [
       "Buscar separa los resultados en pestañas: Texto · Tablas y figuras · Fuera del capítulo, con su cuenta.",
       "Situaciones y Preguntas frecuentes se filtran escribiendo («resonancia», «gestación»): la lista se acorta mientras se escribe.",
