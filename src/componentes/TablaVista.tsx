@@ -173,12 +173,8 @@ function Fichas({
       {idx.map((i) => {
         const f = tabla.filas[i];
         return (
-          <li
-            key={i}
-            className="rounded-xl border bg-white p-3 shadow-soft"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            <div className="mb-2 text-sm font-bold text-slate-900">
+          <li key={i} className="rounded-xl border bg-white p-3" style={{ borderColor: "#e6e6e6" }}>
+            <div className="mb-2 text-[15px] font-bold text-slate-900">
               <Lineas>
                 {/^\d+$/.test(f.etiqueta) ? `${tabla.cabeceraEtiqueta} ${f.etiqueta}` : f.etiqueta}
               </Lineas>
@@ -187,8 +183,8 @@ function Fichas({
               {(f.unida ? [columnas[0]] : columnas).map((c) => (
                 <div
                   key={c}
-                  className="rounded-lg px-2.5 py-2"
-                  style={{ background: tabla.porSistema ? SISTEMA_HEX[c].soft : "#f8fafc" }}
+                  className="border-l-[3px] py-0.5 pl-2.5"
+                  style={{ borderColor: tabla.porSistema ? SISTEMA_HEX[c].strong : "#cbd5e1" }}
                 >
                   <dt
                     className="text-xs font-bold uppercase tracking-wide"
@@ -196,7 +192,7 @@ function Fichas({
                   >
                     {f.unida ? "Todos los sistemas" : tabla.columnas[c]}
                   </dt>
-                  <dd className="mt-0.5 text-sm text-slate-700">
+                  <dd className="mt-0.5 text-[15px] text-slate-800">
                     <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
                   </dd>
                 </div>
@@ -214,11 +210,8 @@ function FichaSistema({ tabla, c }: { tabla: Tabla; c: number }) {
   const hex = SISTEMA_HEX[c];
   return (
     <div
-      className="rounded-2xl border bg-white shadow-soft"
-      style={{
-        borderColor: "#e6e6e6",
-        boxShadow: `inset 0 3px 0 0 ${hex.strong}, 0 8px 24px rgba(15,23,42,0.05)`,
-      }}
+      className="rounded-2xl border bg-white"
+      style={{ borderColor: "#e6e6e6", boxShadow: `inset 0 3px 0 0 ${hex.strong}` }}
     >
       <div className="px-4 pt-4 text-base font-extrabold" style={{ color: hex.ink }}>
         {tabla.columnas[c]}
@@ -229,7 +222,7 @@ function FichaSistema({ tabla, c }: { tabla: Tabla; c: number }) {
             <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">
               <Lineas>{f.etiqueta}</Lineas>
             </dt>
-            <dd className="text-sm text-slate-800">
+            <dd className="text-[15px] text-slate-800">
               <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
             </dd>
           </div>

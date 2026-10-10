@@ -445,7 +445,7 @@ function ColumnaTabla({
               <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">
                 <Lineas>{f.etiqueta}</Lineas>
               </dt>
-              <dd className="text-sm text-slate-800">
+              <dd className="text-[15px] text-slate-800">
                 <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
               </dd>
             </div>
@@ -1133,23 +1133,24 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
           )}
           {seccion === "parametros" && (
             <>
-              <p className="mb-2 text-sm text-slate-600">
-                Cuáles se pueden configurar en modo automático (Tabla 1) y cómo se ajusta cada uno
-                (Tabla 3).
-              </p>
-              <div className="mb-3 grid gap-2 sm:grid-cols-2">
-                {cols.map((c) => (
-                  <div key={c}>
-                    <div
-                      className="mb-1 text-sm font-extrabold"
-                      style={{ color: SISTEMA_HEX[c].ink }}
-                    >
-                      {TABLAS.T1.columnas[c]}
+              <details className="mb-3">
+                <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
+                  Qué se configura en modo automático (Tabla 1)
+                </summary>
+                <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                  {cols.map((c) => (
+                    <div key={c}>
+                      <div
+                        className="mb-1 text-sm font-extrabold"
+                        style={{ color: SISTEMA_HEX[c].ink }}
+                      >
+                        {TABLAS.T1.columnas[c]}
+                      </div>
+                      <ParametrosAutomatico c={c} hexSistema={SISTEMA_HEX[c]} />
                     </div>
-                    <ParametrosAutomatico c={c} hexSistema={SISTEMA_HEX[c]} />
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </details>
               <NivelTitulo.Provider value={2}>
                 <TablaVista tabla={TABLAS.T3} columnasFijas={cols} />
               </NivelTitulo.Provider>

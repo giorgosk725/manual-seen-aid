@@ -71,18 +71,16 @@
   /* Sombra «flotante» suave del rediseño 2026. Utilidad propia (no es core Tailwind):
      en la app se compila desde index.css; si el artefacto se sirve en un host sin
      esta hoja, la tarjeta degrada con elegancia (conserva borde y fondo). */
+  /* Auditoría de diseño del 10-10-2026: las superficies en reposo no flotan; las delimita el
+     borde fino (#e6e6e6). La sombra queda para lo que de verdad flota (menús, diálogos) y
+     para el hover de los enlaces-tarjeta. */
   .shadow-soft {
-    box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.06),
-      0 6px 16px rgba(0, 0, 0, 0.05);
+    box-shadow: none;
   }
-  /* Hover de elevación de la casa: la MISMA geometría de sombra que shadow-soft,
-     más profunda — la tarjeta «se levanta» en vez de cambiar de material (antes el
-     hover saltaba a shadow-md de Tailwind, otra familia de sombra). */
   .hover-lift:hover {
     box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.08),
-      0 12px 28px rgba(0, 0, 0, 0.1);
+      0 1px 2px rgba(0, 0, 0, 0.06),
+      0 6px 16px rgba(0, 0, 0, 0.08);
   }
   /* Curva de movimiento única de la casa (la misma de animate-in/loop-draw) para
      transiciones de hover: una sola personalidad de movimiento en toda la portada. */
@@ -129,10 +127,7 @@ main .bg-white.shadow-soft {
   /* Lenguaje de la portada: borde NEUTRO (el color vive en el acento superior,
      el título y los iconos, no en el perímetro). */
   border-color: #e6e6e6;
-  box-shadow:
-    inset 0 3px 0 0 var(--cat, #3f6e9f),
-    0 1px 2px rgba(0, 0, 0, 0.06),
-    0 6px 16px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 3px 0 0 var(--cat, #3f6e9f);
 }
 
 /* Cajas de nota informativa: tinte suave de la categoría activa. Mantienen
@@ -342,10 +337,10 @@ main .note-soft {
     border-color: #334155;
   }
   html.night .shadow-soft {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    box-shadow: none;
   }
   html.night .hover-lift:hover {
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
   }
   /* Controles nativos */
   html.night input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),

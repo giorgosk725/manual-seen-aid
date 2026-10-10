@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.26.0";
+export const VERSION_APP = "0.27.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-10",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — cada control, una forma; un solo acento`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — superficies más tranquilas`,
+    detalle: [
+      "Las tarjetas ya no flotan: las delimita el borde fino; la sombra queda para lo que de verdad flota (menús, diálogos) y para el hover de los enlaces.",
+      "En las tablas por sistema del móvil y en Situaciones, cada sistema va con un filete de su color en vez de un fondo teñido, y el dato al tamaño de lectura (15 px), como en la ficha.",
+      "En Parámetros comparados, la Tabla 3 va primero; lo que se configura en modo automático (Tabla 1) queda plegado encima.",
+    ],
+  },
+  {
+    fecha: "2026-10-10",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.26.0 — cada control, una forma; un solo acento",
     detalle: [
       "Un único acento de interacción, el burdeos del Manual: botones, pestañas y selección activas se ven igual en toda la app; los colores de categoría quedan como acentos pequeños y desaparecen los degradados.",
       "En Sistemas AID, los sistemas se marcan como casillas (marca y punto de color) y las secciones son pestañas subrayadas; al desplazarse, la barra se pliega a una línea («Control-IQ + Omnipod 5 · Cambiar») con fondo opaco; Ficha completa e Imprimir pasan a la cabecera.",

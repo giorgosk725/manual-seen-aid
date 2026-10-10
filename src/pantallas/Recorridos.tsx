@@ -307,8 +307,8 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                       {tabla.columnas.map((nombre, c) => (
                         <div
                           key={c}
-                          className="rounded-xl p-3 text-sm text-slate-800"
-                          style={{ background: SISTEMA_HEX[c].soft }}
+                          className="border-l-[3px] py-0.5 pl-3 text-[15px] text-slate-800"
+                          style={{ borderColor: SISTEMA_HEX[c].strong }}
                         >
                           <span
                             className="mb-1 block text-xs font-bold uppercase tracking-wide"
