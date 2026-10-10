@@ -57,7 +57,7 @@ const SECCION_DE_TABLA: Record<string, string> = {
 };
 
 /* Enlaces de acción según de dónde sale la respuesta (además de «Ver en…»). */
-function accionesDe(r: Respuesta): { texto: string; ruta: string }[] {
+function accionesDe(r: Respuesta, punto?: string): { texto: string; ruta: string }[] {
   const out: { texto: string; ruta: string }[] = [];
   const tabla = r.id.split("/")[0];
   if (/^T[1-6]$/.test(tabla))
@@ -69,7 +69,8 @@ function accionesDe(r: Respuesta): { texto: string; ruta: string }[] {
           }
         : { texto: `Tabla ${tabla.slice(1)} completa`, ruta: href("consultar", "tablas", tabla) },
     );
-  const todo = `${r.titulo} ${r.texto} ${(r.items ?? []).join(" ")}`;
+  // De una lista solo cuenta el punto que responde (no toda la lista).
+  const todo = `${r.titulo} ${r.texto} ${punto ?? ""}`;
   if (r.id.startsWith("F3/") || /cetonemia|cetosis|β-OHB|cetoacidosis/i.test(todo))
     out.push({
       texto: "Hoja para el paciente: cetonas",
@@ -158,7 +159,7 @@ function Tarjeta({
   const casilla = casillas && sel !== null && sel >= 0 ? casillas[sel] : null;
   const ruta = casilla ? casilla.ruta : r.ruta;
   const ctx = verContexto && contexto ? contexto(r.id) : null;
-  const acciones = principal ? accionesDe(r) : [];
+  const acciones = principal ? accionesDe(r, clave >= 0 ? r.items![clave] : undefined) : [];
   const enlace =
     "inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline sm:min-h-8";
   return (
