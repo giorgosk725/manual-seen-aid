@@ -45,3 +45,16 @@ Por perfil (después): residentes 19/20, adjuntos 15/15, especialistas 14/15.
 - Situaciones → Resonancia → «Hoja para entregar al paciente: pruebas y cirugía»: dos toques.
 - Niña de 4 años, 18 kg, Libre 2 Plus: Criterios de elección da «dentro del criterio» / «fuera del
   criterio» / «no consta» por sistema y variante.
+
+## Segunda ronda (0.30.0): setenta consultas en lenguaje de residente
+
+Setenta consultas escritas como se dicen en la planta o en la consulta («se me ha despegado el
+sensor», «me voy a correr», «vómitos y glucosa alta», «cada cuánto hay que cambiar el set»…),
+contra el motor con el sentido de producción. Antes: 58/70. Fallaban por vocabulario, no por
+contenido: «sin insulina» y «sin batería» (interrupción del sistema), «la aguja se dobla»
+(acodamientos, cánulas metálicas), «no me deja entrar en automático» (salidas del modo
+automático), «se me cae el pod» (adhesivo), «bajar el objetivo» (objetivo glucémico), «me quito la
+bomba para jugar al fútbol», «hb glicada», «sensor en el brazo». Con las equivalencias añadidas:
+67/70. Las tres que quedan no están en el capítulo (sauna, campamento, menstruación) y no se
+fuerzan; «con la regla me sube la glucosa» acaba en la regla de oro de la hiperglucemia
+persistente, que es la conducta que aplica.

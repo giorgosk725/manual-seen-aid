@@ -8,13 +8,22 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.29.3";
+export const VERSION_APP = "0.30.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — lo que enseñó la prueba simulada`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — el buscador entiende más lenguaje de consulta`,
+    detalle: [
+      "Setenta consultas escritas como se dicen en la consulta, probadas contra el motor: «la bomba se ha quedado sin insulina» o «sin batería» llevan a la interrupción del sistema y la pluma; «la aguja se dobla» o «cánula doblada», a los acodamientos y las cánulas metálicas; «no me deja entrar en automático», a las salidas del modo automático; «se me cae el pod», al adhesivo; «bajar el objetivo», al objetivo glucémico y sus valores permitidos; «me quito la bomba para jugar al fútbol», «hb glicada» o «sensor en el brazo» encuentran su pasaje.",
+      "Lo que el capítulo no trata (sauna, campamentos, menstruación) sigue sin respuesta forzada.",
+    ],
+  },
+  {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.29.3 — lo que enseñó la prueba simulada",
     detalle: [
       "Cincuenta consultas de diez perfiles (residentes, adjuntos y especialistas) sobre las tareas del guion: «paso 7 de la descarga» abre ese paso; «descarga comentada», «practicar descarga» o «caso práctico de la descarga» abren el ejemplo comentado; «qué puedo cambiar en Omnipod 5 en automático» abre sus parámetros. Los ocho pasos de la descarga entran en el buscador.",
     ],

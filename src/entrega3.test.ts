@@ -107,3 +107,18 @@ describe("Recurso pedido (prueba simulada del 10-10)", () => {
     );
   });
 });
+
+describe("Lenguaje de consulta (0.30.0)", () => {
+  const top = (q: string) => responder(q)[0];
+  it("sin insulina o sin batería: la interrupción del sistema; la aguja doblada: los acodamientos", () => {
+    expect(top("la bomba se ha quedado sin insulina")?.texto).toMatch(/pluma|interrup|fallo/);
+    expect(top("se ha quedado sin batería")?.texto).toMatch(/pluma|interrup|fallo/);
+    expect(top("la aguja se dobla")?.texto).toMatch(/acodamientos/);
+  });
+  it("no entra en automático: las salidas; se cae el pod: el adhesivo; bajar el objetivo: sus valores", () => {
+    expect(top("la bomba no me deja entrar en automático")?.texto).toMatch(/transitorias|salida/i);
+    expect(top("se me cae el pod")?.texto).toMatch(/despegado|adhesivo/);
+    expect(top("puedo bajar el objetivo en Control-IQ")?.id).toBe("T1/6");
+    expect(top("hb glicada objetivo")?.texto).toMatch(/HbA1c/);
+  });
+});
