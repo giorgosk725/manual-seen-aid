@@ -33,7 +33,6 @@ import { href } from "../rutas";
 import { BotonImprimir, PaginaBadge, Segmented } from "../ui";
 import { SISTEMA_HEX, TRAMO_HEX } from "../tokens";
 import { Lineas, Texto } from "../texto";
-import { EnlaceEducativa } from "./Lectura";
 import { useNivelTitulo, type Nivel } from "../nivel-contexto";
 
 /* Colores de franja (familia AGP). Texto con contraste AA sobre cada fondo. */
@@ -603,9 +602,6 @@ function Transicion() {
       >
         Tabla 2 completa <ArrowRight size={12} aria-hidden="true" />
       </a>
-      <div className="mt-3">
-        <EnlaceEducativa clave="transicion" />
-      </div>
     </div>
   );
 }

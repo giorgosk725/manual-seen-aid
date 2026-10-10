@@ -17,7 +17,6 @@ import { TablaVista } from "../componentes/TablaVista";
 import { Figura3Recorrido } from "../componentes/Figura3Vista";
 import { ImagenFigura } from "../componentes/FiguraVista";
 import { Texto } from "../texto";
-import { EnlaceEducativa } from "../componentes/Lectura";
 import { NivelTitulo } from "../nivel-contexto";
 
 const hex = CATEGORIA_HEX.consultar;
@@ -117,9 +116,6 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
             Hoja para entregar al paciente: cetonas <ArrowRight size={14} aria-hidden="true" />
           </a>
         </div>
-      </div>
-      <div className="mt-3">
-        <EnlaceEducativa clave="cetonemia" />
       </div>
     </div>
   );

@@ -90,9 +90,7 @@ test.describe("Tablas y sistemas", () => {
     ).toBeVisible();
   });
 
-  test("la ficha abre por «Lo esencial» y conserva la sección al pasar al siguiente sistema", async ({
-    page,
-  }) => {
+  test("la ficha abre por «Lo esencial»", async ({ page }) => {
     await page.goto("/#/sistemas/op5");
     await expect(
       page.getByRole("heading", { level: 2, name: /^Lo esencial · Omnipod 5/ }),
@@ -100,9 +98,6 @@ test.describe("Tablas y sistemas", () => {
     await expect(
       page.getByRole("heading", { level: 2, name: /^Parámetros · Omnipod 5/ }),
     ).toBeHidden();
-    await page.goto("/#/sistemas/camaps/situaciones");
-    await page.getByRole("link", { name: /Siguiente/ }).click();
-    await expect(page).toHaveURL(/#\/sistemas\/op5\/situaciones$/);
   });
 
   test("UX07-UX08: dos sistemas, la selección se ve y queda en el enlace", async ({ page }) => {

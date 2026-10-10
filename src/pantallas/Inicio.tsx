@@ -14,7 +14,6 @@ import { CAPITULO } from "../contenido";
 import { VERSION_APP } from "../contenido/cambios";
 import { Lineas } from "../texto";
 import { plano } from "../marcado";
-import { EnlaceEducativa } from "../componentes/Lectura";
 import { PiezaVista } from "../componentes/Piezas";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { FASES, hojaDeComprobacion, type Pieza } from "../inicio";
@@ -302,11 +301,6 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                 </div>
               ))}
             </div>
-            {actual === "inicio" && (
-              <div className="mt-3">
-                <EnlaceEducativa clave="transicion" />
-              </div>
-            )}
           </section>
         ) : (
           <Hoja sis={sis} />

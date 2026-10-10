@@ -8,13 +8,22 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.25.3";
+export const VERSION_APP = "0.25.4";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-10",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — menos texto de app`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — sin bloques repetidos`,
+    detalle: [
+      "Fuera los bloques «Practicar con un caso» que enlazaban a la edición educativa de asistente-aid al pie de Situaciones, Revisar la descarga, Interrupción, Cetonemia e Iniciar un sistema; el enlace a asistente-aid sigue en la ampliación técnica de cada ficha.",
+      "Fuera las tarjetas Anterior / Siguiente al pie de la ficha de sistema: el selector de arriba ya cambia de sistema conservando la sección.",
+    ],
+  },
+  {
+    fecha: "2026-10-10",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.25.3 — menos texto de app",
     detalle: [
       "«Sobre esta app» se queda con qué es y qué hay además del capítulo; fuera el historial de versiones, las correcciones editoriales, lo pendiente y la nota técnica.",
       "En la ampliación técnica, donde un dato no coincidía con el capítulo se enseña directamente la frase del capítulo con su página, sin la marca «Difiere del capítulo»; la ratio insulina/HC pierde la etiqueta de nivel que el capítulo no le da.",

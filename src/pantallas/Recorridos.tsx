@@ -13,7 +13,6 @@ import { casoPorId } from "../casos";
 import { CabeceraEditorial, PaginaBadge, Segmented } from "../ui";
 import { useIrAlCambiar } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
-import { EnlaceEducativa } from "../componentes/Lectura";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 
 const hex = CATEGORIA_HEX.consultar;
@@ -385,7 +384,6 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                   </li>
                 </ul>
               </div>
-              <EnlaceEducativa clave={sit.id} />
             </div>
           )}
         </div>
@@ -582,9 +580,6 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
       <p className="mt-3 text-xs text-slate-500">
         <Texto>{t.notas[1]}</Texto>
       </p>
-      <div className="mt-3">
-        <EnlaceEducativa clave="descarga" />
-      </div>
     </div>
   );
 }
@@ -692,9 +687,6 @@ export function Interrupcion({ tramo }: { tramo?: string }) {
       <p className="mt-3 text-xs text-slate-500">
         <Texto>{parrafos[4]?.b.texto ?? ""}</Texto>
       </p>
-      <div className="mt-3">
-        <EnlaceEducativa clave="interrupcion" />
-      </div>
     </div>
   );
 }

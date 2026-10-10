@@ -8,7 +8,6 @@ import {
   Check,
   Copy,
   ExternalLink,
-  GraduationCap,
   Pause,
   Play,
   Quote,
@@ -18,7 +17,6 @@ import {
 import { CAPITULO, idDeBloque, type Apartado } from "../contenido";
 import { plano } from "../marcado";
 import { citaDeApartado } from "../compartir";
-import { CASO_EDUCATIVO, EDUCATIVA } from "../enlaces";
 
 const BOTON =
   "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600";
@@ -261,30 +259,5 @@ export function Escuchar({ apartado }: { apartado: Apartado }) {
         </button>
       )}
     </span>
-  );
-}
-
-/* ---------- Caso práctico en la edición educativa de asistente-aid ---------- */
-export function EnlaceEducativa({ clave }: { clave: string }) {
-  const c = CASO_EDUCATIVO[clave];
-  if (!c) return null;
-  return (
-    <a
-      href={EDUCATIVA + c.ruta}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="no-imprimir flex items-start gap-3 rounded-xl border bg-white p-3 text-sm transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-      style={{ borderColor: "#e6e6e6" }}
-    >
-      <GraduationCap size={18} className="mt-0.5 shrink-0 text-sky-700" aria-hidden="true" />
-      <span className="min-w-0 flex-1">
-        <span className="block font-semibold text-slate-900">Practicar con un caso: {c.texto}</span>
-        <span className="block text-xs text-slate-600">
-          Edición educativa de asistente-aid (fuera del capítulo; pacientes de ejemplo, sin datos
-          reales).
-        </span>
-      </span>
-      <ExternalLink size={14} className="mt-1 shrink-0 text-slate-500" aria-hidden="true" />
-    </a>
   );
 }

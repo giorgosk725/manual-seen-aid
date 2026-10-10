@@ -536,9 +536,6 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const c = columnaDeSistema(s.id);
   const h = SISTEMA_HEX[c];
   const slug = SLUG_TABLA[c];
-  const i = ORDEN_SISTEMAS.indexOf(s.id);
-  const prev = SISTEMAS_AMPLIACION[i - 1];
-  const next = SISTEMAS_AMPLIACION[i + 1];
   const situacionesT4 = SITUACIONES.filter((x) => x.tabla === "T4");
   // Se enseña una sección (la entera son más de diez pantallas en el móvil); «Lo esencial» si
   // la ruta no dice otra; /completa, la ficha entera (para leer o imprimir).
@@ -790,41 +787,6 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       </section>
 
       {ver("ampliacion") && <Ampliacion s={s} />}
-
-      <nav aria-label="Otro sistema" className="no-imprimir mt-6 grid gap-2 sm:grid-cols-2">
-        {prev ? (
-          <a
-            href={href("sistemas", prev.id, seccion)}
-            className="flex min-w-0 items-center gap-2 overflow-hidden rounded-xl border bg-white p-3 shadow-soft"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            <img src={FOTO_SISTEMA[prev.id]} alt="" className="h-10 w-10 rounded-lg object-cover" />
-            <span className="min-w-0">
-              <span className="block text-xs text-slate-500">Anterior</span>
-              <span className="block truncate text-sm font-semibold text-slate-900">
-                {prev.name}
-              </span>
-            </span>
-          </a>
-        ) : (
-          <span />
-        )}
-        {next && (
-          <a
-            href={href("sistemas", next.id, seccion)}
-            className="flex min-w-0 items-center justify-end gap-2 overflow-hidden rounded-xl border bg-white p-3 text-right shadow-soft"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            <span className="min-w-0">
-              <span className="block text-xs text-slate-500">Siguiente</span>
-              <span className="block truncate text-sm font-semibold text-slate-900">
-                {next.name}
-              </span>
-            </span>
-            <img src={FOTO_SISTEMA[next.id]} alt="" className="h-10 w-10 rounded-lg object-cover" />
-          </a>
-        )}
-      </nav>
     </div>
   );
 }
