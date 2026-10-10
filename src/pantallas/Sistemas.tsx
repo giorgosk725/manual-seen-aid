@@ -33,7 +33,7 @@ import {
   sistemaPorId,
   type Sistema,
 } from "../ampliacion";
-import { href } from "../rutas";
+import { href, fueNavegacionNueva } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Foldable, PaginaBadge } from "../ui";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
@@ -529,8 +529,13 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const completa = seccion === "completa";
   // Enlace a una sección concreta (#/sistemas/<id>/parametros): se abre en ella; la barra con
   // el sistema y la sección queda pegada arriba (scroll-mt de la sección deja sitio).
+  const montada = useRef(false);
   useEffect(() => {
+    const primera = !montada.current;
+    montada.current = true;
     if (!seccion || completa) return;
+    // Al volver atrás (Ver en el capítulo → Atrás), la Shell restaura la posición: no se salta.
+    if (primera && !fueNavegacionNueva()) return;
     document.getElementById(seccion)?.scrollIntoView?.({ block: "start" });
   }, [seccion, id, completa]);
   if (!s) return <Comparacion ids={[]} />;
@@ -1121,6 +1126,13 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
               <NivelTitulo.Provider value={2}>
                 <TablaVista tabla={TABLAS.T3} columnasFijas={cols} />
               </NivelTitulo.Provider>
+              {rutaEnCapitulo(TABLAS.T3) && (
+                <p className="mt-2">
+                  <EnlacePie ruta={rutaEnCapitulo(TABLAS.T3)!}>
+                    Ver en el capítulo · Tabla 3, p. {TABLAS.T3.paginas[0]}
+                  </EnlacePie>
+                </p>
+              )}
             </>
           )}
           {seccion === "situaciones" && (

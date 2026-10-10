@@ -15,7 +15,6 @@ import {
   AArrowUp,
   BookOpen,
   ChevronDown,
-  CircleCheck,
   HeartHandshake,
   Home,
   Menu,
@@ -27,14 +26,7 @@ import {
 import { APARTADOS, CAPITULO } from "../contenido";
 import { DESTINOS, MENU, areaDe, destinoActivo, type Area } from "../nav";
 import { consumirNavegacionNueva, href, marcarNavegacionNueva, type Ruta } from "../rutas";
-import {
-  TAMANOS,
-  guardarVisita,
-  useLeidos,
-  useNocturno,
-  useTamanoLetra,
-  useUltimo,
-} from "../prefs";
+import { TAMANOS, guardarVisita, useNocturno, useTamanoLetra } from "../prefs";
 import { VolverArriba } from "./Lectura";
 import { ErrorBoundary, Modal } from "../ui";
 import { fueraDelCapitulo, marcar, paginaDe } from "../busqueda";
@@ -314,8 +306,6 @@ function MenuNavegacion({
   etiqueta: string;
   onIr?: () => void;
 }) {
-  const leidos = useLeidos();
-  const ultimo = useUltimo();
   const enCapitulo = ruta.seccion === "capitulo";
   const area = areaDe(ruta.seccion);
   // El índice de los apartados se despliega dentro de la lectura; pulsar otra vez «Índice del
@@ -393,11 +383,6 @@ function MenuNavegacion({
                       {a.n}
                     </span>
                     <span className="flex-1">{a.corto}</span>
-                    {leidos.includes(a.slug) && (
-                      <span className="text-emerald-700" title="Leído">
-                        <CircleCheck size={13} aria-label="Leído" />
-                      </span>
-                    )}
                   </a>
                 </li>
               );
@@ -441,30 +426,7 @@ function MenuNavegacion({
         ) : (
           <div key={g.area} className="mt-4">
             {titulo(g.titulo)}
-            <ul className="mt-1 space-y-0.5">
-              {g.area === "leer" && ultimo && !enCapitulo && (
-                <li>
-                  {enlace(
-                    false,
-                    CATEGORIA_HEX.leer.strong,
-                    <>
-                      <BookOpen
-                        size={16}
-                        aria-hidden="true"
-                        className="shrink-0"
-                        style={{ color: CATEGORIA_HEX.leer.strong }}
-                      />
-                      <span className="min-w-0">
-                        <span className="block text-[11px] text-slate-500">Seguir leyendo</span>
-                        <span className="block truncate">{ultimo.titulo}</span>
-                      </span>
-                    </>,
-                    ultimo.ruta,
-                  )}
-                </li>
-              )}
-              {g.ids.map(item)}
-            </ul>
+            <ul className="mt-1 space-y-0.5">{g.ids.map(item)}</ul>
           </div>
         ),
       )}
@@ -625,8 +587,9 @@ export function Shell({
       (ruta.seccion === "capitulo" && !!ruta.detalle) ||
       (ruta.seccion === "sistemas" && !!ruta.detalle) ||
       (ruta.seccion === "bibliografia" && !!ruta.sub);
-    if (destinoProfundo) return;
     const guardada = posiciones.current.get(clavePantalla);
+    // Enlace profundo: la pantalla hace su propio scroll; al volver atrás, se restaura.
+    if (destinoProfundo && (nueva || guardada == null)) return;
     window.scrollTo({ top: !nueva && guardada != null ? guardada : 0 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clavePantalla]);

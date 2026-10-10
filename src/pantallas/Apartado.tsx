@@ -25,7 +25,6 @@ import { ICONO_APARTADO, ICONO_DIAGRAMA } from "../nav";
 import { CIFRAS } from "../contenido/cifras";
 import { href } from "../rutas";
 import { BotonImprimir } from "../ui";
-import { guardarUltimo, marcarLeido } from "../prefs";
 import { CATEGORIA_HEX, SEEN, colorApartado } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
 
@@ -79,42 +78,10 @@ function useProgreso(
   return alFinal;
 }
 
-/* Seguir leyendo: guarda el bloque visible (solo la ruta) y marca el apartado como leído al
-   llegar al final. */
-function useMarcadorLectura(apartado: TApartado, alFinal: boolean) {
-  useEffect(() => {
-    if (alFinal) marcarLeido(apartado.slug);
-  }, [alFinal, apartado.slug]);
-  useEffect(() => {
-    let t: ReturnType<typeof setTimeout> | undefined;
-    const titulo = `${apartado.n}. ${apartado.titulo}`;
-    const guardar = () => {
-      let ancla: string | undefined;
-      apartado.bloques.forEach((b, i) => {
-        const id = idDeBloque(b, i);
-        const el = document.getElementById(id);
-        if (el && el.getBoundingClientRect().top < 140) ancla = id;
-      });
-      guardarUltimo({ slug: apartado.slug, titulo, ruta: href("capitulo", apartado.slug, ancla) });
-    };
-    const onScroll = () => {
-      clearTimeout(t);
-      t = setTimeout(guardar, 600);
-    };
-    guardar();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      clearTimeout(t);
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, [apartado]);
-}
-
 export function Apartado({ apartado, destacado }: { apartado: TApartado; destacado?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const barra = useRef<HTMLDivElement>(null);
-  const alFinal = useProgreso(ref, barra);
-  useMarcadorLectura(apartado, alFinal);
+  useProgreso(ref, barra);
   const i = APARTADOS.findIndex((a) => a.slug === apartado.slug);
   const prev = APARTADOS[i - 1];
   const next = APARTADOS[i + 1];

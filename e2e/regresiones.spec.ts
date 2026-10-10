@@ -102,7 +102,7 @@ test.describe("Visor de imágenes", () => {
 
 /* Regresiones de la auditoría del 3-10-2026 (docs/AUDITORIA_2026-10-03.md). */
 test.describe("Auditoría 0.5.0", () => {
-  test("salir de un apartado abierto en un subapartado no salta ni falsea seguir leyendo", async ({
+  test("salir de un apartado abierto en un subapartado no hace saltar la pantalla siguiente", async ({
     page,
   }) => {
     await page.goto("/#/capitulo/10-situaciones/ejercicio");
@@ -116,8 +116,6 @@ test.describe("Auditoría 0.5.0", () => {
     await expect(page).toHaveURL(/#\/sistemas$/);
     await page.waitForTimeout(500);
     expect(await page.evaluate(() => window.scrollY)).toBe(0);
-    const ultimo = await page.evaluate(() => localStorage.getItem("mseen:ultimo"));
-    expect(ultimo).not.toContain("/ejercicio");
   });
 
   test("Ctrl+P en un apartado no imprime botones ni la versión extendida", async ({ page }) => {

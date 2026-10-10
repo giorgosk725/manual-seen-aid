@@ -41,11 +41,16 @@ let navegacionNueva = false;
 export const marcarNavegacionNueva = () => {
   navegacionNueva = true;
 };
+let ultimaNueva = true;
 export const consumirNavegacionNueva = () => {
   const v = navegacionNueva;
   navegacionNueva = false;
+  ultimaNueva = v;
   return v;
 };
+/* Lo que consumió la Shell en el último cambio de pantalla: las pantallas que hacen su propio
+   scroll al montarse (sección de una ficha, tramo de la Figura 3) lo saltan al volver atrás. */
+export const fueNavegacionNueva = () => ultimaNueva;
 
 export function navegar(
   seccion: string,

@@ -16,7 +16,7 @@ import { RecursosPedidos } from "../componentes/RecursosPedidos";
 import { Autocompletar } from "../componentes/Autocompletar";
 import { SinResultados } from "../componentes/SinResultados";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
-import { useUltimo, useVisitas } from "../prefs";
+import { useVisitas } from "../prefs";
 import { CATEGORIA_HEX, FICHA_AREA, SEEN } from "../tokens";
 
 const fecha = (iso: string) =>
@@ -34,27 +34,6 @@ function Franja() {
         <span key={c} className="flex-1" style={{ background: c }} />
       ))}
     </div>
-  );
-}
-
-function SeguirLeyendo() {
-  const ultimo = useUltimo();
-  if (!ultimo) return null;
-  return (
-    <a
-      href={ultimo.ruta}
-      className="mt-4 flex min-h-11 items-center gap-2 rounded-[3px] border-l-4 bg-slate-50 px-3 py-2 text-sm sm:max-w-md"
-      style={{ borderLeftColor: SEEN.azulOsc }}
-    >
-      <BookOpen size={15} className="shrink-0 text-slate-600" aria-hidden="true" />
-      <span className="min-w-0 flex-1">
-        <span className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-          Seguir leyendo
-        </span>
-        <span className="block truncate font-semibold text-slate-900">{ultimo.titulo}</span>
-      </span>
-      <ArrowRight size={14} className="shrink-0 text-slate-500" aria-hidden="true" />
-    </a>
   );
 }
 
@@ -279,7 +258,6 @@ export function Portada() {
                 <HeartHandshake size={15} aria-hidden="true" /> Para el paciente
               </a>
             </div>
-            <SeguirLeyendo />
           </div>
         </div>
       </section>

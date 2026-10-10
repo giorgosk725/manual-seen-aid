@@ -7,14 +7,18 @@ Cloudflare (`CONSULTAS`, `wrangler.toml`).
 
 ## Qué se guarda y qué no
 
-- Se guarda: el texto en minúsculas y sin espacios de más, cuántas veces se ha hecho, cuántas de
-  ellas tenían al menos resultados del índice (pero ningún pasaje) y el mes de la última.
+- Se guarda: el texto en minúsculas, sin espacios de más y recortado a 80 caracteres, cuántas
+  veces se ha hecho, cuántas de ellas tenían al menos resultados del índice (pero ningún pasaje) y
+  el mes de la última. Cada registro caduca a los seis meses de la última vez (TTL de KV).
 - No se guarda: IP, navegador, fecha exacta, ni nada de quién la hizo. Cloudflare no registra el
   cuerpo de la petición.
-- No se manda: consultas de menos de 4 o más de 120 letras, ni las que contienen un correo, una
-  URL o una cifra de cinco dígitos o más (teléfonos, números de historia). La misma consulta se
-  manda una vez por sesión del navegador.
-- «Sobre esta app» lo dice en una frase.
+- No se manda: consultas de menos de 4 letras, ni las que contienen un correo, una URL o una
+  cifra de cinco dígitos o más (teléfonos, números de historia). La misma consulta se manda una
+  vez por sesión del navegador. También se manda la que nombra un sistema que el capítulo no trata
+  (iLet, Diabeloop…), porque tampoco tiene respuesta específica.
+- «Sobre esta app» lo dice en una frase y el aviso de «sin resultados» lo recuerda junto al
+  buscador. El filtro no garantiza que un texto libre no lleve un nombre: por eso se pide escribir
+  las dudas sin datos del paciente.
 
 ## Cómo leer la lista
 

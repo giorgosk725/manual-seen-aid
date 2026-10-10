@@ -719,6 +719,7 @@ const FRASES: [RegExp, string, Modo][] = [
   [/\b(mi|a mi|de mi) (madre|padre|abuel[oa]|marido|mujer|pareja|tia|tio)\b/, " ", "sustituye"],
   [/cuant[oa]s? (hidratos|gramos|carbohidratos)/, "hidratos cantidades g", "sustituye"],
   [/(se )?salta(rse)? (los )?bolos|no se pone (los )?bolos/, "omision bolos", "sustituye"],
+  [/multiples dosis( diarias)?|inyecciones multiples|desde (las )?plumas/, "mdi", "sustituye"],
   [/pasar de mdi|de plumas a (la )?bomba|desde mdi/, "mdi transicion", "sustituye"],
   [
     /(cuando|cada cuanto) (revisar|ver|veo|citar|cito|visito)|primeras visitas|seguimiento inicial/,
@@ -1344,7 +1345,78 @@ function puntuarPalabra(a: Atomo, t: string, cuerpo: string[], prefijo: boolean,
   return { s: 0, casa: false, titulo: false };
 }
 
-export function responder(pregunta: string, { max = 3 } = {}): Respuesta[] {
+/* Sistemas y bombas que el capítulo no trata: la consulta que los nombra no tiene respuesta
+   específica, aunque comparta palabras generales («configurar», «parámetros»). */
+const NO_CUBIERTOS: [RegExp, string][] = [
+  [/\bilet\b|beta bionics/, "iLet"],
+  [/diabeloop|dblg1/, "Diabeloop (DBLG1)"],
+  [/medtrum|nano\b/, "Medtrum"],
+  [/twiist/, "Twiist"],
+  [/kaleido/, "Kaleido"],
+  [/\bdana\b/, "Dana"],
+  [/accu-?chek|insight\b|\bsolo\b/, "Accu-Chek Insight/Solo"],
+  [/\b(640g|670g|770g)\b/, "MiniMed 640G/670G/770G"],
+  [/basal-?iq/, "Basal-IQ"],
+  [/\bdash\b/, "Omnipod DASH"],
+];
+export function sistemaNoCubierto(pregunta: string): string | null {
+  const q = normalizar(pregunta);
+  return NO_CUBIERTOS.find(([re]) => re.test(q))?.[1] ?? null;
+}
+
+/* El número de paso que pide la consulta («paso 7», «paso tres», «séptimo paso»), o null. */
+const PASO_PALABRA: Record<string, number> = {
+  uno: 1,
+  primer: 1,
+  primero: 1,
+  primera: 1,
+  dos: 2,
+  segundo: 2,
+  segunda: 2,
+  tres: 3,
+  tercer: 3,
+  tercero: 3,
+  tercera: 3,
+  cuatro: 4,
+  cuarto: 4,
+  cuarta: 4,
+  cinco: 5,
+  quinto: 5,
+  quinta: 5,
+  seis: 6,
+  sexto: 6,
+  sexta: 6,
+  siete: 7,
+  septimo: 7,
+  septima: 7,
+  ocho: 8,
+  octavo: 8,
+  octava: 8,
+};
+export function numeroDePaso(pregunta: string): number | null {
+  const q = normalizar(pregunta);
+  // «paso 7», «paso tres» y, si no, «séptimo paso».
+  for (const c of [/\bpaso\s*(\d|[a-z]+)\b/.exec(q)?.[1], /\b([a-z]+)\s+paso\b/.exec(q)?.[1]]) {
+    if (!c) continue;
+    const n = /^\d$/.test(c) ? Number(c) : PASO_PALABRA[c];
+    if (n && n >= 1 && n <= 8) return n;
+  }
+  return null;
+}
+
+/* «Paso 7 de la descarga»: ese paso de la Tabla 5 es la respuesta, delante de lo demás. */
+export function responder(pregunta: string, opciones: { max?: number } = {}): Respuesta[] {
+  const base = responderBase(pregunta, opciones);
+  const q = normalizar(pregunta);
+  const paso = numeroDePaso(pregunta);
+  if (!paso || !/descarga|tabla 5/.test(q)) return base;
+  const a = atomos().find((x) => x.r.id === `T5/${paso - 1}`);
+  if (!a) return base;
+  const r = resolver(a, undefined, 9);
+  return [r, ...base.filter((x) => x.id !== r.id)].slice(0, opciones.max ?? 3);
+}
+
+function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
   const ats = atomos();
   const grupos = gruposDe(pregunta);
   // Las palabras genéricas no se exigen, salvo que la pregunta no tenga otras.

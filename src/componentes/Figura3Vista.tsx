@@ -23,7 +23,7 @@ import { FIGURA3, type PasoTramo, type Tramo, type TramoFigura3 } from "../conte
 import { Texto } from "../texto";
 import { PaginaBadge } from "../ui";
 import { TRAMO_HEX } from "../tokens";
-import { elegirRuta, href } from "../rutas";
+import { elegirRuta, href, fueNavegacionNueva } from "../rutas";
 import { ImagenFigura } from "./FiguraVista";
 import { INFO_F3 } from "./figura3-imagen";
 import { TituloBloque } from "../nivel";
@@ -101,6 +101,11 @@ function Rama({ tramo, completa }: { tramo: TramoFigura3; completa?: boolean }) 
           </div>
         </div>
       </div>
+      {JSON.stringify(tramo.pasos).includes("*") && (
+        <p className="mb-3 rounded-lg bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
+          {FIGURA3.notaAsterisco}
+        </p>
+      )}
       <ol className={`space-y-3 ${completa ? "" : ""}`}>
         {tramo.pasos.map((p, i) => (
           <Paso key={i} paso={p} hex={hex} i={i} />
@@ -258,7 +263,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
   const actuar = useRef<HTMLLIElement>(null);
   // Entrar con un tramo ya elegido (enlace profundo, atajo de búsqueda): directo a su rama.
   useEffect(() => {
-    if (valido) actuar.current?.scrollIntoView({ block: "start" });
+    if (valido && fueNavegacionNueva()) actuar.current?.scrollIntoView({ block: "start" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   /* Atajo: con la cetonemia ya medida, ir directo a su rama («Rama de la figura»). */

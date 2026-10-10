@@ -17,12 +17,12 @@ const mandadas = (): Set<string> => {
   }
 };
 
-/* Lo mismo que descarta la función: correos, URL, cifras largas, muy corto o muy largo. */
+/* Lo mismo que descarta la función: correos, URL, cifras largas, muy corto; recorta a 80. */
 export function consultaRegistrable(q: string): string | null {
   const t = q.replace(/\s+/g, " ").trim().toLowerCase();
-  if (t.length < 4 || t.length > 120) return null;
+  if (t.length < 4) return null;
   if (/@|https?:|www\.|\d{5,}/.test(t)) return null;
-  return t;
+  return t.slice(0, 80).trim();
 }
 
 export function registrarSinRespuesta(q: string, conIndice: boolean) {

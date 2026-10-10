@@ -53,7 +53,7 @@ test.describe("Recorrido básico (escritorio)", () => {
   }) => {
     await page.goto("/#/consultar/figura-3/rojo");
     await expect(page.getByText("URGENCIAS / VALORACIÓN HOSPITALARIA INMEDIATA.")).toBeVisible();
-    await expect(page.getByText(/Dosis orientativas para personas adultas/)).toBeVisible();
+    await expect(page.getByText(/Dosis orientativas para personas adultas/).first()).toBeVisible();
     await expect(page.getByText(/0,1 UI\/kg/)).toHaveCount(0);
   });
 

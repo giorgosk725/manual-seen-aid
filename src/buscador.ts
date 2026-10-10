@@ -45,14 +45,20 @@ export {
   faqsCercanas,
   frecuentesRelacionadas,
   fusionar,
+  numeroDePaso,
   partesDe,
   preguntaFrecuente,
   responder,
   respuestaDeFrecuente,
   respuestaPorId,
+  sistemaNoCubierto,
   type RespuestaFrecuente,
 } from "./respuestas";
-import { conContexto as conContextoDe, esSeguimiento as seguimiento } from "./respuestas";
+import {
+  conContexto as conContextoDe,
+  esSeguimiento as seguimiento,
+  numeroDePaso as pasoPedido,
+} from "./respuestas";
 import { FRECUENTES, type Frecuente } from "./frecuentes";
 import { HOJAS_EXTRA } from "./hojas";
 
@@ -428,6 +434,27 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   if (!terminos.length) return [];
   const out: Resultado[] = [];
   const sis = sistemaDeConsulta(consulta);
+  // «Iniciar Omnipod 5 desde MDI»: el recorrido de inicio para ese sistema, el primero.
+  if (
+    sis >= 0 &&
+    /\b(inici|empez|comenz|arranc|poner en marcha|pasar a la bomba|desde mdi|multiples dosis|desde (las )?plumas)/.test(
+      normalizar(consulta),
+    )
+  ) {
+    const nombre = TABLAS.T1.columnas[sis];
+    out.push({
+      entrada: {
+        id: `recurso/inicio/${SIS_IDS[sis]}`,
+        tipo: "atajo",
+        titulo: `Iniciar un sistema · ${nombre}`,
+        texto: "",
+        pagina: TABLAS.T2.paginas[0],
+        ruta: href("consultar", "inicio", `preparacion:${SIS_IDS[sis]}`),
+      },
+      fragmento: "",
+      puntos: 0,
+    });
+  }
   if (sis >= 0) {
     const sec = SECCION_PEDIDA.find(([re]) => re.test(normalizar(consulta)));
     if (sec) {
@@ -447,7 +474,7 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     }
   }
   // «paso 7» pide ese paso, no los ocho.
-  const paso = consulta.toLowerCase().match(/paso\s*(\d)/)?.[1];
+  const paso = pasoPedido(consulta)?.toString();
   // Las palabras casan por su raíz (seis letras): «comentada» encuentra «comentado»; en los casos
   // cuenta también su descripción («practicar», «caso»).
   const raiz = (w: string) => w.slice(0, 6);
@@ -464,6 +491,28 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
           pagina: TABLAS.T5.paginas[0],
           pagina2: TABLAS.T5.paginas[1],
           ruta: href("consultar", "descarga", paso),
+        },
+        fragmento: "",
+        puntos: 0,
+      });
+  }
+  // «Hoja para el paciente antes de una resonancia»: la hoja pedida, la primera.
+  if (/\b(hoja|paciente|entregar)/.test(normalizar(consulta))) {
+    const HOJA_PEDIDA: [RegExp, string][] = [
+      [/reson|\btc\b|\btac\b|cirug|quirof|prueba|explorac|radiolog|endoscop/, "pruebas-cirugia"],
+      [/ceton|bohb|β-ohb/, "cetonas"],
+    ];
+    const id = HOJA_PEDIDA.find(([re]) => re.test(normalizar(consulta)))?.[1];
+    const h = id ? HOJAS_EXTRA.find((x) => x.id === id) : undefined;
+    if (h)
+      out.unshift({
+        entrada: {
+          id: `recurso/hoja/${h.id}`,
+          tipo: "atajo",
+          titulo: `${h.rotulo} · ${h.titulo}`,
+          texto: "",
+          pagina: 0,
+          ruta: href("pacientes", "hoja", h.id),
         },
         fragmento: "",
         puntos: 0,
@@ -486,11 +535,18 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     .filter((x) => x.f >= 0.6)
     .sort((a, b) => b.f - a.f || b.r.puntos - a.r.puntos)
     .map((x) => x.r);
-  return [...out, ...nombrados].slice(0, 2);
+  // Un solo «Abrir» por destino.
+  const vistos = new Set<string>();
+  return [...out, ...nombrados]
+    .filter((r) => !vistos.has(r.entrada.ruta) && !!vistos.add(r.entrada.ruta))
+    .slice(0, 2);
 }
 
 function sistemaDeConsulta(consulta: string): number {
-  const palabras = normalizar(consulta).split(/\s+/);
+  // «control iq» en dos palabras cuenta como una.
+  const palabras = normalizar(consulta)
+    .replace(/control[\s-]*iq\+?/g, "control-iq")
+    .split(/\s+/);
   return ALIAS_SISTEMA.findIndex((re) => palabras.some((w) => re.test(w)));
 }
 

@@ -2,14 +2,13 @@
    páginas y, aparte, lo que ayuda a comprender y repasar. Y el «capítulo entero» para imprimir
    de una vez. */
 import { useRef } from "react";
-import { ArrowRight, BookOpen, CircleCheck, ExternalLink, Printer } from "lucide-react";
+import { ArrowRight, BookOpen, ExternalLink, Printer } from "lucide-react";
 import { ICONO_APARTADO, destino } from "../nav";
 import { APARTADOS, CAPITULO, subapartados } from "../contenido";
 import { href } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Revelar } from "../ui";
-import { CATEGORIA_HEX, colorApartado, SEEN } from "../tokens";
+import { CATEGORIA_HEX, colorApartado } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
-import { useLeidos, useUltimo } from "../prefs";
 import { HAY_CASOS } from "../casos-hay";
 
 function IconoApartado({ slug }: { slug: string }) {
@@ -73,8 +72,6 @@ function ComprenderYPracticar() {
 }
 
 export function IndiceCapitulo() {
-  const leidos = useLeidos();
-  const ultimo = useUltimo();
   const hex = CATEGORIA_HEX.leer;
   return (
     <div>
@@ -84,22 +81,6 @@ export function IndiceCapitulo() {
           el {CAPITULO.fechaFuente}.
         </p>
       </CabeceraEditorial>
-      {ultimo && (
-        <a
-          href={ultimo.ruta}
-          className="mb-5 flex min-h-11 items-center gap-2 rounded-[3px] border-l-4 bg-white px-3 py-2 text-sm shadow-soft sm:max-w-md"
-          style={{ borderLeftColor: SEEN.azulOsc }}
-        >
-          <BookOpen size={15} className="shrink-0 text-slate-600" aria-hidden="true" />
-          <span className="min-w-0 flex-1">
-            <span className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-              Seguir leyendo
-            </span>
-            <span className="block truncate font-semibold text-slate-900">{ultimo.titulo}</span>
-          </span>
-          <ArrowRight size={14} className="shrink-0 text-slate-500" aria-hidden="true" />
-        </a>
-      )}
       <ComprenderYPracticar />
       <section aria-labelledby="indice-apartados">
         <h2
@@ -108,11 +89,6 @@ export function IndiceCapitulo() {
           style={{ color: hex.ink }}
         >
           Índice del capítulo
-          {leidos.length > 0 && (
-            <span className="text-xs font-semibold normal-case tracking-normal text-slate-500">
-              Has leído {leidos.length} de {APARTADOS.length}
-            </span>
-          )}
         </h2>
         <ol className="space-y-2">
           {APARTADOS.map((a) => {
@@ -147,11 +123,6 @@ export function IndiceCapitulo() {
                         ? `p. ${a.paginas[0]}`
                         : `pp. ${a.paginas[0]}–${a.paginas[1]}`}
                     </span>
-                    {leidos.includes(a.slug) && (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700">
-                        <CircleCheck size={13} aria-hidden="true" /> Leído
-                      </span>
-                    )}
                   </span>
                 </a>
               </Revelar>

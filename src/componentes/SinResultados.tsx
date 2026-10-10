@@ -57,6 +57,12 @@ export function SinResultados({
       >
         Explorar las preguntas frecuentes por temas →
       </a>
+      {q && (
+        <p className="mt-1 text-xs text-slate-500">
+          Esta consulta se anota (solo su texto, sin datos de quién la hace) para mejorar el
+          buscador.
+        </p>
+      )}
       <ul className="mt-2 flex flex-wrap gap-1.5">
         {PUERTAS.map((p) => (
           <li key={p.t}>

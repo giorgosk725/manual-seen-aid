@@ -8,13 +8,26 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.31.0";
+export const VERSION_APP = "0.32.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — diez preguntas frecuentes más, dos intenciones y consultas sin respuesta`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — confianza y continuidad (auditoría de la 0.31, entrega 1)`,
+    detalle: [
+      "Buscador: una consulta que nombra un sistema que el capítulo no trata (iLet, Diabeloop, Medtrum…) lo dice antes de dar nada general; «paso 7 de la descarga» abre un solo acceso y enseña ese paso como pasaje principal; «iniciar Omnipod 5 desde múltiples dosis» abre Iniciar para ese sistema y «múltiples dosis» se entiende como MDI.",
+      "Volver desde «Ver en el capítulo» con Atrás devuelve al mismo punto de la ficha de sistema o de la Figura 3, en vez de al principio de la sección. Parámetros comparados y Revisar la descarga enlazan su fuente («Ver en el capítulo · Tabla 3, p. 11»; «Tabla 5, pp. 13–14»).",
+      "Figura 3: la nota de que las dosis son orientativas para personas adultas se enseña junto al tramo que las lleva, además de en las notas comunes.",
+      "Consultas sin respuesta: el texto se recorta a 80 caracteres, cada registro caduca a los seis meses, se anota también la que nombra un sistema no cubierto, y el aviso de «sin resultados» lo dice junto al buscador. «Sobre esta app» pide escribir las dudas sin datos del paciente.",
+      "Se quita «Seguir leyendo» (portada, menú e índice del capítulo) y la marca de apartado «Leído»: la app es de consulta, no de lectura seguida.",
+    ],
+  },
+  {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo:
+      "Manual SEEN · AID 0.31.0 — diez preguntas frecuentes más, dos intenciones y consultas sin respuesta",
     detalle: [
       "Diez preguntas frecuentes nuevas (60 en total): fallo de la bomba o sin insulina, cuándo confirmar con glucemia capilar, pérdida de señal del sensor, adhesivo y piel, fallos de infusión y cánula, cuánto esperar antes de volver a corregir, comida rica en grasa o proteína, viaje y aeropuerto, fatiga por alarmas, enfermedad intercurrente.",
       "Una consulta con dos intenciones («hipoglucemia nocturna y comidas grasas con 780G») responde a las dos: debajo del pasaje principal, «También sobre …» con lo que añade la otra parte. Con una pregunta de cifra, la casilla breve de la tabla se enseña en una línea encima de los pasajes cuando no es ya la primera respuesta.",

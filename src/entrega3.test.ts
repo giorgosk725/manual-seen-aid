@@ -14,6 +14,7 @@ import {
   contextoDe,
   datoCorto,
   partesDe,
+  sistemaNoCubierto,
   esSeguimiento,
   faqsCercanas,
   frecuentesRelacionadas,
@@ -157,6 +158,42 @@ describe("Dos intenciones, dato en una línea y consultas registrables (0.31.0)"
     expect(consultaRegistrable("juan@x.es")).toBeNull();
     expect(consultaRegistrable("historia 123456")).toBeNull();
     expect(consultaRegistrable("https://x.es")).toBeNull();
-    expect(consultaRegistrable("x".repeat(130))).toBeNull();
+    expect(consultaRegistrable("x".repeat(130))).toHaveLength(80);
+  });
+});
+
+describe("Entrega 1 de la auditoría de la 0.31 (0.32.0)", () => {
+  const rec = (q: string) => recursosPedidos(q, buscarConTotales(q, 12).resultados);
+  it("un sistema que el capítulo no trata se reconoce; los cubiertos, no", () => {
+    expect(sistemaNoCubierto("cómo configuro un sistema iLet")).toBe("iLet");
+    expect(sistemaNoCubierto("diabeloop en gestación")).toMatch(/Diabeloop/);
+    expect(sistemaNoCubierto("parámetros de Omnipod 5")).toBeNull();
+    expect(sistemaNoCubierto("modo sueño")).toBeNull();
+  });
+  it("«paso 7 de la descarga»: un solo «Abrir» y el paso como respuesta principal", () => {
+    const r = rec("paso 7 de la descarga");
+    expect(r[0].entrada.ruta).toBe("#/consultar/descarga/7");
+    expect(new Set(r.map((x) => x.entrada.ruta)).size).toBe(r.length);
+    expect(responder("paso 7 de la descarga")[0].id).toBe("T5/6");
+    expect(responder("paso 2 de la tabla 5")[0].id).toBe("T5/1");
+    expect(responder("paso tres de la descarga")[0].id).toBe("T5/2");
+    expect(responder("séptimo paso de la descarga")[0].id).toBe("T5/6");
+    expect(rec("paso tres de la descarga")[0].entrada.ruta).toBe("#/consultar/descarga/3");
+  });
+  it("«hoja para el paciente antes de una resonancia» abre la hoja de pruebas y cirugía", () => {
+    expect(rec("hoja para el paciente antes de una resonancia")[0].entrada.ruta).toBe(
+      "#/pacientes/hoja/pruebas-cirugia",
+    );
+    expect(rec("qué entregar al paciente con cetonas")[0].entrada.ruta).toBe(
+      "#/pacientes/hoja/cetonas",
+    );
+  });
+  it("«iniciar Omnipod 5 desde múltiples dosis» abre Iniciar para Omnipod 5 y no responde con siglas", () => {
+    expect(rec("iniciar Omnipod 5 desde múltiples dosis")[0].entrada.ruta).toBe(
+      "#/consultar/inicio/preparacion:omnipod-5",
+    );
+    expect(rec("empezar con control iq")[0].entrada.titulo).toMatch(/Iniciar un sistema/);
+    const top = responder("iniciar Omnipod 5 desde múltiples dosis")[0];
+    expect(top.id).not.toMatch(/nota/);
   });
 });

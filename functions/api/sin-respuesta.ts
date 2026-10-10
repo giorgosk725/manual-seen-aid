@@ -6,7 +6,7 @@
 
 interface KV {
   get: (clave: string, tipo: "json") => Promise<Registro | null>;
-  put: (clave: string, valor: string) => Promise<void>;
+  put: (clave: string, valor: string, opciones?: { expirationTtl: number }) => Promise<void>;
   list: (opciones: {
     prefix: string;
     limit?: number;
@@ -33,13 +33,13 @@ const json = (datos: unknown, status = 200) =>
     },
   });
 
-/* Lo que no se guarda: correos, URL, cifras largas (teléfonos, historias) y lo muy largo. */
+/* Lo que no se guarda: correos, URL, cifras largas (teléfonos, historias); se recorta a 80. */
 export function limpiar(q: unknown): string | null {
   if (typeof q !== "string") return null;
   const t = q.replace(/\s+/g, " ").trim().toLowerCase();
-  if (t.length < 4 || t.length > 120) return null;
+  if (t.length < 4) return null;
   if (/@|https?:|www\.|\d{5,}/.test(t)) return null;
-  return t;
+  return t.slice(0, 80).trim();
 }
 
 export async function onRequestPost({ request, env }: { request: Request; env: Env }) {
@@ -61,7 +61,8 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
     i: previo.i + (cuerpo.i === true ? 1 : 0),
     m: new Date().toISOString().slice(0, 7),
   };
-  await env.CONSULTAS.put(clave, JSON.stringify(registro));
+  // Caduca a los seis meses de la última vez que se hizo.
+  await env.CONSULTAS.put(clave, JSON.stringify(registro), { expirationTtl: 180 * 24 * 3600 });
   return new Response(null, { status: 204 });
 }
 

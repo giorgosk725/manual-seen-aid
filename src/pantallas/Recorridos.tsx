@@ -6,7 +6,7 @@
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
 import { useState } from "react";
 import { ArrowRight, Check, ChevronLeft, ChevronRight, HeartHandshake } from "lucide-react";
-import { APARTADOS, TABLAS, idDeBloque, type Bloque } from "../contenido";
+import { APARTADOS, TABLAS, idDeBloque, type Bloque, rutaDeTabla } from "../contenido";
 import { SIS_IDS, SITUACIONES, type Situacion } from "../situaciones";
 
 import { elegirRuta, href } from "../rutas";
@@ -483,14 +483,25 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
             </div>
           ))}
         </dl>
-        {casoPorId("ejemplo-descarga") && (
-          <a
-            href={href("casos", "ejemplo-descarga", String(n))}
-            className="mt-3 inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 hover:border-slate-500"
-          >
-            Ver este paso en el ejemplo comentado <ArrowRight size={14} aria-hidden="true" />
-          </a>
-        )}
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+          {casoPorId("ejemplo-descarga") && (
+            <a
+              href={href("casos", "ejemplo-descarga", String(n))}
+              className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 hover:border-slate-500"
+            >
+              Ver este paso en el ejemplo comentado <ArrowRight size={14} aria-hidden="true" />
+            </a>
+          )}
+          {rutaDeTabla("T5") && (
+            <a
+              href={rutaDeTabla("T5")}
+              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+            >
+              Ver en el capítulo · Tabla 5, pp. {t.paginas[0]}–{t.paginas[1]}{" "}
+              <ArrowRight size={13} aria-hidden="true" />
+            </a>
+          )}
+        </div>
         {patrones.length > 0 && (
           <details className="mt-4">
             <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">

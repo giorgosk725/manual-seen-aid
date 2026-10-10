@@ -169,14 +169,15 @@ export function Buscar({ inicial }: { inicial?: string }) {
       }))
       .filter((x) => x.respuestas.length > 0);
   }, [motor, qEf, todas]);
-  // Sin ningún pasaje ni pregunta frecuente: se registra (solo el texto, consultas.ts).
+  // Un sistema que el capítulo no trata (iLet, Diabeloop…): se dice antes de dar nada general.
+  const noCubierto = motor && qEf.trim().length >= 2 ? motor.sistemaNoCubierto(qEf) : null;
+  // Sin ningún pasaje ni pregunta frecuente (o sin respuesta específica): se registra (solo el
+  // texto, consultas.ts).
   useRegistroSinRespuesta(
     qEf,
     estado === "listo" &&
       q.trim().length >= 4 &&
-      !respuestas.length &&
-      !frecuente &&
-      !extras.length,
+      (!!noCubierto || (!respuestas.length && !frecuente && !extras.length)),
     res.length > 0,
   );
   const sugerencias = motor && q.trim().length >= 3 ? motor.sugerir(q) : [];
@@ -243,6 +244,19 @@ export function Buscar({ inicial }: { inicial?: string }) {
       >
         {motor && qEf.trim().length >= 2 && (
           <RecursosPedidos items={motor.recursosPedidos(qEf, res)} />
+        )}
+        {noCubierto && (
+          <div
+            role="status"
+            className="mt-3 rounded-lg border-2 px-3 py-2 text-sm text-slate-900"
+            style={{ borderColor: "#8E254E", background: "#fff" }}
+          >
+            <p className="font-semibold">El capítulo no trata {noCubierto}.</p>
+            <p className="mt-1 text-slate-700">
+              No hay información específica de ese sistema. Lo que sigue es lo general del capítulo
+              que puede servir; no lo tomes como propio de {noCubierto}.
+            </p>
+          </div>
         )}
         {dato && (
           <p
@@ -466,10 +480,11 @@ export function Sobre() {
           </li>
         </ul>
         <p className="mt-4 text-sm text-slate-600">
-          No pide ni guarda datos de pacientes. Si una búsqueda se queda sin respuesta, se guarda
-          solo su texto y cuántas veces se ha hecho, sin fecha exacta ni ningún dato de quién la
-          hizo, para mejorar el buscador. No sustituye la ficha técnica de cada sistema, los
-          protocolos del centro ni el juicio clínico.
+          No pide datos de pacientes: escribe las dudas sin ellos. Si una búsqueda se queda sin
+          respuesta, se guarda su texto (recortado a 80 caracteres, sin correos, direcciones ni
+          cifras largas) y cuántas veces se ha hecho, durante seis meses, sin fecha exacta ni ningún
+          dato de quién la hizo, para mejorar el buscador. No sustituye la ficha técnica de cada
+          sistema, los protocolos del centro ni el juicio clínico.
         </p>
       </section>
     </div>
