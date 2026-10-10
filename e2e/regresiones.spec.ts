@@ -23,8 +23,9 @@ test.describe("Navegación e historial", () => {
     await page.goto("/#/buscar");
     await page.getByLabel("Texto a buscar").fill("glargina");
     await expect(page).toHaveURL(/#\/buscar\/glargina$/);
+    // El primer enlace al capítulo que nombra la glargina (no una pregunta relacionada).
     await page
-      .getByRole("link", { name: /glargina/i })
+      .locator('a[href^="#/capitulo/"]', { hasText: /glargina/i })
       .first()
       .click();
     await expect(page).toHaveURL(/#\/capitulo\//);

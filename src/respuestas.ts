@@ -1561,6 +1561,7 @@ function resolver(a: Atomo, sis: number | undefined, score: number): Respuesta {
       sistema: s.nombre,
       ruta: s.ruta,
       porSistema: undefined,
+      casillas: a.r.porSistema,
       score,
     };
   }
@@ -1717,4 +1718,70 @@ export function frecuentePorSentido(pregunta: string, ids: string[]): RespuestaF
     return { id: f.id, pregunta: f.pregunta, respuestas: pasajes.map((a) => resolver(a, sis, 1)) };
   }
   return null;
+}
+
+/* ------------------------------------------------------ entrega 3: responder con más mano */
+
+/* Una respuesta por su id (cambiar de tramo de la Figura 3 dentro de la tarjeta). */
+export function respuestaPorId(id: string, sis?: number): Respuesta | null {
+  const a = atomos().find((x) => x.r.id === id);
+  return a ? resolver(a, sis, 1) : null;
+}
+
+/* La frase anterior y la siguiente del mismo párrafo (ids t/<apartado>/<bloque>/<k>). */
+export function contextoDe(id: string): { antes?: string; despues?: string } {
+  const m = id.match(/^(t\/.+)\/(\d+)$/);
+  if (!m) return {};
+  const k = Number(m[2]);
+  const ats = atomos();
+  const frase = (n: number) => ats.find((x) => x.r.id === `${m[1]}/${n}`)?.r.texto;
+  return { antes: k > 0 ? frase(k - 1) : undefined, despues: frase(k + 1) };
+}
+
+/* Preguntas frecuentes cercanas por el sentido: las que tienen entre sus pasajes alguno de los
+   átomos parecidos, en el orden de parecido (para cuando la búsqueda no da nada). */
+export function faqsCercanas(parecidos: { id: string; s: number }[], max = 3): Frecuente[] {
+  const out: Frecuente[] = [];
+  for (const p of parecidos) {
+    for (const f of FRECUENTES) if (f.pasajes.includes(p.id) && !out.includes(f)) out.push(f);
+    if (out.length >= max) break;
+  }
+  return out.slice(0, max);
+}
+
+/* Preguntas frecuentes relacionadas con lo respondido: las que citan alguno de esos pasajes y,
+   si no llegan, las del mismo tema que la frecuente enseñada. */
+export function frecuentesRelacionadas(ids: string[], frecuenteId?: string, max = 3): Frecuente[] {
+  const out: Frecuente[] = [];
+  for (const f of FRECUENTES)
+    if (f.id !== frecuenteId && f.pasajes.some((p) => ids.includes(p))) out.push(f);
+  if (frecuenteId && out.length < max) {
+    const tema = FRECUENTES.find((f) => f.id === frecuenteId)?.tema;
+    for (const f of FRECUENTES)
+      if (f.tema === tema && f.id !== frecuenteId && !out.includes(f)) out.push(f);
+  }
+  return out.slice(0, max);
+}
+
+/* Seguimiento: la búsqueda nueva solo nombra un sistema («y en Omnipod 5», «con Control-IQ») o
+   solo palabras genéricas: hereda el tema de la búsqueda anterior. */
+export function esSeguimiento(q: string): boolean {
+  if (tramoDeConsulta(unificar(q))) return false;
+  const ws = palabras(q);
+  const sis = ws.filter((w) => ALIAS_SISTEMA[w] !== undefined);
+  // Lo que no es sistema ni palabra vacía ni genérica: si hay algo, es una búsqueda con tema.
+  const resto = ws.filter(
+    (w) => ALIAS_SISTEMA[w] === undefined && !STOP.has(w) && !GENERICAS.has(w) && w.length > 2,
+  );
+  return sis.length > 0 && resto.length === 0;
+}
+
+/* La búsqueda anterior con el sistema nuevo: «hipoglucemia nocturna 780G» + «y en Omnipod 5»
+   → «hipoglucemia nocturna omnipod 5». */
+export function conContexto(q: string, anterior: string | null): string | null {
+  if (!anterior || !esSeguimiento(q)) return null;
+  const tema = palabras(anterior).filter((w) => ALIAS_SISTEMA[w] === undefined);
+  if (!tema.length || tema.every((w) => STOP.has(w))) return null;
+  const nuevo = palabras(q).filter((w) => !STOP.has(w) || ALIAS_SISTEMA[w] !== undefined);
+  return `${tema.join(" ")} ${nuevo.join(" ")}`.trim();
 }

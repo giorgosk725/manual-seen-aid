@@ -21,6 +21,7 @@ import { useParecidos } from "../semantica";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
 import { RecursosPedidos } from "../componentes/RecursosPedidos";
+import { Autocompletar } from "../componentes/Autocompletar";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
 import { SinResultados } from "../componentes/SinResultados";
 
@@ -116,24 +117,37 @@ export function Buscar({ inicial }: { inicial?: string }) {
   useEffect(() => setTope(12), [q]);
   // El índice llega en su trozo (useBuscador): estas pantallas no lo cargan si no se busca.
   const { motor, estado, reintentar } = useBuscador(true);
+  // «y en Omnipod 5» hereda el tema de la búsqueda anterior (seguimiento).
+  const qEf = (motor && motor.consultaEfectiva(q)) || q;
   // Con conexión, los pasajes parecidos por el sentido se funden con los de las palabras.
-  const parecidos = useParecidos(q);
+  const parecidos = useParecidos(qEf);
   const busqueda: Busqueda = useMemo(
     () =>
-      motor && q.trim().length >= 2
-        ? motor.buscarConTotales(q, tope, Math.round(tope / 3))
+      motor && qEf.trim().length >= 2
+        ? motor.buscarConTotales(qEf, tope, Math.round(tope / 3))
         : { resultados: [], totalCapitulo: 0, totalFuera: 0 },
-    [motor, q, tope],
+    [motor, qEf, tope],
   );
   const res = busqueda.resultados;
   const respuestas = useMemo(
-    () => (motor && q.trim().length >= 2 ? motor.fusionar(q, parecidos) : []),
-    [motor, q, parecidos],
+    () => (motor && qEf.trim().length >= 2 ? motor.fusionar(qEf, parecidos) : []),
+    [motor, qEf, parecidos],
   );
   const frecuente = useMemo(
-    () => (motor && q.trim().length >= 2 ? motor.preguntaFrecuente(q) : null),
-    [motor, q],
+    () => (motor && qEf.trim().length >= 2 ? motor.preguntaFrecuente(qEf) : null),
+    [motor, qEf],
   );
+  useEffect(() => {
+    if (motor && (respuestas.length || frecuente)) motor.recordarTema(qEf);
+  }, [motor, qEf, respuestas, frecuente]);
+  const sugerencias = motor && q.trim().length >= 3 ? motor.sugerir(q) : [];
+  const relacionadas = motor
+    ? motor.frecuentesRelacionadas(
+        [...(frecuente?.respuestas ?? []), ...respuestas].map((r) => r.id),
+        frecuente?.id,
+      )
+    : [];
+  const cercanas = motor && !respuestas.length && !frecuente ? motor.faqsCercanas(parecidos) : [];
   const dentro = res.filter((r) => !fueraDelCapitulo(r.entrada));
   const fueraRes = res.filter((r) => fueraDelCapitulo(r.entrada));
   const hayMas = dentro.length < busqueda.totalCapitulo || fueraRes.length < busqueda.totalFuera;
@@ -158,14 +172,39 @@ export function Buscar({ inicial }: { inicial?: string }) {
         autoComplete="off"
       />
       {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
+      {!frecuente && <Autocompletar items={sugerencias} onElegir={setQ} />}
+      {qEf !== q && (
+        <p className="mt-2 text-xs text-slate-600" role="status">
+          Entendido como «{qEf}».{" "}
+          <button
+            type="button"
+            onClick={() => {
+              motor?.recordarTema("");
+              setQ(q + " ");
+            }}
+            className="font-semibold underline underline-offset-2"
+          >
+            Buscar solo «{q}»
+          </button>
+        </p>
+      )}
       <div
         onClickCapture={(e) => {
           if ((e.target as HTMLElement).closest("a")) guardarReciente(q);
         }}
       >
-        {motor && q.trim().length >= 2 && <RecursosPedidos items={motor.recursosPedidos(q, res)} />}
-        <AvisosBusqueda q={q} parcial={busqueda.parcial} primera={respuestas[0]}>
-          <RespuestasCapitulo respuestas={respuestas} q={q} frecuente={frecuente} />
+        {motor && qEf.trim().length >= 2 && (
+          <RecursosPedidos items={motor.recursosPedidos(qEf, res)} />
+        )}
+        <AvisosBusqueda q={qEf} parcial={busqueda.parcial} primera={respuestas[0]}>
+          <RespuestasCapitulo
+            respuestas={respuestas}
+            q={qEf}
+            frecuente={frecuente}
+            porId={motor?.respuestaPorId}
+            contexto={motor?.contextoDe}
+            relacionadas={relacionadas}
+          />
         </AvisosBusqueda>
         {estado === "error" && (
           <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-700">
@@ -192,8 +231,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
           q.trim().length >= 2 &&
           res.length === 0 &&
           !respuestas.length &&
-          !frecuente && <SinResultados />}
-        <ListaResultados res={dentro} q={q} />
+          !frecuente && <SinResultados q={q} cercanas={cercanas} />}
+        <ListaResultados res={dentro} q={qEf} />
         {fueraRes.length > 0 && (
           <section aria-labelledby="fuera" className="mt-6">
             <h2 id="fuera" className="text-sm font-bold text-amber-900">

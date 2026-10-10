@@ -1,6 +1,7 @@
 /* Cuando no hay nada con esas palabras (portada, paleta y Buscar): en vez de un callejón sin
    salida, las consultas más frecuentes. */
 import { href } from "../rutas";
+import type { Frecuente } from "../frecuentes";
 
 const PUERTAS = [
   { t: "Cetonemia (Figura 3)", ruta: href("consultar", "figura-3") },
@@ -11,16 +12,44 @@ const PUERTAS = [
   { t: "Comparar sistemas (Tabla 1)", ruta: href("sistemas", "todos", "esencial") },
 ];
 
-export function SinResultados({ onIr }: { onIr?: () => void }) {
+export function SinResultados({
+  onIr,
+  q,
+  cercanas = [],
+}: {
+  onIr?: () => void;
+  q?: string;
+  /* Preguntas frecuentes cercanas por el sentido (faqsCercanas), si las hay. */
+  cercanas?: Frecuente[];
+}) {
   return (
     <div
       role="status"
       className="mt-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
     >
       <p>
-        No se han encontrado resultados en el capítulo para esta búsqueda. Prueba con otras palabras
-        («sueño», «cetonemia», «TBR») o entra por una consulta:
+        {q
+          ? `El capítulo no parece tratar «${q}».`
+          : "No se han encontrado resultados en el capítulo."}{" "}
+        {cercanas.length
+          ? "Quizá buscabas:"
+          : "Prueba con otras palabras («sueño», «cetonemia», «TBR») o entra por una consulta:"}
       </p>
+      {cercanas.length > 0 && (
+        <ul className="mt-1 space-y-0.5">
+          {cercanas.map((f) => (
+            <li key={f.id}>
+              <a
+                href={href("preguntas", f.id)}
+                onClick={onIr}
+                className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 underline underline-offset-2 sm:min-h-8"
+              >
+                {f.pregunta}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
       <a
         href={href("preguntas")}
         onClick={onIr}

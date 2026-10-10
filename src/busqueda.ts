@@ -59,6 +59,8 @@ export interface Respuesta {
   porSistema?: { nombre: string; texto: string; ruta: string }[];
   /* Sistema de la casilla, si la pregunta lo nombra. */
   sistema?: string;
+  /* Las cuatro casillas, aunque se haya elegido una (para cambiar de sistema en la tarjeta). */
+  casillas?: { nombre: string; texto: string; ruta: string }[];
   pagina: number;
   pagina2?: number;
   ruta: string;

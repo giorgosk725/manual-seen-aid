@@ -8,13 +8,24 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.27.0";
+export const VERSION_APP = "0.28.0";
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo: `Manual SEEN · AID ${VERSION_APP} — buscar y responder con más mano`,
+    detalle: [
+      "Sugerencias mientras se escribe: a partir de tres letras, preguntas frecuentes, situaciones, sistemas, herramientas, hojas y siglas que empiezan por lo escrito; una pregunta rellena la caja y lo demás abre su pantalla.",
+      "La tarjeta de respuesta cambia: cuando responde una lista, el punto que coincide va primero y la lista entera queda plegada; en una fila por sistema, los cuatro sistemas se cambian con un toque dentro de la tarjeta (y vienen marcados si la búsqueda nombraba uno); en la Figura 3, el tramo se cambia igual; «Ver en contexto» despliega la frase anterior y la siguiente sin salir; y según de dónde sale la respuesta, enlaces a los cuatro sistemas en esa tabla o a la hoja para el paciente (cetonas; pruebas y cirugía).",
+      "Seguimiento: «y en Omnipod 5» o «con Control-IQ» heredan el tema de la búsqueda anterior («Entendido como …», con la opción de buscar lo escrito tal cual).",
+      "Al pie de cada respuesta, preguntas relacionadas; y cuando el capítulo no trata lo buscado, se dice y se ofrecen las preguntas más cercanas por el sentido.",
+    ],
+  },
+  {
     fecha: "2026-10-10",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — superficies más tranquilas`,
+    titulo: "Manual SEEN · AID 0.27.0 — superficies más tranquilas",
     detalle: [
       "Las tarjetas ya no flotan: las delimita el borde fino; la sombra queda para lo que de verdad flota (menús, diálogos) y para el hover de los enlaces.",
       "En las tablas por sistema del móvil y en Situaciones, cada sistema va con un filete de su color en vez de un fondo teñido, y el dato al tamaño de lectura (15 px), como en la ficha.",

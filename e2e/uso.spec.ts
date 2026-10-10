@@ -67,7 +67,7 @@ test.describe("Uso 0.10.0", () => {
     await page.goto("/#/buscar/zzzz%20qqqq");
     const aviso = page
       .getByRole("status")
-      .filter({ hasText: "No se han encontrado resultados en el capítulo" });
+      .filter({ hasText: /no parece tratar|No se han encontrado resultados/ });
     await expect(aviso).toBeVisible();
     await expect(aviso.getByRole("link", { name: "Cetonemia (Figura 3)" })).toBeVisible();
   });

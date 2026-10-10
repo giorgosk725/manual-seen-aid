@@ -38,12 +38,21 @@ import { CASOS_INDICE } from "./casos-indice";
 export * from "./busqueda";
 /* «Preguntas al capítulo»: la respuesta literal (va en el mismo trozo que el índice). */
 export {
+  conContexto,
+  contextoDe,
+  esSeguimiento,
+  faqsCercanas,
+  frecuentesRelacionadas,
   fusionar,
   preguntaFrecuente,
   responder,
   respuestaDeFrecuente,
+  respuestaPorId,
   type RespuestaFrecuente,
 } from "./respuestas";
+import { conContexto as conContextoDe, esSeguimiento as seguimiento } from "./respuestas";
+import { FRECUENTES, type Frecuente } from "./frecuentes";
+import { HOJAS_EXTRA } from "./hojas";
 
 const sinMarcado = (s: string) => plano(s);
 
@@ -508,4 +517,87 @@ function fragmento(texto: string, pos: number, radio = 90): string {
     if (esp > pos) fin = esp;
   }
   return (ini > 0 ? "…" : "") + texto.slice(ini, fin) + (fin < texto.length ? "…" : "");
+}
+
+/* ------------------------------------------------------ sugerencias mientras se escribe */
+export interface Sugerencia {
+  texto: string;
+  tipo: "pregunta" | "situacion" | "sistema" | "herramienta" | "hoja" | "sigla";
+  /* Sin ruta, la sugerencia rellena la caja (pregunta frecuente); con ruta, abre su pantalla. */
+  ruta?: string;
+  /* La pregunta frecuente, para enseñar sus pasajes. */
+  frecuente?: Frecuente;
+}
+
+const HERRAMIENTAS: [string, string][] = [
+  ["Revisar la descarga (Tabla 5, ocho pasos)", href("consultar", "descarga", "1")],
+  ["Iniciar un sistema (apartado 8)", href("consultar", "inicio")],
+  ["Criterios de elección (apartado 6 y Tabla 1)", href("sistemas", "elegir")],
+  ["Comparar sistemas (Tabla 1)", href("sistemas", "todos", "esencial")],
+  ["Parámetros por sistema (Tabla 3)", href("sistemas", "todos", "parametros")],
+  ["Cetonemia paso a paso (Figura 3)", href("consultar", "figura-3")],
+  ["Interrupción del sistema", href("consultar", "interrupcion")],
+  ["Hojas para el paciente", href("pacientes")],
+  ["Ejemplo comentado de una descarga", href("casos", "ejemplo-descarga")],
+];
+const PRIORIDAD: Record<Sugerencia["tipo"], number> = {
+  herramienta: 0,
+  situacion: 1,
+  sistema: 2,
+  hoja: 3,
+  pregunta: 4,
+  sigla: 5,
+};
+
+/* Cada término escrito es prefijo de alguna palabra del texto candidato. */
+function empiezaPor(texto: string, terminos: string[]) {
+  const ws = normalizar(texto)
+    .split(/[^a-z0-9ñ]+/)
+    .filter(Boolean);
+  return terminos.every((t) => ws.some((w) => w.startsWith(t)));
+}
+
+export function sugerir(consulta: string, max = 5): Sugerencia[] {
+  const terminos = terminosDe(consulta).map((v) => v[0]);
+  if (!terminos.length || normalizar(consulta).trim().length < 3) return [];
+  const out: Sugerencia[] = [];
+  const vistos = new Set<string>();
+  const add = (s: Sugerencia) => {
+    if (vistos.has(s.texto)) return;
+    vistos.add(s.texto);
+    out.push(s);
+  };
+  for (const [texto, ruta] of HERRAMIENTAS)
+    if (empiezaPor(texto, terminos)) add({ texto, tipo: "herramienta", ruta });
+  for (const st of SITUACIONES)
+    if (empiezaPor(st.etiqueta, terminos))
+      add({ texto: st.etiqueta, tipo: "situacion", ruta: href("consultar", "situacion", st.id) });
+  for (const s of SISTEMAS_AMPLIACION)
+    if (empiezaPor(`${s.name} ${s.short}`, terminos))
+      add({ texto: s.name, tipo: "sistema", ruta: href("sistemas", s.id) });
+  for (const h of HOJAS_EXTRA)
+    if (empiezaPor(h.titulo, terminos))
+      add({ texto: h.titulo, tipo: "hoja", ruta: href("pacientes", "hoja", h.id) });
+  for (const f of FRECUENTES)
+    if ([f.pregunta, ...f.variantes].some((t) => empiezaPor(t, terminos)))
+      add({ texto: f.pregunta, tipo: "pregunta", frecuente: f });
+  for (const g of GLOSARIO)
+    if (empiezaPor(`${g.sigla} ${g.desarrollo}`, terminos))
+      add({
+        texto: `${g.sigla}: ${g.desarrollo}`,
+        tipo: "sigla",
+        ruta: href("capitulo", apartadoDePagina(g.pagina)?.slug ?? APARTADOS[0].slug),
+      });
+  return out.sort((a, b) => PRIORIDAD[a.tipo] - PRIORIDAD[b.tipo]).slice(0, max);
+}
+
+/* ------------------------------------------------------ seguimiento con el tema anterior */
+let temaAnterior: string | null = null;
+/* Se llama con cada búsqueda que responde algo y tiene tema propio. */
+export function recordarTema(q: string) {
+  if (q.trim().length >= 3 && !seguimiento(q)) temaAnterior = q;
+}
+/* «y en Omnipod 5» → la búsqueda anterior con ese sistema; null si no es un seguimiento. */
+export function consultaEfectiva(q: string): string | null {
+  return conContextoDe(q, temaAnterior);
 }

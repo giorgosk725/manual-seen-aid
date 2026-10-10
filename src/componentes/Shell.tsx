@@ -36,6 +36,7 @@ import { useParecidos } from "../semantica";
 import { AvisosBusqueda } from "./AvisosBusqueda";
 import { RespuestasCapitulo } from "./RespuestasCapitulo";
 import { RecursosPedidos } from "./RecursosPedidos";
+import { Autocompletar } from "./Autocompletar";
 import { guardarReciente } from "../prefs";
 import { SugerenciasBusqueda } from "./SugerenciasBusqueda";
 import { SinResultados } from "./SinResultados";
@@ -59,11 +60,14 @@ function CargandoPantalla() {
 function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [q, setQ] = useState("");
   const { motor, estado, reintentar } = useBuscador(open);
-  const parecidos = useParecidos(q, open);
-  const busqueda = motor && q.trim().length >= 2 ? motor.buscarConTotales(q, 12) : null;
+  const qEf = (motor && motor.consultaEfectiva(q)) || q;
+  const parecidos = useParecidos(qEf, open);
+  const busqueda = motor && qEf.trim().length >= 2 ? motor.buscarConTotales(qEf, 12) : null;
   const res = busqueda?.resultados ?? [];
-  const respuestas = motor && q.trim().length >= 2 ? motor.fusionar(q, parecidos) : [];
-  const frecuente = motor && q.trim().length >= 2 ? motor.preguntaFrecuente(q) : null;
+  const respuestas = motor && qEf.trim().length >= 2 ? motor.fusionar(qEf, parecidos) : [];
+  const frecuente = motor && qEf.trim().length >= 2 ? motor.preguntaFrecuente(qEf) : null;
+  const sugerencias = motor && q.trim().length >= 3 && !frecuente ? motor.sugerir(q) : [];
+  if (motor && (respuestas.length || frecuente)) motor.recordarTema(qEf);
   // Abrir un resultado deja la búsqueda en «recientes».
   const cerrarYGuardar = () => {
     guardarReciente(q);
@@ -127,17 +131,24 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
         </p>
         <div ref={zona} onKeyDown={alMoverse}>
           {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
-          {motor && q.trim().length >= 2 && (
-            <RecursosPedidos items={motor.recursosPedidos(q, res)} onIr={cerrarYGuardar} />
+          <Autocompletar items={sugerencias} onElegir={setQ} onIr={cerrarYGuardar} />
+          {qEf !== q && (
+            <p className="mt-1 text-xs text-slate-600" role="status">
+              Entendido como «{qEf}».
+            </p>
+          )}
+          {motor && qEf.trim().length >= 2 && (
+            <RecursosPedidos items={motor.recursosPedidos(qEf, res)} onIr={cerrarYGuardar} />
           )}
           {q.trim().length >= 2 && (
-            <AvisosBusqueda q={q} parcial={busqueda?.parcial} primera={respuestas[0]}>
+            <AvisosBusqueda q={qEf} parcial={busqueda?.parcial} primera={respuestas[0]}>
               <RespuestasCapitulo
                 respuestas={respuestas}
-                q={q}
+                q={qEf}
                 compacta
                 onIr={cerrarYGuardar}
                 frecuente={frecuente}
+                porId={motor?.respuestaPorId}
               />
             </AvisosBusqueda>
           )}
@@ -164,7 +175,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
               )}
               {estado === "listo" && res.length === 0 && !respuestas.length && !frecuente && (
                 <li className="px-2 pb-2">
-                  <SinResultados onIr={onClose} />
+                  <SinResultados onIr={onClose} q={q} cercanas={motor?.faqsCercanas(parecidos)} />
                 </li>
               )}
               {res.map((r) => (

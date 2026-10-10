@@ -13,6 +13,7 @@ import { useParecidos } from "../semantica";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
 import { RecursosPedidos } from "../componentes/RecursosPedidos";
+import { Autocompletar } from "../componentes/Autocompletar";
 import { SinResultados } from "../componentes/SinResultados";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
 import { useUltimo } from "../prefs";
@@ -64,11 +65,14 @@ function Buscador() {
   // queda a la vista en la primera pantalla del móvil.
   const [sugerir, setSugerir] = useState(false);
   const { motor, estado, reintentar } = useBuscador(q.length > 0);
-  const parecidos = useParecidos(q, q.length > 0);
-  const busqueda = motor && q.trim().length >= 2 ? motor.buscarConTotales(q, 5, 2) : null;
+  const qEf = (motor && motor.consultaEfectiva(q)) || q;
+  const parecidos = useParecidos(qEf, q.length > 0);
+  const busqueda = motor && qEf.trim().length >= 2 ? motor.buscarConTotales(qEf, 5, 2) : null;
   const res = busqueda?.resultados ?? [];
-  const respuestas = motor && q.trim().length >= 2 ? motor.fusionar(q, parecidos) : [];
-  const frecuente = motor && q.trim().length >= 2 ? motor.preguntaFrecuente(q) : null;
+  const respuestas = motor && qEf.trim().length >= 2 ? motor.fusionar(qEf, parecidos) : [];
+  const frecuente = motor && qEf.trim().length >= 2 ? motor.preguntaFrecuente(qEf) : null;
+  const sugerencias = motor && q.trim().length >= 3 && !frecuente ? motor.sugerir(q) : [];
+  if (motor && (respuestas.length || frecuente)) motor.recordarTema(qEf);
   return (
     <section aria-labelledby="portada-buscar" className="scroll-mt-16 space-y-3">
       <h2 id="portada-buscar" className="sr-only">
@@ -106,14 +110,23 @@ function Buscador() {
         </div>
       </form>
       {sugerir && q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
-      {motor && q.trim().length >= 2 && <RecursosPedidos items={motor.recursosPedidos(q, res)} />}
-      <AvisosBusqueda q={q} parcial={busqueda?.parcial} primera={respuestas[0]}>
+      <Autocompletar items={sugerencias} onElegir={setQ} />
+      {qEf !== q && (
+        <p className="text-xs text-slate-600" role="status">
+          Entendido como «{qEf}».
+        </p>
+      )}
+      {motor && qEf.trim().length >= 2 && (
+        <RecursosPedidos items={motor.recursosPedidos(qEf, res)} />
+      )}
+      <AvisosBusqueda q={qEf} parcial={busqueda?.parcial} primera={respuestas[0]}>
         <RespuestasCapitulo
           respuestas={respuestas}
-          q={q}
+          q={qEf}
           compacta
           nivel={3}
           frecuente={frecuente}
+          porId={motor?.respuestaPorId}
         />
       </AvisosBusqueda>
       {estado === "error" && q.trim().length >= 2 && (
@@ -132,7 +145,7 @@ function Buscador() {
         </p>
       )}
       {motor && q.trim().length >= 2 && res.length === 0 && !respuestas.length && !frecuente && (
-        <SinResultados />
+        <SinResultados q={q} cercanas={motor.faqsCercanas(parecidos)} />
       )}
       {res.length > 0 && (
         <ul
