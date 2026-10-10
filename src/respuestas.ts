@@ -1851,3 +1851,44 @@ export function conContexto(q: string, anterior: string | null): string | null {
   const nuevo = palabras(q).filter((w) => !STOP.has(w) || ALIAS_SISTEMA[w] !== undefined);
   return `${tema.join(" ")} ${nuevo.join(" ")}`.trim();
 }
+
+const CORTO_SISTEMA = ["780G", "Control-IQ", "CamAPS", "Omnipod 5"];
+
+/* Dos intenciones en una consulta («hipoglucemia nocturna y comidas grasas con 780G»): las partes
+   separadas por «y», coma, punto y coma o «¿», con alguna palabra con contenido cada una. Si la
+   consulta nombra un sistema, cada parte lo hereda. Null si no hay dos partes. */
+export function partesDe(pregunta: string): string[] | null {
+  const q = normalizar(pregunta);
+  const trozos = q
+    .split(/(?<!\d)\s*[,;]\s*(?!\d)|\s+y\s+|\s*[¿?]\s*/)
+    .map((t) => t.trim())
+    .filter(Boolean);
+  if (trozos.length < 2 || trozos.length > 3) return null;
+  const sis = gruposDe(q).find((g) => g.sistema !== undefined)?.sistema;
+  const nombre = sis !== undefined ? CORTO_SISTEMA[sis] : null;
+  const partes = trozos
+    // Una cifra de β-OHB ya la responde la rama de la Figura 3: no es otra intención.
+    .filter((t) => !tramoDeConsulta(unificar(t)))
+    .filter((t) => contenido(gruposDe(t)).some((g) => !g.generica))
+    .map((t) =>
+      nombre && !gruposDe(t).some((g) => g.sistema !== undefined) ? `${t} ${nombre}` : t,
+    );
+  return partes.length >= 2 ? partes : null;
+}
+
+/* Respuesta en una línea: con una pregunta de cifra («cada cuánto», «desde qué edad», «qué
+   objetivo») y una casilla breve de una tabla por sistema entre las respuestas, esa casilla, para
+   enseñarla encima de los pasajes. No si ya es la primera respuesta. */
+export function datoCorto(pregunta: string, rs: Respuesta[]): Respuesta | null {
+  const q = normalizar(pregunta);
+  if (
+    !/\b(cada cuant|cuant[oa]s?|desde que edad|que edad|a partir de|hasta que|que objetivo|rango|minim|maxim|peso|dtd|cuanto dura|duracion)/.test(
+      q,
+    )
+  )
+    return null;
+  const i = rs.findIndex(
+    (r) => !!r.sistema && r.texto.length > 0 && r.texto.length <= 120 && !r.texto.includes("\n"),
+  );
+  return i > 0 ? rs[i] : null;
+}

@@ -8,9 +8,12 @@ import {
   recursosPedidos,
   sugerir,
 } from "./buscador";
+import { consultaRegistrable } from "./consultas";
 import {
   conContexto,
   contextoDe,
+  datoCorto,
+  partesDe,
   esSeguimiento,
   faqsCercanas,
   frecuentesRelacionadas,
@@ -120,5 +123,40 @@ describe("Lenguaje de consulta (0.30.0)", () => {
     expect(top("se me cae el pod")?.texto).toMatch(/despegado|adhesivo/);
     expect(top("puedo bajar el objetivo en Control-IQ")?.id).toBe("T1/6");
     expect(top("hb glicada objetivo")?.texto).toMatch(/HbA1c/);
+  });
+});
+
+describe("Dos intenciones, dato en una línea y consultas registrables (0.31.0)", () => {
+  it("partesDe separa por «y», coma o «¿» y cada parte hereda el sistema", () => {
+    expect(partesDe("hipoglucemia nocturna y comidas grasas con 780G")).toEqual([
+      "hipoglucemia nocturna 780G",
+      "comidas grasas con 780g",
+    ]);
+    expect(partesDe("resonancia, cirugía y viaje")).toEqual(["resonancia", "cirugia", "viaje"]);
+    expect(partesDe("embarazada con 780G, ¿qué objetivo?")?.length).toBe(2);
+  });
+  it("no hay partes con una sola intención, con una cifra de cetonas ni con más de tres", () => {
+    expect(partesDe("modo sueño")).toBeNull();
+    expect(partesDe("cetonas 1,2 y glucosa alta")).toBeNull();
+    expect(partesDe("a, b, c, d y e")).toBeNull();
+  });
+  it("datoCorto: la casilla breve por sistema cuando no es ya la primera respuesta", () => {
+    const celda = {
+      ...responder("objetivo de glucosa en omnipod 5")[0],
+    };
+    expect(celda.sistema).toBe("Omnipod 5");
+    const parrafo = responder("cómo preparar el ejercicio")[0];
+    expect(datoCorto("qué objetivo en omnipod 5", [parrafo, celda])?.id).toBe(celda.id);
+    expect(datoCorto("qué objetivo en omnipod 5", [celda, parrafo])).toBeNull();
+    expect(datoCorto("ejercicio con omnipod 5", [parrafo, celda])).toBeNull();
+  });
+  it("consultaRegistrable descarta correos, URL, cifras largas y lo muy corto o largo", () => {
+    expect(consultaRegistrable("  Cetonas 1,2  en Control IQ ")).toBe("cetonas 1,2 en control iq");
+    expect(consultaRegistrable("hola")).toBe("hola");
+    expect(consultaRegistrable("abc")).toBeNull();
+    expect(consultaRegistrable("juan@x.es")).toBeNull();
+    expect(consultaRegistrable("historia 123456")).toBeNull();
+    expect(consultaRegistrable("https://x.es")).toBeNull();
+    expect(consultaRegistrable("x".repeat(130))).toBeNull();
   });
 });

@@ -25,6 +25,7 @@ import {
 } from "../busqueda";
 import { useBuscador } from "../useBuscador";
 import { useParecidos } from "../semantica";
+import { URL_SIN_RESPUESTA, useRegistroSinRespuesta } from "../consultas";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
 import { RecursosPedidos } from "../componentes/RecursosPedidos";
@@ -147,6 +148,37 @@ export function Buscar({ inicial }: { inicial?: string }) {
   useEffect(() => {
     if (motor && (respuestas.length || frecuente)) motor.recordarTema(qEf);
   }, [motor, qEf, respuestas, frecuente]);
+  const todas = useMemo(
+    () => [...(frecuente?.respuestas ?? []), ...respuestas],
+    [frecuente, respuestas],
+  );
+  // Pregunta de cifra: la casilla breve de la tabla, en una línea encima de los pasajes.
+  const dato = motor && todas.length ? motor.datoCorto(qEf, todas) : null;
+  // Dos intenciones («hipoglucemia nocturna y comidas grasas»): lo que la segunda añade.
+  const extras = useMemo(() => {
+    const partes = motor && qEf.trim().length >= 2 ? motor.partesDe(qEf) : null;
+    if (!motor || !partes) return [];
+    const vistos = new Set(todas.map((r) => r.id));
+    return partes
+      .map((parte) => ({
+        parte,
+        respuestas: motor
+          .responder(parte)
+          .filter((r) => !r.aproximada && r.tipo !== "sigla" && !vistos.has(r.id))
+          .slice(0, 2),
+      }))
+      .filter((x) => x.respuestas.length > 0);
+  }, [motor, qEf, todas]);
+  // Sin ningún pasaje ni pregunta frecuente: se registra (solo el texto, consultas.ts).
+  useRegistroSinRespuesta(
+    qEf,
+    estado === "listo" &&
+      q.trim().length >= 4 &&
+      !respuestas.length &&
+      !frecuente &&
+      !extras.length,
+    res.length > 0,
+  );
   const sugerencias = motor && q.trim().length >= 3 ? motor.sugerir(q) : [];
   const relacionadas = motor
     ? motor.frecuentesRelacionadas(
@@ -212,6 +244,21 @@ export function Buscar({ inicial }: { inicial?: string }) {
         {motor && qEf.trim().length >= 2 && (
           <RecursosPedidos items={motor.recursosPedidos(qEf, res)} />
         )}
+        {dato && (
+          <p
+            role="status"
+            className="mt-3 rounded-lg border px-3 py-2 text-sm text-slate-900"
+            style={{ borderColor: "#e3c7d3", background: "#f7eff3" }}
+          >
+            <span className="font-semibold">
+              {dato.sistema} · {dato.titulo}:
+            </span>{" "}
+            {dato.texto}{" "}
+            <a href={dato.ruta} className="font-semibold underline underline-offset-2">
+              Ver en la tabla
+            </a>
+          </p>
+        )}
         <AvisosBusqueda q={qEf} parcial={busqueda.parcial} primera={respuestas[0]}>
           <RespuestasCapitulo
             respuestas={respuestas}
@@ -222,6 +269,20 @@ export function Buscar({ inicial }: { inicial?: string }) {
             relacionadas={relacionadas}
           />
         </AvisosBusqueda>
+        {extras.map((x) => (
+          <section key={x.parte} className="mt-3" aria-label={`También sobre ${x.parte}`}>
+            <h2 className="text-xs font-bold uppercase tracking-wide text-slate-600">
+              También sobre «{x.parte}»
+            </h2>
+            <RespuestasCapitulo
+              respuestas={x.respuestas}
+              q={x.parte}
+              nivel={3}
+              porId={motor?.respuestaPorId}
+              contexto={motor?.contextoDe}
+            />
+          </section>
+        ))}
         {estado === "error" && (
           <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-700">
             No se pudo cargar el índice de búsqueda.
@@ -405,10 +466,117 @@ export function Sobre() {
           </li>
         </ul>
         <p className="mt-4 text-sm text-slate-600">
-          No pide ni guarda datos de pacientes. No sustituye la ficha técnica de cada sistema, los
+          No pide ni guarda datos de pacientes. Si una búsqueda se queda sin respuesta, se guarda
+          solo su texto y cuántas veces se ha hecho, sin fecha exacta ni ningún dato de quién la
+          hizo, para mejorar el buscador. No sustituye la ficha técnica de cada sistema, los
           protocolos del centro ni el juicio clínico.
         </p>
       </section>
+    </div>
+  );
+}
+
+/* ---------- Consultas sin respuesta (#/sobre/consultas): la lista, con la clave ---------- */
+interface ConsultaRegistrada {
+  q: string;
+  n: number;
+  i: number;
+  m: string;
+}
+export function ConsultasSinRespuesta() {
+  const [clave, setClave] = useState(() => {
+    try {
+      return localStorage.getItem("mseen:clave") ?? "";
+    } catch {
+      return "";
+    }
+  });
+  const [estado, setEstado] = useState<"inicial" | "cargando" | "error" | "listo">("inicial");
+  const [filas, setFilas] = useState<ConsultaRegistrada[]>([]);
+  const cargar = async () => {
+    setEstado("cargando");
+    try {
+      localStorage.setItem("mseen:clave", clave);
+    } catch {
+      /* sin almacenamiento */
+    }
+    try {
+      const r = await fetch(URL_SIN_RESPUESTA, { headers: { "X-Clave": clave } });
+      if (!r.ok) throw new Error(String(r.status));
+      const d = (await r.json()) as { consultas?: unknown };
+      setFilas(Array.isArray(d.consultas) ? (d.consultas as ConsultaRegistrada[]) : []);
+      setEstado("listo");
+    } catch {
+      setEstado("error");
+    }
+  };
+  return (
+    <div className="space-y-4">
+      <CabeceraEditorial titulo="Consultas sin respuesta" hex={CATEGORIA_HEX.confiar} level={1}>
+        <p className="text-sm text-slate-600">
+          Lo que se ha buscado sin encontrar ningún pasaje ni pregunta frecuente: el texto y las
+          veces. Sirve para añadir equivalencias y preguntas frecuentes.
+        </p>
+      </CabeceraEditorial>
+      <form
+        className="flex flex-wrap items-end gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void cargar();
+        }}
+      >
+        <label className="flex flex-col text-sm">
+          <span className="text-xs font-semibold text-slate-600">Clave de lectura</span>
+          <input
+            type="password"
+            value={clave}
+            onChange={(e) => setClave(e.target.value)}
+            autoComplete="off"
+            className="min-h-11 rounded-md border border-slate-300 px-3 text-base"
+          />
+        </label>
+        <button
+          type="submit"
+          disabled={clave.length < 16 || estado === "cargando"}
+          className="tap-44 rounded-md border border-slate-400 bg-white px-3 py-2 text-sm font-semibold text-slate-800 disabled:opacity-50"
+        >
+          {estado === "cargando" ? "Cargando…" : "Ver la lista"}
+        </button>
+      </form>
+      {estado === "error" && (
+        <p role="alert" className="text-sm text-slate-700">
+          No se pudo cargar: clave incorrecta o sin conexión.
+        </p>
+      )}
+      {estado === "listo" && filas.length === 0 && (
+        <p className="text-sm text-slate-700">Todavía no hay consultas registradas.</p>
+      )}
+      {filas.length > 0 && (
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-xs text-slate-600">
+              <th className="py-1 pr-2 font-semibold">Consulta</th>
+              <th className="py-1 pr-2 text-right font-semibold">Veces</th>
+              <th className="py-1 pr-2 text-right font-semibold">Con resultados</th>
+              <th className="py-1 font-semibold">Último mes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filas.map((f) => (
+              <tr key={f.q} className="border-t" style={{ borderColor: "#e6e6e6" }}>
+                <td className="py-1.5 pr-2">
+                  <a href={href("buscar", f.q)} className="underline underline-offset-2">
+                    {f.q}
+                  </a>
+                </td>
+                <td className="py-1.5 pr-2 text-right tabular-nums">{f.n}</td>
+                <td className="py-1.5 pr-2 text-right tabular-nums">{f.i}</td>
+                <td className="py-1.5 tabular-nums">{f.m}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }

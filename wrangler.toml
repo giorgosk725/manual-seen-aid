@@ -6,3 +6,8 @@ compatibility_date = "2026-06-01"
 
 [ai]
 binding = "AI"
+
+# Consultas sin respuesta (functions/api/sin-respuesta.ts): texto y cuenta, nada de quién.
+[[kv_namespaces]]
+binding = "CONSULTAS"
+id = "b586bf4611f34e649f139c1115867cf9"

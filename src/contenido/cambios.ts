@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.30.0";
+export const VERSION_APP = "0.31.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — el buscador entiende más lenguaje de consulta`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — diez preguntas frecuentes más, dos intenciones y consultas sin respuesta`,
+    detalle: [
+      "Diez preguntas frecuentes nuevas (60 en total): fallo de la bomba o sin insulina, cuándo confirmar con glucemia capilar, pérdida de señal del sensor, adhesivo y piel, fallos de infusión y cánula, cuánto esperar antes de volver a corregir, comida rica en grasa o proteína, viaje y aeropuerto, fatiga por alarmas, enfermedad intercurrente.",
+      "Una consulta con dos intenciones («hipoglucemia nocturna y comidas grasas con 780G») responde a las dos: debajo del pasaje principal, «También sobre …» con lo que añade la otra parte. Con una pregunta de cifra, la casilla breve de la tabla se enseña en una línea encima de los pasajes cuando no es ya la primera respuesta.",
+      "Si una búsqueda se queda sin ningún pasaje ni pregunta frecuente, la app guarda solo su texto y cuántas veces se ha hecho, sin fecha exacta ni dato alguno de quién la hizo, para mejorar el buscador (se explica en «Sobre esta app»).",
+    ],
+  },
+  {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.30.0 — el buscador entiende más lenguaje de consulta",
     detalle: [
       "Setenta consultas escritas como se dicen en la consulta, probadas contra el motor: «la bomba se ha quedado sin insulina» o «sin batería» llevan a la interrupción del sistema y la pluma; «la aguja se dobla» o «cánula doblada», a los acodamientos y las cánulas metálicas; «no me deja entrar en automático», a las salidas del modo automático; «se me cae el pod», al adhesivo; «bajar el objetivo», al objetivo glucémico y sus valores permitidos; «me quito la bomba para jugar al fútbol», «hb glicada» o «sensor en el brazo» encuentran su pasaje.",
       "Lo que el capítulo no trata (sauna, campamentos, menstruación) sigue sin respuesta forzada.",

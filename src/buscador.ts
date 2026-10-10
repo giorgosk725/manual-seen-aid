@@ -40,10 +40,12 @@ export * from "./busqueda";
 export {
   conContexto,
   contextoDe,
+  datoCorto,
   esSeguimiento,
   faqsCercanas,
   frecuentesRelacionadas,
   fusionar,
+  partesDe,
   preguntaFrecuente,
   responder,
   respuestaDeFrecuente,

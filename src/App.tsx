@@ -28,6 +28,9 @@ const otras = () => import("./pantallas/Otras");
 const Bibliografia = lazy(() => otras().then((m) => ({ default: m.Bibliografia })));
 const Buscar = lazy(() => otras().then((m) => ({ default: m.Buscar })));
 const Sobre = lazy(() => otras().then((m) => ({ default: m.Sobre })));
+const ConsultasSinRespuesta = lazy(() =>
+  otras().then((m) => ({ default: m.ConsultasSinRespuesta })),
+);
 const Test = lazy(() => otras().then((m) => ({ default: m.Test })));
 const Preguntas = lazy(() => otras().then((m) => ({ default: m.Preguntas })));
 
@@ -225,8 +228,13 @@ export default function App() {
       titulo = "Sobre esta app";
       break;
     case "sobre":
-      pantalla = <Sobre />;
-      titulo = "Sobre esta app";
+      if (ruta.sub === "consultas") {
+        pantalla = <ConsultasSinRespuesta />;
+        titulo = "Consultas sin respuesta";
+      } else {
+        pantalla = <Sobre />;
+        titulo = "Sobre esta app";
+      }
       break;
     case "test":
       pantalla = <Test />;
