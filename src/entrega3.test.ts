@@ -10,6 +10,7 @@ import {
 } from "./buscador";
 import { consultaRegistrable } from "./consultas";
 import {
+  coberturaDe,
   conContexto,
   contextoDe,
   preguntaFrecuente,
@@ -219,5 +220,31 @@ describe("Entrega 4 de la auditoría (0.35.0)", () => {
     expect(rec("dejar las plumas y empezar con control iq")[0].entrada.titulo).toMatch(
       /Iniciar un sistema/,
     );
+  });
+});
+
+describe("Reformulaciones nuevas y cobertura parcial (0.36.0)", () => {
+  const rec = (q: string) => recursosPedidos(q, buscarConTotales(q, 12).resultados);
+  it("transición e inicio con otras palabras", () => {
+    for (const q of [
+      "cambiar de bolis a Omnipod",
+      "quiero empezar a usar omnipod viniendo de plumas",
+      "poner en marcha una 780G en un paciente con MDI",
+      "arrancar control iq desde pauta bolo-basal",
+    ])
+      expect(rec(q)[0]?.entrada.titulo, q).toMatch(/Iniciar un sistema/);
+  });
+  it("comparaciones con otras palabras", () => {
+    expect(preguntaFrecuente("en qué se diferencian control iq y control iq plus")?.id).toBe("f61");
+    expect(partesDe("en qué se distinguen 780G y Omnipod 5")).toBeNull();
+    expect(rec("comparar 780G con camaps")[0].entrada.titulo).toMatch(
+      /^Comparar MiniMed 780G y myLoop CamAPS/,
+    );
+    expect(responder("paso siete de la tabla 5")[0].id).toBe("T5/6");
+  });
+  it("cobertura parcial: lo que el capítulo no trata de la consulta", () => {
+    expect(coberturaDe("sauna con la bomba").ajenas).toEqual(["sauna"]);
+    expect(coberturaDe("modo sueño").ajenas).toEqual([]);
+    expect(coberturaDe("semaglutida en DM1 con asa cerrada").ajenas).toEqual(["semaglutida"]);
   });
 });

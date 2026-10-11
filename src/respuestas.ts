@@ -1425,6 +1425,31 @@ export function responder(pregunta: string, opciones: { max?: number } = {}): Re
   return [r, ...base.filter((x) => x.id !== r.id)].slice(0, opciones.max ?? 3);
 }
 
+/* Lo que el capítulo no trata de una consulta: las palabras con contenido que ninguna raíz del
+   índice casa («sauna», «semaglutida»). Para decir qué queda sin responder cuando hay respuesta
+   parcial. */
+export function coberturaDe(pregunta: string): { ajenas: string[] } {
+  atomos();
+  const grupos = gruposDe(pregunta);
+  const todas = grupos.filter((g) => g.sistema === undefined && !g.bonus);
+  const especificas = todas.filter((g) => !g.generica);
+  const utiles = especificas.length ? especificas : todas;
+  const conocida = (g: Grupo) =>
+    g.palabras.some((t, k) => {
+      if (PESO!.has(t)) return true;
+      for (const v of PESO!.keys()) if (casa(t, v, k === 0 && !!g.prefijo)) return true;
+      return false;
+    });
+  const ajenas = utiles.filter(
+    (g) =>
+      !conocida(g) &&
+      g.palabras[0].length >= 5 &&
+      !/(ar|er|ir|an|en|s)$/.test(g.palabras[0]) &&
+      !/(ar|er|ir)(me|se|lo|la|le)?$|(ando|iendo)$/.test(g.escrita ?? ""),
+  );
+  return { ajenas: ajenas.map((g) => g.escrita ?? g.palabras[0]) };
+}
+
 function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
   const ats = atomos();
   const grupos = gruposDe(pregunta);

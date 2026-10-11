@@ -170,6 +170,12 @@ export function Buscar({ inicial }: { inicial?: string }) {
       })
       .filter((x) => x.respuestas.length > 0);
   }, [motor, qEf, todas]);
+  // Respuesta parcial: lo que el capítulo no trata de la consulta («sauna» en «sauna con la
+  // bomba»), dicho junto a lo que sí responde.
+  const ajenas =
+    motor && qEf.trim().length >= 2 && (respuestas.length || frecuente)
+      ? motor.coberturaDe(qEf).ajenas
+      : [];
   // Un sistema que el capítulo no trata (iLet, Diabeloop…): se dice antes de dar nada general.
   const noCubierto = motor && qEf.trim().length >= 2 ? motor.sistemaNoCubierto(qEf) : null;
   // Sin ningún pasaje ni pregunta frecuente (o sin respuesta específica): se registra (solo el
@@ -262,6 +268,16 @@ export function Buscar({ inicial }: { inicial?: string }) {
               que puede servir; no lo tomes como propio de {noCubierto}.
             </p>
           </div>
+        )}
+        {ajenas.length > 0 && !noCubierto && (
+          <p
+            role="status"
+            className="mt-3 rounded-lg border px-3 py-2 text-sm text-slate-800"
+            style={{ borderColor: "#e3c7d3", background: "#fff" }}
+          >
+            El capítulo no trata {ajenas.map((a) => `«${a}»`).join(", ")}. Lo que sigue responde al
+            resto de la consulta.
+          </p>
         )}
         {dato && (
           <p

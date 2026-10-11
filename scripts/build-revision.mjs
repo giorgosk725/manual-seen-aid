@@ -11,6 +11,7 @@ import { existsSync, mkdirSync, readdirSync, copyFileSync, rmSync } from "node:f
 const CLASES = [
   { origen: "borradores", destino: "src/casos-borrador" },
   { origen: "borradores/hojas", destino: "src/hojas-borrador" },
+  { origen: "borradores/interpretaciones", destino: "src/interpretaciones-borrador" },
 ];
 const lista = (d) => (existsSync(d) ? readdirSync(d).filter((f) => f.endsWith(".json")) : []);
 const todos = CLASES.flatMap((c) => lista(c.origen).map((f) => `${c.origen}/${f}`));

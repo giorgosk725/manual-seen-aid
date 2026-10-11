@@ -7,7 +7,7 @@
      (`T1:minimed-780g+omnipod-5`, `T6:3`) para poder compartirla. */
 import { useMemo, useState } from "react";
 import { ExternalLink } from "lucide-react";
-import type { Tabla } from "../contenido";
+import type { Tabla, TablaId } from "../contenido";
 import { Lineas, Texto } from "../texto";
 import { Enlace, PaginaBadge } from "../ui";
 import { BRAND_ACCENT, SISTEMA_HEX } from "../tokens";
@@ -15,8 +15,17 @@ import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
 import { CasillasSistema } from "./CasillasSistema";
 import { TituloBloque } from "../nivel";
+import { ComoInterpretar } from "./ComoInterpretar";
 
 const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
+
+/* La herramienta de la app que recorre cada tabla, desde la lectura del capítulo. */
+const HERRAMIENTA_DE_TABLA: Record<string, { texto: string; ruta: string }> = {
+  T2: { texto: "Iniciar un sistema, paso a paso", ruta: href("consultar", "inicio") },
+  T4: { texto: "Situaciones", ruta: href("consultar", "situacion") },
+  T5: { texto: "Revisar la descarga, paso a paso", ruta: href("consultar", "descarga", "1") },
+  T6: { texto: "Situaciones", ruta: href("consultar", "situacion") },
+};
 const slugDe = (c: number) => CORTOS[c].toLowerCase().replace(/\s/g, "-");
 
 /* «Viendo: MiniMed 780G y Omnipod 5»: qué selección está activa, con palabras. */
@@ -50,6 +59,15 @@ export function CabeceraTabla({
           >
             <ExternalLink size={12} aria-hidden="true" />
             {tabla.porSistema ? "Ver por sistema" : "Abrir la tabla"}
+          </Enlace>
+        )}
+        {enlaceConsultar && HERRAMIENTA_DE_TABLA[tabla.id] && (
+          <Enlace
+            href={HERRAMIENTA_DE_TABLA[tabla.id].ruta}
+            className="no-imprimir inline-flex items-center gap-1 rounded-full border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+          >
+            <ExternalLink size={12} aria-hidden="true" />
+            {HERRAMIENTA_DE_TABLA[tabla.id].texto}
           </Enlace>
         )}
       </div>
@@ -281,6 +299,7 @@ export function TablaVista({
   return (
     <section aria-label={`Tabla ${tabla.numero}`} className="bloque-papel">
       <CabeceraTabla tabla={tabla} enlaceConsultar={!interactiva && !columnasFijas} />
+      <ComoInterpretar tabla={tabla.id as TablaId} />
       {interactiva && tabla.porSistema && !columnasFijas && (
         <div className="no-imprimir mb-3">
           <div className="mb-1 text-xs font-semibold text-slate-500">

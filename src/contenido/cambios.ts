@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.35.0";
+export const VERSION_APP = "0.36.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — precisión y continuidad (revisión de la 0.34)`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — capítulo y herramientas conectados`,
+    detalle: [
+      "Buscar: cuando el capítulo solo responde en parte, lo dice («El capítulo no trata «sauna». Lo que sigue responde al resto de la consulta»). Las transiciones y comparaciones se reconocen con más formas de decirlas («cambiar de bolis a Omnipod», «en qué se diferencian», «comparar 780G con CamAPS»).",
+      "Al abrir el capítulo desde una herramienta (una ficha, una situación, Iniciar, una búsqueda, un caso), un botón «Volver a la consulta» devuelve al mismo punto y estado. Desde una tabla del capítulo se llega a su herramienta: Iniciar un sistema (Tabla 2), Situaciones (Tablas 4 y 6) y Revisar la descarga (Tabla 5), además de «Ver por sistema».",
+      "Preparado el bloque opcional «Cómo interpretar este dato» en las tablas y en los pasos de la descarga, y el comentario desglosado de los casos (hallazgo, hipótesis, qué falta, conclusión). Su texto es de la app y entra solo cuando se aprueba; mientras, se ve en la copia de revisión como borrador.",
+    ],
+  },
+  {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.35.0 — precisión y continuidad (revisión de la 0.34)",
     detalle: [
       "Buscador: «¿qué diferencia hay entre Control-IQ y Control-IQ+?» es una sola pregunta (nueva frecuente con la indicación, la gestación y la basal temporal de las Tablas 1 y 3, y el párrafo del apartado 4); «780G frente a Omnipod 5» abre su comparación en la Tabla 1; «pasar de plumas a Omnipod» o «dejar las plumas» conservan el acceso a Iniciar. Con el sistema nombrado, en los textos con una línea por sistema (inicialización de la Tabla 2) su línea va primero y las demás, en «Ver los cuatro».",
       "Iniciar un sistema: el aspecto elegido va en la ruta (se puede enlazar y sobrevive a «Ver en el capítulo» y Atrás); con un aspecto abierto, el índice se pliega a «Aspecto: … · Cambiar»; cada aspecto enlaza su fuente exacta (la tabla en el capítulo o el párrafo); los botones dicen «Fase anterior» y «Fase siguiente».",

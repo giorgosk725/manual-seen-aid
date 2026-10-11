@@ -112,6 +112,25 @@ function Respuesta({ o, id }: { o: OpcionCaso; id?: string }) {
         </span>
         {o.comentario}
       </p>
+      {o.desglose && (
+        <dl className="mt-2 space-y-1 text-sm text-slate-800">
+          {(
+            [
+              ["Qué hallazgo importa", o.desglose.hallazgo],
+              ["Qué hipótesis permite el capítulo", o.desglose.hipotesis],
+              ["Qué falta para distinguirlas", o.desglose.falta],
+              ["Qué conclusión está respaldada", o.desglose.conclusion],
+            ] as const
+          ).map(([rotulo, texto]) => (
+            <div key={rotulo}>
+              <dt className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                {rotulo}
+              </dt>
+              <dd>{texto}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
       <div className="mt-2">
         <Citas citas={o.citas} asterisco={o.asterisco} />
       </div>

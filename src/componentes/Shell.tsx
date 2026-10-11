@@ -15,6 +15,7 @@ import {
   AArrowUp,
   BookOpen,
   ChevronDown,
+  ChevronLeft,
   HeartHandshake,
   Home,
   Menu,
@@ -581,9 +582,21 @@ export function Shell({
   // Al cambiar de pantalla (no al elegir una opción dentro de ella): arriba del todo, salvo
   // enlace profundo (un bloque del capítulo, una referencia) o vuelta atrás (se restaura).
   // useLayoutEffect: corre antes que los efectos de los hijos, que hacen su propio scroll.
+  // «Volver a la consulta»: al abrir el capítulo desde una herramienta (Sistemas, Situaciones,
+  // Iniciar, Buscar, un caso…), un botón para volver justo donde se estaba (historial).
+  const previa = useRef<{ seccion: string; titulo: string }>({ seccion: "", titulo: "" });
+  const [volver, setVolver] = useState<string | null>(null);
   useLayoutEffect(() => {
     pantallaActual.current = clavePantalla;
     const nueva = consumirNavegacionNueva();
+    const desdeHerramienta =
+      nueva &&
+      ruta.seccion === "capitulo" &&
+      ["consultar", "sistemas", "buscar", "casos", "preguntas", "visual"].includes(
+        previa.current.seccion,
+      );
+    setVolver(desdeHerramienta ? previa.current.titulo : null);
+    previa.current = { seccion: ruta.seccion, titulo: titulo ?? "" };
     const destinoProfundo =
       (ruta.seccion === "capitulo" && !!ruta.detalle) ||
       (ruta.seccion === "sistemas" && !!ruta.detalle) ||
@@ -744,6 +757,19 @@ export function Shell({
           key={clavePantalla}
           className="pantalla-in mx-auto max-w-5xl px-3 pb-24 pt-4 sm:px-5 md:pb-10"
         >
+          {volver && ruta.seccion === "capitulo" && (
+            <div className="no-imprimir mb-3">
+              <button
+                type="button"
+                onClick={() => window.history.back()}
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border bg-white px-3 text-sm font-semibold text-slate-800 hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9"
+                style={{ borderColor: "#d4d4d4" }}
+              >
+                <ChevronLeft size={15} aria-hidden="true" /> Volver a la consulta
+                <span className="font-normal text-slate-600">· {volver}</span>
+              </button>
+            </div>
+          )}
           {/* Un fallo en una pantalla deja en pie la barra lateral y la navegación. */}
           <ErrorBoundary>
             <Suspense fallback={<CargandoPantalla />}>{children}</Suspense>

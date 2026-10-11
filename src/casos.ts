@@ -12,8 +12,18 @@ export interface CitaCaso {
   f: string;
 }
 
+/* Comentario desglosado (opcional): qué hallazgo importa, qué hipótesis permite el capítulo,
+   qué falta para distinguirlas y qué conclusión está respaldada. */
+export interface DesgloseCaso {
+  hallazgo: string;
+  hipotesis: string;
+  falta: string;
+  conclusion: string;
+}
+
 export interface OpcionCaso {
   texto: string;
+  desglose?: DesgloseCaso;
   /* «si» = lo que indica el capítulo; «no» = no lo es; «matiz» = no es un error, pero el
      capítulo no lo pide en ese punto. */
   tipo: "si" | "no" | "matiz";

@@ -39,6 +39,7 @@ import { CASOS_INDICE } from "./casos-indice";
 export * from "./busqueda";
 /* «Preguntas al capítulo»: la respuesta literal (va en el mismo trozo que el índice). */
 export {
+  coberturaDe,
   conContexto,
   contextoDe,
   datoCorto,
@@ -462,7 +463,7 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   }
   if (
     sis >= 0 &&
-    /\b(inici|empez|comenz|arranc|poner en marcha|pasar a (la |una )?bomba|desde mdi|multiples dosis|desde (las )?plumas|pasar de (las )?plumas|dejar (las )?plumas|cambiar de mdi|pasar de mdi|empezar (con )?(una |la )?bomba|transici)/.test(
+    /\b(inici|empez|comenz|arranc|poner en marcha|pasar a (la |una )?bomba|desde mdi|multiples dosis|desde (las )?plumas|pasar de (las )?(plumas|bolis)|dejar (las |los )?(plumas|bolis)|cambiar de (las |los )?(mdi|plumas|bolis)|de (las |los )?(plumas|bolis) a|pasar de mdi|empezar (con )?(una |la )?bomba|viniendo de|transici|pauta bolo|bolo-basal)/.test(
       normalizar(consulta),
     )
   ) {
