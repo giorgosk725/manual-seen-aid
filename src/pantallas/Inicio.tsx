@@ -4,7 +4,7 @@
    El contenido sale de inicio.ts (referencias al texto literal); aquí solo se pinta. */
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Check, ChevronDown, ChevronLeft, ChevronRight, Printer } from "lucide-react";
-import { APARTADOS, TABLAS, rutaDeTabla } from "../contenido";
+import { APARTADOS, GLOSARIO, TABLAS, rutaDeTabla } from "../contenido";
 import { ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { SIS_IDS } from "../situaciones";
 import { elegirRuta, href } from "../rutas";
@@ -16,7 +16,8 @@ import { VERSION_APP } from "../contenido/cambios";
 import { Lineas } from "../texto";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
-import { PiezaVista } from "../componentes/Piezas";
+import { PiezaVista, textosDePieza } from "../componentes/Piezas";
+import { siglasEn } from "../siglas";
 import { CATEGORIA_HEX } from "../tokens";
 import {
   FASES,
@@ -207,6 +208,14 @@ function TareaVista({
 }) {
   const id = `tarea-${tarea.id}`;
   const fuentes = fuentesDeTarea(fase, tarea);
+  // Las siglas del glosario, pulsables la primera vez que salen en la tarea: a cada pieza le
+  // llegan las que no han salido en las anteriores.
+  const vistas = new Set<string>();
+  const siglasDe = tarea.piezas.map((i) => {
+    const pend = new Set(GLOSARIO.map((g) => g.sigla).filter((x) => !vistas.has(x)));
+    for (const t of textosDePieza(fase.piezas[i], sis)) for (const x of siglasEn(t)) vistas.add(x);
+    return pend;
+  });
   const siguiente = tarea.siguiente?.(sis) ?? null;
   return (
     <section className="border-t" style={{ borderColor: "#e6e6e6" }} aria-labelledby={`${id}-t`}>
@@ -229,9 +238,9 @@ function TareaVista({
       {abierta && (
         <div id={id} className="pb-4">
           <div className="divide-y" style={{ borderColor: "#eeeeee" }}>
-            {tarea.piezas.map((i) => (
+            {tarea.piezas.map((i, k) => (
               <div key={i} id={`pieza-${i}`} className="py-2.5 first:pt-0">
-                <PiezaVista pieza={fase.piezas[i]} sis={sis} compacta />
+                <PiezaVista pieza={fase.piezas[i]} sis={sis} compacta siglas={siglasDe[k]} />
               </div>
             ))}
           </div>

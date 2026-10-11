@@ -188,12 +188,21 @@ export function Buscar({ inicial }: { inicial?: string }) {
     res.length > 0,
   );
   const sugerencias = motor && q.trim().length >= 3 ? motor.sugerir(q) : [];
+  const sistemaQ = motor ? motor.sistemaNombrado(qEf) : -1;
   const relacionadas = motor
     ? motor.frecuentesRelacionadas(
         [...(frecuente?.respuestas ?? []), ...respuestas].map((r) => r.id),
         frecuente?.id,
+        3,
+        sistemaQ >= 0 ? sistemaQ : undefined,
       )
     : [];
+  // Una respuesta de las Tablas 2 o 3 sigue en la tarea de Iniciar que la trabaja (si la
+  // pregunta frecuente ya trae su continuación, esa manda).
+  const continuacion =
+    motor && respuestas[0] && !frecuente?.siguiente
+      ? motor.continuacionDe(respuestas[0].id, sistemaQ)
+      : null;
   const cercanas = motor && !respuestas.length && !frecuente ? motor.faqsCercanas(parecidos) : [];
   // Recursos de la app (ampliación, hojas, casos, test, accesos): aparte del texto del capítulo.
   const esRecurso = (r: Resultado) =>
@@ -302,7 +311,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
             porId={motor?.respuestaPorId}
             contexto={motor?.contextoDe}
             relacionadas={relacionadas}
-            sistema={motor ? motor.sistemaNombrado(qEf) : undefined}
+            sistema={sistemaQ >= 0 ? sistemaQ : undefined}
+            continuacion={continuacion}
           />
         </AvisosBusqueda>
         {extras.map((x) => (

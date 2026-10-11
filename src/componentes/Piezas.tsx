@@ -4,7 +4,8 @@
 import { ArrowRight } from "lucide-react";
 import { TABLAS } from "../contenido";
 import { PaginaBadge } from "../ui";
-import { Lineas } from "../texto";
+import { Lineas, Texto } from "../texto";
+import { siglasPorTexto } from "../siglas";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { frasesDe, lineasInicializacion, listaDe, type Pieza } from "../inicio";
 
@@ -39,7 +40,17 @@ function CabeceraTabla({ tabla, etiqueta }: { tabla: keyof typeof TABLAS; etique
   );
 }
 
-function Casilla({ nombre, texto, c }: { nombre: string; texto: string; c: number }) {
+function Casilla({
+  nombre,
+  texto,
+  c,
+  siglas,
+}: {
+  nombre: string;
+  texto: string;
+  c: number;
+  siglas?: Set<string>;
+}) {
   return (
     <div
       className="rounded-xl p-3 text-sm text-slate-800"
@@ -51,9 +62,33 @@ function Casilla({ nombre, texto, c }: { nombre: string; texto: string; c: numbe
       >
         {nombre}
       </span>
-      <Lineas>{texto}</Lineas>
+      <Lineas siglas={siglas}>{texto}</Lineas>
     </div>
   );
+}
+
+/* Los textos que una pieza pinta, en orden de lectura (para saber qué siglas salen antes). */
+export function textosDePieza(pieza: Pieza, sis?: number): string[] {
+  switch (pieza.t) {
+    case "frase":
+      return frasesDe(pieza.apartado, pieza.bloque, pieza.k, pieza.trozo).frases;
+    case "lista": {
+      const l = listaDe(pieza.apartado, pieza.bloque);
+      return [l.intro ?? "", ...l.items];
+    }
+    case "fila": {
+      const f = TABLAS[pieza.tabla].filas[pieza.fila];
+      return [f.etiqueta, ...f.celdas];
+    }
+    case "casilla": {
+      const f = TABLAS[pieza.tabla].filas[pieza.fila];
+      return [f.etiqueta, ...(sis !== undefined ? [f.celdas[sis]] : f.celdas)];
+    }
+    case "hito":
+      return frasesDe(pieza.apartado, pieza.bloque, pieza.k).frases;
+    default:
+      return [];
+  }
 }
 
 /* `compacta`: dentro de una tarea de «Iniciar un sistema», la pieza va sin su cabecera de tabla,
@@ -63,17 +98,30 @@ export function PiezaVista({
   pieza,
   sis,
   compacta = false,
+  siglas,
 }: {
   pieza: Pieza;
   sis?: number;
   compacta?: boolean;
+  /* Siglas pendientes de marcar en este bloque: la primera aparición se hace pulsable y se
+     quita del conjunto (el conjunto lo crea quien pinta el bloque). */
+  siglas?: Set<string>;
 }) {
+  // Qué siglas se marcan en cada texto de la pieza (su primera aparición), sin mutar nada.
+  const textos = siglas ? textosDePieza(pieza, sis) : [];
+  const porTexto = new Map(
+    siglas ? siglasPorTexto(textos, siglas).map((x, i) => [textos[i], x] as const) : [],
+  );
+  const pend = (t: string) => porTexto.get(t);
+  const T = ({ children }: { children: string }) => (
+    <Texto siglas={pend(children)}>{children}</Texto>
+  );
   const caja = compacta ? "" : "rounded-xl border bg-white p-3";
   const borde = compacta ? undefined : { borderColor: "#e6e6e6" };
   const Rotulo = ({ tabla, etiqueta }: { tabla: keyof typeof TABLAS; etiqueta: string }) =>
     compacta ? (
       <h4 className="mb-1 text-sm font-bold text-slate-900">
-        <Lineas>{etiqueta}</Lineas>
+        <Lineas siglas={pend(etiqueta)}>{etiqueta}</Lineas>
       </h4>
     ) : (
       <CabeceraTabla tabla={tabla} etiqueta={etiqueta} />
@@ -84,7 +132,7 @@ export function PiezaVista({
       return (
         <p className={compacta ? "text-[15px] leading-relaxed text-slate-800" : "prosa"}>
           {f.lead && <strong>{f.lead} </strong>}
-          {f.frases.join(" ")}
+          <T>{f.frases.join(" ")}</T>
           {!compacta && <EnlacePagina ruta={f.ruta} p={f.pagina} />}
         </p>
       );
@@ -94,12 +142,14 @@ export function PiezaVista({
       return (
         <div className={caja} style={borde}>
           <p className="text-sm font-semibold text-slate-900">
-            {l.intro}
+            <T>{l.intro}</T>
             {!compacta && <EnlacePagina ruta={l.ruta} p={l.pagina} />}
           </p>
           <ul className="mt-1 list-disc space-y-0.5 pl-5 text-sm text-slate-800">
             {l.items.map((it) => (
-              <li key={it}>{it}</li>
+              <li key={it}>
+                <T>{it}</T>
+              </li>
             ))}
           </ul>
         </div>
@@ -125,7 +175,7 @@ export function PiezaVista({
                   {col}
                 </dt>
                 <dd className="text-sm text-slate-800">
-                  <Lineas>{f.celdas[c]}</Lineas>
+                  <Lineas siglas={pend(f.celdas[c])}>{f.celdas[c]}</Lineas>
                 </dd>
               </div>
             ))}
@@ -140,11 +190,22 @@ export function PiezaVista({
         <div className={caja} style={borde}>
           <Rotulo tabla={pieza.tabla} etiqueta={f.etiqueta} />
           {sis !== undefined ? (
-            <Casilla nombre={t.columnas[sis]} texto={f.celdas[sis]} c={sis} />
+            <Casilla
+              nombre={t.columnas[sis]}
+              texto={f.celdas[sis]}
+              c={sis}
+              siglas={pend(f.celdas[sis])}
+            />
           ) : (
             <div className="grid gap-2 sm:grid-cols-2">
               {t.columnas.map((nombre, c) => (
-                <Casilla key={nombre} nombre={nombre} texto={f.celdas[c]} c={c} />
+                <Casilla
+                  key={nombre}
+                  nombre={nombre}
+                  texto={f.celdas[c]}
+                  c={c}
+                  siglas={pend(f.celdas[c])}
+                />
               ))}
             </div>
           )}
@@ -191,7 +252,7 @@ export function PiezaVista({
           <div>
             <h3 className="text-sm font-bold text-slate-900">{pieza.rotulo}</h3>
             <p className="text-sm text-slate-800">
-              {f.frases.join(" ")}
+              <T>{f.frases.join(" ")}</T>
               {!compacta && <EnlacePagina ruta={f.ruta} p={f.pagina} />}
             </p>
           </div>

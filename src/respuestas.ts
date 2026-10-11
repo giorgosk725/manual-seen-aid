@@ -1751,7 +1751,11 @@ export interface RespuestaFrecuente {
   id: string;
   pregunta: string;
   respuestas: Respuesta[]; /* Una continuación operativa (una herramienta de la app), si la pregunta la tiene. */
-  siguiente?: { texto: string; ruta: string };
+  siguiente?: {
+    texto: string;
+    ruta: string;
+  }; /* La pregunta es sobre un sistema (columna de la Tabla 1). */
+  sistema?: number;
 }
 
 let CANDIDATAS: { f: Frecuente; formas: { grupos: Grupo[]; negadas: Grupo[] }[] }[] | null = null;
@@ -1840,6 +1844,7 @@ export function mejorFrecuente(
     pregunta: mejor.f.pregunta,
     respuestas,
     siguiente: mejor.f.siguiente,
+    sistema: mejor.f.sistema,
     deBusqueda: mejor.deBusqueda,
     dePregunta: mejor.dePregunta,
   };
@@ -1848,7 +1853,13 @@ export function mejorFrecuente(
 export function preguntaFrecuente(pregunta: string): RespuestaFrecuente | null {
   const m = mejorFrecuente(pregunta);
   if (!m || m.deBusqueda < UMBRAL_BUSQUEDA || m.dePregunta < UMBRAL_PREGUNTA) return null;
-  return { id: m.id, pregunta: m.pregunta, respuestas: m.respuestas, siguiente: m.siguiente };
+  return {
+    id: m.id,
+    pregunta: m.pregunta,
+    respuestas: m.respuestas,
+    siguiente: m.siguiente,
+    sistema: m.sistema,
+  };
 }
 
 /* Una pregunta frecuente por su id, con sus pasajes tal cual (pantalla «Preguntas frecuentes»
@@ -1862,7 +1873,7 @@ export function respuestaDeFrecuente(id: string): RespuestaFrecuente | null {
     .filter((a): a is Atomo => !!a)
     .map((a) => resolver(a, f.sistema, 2));
   return respuestas.length
-    ? { id: f.id, pregunta: f.pregunta, respuestas, siguiente: f.siguiente }
+    ? { id: f.id, pregunta: f.pregunta, respuestas, siguiente: f.siguiente, sistema: f.sistema }
     : null;
 }
 
@@ -1896,6 +1907,7 @@ export function frecuentePorSentido(pregunta: string, ids: string[]): RespuestaF
       pregunta: f.pregunta,
       respuestas: pasajes.map((a) => resolver(a, sis ?? f.sistema, 1)),
       siguiente: f.siguiente,
+      sistema: f.sistema,
     };
   }
   return null;
@@ -1932,14 +1944,30 @@ export function faqsCercanas(parecidos: { id: string; s: number }[], max = 3): F
 
 /* Preguntas frecuentes relacionadas con lo respondido: las que citan alguno de esos pasajes y,
    si no llegan, las del mismo tema que la frecuente enseñada. */
-export function frecuentesRelacionadas(ids: string[], frecuenteId?: string, max = 3): Frecuente[] {
+/* Una fila por sistema (Tablas 1, 3 y 4) la comparten preguntas de temas distintos: por sí sola
+   no relaciona. Y una pregunta sobre un sistema o una variante no es relacionada de una consulta
+   que nombra otro sistema. */
+const esFilaPorSistema = (id: string) => /^T[134]\/\d+$/.test(id);
+export function frecuentesRelacionadas(
+  ids: string[],
+  frecuenteId?: string,
+  max = 3,
+  sistema?: number,
+): Frecuente[] {
   const out: Frecuente[] = [];
+  const pertinente = (f: Frecuente) =>
+    f.sistema === undefined || sistema === undefined || f.sistema === sistema;
   for (const f of FRECUENTES)
-    if (f.id !== frecuenteId && f.pasajes.some((p) => ids.includes(p))) out.push(f);
+    if (
+      f.id !== frecuenteId &&
+      pertinente(f) &&
+      f.pasajes.some((p) => ids.includes(p) && !esFilaPorSistema(p))
+    )
+      out.push(f);
   if (frecuenteId && out.length < max) {
     const tema = FRECUENTES.find((f) => f.id === frecuenteId)?.tema;
     for (const f of FRECUENTES)
-      if (f.tema === tema && f.id !== frecuenteId && !out.includes(f)) out.push(f);
+      if (f.tema === tema && f.id !== frecuenteId && !out.includes(f) && pertinente(f)) out.push(f);
   }
   return out.slice(0, max);
 }

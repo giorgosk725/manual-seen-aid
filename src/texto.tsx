@@ -3,22 +3,17 @@
 import React from "react";
 import { trocear } from "./marcado";
 import { SiglaPulsable } from "./componentes/Sigla";
-import type { TrozoSigla } from "./siglas";
+import { partirSiglas, siglasPorTexto, type TrozoSigla } from "./siglas";
 
-export function Texto({ children }: { children: string }) {
-  return (
-    <>
-      {trocear(children).map((tr, i) =>
-        tr.b ? (
-          <strong key={i}>{tr.t}</strong>
-        ) : tr.i ? (
-          <em key={i}>{tr.t}</em>
-        ) : (
-          <React.Fragment key={i}>{tr.t}</React.Fragment>
-        ),
-      )}
-    </>
-  );
+/* Los trozos de un texto con marcado y, si se pide, con sus siglas pendientes marcadas. */
+const trozosDe = (texto: string, siglas?: Set<string>): TrozoSigla[] => {
+  if (!siglas?.size) return trocear(texto);
+  const pend = new Set(siglas); // copia: la de fuera no cambia al pintar
+  return trocear(texto).flatMap((tr) => partirSiglas(tr.t, pend).map((x) => ({ ...tr, ...x })));
+};
+
+export function Texto({ children, siglas }: { children: string; siglas?: Set<string> }) {
+  return <Trozos trozos={trozosDe(children, siglas)} />;
 }
 
 /* Trozos ya partidos (Remisiones.tsx): los que llevan `sigla` se pintan como sigla pulsable,
@@ -41,13 +36,14 @@ export function Trozos({ trozos }: { trozos: TrozoSigla[] }) {
 }
 
 /* Celdas de tabla: cada "\n" es una línea propia. */
-export function Lineas({ children }: { children: string }) {
+export function Lineas({ children, siglas }: { children: string; siglas?: Set<string> }) {
   const lineas = children.split("\n");
+  const porLinea = siglas ? siglasPorTexto(lineas, siglas) : [];
   return (
     <>
       {lineas.map((l, i) => (
         <span key={i} className={i > 0 ? "mt-1 block" : "block"}>
-          <Texto>{l}</Texto>
+          <Texto siglas={porLinea[i]}>{l}</Texto>
         </span>
       ))}
     </>

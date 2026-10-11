@@ -31,6 +31,7 @@ import {
   type Resultado,
 } from "./busqueda";
 import { SIS_IDS, SITUACIONES } from "./situaciones";
+import { tituloDeTarea } from "./inicio";
 import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import { OBJETIVOS_MCG } from "./contenido/diagramas";
 import { CASOS_INDICE } from "./casos-indice";
@@ -738,4 +739,35 @@ export function recordarTema(q: string) {
 /* «y en Omnipod 5» → la búsqueda anterior con ese sistema; null si no es un seguimiento. */
 export function consultaEfectiva(q: string): string | null {
   return conContextoDe(q, temaAnterior);
+}
+
+/* La continuación operativa de una respuesta que es una fila de la Tabla 2 o la Tabla 3: la
+   tarea de «Iniciar un sistema» que la trabaja, con el sistema nombrado si lo hay. */
+const TAREA_DE_T2: Record<number, string> = {
+  0: "respaldo",
+  1: "arranque",
+  2: "transicion",
+  3: "parametros",
+  4: "parametros",
+  5: "parametros",
+  6: "objetivos",
+  7: "objetivos",
+  8: "transicion",
+};
+export function continuacionDe(
+  id: string,
+  sistema: number,
+): { texto: string; ruta: string } | null {
+  const m = /^T([23])\/(\d+)$/.exec(id);
+  if (!m) return null;
+  const tarea = m[1] === "2" ? TAREA_DE_T2[Number(m[2])] : "parametros";
+  if (!tarea) return null;
+  const titulo = tituloDeTarea("inicio", tarea);
+  if (!titulo) return null;
+  const sis = sistema >= 0 ? SIS_IDS[sistema] : "";
+  const nombre = sistema >= 0 ? ` (${TABLAS.T1.columnas[sistema]})` : "";
+  return {
+    texto: `Iniciar un sistema · ${titulo}${nombre}`,
+    ruta: href("consultar", "inicio", `inicio:${sis}:${tarea}`),
+  };
 }

@@ -2,7 +2,7 @@
    cada uno con su página de origen y un id estable (ancla). Solo lo que hay en el capítulo
    publicado: la versión extendida no se muestra en la lectura (decisión del autor, 9-10-2026);
    sigue en las fichas de sistema y en las tablas, rotulada. */
-import { Fragment, memo, useEffect, useMemo } from "react";
+import { Fragment, Suspense, lazy, memo, useEffect, useMemo } from "react";
 import { Link2 } from "lucide-react";
 import {
   FIGURAS,
@@ -11,6 +11,7 @@ import {
   idDeBloque,
   type Apartado,
   type Bloque,
+  type DiagramaId,
 } from "../contenido";
 import { TextoConRemisiones } from "./Remisiones";
 import { PaginaBadge } from "../ui";
@@ -18,7 +19,13 @@ import { TablaVista } from "./TablaVista";
 import { FiguraVista } from "./FiguraVista";
 import { Figura3Lectura } from "./Figura3Vista";
 import { Figura1Animada } from "./Figura1Animada";
-import { DiagramaVista } from "./Diagramas";
+/* Los diagramas (SVG grandes) se cargan al pedirlos: fuera del trozo de arranque. */
+const DiagramaVista = lazy(() => import("./Diagramas").then((m) => ({ default: m.DiagramaVista })));
+const Diagrama = (props: { id: DiagramaId; enApartado?: boolean }) => (
+  <Suspense fallback={<div className="min-h-40" aria-busy="true" />}>
+    <DiagramaVista {...props} />
+  </Suspense>
+);
 import { href } from "../rutas";
 import { NivelTitulo, type Nivel } from "../nivel-contexto";
 import { partirDestacado, resaltarFrase, textoCitado } from "../fraseCitada";
@@ -137,7 +144,7 @@ function BloqueVista({
     case "diagrama":
       return (
         <div id={id} className="scroll-mt-24 lg:-mr-16">
-          <DiagramaVista id={b.id} enApartado />
+          <Diagrama id={b.id} enApartado />
         </div>
       );
     case "figura":
@@ -219,7 +226,7 @@ export const Bloques = memo(function Bloques({
                   id={prefijo ? `${prefijo}-d-${d.id}` : `d-${d.id}`}
                   className="scroll-mt-24 lg:-mr-16"
                 >
-                  <DiagramaVista id={d.id} enApartado />
+                  <Diagrama id={d.id} enApartado />
                 </div>
               ))}
             </Fragment>

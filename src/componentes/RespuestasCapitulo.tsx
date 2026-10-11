@@ -7,7 +7,8 @@ import { ArrowRight, MessageCircleQuestion, Quote } from "lucide-react";
 import { marcar, type Respuesta } from "../busqueda";
 import type { RespuestaFrecuente } from "../respuestas";
 import type { Frecuente } from "../frecuentes";
-import { FIGURA3, LISTA_TABLAS } from "../contenido";
+import { FIGURA3, LISTA_TABLAS, type TablaId } from "../contenido";
+import { ComoInterpretar } from "./ComoInterpretar";
 import { ESCALA_CETONEMIA } from "../contenido/diagramas";
 import { href } from "../rutas";
 import { Texto } from "../texto";
@@ -98,6 +99,40 @@ function LineasSistema({ texto, q, sistema }: { texto: string; q: string; sistem
         </span>
       </details>
     </>
+  );
+}
+
+/* La tabla y la fila de una respuesta que es una fila de tabla («T3/1»). */
+const tablaDe = (id: string): TablaId | null => {
+  const m = /^T([1-6])\//.exec(id);
+  return m ? (`T${m[1]}` as TablaId) : null;
+};
+const filaDe = (id: string): number | undefined => {
+  const m = /^T[1-6]\/(\d+)$/.exec(id);
+  return m ? Number(m[1]) : undefined;
+};
+/* Un texto que nombra tres o más sistemas: en una pregunta sobre un sistema, es ampliación. */
+const NOMBRES_SISTEMA = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
+const nombraVarios = (t: string) => NOMBRES_SISTEMA.filter((n) => t.includes(n)).length >= 3;
+
+/* Contenido a la vista o, plegado, tras un rótulo. */
+function Plegable({
+  abierto,
+  rotulo,
+  children,
+}: {
+  abierto: boolean;
+  rotulo: string;
+  children: ReactNode;
+}) {
+  if (abierto) return <div className="mt-1">{children}</div>;
+  return (
+    <details className="mt-1">
+      <summary className="min-h-11 cursor-pointer text-xs font-semibold text-slate-600 sm:min-h-6">
+        {rotulo}
+      </summary>
+      {children}
+    </details>
   );
 }
 
@@ -200,6 +235,9 @@ function Tarjeta({
     r.sistema && casillas ? casillas.findIndex((c) => c.nombre === r.sistema) : null,
   );
   const [verContexto, setVerContexto] = useState(false);
+  // Si la persona tocó los chips, se quedan a la vista; si el sistema viene de la consulta, los
+  // demás van plegados.
+  const [tocado, setTocado] = useState(false);
   const titulo = r.tipo === "texto" ? "" : r.titulo;
   const asterisco = notaAsterisco(r);
   const items = compacta && r.items && r.items.length > 5 ? r.items.slice(0, 5) : r.items;
@@ -243,13 +281,23 @@ function Tarjeta({
         </div>
       )}
       {casillas && !compacta && (
-        <div className="mt-2 flex flex-wrap gap-1.5" role="group" aria-label="Sistema">
-          {casillas.map((c, i) => (
-            <Chip key={c.nombre} on={sel === i} onClick={() => setSel(sel === i ? null : i)}>
-              {c.nombre}
-            </Chip>
-          ))}
-        </div>
+        /* Con un sistema elegido, los demás van plegados: menos selectores repetidos. */
+        <Plegable abierto={!casilla || tocado} rotulo="Ver otros sistemas">
+          <div className="mt-1 flex flex-wrap gap-1.5" role="group" aria-label="Sistema">
+            {casillas.map((c, i) => (
+              <Chip
+                key={c.nombre}
+                on={sel === i}
+                onClick={() => {
+                  setTocado(true);
+                  setSel(sel === i ? null : i);
+                }}
+              >
+                {c.nombre}
+              </Chip>
+            ))}
+          </div>
+        </Plegable>
       )}
       {ctx?.antes && (
         <p className="mt-2 text-sm text-slate-500">
@@ -420,8 +468,13 @@ function BloqueFrecuente({
       {!sinPregunta && (
         <p className="mb-2 text-base font-bold text-slate-900">{frecuente.pregunta}</p>
       )}
-      <div className="space-y-2">
-        {frecuente.respuestas.map((r) => {
+      {(() => {
+        // En una pregunta sobre un sistema, el párrafo que enumera los cuatro va como ampliación.
+        const esAmpliacion = (r: Respuesta) =>
+          frecuente.sistema !== undefined && r.tipo === "texto" && nombraVarios(r.texto);
+        const principales = frecuente.respuestas.filter((r) => !esAmpliacion(r));
+        const ampliacion = frecuente.respuestas.filter(esAmpliacion);
+        const tarjeta = (r: Respuesta) => {
           const nota = notaAsterisco(r)?.nota;
           const repetida = !!nota && notasVistas.has(nota);
           if (nota) notasVistas.add(nota);
@@ -432,11 +485,24 @@ function BloqueFrecuente({
               q={q}
               onIr={onIr}
               sinNota={repetida}
-              sistemaConsulta={sistema}
+              sistemaConsulta={sistema ?? frecuente.sistema}
             />
           );
-        })}
-      </div>
+        };
+        return (
+          <>
+            <div className="space-y-2">{principales.map(tarjeta)}</div>
+            {ampliacion.length > 0 && (
+              <details className="mt-2">
+                <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
+                  Ampliación: los cuatro sistemas
+                </summary>
+                <div className="mt-2 space-y-2">{ampliacion.map(tarjeta)}</div>
+              </details>
+            )}
+          </>
+        );
+      })()}
       {frecuente.siguiente && (
         <p className="mt-2">
           <a
@@ -467,6 +533,7 @@ export function RespuestasCapitulo({
   contexto,
   relacionadas,
   sistema,
+  continuacion,
 }: {
   respuestas: Respuesta[];
   q: string;
@@ -483,6 +550,8 @@ export function RespuestasCapitulo({
   relacionadas?: Frecuente[];
   /* El sistema que nombra la consulta (columna de la Tabla 1), si lo hay. */
   sistema?: number;
+  /* Una continuación operativa para la respuesta principal (Buscar). */
+  continuacion?: { texto: string; ruta: string } | null;
 }) {
   const id = useId();
   const H = `h${nivel}` as "h2" | "h3";
@@ -582,6 +651,21 @@ export function RespuestasCapitulo({
           contexto={contexto}
           sistemaConsulta={sistema}
         />
+        {/* La explicación aprobada de esa tabla y una continuación, junto al dato. */}
+        {!compacta && tablaDe(r.id) && (
+          <ComoInterpretar tabla={tablaDe(r.id)!} fila={filaDe(r.id)} general />
+        )}
+        {!compacta && continuacion && (
+          <p className="mt-2">
+            <a
+              href={continuacion.ruta}
+              onClick={onIr}
+              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline sm:min-h-8"
+            >
+              Seguir en: {continuacion.texto} <ArrowRight size={13} aria-hidden="true" />
+            </a>
+          </p>
+        )}
         {compacta ? (
           <a
             href={href("buscar", q)}

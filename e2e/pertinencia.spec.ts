@@ -1,0 +1,46 @@
+/* 0.42.0: relacionadas pertinentes y continuación en Buscar; f61 más corta; siglas pulsables en
+   las tareas de Iniciar; hojas con su «para qué». */
+import { expect, test } from "@playwright/test";
+
+test.describe("Pertinencia y continuación (0.42.0)", () => {
+  test("basal de Omnipod: sin la pregunta de Control-IQ+, con «Seguir en» y la explicación de la Tabla 3", async ({
+    page,
+  }) => {
+    await page.goto(
+      "/#/buscar/%C2%BFQu%C3%A9%20basal%20programo%20en%20Omnipod%20y%20para%20qu%C3%A9%20sirve%20despu%C3%A9s%3F",
+    );
+    await expect(page.getByText(/Tasa basal programada/).first()).toBeVisible();
+    await expect(
+      page.getByText(/Control-IQ frente a Control-IQ\+|diferencia hay entre Control-IQ/),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("link", { name: /Seguir en: Iniciar un sistema · Basal, ratio/ }),
+    ).toBeVisible();
+    await expect(page.getByText("Cómo leer esta tabla").first()).toBeVisible();
+  });
+
+  test("f61: la columna de Tandem, otros sistemas plegados y los cuatro como ampliación", async ({
+    page,
+  }) => {
+    await page.goto("/#/preguntas/f61");
+    await expect(page.getByText(/Control-IQ\+: ≥ 2 años/).first()).toBeVisible();
+    await expect(page.getByText("Ver otros sistemas").first()).toBeVisible();
+    await expect(page.getByRole("group", { name: "Sistema" })).toHaveCount(0);
+    await expect(page.getByText("Ampliación: los cuatro sistemas")).toBeVisible();
+  });
+
+  test("Iniciar: una sigla de la tarea es pulsable y define sin salir", async ({ page }) => {
+    await page.goto("/#/consultar/inicio/inicio:omnipod-5:transicion");
+    const sigla = page.getByRole("button", { name: /^(MDI|DTD)$/ }).first();
+    await expect(sigla).toBeVisible();
+    await sigla.click();
+    await expect(page.getByText(/múltiples dosis|dosis total diaria/i).first()).toBeVisible();
+  });
+
+  test("Para el paciente: cada hoja dice para qué sirve", async ({ page }) => {
+    await page.goto("/#/pacientes");
+    await expect(
+      page.getByText(/Tarjeta de bolsillo para entregar · Esta tarjeta resume/),
+    ).toBeVisible();
+  });
+});

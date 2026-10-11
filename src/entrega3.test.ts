@@ -337,3 +337,35 @@ describe("Pasos 5 y 6: opciones y comentarios coherentes con el desglose (0.40.0
     }
   });
 });
+
+describe("Siglas en las tareas de Iniciar (0.42.0)", () => {
+  it("siglasPorTexto marca la primera aparición y no toca el conjunto de entrada", async () => {
+    const { siglasPorTexto } = await import("./siglas");
+    const pend = new Set(["DTD", "MDI", "HbA1c"]);
+    const sets = siglasPorTexto(["Reducción de la DTD al pasar de MDI", "La DTD y la HbA1c"], pend);
+    expect([...sets[0]]).toEqual(["DTD", "MDI"]);
+    expect([...sets[1]]).toEqual(["HbA1c"]);
+    expect(pend.size).toBe(3);
+    // Dos veces lo mismo da lo mismo (React puede pintar dos veces).
+    expect(siglasPorTexto(["La DTD"], pend)).toEqual(siglasPorTexto(["La DTD"], pend));
+  });
+});
+
+describe("Pertinencia de relacionadas y continuación (0.42.0)", () => {
+  it("una consulta sobre Omnipod no propone la pregunta de Control-IQ+ aunque compartan fila", () => {
+    const q = "¿Qué basal programo en Omnipod y para qué sirve después?";
+    const ids = responder(q).map((r) => r.id);
+    expect(ids[0]).toBe("T3/1");
+    const rel = frecuentesRelacionadas(ids, undefined, 3, 3);
+    expect(rel.map((f) => f.id)).not.toContain("f61");
+    // Sin sistema, una fila por sistema compartida tampoco relaciona por sí sola.
+    expect(frecuentesRelacionadas(["T3/1"], undefined, 3).map((f) => f.id)).not.toContain("f61");
+  });
+  it("una respuesta de la Tabla 2 o 3 sigue en su tarea de Iniciar, con el sistema", async () => {
+    const { continuacionDe } = await import("./buscador");
+    expect(continuacionDe("T3/1", 3)?.ruta).toBe("#/consultar/inicio/inicio:omnipod-5:parametros");
+    expect(continuacionDe("T2/2", -1)?.ruta).toBe("#/consultar/inicio/inicio::transicion");
+    expect(continuacionDe("T2/0", 1)?.texto).toMatch(/Plan de respaldo.*Control-IQ/);
+    expect(continuacionDe("T4/2", 0)).toBeNull();
+  });
+});

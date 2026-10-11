@@ -20,7 +20,7 @@ const ALTERNATIVAS = [...GLOSARIO]
   .join("|");
 const PATRON = new RegExp(`(^|[^\\p{L}\\p{N}])(${ALTERNATIVAS})(?![\\p{L}\\p{N}])`, "gu");
 
-const siglasEn = (texto: string) => [...texto.matchAll(PATRON)].map((m) => m[2]);
+export const siglasEn = (texto: string) => [...texto.matchAll(PATRON)].map((m) => m[2]);
 
 /* Cada texto que se pinta por separado es una «unidad»: el párrafo, la introducción de una
    lista o cada uno de sus puntos. */
@@ -69,6 +69,21 @@ export function partirSiglas(texto: string, pendientes: Set<string>): TrozoSigla
   }
   if (ultimo < texto.length) out.push({ t: texto.slice(ultimo) });
   return out;
+}
+
+/* Para una lista de textos en orden de lectura, las siglas de `pendientes` cuya primera
+   aparición cae en cada uno. Pura: no toca `pendientes` (React puede pintar dos veces). */
+export function siglasPorTexto(textos: string[], pendientes: Set<string>): Set<string>[] {
+  const vistas = new Set<string>();
+  return textos.map((t) => {
+    const propias = new Set<string>();
+    for (const x of siglasEn(t))
+      if (pendientes.has(x) && !vistas.has(x)) {
+        vistas.add(x);
+        propias.add(x);
+      }
+    return propias;
+  });
 }
 
 export const desarrolloDe = (sigla: string) => GLOSARIO.find((g) => g.sigla === sigla);
