@@ -14,7 +14,10 @@ test.describe("Aprobado el 11-10 (0.37.0)", () => {
       "Cómo administra la insulina",
       "Bolos automáticos de corrección",
     ])
-      await expect(page.getByRole("region", { name: a })).toBeVisible();
+      // Escritorio: fila de la cuadrícula; móvil: bloque por aspecto (0.43.0).
+      await expect(
+        page.getByRole("rowheader", { name: a }).or(page.getByRole("region", { name: a })),
+      ).toBeVisible();
     await expect(page.getByText(/Modalidad híbrida · los cuatro sistemas/)).toBeVisible();
     await expect(page.getByText(/modalidad Liberty/)).toHaveCount(0);
     await page
@@ -28,7 +31,7 @@ test.describe("Aprobado el 11-10 (0.37.0)", () => {
     await page.waitForTimeout(400);
     const antes = await page.evaluate(() => window.scrollY);
     await page
-      .getByRole("link", { name: /Tabla 1, «.*», p\. 3 · Ver en el capítulo/ })
+      .getByRole("link", { name: /«.*».* Ver en el capítulo/ })
       .first()
       .click();
     await expect(page).toHaveURL(/#\/capitulo\//);

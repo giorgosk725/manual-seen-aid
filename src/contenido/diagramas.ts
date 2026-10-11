@@ -154,7 +154,12 @@ export const OBJETIVOS_MCG: PoblacionObjetivos[] = [
     pagina: 4,
     franjas: [
       { franja: "> 250 mg/dl", objetivo: "< 5 %", nota: "TAR de nivel 2", tono: "muy-alto" },
-      { franja: "> 180 mg/dl", objetivo: "—", nota: "TAR: complementa al TIR", tono: "alto" },
+      {
+        franja: "> 180 mg/dl",
+        objetivo: "< 25 %",
+        nota: "TAR: complementa al TIR (cifra del consenso internacional de MCG de 2019; el capítulo no la reproduce)",
+        tono: "alto",
+      },
       {
         franja: "70-180 mg/dl",
         objetivo: "> 70 %",

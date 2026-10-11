@@ -36,14 +36,4 @@ test.describe("Entrega 4 (0.35.0)", () => {
     ).toBeVisible();
     await expect(page.getByRole("region", { name: /^También sobre/ })).toHaveCount(0);
   });
-
-  test("recientes nombra los sistemas comparados", async ({ page }) => {
-    await page.goto("/#/sistemas/ciq+op5/funciona");
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await page.goto("/#/");
-    const recientes = page.getByRole("navigation", { name: "Lo último que consultaste" });
-    await expect(
-      recientes.getByRole("link", { name: /Control-IQ \+ Omnipod 5 · Cómo funciona/ }),
-    ).toBeVisible();
-  });
 });

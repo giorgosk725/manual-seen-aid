@@ -542,7 +542,6 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const c = columnaDeSistema(s.id);
   const h = SISTEMA_HEX[c];
   const slug = SLUG_TABLA[c];
-  const situacionesT4 = SITUACIONES.filter((x) => x.tabla === "T4");
   // Se enseña una sección (la entera son más de diez pantallas en el móvil); «Lo esencial» si
   // la ruta no dice otra; /completa, la ficha entera (para leer o imprimir).
   const sec = completa ? undefined : (seccion ?? "esencial");
@@ -723,33 +722,24 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           Situaciones
         </TituloSeccion>
         <p className="mb-2 text-sm text-slate-600">
-          Qué herramienta del sistema usar en cada situación frecuente (Tabla 4). Cada una se abre
-          con este sistema ya elegido.
+          La conducta ante cada situación (Tablas 4 y 6) está en «Situaciones», una sola vez; de
+          aquí se abre con este sistema ya elegido.
         </p>
-        <ul className="space-y-2">
-          {situacionesT4.map((x) => {
-            const f = TABLAS.T4.filas[x.fila];
-            return (
-              <li
-                key={x.id}
-                className="rounded-xl border bg-white p-3"
-                style={{ borderColor: "#e6e6e6" }}
+        <ul className="divide-y rounded-xl border bg-white" style={{ borderColor: "#e6e6e6" }}>
+          {SITUACIONES.filter((x) => x.tabla).map((x) => (
+            <li key={x.id}>
+              <a
+                href={href("consultar", "situacion", `${x.id}:${slug}`)}
+                className="flex min-h-11 items-center gap-2 px-3 py-1.5 text-sm text-slate-800 transition hover:bg-slate-50"
               >
-                <div className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                  <Lineas>{f.etiqueta}</Lineas>
-                </div>
-                <div className="mt-1 text-sm text-slate-800">
-                  <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
-                </div>
-                <a
-                  href={href("consultar", "situacion", `${x.id}:${slug}`)}
-                  className="no-imprimir mt-1 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
-                >
-                  Ver la situación con su texto <ArrowRight size={13} aria-hidden="true" />
-                </a>
-              </li>
-            );
-          })}
+                <span className="min-w-0 flex-1">{x.etiqueta}</span>
+                <span className="shrink-0 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                  Tabla {x.tabla === "T4" ? 4 : 6}
+                </span>
+                <ArrowRight size={13} className="shrink-0 text-slate-400" aria-hidden="true" />
+              </a>
+            </li>
+          ))}
         </ul>
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
           <span className="flex flex-wrap gap-x-4">
@@ -1034,51 +1024,110 @@ const ASPECTOS_FUNCIONA: [string, number][] = [
   ["Cómo administra la insulina", 4],
   ["Bolos automáticos de corrección", 5],
 ];
-const COLUMNAS_GRID: Record<number, string> = {
-  1: "",
-  2: "sm:grid-cols-2",
-  3: "sm:grid-cols-2 lg:grid-cols-3",
-  4: "sm:grid-cols-2 lg:grid-cols-4",
-};
 function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: string }) {
   const t = TABLAS.T1;
   const fuente = rutaEnCapitulo(t);
+  const rotuloDe = (fila: number) => plano(t.filas[fila].etiqueta).split("\n")[0];
   return (
     <div className="space-y-3">
-      {ASPECTOS_FUNCIONA.map(([rotulo, fila]) => (
-        <section
-          key={fila}
-          aria-label={rotulo}
-          className="rounded-xl border bg-white p-3"
-          style={{ borderColor: "#e6e6e6" }}
-        >
-          <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-            <h3 className="text-sm font-extrabold text-slate-900">{rotulo}</h3>
-            {fuente && (
-              <EnlacePie ruta={fuente}>
-                Tabla 1, «{plano(t.filas[fila].etiqueta).split("\n")[0]}», p. {t.paginas[0]} · Ver
-                en el capítulo
-              </EnlacePie>
-            )}
-          </div>
-          <div className={`grid gap-2 ${COLUMNAS_GRID[cols.length] ?? COLUMNAS_GRID[4]}`}>
-            {cols.map((c) => (
-              <div
-                key={c}
-                className="rounded-lg bg-slate-50 p-2.5"
-                style={{ boxShadow: `inset 0 3px 0 0 ${SISTEMA_HEX[c].strong}` }}
+      {/* Tableta y escritorio: una cuadrícula; los sistemas, con su foto, una sola vez. */}
+      <div
+        className="hidden overflow-x-auto rounded-xl border bg-white sm:block"
+        style={{ borderColor: "#e6e6e6" }}
+      >
+        <table className="w-full border-collapse text-sm" aria-label="Cómo funciona, comparado">
+          <thead>
+            <tr>
+              <th
+                scope="col"
+                className="w-40 p-3 text-left align-bottom text-[11px] font-bold uppercase tracking-wide text-slate-500"
               >
-                <div className="text-xs font-bold" style={{ color: SISTEMA_HEX[c].ink }}>
-                  {t.columnas[c]}
-                </div>
-                <div className="mt-0.5 text-sm text-slate-800">
-                  <Lineas>{t.filas[fila].celdas[c]}</Lineas>
-                </div>
-              </div>
+                Aspecto · Tabla 1, p. {t.paginas[0]}
+              </th>
+              {cols.map((c) => (
+                <th
+                  key={c}
+                  scope="col"
+                  className="p-3 text-left align-bottom"
+                  style={{ borderTop: `4px solid ${SISTEMA_HEX[c].strong}` }}
+                >
+                  <span className="flex items-center gap-2">
+                    <img
+                      src={FOTO_SISTEMA[SISTEMAS_AMPLIACION[c].id]}
+                      alt=""
+                      className="h-10 w-10 shrink-0 rounded-lg border object-cover"
+                      style={{ borderColor: "#e6e6e6" }}
+                      loading="lazy"
+                    />
+                    <span className="text-sm font-extrabold" style={{ color: SISTEMA_HEX[c].ink }}>
+                      {t.columnas[c]}
+                    </span>
+                  </span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {ASPECTOS_FUNCIONA.map(([rotulo, fila]) => (
+              <tr key={fila} className="border-t align-top" style={{ borderColor: "#e6e6e6" }}>
+                <th scope="row" className="p-3 text-left font-normal">
+                  <span className="block text-sm font-extrabold text-slate-900">{rotulo}</span>
+                  {fuente && (
+                    <span className="mt-1 block text-xs">
+                      <EnlacePie ruta={fuente}>«{rotuloDe(fila)}» · Ver en el capítulo</EnlacePie>
+                    </span>
+                  )}
+                </th>
+                {cols.map((c) => (
+                  <td
+                    key={c}
+                    className="p-3 text-slate-800"
+                    style={{ boxShadow: `inset 3px 0 0 0 ${SISTEMA_HEX[c].strong}` }}
+                  >
+                    <Lineas>{t.filas[fila].celdas[c]}</Lineas>
+                  </td>
+                ))}
+              </tr>
             ))}
-          </div>
-        </section>
-      ))}
+          </tbody>
+        </table>
+      </div>
+      {/* Móvil: un bloque por aspecto, con las casillas una debajo de otra. */}
+      <div className="space-y-3 sm:hidden">
+        {ASPECTOS_FUNCIONA.map(([rotulo, fila]) => (
+          <section
+            key={fila}
+            aria-label={rotulo}
+            className="rounded-xl border bg-white p-3"
+            style={{ borderColor: "#e6e6e6" }}
+          >
+            <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+              <h3 className="text-sm font-extrabold text-slate-900">{rotulo}</h3>
+              {fuente && (
+                <EnlacePie ruta={fuente}>
+                  Tabla 1, «{rotuloDe(fila)}», p. {t.paginas[0]} · Ver en el capítulo
+                </EnlacePie>
+              )}
+            </div>
+            <div className="grid gap-2">
+              {cols.map((c) => (
+                <div
+                  key={c}
+                  className="rounded-lg bg-slate-50 p-2.5"
+                  style={{ boxShadow: `inset 3px 0 0 0 ${SISTEMA_HEX[c].strong}` }}
+                >
+                  <div className="text-xs font-bold" style={{ color: SISTEMA_HEX[c].ink }}>
+                    {t.columnas[c]}
+                  </div>
+                  <div className="mt-0.5 text-sm text-slate-800">
+                    <Lineas>{t.filas[fila].celdas[c]}</Lineas>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
       <section
         aria-label="Condiciones por modalidad"
         className="rounded-xl border bg-white p-3"
@@ -1127,21 +1176,44 @@ function TarjetaSistema({
 }) {
   const s = SISTEMAS_AMPLIACION[c];
   const h = SISTEMA_HEX[c];
+  const etiquetas = [s.tags.pedsAge, s.tags.movil, s.tags.sintubo].filter(Boolean);
   return (
     <li
-      className="rounded-xl border bg-white p-3"
+      className="flex gap-3 rounded-xl border bg-white p-3"
       style={{ borderColor: "#e6e6e6", boxShadow: `inset 0 3px 0 0 ${h.strong}` }}
     >
-      <div className="text-base font-extrabold" style={{ color: h.ink }}>
-        {s.name}
+      <img
+        src={FOTO_SISTEMA[s.id]}
+        alt=""
+        className="h-16 w-16 shrink-0 rounded-lg border object-cover"
+        style={{ borderColor: "#e6e6e6" }}
+        loading="lazy"
+      />
+      <div className="min-w-0 flex-1">
+        <div className="text-base font-extrabold" style={{ color: h.ink }}>
+          {s.name}
+        </div>
+        <p className="mt-0.5 text-sm text-slate-800">{s.takeaway}</p>
+        {etiquetas.length > 0 && (
+          <ul className="mt-1.5 flex flex-wrap gap-1" aria-label="Rasgos">
+            {etiquetas.map((e) => (
+              <li
+                key={e}
+                className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700"
+              >
+                {e}
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="mt-1 text-xs text-slate-500">{texto}</div>
+        <a
+          href={href("sistemas", s.id, seccion)}
+          className="mt-1 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+        >
+          {enlace} <ArrowRight size={13} aria-hidden="true" />
+        </a>
       </div>
-      <div className="mt-1 text-sm text-slate-800">{texto}</div>
-      <a
-        href={href("sistemas", s.id, seccion)}
-        className="mt-2 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
-      >
-        {enlace} <ArrowRight size={13} aria-hidden="true" />
-      </a>
     </li>
   );
 }

@@ -5,7 +5,7 @@
    12 pt, a doble cara: dos o tres caras). La app no guarda nada de lo que se escribe:
    no hay campos, solo líneas en blanco para el papel. */
 import { useEffect, useRef, type ReactNode } from "react";
-import { ArrowRight, FileText, Printer, ShieldCheck } from "lucide-react";
+import { ArrowRight, FileText, Printer, ShieldCheck, FileDown } from "lucide-react";
 import { CAPITULO, FIGURA3, TABLAS, apartadoPorSlug, idDeBloque } from "../contenido";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import type { SistemaId } from "../ampliacion/tipos";
@@ -152,17 +152,24 @@ function FilaHoja({
   titulo,
   detalle,
   borrador = false,
+  descarga = false,
 }: {
   href: string;
   titulo: string;
   detalle: string;
   borrador?: boolean;
+  /* Un archivo que se descarga (PDF), no una pantalla. */
+  descarga?: boolean;
 }) {
   return (
     <a
       href={destino}
+      download={descarga ? "" : undefined}
       className="flex min-h-11 items-center gap-3 px-3 py-2 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
     >
+      {descarga && (
+        <FileDown size={18} className="shrink-0" style={{ color: hex.strong }} aria-hidden="true" />
+      )}
       <span className="min-w-0 flex-1">
         <span className="block font-semibold text-slate-900">{titulo}</span>
         <span className="block text-xs text-slate-600">{detalle}</span>
@@ -176,6 +183,10 @@ function FilaHoja({
     </a>
   );
 }
+/* El PDF oficial de «Información para pacientes» tal como lo publica el Manual SEEN
+   (public/pdf; no entra en la precarga: se baja al pedirlo). */
+const PDF_PACIENTES = `${import.meta.env.BASE_URL}pdf/manual-seen-aid-pacientes.pdf`;
+
 export function HubPacientes() {
   const tarjetas = [
     {
@@ -199,6 +210,14 @@ export function HubPacientes() {
             <FilaHoja href={c.href} titulo={c.t} detalle={c.s} />
           </li>
         ))}
+        <li>
+          <FilaHoja
+            href={PDF_PACIENTES}
+            titulo="Descargar el PDF oficial del Manual SEEN · Información para pacientes"
+            detalle="Las mismas doce preguntas y respuestas, maquetadas por el Manual SEEN (PDF, 51 KB), para imprimir o enviar."
+            descarga
+          />
+        </li>
       </ul>
       <section aria-labelledby="hojas-breves" className="mt-6">
         <h2 id="hojas-breves" className="text-base font-extrabold text-slate-900">

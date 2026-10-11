@@ -92,3 +92,23 @@ describe("Iniciar un sistema: pantalla", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("Guía paso a paso y momentos de las situaciones (0.43.0)", () => {
+  it("todas las piezas de la guía y todos los momentos existen en el capítulo", async () => {
+    const { PASOS_GUIA } = await import("./guia-inicio");
+    const { textosDePieza, kDe, frasesDe } = await import("./inicio");
+    const { GUION, SITUACIONES_GUIA } = await import("./situaciones");
+    for (const p of PASOS_GUIA) {
+      for (const pz of p.piezas) expect(textosDePieza(pz, 3).length, p.id).toBeGreaterThan(0);
+      for (const q of p.preguntas ?? [])
+        for (const o of q.opciones)
+          for (const pz of o.piezas) expect(textosDePieza(pz, 3).length, o.id).toBeGreaterThan(0);
+    }
+    const momentos = [...Object.values(GUION).flat(), ...SITUACIONES_GUIA.flatMap((s) => s.guion)];
+    for (const m of momentos) {
+      const k = m.k ?? kDe(m.apartado, m.bloque);
+      expect(frasesDe(m.apartado, m.bloque, k).frases.length, m.rotulo).toBeGreaterThan(0);
+    }
+    expect(PASOS_GUIA.length).toBe(6);
+  });
+});

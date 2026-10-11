@@ -193,9 +193,12 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
     await expect(page.getByRole("region", { name: "Pasaje del capítulo" })).toHaveCount(0);
   });
 
-  test("la caja de la portada responde con la fila de la Tabla 6", async ({ page }) => {
+  test("la caja de la barra lateral lleva a Buscar con la fila de la Tabla 6", async ({ page }) => {
     await page.goto("/#/");
-    await page.getByLabel("Busca un tema, un sistema o una pregunta").fill("resonancia con 780G");
+    const caja = page.getByRole("searchbox", { name: "Pregunta al capítulo" });
+    await caja.fill("resonancia con 780G");
+    await caja.press("Enter");
+    await expect(page).toHaveURL(/#\/buscar\//);
     const respuesta = page.getByRole("region", { name: "Pasaje del capítulo" });
     await expect(respuesta).toContainText("Resonancia magnética (RM)");
     await expect(respuesta).toContainText("Retirar antes de entrar en la sala");

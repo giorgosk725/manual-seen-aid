@@ -2,12 +2,13 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Uso 0.10.0 en el móvil", () => {
-  test("al enfocar la caja de la portada, sube arriba (el teclado no tapa la respuesta)", async ({
+  test("en la portada, el icono de la cabecera abre la paleta de búsqueda arriba", async ({
     page,
   }) => {
     await page.goto("/#/");
-    const caja = page.getByLabel("Busca un tema, un sistema o una pregunta");
-    await caja.focus();
+    await page.getByRole("button", { name: "Buscar", exact: true }).tap();
+    const caja = page.getByRole("textbox", { name: "Buscar en el capítulo" });
+    await expect(caja).toBeFocused();
     await expect
       .poll(async () => (await caja.boundingBox())?.y ?? 9999, { timeout: 3000 })
       .toBeLessThan(200);

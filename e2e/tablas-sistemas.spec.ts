@@ -143,11 +143,10 @@ test.describe("Tablas y sistemas", () => {
     await expect(
       page.getByRole("heading", { name: /Ampliación técnica · fuera del capítulo/ }),
     ).toBeVisible();
-    // Cada situación se abre con el sistema ya elegido.
+    // Cada situación se abre, en «Situaciones», con el sistema ya elegido (sin repetir la celda).
     await page
       .getByRole("region", { name: /Situaciones/ })
-      .getByRole("link", { name: /Ver la situación con su texto/ })
-      .first()
+      .getByRole("link", { name: /Ejercicio aeróbico planificado/ })
       .click();
     await expect(page).toHaveURL(/#\/consultar\/situacion\/ejercicio-aerobico:minimed-780g$/);
   });

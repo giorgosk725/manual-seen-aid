@@ -2,7 +2,7 @@
    comparten título («Cetonemia paso a paso» con dos tramos). De la ruta sale un contexto breve:
    tramo, paso, fase y sistema, situación, sección de la ficha. Solo texto de interfaz. */
 import { FIGURA3 } from "./contenido";
-import { SIS_IDS, SITUACIONES } from "./situaciones";
+import { SIS_IDS, SITUACIONES, SITUACIONES_GUIA } from "./situaciones";
 import { tareaDePieza, tituloDeTarea } from "./inicio";
 import type { Ruta } from "./rutas";
 
@@ -53,7 +53,8 @@ export function contextoDeRuta(ruta: Ruta): string | undefined {
       return rotulo ? `${base} · ${corto(rotulo, 32)}` : base;
     }
     if (ruta.sub === "situacion" && detalle) {
-      const st = SITUACIONES.find((x) => x.id === detalle);
+      const st =
+        SITUACIONES.find((x) => x.id === detalle) ?? SITUACIONES_GUIA.find((x) => x.id === detalle);
       return st
         ? conSistema(corto(st.etiqueta), SIS_IDS.includes(sis) ? sis : undefined)
         : undefined;

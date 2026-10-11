@@ -173,3 +173,124 @@ export const SITUACIONES: Situacion[] = [
 /* Sistema en la dirección (#/consultar/situacion/<situación>:<sistema>), en el orden de las
    columnas de las tablas. */
 export const SIS_IDS = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
+
+/* Un momento de una situación: rótulo de la app y párrafo literal del capítulo (apartado y
+   bloque; si no es entero, las frases). La pantalla lo pinta con su página. */
+export interface Momento {
+  rotulo: string;
+  apartado: string;
+  bloque: string;
+  k?: number[];
+}
+const S = "10-situaciones";
+const E = "07-educacion";
+const EJERCICIO_COMUN: Momento[] = [{ rotulo: "Antes de empezar", apartado: S, bloque: "b20" }];
+const EJERCICIO_FINAL: Momento[] = [
+  {
+    rotulo: "Hidratos y tratamiento de la hipoglucemia con asa cerrada",
+    apartado: E,
+    bloque: "b6",
+  },
+  {
+    rotulo: "Hipoglucemia leve cuando el algoritmo ya ha reducido la insulina",
+    apartado: E,
+    bloque: "b7",
+  },
+  { rotulo: "Deportes de contacto, agua y desconexión", apartado: S, bloque: "b24" },
+  { rotulo: "Después del ejercicio: hipoglucemia diferida y noche", apartado: S, bloque: "b25" },
+];
+const EXPLORACION: Momento[] = [
+  { rotulo: "Bomba y sensor, por separado", apartado: S, bloque: "b41" },
+  { rotulo: "Lecturas del sensor tras la prueba", apartado: S, bloque: "b42" },
+];
+const CIRUGIA: Momento[] = [
+  { rotulo: "Período perioperatorio", apartado: S, bloque: "b39" },
+  { rotulo: "Cuándo no continuar y cómo pasar a pauta subcutánea", apartado: S, bloque: "b36" },
+  { rotulo: "Basal programada antes de retirar el dispositivo", apartado: E, bloque: "b14" },
+];
+/* Los momentos de cada situación de las Tablas 4 y 6 (los que los tienen). */
+export const GUION: Record<string, Momento[]> = {
+  "ejercicio-aerobico": [
+    ...EJERCICIO_COMUN,
+    { rotulo: "Actividad planificada con descenso esperado", apartado: S, bloque: "b22" },
+    { rotulo: "Actividad no planificada", apartado: S, bloque: "b23" },
+    ...EJERCICIO_FINAL,
+  ],
+  "ejercicio-anaerobico": [
+    ...EJERCICIO_COMUN,
+    { rotulo: "Esfuerzo breve de alta intensidad o anaeróbico", apartado: S, bloque: "b23" },
+    ...EJERCICIO_FINAL,
+  ],
+  rm: EXPLORACION,
+  tc: EXPLORACION,
+  rx: EXPLORACION,
+  pet: EXPLORACION,
+  diatermia: EXPLORACION,
+  eco: EXPLORACION,
+  "cirugia-corta": CIRUGIA,
+  "cirugia-larga": CIRUGIA,
+};
+
+/* Situaciones que no son una fila de tabla: se consultan por los momentos del capítulo. */
+export interface SituacionGuia {
+  id: string;
+  etiqueta: string;
+  intro: string;
+  fuente: string;
+  pagina: number;
+  guion: Momento[];
+  enlaces: { texto: string; ruta: string }[];
+}
+export const SITUACIONES_GUIA: SituacionGuia[] = [
+  {
+    id: "ingreso-hospitalario",
+    etiqueta: "Ingreso hospitalario (planta, persona adulta no crítica)",
+    intro:
+      "Qué mantener, cuándo no y cómo pasar a una pauta subcutánea: lo que recoge el capítulo del posicionamiento internacional de 2026.",
+    fuente: "pp. 20-21",
+    pagina: 20,
+    guion: [
+      { rotulo: "Marco y a quién se aplica", apartado: S, bloque: "b33" },
+      { rotulo: "Mantener la MCG, la bomba o el AID", apartado: S, bloque: "b34" },
+      { rotulo: "Objetivos de glucosa en el hospital", apartado: S, bloque: "b35" },
+      { rotulo: "Cuándo no continuar y cómo pasar a pauta subcutánea", apartado: S, bloque: "b36" },
+      { rotulo: "Dosis suplementarias y datos compartidos", apartado: S, bloque: "b37" },
+      { rotulo: "Leer la MCG en el hospital", apartado: S, bloque: "b38" },
+      { rotulo: "Período perioperatorio", apartado: S, bloque: "b39" },
+    ],
+    enlaces: [
+      { texto: "Objetivos en el hospital (figura)", ruta: "#/visual/objetivos-mcg/hospital" },
+      { texto: "Exploraciones y cirugía (Tabla 6)", ruta: "#/consultar/tablas/T6" },
+      { texto: "Interrupción del sistema y pauta alternativa", ruta: "#/consultar/interrupcion" },
+      {
+        texto: "Hoja para el paciente: pruebas y cirugía",
+        ruta: "#/pacientes/hoja/pruebas-cirugia",
+      },
+    ],
+  },
+  {
+    id: "gestacion",
+    etiqueta: "Gestación, parto y posparto",
+    intro:
+      "Qué sistemas tienen autorización y evidencia, los objetivos de la gestación y cómo se ajusta cada sistema.",
+    fuente: "pp. 17-18",
+    pagina: 17,
+    guion: [
+      { rotulo: "Qué sistema: autorización y evidencia", apartado: S, bloque: "b3" },
+      { rotulo: "Objetivos de HbA1c y de MCG", apartado: S, bloque: "b4" },
+      { rotulo: "Lo que mostraron AiDAPT, CRISTAL y CIRCUIT", apartado: S, bloque: "b5" },
+      { rotulo: "Seguimiento y objetivo del algoritmo", apartado: S, bloque: "b6" },
+      { rotulo: "CamAPS FX", apartado: S, bloque: "b7" },
+      { rotulo: "MiniMed 780G", apartado: S, bloque: "b8" },
+      { rotulo: "Control-IQ+", apartado: S, bloque: "b9" },
+      { rotulo: "Cetoacidosis: vigilancia", apartado: S, bloque: "b10" },
+      { rotulo: "Parto y posparto", apartado: S, bloque: "b11" },
+    ],
+    enlaces: [
+      { texto: "Objetivos de la gestación (figura)", ruta: "#/visual/objetivos-mcg/gestacion" },
+      { texto: "Objetivo del calculador en gestación (Tabla 2)", ruta: "#/consultar/tablas/T2" },
+      { texto: "Criterios de elección", ruta: "#/sistemas/elegir" },
+    ],
+  },
+];
+export const situacionGuia = (id?: string) => SITUACIONES_GUIA.find((x) => x.id === id);

@@ -1,23 +1,13 @@
 /* Portada = Consultar: identidad del Manual y título del capítulo, las dos entradas (Leer
-   capítulo y Para el paciente), el buscador, seguir leyendo, el mapa de consulta en cuatro
-   bloques (componentes/MapaConsulta) y el capítulo publicado. */
-import { useState } from "react";
-import { History, ArrowRight, BookOpen, ExternalLink, HeartHandshake, Search } from "lucide-react";
+   capítulo y Para el paciente), el mapa de consulta en cuatro bloques
+   (componentes/MapaConsulta) y el capítulo publicado. El buscador vive en la barra lateral
+   (escritorio) y en la cabecera (móvil): la portada no lo repite. */
+import { ArrowRight, BookOpen, ExternalLink, HeartHandshake } from "lucide-react";
 import { CAPITULO } from "../contenido";
 import { MapaConsulta } from "../componentes/MapaConsulta";
 import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
-import { href, navegar } from "../rutas";
-import { marcar, paginaDe } from "../busqueda";
-import { precargarBuscador, useBuscador } from "../useBuscador";
-import { useParecidos } from "../semantica";
-import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
-import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
-import { RecursosPedidos } from "../componentes/RecursosPedidos";
-import { Autocompletar } from "../componentes/Autocompletar";
-import { SinResultados } from "../componentes/SinResultados";
-import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
-import { useVisitas } from "../prefs";
-import { CATEGORIA_HEX, FICHA_AREA, SEEN } from "../tokens";
+import { href } from "../rutas";
+import { FICHA_AREA, SEEN } from "../tokens";
 
 const fecha = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("es-ES", {
@@ -34,180 +24,6 @@ function Franja() {
         <span key={c} className="flex-1" style={{ background: c }} />
       ))}
     </div>
-  );
-}
-
-/* Las últimas pantallas consultadas (prefs.ts, guardarVisita): volver en un toque. */
-function Recientes() {
-  const visitas = useVisitas();
-  if (!visitas.length) return null;
-  return (
-    <nav aria-label="Lo último que consultaste" className="-mt-3">
-      <p className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">
-        <History size={13} aria-hidden="true" /> Lo último que consultaste
-      </p>
-      <ul className="flex flex-wrap gap-1.5">
-        {visitas.map((v) => (
-          <li key={v.ruta}>
-            <a
-              href={v.ruta}
-              className="inline-flex min-h-11 max-w-[20rem] items-center rounded-2xl border bg-white px-3 py-1 text-left text-sm font-semibold text-slate-800 hover:border-slate-500 sm:min-h-9"
-              style={{ borderColor: "#d4d4d4" }}
-            >
-              <span className="line-clamp-2">
-                {v.titulo}
-                {v.detalle && <span className="font-normal text-slate-600"> · {v.detalle}</span>}
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  );
-}
-
-/* El buscador transversal: el mismo motor que la paleta y la pantalla Buscar. */
-function Buscador() {
-  const [q, setQ] = useState("");
-  // Las sugerencias y las búsquedas recientes aparecen al tocar la caja: así el mapa de consulta
-  // queda a la vista en la primera pantalla del móvil.
-  const [sugerir, setSugerir] = useState(false);
-  const { motor, estado, reintentar } = useBuscador(q.length > 0);
-  const qEf = (motor && motor.consultaEfectiva(q)) || q;
-  const parecidos = useParecidos(qEf, q.length > 0);
-  const busqueda = motor && qEf.trim().length >= 2 ? motor.buscarConTotales(qEf, 5, 2) : null;
-  const res = busqueda?.resultados ?? [];
-  const respuestas = motor && qEf.trim().length >= 2 ? motor.fusionar(qEf, parecidos) : [];
-  const frecuente = motor && qEf.trim().length >= 2 ? motor.preguntaFrecuente(qEf) : null;
-  const sugerencias = motor && q.trim().length >= 3 && !frecuente ? motor.sugerir(q) : [];
-  if (motor && (respuestas.length || frecuente)) motor.recordarTema(qEf);
-  return (
-    <section aria-labelledby="portada-buscar" className="scroll-mt-16 space-y-3">
-      <h2
-        id="portada-buscar"
-        className="text-xs font-bold uppercase tracking-wide"
-        style={{ color: CATEGORIA_HEX.consultar.ink }}
-      >
-        Pregunta al capítulo
-      </h2>
-      <p className="-mt-2 text-xs text-slate-500">Encuentra pasajes, tablas y herramientas.</p>
-      <form
-        role="search"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (q.trim()) navegar("buscar", q.trim());
-        }}
-      >
-        <label htmlFor="portada-q" className="sr-only">
-          Busca un tema, un sistema o una pregunta
-        </label>
-        <div className="flex items-center gap-2 rounded-md border-2 border-slate-300 bg-white px-3 py-2.5 transition focus-within:border-slate-500">
-          <Search size={17} className="shrink-0 text-slate-500" aria-hidden="true" />
-          <input
-            id="portada-q"
-            onFocus={(e) => {
-              setSugerir(true);
-              void precargarBuscador();
-              // En el móvil, el teclado tapa media pantalla: el campo sube arriba para que la
-              // respuesta quede a la vista.
-              const seccion = e.currentTarget.closest("section");
-              if (window.innerWidth < 768 && seccion)
-                window.setTimeout(() => seccion.scrollIntoView({ block: "start" }), 250);
-            }}
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Una duda: cetonas 1,2, modo sueño en Control-IQ, resonancia con 780G…"
-            autoComplete="off"
-            className="w-full bg-transparent text-base text-slate-900 placeholder:text-slate-500 focus:outline-none"
-          />
-        </div>
-      </form>
-      {sugerir && q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
-      <Autocompletar items={sugerencias} onElegir={setQ} />
-      {qEf !== q && (
-        <p className="text-xs text-slate-600" role="status">
-          Entendido como «{qEf}».
-        </p>
-      )}
-      {motor && qEf.trim().length >= 2 && (
-        <RecursosPedidos items={motor.recursosPedidos(qEf, res)} />
-      )}
-      <AvisosBusqueda q={qEf} parcial={busqueda?.parcial} primera={respuestas[0]}>
-        <RespuestasCapitulo
-          respuestas={respuestas}
-          q={qEf}
-          compacta
-          nivel={3}
-          frecuente={frecuente}
-          porId={motor?.respuestaPorId}
-        />
-      </AvisosBusqueda>
-      {estado === "error" && q.trim().length >= 2 && (
-        <p
-          role="status"
-          className="flex flex-wrap items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
-        >
-          No se ha podido cargar el índice de búsqueda.
-          <button
-            type="button"
-            onClick={reintentar}
-            className="inline-flex min-h-9 items-center rounded-md border border-slate-300 px-2 text-xs font-semibold hover:border-slate-500"
-          >
-            Reintentar
-          </button>
-        </p>
-      )}
-      {motor && q.trim().length >= 2 && res.length === 0 && !respuestas.length && !frecuente && (
-        <SinResultados q={q} cercanas={motor.faqsCercanas(parecidos)} />
-      )}
-      {res.length > 0 && (
-        <ul
-          className="divide-y rounded-xl border bg-white shadow-soft"
-          style={{ borderColor: "#e6e6e6" }}
-          aria-label="Resultados"
-        >
-          {res.map((r) => (
-            <li key={r.entrada.id}>
-              <a
-                href={r.entrada.ruta}
-                className="block px-3 py-2 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-              >
-                <span className="flex items-center justify-between gap-2 text-xs text-slate-500">
-                  <span className="truncate font-semibold">{r.entrada.titulo}</span>
-                  {r.entrada.pagina === 0 && (
-                    <span className="shrink-0 rounded-full bg-amber-100 px-1.5 text-[11px] font-semibold text-amber-900">
-                      Fuera del capítulo
-                    </span>
-                  )}
-                  {r.entrada.pagina > 0 && (
-                    <span className="pagina-badge">{paginaDe(r.entrada)}</span>
-                  )}
-                </span>
-                <span className="mt-0.5 block text-slate-800">
-                  {marcar(r.fragmento, q).map((t, i) =>
-                    t.hit ? (
-                      <mark key={i} className="resaltado">
-                        {t.t}
-                      </mark>
-                    ) : (
-                      <span key={i}>{t.t}</span>
-                    ),
-                  )}
-                </span>
-              </a>
-            </li>
-          ))}
-          <li>
-            <a
-              href={href("buscar", q)}
-              className="flex min-h-11 items-center px-3 text-sm font-semibold text-slate-700 hover:underline"
-            >
-              Ver todos los resultados
-            </a>
-          </li>
-        </ul>
-      )}
-    </section>
   );
 }
 
@@ -268,10 +84,6 @@ export function Portada() {
           </div>
         </div>
       </section>
-
-      <Buscador />
-
-      <Recientes />
 
       <MapaConsulta />
 

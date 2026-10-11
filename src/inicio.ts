@@ -161,6 +161,13 @@ export function frasesDe(apartado: string, bloque: string, k: number[], trozo?: 
   };
 }
 
+/* Los índices de todas las frases de un párrafo (para citarlo entero). */
+export function kDe(apartado: string, bloque: string): number[] {
+  const { b } = bloqueDe(apartado, bloque);
+  if (b.t !== "p") throw new Error(`inicio.ts: ${apartado}/${bloque} no es un párrafo`);
+  return frases(plano(b.texto)).map((_, i) => i);
+}
+
 export function listaDe(apartado: string, bloque: string) {
   const { b, ruta } = bloqueDe(apartado, bloque);
   if (b.t !== "lista") throw new Error(`inicio.ts: ${apartado}/${bloque} no es una lista`);
@@ -302,3 +309,29 @@ export const tituloDeTarea = (faseId: string, id: string) =>
 /* Las piezas de una fase que no caben en ninguna tarea (enlaces sueltos, al pie). */
 export const piezasSueltas = (fase: Fase) =>
   fase.piezas.map((_, i) => i).filter((i) => !tareasDe(fase.id).some((t) => t.piezas.includes(i)));
+
+/* Los textos que una pieza pinta, en orden de lectura (para saber qué siglas salen antes). */
+export function textosDePieza(pieza: Pieza, sis?: number): string[] {
+  switch (pieza.t) {
+    case "frase":
+      return frasesDe(pieza.apartado, pieza.bloque, pieza.k, pieza.trozo).frases;
+    case "lista": {
+      const l = listaDe(pieza.apartado, pieza.bloque);
+      return [l.intro ?? "", ...l.items];
+    }
+    case "fila": {
+      const f = TABLAS[pieza.tabla].filas[pieza.fila];
+      return [f.etiqueta, ...f.celdas];
+    }
+    case "casilla": {
+      const f = TABLAS[pieza.tabla].filas[pieza.fila];
+      return [f.etiqueta, ...(sis !== undefined ? [f.celdas[sis]] : f.celdas)];
+    }
+    case "hito":
+      return frasesDe(pieza.apartado, pieza.bloque, pieza.k).frases;
+    case "inicializacion":
+      return lineasInicializacion(sis);
+    default:
+      return [];
+  }
+}

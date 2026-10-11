@@ -7,7 +7,7 @@ import { PaginaBadge } from "../ui";
 import { Lineas, Texto } from "../texto";
 import { siglasPorTexto } from "../siglas";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
-import { frasesDe, lineasInicializacion, listaDe, type Pieza } from "../inicio";
+import { frasesDe, lineasInicializacion, listaDe, textosDePieza, type Pieza } from "../inicio";
 
 const hex = CATEGORIA_HEX.consultar;
 
@@ -65,30 +65,6 @@ function Casilla({
       <Lineas siglas={siglas}>{texto}</Lineas>
     </div>
   );
-}
-
-/* Los textos que una pieza pinta, en orden de lectura (para saber qué siglas salen antes). */
-export function textosDePieza(pieza: Pieza, sis?: number): string[] {
-  switch (pieza.t) {
-    case "frase":
-      return frasesDe(pieza.apartado, pieza.bloque, pieza.k, pieza.trozo).frases;
-    case "lista": {
-      const l = listaDe(pieza.apartado, pieza.bloque);
-      return [l.intro ?? "", ...l.items];
-    }
-    case "fila": {
-      const f = TABLAS[pieza.tabla].filas[pieza.fila];
-      return [f.etiqueta, ...f.celdas];
-    }
-    case "casilla": {
-      const f = TABLAS[pieza.tabla].filas[pieza.fila];
-      return [f.etiqueta, ...(sis !== undefined ? [f.celdas[sis]] : f.celdas)];
-    }
-    case "hito":
-      return frasesDe(pieza.apartado, pieza.bloque, pieza.k).frases;
-    default:
-      return [];
-  }
 }
 
 /* `compacta`: dentro de una tarea de «Iniciar un sistema», la pieza va sin su cabecera de tabla,

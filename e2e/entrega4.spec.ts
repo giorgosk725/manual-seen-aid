@@ -48,16 +48,11 @@ test.describe("Listas y tarjetas (0.29.0)", () => {
     await expect(page).toHaveURL(/:camaps$/);
   });
 
-  test("un caso recuerda el paso alcanzado y la portada lo último consultado", async ({ page }) => {
+  test("un caso recuerda el paso alcanzado", async ({ page }) => {
     await page.goto("/#/casos/hiperglucemia-pod/3");
     await expect(page.getByText(/Paso 3 de/)).toBeVisible();
     await page.goto("/#/casos");
     await expect(page.getByRole("link", { name: /Paso 3 de 5 · Continuar/ })).toBeVisible();
-    await page.goto("/#/");
-    const recientes = page.getByRole("navigation", { name: "Lo último que consultaste" });
-    // Dos visitas distintas con el mismo título: la lista y el caso con su paso.
-    await expect(recientes.getByRole("link", { name: "Casos guiados", exact: true })).toBeVisible();
-    await expect(recientes.getByRole("link", { name: /Casos guiados · Paso 3/ })).toBeVisible();
   });
 
   test("Para el paciente: las hojas son filas que abren", async ({ page }) => {

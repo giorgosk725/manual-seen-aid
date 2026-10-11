@@ -8,13 +8,25 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.42.0";
+export const VERSION_APP = "0.43.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-12",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — respuestas pertinentes y siglas a mano`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — buscador a la izquierda, situaciones por momentos, guía paso a paso`,
+    detalle: [
+      "Portada sin la caja grande ni «Lo último que consultaste»: el buscador está arriba a la izquierda (barra lateral) y, en el móvil, en el icono de la cabecera, también en la portada.",
+      "Sistemas: «Cómo funciona» comparado es una cuadrícula con la foto y el nombre de cada sistema una sola vez; las tarjetas de la ampliación técnica llevan foto, resumen y rasgos. En la ficha, «Situaciones» ya no repite las celdas: es un índice que abre cada situación con el sistema elegido.",
+      "Situaciones: ejercicio, exploraciones y cirugía enseñan «Lo que dice el capítulo, por momentos» (antes, durante, hipoglucemia, desconexión, después…); nuevas situaciones «Ingreso hospitalario» y «Gestación, parto y posparto», con los párrafos literales del capítulo y sus enlaces.",
+      "Iniciar un sistema: «Guía paso a paso» con un paciente delante, en seis pasos; las preguntas (pauta previa, basal que lleva) eligen qué texto del capítulo se enseña y las casillas se marcan durante la consulta, sin guardar nada.",
+      "Para el paciente: se puede descargar el PDF oficial del Manual SEEN con las doce preguntas. Objetivos de MCG: el TAR > 180 mg/dl lleva su cifra (< 25 %, consenso internacional de 2019, que el capítulo no reproduce).",
+    ],
+  },
+  {
+    fecha: "2026-10-12",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.42.0 — respuestas pertinentes y siglas a mano",
     detalle: [
       "Buscar: las preguntas relacionadas respetan el sistema de la consulta (sobre Omnipod no sale Control-IQ frente a Control-IQ+) y no cuentan como relación compartir solo una fila por sistema. Una respuesta de las Tablas 2 o 3 sigue en su tarea de Iniciar («Seguir en: Iniciar un sistema · Basal, ratio y factor de sensibilidad») y enseña, plegada, la explicación aprobada de esa tabla.",
       "Tarjetas: con un sistema elegido, los demás van plegados en «Ver otros sistemas». En una pregunta sobre un sistema (Control-IQ frente a Control-IQ+), el párrafo que enumera los cuatro va como ampliación.",

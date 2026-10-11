@@ -30,7 +30,7 @@ import {
   type Entrada,
   type Resultado,
 } from "./busqueda";
-import { SIS_IDS, SITUACIONES } from "./situaciones";
+import { SIS_IDS, SITUACIONES, SITUACIONES_GUIA } from "./situaciones";
 import { tituloDeTarea } from "./inicio";
 import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import { OBJETIVOS_MCG } from "./contenido/diagramas";
@@ -266,6 +266,15 @@ export function indice(): Entrada[] {
       ruta: href("consultar", "situacion", st.id),
     });
   }
+  for (const st of SITUACIONES_GUIA)
+    out.push({
+      id: `atajo/sit/${st.id}`,
+      tipo: "atajo",
+      titulo: `Situaciones · ${st.etiqueta}`,
+      texto: `${st.etiqueta}. ${st.intro} ${st.guion.map((m) => m.rotulo).join(". ")}. ${NOMBRES}`,
+      pagina: st.pagina,
+      ruta: href("consultar", "situacion", st.id),
+    });
   for (const s of SISTEMAS_AMPLIACION)
     out.push({
       id: `atajo/sis/${s.id}`,
@@ -708,7 +717,7 @@ export function sugerir(consulta: string, max = 5): Sugerencia[] {
   };
   for (const [texto, ruta] of HERRAMIENTAS)
     if (empiezaPor(texto, terminos)) add({ texto, tipo: "herramienta", ruta });
-  for (const st of SITUACIONES)
+  for (const st of [...SITUACIONES, ...SITUACIONES_GUIA])
     if (empiezaPor(st.etiqueta, terminos))
       add({ texto: st.etiqueta, tipo: "situacion", ruta: href("consultar", "situacion", st.id) });
   for (const s of SISTEMAS_AMPLIACION)

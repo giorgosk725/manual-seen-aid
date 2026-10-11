@@ -3,21 +3,6 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Entrega 3 (0.34.0)", () => {
-  test("«Lo último que consultaste» distingue dos tramos de la Figura 3", async ({ page }) => {
-    await page.goto("/#/consultar/figura-3/naranja");
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await page.goto("/#/consultar/figura-3/rojo");
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await page.goto("/#/");
-    const recientes = page.getByRole("navigation", { name: "Lo último que consultaste" });
-    await expect(
-      recientes.getByRole("link", { name: /Cetonemia paso a paso · β-OHB ≥3,0/ }),
-    ).toBeVisible();
-    await expect(
-      recientes.getByRole("link", { name: /Cetonemia paso a paso · β-OHB 1,0-2,9/ }),
-    ).toBeVisible();
-  });
-
   test("Sistemas: «Los cuatro» marcado cuando no hay selección", async ({ page }) => {
     await page.goto("/#/sistemas/todos/parametros");
     const grupo = page.getByRole("group", { name: "Sistemas" });

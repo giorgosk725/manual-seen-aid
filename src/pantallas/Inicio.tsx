@@ -3,7 +3,16 @@
    con el sistema elegido o los cuatro, y la hoja de comprobación como herramienta del recorrido.
    El contenido sale de inicio.ts (referencias al texto literal); aquí solo se pinta. */
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Check, ChevronDown, ChevronLeft, ChevronRight, Printer } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ListChecks,
+  Printer,
+} from "lucide-react";
+import { PASOS_GUIA } from "../guia-inicio";
 import { APARTADOS, GLOSARIO, TABLAS, rutaDeTabla } from "../contenido";
 import { ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { SIS_IDS } from "../situaciones";
@@ -16,7 +25,7 @@ import { VERSION_APP } from "../contenido/cambios";
 import { Lineas } from "../texto";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
-import { PiezaVista, textosDePieza } from "../componentes/Piezas";
+import { PiezaVista } from "../componentes/Piezas";
 import { siglasEn } from "../siglas";
 import { CATEGORIA_HEX } from "../tokens";
 import {
@@ -27,6 +36,7 @@ import {
   piezasSueltas,
   tareaDePieza,
   tareasDe,
+  textosDePieza,
   type Fase,
   type Pieza,
   type Tarea,
@@ -37,6 +47,7 @@ const NOMBRES = TABLAS.T1.columnas;
 /* En los botones, el nombre corto (el largo se cortaba en el móvil). */
 const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
 const HOJA = "hoja";
+const GUIA = "guia";
 
 /* La procedencia de una pieza, en una línea («Tabla 2, p. 10»), con su sitio en el capítulo. */
 const numeroApartado = (slug: string) => APARTADOS.find((a) => a.slug === slug)?.n ?? "";
@@ -65,12 +76,24 @@ function fuentesDePieza(p: Pieza): { texto: string; ruta: string }[] {
       return [];
   }
 }
-/* Las fuentes de una tarea, sin repetir. */
-function fuentesDeTarea(fase: Fase, t: Tarea): { texto: string; ruta: string }[] {
+/* Las fuentes de unas piezas, sin repetir. */
+function fuentesDePiezas(piezas: Pieza[]): { texto: string; ruta: string }[] {
   const vistas = new Set<string>();
-  return t.piezas
-    .flatMap((i) => fuentesDePieza(fase.piezas[i]))
+  return piezas
+    .flatMap(fuentesDePieza)
     .filter((f) => !vistas.has(f.texto) && !!vistas.add(f.texto));
+}
+const fuentesDeTarea = (fase: Fase, t: Tarea) =>
+  fuentesDePiezas(t.piezas.map((i) => fase.piezas[i]));
+/* Las siglas del glosario, pulsables la primera vez que salen en el bloque: a cada pieza le
+   llegan las que no han salido en las anteriores. */
+function siglasPorPiezas(piezas: Pieza[], sis?: number): Set<string>[] {
+  const vistas = new Set<string>();
+  return piezas.map((p) => {
+    const pend = new Set(GLOSARIO.map((g) => g.sigla).filter((x) => !vistas.has(x)));
+    for (const t of textosDePieza(p, sis)) for (const x of siglasEn(t)) vistas.add(x);
+    return pend;
+  });
 }
 
 const capitalizar = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -208,14 +231,10 @@ function TareaVista({
 }) {
   const id = `tarea-${tarea.id}`;
   const fuentes = fuentesDeTarea(fase, tarea);
-  // Las siglas del glosario, pulsables la primera vez que salen en la tarea: a cada pieza le
-  // llegan las que no han salido en las anteriores.
-  const vistas = new Set<string>();
-  const siglasDe = tarea.piezas.map((i) => {
-    const pend = new Set(GLOSARIO.map((g) => g.sigla).filter((x) => !vistas.has(x)));
-    for (const t of textosDePieza(fase.piezas[i], sis)) for (const x of siglasEn(t)) vistas.add(x);
-    return pend;
-  });
+  const siglasDe = siglasPorPiezas(
+    tarea.piezas.map((i) => fase.piezas[i]),
+    sis,
+  );
   const siguiente = tarea.siguiente?.(sis) ?? null;
   return (
     <section className="border-t" style={{ borderColor: "#e6e6e6" }} aria-labelledby={`${id}-t`}>
@@ -244,20 +263,7 @@ function TareaVista({
               </div>
             ))}
           </div>
-          {fuentes.length > 0 && (
-            <p className="mt-1 text-[13px] text-slate-500">
-              Fuente:{" "}
-              {fuentes.map((f, k) => (
-                <span key={f.texto}>
-                  {k > 0 && " · "}
-                  <a href={f.ruta} className="font-semibold text-slate-600 hover:underline">
-                    {f.texto}
-                  </a>
-                </span>
-              ))}{" "}
-              · <span className="whitespace-nowrap">texto literal del capítulo</span>
-            </p>
-          )}
+          <LineaFuente fuentes={fuentes} />
           {tarea.piezas.some((i) => esDeTabla2(fase.piezas[i])) && <ComoInterpretar tabla="T2" />}
           {siguiente && (
             <p className="mt-2">
@@ -275,11 +281,205 @@ function TareaVista({
   );
 }
 
+/* Fuente de un bloque de piezas, en una línea. */
+function LineaFuente({ fuentes }: { fuentes: { texto: string; ruta: string }[] }) {
+  if (!fuentes.length) return null;
+  return (
+    <p className="mt-1 text-[13px] text-slate-500">
+      Fuente:{" "}
+      {fuentes.map((f, k) => (
+        <span key={f.texto}>
+          {k > 0 && " · "}
+          <a href={f.ruta} className="font-semibold text-slate-600 hover:underline">
+            {f.texto}
+          </a>
+        </span>
+      ))}{" "}
+      · <span className="whitespace-nowrap">texto literal del capítulo</span>
+    </p>
+  );
+}
+
+/* Guía paso a paso, con un paciente delante: seis pasos; las preguntas eligen qué texto del
+   capítulo se enseña y las casillas se marcan durante la consulta. No se guarda nada (ni las
+   respuestas ni lo marcado): sin datos del paciente. */
+function GuiaInicio({ sis, paso }: { sis?: number; paso: number }) {
+  const n = Math.min(PASOS_GUIA.length, Math.max(1, paso));
+  const p = PASOS_GUIA[n - 1];
+  const [resp, setResp] = useState<Record<string, string>>({});
+  const [hechos, setHechos] = useState<Set<string>>(new Set());
+  const ir = (k: number) => elegirRuta("consultar", "inicio", detalleDe(GUIA, sis, String(k)));
+  const alPaso = useIrAlCambiar(String(n), "paso-guia");
+  const elegidas = (p.preguntas ?? []).flatMap(
+    (q) => q.opciones.find((o) => o.id === resp[q.id])?.piezas ?? [],
+  );
+  const piezas = [...p.piezas, ...elegidas];
+  const siglas = siglasPorPiezas(piezas, sis);
+  const hoja = hojaDeComprobacion(sis);
+  const lista =
+    p.comprobar === "antes"
+      ? hoja.antes.map((x) => x.texto)
+      : p.comprobar === "citas"
+        ? hoja.citas
+        : [];
+  const enlace = p.enlace?.(sis) ?? null;
+  const marcar = (k: string) =>
+    setHechos((prev) => {
+      const s = new Set(prev);
+      if (s.has(k)) s.delete(k);
+      else s.add(k);
+      return s;
+    });
+  const boton = (on: boolean) =>
+    `inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`;
+  return (
+    <section
+      id="paso-guia"
+      className="pantalla-in scroll-mt-24 rounded-2xl border bg-white px-4 pb-3 pt-4"
+      style={{ borderColor: "#e6e6e6" }}
+      aria-labelledby="guia-titulo"
+    >
+      <ol className="mb-3 flex flex-wrap gap-1.5" aria-label="Pasos de la guía">
+        {PASOS_GUIA.map((x, i) => {
+          const on = i === n - 1;
+          return (
+            <li key={x.id}>
+              <button
+                type="button"
+                aria-current={on ? "step" : undefined}
+                onClick={() => {
+                  alPaso();
+                  ir(i + 1);
+                }}
+                className={boton(on).replace("min-h-11", "min-h-9").replace("px-3", "px-2.5")}
+                style={
+                  on
+                    ? { background: hex.strong, borderColor: hex.strong }
+                    : { borderColor: "#e6e6e6" }
+                }
+              >
+                <span className="tabular-nums">{i + 1}</span>
+                <span className="hidden sm:inline">{x.titulo}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+      <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+        Paso {n} de {PASOS_GUIA.length}
+      </p>
+      <h2 id="guia-titulo" className="text-lg font-extrabold text-slate-900">
+        {p.titulo}
+      </h2>
+      {p.intro && <p className="mt-1 text-sm text-slate-600">{p.intro}</p>}
+      {(p.preguntas ?? []).map((q) => (
+        <div key={q.id} className="mt-3">
+          <div className="mb-1 text-sm font-semibold text-slate-800">{q.rotulo}</div>
+          <div role="group" aria-label={q.rotulo} className="flex flex-wrap gap-1.5">
+            {q.opciones.map((o) => {
+              const on = resp[q.id] === o.id;
+              return (
+                <button
+                  key={o.id}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => setResp({ ...resp, [q.id]: on ? "" : o.id })}
+                  className={boton(on)}
+                  style={
+                    on
+                      ? { background: "#334155", borderColor: "#334155" }
+                      : { borderColor: "#d4d4d4" }
+                  }
+                >
+                  {o.texto}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+      {piezas.length > 0 && (
+        <div className="mt-3 divide-y" style={{ borderColor: "#eeeeee" }}>
+          {piezas.map((pz, k) => (
+            <div key={k} className="py-2.5 first:pt-0">
+              <PiezaVista pieza={pz} sis={sis} compacta siglas={siglas[k]} />
+            </div>
+          ))}
+        </div>
+      )}
+      <LineaFuente fuentes={fuentesDePiezas(piezas)} />
+      {piezas.some(esDeTabla2) && <ComoInterpretar tabla="T2" />}
+      {lista.length > 0 && (
+        <ul className="mt-3 space-y-1" aria-label="Para marcar en la consulta">
+          {lista.map((x) => (
+            <li key={x}>
+              <label className="flex gap-2 text-sm text-slate-800">
+                <input
+                  type="checkbox"
+                  checked={hechos.has(x)}
+                  onChange={() => marcar(x)}
+                  className="h-6 w-6 shrink-0 accent-slate-700"
+                />
+                <span>{x}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      )}
+      {enlace && (
+        <p className="mt-2">
+          <a
+            href={enlace.ruta}
+            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline sm:min-h-8"
+          >
+            Seguir en: {enlace.texto} <ArrowRight size={13} aria-hidden="true" />
+          </a>
+        </p>
+      )}
+      <div className="no-imprimir mt-4 flex items-center justify-between">
+        <button
+          type="button"
+          disabled={n === 1}
+          onClick={() => {
+            alPaso();
+            ir(n - 1);
+          }}
+          className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 disabled:opacity-40"
+        >
+          <ChevronLeft size={14} aria-hidden="true" /> Anterior
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            alPaso();
+            if (n === PASOS_GUIA.length)
+              elegirRuta("consultar", "inicio", detalleDe(HOJA, sis, null) || undefined);
+            else ir(n + 1);
+          }}
+          className="inline-flex min-h-11 items-center gap-1 rounded-lg px-3 text-sm font-semibold text-white"
+          style={{ background: hex.strong }}
+        >
+          {n === PASOS_GUIA.length ? "Hoja de comprobación" : "Siguiente"}{" "}
+          <ChevronRight size={14} aria-hidden="true" />
+        </button>
+      </div>
+      <p className="mt-2 text-xs text-slate-500">
+        No se guarda nada: ni las respuestas ni lo marcado. El texto es el del capítulo, con su
+        página.
+      </p>
+    </section>
+  );
+}
+
 export function IniciarSistema({ detalle }: { detalle?: string }) {
   const [faseId, sisId, tareaId] = (detalle ?? "").split(":");
   const sisIdx = sisId ? SIS_IDS.indexOf(sisId) : -1;
   const sis = sisIdx >= 0 ? sisIdx : undefined;
-  const actual = FASES.some((f) => f.id === faseId) ? faseId : faseId === HOJA ? HOJA : FASES[0].id;
+  const actual = FASES.some((f) => f.id === faseId)
+    ? faseId
+    : faseId === HOJA || faseId === GUIA
+      ? faseId
+      : FASES[0].id;
   const n = FASES.findIndex((f) => f.id === actual);
   const fase = FASES.find((f) => f.id === actual);
   const tareas = fase ? tareasDe(fase.id) : [];
@@ -331,7 +531,9 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
       <div className="mb-4">
         <CasillasSistema
           seleccion={sis !== undefined ? [sis] : []}
-          onToggle={(c) => ir(actual, sis === c ? undefined : c, pedida)}
+          onToggle={(c) =>
+            ir(actual, sis === c ? undefined : c, actual === GUIA ? tareaId || null : pedida)
+          }
           nombres={CORTOS}
         />
       </div>
@@ -365,7 +567,20 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
             );
           })}
         </ol>
-        {/* La hoja es una herramienta del recorrido, no una fase. */}
+        {/* La guía y la hoja son herramientas del recorrido, no fases. */}
+        <button
+          type="button"
+          aria-current={actual === GUIA ? "page" : undefined}
+          onClick={() => ir(GUIA, sis, "1")}
+          className={`inline-flex min-h-11 items-center gap-1.5 self-start rounded-lg border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${actual === GUIA ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
+          style={
+            actual === GUIA
+              ? { background: "#334155", borderColor: "#334155" }
+              : { borderColor: "#e6e6e6" }
+          }
+        >
+          <ListChecks size={14} aria-hidden="true" /> Guía paso a paso
+        </button>
         <button
           type="button"
           aria-current={actual === HOJA ? "page" : undefined}
@@ -434,6 +649,8 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
               Apartado 8 del capítulo, {fase.paginas}.
             </p>
           </section>
+        ) : actual === GUIA ? (
+          <GuiaInicio sis={sis} paso={Number(tareaId) || 1} />
         ) : (
           <Hoja sis={sis} />
         )}

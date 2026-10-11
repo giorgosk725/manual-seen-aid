@@ -7,7 +7,17 @@
 import { useState } from "react";
 import { ArrowRight, Check, ChevronLeft, ChevronRight, HeartHandshake } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, rutaDeTabla } from "../contenido";
-import { SIS_IDS, SITUACIONES, type Situacion } from "../situaciones";
+import {
+  GUION,
+  SIS_IDS,
+  SITUACIONES,
+  SITUACIONES_GUIA,
+  type Momento,
+  type Situacion,
+  type SituacionGuia,
+} from "../situaciones";
+import { PiezaVista } from "../componentes/Piezas";
+import { kDe } from "../inicio";
 
 import { elegirRuta, href } from "../rutas";
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
@@ -43,8 +53,18 @@ const TEMAS_SITUACION: { t: string; ids: string[]; subs: RegExp; extras?: Extra[
   },
   {
     t: "Exploraciones, cirugía e ingreso",
-    ids: ["rm", "tc", "rx", "pet", "diatermia", "eco", "cirugia-corta", "cirugia-larga"],
-    subs: /ingreso|hospital/i,
+    ids: [
+      "rm",
+      "tc",
+      "rx",
+      "pet",
+      "diatermia",
+      "eco",
+      "cirugia-corta",
+      "cirugia-larga",
+      "ingreso-hospitalario",
+    ],
+    subs: /^$/,
   },
   {
     t: "Interrupción del sistema",
@@ -58,8 +78,50 @@ const TEMAS_SITUACION: { t: string; ids: string[]; subs: RegExp; extras?: Extra[
       },
     ],
   },
-  { t: "Poblaciones y situaciones especiales", ids: [], subs: /./ },
+  { t: "Poblaciones y situaciones especiales", ids: ["gestacion"], subs: /./ },
 ];
+
+type SituacionLista = Situacion | SituacionGuia;
+const TODAS: SituacionLista[] = [...SITUACIONES, ...SITUACIONES_GUIA];
+
+/* Los momentos de una situación: párrafos literales del capítulo, cada uno con su página. */
+function GuionVista({ momentos }: { momentos: Momento[] }) {
+  return (
+    <section
+      aria-label="Lo que dice el capítulo, por momentos"
+      className="rounded-2xl border bg-white p-4"
+      style={{ borderColor: "#e6e6e6" }}
+    >
+      <h2 className="text-xs font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
+        Lo que dice el capítulo, por momentos
+      </h2>
+      <ol className="mt-1">
+        {momentos.map((m, i) => (
+          <li
+            key={`${m.bloque}-${i}`}
+            className="border-t py-2.5 first:border-t-0"
+            style={{ borderColor: "#eeeeee" }}
+          >
+            <h3 className="text-sm font-bold text-slate-900">{m.rotulo}</h3>
+            <div className="mt-0.5">
+              <PiezaVista
+                pieza={{
+                  t: "frase",
+                  apartado: m.apartado,
+                  bloque: m.bloque,
+                  k: m.k ?? kDe(m.apartado, m.bloque),
+                }}
+              />
+            </div>
+          </li>
+        ))}
+      </ol>
+      <p className="mt-2 text-[13px] text-slate-500">
+        Texto literal del capítulo, con su página; los rótulos de los momentos son de la app.
+      </p>
+    </section>
+  );
+}
 
 function ListaSituaciones({
   sit,
@@ -76,7 +138,9 @@ function ListaSituaciones({
   const pasa = (t: string) => !f || normalizar(t).includes(f);
   let subs = a.bloques.filter(
     (b): b is Extract<Bloque, { t: "h3" }> =>
-      b.t === "h3" && b.id !== "ejercicio" && b.id !== "exploraciones" && pasa(b.texto),
+      b.t === "h3" &&
+      !["ejercicio", "exploraciones", "ingreso", "gestacion"].includes(b.id) &&
+      pasa(b.texto),
   );
   const enlace =
     "flex min-h-11 w-full items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500";
@@ -86,8 +150,8 @@ function ListaSituaciones({
         const mios = subs.filter((b) => tema.subs.test(b.texto));
         subs = subs.filter((b) => !mios.includes(b));
         const sits = tema.ids
-          .map((id) => SITUACIONES.find((x) => x.id === id))
-          .filter((x): x is Situacion => !!x && pasa(x.etiqueta));
+          .map((id) => TODAS.find((x) => x.id === id))
+          .filter((x): x is SituacionLista => !!x && pasa(x.etiqueta));
         const extras = (tema.extras ?? []).filter((x) => pasa(x.t));
         if (!sits.length && !mios.length && !extras.length) return null;
         return (
@@ -122,7 +186,7 @@ function ListaSituaciones({
                       <span
                         className={`shrink-0 text-[11px] ${on ? "text-white/80" : "text-slate-500"}`}
                       >
-                        Tabla {s.tabla.slice(1)}
+                        {"tabla" in s ? `Tabla ${s.tabla.slice(1)}` : s.fuente}
                       </span>
                     </button>
                   </li>
@@ -163,6 +227,7 @@ function ListaSituaciones({
 export function SituacionSistema({ situacion, sistema }: { situacion?: string; sistema?: string }) {
   const [filtro, setFiltro] = useState("");
   const sit = SITUACIONES.find((s) => s.id === situacion) || null;
+  const guia = SITUACIONES_GUIA.find((s) => s.id === situacion) || null;
   const sisIdx = sistema ? SIS_IDS.indexOf(sistema) : -1;
   const tabla = sit ? TABLAS[sit.tabla] : null;
   const fila = sit && tabla ? tabla.filas[sit.fila] : null;
@@ -194,13 +259,68 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
           />
           <ListaSituaciones sit={sit} sistema={sistema} filtro={filtro} />
         </div>
-        <div aria-live="polite" className={sit ? "order-first lg:order-none" : undefined}>
-          {!sit && (
+        <div aria-live="polite" className={sit || guia ? "order-first lg:order-none" : undefined}>
+          {!sit && !guia && (
             <div
               className="rounded-xl border border-dashed px-4 py-8 text-center text-sm text-slate-600"
               style={{ borderColor: "#d4d4d4", background: "#f8fafc" }}
             >
               Elige una situación de la lista.
+            </div>
+          )}
+          {guia && (
+            <div key={guia.id} className="pantalla-in space-y-4">
+              <div
+                className="flex items-center gap-2 rounded-lg border bg-white px-3 py-2 lg:hidden"
+                style={{ borderColor: "#e6e6e6" }}
+              >
+                <span className="min-w-0 flex-1 text-sm">
+                  <span className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                    Situación
+                  </span>
+                  <span className="block font-semibold text-slate-900">{guia.etiqueta}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    document.getElementById("lista-situaciones")?.scrollIntoView({ block: "start" })
+                  }
+                  className="min-h-11 shrink-0 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-500"
+                >
+                  Cambiar
+                </button>
+              </div>
+              <section
+                id="conducta-situacion"
+                className="scroll-mb-28 scroll-mt-24 rounded-2xl border bg-white p-4 shadow-soft"
+                style={{ borderColor: "#e6e6e6" }}
+                aria-label="Situación"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <h2 className="text-base font-bold text-slate-900">{guia.etiqueta}</h2>
+                  <PaginaBadge p={guia.pagina} />
+                </div>
+                <p className="mt-1 text-sm text-slate-700">{guia.intro}</p>
+              </section>
+              <GuionVista momentos={guia.guion} />
+              <div>
+                <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
+                  Seguir en
+                </div>
+                <ul className="flex flex-wrap gap-1.5">
+                  {guia.enlaces.map((l) => (
+                    <li key={l.ruta}>
+                      <a
+                        href={l.ruta}
+                        className="inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-8"
+                        style={{ borderColor: "#d4d4d4" }}
+                      >
+                        {l.texto} <ArrowRight size={12} aria-hidden="true" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           )}
           {sit && tabla && fila && (
@@ -332,6 +452,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                   </dl>
                 )}
               </section>
+              {GUION[sit.id] && <GuionVista momentos={GUION[sit.id]} />}
               {(sit.tabla === "T6" || sit.id.startsWith("hiperglucemia")) && (
                 <a
                   href={href(

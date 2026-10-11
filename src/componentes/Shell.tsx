@@ -33,8 +33,10 @@ import {
   marcarNavegacionNueva,
   parseHash,
   type Ruta,
+  navegar,
 } from "../rutas";
 import { TAMANOS, guardarVisita, useNocturno, useTamanoLetra } from "../prefs";
+import { precargarBuscador } from "../useBuscador";
 import { VolverArriba } from "./Lectura";
 import { ErrorBoundary, Modal } from "../ui";
 import { fueraDelCapitulo, marcar, paginaDe } from "../busqueda";
@@ -460,11 +462,48 @@ function Lateral({ ruta }: { ruta: Ruta }) {
           {CAPITULO.tituloCorto}
         </span>
       </a>
+      <BuscadorLateral />
       <MenuNavegacion ruta={ruta} etiqueta="Navegación principal" />
       <div className="mt-auto px-3 pt-6 text-[11px] leading-relaxed text-slate-500">
         No sustituye la ficha técnica de cada sistema ni el juicio clínico.
       </div>
     </aside>
+  );
+}
+
+/* La caja de búsqueda de la barra lateral: escribir y Intro abre Buscar con la consulta (el
+   mismo motor que la paleta y la portada de antes). */
+function BuscadorLateral() {
+  const [q, setQ] = useState("");
+  return (
+    <form
+      role="search"
+      className="mb-3 mt-3 px-1"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (q.trim()) navegar("buscar", q.trim());
+      }}
+    >
+      <label htmlFor="lateral-q" className="sr-only">
+        Pregunta al capítulo
+      </label>
+      <div className="flex items-center gap-2 rounded-md border border-slate-300 bg-white px-2.5 py-1.5 transition focus-within:border-slate-500">
+        <Search size={14} className="shrink-0 text-slate-500" aria-hidden="true" />
+        <input
+          id="lateral-q"
+          type="search"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          onFocus={() => void precargarBuscador()}
+          placeholder="Pregunta al capítulo"
+          autoComplete="off"
+          className="w-full min-w-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none"
+        />
+        <kbd className="hidden rounded border border-slate-300 px-1 text-[10px] text-slate-500 lg:block">
+          Ctrl K
+        </kbd>
+      </div>
+    </form>
   );
 }
 
@@ -709,22 +748,6 @@ export function Shell({
           <span className="hidden min-w-0 flex-1 truncate text-sm text-slate-600 md:block">
             {titulo || CAPITULO.tituloCorto}
           </span>
-          {/* En escritorio, la búsqueda vive aquí (no se repite en la barra lateral). En la
-              portada no: allí está el buscador grande, y dos cajas confunden. */}
-          {ruta.seccion !== "" && (
-            <button
-              type="button"
-              onClick={abrirPaleta}
-              aria-label="Buscar en el capítulo (Ctrl K)"
-              className="ml-auto hidden min-h-10 w-64 shrink-0 items-center gap-2 rounded-md border border-slate-300 bg-white px-3 text-left text-sm text-slate-500 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:flex lg:w-80"
-            >
-              <Search size={15} aria-hidden="true" className="shrink-0" />
-              <span className="flex-1 truncate">Pregunta al capítulo</span>
-              <kbd className="rounded border border-slate-300 px-1 text-[10px] text-slate-500">
-                Ctrl K
-              </kbd>
-            </button>
-          )}
           <span className="flex-1 md:hidden" />
           {enLectura && (
             <div
@@ -752,16 +775,14 @@ export function Shell({
               </button>
             </div>
           )}
-          {ruta.seccion !== "" && (
-            <button
-              type="button"
-              onClick={abrirPaleta}
-              aria-label="Buscar"
-              className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
-            >
-              <Search size={18} />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={abrirPaleta}
+            aria-label="Buscar"
+            className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
+          >
+            <Search size={18} />
+          </button>
           <button
             type="button"
             onClick={toggleNight}
