@@ -205,8 +205,18 @@ function ObjetivosMCG({ opcion }: { opcion?: string }) {
         ))}
       </div>
       <p className="mt-3 text-xs text-slate-500">
-        Cada franja con el objetivo de tiempo que da el capítulo. «—»: el capítulo no fija objetivo
-        para esa franja.
+        Objetivos recogidos en el capítulo. El TAR &gt; 180 mg/dl de adultos no gestantes se añade
+        como dato complementario del{" "}
+        <a
+          href="https://doi.org/10.2337/dci19-0028"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold underline"
+        >
+          consenso internacional de MCG de 2019
+        </a>{" "}
+        (Battelino et al., Diabetes Care), que diferencia poblaciones; el capítulo no lo reproduce.
+        «—»: sin objetivo para esa franja.
       </p>
     </div>
   );

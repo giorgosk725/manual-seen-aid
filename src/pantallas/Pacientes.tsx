@@ -234,7 +234,7 @@ export function HubPacientes() {
               <FilaHoja
                 href={href("pacientes", "hoja", h.id)}
                 titulo={h.titulo}
-                detalle={`${h.rotulo} para entregar · ${primeraFrase(h.intro) || h.fuente}`}
+                detalle={`${h.rotulo.replace(/ para el paciente$/i, "")} para entregar · ${primeraFrase(h.intro) || h.fuente}`}
                 borrador={h.estado === "borrador"}
               />
             </li>

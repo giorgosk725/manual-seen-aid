@@ -112,3 +112,16 @@ describe("Guía paso a paso y momentos de las situaciones (0.43.0)", () => {
     expect(PASOS_GUIA.length).toBe(6);
   });
 });
+
+describe("Guía: preguntas dependientes (0.43.1)", () => {
+  it("la basal solo se pregunta con MDI y su respuesta se borra al cambiar la pauta", async () => {
+    const { PASOS_GUIA, preguntasActivas, limpiarRespuestas } = await import("./guia-inicio");
+    const p = PASOS_GUIA[0];
+    expect(preguntasActivas(p, {}).map((q) => q.id)).toEqual(["pauta"]);
+    expect(preguntasActivas(p, { pauta: "mdi" }).map((q) => q.id)).toEqual(["pauta", "basal"]);
+    expect(limpiarRespuestas({ pauta: "isci", basal: "larga" })).toEqual({ pauta: "isci" });
+    expect(limpiarRespuestas({ pauta: "", basal: "larga" })).toEqual({});
+    expect(p.enlace?.(3, { pauta: "isci" })?.texto).toMatch(/Criterios/);
+    expect(p.enlace?.(3, {})).toBeNull();
+  });
+});

@@ -1176,7 +1176,11 @@ function TarjetaSistema({
 }) {
   const s = SISTEMAS_AMPLIACION[c];
   const h = SISTEMA_HEX[c];
-  const etiquetas = [s.tags.pedsAge, s.tags.movil, s.tags.sintubo].filter(Boolean);
+  const etiquetas = [
+    `Edad: ${s.tags.pedsAge}`,
+    `Control desde el móvil: ${s.tags.movil.toLowerCase()}`,
+    `Sin tubo: ${s.tags.sintubo.toLowerCase()}`,
+  ];
   return (
     <li
       className="flex gap-3 rounded-xl border bg-white p-3"

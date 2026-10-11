@@ -4,7 +4,7 @@
    - Revisar la descarga: la Tabla 5 paso a paso (8 pasos), con el patrón relacionado.
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, Check, ChevronLeft, ChevronRight, HeartHandshake } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, rutaDeTabla } from "../contenido";
 import {
@@ -17,7 +17,7 @@ import {
   type SituacionGuia,
 } from "../situaciones";
 import { PiezaVista } from "../componentes/Piezas";
-import { kDe } from "../inicio";
+import { frasesDe, kDe, type Pieza } from "../inicio";
 
 import { elegirRuta, href } from "../rutas";
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
@@ -84,40 +84,140 @@ const TEMAS_SITUACION: { t: string; ids: string[]; subs: RegExp; extras?: Extra[
 type SituacionLista = Situacion | SituacionGuia;
 const TODAS: SituacionLista[] = [...SITUACIONES, ...SITUACIONES_GUIA];
 
-/* Los momentos de una situación: párrafos literales del capítulo, cada uno con su página. */
-function GuionVista({ momentos }: { momentos: Momento[] }) {
+/* Los momentos de una situación: párrafos literales del capítulo. Un índice breve arriba, el
+   primero abierto y los demás plegados («Abrir todos» para leer seguido), y la fuente una sola
+   vez al pie, con sus enlaces exactos. */
+const piezasDe = (m: Momento): Pieza[] =>
+  [m, ...(m.mas ?? [])].map((x) => ({
+    t: "frase",
+    apartado: x.apartado,
+    bloque: x.bloque,
+    k: x.k ?? kDe(x.apartado, x.bloque),
+  }));
+const numeroApartado = (slug: string) => APARTADOS.find((a) => a.slug === slug)?.n ?? "";
+function fuentesDeMomentos(momentos: Momento[]): { texto: string; ruta: string }[] {
+  const vistas = new Set<string>();
+  const out: { texto: string; ruta: string }[] = [];
+  for (const m of momentos)
+    for (const pz of piezasDe(m)) {
+      if (pz.t !== "frase") continue;
+      const f = frasesDe(pz.apartado, pz.bloque, pz.k);
+      const texto = `Apartado ${numeroApartado(pz.apartado)}, p. ${f.pagina}`;
+      if (!vistas.has(texto)) {
+        vistas.add(texto);
+        out.push({ texto, ruta: f.ruta });
+      }
+    }
+  return out;
+}
+function GuionVista({
+  momentos,
+  rotulo = "Lo que dice el capítulo, por momentos",
+}: {
+  momentos: Momento[];
+  rotulo?: string;
+}) {
+  const [todos, setTodos] = useState(false);
+  const [abiertos, setAbiertos] = useState<Set<number>>(new Set([0]));
+  const abierto = (i: number) => todos || abiertos.has(i);
+  const alternar = (i: number) =>
+    setAbiertos((prev) => {
+      const s = new Set(prev);
+      if (s.has(i)) s.delete(i);
+      else s.add(i);
+      return s;
+    });
+  const fuentes = fuentesDeMomentos(momentos);
   return (
     <section
-      aria-label="Lo que dice el capítulo, por momentos"
+      aria-label={rotulo}
       className="rounded-2xl border bg-white p-4"
       style={{ borderColor: "#e6e6e6" }}
     >
-      <h2 className="text-xs font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
-        Lo que dice el capítulo, por momentos
-      </h2>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <h2 className="text-xs font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
+          {rotulo}
+        </h2>
+        <button
+          type="button"
+          onClick={() => setTodos(!todos)}
+          className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-6"
+        >
+          {todos ? "Plegar" : "Abrir todos"}
+        </button>
+      </div>
+      <nav aria-label="Índice de la situación" className="mt-1">
+        <ol className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-slate-600">
+          {momentos.map((m, i) => (
+            <li key={i}>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!abierto(i)) alternar(i);
+                  document
+                    .getElementById(`momento-${i}`)
+                    ?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+                }}
+                className="inline-flex min-h-8 items-center font-semibold hover:underline"
+              >
+                {i + 1}. {m.rotulo}
+              </button>
+            </li>
+          ))}
+        </ol>
+      </nav>
       <ol className="mt-1">
         {momentos.map((m, i) => (
           <li
             key={`${m.bloque}-${i}`}
-            className="border-t py-2.5 first:border-t-0"
+            id={`momento-${i}`}
+            className="scroll-mt-24 border-t py-1.5 first:border-t-0"
             style={{ borderColor: "#eeeeee" }}
           >
-            <h3 className="text-sm font-bold text-slate-900">{m.rotulo}</h3>
-            <div className="mt-0.5">
-              <PiezaVista
-                pieza={{
-                  t: "frase",
-                  apartado: m.apartado,
-                  bloque: m.bloque,
-                  k: m.k ?? kDe(m.apartado, m.bloque),
-                }}
-              />
-            </div>
+            <h3>
+              <button
+                type="button"
+                aria-expanded={abierto(i)}
+                onClick={() => alternar(i)}
+                className="flex min-h-11 w-full items-center justify-between gap-3 py-1 text-left text-sm font-bold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+              >
+                <span>
+                  <span className="mr-1.5 tabular-nums" style={{ color: hex.strong }}>
+                    {i + 1}.
+                  </span>
+                  {m.rotulo}
+                </span>
+                <ChevronRight
+                  size={15}
+                  aria-hidden="true"
+                  className={`shrink-0 text-slate-500 transition ${abierto(i) ? "rotate-90" : ""}`}
+                />
+              </button>
+            </h3>
+            {abierto(i) && (
+              <div className="space-y-2 pb-2">
+                {piezasDe(m).map((pz, k) => (
+                  <PiezaVista key={k} pieza={pz} compacta />
+                ))}
+              </div>
+            )}
           </li>
         ))}
       </ol>
-      <p className="mt-2 text-[13px] text-slate-500">
-        Texto literal del capítulo, con su página; los rótulos de los momentos son de la app.
+      <p
+        className="mt-2 border-t pt-2 text-[13px] text-slate-500"
+        style={{ borderColor: "#eeeeee" }}
+      >
+        Fuente:{" "}
+        {fuentes.map((f, k) => (
+          <span key={f.texto}>
+            {k > 0 && " · "}
+            <a href={f.ruta} className="font-semibold text-slate-600 hover:underline">
+              {f.texto}
+            </a>
+          </span>
+        ))}{" "}
+        · texto literal del capítulo; los rótulos son de la app.
       </p>
     </section>
   );
@@ -228,6 +328,16 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
   const [filtro, setFiltro] = useState("");
   const sit = SITUACIONES.find((s) => s.id === situacion) || null;
   const guia = SITUACIONES_GUIA.find((s) => s.id === situacion) || null;
+  // En el móvil, con una situación elegida el catálogo se pliega; «Cambiar» lo vuelve a abrir.
+  const [verLista, setVerLista] = useState(false);
+  useEffect(() => setVerLista(false), [situacion]);
+  const cambiar = () => {
+    setVerLista(true);
+    window.setTimeout(
+      () => document.getElementById("lista-situaciones")?.scrollIntoView({ block: "start" }),
+      0,
+    );
+  };
   const sisIdx = sistema ? SIS_IDS.indexOf(sistema) : -1;
   const tabla = sit ? TABLAS[sit.tabla] : null;
   const fila = sit && tabla ? tabla.filas[sit.fila] : null;
@@ -245,7 +355,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
         </p>
       </CabeceraEditorial>
       <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">
-        <div>
+        <div className={(sit || guia) && !verLista ? "hidden lg:block" : undefined}>
           <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
             1 · Situación
           </div>
@@ -282,9 +392,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                 </span>
                 <button
                   type="button"
-                  onClick={() =>
-                    document.getElementById("lista-situaciones")?.scrollIntoView({ block: "start" })
-                  }
+                  onClick={cambiar}
                   className="min-h-11 shrink-0 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-500"
                 >
                   Cambiar
@@ -302,7 +410,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                 </div>
                 <p className="mt-1 text-sm text-slate-700">{guia.intro}</p>
               </section>
-              <GuionVista momentos={guia.guion} />
+              <GuionVista momentos={guia.guion} rotulo={guia.rotuloGuion} />
               <div>
                 <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
                   Seguir en
@@ -338,9 +446,7 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                 </span>
                 <button
                   type="button"
-                  onClick={() =>
-                    document.getElementById("lista-situaciones")?.scrollIntoView({ block: "start" })
-                  }
+                  onClick={cambiar}
                   className="min-h-11 shrink-0 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-500"
                 >
                   Cambiar

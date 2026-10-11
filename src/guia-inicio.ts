@@ -15,6 +15,8 @@ export interface PreguntaGuia {
   id: string;
   rotulo: string;
   opciones: OpcionGuia[];
+  /* Solo se hace si otra pregunta tiene esa respuesta (y su respuesta se borra si cambia). */
+  si?: { pregunta: string; opcion: string };
 }
 export interface PasoGuia {
   id: string;
@@ -24,7 +26,7 @@ export interface PasoGuia {
   piezas: Pieza[];
   /* Lista de la hoja de comprobación que se marca en este paso. */
   comprobar?: "antes" | "citas";
-  enlace?: (sis?: number) => { texto: string; ruta: string } | null;
+  enlace?: (sis?: number, resp?: Record<string, string>) => { texto: string; ruta: string } | null;
 }
 
 const I = "08-iniciacion";
@@ -35,7 +37,7 @@ export const PASOS_GUIA: PasoGuia[] = [
   {
     id: "pauta",
     titulo: "De qué pauta viene",
-    intro: "Elige lo que corresponde: la guía enseña solo el texto del capítulo que aplica.",
+    intro: "Elige las opciones: la guía muestra los pasajes del capítulo relacionados con ellas.",
     preguntas: [
       {
         id: "pauta",
@@ -63,7 +65,8 @@ export const PASOS_GUIA: PasoGuia[] = [
       },
       {
         id: "basal",
-        rotulo: "Si viene de plumas, la basal que lleva",
+        rotulo: "La basal que lleva",
+        si: { pregunta: "pauta", opcion: "mdi" },
         opciones: [
           {
             id: "u100",
@@ -79,10 +82,12 @@ export const PASOS_GUIA: PasoGuia[] = [
       },
     ],
     piezas: [],
-    enlace: () => ({
-      texto: "Transición desde MDI (diagrama)",
-      ruta: href("visual", "transicion"),
-    }),
+    enlace: (_sis, resp) =>
+      resp?.pauta === "mdi"
+        ? { texto: "Transición desde MDI (diagrama)", ruta: href("visual", "transicion") }
+        : resp?.pauta
+          ? { texto: "Criterios de elección del sistema", ruta: href("sistemas", "elegir") }
+          : null,
   },
   {
     id: "parametros",
@@ -134,7 +139,13 @@ export const PASOS_GUIA: PasoGuia[] = [
           }
         : { texto: "Planes de seguridad para entregar", ruta: href("pacientes") },
   },
-  { id: "arranque", titulo: "Arranque del modo automático", piezas: [{ t: "inicializacion" }] },
+  {
+    id: "arranque",
+    titulo: "Arranque del modo automático",
+    // El requisito previo (núcleo configurado y plan de respaldo) queda a la vista aunque se
+    // entre directamente en este paso.
+    piezas: [{ t: "frase", apartado: I, bloque: "b6", k: [0] }, { t: "inicializacion" }],
+  },
   {
     id: "seguimiento",
     titulo: "Primeras 72 h y 3 meses",
@@ -146,3 +157,15 @@ export const PASOS_GUIA: PasoGuia[] = [
     }),
   },
 ];
+
+/* Las preguntas que se hacen con las respuestas dadas, y las respuestas limpias (sin las de
+   preguntas que ya no se hacen). Puro. */
+export function preguntasActivas(paso: PasoGuia, resp: Record<string, string>): PreguntaGuia[] {
+  return (paso.preguntas ?? []).filter((q) => !q.si || resp[q.si.pregunta] === q.si.opcion);
+}
+export function limpiarRespuestas(resp: Record<string, string>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const p of PASOS_GUIA)
+    for (const q of preguntasActivas(p, resp)) if (resp[q.id]) out[q.id] = resp[q.id];
+  return out;
+}

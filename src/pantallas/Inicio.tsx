@@ -12,7 +12,7 @@ import {
   ListChecks,
   Printer,
 } from "lucide-react";
-import { PASOS_GUIA } from "../guia-inicio";
+import { PASOS_GUIA, limpiarRespuestas, preguntasActivas } from "../guia-inicio";
 import { APARTADOS, GLOSARIO, TABLAS, rutaDeTabla } from "../contenido";
 import { ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { SIS_IDS } from "../situaciones";
@@ -303,14 +303,34 @@ function LineaFuente({ fuentes }: { fuentes: { texto: string; ruta: string }[] }
 /* Guía paso a paso, con un paciente delante: seis pasos; las preguntas eligen qué texto del
    capítulo se enseña y las casillas se marcan durante la consulta. No se guarda nada (ni las
    respuestas ni lo marcado): sin datos del paciente. */
-function GuiaInicio({ sis, paso }: { sis?: number; paso: number }) {
+/* Lo elegido y lo marcado en la guía vive en memoria mientras la app está abierta: sobrevive a
+   abrir una fuente y volver, y se va al recargar o al pulsar «Reiniciar». No se guarda nada. */
+const guiaMemoria: { resp: Record<string, string>; hechos: Set<string> } = {
+  resp: {},
+  hechos: new Set(),
+};
+function GuiaInicio({ sis, paso, onFases }: { sis?: number; paso: number; onFases: () => void }) {
   const n = Math.min(PASOS_GUIA.length, Math.max(1, paso));
   const p = PASOS_GUIA[n - 1];
-  const [resp, setResp] = useState<Record<string, string>>({});
-  const [hechos, setHechos] = useState<Set<string>>(new Set());
+  const [resp, setRespEstado] = useState<Record<string, string>>(guiaMemoria.resp);
+  const [hechos, setHechosEstado] = useState<Set<string>>(guiaMemoria.hechos);
+  const setResp = (r: Record<string, string>) => {
+    const limpio = limpiarRespuestas(r);
+    guiaMemoria.resp = limpio;
+    setRespEstado(limpio);
+  };
+  const setHechos = (f: (prev: Set<string>) => Set<string>) => {
+    guiaMemoria.hechos = f(guiaMemoria.hechos);
+    setHechosEstado(guiaMemoria.hechos);
+  };
+  const reiniciar = () => {
+    setResp({});
+    setHechos(() => new Set());
+  };
   const ir = (k: number) => elegirRuta("consultar", "inicio", detalleDe(GUIA, sis, String(k)));
   const alPaso = useIrAlCambiar(String(n), "paso-guia");
-  const elegidas = (p.preguntas ?? []).flatMap(
+  const preguntas = preguntasActivas(p, resp);
+  const elegidas = preguntas.flatMap(
     (q) => q.opciones.find((o) => o.id === resp[q.id])?.piezas ?? [],
   );
   const piezas = [...p.piezas, ...elegidas];
@@ -322,7 +342,7 @@ function GuiaInicio({ sis, paso }: { sis?: number; paso: number }) {
       : p.comprobar === "citas"
         ? hoja.citas
         : [];
-  const enlace = p.enlace?.(sis) ?? null;
+  const enlace = p.enlace?.(sis, resp) ?? null;
   const marcar = (k: string) =>
     setHechos((prev) => {
       const s = new Set(prev);
@@ -339,6 +359,30 @@ function GuiaInicio({ sis, paso }: { sis?: number; paso: number }) {
       style={{ borderColor: "#e6e6e6" }}
       aria-labelledby="guia-titulo"
     >
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+          Guía de inicio{sis !== undefined ? ` · ${CORTOS[sis]}` : ""} · Paso {n} de{" "}
+          {PASOS_GUIA.length}
+        </p>
+        <span className="flex flex-wrap gap-x-3">
+          <button
+            type="button"
+            onClick={onFases}
+            className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
+          >
+            Consultar por fases
+          </button>
+          {(Object.keys(resp).length > 0 || hechos.size > 0) && (
+            <button
+              type="button"
+              onClick={reiniciar}
+              className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
+            >
+              Reiniciar la guía
+            </button>
+          )}
+        </span>
+      </div>
       <ol className="mb-3 flex flex-wrap gap-1.5" aria-label="Pasos de la guía">
         {PASOS_GUIA.map((x, i) => {
           const on = i === n - 1;
@@ -347,6 +391,7 @@ function GuiaInicio({ sis, paso }: { sis?: number; paso: number }) {
               <button
                 type="button"
                 aria-current={on ? "step" : undefined}
+                aria-label={`${i + 1}. ${x.titulo}`}
                 onClick={() => {
                   alPaso();
                   ir(i + 1);
@@ -365,14 +410,14 @@ function GuiaInicio({ sis, paso }: { sis?: number; paso: number }) {
           );
         })}
       </ol>
-      <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-        Paso {n} de {PASOS_GUIA.length}
-      </p>
       <h2 id="guia-titulo" className="text-lg font-extrabold text-slate-900">
+        <span className="mr-2 tabular-nums" style={{ color: hex.strong }}>
+          {n}.
+        </span>
         {p.titulo}
       </h2>
       {p.intro && <p className="mt-1 text-sm text-slate-600">{p.intro}</p>}
-      {(p.preguntas ?? []).map((q) => (
+      {preguntas.map((q) => (
         <div key={q.id} className="mt-3">
           <div className="mb-1 text-sm font-semibold text-slate-800">{q.rotulo}</div>
           <div role="group" aria-label={q.rotulo} className="flex flex-wrap gap-1.5">
@@ -464,8 +509,9 @@ function GuiaInicio({ sis, paso }: { sis?: number; paso: number }) {
         </button>
       </div>
       <p className="mt-2 text-xs text-slate-500">
-        No se guarda nada: ni las respuestas ni lo marcado. El texto es el del capítulo, con su
-        página.
+        Lo elegido y lo marcado se conserva mientras dura la consulta (también al abrir una fuente y
+        volver) y se borra al cerrar la app o con «Reiniciar la guía»: no se guarda nada. El texto
+        es el del capítulo, con su página.
       </p>
     </section>
   );
@@ -538,8 +584,11 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
         />
       </div>
 
-      {/* Las cuatro fases en su fila; la hoja, aparte (en el móvil, debajo). */}
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start">
+      {/* Las cuatro fases en su fila; la guía y la hoja, aparte (en el móvil, debajo). Con la
+          guía abierta, las fases se pliegan: la guía ofrece «Consultar por fases». */}
+      <div
+        className={`mb-4 flex flex-col gap-2 sm:flex-row sm:items-start ${actual === GUIA ? "hidden" : ""}`}
+      >
         <ol className="grid w-full grid-cols-2 gap-1.5 sm:flex-1 sm:grid-cols-4" aria-label="Fases">
           {FASES.map((f, i) => {
             const on = f.id === actual;
@@ -650,7 +699,11 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
             </p>
           </section>
         ) : actual === GUIA ? (
-          <GuiaInicio sis={sis} paso={Number(tareaId) || 1} />
+          <GuiaInicio
+            sis={sis}
+            paso={Number(tareaId) || 1}
+            onFases={() => ir(FASES[1].id, sis, null)}
+          />
         ) : (
           <Hoja sis={sis} />
         )}

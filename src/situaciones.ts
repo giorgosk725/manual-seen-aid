@@ -181,20 +181,24 @@ export interface Momento {
   apartado: string;
   bloque: string;
   k?: number[];
+  /* Otros párrafos que van bajo el mismo rótulo. */
+  mas?: { apartado: string; bloque: string; k?: number[] }[];
 }
 const S = "10-situaciones";
 const E = "07-educacion";
-const EJERCICIO_COMUN: Momento[] = [{ rotulo: "Antes de empezar", apartado: S, bloque: "b20" }];
+const EJERCICIO_COMUN: Momento[] = [
+  {
+    rotulo: "Antes de empezar: glucosa, tendencia, insulina activa y cetonas",
+    apartado: S,
+    bloque: "b20",
+  },
+];
 const EJERCICIO_FINAL: Momento[] = [
   {
-    rotulo: "Hidratos y tratamiento de la hipoglucemia con asa cerrada",
+    rotulo: "Hipoglucemia: hidratos y tratamiento con asa cerrada",
     apartado: E,
     bloque: "b6",
-  },
-  {
-    rotulo: "Hipoglucemia leve cuando el algoritmo ya ha reducido la insulina",
-    apartado: E,
-    bloque: "b7",
+    mas: [{ apartado: E, bloque: "b7" }],
   },
   { rotulo: "Deportes de contacto, agua y desconexión", apartado: S, bloque: "b24" },
   { rotulo: "Después del ejercicio: hipoglucemia diferida y noche", apartado: S, bloque: "b25" },
@@ -212,8 +216,12 @@ const CIRUGIA: Momento[] = [
 export const GUION: Record<string, Momento[]> = {
   "ejercicio-aerobico": [
     ...EJERCICIO_COMUN,
-    { rotulo: "Actividad planificada con descenso esperado", apartado: S, bloque: "b22" },
-    { rotulo: "Actividad no planificada", apartado: S, bloque: "b23" },
+    {
+      rotulo: "Actividad planificada con descenso esperado: antes y durante",
+      apartado: S,
+      bloque: "b22",
+    },
+    { rotulo: "Actividad no planificada: al empezar", apartado: S, bloque: "b23" },
     ...EJERCICIO_FINAL,
   ],
   "ejercicio-anaerobico": [
@@ -238,6 +246,8 @@ export interface SituacionGuia {
   intro: string;
   fuente: string;
   pagina: number;
+  /* Cómo se llama el bloque de momentos («Qué revisar durante el ingreso»). */
+  rotuloGuion: string;
   guion: Momento[];
   enlaces: { texto: string; ruta: string }[];
 }
@@ -249,6 +259,7 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
       "Qué mantener, cuándo no y cómo pasar a una pauta subcutánea: lo que recoge el capítulo del posicionamiento internacional de 2026.",
     fuente: "pp. 20-21",
     pagina: 20,
+    rotuloGuion: "Qué revisar durante el ingreso",
     guion: [
       { rotulo: "Marco y a quién se aplica", apartado: S, bloque: "b33" },
       { rotulo: "Mantener la MCG, la bomba o el AID", apartado: S, bloque: "b34" },
@@ -275,10 +286,11 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
       "Qué sistemas tienen autorización y evidencia, los objetivos de la gestación y cómo se ajusta cada sistema.",
     fuente: "pp. 17-18",
     pagina: 17,
+    rotuloGuion: "Por necesidades: qué sistema, objetivos, ajustes, vigilancia, parto",
     guion: [
       { rotulo: "Qué sistema: autorización y evidencia", apartado: S, bloque: "b3" },
       { rotulo: "Objetivos de HbA1c y de MCG", apartado: S, bloque: "b4" },
-      { rotulo: "Lo que mostraron AiDAPT, CRISTAL y CIRCUIT", apartado: S, bloque: "b5" },
+      { rotulo: "Evidencia: AiDAPT, CRISTAL y CIRCUIT", apartado: S, bloque: "b5" },
       { rotulo: "Seguimiento y objetivo del algoritmo", apartado: S, bloque: "b6" },
       { rotulo: "CamAPS FX", apartado: S, bloque: "b7" },
       { rotulo: "MiniMed 780G", apartado: S, bloque: "b8" },
