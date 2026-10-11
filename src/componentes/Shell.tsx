@@ -499,9 +499,6 @@ function BuscadorLateral() {
           autoComplete="off"
           className="w-full min-w-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none"
         />
-        <kbd className="hidden rounded border border-slate-300 px-1 text-[10px] text-slate-500 lg:block">
-          Ctrl K
-        </kbd>
       </div>
     </form>
   );
