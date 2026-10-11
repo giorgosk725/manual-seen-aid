@@ -51,10 +51,10 @@ function Recientes() {
           <li key={v.ruta}>
             <a
               href={v.ruta}
-              className="inline-flex min-h-11 max-w-[18rem] items-center rounded-full border bg-white px-3 text-sm font-semibold text-slate-800 hover:border-slate-500 sm:min-h-9"
+              className="inline-flex min-h-11 max-w-[20rem] items-center rounded-2xl border bg-white px-3 py-1 text-left text-sm font-semibold text-slate-800 hover:border-slate-500 sm:min-h-9"
               style={{ borderColor: "#d4d4d4" }}
             >
-              <span className="truncate">
+              <span className="line-clamp-2">
                 {v.titulo}
                 {v.detalle && <span className="font-normal text-slate-600"> · {v.detalle}</span>}
               </span>
@@ -88,11 +88,9 @@ function Buscador() {
         className="text-xs font-bold uppercase tracking-wide"
         style={{ color: CATEGORIA_HEX.consultar.ink }}
       >
-        Pregunta al capítulo{" "}
-        <span className="font-normal normal-case tracking-normal text-slate-500">
-          · pasajes y recursos del capítulo
-        </span>
+        Pregunta al capítulo
       </h2>
+      <p className="-mt-2 text-xs text-slate-500">Encuentra pasajes, tablas y herramientas.</p>
       <form
         role="search"
         onSubmit={(e) => {

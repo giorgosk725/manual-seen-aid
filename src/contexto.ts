@@ -3,6 +3,7 @@
    tramo, paso, fase y sistema, situación, sección de la ficha. Solo texto de interfaz. */
 import { FIGURA3 } from "./contenido";
 import { SIS_IDS, SITUACIONES } from "./situaciones";
+import { rotuloDeAspecto } from "./inicio";
 import type { Ruta } from "./rutas";
 
 const NOMBRE_SIS: Record<string, string> = {
@@ -18,6 +19,12 @@ const FASE: Record<string, string> = {
   mantenido: "Largo plazo",
   hoja: "Hoja de comprobación",
 };
+const NOMBRE_ID: Record<string, string> = {
+  mm780: "MiniMed 780G",
+  ciq: "Control-IQ",
+  camaps: "CamAPS",
+  op5: "Omnipod 5",
+};
 const SECCION: Record<string, string> = {
   esencial: "Lo esencial",
   funciona: "Cómo funciona",
@@ -31,12 +38,17 @@ const conSistema = (base: string, sis?: string) =>
   sis && NOMBRE_SIS[sis] ? `${base} · ${NOMBRE_SIS[sis]}` : base;
 
 export function contextoDeRuta(ruta: Ruta): string | undefined {
-  const [detalle, sis] = (ruta.detalle ?? "").split(":");
+  const [detalle, sis, asp] = (ruta.detalle ?? "").split(":");
   if (ruta.seccion === "consultar") {
     if (ruta.sub === "figura-3" && detalle)
       return FIGURA3.tramos.find((t) => t.clave === detalle)?.rango;
     if (ruta.sub === "descarga" && /^\d$/.test(detalle)) return `Paso ${detalle}`;
-    if (ruta.sub === "inicio" && detalle) return conSistema(FASE[detalle] ?? detalle, sis);
+    if (ruta.sub === "inicio" && detalle) {
+      const base = conSistema(FASE[detalle] ?? detalle, sis);
+      const n = /^a\d+$/.test(asp ?? "") ? Number(asp.slice(1)) : null;
+      const rotulo = n !== null ? rotuloDeAspecto(detalle, n) : null;
+      return rotulo ? `${base} · ${corto(rotulo, 32)}` : base;
+    }
     if (ruta.sub === "situacion" && detalle) {
       const st = SITUACIONES.find((x) => x.id === detalle);
       return st
@@ -47,7 +59,15 @@ export function contextoDeRuta(ruta: Ruta): string | undefined {
       return detalle.charAt(0).toUpperCase() + detalle.slice(1);
     return undefined;
   }
-  if (ruta.seccion === "sistemas" && ruta.detalle) return SECCION[ruta.detalle];
+  if (ruta.seccion === "sistemas" && ruta.detalle) {
+    const seccion = SECCION[ruta.detalle];
+    const ids = (ruta.sub ?? "").split("+").filter((x) => NOMBRE_ID[x]);
+    // Con un solo sistema el título ya es su nombre; con varios, se nombran.
+    if (ids.length >= 2)
+      return [ids.map((x) => NOMBRE_ID[x]).join(" + "), seccion].filter(Boolean).join(" · ");
+    if (ruta.sub === "todos") return ["Los cuatro", seccion].filter(Boolean).join(" · ");
+    return seccion;
+  }
   if (ruta.seccion === "casos" && /^\d+$/.test(detalle)) return `Paso ${detalle}`;
   return undefined;
 }

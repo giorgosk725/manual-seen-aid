@@ -29,9 +29,11 @@ test.describe("Entrega 2 (0.33.0)", () => {
     const n = await chips.count();
     expect(n).toBeGreaterThan(4);
     await chips.nth(2).click();
-    await expect(chips.nth(2)).toHaveAttribute("aria-pressed", "true");
+    // Con un aspecto abierto (0.35.0) el índice se pliega a «Aspecto: … · Cambiar».
+    await expect(indice.getByText(/^Aspecto:/)).toBeVisible();
     await expect(page.locator('[id^="pieza-"]')).toHaveCount(1);
     await page.getByRole("button", { name: "Ver la fase completa" }).click();
-    expect(await page.locator('[id^="pieza-"]').count()).toBeGreaterThan(3);
+    // La vuelta a la fase completa cambia la ruta: se espera a que se pinte.
+    await expect.poll(() => page.locator('[id^="pieza-"]').count()).toBeGreaterThan(3);
   });
 });

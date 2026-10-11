@@ -56,6 +56,51 @@ const SECCION_DE_TABLA: Record<string, string> = {
   T4: "situaciones",
 };
 
+/* Un texto con una línea por sistema («MiniMed 780G: …», «Control-IQ: …»): con el sistema de la
+   consulta conocido, su línea va primero y las demás, plegadas en «Ver los cuatro». Solo cuando
+   la estructura lo permite (tres o más líneas de sistemas distintos); un párrafo corrido no se
+   trocea. */
+const PREFIJO_SISTEMA: RegExp[] = [
+  /^(MiniMed 780G|780G)\b/,
+  /^(Tandem Control-IQ|Control-IQ)\b/,
+  /^(myLoop CamAPS|CamAPS)/,
+  /^Omnipod 5\b/,
+];
+function lineasPorSistema(texto: string): { linea: string; sistema: number }[] | null {
+  const lineas = texto.split("\n").filter((l) => l.trim());
+  const marcadas = lineas.map((l) => ({
+    linea: l,
+    sistema: PREFIJO_SISTEMA.findIndex((re) => re.test(l.trim())),
+  }));
+  const distintos = new Set(marcadas.filter((m) => m.sistema >= 0).map((m) => m.sistema));
+  return distintos.size >= 3 ? marcadas : null;
+}
+function LineasSistema({ texto, q, sistema }: { texto: string; q: string; sistema: number }) {
+  const lineas = lineasPorSistema(texto);
+  const propia = lineas?.find((l) => l.sistema === sistema);
+  if (!lineas || !propia)
+    return (
+      <span className="whitespace-pre-line">
+        <Marcado texto={texto} q={q} />
+      </span>
+    );
+  return (
+    <>
+      <span className="block rounded-md px-2 py-1" style={{ background: "#f7eff3" }}>
+        <Marcado texto={propia.linea} q={q} />
+      </span>
+      <details className="mt-1">
+        <summary className="min-h-11 cursor-pointer text-xs font-semibold text-slate-600 sm:min-h-6">
+          Ver los cuatro
+        </summary>
+        <span className="mt-1 block whitespace-pre-line">
+          <Marcado texto={texto} q={q} />
+        </span>
+      </details>
+    </>
+  );
+}
+
 /* Enlaces de acción según de dónde sale la respuesta (además de «Ver en…»). */
 function accionesDe(r: Respuesta, punto?: string): { texto: string; ruta: string }[] {
   const out: { texto: string; ruta: string }[] = [];
@@ -130,6 +175,7 @@ function Tarjeta({
   sinNota = false,
   porId,
   contexto,
+  sistemaConsulta,
 }: {
   r: Respuesta;
   q: string;
@@ -138,6 +184,8 @@ function Tarjeta({
   onIr?: () => void;
   /* La nota del asterisco ya se ha enseñado en un pasaje anterior del mismo bloque. */
   sinNota?: boolean;
+  /* El sistema que nombra la consulta (columna): su línea, primero, en textos por sistema. */
+  sistemaConsulta?: number;
   /* Otra respuesta por su id (cambiar de tramo de la Figura 3 sin salir). */
   porId?: (id: string) => Respuesta | null;
   /* La frase anterior y la siguiente del mismo párrafo («Ver en contexto»). */
@@ -222,7 +270,11 @@ function Tarjeta({
           <p
             className={`mt-1 whitespace-pre-line text-slate-900 ${principal ? "text-[15px] leading-relaxed" : "text-sm"}`}
           >
-            <Marcado texto={r.texto} q={q} />
+            {sistemaConsulta !== undefined && sistemaConsulta >= 0 ? (
+              <LineasSistema texto={r.texto} q={q} sistema={sistemaConsulta} />
+            ) : (
+              <Marcado texto={r.texto} q={q} />
+            )}
           </p>
         )
       )}
@@ -270,7 +322,11 @@ function Tarjeta({
                 {p.etiqueta}
               </dt>
               <dd className="whitespace-pre-line text-slate-900">
-                <Marcado texto={p.texto} q={q} />
+                {sistemaConsulta !== undefined && sistemaConsulta >= 0 ? (
+                  <LineasSistema texto={p.texto} q={q} sistema={sistemaConsulta} />
+                ) : (
+                  <Marcado texto={p.texto} q={q} />
+                )}
               </dd>
             </div>
           ))}
@@ -335,6 +391,7 @@ function BloqueFrecuente({
   onIr,
   H,
   sinPregunta = false,
+  sistema,
 }: {
   frecuente: RespuestaFrecuente;
   q: string;
@@ -342,6 +399,7 @@ function BloqueFrecuente({
   H: "h2" | "h3";
   /* En la pantalla de la pregunta, el título ya es la pregunta. */
   sinPregunta?: boolean;
+  sistema?: number;
 }) {
   const id = useId();
   // La misma nota (p. ej. la del asterisco de la Tabla 1) se enseña una vez por bloque.
@@ -367,7 +425,16 @@ function BloqueFrecuente({
           const nota = notaAsterisco(r)?.nota;
           const repetida = !!nota && notasVistas.has(nota);
           if (nota) notasVistas.add(nota);
-          return <Tarjeta key={r.id} r={r} q={q} onIr={onIr} sinNota={repetida} />;
+          return (
+            <Tarjeta
+              key={r.id}
+              r={r}
+              q={q}
+              onIr={onIr}
+              sinNota={repetida}
+              sistemaConsulta={sistema}
+            />
+          );
         })}
       </div>
       <p className="mt-2 text-[11px] text-slate-500">
@@ -388,6 +455,7 @@ export function RespuestasCapitulo({
   porId,
   contexto,
   relacionadas,
+  sistema,
 }: {
   respuestas: Respuesta[];
   q: string;
@@ -402,6 +470,8 @@ export function RespuestasCapitulo({
   contexto?: (id: string) => { antes?: string; despues?: string };
   /* Preguntas frecuentes relacionadas con lo respondido (al pie, en la pantalla Buscar). */
   relacionadas?: Frecuente[];
+  /* El sistema que nombra la consulta (columna de la Tabla 1), si lo hay. */
+  sistema?: number;
 }) {
   const id = useId();
   const H = `h${nivel}` as "h2" | "h3";
@@ -446,7 +516,14 @@ export function RespuestasCapitulo({
   if (frecuente)
     return (
       <>
-        <BloqueFrecuente frecuente={frecuente} q={q} onIr={onIr} H={H} sinPregunta={sinPregunta} />
+        <BloqueFrecuente
+          frecuente={frecuente}
+          q={q}
+          onIr={onIr}
+          H={H}
+          sinPregunta={sinPregunta}
+          sistema={sistema}
+        />
         {compacta ? (
           <a
             href={href("buscar", q)}
@@ -492,6 +569,7 @@ export function RespuestasCapitulo({
           onIr={onIr}
           porId={porId}
           contexto={contexto}
+          sistemaConsulta={sistema}
         />
         {compacta ? (
           <a

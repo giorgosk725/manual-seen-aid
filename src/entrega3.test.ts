@@ -12,6 +12,7 @@ import { consultaRegistrable } from "./consultas";
 import {
   conContexto,
   contextoDe,
+  preguntaFrecuente,
   datoCorto,
   partesDe,
   sistemaNoCubierto,
@@ -197,5 +198,26 @@ describe("Entrega 1 de la auditoría de la 0.31 (0.32.0)", () => {
     expect(rec("empezar con control iq")[0].entrada.titulo).toMatch(/Iniciar un sistema/);
     const top = responder("iniciar Omnipod 5 desde múltiples dosis")[0];
     expect(top.id).not.toMatch(/nota/);
+  });
+});
+
+describe("Entrega 4 de la auditoría (0.35.0)", () => {
+  const rec = (q: string) => recursosPedidos(q, buscarConTotales(q, 12).resultados);
+  it("una comparación es una sola intención y responde con las variantes documentadas", () => {
+    expect(partesDe("¿Qué diferencia hay entre Control-IQ y Control-IQ+?")).toBeNull();
+    expect(partesDe("780G frente a Omnipod 5")).toBeNull();
+    expect(preguntaFrecuente("¿Qué diferencia hay entre Control-IQ y Control-IQ+?")?.id).toBe(
+      "f61",
+    );
+    expect(preguntaFrecuente("Control-IQ frente a Control-IQ+")?.id).toBe("f61");
+    expect(rec("diferencia entre 780G y Omnipod 5")[0].entrada.ruta).toBe(
+      "#/sistemas/mm780+op5/esencial",
+    );
+  });
+  it("«pasar de plumas a Omnipod» conserva el acceso a Iniciar", () => {
+    expect(rec("quiero pasar de plumas a Omnipod")[0].entrada.titulo).toMatch(/Iniciar un sistema/);
+    expect(rec("dejar las plumas y empezar con control iq")[0].entrada.titulo).toMatch(
+      /Iniciar un sistema/,
+    );
   });
 });

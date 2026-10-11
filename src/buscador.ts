@@ -31,6 +31,7 @@ import {
   type Resultado,
 } from "./busqueda";
 import { SIS_IDS, SITUACIONES } from "./situaciones";
+import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import { OBJETIVOS_MCG } from "./contenido/diagramas";
 import { CASOS_INDICE } from "./casos-indice";
 
@@ -438,9 +439,30 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   const out: Resultado[] = [];
   const sis = sistemaDeConsulta(consulta);
   // «Iniciar Omnipod 5 desde MDI»: el recorrido de inicio para ese sistema, el primero.
+  // «Diferencia entre 780G y Omnipod 5»: la comparación de los dos (Tabla 1), la primera.
+  const varios = sistemasDeConsulta(consulta);
+  if (
+    varios.length >= 2 &&
+    /diferenci|compar|frente a|versus|\bvs\b|distin|entre/.test(normalizar(consulta))
+  ) {
+    const nombres = varios.map((i) => TABLAS.T1.columnas[i]);
+    out.push({
+      entrada: {
+        id: `recurso/comparar/${varios.join("+")}`,
+        tipo: "atajo",
+        titulo: `Comparar ${nombres.join(" y ")} (Tabla 1)`,
+        texto: "",
+        pagina: TABLAS.T1.paginas[0],
+        pagina2: TABLAS.T1.paginas[1],
+        ruta: href("sistemas", varios.map((i) => ORDEN_SISTEMAS[i]).join("+"), "esencial"),
+      },
+      fragmento: "",
+      puntos: 0,
+    });
+  }
   if (
     sis >= 0 &&
-    /\b(inici|empez|comenz|arranc|poner en marcha|pasar a la bomba|desde mdi|multiples dosis|desde (las )?plumas)/.test(
+    /\b(inici|empez|comenz|arranc|poner en marcha|pasar a (la |una )?bomba|desde mdi|multiples dosis|desde (las )?plumas|pasar de (las )?plumas|dejar (las )?plumas|cambiar de mdi|pasar de mdi|empezar (con )?(una |la )?bomba|transici)/.test(
       normalizar(consulta),
     )
   ) {
@@ -545,13 +567,24 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     .slice(0, 2);
 }
 
-function sistemaDeConsulta(consulta: string): number {
+const palabrasDeSistema = (consulta: string) =>
   // «control iq» en dos palabras cuenta como una.
-  const palabras = normalizar(consulta)
+  normalizar(consulta)
     .replace(/control[\s-]*iq\+?/g, "control-iq")
     .split(/\s+/);
+function sistemaDeConsulta(consulta: string): number {
+  const palabras = palabrasDeSistema(consulta);
   return ALIAS_SISTEMA.findIndex((re) => palabras.some((w) => re.test(w)));
 }
+/* Todos los sistemas que nombra la consulta (índices de columna, en el orden de la Tabla 1). */
+function sistemasDeConsulta(consulta: string): number[] {
+  const palabras = palabrasDeSistema(consulta);
+  return ALIAS_SISTEMA.map((re, i) => (palabras.some((w) => re.test(w)) ? i : -1)).filter(
+    (i) => i >= 0,
+  );
+}
+/* El sistema que nombra la consulta (índice de columna) o -1: la tarjeta lo pone primero. */
+export const sistemaNombrado = sistemaDeConsulta;
 
 function puntuar(terminos: string[][], todas: boolean): Resultado[] {
   const res: Resultado[] = [];

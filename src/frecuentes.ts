@@ -636,4 +636,16 @@ export const FRECUENTES: Frecuente[] = [
     ],
     pasajes: ["t/10-situaciones/b27/0", "t/10-situaciones/b27/1", "t/10-situaciones/b27/3"],
   },
+  // 0.35.0: una comparación entre variantes del mismo sistema es una sola pregunta.
+  {
+    id: "f61",
+    tema: "Sistemas y parámetros",
+    pregunta: "¿Qué diferencia hay entre Control-IQ y Control-IQ+?",
+    variantes: [
+      "diferencias entre control-iq y control-iq plus",
+      "qué diferencia hay con control-iq+",
+      "control-iq plus diferencias",
+    ],
+    pasajes: ["T1/7", "T1/8", "T3/1", "t/04-sistemas/b4/1"],
+  },
 ];

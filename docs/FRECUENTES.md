@@ -108,3 +108,4 @@ primeras.
 | f58 | Situaciones especiales        | ¿Qué hacer en un viaje o en el control del aeropuerto?        | `t/10-situaciones/b43/0`; `l/07-educacion/b3/4`                              |
 | f59 | Incidencias y cetonemia       | Demasiadas alarmas: ¿qué hacer con la fatiga por alarmas?     | `t/09-descarga/b26/0`; `t/09-descarga/b26/1`                                 |
 | f60 | Situaciones especiales        | ¿Qué hacer ante una enfermedad intercurrente (gripe, fiebre)? | `t/10-situaciones/b27/0`; `t/10-situaciones/b27/1`; `t/10-situaciones/b27/3` |
+| f61 | Sistemas y parámetros         | ¿Qué diferencia hay entre Control-IQ y Control-IQ+? (0.35.0)  | `T1/7`; `T1/8`; `T3/1`; `t/04-sistemas/b4/1`                                 |

@@ -286,6 +286,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
             porId={motor?.respuestaPorId}
             contexto={motor?.contextoDe}
             relacionadas={relacionadas}
+            sistema={motor ? motor.sistemaNombrado(qEf) : undefined}
           />
         </AvisosBusqueda>
         {extras.map((x) => (

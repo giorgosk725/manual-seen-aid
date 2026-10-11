@@ -3,7 +3,7 @@
    El contenido sale de inicio.ts (referencias al texto literal); aquí solo se pinta. */
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Check, ChevronLeft, ChevronRight, Printer } from "lucide-react";
-import { TABLAS } from "../contenido";
+import { TABLAS, rutaDeTabla } from "../contenido";
 import { ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { SIS_IDS } from "../situaciones";
 import { elegirRuta, href } from "../rutas";
@@ -14,10 +14,9 @@ import { CAPITULO } from "../contenido";
 import { VERSION_APP } from "../contenido/cambios";
 import { Lineas } from "../texto";
 import { CasillasSistema } from "../componentes/CasillasSistema";
-import { plano } from "../marcado";
 import { PiezaVista } from "../componentes/Piezas";
 import { CATEGORIA_HEX } from "../tokens";
-import { FASES, hojaDeComprobacion, type Pieza } from "../inicio";
+import { FASES, entradasDeFase, hojaDeComprobacion, type Pieza } from "../inicio";
 
 const hex = CATEGORIA_HEX.consultar;
 const NOMBRES = TABLAS.T1.columnas;
@@ -27,29 +26,9 @@ const HOJA = "hoja";
 
 const capitalizar = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-/* «En esta fase»: índice de las filas de tabla y los hitos de la fase. Elegir uno abre solo ese
-   aspecto (con su recomendación, notas y fuente); «Ver la fase completa» devuelve la lectura
-   seguida. Los rótulos son los de las filas del capítulo. */
-function rotuloDe(p: Pieza): string | null {
-  switch (p.t) {
-    case "fila":
-    case "casilla":
-      return plano(TABLAS[p.tabla].filas[p.fila].etiqueta).split("\n")[0];
-    case "inicializacion":
-      return plano(TABLAS.T2.filas[1].etiqueta).split("\n")[0];
-    case "hito":
-      return p.rotulo;
-    default:
-      return null;
-  }
-}
-
-function entradasDeFase(piezas: Pieza[]) {
-  return piezas
-    .map((p, i) => ({ i, rotulo: rotuloDe(p) }))
-    .filter((e): e is { i: number; rotulo: string } => !!e.rotulo);
-}
-
+/* «En esta fase»: índice de los aspectos (filas de tabla e hitos). Elegir uno abre solo ese
+   aspecto, con su recomendación, notas y fuente; con uno abierto el índice se pliega a una
+   línea («Aspecto: … · Cambiar»). «Fase completa» devuelve la lectura seguida. */
 function EnEstaFase({
   piezas,
   activo,
@@ -60,7 +39,41 @@ function EnEstaFase({
   onElegir: (i: number | null) => void;
 }) {
   const entradas = entradasDeFase(piezas);
+  // Con un aspecto abierto, una línea; «Cambiar» vuelve a enseñar la lista hasta elegir.
+  const [cambiando, setCambiando] = useState(false);
+  useEffect(() => setCambiando(false), [activo]);
   if (entradas.length < 4) return null;
+  const actual = entradas.find((e) => e.i === activo);
+  if (actual && !cambiando)
+    return (
+      <nav
+        aria-label="En esta fase"
+        className="no-imprimir mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
+      >
+        <span className="text-slate-700">
+          <span className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+            Aspecto:{" "}
+          </span>
+          <span className="font-semibold text-slate-900">{actual.rotulo}</span>
+        </span>
+        <button
+          type="button"
+          aria-expanded={false}
+          onClick={() => setCambiando(true)}
+          className="inline-flex min-h-11 items-center font-semibold underline underline-offset-2 sm:min-h-8"
+          style={{ color: hex.ink }}
+        >
+          Cambiar
+        </button>
+        <button
+          type="button"
+          onClick={() => onElegir(null)}
+          className="inline-flex min-h-11 items-center font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
+        >
+          Fase completa
+        </button>
+      </nav>
+    );
   const chip = (on: boolean) =>
     `inline-flex min-h-11 items-center whitespace-nowrap rounded-full border px-2.5 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-8 ${on ? "text-white" : "border-slate-300 bg-white text-slate-700 hover:border-slate-500"}`;
   return (
@@ -100,6 +113,33 @@ function EnEstaFase({
         ))}
       </ul>
     </nav>
+  );
+}
+
+/* La fuente exacta del aspecto abierto: la tabla en su sitio del capítulo o el párrafo. */
+function FuenteDePieza({ pieza }: { pieza: Pieza }) {
+  const ruta =
+    pieza.t === "fila" || pieza.t === "casilla"
+      ? rutaDeTabla(pieza.tabla)
+      : pieza.t === "inicializacion"
+        ? rutaDeTabla("T2")
+        : pieza.t === "frase" || pieza.t === "lista" || pieza.t === "hito"
+          ? href("capitulo", pieza.apartado, pieza.bloque)
+          : undefined;
+  if (!ruta) return null;
+  const texto =
+    pieza.t === "fila" || pieza.t === "casilla"
+      ? `Ver en el capítulo · Tabla ${TABLAS[pieza.tabla].numero}`
+      : pieza.t === "inicializacion"
+        ? "Ver en el capítulo · Tabla 2"
+        : "Ver en el apartado";
+  return (
+    <a
+      href={ruta}
+      className="mt-1.5 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+    >
+      {texto} <ArrowRight size={13} aria-hidden="true" />
+    </a>
   );
 }
 
@@ -212,22 +252,27 @@ function Hoja({ sis }: { sis?: number }) {
   );
 }
 
+/* Ruta: #/consultar/inicio/<fase>[:<sistema>][:a<aspecto>]. El aspecto va en la ruta para que
+   sobreviva a «Ver en el capítulo» y Atrás, y para poder enlazarlo. */
+const detalleDe = (f: string, s: number | undefined, a: number | null) =>
+  [f, s !== undefined ? SIS_IDS[s] : "", a !== null ? `a${a}` : ""].join(":").replace(/:+$/, "");
+
 export function IniciarSistema({ detalle }: { detalle?: string }) {
-  const [faseId, sisId] = (detalle ?? "").split(":");
+  const [faseId, sisId, aspId] = (detalle ?? "").split(":");
   const sisIdx = sisId ? SIS_IDS.indexOf(sisId) : -1;
   const sis = sisIdx >= 0 ? sisIdx : undefined;
   const pasos = [...FASES.map((f) => f.id), HOJA];
   const actual = pasos.includes(faseId) ? faseId : FASES[0].id;
   const n = pasos.indexOf(actual);
   const fase = FASES.find((f) => f.id === actual);
-  const ir = (f: string, s = sis) =>
-    elegirRuta("consultar", "inicio", s !== undefined ? `${f}:${SIS_IDS[s]}` : f);
+  const ir = (f: string, s = sis, a: number | null = null) =>
+    elegirRuta("consultar", "inicio", detalleDe(f, s, a) || undefined);
   const alPaso = useIrAlCambiar(actual, "paso-inicio");
-  // Aspecto elegido dentro de la fase (índice de pieza); se olvida al cambiar de fase o sistema.
-  const [aspecto, setAspecto] = useState<number | null>(null);
-  useEffect(() => setAspecto(null), [actual, sis]);
-  const piezasVisibles =
-    fase && aspecto !== null && fase.piezas[aspecto] ? [aspecto] : fase?.piezas.map((_, i) => i);
+  // Aspecto elegido dentro de la fase (índice de pieza), leído de la ruta.
+  const pedido = /^a\d+$/.test(aspId ?? "") ? Number(aspId.slice(1)) : null;
+  const aspecto = fase && pedido !== null && fase.piezas[pedido] ? pedido : null;
+  const setAspecto = (a: number | null) => ir(actual, sis, a);
+  const piezasVisibles = fase && aspecto !== null ? [aspecto] : fase?.piezas.map((_, i) => i);
   return (
     <div>
       <CabeceraEditorial titulo="Iniciar un sistema" hex={hex} level={1}>
@@ -243,7 +288,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
       <div className="mb-4">
         <CasillasSistema
           seleccion={sis !== undefined ? [sis] : []}
-          onToggle={(c) => ir(actual, sis === c ? undefined : c)}
+          onToggle={(c) => ir(actual, sis === c ? undefined : c, aspecto)}
           nombres={CORTOS}
         />
       </div>
@@ -307,6 +352,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                   className="scroll-mt-24 focus:outline-none"
                 >
                   <PiezaVista pieza={fase.piezas[i]} sis={sis} />
+                  {aspecto !== null && <FuenteDePieza pieza={fase.piezas[i]} />}
                 </div>
               ))}
             </div>
@@ -335,7 +381,8 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
           }}
           className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 disabled:opacity-40"
         >
-          <ChevronLeft size={14} aria-hidden="true" /> Anterior
+          <ChevronLeft size={14} aria-hidden="true" />{" "}
+          {aspecto !== null ? "Fase anterior" : "Anterior"}
         </button>
         <button
           type="button"
@@ -347,7 +394,11 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
           className="inline-flex min-h-11 items-center gap-1 rounded-lg px-3 text-sm font-semibold text-white disabled:opacity-40"
           style={{ background: hex.strong }}
         >
-          {n === pasos.length - 2 ? "Hoja de comprobación" : "Siguiente"}{" "}
+          {n === pasos.length - 2
+            ? "Hoja de comprobación"
+            : aspecto !== null
+              ? "Fase siguiente"
+              : "Siguiente"}{" "}
           <ChevronRight size={14} aria-hidden="true" />
         </button>
       </div>

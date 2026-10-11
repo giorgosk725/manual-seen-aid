@@ -216,3 +216,27 @@ export function hojaDeComprobacion(sis?: number) {
     ],
   };
 }
+
+/* Rótulo de un aspecto de la fase (fila de tabla o hito), para el índice «En esta fase» y para
+   «Lo último que consultaste». Los rótulos de las filas son los del capítulo. */
+export function rotuloDePieza(p: Pieza): string | null {
+  switch (p.t) {
+    case "fila":
+    case "casilla":
+      return plano(TABLAS[p.tabla].filas[p.fila].etiqueta).split("\n")[0];
+    case "inicializacion":
+      return plano(TABLAS.T2.filas[1].etiqueta).split("\n")[0];
+    case "hito":
+      return p.rotulo;
+    default:
+      return null;
+  }
+}
+export const entradasDeFase = (piezas: Pieza[]) =>
+  piezas
+    .map((p, i) => ({ i, rotulo: rotuloDePieza(p) }))
+    .filter((e): e is { i: number; rotulo: string } => !!e.rotulo);
+export const rotuloDeAspecto = (faseId: string, i: number): string | null => {
+  const f = FASES.find((x) => x.id === faseId);
+  return f?.piezas[i] ? rotuloDePieza(f.piezas[i]) : null;
+};

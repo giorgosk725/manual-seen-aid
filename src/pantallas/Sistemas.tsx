@@ -1068,9 +1068,11 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
         <p className="text-sm text-slate-600">
           {!seccion
             ? "Los cuatro sistemas comercializados en España, de uno en uno o comparados."
-            : ids.length
-              ? `Comparando ${listaNombres(nombres)}.`
-              : "Los cuatro sistemas, uno junto a otro."}
+            : seccion === "funciona"
+              ? `Cómo funciona cada uno: ${listaNombres(nombres)}.`
+              : ids.length
+                ? `Comparando ${listaNombres(nombres)}.`
+                : "Los cuatro sistemas, uno junto a otro."}
         </p>
         {seccion && (
           <div className="no-imprimir mt-2">

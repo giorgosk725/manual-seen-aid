@@ -339,6 +339,10 @@ const LEXICO: Record<string, string[]> = {
   bicicleta: ["ejercicio", "actividad", "aerobico"],
   ciclismo: ["ejercicio", "actividad", "aerobico"],
   franja: ["tramos", "tramo"],
+  frente: ["diferencia", "diferencias"],
+  versus: ["diferencia", "diferencias"],
+  vs: ["diferencia", "diferencias"],
+  plus: ["control-iq+"],
   franjas: ["tramos", "tramo"],
   glicada: ["hba1c"],
   glicosilada: ["hba1c"],
@@ -720,6 +724,11 @@ const FRASES: [RegExp, string, Modo][] = [
   [/cuant[oa]s? (hidratos|gramos|carbohidratos)/, "hidratos cantidades g", "sustituye"],
   [/(se )?salta(rse)? (los )?bolos|no se pone (los )?bolos/, "omision bolos", "sustituye"],
   [/multiples dosis( diarias)?|inyecciones multiples|desde (las )?plumas/, "mdi", "sustituye"],
+  [
+    /pasar de (las )?plumas|dejar (las )?plumas|cambiar de mdi|quitar (las )?plumas/,
+    "mdi transicion",
+    "sustituye",
+  ],
   [/pasar de mdi|de plumas a (la )?bomba|desde mdi/, "mdi transicion", "sustituye"],
   [
     /(cuando|cada cuanto) (revisar|ver|veo|citar|cito|visito)|primeras visitas|seguimiento inicial/,
@@ -1931,6 +1940,8 @@ const CORTO_SISTEMA = ["780G", "Control-IQ", "CamAPS", "Omnipod 5"];
    consulta nombra un sistema, cada parte lo hereda. Null si no hay dos partes. */
 export function partesDe(pregunta: string): string[] | null {
   const q = normalizar(pregunta);
+  // «Diferencia entre A y B», «A frente a B»: la «y» une una comparación, no dos preguntas.
+  if (/\b(diferenci|compar|frente a|versus|vs|distingu|distint)/.test(q)) return null;
   const trozos = q
     .split(/(?<!\d)\s*[,;]\s*(?!\d)|\s+y\s+|\s*[¿?]\s*/)
     .map((t) => t.trim())

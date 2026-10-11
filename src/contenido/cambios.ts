@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.34.0";
+export const VERSION_APP = "0.35.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — navegación pulida (auditoría de la 0.31, entrega 3)`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — precisión y continuidad (revisión de la 0.34)`,
+    detalle: [
+      "Buscador: «¿qué diferencia hay entre Control-IQ y Control-IQ+?» es una sola pregunta (nueva frecuente con la indicación, la gestación y la basal temporal de las Tablas 1 y 3, y el párrafo del apartado 4); «780G frente a Omnipod 5» abre su comparación en la Tabla 1; «pasar de plumas a Omnipod» o «dejar las plumas» conservan el acceso a Iniciar. Con el sistema nombrado, en los textos con una línea por sistema (inicialización de la Tabla 2) su línea va primero y las demás, en «Ver los cuatro».",
+      "Iniciar un sistema: el aspecto elegido va en la ruta (se puede enlazar y sobrevive a «Ver en el capítulo» y Atrás); con un aspecto abierto, el índice se pliega a «Aspecto: … · Cambiar»; cada aspecto enlaza su fuente exacta (la tabla en el capítulo o el párrafo); los botones dicen «Fase anterior» y «Fase siguiente».",
+      "Portada: «Lo último que consultaste» nombra los sistemas comparados (Control-IQ + Omnipod 5 · Cómo funciona) y admite dos líneas; el buscador vuelve a «Pregunta al capítulo» con la ayuda «Encuentra pasajes, tablas y herramientas». Sistemas comparados: «Cómo funciona cada uno» en vez de «Comparando».",
+    ],
+  },
+  {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.34.0 — navegación pulida (auditoría de la 0.31, entrega 3)",
     detalle: [
       "Portada más compacta en el móvil: cabecera con menos altura, la afiliación pasa al pie y el buscador queda antes. «Lo último que consultaste» añade el contexto (tramo de la Figura 3, paso de la descarga, fase y sistema de Iniciar, situación, sección de la ficha) para distinguir dos visitas con el mismo título.",
       "Sistemas: «Los cuatro» es un estado explícito del selector, marcado cuando no hay ninguno elegido. En la portada, «Comparar sistemas (lo esencial)» y «Comparar los parámetros» dicen que son el mismo espacio.",
