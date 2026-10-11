@@ -1750,7 +1750,8 @@ function resolver(a: Atomo, sis: number | undefined, score: number): Respuesta {
 export interface RespuestaFrecuente {
   id: string;
   pregunta: string;
-  respuestas: Respuesta[];
+  respuestas: Respuesta[]; /* Una continuación operativa (una herramienta de la app), si la pregunta la tiene. */
+  siguiente?: { texto: string; ruta: string };
 }
 
 let CANDIDATAS: { f: Frecuente; formas: { grupos: Grupo[]; negadas: Grupo[] }[] }[] | null = null;
@@ -1832,12 +1833,13 @@ export function mejorFrecuente(
   const respuestas = mejor.f.pasajes
     .map((id) => porId.get(id))
     .filter((a): a is Atomo => !!a)
-    .map((a) => resolver(a, sis, puntos));
+    .map((a) => resolver(a, sis ?? mejor.f.sistema, puntos));
   if (!respuestas.length) return null;
   return {
     id: mejor.f.id,
     pregunta: mejor.f.pregunta,
     respuestas,
+    siguiente: mejor.f.siguiente,
     deBusqueda: mejor.deBusqueda,
     dePregunta: mejor.dePregunta,
   };
@@ -1846,7 +1848,7 @@ export function mejorFrecuente(
 export function preguntaFrecuente(pregunta: string): RespuestaFrecuente | null {
   const m = mejorFrecuente(pregunta);
   if (!m || m.deBusqueda < UMBRAL_BUSQUEDA || m.dePregunta < UMBRAL_PREGUNTA) return null;
-  return { id: m.id, pregunta: m.pregunta, respuestas: m.respuestas };
+  return { id: m.id, pregunta: m.pregunta, respuestas: m.respuestas, siguiente: m.siguiente };
 }
 
 /* Una pregunta frecuente por su id, con sus pasajes tal cual (pantalla «Preguntas frecuentes»
@@ -1858,8 +1860,10 @@ export function respuestaDeFrecuente(id: string): RespuestaFrecuente | null {
   const respuestas = f.pasajes
     .map((x) => porId.get(x))
     .filter((a): a is Atomo => !!a)
-    .map((a) => resolver(a, undefined, 2));
-  return respuestas.length ? { id: f.id, pregunta: f.pregunta, respuestas } : null;
+    .map((a) => resolver(a, f.sistema, 2));
+  return respuestas.length
+    ? { id: f.id, pregunta: f.pregunta, respuestas, siguiente: f.siguiente }
+    : null;
 }
 
 /* Por el sentido (semantica.ts → /api/frecuente): las preguntas frecuentes más parecidas a la
@@ -1887,7 +1891,12 @@ export function frecuentePorSentido(pregunta: string, ids: string[]): RespuestaF
     const choca = (n: Grupo) =>
       propia.some((g) => casanGrupos(n, g) && !niega.some((m) => casanGrupos(m, g)));
     if (negadas.some(choca)) continue;
-    return { id: f.id, pregunta: f.pregunta, respuestas: pasajes.map((a) => resolver(a, sis, 1)) };
+    return {
+      id: f.id,
+      pregunta: f.pregunta,
+      respuestas: pasajes.map((a) => resolver(a, sis ?? f.sistema, 1)),
+      siguiente: f.siguiente,
+    };
   }
   return null;
 }

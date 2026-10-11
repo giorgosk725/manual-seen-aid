@@ -8,13 +8,22 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.37.0";
+export const VERSION_APP = "0.38.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — comparar cómo funcionan, leer las tablas, el paso 7`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — preguntas que responden a lo preguntado`,
+    detalle: [
+      "Preguntas frecuentes: títulos ajustados a sus pasajes (irritación de la piel, fallos repetidos de infusión, corrección con pluma, control del aeropuerto), sin pasajes repetidos; la de Control-IQ frente a Control-IQ+ añade el bolo extendido y enseña primero la columna de Tandem; tras la respuesta, como mucho una continuación (Interrupción del sistema, Figura 3).",
+      "Iniciar un sistema: en los aspectos de la Tabla 2 se puede abrir «Cómo leer esta tabla» (configuración inicial frente a funcionamiento posterior). Textos más cortos en la comparación de «Cómo funciona» y en el paso 7 del ejemplo.",
+    ],
+  },
+  {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.37.0 — comparar cómo funcionan, leer las tablas, el paso 7",
     detalle: [
       "Sistemas comparados, «Cómo funciona»: cuatro aspectos (dónde está el algoritmo, cómo decide y aprende, cómo administra la insulina, bolos automáticos de corrección) con la celda de la Tabla 1 de cada sistema elegido, hasta los cuatro, un bloque por aspecto en el móvil, la fuente en cada aspecto y las condiciones de la modalidad híbrida y de Liberty (CamAPS FX). «Comparar los parámetros» conserva la selección.",
       "«Cómo leer esta tabla», plegado y aparte del texto literal, en las Tablas 1 a 5, y «Cómo interpretar este hallazgo» en el paso 7 de la descarga: explicaciones de la app revisadas, con su fuente.",

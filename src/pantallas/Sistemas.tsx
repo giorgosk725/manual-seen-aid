@@ -1053,14 +1053,12 @@ function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: strin
           style={{ borderColor: "#e6e6e6" }}
         >
           <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-            <h3 className="text-sm font-extrabold text-slate-900">
-              {rotulo}{" "}
-              <span className="text-xs font-normal text-slate-500">
-                · Tabla 1, «{plano(t.filas[fila].etiqueta).split("\n")[0]}»
-              </span>
-            </h3>
+            <h3 className="text-sm font-extrabold text-slate-900">{rotulo}</h3>
             {fuente && (
-              <EnlacePie ruta={fuente}>Ver en el capítulo · Tabla 1, p. {t.paginas[0]}</EnlacePie>
+              <EnlacePie ruta={fuente}>
+                Tabla 1, «{plano(t.filas[fila].etiqueta).split("\n")[0]}», p. {t.paginas[0]} · Ver
+                en el capítulo
+              </EnlacePie>
             )}
           </div>
           <div className={`grid gap-2 ${COLUMNAS_GRID[cols.length] ?? COLUMNAS_GRID[4]}`}>
@@ -1189,9 +1187,7 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
           {seccion === "funciona" && (
             <>
               <p className="mb-3 text-sm text-slate-600">
-                Compara cómo funcionan los sistemas seleccionados: cuatro aspectos, con la celda de
-                la Tabla 1 de cada uno, literal y con su página. Los objetivos y los parámetros van
-                en «Parámetros».
+                Compara cómo funcionan los sistemas seleccionados.
               </p>
               <ComoFuncionaComparado cols={cols} selStr={ids.length ? ids.join("+") : "todos"} />
               <p className="mb-2 mt-5 text-xs font-bold uppercase tracking-wide text-slate-500">

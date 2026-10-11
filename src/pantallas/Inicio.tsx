@@ -14,6 +14,7 @@ import { CAPITULO } from "../contenido";
 import { VERSION_APP } from "../contenido/cambios";
 import { Lineas } from "../texto";
 import { CasillasSistema } from "../componentes/CasillasSistema";
+import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { PiezaVista } from "../componentes/Piezas";
 import { CATEGORIA_HEX } from "../tokens";
 import { FASES, entradasDeFase, hojaDeComprobacion, type Pieza } from "../inicio";
@@ -353,6 +354,9 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                 >
                   <PiezaVista pieza={fase.piezas[i]} sis={sis} />
                   {aspecto !== null && <FuenteDePieza pieza={fase.piezas[i]} />}
+                  {aspecto !== null &&
+                    ((fase.piezas[i].t === "fila" && fase.piezas[i].tabla === "T2") ||
+                      fase.piezas[i].t === "inicializacion") && <ComoInterpretar tabla="T2" />}
                 </div>
               ))}
             </div>

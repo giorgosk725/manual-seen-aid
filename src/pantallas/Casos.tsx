@@ -106,12 +106,15 @@ function Respuesta({ o, id }: { o: OpcionCaso; id?: string }) {
       style={{ borderLeftColor: COLOR[o.tipo].borde }}
     >
       <p className={`text-sm font-extrabold ${COLOR[o.tipo].texto}`}>{VEREDICTO[o.tipo]}</p>
-      <p className="mt-1 text-sm text-slate-800">
-        <span className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
-          Comentario ·{" "}
-        </span>
-        {o.comentario}
-      </p>
+      {/* Con el comentario desglosado en cuatro partes, el párrafo general sobra. */}
+      {!o.desglose && (
+        <p className="mt-1 text-sm text-slate-800">
+          <span className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+            Comentario ·{" "}
+          </span>
+          {o.comentario}
+        </p>
+      )}
       {o.desglose && (
         <dl className="mt-2 space-y-1 text-sm text-slate-800">
           {(

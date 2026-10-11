@@ -87,7 +87,7 @@ test.describe("Recorridos completos (0.36.0)", () => {
       .getByRole("button", { name: /no identifican por sí solas la causa/ })
       .first()
       .click();
-    await expect(page.getByText(/Comentario ·/).first()).toBeVisible();
+    await expect(page.getByText("Qué observamos").first()).toBeVisible();
     await expect(page.getByText("Lo que dice el capítulo").first()).toBeVisible();
     await page.goBack();
     await expect(page).toHaveURL(/#\/consultar\/descarga\/7$/);

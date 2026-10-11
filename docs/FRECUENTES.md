@@ -109,3 +109,12 @@ primeras.
 | f59 | Incidencias y cetonemia       | Demasiadas alarmas: ¿qué hacer con la fatiga por alarmas?     | `t/09-descarga/b26/0`; `t/09-descarga/b26/1`                                 |
 | f60 | Situaciones especiales        | ¿Qué hacer ante una enfermedad intercurrente (gripe, fiebre)? | `t/10-situaciones/b27/0`; `t/10-situaciones/b27/1`; `t/10-situaciones/b27/3` |
 | f61 | Sistemas y parámetros         | ¿Qué diferencia hay entre Control-IQ y Control-IQ+? (0.35.0)  | `T1/7`; `T1/8`; `T3/1`; `t/04-sistemas/b4/1`                                 |
+
+## Estado de revisión de las once nuevas (f51–f61)
+
+Dos cosas distintas, registradas por separado:
+
+- **Comprobación técnica** (Claude, 11-10-2026): cada pasaje existe en el capítulo, cada pregunta encuentra su ficha y sus variantes la encuentran (pruebas unitarias). Hecha para las once.
+- **Aprobación editorial** (autor): si la pregunta corresponde a sus pasajes y si se enseña así. **Pendiente para las once.**
+
+Cambios del 11-10-2026 tras la revisión de la 0.37 (propuestas del revisor, a validar por el autor): f54 «¿Qué revisar ante irritación de la piel por sensores o sistemas de infusión?»; f55 «¿Qué revisar ante fallos repetidos de infusión?»; f56 acotada a la pluma («Tras una corrección con pluma, ¿qué precauciones hay antes de volver a corregir?»); f58 «¿Qué precauciones tomar con el sistema en el control del aeropuerto?» (solo el pasaje de los controles aeroportuarios); f59 sin el pasaje repetido; f61 con la fila de la Tabla 4 y la frase del apartado 9 sobre el bolo extendido, y la columna de Tandem primero; f51 y f60 con una continuación (Interrupción del sistema; Figura 3). El rótulo de la app «Pasajes del capítulo revisados para esta pregunta» se refiere a la comprobación técnica.

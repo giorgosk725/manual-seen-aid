@@ -10,6 +10,10 @@ export interface Frecuente {
   pregunta: string;
   variantes: string[];
   pasajes: string[];
+  /* La pregunta es sobre un sistema (columna de la Tabla 1): sus casillas van primero. */
+  sistema?: number;
+  /* Como mucho una continuación operativa (una herramienta de la app), tras los pasajes. */
+  siguiente?: { texto: string; ruta: string };
 }
 
 export const FRECUENTES: Frecuente[] = [
@@ -537,6 +541,7 @@ export const FRECUENTES: Frecuente[] = [
       "pauta alternativa si falla el sistema",
     ],
     pasajes: ["t/07-educacion/b11/0", "t/07-educacion/b11/4", "t/07-educacion/b13/0"],
+    siguiente: { texto: "Interrupción del sistema, paso a paso", ruta: "#/consultar/interrupcion" },
   },
   {
     id: "f52",
@@ -563,19 +568,18 @@ export const FRECUENTES: Frecuente[] = [
   {
     id: "f54",
     tema: "Incidencias y cetonemia",
-    pregunta: "¿Qué hacer si el adhesivo se despega o irrita la piel?",
+    pregunta: "¿Qué revisar ante irritación de la piel por sensores o sistemas de infusión?",
     variantes: [
-      "se me cae el pod",
-      "el sensor se despega",
       "irritación por el adhesivo",
       "problemas de piel con el sensor",
+      "rotación de las zonas de inserción",
     ],
     pasajes: ["t/09-descarga/b24/2", "t/09-descarga/b24/1", "t/09-descarga/b24/4"],
   },
   {
     id: "f55",
     tema: "Incidencias y cetonemia",
-    pregunta: "Fallos de infusión repetidos: ¿qué revisar y qué cánula usar?",
+    pregunta: "¿Qué revisar ante fallos repetidos de infusión?",
     variantes: [
       "la cánula se dobla",
       "acodamientos del catéter",
@@ -587,12 +591,11 @@ export const FRECUENTES: Frecuente[] = [
   {
     id: "f56",
     tema: "Incidencias y cetonemia",
-    pregunta: "¿Cuánto esperar antes de volver a corregir?",
+    pregunta: "Tras una corrección con pluma, ¿qué precauciones hay antes de volver a corregir?",
     variantes: [
-      "cuánto tiempo entre correcciones",
-      "cuándo repetir la corrección",
-      "apilamiento de insulina",
-      "corregir sin mirar la insulina activa",
+      "cuánto esperar tras corregir con pluma",
+      "apilamiento de insulina con pluma",
+      "corregir con pluma y volver a corregir",
     ],
     pasajes: ["F3/pie/0", "l/09-descarga/b28/0"],
   },
@@ -610,20 +613,20 @@ export const FRECUENTES: Frecuente[] = [
   {
     id: "f58",
     tema: "Situaciones especiales",
-    pregunta: "¿Qué hacer en un viaje o en el control del aeropuerto?",
+    pregunta: "¿Qué precauciones tomar con el sistema en el control del aeropuerto?",
     variantes: [
-      "viajar en avión con la bomba",
       "escáner del aeropuerto",
       "pasar el arco de seguridad con el sensor",
+      "viajar en avión con la bomba",
     ],
-    pasajes: ["t/10-situaciones/b43/0", "l/07-educacion/b3/4"],
+    pasajes: ["t/10-situaciones/b43/0"],
   },
   {
     id: "f59",
     tema: "Incidencias y cetonemia",
     pregunta: "Demasiadas alarmas: ¿qué hacer con la fatiga por alarmas?",
     variantes: ["fatiga por alarmas", "el paciente apaga las alarmas", "sobrecarga de alertas"],
-    pasajes: ["t/09-descarga/b26/0", "t/09-descarga/b26/1"],
+    pasajes: ["t/09-descarga/b26/1"],
   },
   {
     id: "f60",
@@ -635,6 +638,7 @@ export const FRECUENTES: Frecuente[] = [
       "días de enfermedad con asa cerrada",
     ],
     pasajes: ["t/10-situaciones/b27/0", "t/10-situaciones/b27/1", "t/10-situaciones/b27/3"],
+    siguiente: { texto: "Cetonemia paso a paso (Figura 3)", ruta: "#/consultar/figura-3" },
   },
   // 0.35.0: una comparación entre variantes del mismo sistema es una sola pregunta.
   {
@@ -646,6 +650,7 @@ export const FRECUENTES: Frecuente[] = [
       "qué diferencia hay con control-iq+",
       "control-iq plus diferencias",
     ],
-    pasajes: ["T1/7", "T1/8", "T3/1", "t/04-sistemas/b4/1"],
+    pasajes: ["T1/7", "T1/8", "T3/1", "T4/5", "t/09-descarga/b6/1", "t/04-sistemas/b4/1"],
+    sistema: 1,
   },
 ];

@@ -29,7 +29,12 @@ export function cargarInterpretaciones(): Promise<Interpretacion[]> {
     Object.keys(modulos)
       .sort()
       .map((k) => modulos[k]()),
-  ).then((listas) => listas.flat());
+  ).then((listas) => {
+    // Un borrador con el mismo id que una aprobada la sustituye en la copia de revisión.
+    const porId = new Map<string, Interpretacion>();
+    for (const x of listas.flat()) porId.set(x.id, x);
+    return [...porId.values()];
+  });
   return todas;
 }
 

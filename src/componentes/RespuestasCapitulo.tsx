@@ -437,6 +437,17 @@ function BloqueFrecuente({
           );
         })}
       </div>
+      {frecuente.siguiente && (
+        <p className="mt-2">
+          <a
+            href={frecuente.siguiente.ruta}
+            onClick={onIr}
+            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline sm:min-h-8"
+          >
+            Seguir en: {frecuente.siguiente.texto} <ArrowRight size={13} aria-hidden="true" />
+          </a>
+        </p>
+      )}
       <p className="mt-2 text-[11px] text-slate-500">
         Pasajes del capítulo revisados para esta pregunta.
       </p>
