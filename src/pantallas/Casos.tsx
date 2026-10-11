@@ -116,10 +116,10 @@ function Respuesta({ o, id }: { o: OpcionCaso; id?: string }) {
         <dl className="mt-2 space-y-1 text-sm text-slate-800">
           {(
             [
-              ["Qué hallazgo importa", o.desglose.hallazgo],
-              ["Qué hipótesis permite el capítulo", o.desglose.hipotesis],
-              ["Qué falta para distinguirlas", o.desglose.falta],
-              ["Qué conclusión está respaldada", o.desglose.conclusion],
+              ["Qué observamos", o.desglose.hallazgo],
+              ["Qué puede explicarlo", o.desglose.hipotesis],
+              ["Qué falta comprobar", o.desglose.falta],
+              ["Qué podemos concluir", o.desglose.conclusion],
             ] as const
           ).map(([rotulo, texto]) => (
             <div key={rotulo}>
@@ -311,6 +311,22 @@ export function CasoVista({ caso, inicial = 0 }: { caso: Caso; inicial?: number 
             >
               {p.situacion}
             </p>
+          )}
+          {p.contexto && (
+            <div className="mt-2 text-sm text-slate-800">
+              <p>{p.contexto.texto}</p>
+              <details className="mt-1">
+                <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
+                  {p.contexto.rotulo}
+                </summary>
+                <p
+                  className="mt-1 rounded-lg px-3 py-2 text-sm text-slate-800"
+                  style={{ background: hex.soft }}
+                >
+                  {caso.pasos[p.contexto.verPaso - 1]?.situacion}
+                </p>
+              </details>
+            </div>
           )}
           <h2
             id="pregunta-caso"

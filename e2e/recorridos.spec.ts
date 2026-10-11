@@ -84,7 +84,7 @@ test.describe("Recorridos completos (0.36.0)", () => {
     await page.getByRole("link", { name: /Ver este paso en el ejemplo comentado/ }).click();
     await expect(page).toHaveURL(/#\/casos\/ejemplo-descarga\/7$/);
     await page
-      .getByRole("button", { name: /Autocorrecciones intensas/ })
+      .getByRole("button", { name: /no identifican por sí solas la causa/ })
       .first()
       .click();
     await expect(page.getByText(/Comentario ·/).first()).toBeVisible();

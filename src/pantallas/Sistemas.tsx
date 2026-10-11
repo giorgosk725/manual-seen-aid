@@ -1024,6 +1024,96 @@ function EntradaSistemas() {
   );
 }
 
+/* «Cómo funciona» comparado (aprobado el 11-10-2026): cuatro aspectos de la Tabla 1, celda a
+   celda, con los sistemas elegidos (hasta los cuatro); en el móvil, un bloque por aspecto con las
+   celdas una debajo de otra. Las condiciones de la modalidad híbrida (los cuatro) y de Liberty
+   (CamAPS FX) van debajo, con la modalidad a la que se refiere cada una. */
+const ASPECTOS_FUNCIONA: [string, number][] = [
+  ["Dónde está el algoritmo", 2],
+  ["Cómo decide y aprende", 3],
+  ["Cómo administra la insulina", 4],
+  ["Bolos automáticos de corrección", 5],
+];
+const COLUMNAS_GRID: Record<number, string> = {
+  1: "",
+  2: "sm:grid-cols-2",
+  3: "sm:grid-cols-2 lg:grid-cols-3",
+  4: "sm:grid-cols-2 lg:grid-cols-4",
+};
+function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: string }) {
+  const t = TABLAS.T1;
+  const fuente = rutaEnCapitulo(t);
+  return (
+    <div className="space-y-3">
+      {ASPECTOS_FUNCIONA.map(([rotulo, fila]) => (
+        <section
+          key={fila}
+          aria-label={rotulo}
+          className="rounded-xl border bg-white p-3"
+          style={{ borderColor: "#e6e6e6" }}
+        >
+          <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+            <h3 className="text-sm font-extrabold text-slate-900">
+              {rotulo}{" "}
+              <span className="text-xs font-normal text-slate-500">
+                · Tabla 1, «{plano(t.filas[fila].etiqueta).split("\n")[0]}»
+              </span>
+            </h3>
+            {fuente && (
+              <EnlacePie ruta={fuente}>Ver en el capítulo · Tabla 1, p. {t.paginas[0]}</EnlacePie>
+            )}
+          </div>
+          <div className={`grid gap-2 ${COLUMNAS_GRID[cols.length] ?? COLUMNAS_GRID[4]}`}>
+            {cols.map((c) => (
+              <div
+                key={c}
+                className="rounded-lg bg-slate-50 p-2.5"
+                style={{ boxShadow: `inset 0 3px 0 0 ${SISTEMA_HEX[c].strong}` }}
+              >
+                <div className="text-xs font-bold" style={{ color: SISTEMA_HEX[c].ink }}>
+                  {t.columnas[c]}
+                </div>
+                <div className="mt-0.5 text-sm text-slate-800">
+                  <Lineas>{t.filas[fila].celdas[c]}</Lineas>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
+      <section
+        aria-label="Condiciones por modalidad"
+        className="rounded-xl border bg-white p-3"
+        style={{ borderColor: "#e6e6e6" }}
+      >
+        <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+          Modalidad híbrida · los cuatro sistemas
+        </p>
+        <div className="mt-1 text-sm">
+          <PiezaVista pieza={{ t: "frase", apartado: "03-algoritmos", bloque: "b2", k: [0] }} />
+        </div>
+        {cols.includes(2) && (
+          <>
+            <p className="mt-3 text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              CamAPS FX · modalidad Liberty (asa cerrada completa)
+            </p>
+            <div className="mt-1 text-sm">
+              <PiezaVista
+                pieza={{ t: "frase", apartado: "03-algoritmos", bloque: "b3", k: [1, 2] }}
+              />
+            </div>
+          </>
+        )}
+      </section>
+      <p>
+        <EnlacePie ruta={href("sistemas", selStr, "parametros")}>
+          Comparar los parámetros (objetivos y ajustes) de estos sistemas
+        </EnlacePie>
+      </p>
+    </div>
+  );
+}
+
 /* Tarjeta de un sistema dentro de la comparación, para lo que no cabe en columnas
    («Cómo funciona» y la ampliación técnica se leen sistema a sistema). */
 function TarjetaSistema({
@@ -1099,9 +1189,13 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
           {seccion === "funciona" && (
             <>
               <p className="mb-3 text-sm text-slate-600">
-                Lectura por sistema, no comparación por aspectos: aquí, el algoritmo de cada uno tal
-                como lo nombra la Tabla 1; el recorrido completo («qué mide, dónde decide, cómo
-                administra la insulina») se lee en la ficha de cada sistema.
+                Compara cómo funcionan los sistemas seleccionados: cuatro aspectos, con la celda de
+                la Tabla 1 de cada uno, literal y con su página. Los objetivos y los parámetros van
+                en «Parámetros».
+              </p>
+              <ComoFuncionaComparado cols={cols} selStr={ids.length ? ids.join("+") : "todos"} />
+              <p className="mb-2 mt-5 text-xs font-bold uppercase tracking-wide text-slate-500">
+                El recorrido completo, sistema a sistema
               </p>
               <ul className="grid gap-3 sm:grid-cols-2">
                 {cols.map((c) => (

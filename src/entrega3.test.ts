@@ -248,3 +248,23 @@ describe("Reformulaciones nuevas y cobertura parcial (0.36.0)", () => {
     expect(coberturaDe("semaglutida en DM1 con asa cerrada").ajenas).toEqual(["semaglutida"]);
   });
 });
+
+describe("Aprobado el 11-10: Cómo funciona comparado, paso 7 e interpretaciones (0.37.0)", () => {
+  it("las interpretaciones aprobadas existen para las tablas 1 a 5 y el paso 7", async () => {
+    const { cargarInterpretaciones, interpretacionesDe } = await import("./interpretaciones");
+    const todas = await cargarInterpretaciones();
+    expect(todas.every((x) => x.estado === "aprobada")).toBe(true);
+    expect(todas.map((x) => x.tabla).sort()).toEqual(["T1", "T2", "T3", "T4", "T5", "T5"]);
+    expect(interpretacionesDe(todas, "T5", 6)[0].id).toBe("t5-paso7");
+    expect(interpretacionesDe(todas, "T5")[0].id).toBe("t5-hallazgos");
+  });
+  it("el paso 7 del ejemplo lleva contexto, desglose y la opción prudente", async () => {
+    const { casoPorId } = await import("./casos");
+    const p7 = casoPorId("ejemplo-descarga")!.pasos[6];
+    expect(p7.contexto?.verPaso).toBe(6);
+    const ok = p7.opciones.find((o) => o.tipo === "si")!;
+    expect(ok.texto).toMatch(/no identifican por sí solas la causa/);
+    expect(ok.desglose?.conclusion).toMatch(/no identifica la causa/);
+    expect(ok.citas.length).toBe(3);
+  });
+});

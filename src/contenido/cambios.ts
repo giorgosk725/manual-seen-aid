@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.36.0";
+export const VERSION_APP = "0.37.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — capítulo y herramientas conectados`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — comparar cómo funcionan, leer las tablas, el paso 7`,
+    detalle: [
+      "Sistemas comparados, «Cómo funciona»: cuatro aspectos (dónde está el algoritmo, cómo decide y aprende, cómo administra la insulina, bolos automáticos de corrección) con la celda de la Tabla 1 de cada sistema elegido, hasta los cuatro, un bloque por aspecto en el móvil, la fuente en cada aspecto y las condiciones de la modalidad híbrida y de Liberty (CamAPS FX). «Comparar los parámetros» conserva la selección.",
+      "«Cómo leer esta tabla», plegado y aparte del texto literal, en las Tablas 1 a 5, y «Cómo interpretar este hallazgo» en el paso 7 de la descarga: explicaciones de la app revisadas, con su fuente.",
+      "Ejemplo comentado, paso 7: la opción correcta no da por identificada la causa; el comentario va en cuatro partes (qué observamos, qué puede explicarlo, qué falta comprobar, qué podemos concluir) y, para quien entra directo, una frase neutra con los datos de la cena del paso 6 plegados.",
+    ],
+  },
+  {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.36.0 — capítulo y herramientas conectados",
     detalle: [
       "Buscar: cuando el capítulo solo responde en parte, lo dice («El capítulo no trata «sauna». Lo que sigue responde al resto de la consulta»). Las transiciones y comparaciones se reconocen con más formas de decirlas («cambiar de bolis a Omnipod», «en qué se diferencian», «comparar 780G con CamAPS»).",
       "Al abrir el capítulo desde una herramienta (una ficha, una situación, Iniciar, una búsqueda, un caso), un botón «Volver a la consulta» devuelve al mismo punto y estado. Desde una tabla del capítulo se llega a su herramienta: Iniciar un sistema (Tabla 2), Situaciones (Tablas 4 y 6) y Revisar la descarga (Tabla 5), además de «Ver por sistema».",

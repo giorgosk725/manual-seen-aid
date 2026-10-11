@@ -117,8 +117,16 @@
             "tipo": "no",
             "comentario": "Los episodios nocturnos y las alertas se revisan aunque el TBR sea bajo; es lo que mira este paso.",
             "citas": [
-              { "t": "Alertas de glucosa baja/urgente", "p": 13, "f": "Tabla 5" },
-              { "t": "Episodios nocturnos", "p": 13, "f": "Tabla 5" }
+              {
+                "t": "Alertas de glucosa baja/urgente",
+                "p": 13,
+                "f": "Tabla 5"
+              },
+              {
+                "t": "Episodios nocturnos",
+                "p": 13,
+                "f": "Tabla 5"
+              }
             ]
           }
         ]
@@ -171,7 +179,11 @@
                 "p": 13,
                 "f": "Tabla 5"
               },
-              { "t": "orientativamente en un 10–20 %", "p": 13, "f": "Texto" },
+              {
+                "t": "orientativamente en un 10–20 %",
+                "p": 13,
+                "f": "Texto"
+              },
               {
                 "t": "su impacto sobre el patrón glucémico debe evaluarse durante varios días antes de realizar nuevos ajustes",
                 "p": 13,
@@ -314,7 +326,11 @@
                 "p": 14,
                 "f": "Texto"
               },
-              { "t": "evitar correcciones adicionales precoces", "p": 14, "f": "Tabla 5" }
+              {
+                "t": "evitar correcciones adicionales precoces",
+                "p": 14,
+                "f": "Tabla 5"
+              }
             ]
           },
           {
@@ -322,7 +338,11 @@
             "tipo": "no",
             "comentario": "La ratio se ajusta si el patrón es consistente; la subida tardía de una comida grasa responde a su composición, no a la ratio.",
             "citas": [
-              { "t": "ajustar la ratio I/HC si el patrón es consistente", "p": 14, "f": "Tabla 5" },
+              {
+                "t": "ajustar la ratio I/HC si el patrón es consistente",
+                "p": 14,
+                "f": "Tabla 5"
+              },
               {
                 "t": "Las excursiones posprandiales pueden reflejar bolo tardío, ratio inadecuada o una composición de la comida que requiere una estrategia específica",
                 "p": 14,
@@ -354,9 +374,9 @@
         "pregunta": "¿Qué significa esta respuesta automática y qué se actualiza?",
         "opciones": [
           {
-            "texto": "Autocorrecciones intensas tras las cenas: apuntan a bolos omitidos o tardíos, no a un éxito del algoritmo; con la DTD cambiada de forma sostenida, se actualiza la pauta de respaldo.",
+            "texto": "Las autocorrecciones tras las cenas no identifican por sí solas la causa ni demuestran un éxito del algoritmo. Hay que revisar el patrón en contexto. Si se confirma un cambio sostenido de la DTD, corresponde reevaluar y actualizar la pauta de respaldo.",
             "tipo": "si",
-            "comentario": "Es la interpretación de la fila 7 y del patrón «exceso de autocorrecciones», y su actuación: la pauta de respaldo al día.",
+            "comentario": "Es la interpretación de la fila 7 de la Tabla 5 y del patrón «exceso de autocorrecciones»: la causa se busca en contexto y la pauta de respaldo se revisa si el cambio de DTD es sostenido.",
             "citas": [
               {
                 "t": "Una respuesta automática intensa o sostenida puede reflejar bolos omitidos o tardíos, ratio insuficiente, comida de absorción lenta, objetivo poco intensivo o mayor necesidad transitoria de insulina.",
@@ -373,12 +393,18 @@
                 "p": 14,
                 "f": "Tabla 5"
               }
-            ]
+            ],
+            "desglose": {
+              "hallazgo": "Autocorrecciones concentradas tras las cenas, DTD actual mayor que al inicio y pauta de respaldo del inicio.",
+              "hipotesis": "Las que recoge el capítulo: bolos omitidos o tardíos, ratio insuficiente, comida de absorción lenta, objetivo poco intensivo o mayor necesidad transitoria de insulina; en MiniMed 780G, además, el objetivo y la duración de la insulina activa. Ninguna se elige como definitiva.",
+              "falta": "Bolos (hora y cantidad), composición de las comidas, configuración del sistema y evolución reciente de la DTD. Los datos de la cena del paso 6 aportan contexto, pero no excluyen las demás hipótesis.",
+              "conclusion": "El porcentaje aislado no identifica la causa: hay que investigar el patrón. Si el cambio de la DTD es sostenido, se revisa la vigencia de la pauta de respaldo."
+            }
           },
           {
             "texto": "Las autocorrecciones demuestran que el sistema se adapta: no hay nada que cambiar.",
             "tipo": "no",
-            "comentario": "Un exceso de autocorrecciones puede señalar bolos omitidos, ratio insuficiente o un objetivo poco intensivo; en MiniMed 780G, además, el objetivo y la duración de la insulina activa.",
+            "comentario": "Un exceso de autocorrecciones no demuestra por sí solo un éxito del algoritmo: puede señalar bolos omitidos, ratio insuficiente o un objetivo poco intensivo; en MiniMed 780G, además, el objetivo y la duración de la insulina activa. Lo que toca es revisar el patrón en contexto.",
             "citas": [
               {
                 "t": "En MiniMed 780G o Tandem Control-IQ, un exceso de bolos automáticos de corrección puede indicar bolos omitidos o tardíos, ratios insuficientes, comidas no anunciadas o un objetivo poco intensivo",
@@ -395,7 +421,7 @@
           {
             "texto": "Mantener la pauta de respaldo del inicio: las plumas solo se usan en emergencias.",
             "tipo": "no",
-            "comentario": "La DTD ha subido un 20 %: la pauta de respaldo debe reflejarlo, incluidas las correcciones y la actuación ante fallo del sistema.",
+            "comentario": "La DTD actual es mayor que la del inicio: hay que comprobar si el cambio es sostenido y, si lo es, reevaluar y actualizar la pauta de respaldo, incluidas las correcciones y la actuación ante fallo del sistema.",
             "citas": [
               {
                 "t": "Si la DTD ha cambiado de forma sostenida, reevaluar y actualizar la pauta de respaldo con insulina basal y rápida en pluma, incluyendo correcciones y actuación ante fallo del sistema",
@@ -404,7 +430,12 @@
               }
             ]
           }
-        ]
+        ],
+        "contexto": {
+          "texto": "Este paso se interpreta junto con los datos de comidas y bolos. Puedes consultar los datos de la cena del paso 6.",
+          "verPaso": 6,
+          "rotulo": "Ver datos de la cena"
+        }
       },
       {
         "situacion": "Paso 8 · Bandera roja. El día 9, glucosa ≥ 250 mg/dl durante 3 h, sin respuesta a una corrección. Marta no midió la cetonemia y cambió el set a la mañana siguiente; notaba ardor en la zona de inserción.",

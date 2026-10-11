@@ -38,6 +38,8 @@ export interface PasoCaso {
   situacion: string;
   pregunta: string;
   opciones: OpcionCaso[];
+  /* Para quien entra directo al paso: una frase neutra y los datos de otro paso, plegados. */
+  contexto?: { texto: string; verPaso: number; rotulo: string };
 }
 
 export interface Caso {

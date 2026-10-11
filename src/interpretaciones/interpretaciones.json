@@ -1,0 +1,49 @@
+[
+  {
+    "id": "t1-configurables",
+    "estado": "aprobada",
+    "tabla": "T1",
+    "texto": "Dos cosas distintas: qué se puede configurar y qué afecta directamente al algoritmo en automático. En la fila «Parámetros configurables en modo automático», el asterisco marca los parámetros con efecto directo sobre el algoritmo; el resto interviene sobre todo en los bolos administrados por la persona o en el modo manual. La ratio I/HC interviene en el cálculo del bolo prandial. Que un parámetro no tenga efecto directo sobre el algoritmo no excluye una influencia indirecta: la Tabla 3 explica cómo la respuesta posprandial o los bolos administrados pueden contribuir a la adaptación en determinados sistemas.",
+    "fuente": "Tabla 1, fila «Parámetros configurables en modo automático» y su nota, p. 4; Tabla 3, p. 11"
+  },
+  {
+    "id": "t2-inicial-vs-posterior",
+    "estado": "aprobada",
+    "tabla": "T2",
+    "texto": "La Tabla 2 recoge la configuración inicial: lo que se programa para arrancar. El funcionamiento posterior depende de cada algoritmo (Tabla 1) y de cómo usa cada parámetro (Tabla 3). En Omnipod 5, la tasa basal programada se utiliza en modo manual o de respaldo y para estimar la DTD inicial del primer pod; después, el modo automático sustituye el perfil basal programado por su basal adaptativa.",
+    "fuente": "Tabla 2, p. 10; Tabla 1, p. 3; Tabla 3, p. 11"
+  },
+  {
+    "id": "t3-mismo-parametro",
+    "estado": "aprobada",
+    "tabla": "T3",
+    "texto": "Un mismo parámetro no hace lo mismo en cada sistema. La tasa basal programada solo interviene en automático en Control-IQ, que la modula; en MiniMed 780G y CamAPS se utiliza en modo manual o de respaldo; en Omnipod 5 se utiliza en manual o respaldo y para estimar la DTD inicial del primer pod, y posteriormente no determina directamente la administración automática. El factor de sensibilidad interviene en automático solo en Control-IQ; en los demás se usa en el calculador de bolos para las correcciones indicadas por la persona. La duración de la insulina activa: en MiniMed 780G, una duración más corta intensifica especialmente las autocorrecciones; en Control-IQ no es modificable en automático; en CamAPS y Omnipod 5 se usa en el calculador de bolos, y en Omnipod 5 puede influir indirectamente a través de cambios sostenidos de la DTD. Antes de interpretar un ajuste, comprueba qué función tiene ese parámetro en el sistema y momento de uso correspondientes.",
+    "fuente": "Tabla 3, p. 11"
+  },
+  {
+    "id": "t4-herramienta-vs-interpretacion",
+    "estado": "aprobada",
+    "tabla": "T4",
+    "texto": "La Tabla 4 dice qué herramienta tiene cada sistema para una situación (un modo, un objetivo temporal, o «sin función específica») y la conducta recomendada. No explica por sí sola qué está pasando: la interpretación de la situación está en el texto del apartado 10 y, si lo que se ve es un patrón de la descarga, en la Tabla 5. «Sin función específica» significa que el sistema no dispone de una función específica para esa situación, no que no haya nada que hacer.",
+    "fuente": "Tabla 4, pp. 11-12; apartado 10, pp. 17-22",
+    "enlace": {
+      "texto": "Ver el apartado 10 · Situaciones especiales",
+      "ruta": "#/capitulo/10-situaciones"
+    }
+  },
+  {
+    "id": "t5-hallazgos",
+    "estado": "aprobada",
+    "tabla": "T5",
+    "texto": "Cada paso de la Tabla 5 tiene tres columnas: qué mirar en la descarga, qué puede significar y qué hacer. Un mismo hallazgo (muchas salidas del automático, muchas autocorrecciones, una subida tardía tras la cena) admite varias causas: la columna de interpretación las enumera y la de actuación recoge comprobaciones y actuaciones. La revisión comienza por la calidad de los datos y la seguridad, y continúa con el control global y los patrones. Este orden organiza la consulta; si aparece hiperglucemia persistente o sospecha de fallo de infusión, la tabla indica pasar directamente al paso 8 y a la Figura 3.",
+    "fuente": "Tabla 5, pp. 13-14; apartado 9, pp. 13-16"
+  },
+  {
+    "id": "t5-paso7",
+    "estado": "aprobada",
+    "tabla": "T5",
+    "fila": 6,
+    "texto": "Una respuesta automática intensa es una señal, no un diagnóstico: la fila enumera cinco causas posibles (bolos omitidos o tardíos, ratio insuficiente, comida de absorción lenta, objetivo poco intensivo, mayor necesidad transitoria); en MiniMed 780G, además, el objetivo y la duración de la insulina activa. El porcentaje de respuesta automática no identifica por sí solo la causa. Hay que contrastarlo con los bolos, las comidas, la configuración, la conversación con la persona y la evolución de las descargas. Si se confirma un cambio sostenido de la DTD, el capítulo indica reevaluar y actualizar la pauta de respaldo.",
+    "fuente": "Tabla 5, paso 7, p. 14; apartado 9, p. 15"
+  }
+]

@@ -27,7 +27,13 @@ import {
 import { APARTADOS, CAPITULO } from "../contenido";
 import { contextoDeRuta } from "../contexto";
 import { DESTINOS, MENU, areaDe, destinoActivo, type Area } from "../nav";
-import { consumirNavegacionNueva, href, marcarNavegacionNueva, type Ruta } from "../rutas";
+import {
+  consumirNavegacionNueva,
+  href,
+  marcarNavegacionNueva,
+  parseHash,
+  type Ruta,
+} from "../rutas";
 import { TAMANOS, guardarVisita, useNocturno, useTamanoLetra } from "../prefs";
 import { VolverArriba } from "./Lectura";
 import { ErrorBoundary, Modal } from "../ui";
@@ -566,13 +572,32 @@ export function Shell({
     return () => document.removeEventListener("click", onClick, true);
   }, []);
 
-  // Posición de scroll por pantalla, para restaurarla al volver con Atrás.
+  // Posición de scroll por pantalla, para restaurarla al volver con Atrás. La restaura la app,
+  // no el navegador: su restauración propia llega a destiempo (antes o después de pintar la
+  // pantalla) y pisaba la posición guardada.
   const posiciones = useRef(new Map<string, number>());
-  const pantallaActual = useRef("");
   useEffect(() => {
-    const onScroll = () => posiciones.current.set(pantallaActual.current, window.scrollY);
+    if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual";
+  }, []);
+  useEffect(() => {
+    let pendiente: ReturnType<typeof setTimeout> | undefined;
+    const onScroll = () => {
+      const r = parseHash(window.location.hash);
+      const k = `${r.seccion}/${r.seccion === "buscar" ? "" : (r.sub ?? "")}`;
+      const y = window.scrollY;
+      clearTimeout(pendiente);
+      // Se apunta un instante después: el desplazamiento que hace el navegador justo antes de
+      // cambiar de hash (al pulsar un enlace o al volver atrás) no es del lector y se descarta.
+      pendiente = setTimeout(() => posiciones.current.set(k, y), 80);
+    };
+    const onHash = () => clearTimeout(pendiente);
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("hashchange", onHash);
+    return () => {
+      clearTimeout(pendiente);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("hashchange", onHash);
+    };
   }, []);
 
   // En Buscar, el texto escrito viaja en la URL: no es otra pantalla.
@@ -587,7 +612,6 @@ export function Shell({
   const previa = useRef<{ seccion: string; titulo: string }>({ seccion: "", titulo: "" });
   const [volver, setVolver] = useState<string | null>(null);
   useLayoutEffect(() => {
-    pantallaActual.current = clavePantalla;
     const nueva = consumirNavegacionNueva();
     const desdeHerramienta =
       nueva &&
@@ -604,15 +628,22 @@ export function Shell({
     const guardada = posiciones.current.get(clavePantalla);
     // Enlace profundo: la pantalla hace su propio scroll; al volver atrás, se restaura.
     if (destinoProfundo && (nueva || guardada == null)) return;
-    const destino = !nueva && guardada != null ? guardada : 0;
+    // Al volver atrás, el navegador puede haber restaurado ya su propia posición: vale la mayor
+    // de las dos (la guardada aquí o la del navegador), porque solo se pierde por recorte.
+    const destino = !nueva && guardada != null ? Math.max(guardada, window.scrollY) : 0;
     window.scrollTo({ top: destino });
     // Al volver atrás, la pantalla perezosa puede no haber crecido aún: se reintenta un momento
     // después, solo si la posición no ha llegado (el lector no ha tocado nada).
     if (destino > 0) {
-      const t = setTimeout(() => {
+      const reintentar = () => {
         if (Math.abs(window.scrollY - destino) > 4) window.scrollTo({ top: destino });
-      }, 250);
-      return () => clearTimeout(t);
+      };
+      const t1 = setTimeout(reintentar, 250);
+      const t2 = setTimeout(reintentar, 900);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clavePantalla]);
