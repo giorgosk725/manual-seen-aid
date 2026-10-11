@@ -8,13 +8,22 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.40.0";
+export const VERSION_APP = "0.41.0";
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-12",
+    ambito: "app",
+    titulo: `Manual SEEN · AID ${VERSION_APP} — Iniciar un sistema por tareas, con menos ruido`,
+    detalle: [
+      "Iniciar un sistema: cada fase es una lista corta de tareas desplegables con título de necesidad (en Inicio: plan de respaldo, cómo inicia el modo automático, pauta previa y transición desde MDI, basal/ratio/factor de sensibilidad, objetivos de glucosa). La tarea abierta va en la ruta, se puede enlazar y sobrevive a «Ver en el capítulo» y Atrás; «Fase completa» las abre todas. La hoja de comprobación pasa a ser una herramienta del recorrido, no una quinta fase.",
+      "Procedencia sin repetir: dentro de una tarea, las piezas van sin cabecera de tabla, sin badge de página y sin enlace junto a cada frase; la fuente se dice una vez al pie («Fuente: Tabla 2, p. 10 · Apartado 8, p. 12 · texto literal del capítulo»). Cada tarea ofrece, como mucho, una continuación (plan de seguridad, criterios de elección, parámetros del sistema, revisar la descarga). Las piezas, condiciones y citas son las mismas.",
+    ],
+  },
+  {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — ejemplo comentado coherente`,
+    titulo: "Manual SEEN · AID 0.40.0 — ejemplo comentado coherente",
     detalle: [
       "Pasos 5 y 6 del ejemplo: las opciones correctas y los comentarios de las incorrectas dicen lo mismo que el comentario en cuatro partes: las causas se mantienen como hipótesis, las noches bajas no se atribuyen de entrada al objetivo temporal y una cena grasa no descarta la ratio.",
     ],

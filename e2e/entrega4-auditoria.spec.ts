@@ -3,26 +3,28 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Entrega 4 (0.35.0)", () => {
-  test("Iniciar: el aspecto va en la ruta, se pliega el índice y vuelve tras Atrás", async ({
+  test("Iniciar: la tarea va en la ruta, enlaza su fuente y vuelve tras Atrás", async ({
     page,
   }) => {
     await page.goto("/#/consultar/inicio/inicio:omnipod-5");
-    const indice = page.getByRole("navigation", { name: "En esta fase" });
-    await indice.getByRole("button").nth(2).click();
-    await expect(page).toHaveURL(/#\/consultar\/inicio\/inicio:omnipod-5:a\d+$/);
-    await expect(page.locator('[id^="pieza-"]')).toHaveCount(1);
-    await expect(indice.getByText(/^Aspecto:/)).toBeVisible();
-    await expect(indice.getByRole("button", { name: "Cambiar" })).toBeVisible();
+    await page.getByRole("button", { name: "Pauta previa y transición desde MDI" }).click();
+    await expect(page).toHaveURL(/#\/consultar\/inicio\/inicio:omnipod-5:transicion$/);
+    await expect(page.getByText(/Reducción de la DTD al pasar de MDI/)).toBeVisible();
     await page
-      .getByRole("link", { name: /Ver en el (capítulo|apartado)/ })
+      .getByRole("link", { name: /Tabla 2, p\. 10/ })
       .first()
       .click();
     await expect(page).toHaveURL(/#\/capitulo\//);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await page.waitForTimeout(300);
     await page.goBack();
-    await expect(page).toHaveURL(/:a\d+$/);
-    await expect(page.locator('[id^="pieza-"]')).toHaveCount(1);
-    await indice.getByRole("button", { name: "Fase completa" }).click();
-    await expect(page).toHaveURL(/#\/consultar\/inicio\/inicio:omnipod-5$/);
+    await expect(page).toHaveURL(/:transicion$/);
+    await expect(page.getByText(/Reducción de la DTD al pasar de MDI/)).toBeVisible();
+    // Un enlace antiguo con aspecto abre la tarea que contiene esa pieza.
+    await page.goto("/#/consultar/inicio/inicio:omnipod-5:a4");
+    await expect(
+      page.getByRole("button", { name: "Basal, ratio y factor de sensibilidad" }),
+    ).toHaveAttribute("aria-expanded", "true");
   });
 
   test("una comparación entre variantes no añade «También sobre»", async ({ page }) => {

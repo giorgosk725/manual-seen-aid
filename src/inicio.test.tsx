@@ -53,9 +53,27 @@ describe("Iniciar un sistema: el texto sale del capítulo", () => {
   });
 });
 
+describe("Iniciar un sistema: tareas", () => {
+  it("cada pieza de cada fase está en una tarea o suelta, y ninguna en dos", async () => {
+    const { tareasDe, piezasSueltas } = await import("./inicio");
+    for (const f of FASES) {
+      const vistas = new Map<number, number>();
+      for (const t of tareasDe(f.id))
+        for (const i of t.piezas) vistas.set(i, (vistas.get(i) ?? 0) + 1);
+      expect(
+        [...vistas.values()].every((v) => v === 1),
+        f.id,
+      ).toBe(true);
+      const cubiertas = new Set([...vistas.keys(), ...piezasSueltas(f)]);
+      expect(cubiertas.size, f.id).toBe(f.piezas.length);
+      expect(tareasDe(f.id).length, f.id).toBeGreaterThanOrEqual(2);
+    }
+  });
+});
+
 describe("Iniciar un sistema: pantalla", () => {
   it("con Omnipod 5, la fase de inicio enseña solo su línea y sus casillas", async () => {
-    const { container } = render(<IniciarSistema detalle="inicio:omnipod-5" />);
+    const { container } = render(<IniciarSistema detalle="inicio:omnipod-5:arranque" />);
     expect(
       screen.getByText(/^Omnipod 5: iniciar modo automático desde el primer pod/),
     ).toBeInTheDocument();

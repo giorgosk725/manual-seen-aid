@@ -56,17 +56,36 @@ function Casilla({ nombre, texto, c }: { nombre: string; texto: string; c: numbe
   );
 }
 
-export function PiezaVista({ pieza, sis }: { pieza: Pieza; sis?: number }) {
-  const caja = "rounded-xl border bg-white p-3";
-  const borde = { borderColor: "#e6e6e6" };
+/* `compacta`: dentro de una tarea de «Iniciar un sistema», la pieza va sin su cabecera de tabla,
+   sin badge de página y sin enlace de página junto a cada frase; la procedencia la pone la
+   tarea, una sola vez, al pie. Fuera de ahí (guías de la ficha), todo como siempre. */
+export function PiezaVista({
+  pieza,
+  sis,
+  compacta = false,
+}: {
+  pieza: Pieza;
+  sis?: number;
+  compacta?: boolean;
+}) {
+  const caja = compacta ? "" : "rounded-xl border bg-white p-3";
+  const borde = compacta ? undefined : { borderColor: "#e6e6e6" };
+  const Rotulo = ({ tabla, etiqueta }: { tabla: keyof typeof TABLAS; etiqueta: string }) =>
+    compacta ? (
+      <h4 className="mb-1 text-sm font-bold text-slate-900">
+        <Lineas>{etiqueta}</Lineas>
+      </h4>
+    ) : (
+      <CabeceraTabla tabla={tabla} etiqueta={etiqueta} />
+    );
   switch (pieza.t) {
     case "frase": {
       const f = frasesDe(pieza.apartado, pieza.bloque, pieza.k, pieza.trozo);
       return (
-        <p className="prosa">
+        <p className={compacta ? "text-[15px] leading-relaxed text-slate-800" : "prosa"}>
           {f.lead && <strong>{f.lead} </strong>}
           {f.frases.join(" ")}
-          <EnlacePagina ruta={f.ruta} p={f.pagina} />
+          {!compacta && <EnlacePagina ruta={f.ruta} p={f.pagina} />}
         </p>
       );
     }
@@ -76,7 +95,7 @@ export function PiezaVista({ pieza, sis }: { pieza: Pieza; sis?: number }) {
         <div className={caja} style={borde}>
           <p className="text-sm font-semibold text-slate-900">
             {l.intro}
-            <EnlacePagina ruta={l.ruta} p={l.pagina} />
+            {!compacta && <EnlacePagina ruta={l.ruta} p={l.pagina} />}
           </p>
           <ul className="mt-1 list-disc space-y-0.5 pl-5 text-sm text-slate-800">
             {l.items.map((it) => (
@@ -91,7 +110,7 @@ export function PiezaVista({ pieza, sis }: { pieza: Pieza; sis?: number }) {
       const f = t.filas[pieza.fila];
       return (
         <div className={caja} style={borde}>
-          <CabeceraTabla tabla={pieza.tabla} etiqueta={f.etiqueta} />
+          <Rotulo tabla={pieza.tabla} etiqueta={f.etiqueta} />
           <dl className="grid gap-2 sm:grid-cols-2">
             {t.columnas.map((col, c) => (
               <div
@@ -119,7 +138,7 @@ export function PiezaVista({ pieza, sis }: { pieza: Pieza; sis?: number }) {
       const f = t.filas[pieza.fila];
       return (
         <div className={caja} style={borde}>
-          <CabeceraTabla tabla={pieza.tabla} etiqueta={f.etiqueta} />
+          <Rotulo tabla={pieza.tabla} etiqueta={f.etiqueta} />
           {sis !== undefined ? (
             <Casilla nombre={t.columnas[sis]} texto={f.celdas[sis]} c={sis} />
           ) : (
@@ -141,7 +160,7 @@ export function PiezaVista({ pieza, sis }: { pieza: Pieza; sis?: number }) {
       const f = TABLAS.T2.filas[1];
       return (
         <div className={caja} style={borde}>
-          <CabeceraTabla tabla="T2" etiqueta={f.etiqueta} />
+          <Rotulo tabla="T2" etiqueta={f.etiqueta} />
           <ul className="space-y-1.5">
             {lineasInicializacion(sis).map((l) => (
               <li
@@ -173,7 +192,7 @@ export function PiezaVista({ pieza, sis }: { pieza: Pieza; sis?: number }) {
             <h3 className="text-sm font-bold text-slate-900">{pieza.rotulo}</h3>
             <p className="text-sm text-slate-800">
               {f.frases.join(" ")}
-              <EnlacePagina ruta={f.ruta} p={f.pagina} />
+              {!compacta && <EnlacePagina ruta={f.ruta} p={f.pagina} />}
             </p>
           </div>
         </div>

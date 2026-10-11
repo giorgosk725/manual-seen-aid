@@ -580,7 +580,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           </p>
           <div className="no-imprimir mt-2 flex flex-wrap gap-x-3 gap-y-1">
             <a
-              href={href("consultar", "inicio", `inicio:${slug}`)}
+              href={href("consultar", "inicio", `inicio:${slug}:arranque`)}
               className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
               style={{ color: h.ink }}
             >

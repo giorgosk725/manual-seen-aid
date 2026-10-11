@@ -3,7 +3,7 @@
    tramo, paso, fase y sistema, situación, sección de la ficha. Solo texto de interfaz. */
 import { FIGURA3 } from "./contenido";
 import { SIS_IDS, SITUACIONES } from "./situaciones";
-import { rotuloDeAspecto } from "./inicio";
+import { tareaDePieza, tituloDeTarea } from "./inicio";
 import type { Ruta } from "./rutas";
 
 const NOMBRE_SIS: Record<string, string> = {
@@ -45,8 +45,11 @@ export function contextoDeRuta(ruta: Ruta): string | undefined {
     if (ruta.sub === "descarga" && /^\d$/.test(detalle)) return `Paso ${detalle}`;
     if (ruta.sub === "inicio" && detalle) {
       const base = conSistema(FASE[detalle] ?? detalle, sis);
-      const n = /^a\d+$/.test(asp ?? "") ? Number(asp.slice(1)) : null;
-      const rotulo = n !== null ? rotuloDeAspecto(detalle, n) : null;
+      const rotulo = !asp
+        ? null
+        : /^a\d+$/.test(asp)
+          ? (tareaDePieza(detalle, Number(asp.slice(1)))?.titulo ?? null)
+          : tituloDeTarea(detalle, asp);
       return rotulo ? `${base} · ${corto(rotulo, 32)}` : base;
     }
     if (ruta.sub === "situacion" && detalle) {

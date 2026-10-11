@@ -21,19 +21,18 @@ test.describe("Entrega 2 (0.33.0)", () => {
     await expect(tambien.first()).toContainText(/Hipoglucemia nocturna/);
   });
 
-  test("Iniciar: un aspecto solo y «Ver la fase completa»", async ({ page }) => {
+  test("Iniciar: tareas desplegables y «Fase completa»", async ({ page }) => {
     await page.goto("/#/consultar/inicio/inicio:omnipod-5");
-    const indice = page.getByRole("navigation", { name: "En esta fase" });
-    await expect(indice).toBeVisible();
-    const chips = indice.getByRole("button");
-    const n = await chips.count();
-    expect(n).toBeGreaterThan(4);
-    await chips.nth(2).click();
-    // Con un aspecto abierto (0.35.0) el índice se pliega a «Aspecto: … · Cambiar».
-    await expect(indice.getByText(/^Aspecto:/)).toBeVisible();
-    await expect(page.locator('[id^="pieza-"]')).toHaveCount(1);
-    await page.getByRole("button", { name: "Ver la fase completa" }).click();
-    // La vuelta a la fase completa cambia la ruta: se espera a que se pinte.
-    await expect.poll(() => page.locator('[id^="pieza-"]').count()).toBeGreaterThan(3);
+    await expect(
+      page.getByRole("button", { name: "Plan de respaldo antes de activar el automático" }),
+    ).toBeVisible();
+    await expect
+      .poll(() => page.getByRole("button", { expanded: false }).count())
+      .toBeGreaterThan(3);
+    await page.getByRole("button", { name: "Basal, ratio y factor de sensibilidad" }).click();
+    await expect(page).toHaveURL(/:parametros$/);
+    await expect(page.getByText(/Regla del 450/)).toBeVisible();
+    await page.getByRole("button", { name: "Fase completa" }).click();
+    await expect.poll(() => page.getByRole("button", { expanded: true }).count()).toBe(5);
   });
 });

@@ -4,6 +4,7 @@
    tal cual con su página. Los nombres de las fases son los del propio capítulo (p. 10).
    Lo único de la app: los rótulos cortos de la navegación y de los hitos del seguimiento. */
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, type TablaId } from "./contenido";
+import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import { plano } from "./marcado";
 import { frases } from "./frases";
 import { href } from "./rutas";
@@ -217,26 +218,87 @@ export function hojaDeComprobacion(sis?: number) {
   };
 }
 
-/* Rótulo de un aspecto de la fase (fila de tabla o hito), para el índice «En esta fase» y para
-   «Lo último que consultaste». Los rótulos de las filas son los del capítulo. */
-export function rotuloDePieza(p: Pieza): string | null {
-  switch (p.t) {
-    case "fila":
-    case "casilla":
-      return plano(TABLAS[p.tabla].filas[p.fila].etiqueta).split("\n")[0];
-    case "inicializacion":
-      return plano(TABLAS.T2.filas[1].etiqueta).split("\n")[0];
-    case "hito":
-      return p.rotulo;
-    default:
-      return null;
-  }
+/* Cada fase, en una lista corta de tareas (texto de la app): cada tarea reúne piezas existentes,
+   por su índice en `piezas`, sin repetir ni recortar texto clínico. `siguiente` es, como mucho,
+   una continuación útil (una herramienta de la app). Las piezas que no están en ninguna tarea se
+   enseñan al pie de la fase como enlaces. */
+export interface Tarea {
+  id: string;
+  titulo: string;
+  piezas: number[];
+  siguiente?: (sis?: number) => { texto: string; ruta: string } | null;
 }
-export const entradasDeFase = (piezas: Pieza[]) =>
-  piezas
-    .map((p, i) => ({ i, rotulo: rotuloDePieza(p) }))
-    .filter((e): e is { i: number; rotulo: string } => !!e.rotulo);
-export const rotuloDeAspecto = (faseId: string, i: number): string | null => {
-  const f = FASES.find((x) => x.id === faseId);
-  return f?.piezas[i] ? rotuloDePieza(f.piezas[i]) : null;
+const planDeSeguridad = (sis?: number) =>
+  sis !== undefined
+    ? {
+        texto: "Plan de seguridad para entregar",
+        ruta: href("pacientes", "plan", ORDEN_SISTEMAS[sis]),
+      }
+    : { texto: "Plan de seguridad para entregar", ruta: href("pacientes", "plan") };
+export const TAREAS: Record<string, Tarea[]> = {
+  preparacion: [
+    {
+      id: "requisitos",
+      titulo: "Requisitos e indicación",
+      piezas: [0, 1],
+      siguiente: () => ({ texto: "Criterios de elección", ruta: href("sistemas", "elegir") }),
+    },
+    { id: "eleccion", titulo: "Elección compartida del sistema", piezas: [2, 3, 4] },
+    {
+      id: "educacion",
+      titulo: "Educación y plan de seguridad",
+      piezas: [5, 6],
+      siguiente: planDeSeguridad,
+    },
+  ],
+  inicio: [
+    {
+      id: "respaldo",
+      titulo: "Plan de respaldo antes de activar el automático",
+      piezas: [0],
+      siguiente: planDeSeguridad,
+    },
+    { id: "arranque", titulo: "Cómo inicia el modo automático", piezas: [1, 2] },
+    { id: "transicion", titulo: "Pauta previa y transición desde MDI", piezas: [3, 12, 13, 14] },
+    {
+      id: "parametros",
+      titulo: "Basal, ratio y factor de sensibilidad",
+      piezas: [4, 5, 6, 7, 11],
+      siguiente: (sis) =>
+        sis !== undefined
+          ? {
+              texto: "Parámetros de este sistema (Tablas 1 y 3)",
+              ruta: href("sistemas", ORDEN_SISTEMAS[sis], "parametros"),
+            }
+          : {
+              texto: "Comparar los parámetros (Tabla 3)",
+              ruta: href("sistemas", "todos", "parametros"),
+            },
+    },
+    { id: "objetivos", titulo: "Objetivos de glucosa", piezas: [8, 9, 10] },
+  ],
+  "primeros-meses": [
+    { id: "calendario", titulo: "Calendario de revisiones", piezas: [0, 1, 2, 3] },
+    {
+      id: "ajustes",
+      titulo: "Qué se ajusta en las primeras descargas",
+      piezas: [4, 5],
+      siguiente: () => ({
+        texto: "Revisar la descarga, paso a paso",
+        ruta: href("consultar", "descarga", "1"),
+      }),
+    },
+  ],
+  mantenido: [
+    { id: "visitas", titulo: "Qué incluye cada visita", piezas: [0] },
+    { id: "reconsiderar", titulo: "Cuándo reconsiderar el tratamiento", piezas: [1, 2] },
+  ],
 };
+export const tareasDe = (faseId: string): Tarea[] => TAREAS[faseId] ?? [];
+export const tareaDePieza = (faseId: string, i: number) =>
+  tareasDe(faseId).find((t) => t.piezas.includes(i));
+export const tituloDeTarea = (faseId: string, id: string) =>
+  tareasDe(faseId).find((t) => t.id === id)?.titulo ?? null;
+/* Las piezas de una fase que no caben en ninguna tarea (enlaces sueltos, al pie). */
+export const piezasSueltas = (fase: Fase) =>
+  fase.piezas.map((_, i) => i).filter((i) => !tareasDe(fase.id).some((t) => t.piezas.includes(i)));

@@ -46,25 +46,21 @@ test.describe("Recorridos completos (0.36.0)", () => {
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Iniciar un sistema");
   });
 
-  test("3 · Elegir un aspecto de Inicio → consultar su fuente → regresar al mismo aspecto", async ({
+  test("3 · Elegir una tarea de Inicio → consultar su fuente → regresar a la misma tarea", async ({
     page,
   }) => {
     await page.goto("/#/consultar/inicio/inicio:omnipod-5");
-    const indice = page.getByRole("navigation", { name: "En esta fase" });
-    await indice
-      .getByRole("button", { name: /Distribución basal|basal/i })
-      .first()
-      .click();
-    await expect(page).toHaveURL(/:a\d+$/);
+    await page.getByRole("button", { name: "Basal, ratio y factor de sensibilidad" }).click();
+    await expect(page).toHaveURL(/:parametros$/);
     const url = page.url();
     await page
-      .getByRole("link", { name: /Ver en el (capítulo|apartado)/ })
+      .getByRole("link", { name: /Tabla 2, p\. 10/ })
       .first()
       .click();
     await expect(page).toHaveURL(/#\/capitulo\//);
     await page.getByRole("button", { name: /Volver a la consulta/ }).click();
     await expect(page).toHaveURL(url);
-    await expect(page.locator('[id^="pieza-"]')).toHaveCount(1);
+    await expect(page.getByText(/Regla del 450/)).toBeVisible();
   });
 
   test("4 · Buscar diferencias entre variantes → contenido pertinente", async ({ page }) => {

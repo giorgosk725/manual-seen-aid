@@ -88,11 +88,8 @@ test.describe("Uso 0.10.0", () => {
     const titulo = page.getByRole("heading", { name: /Inicio del sistema/ });
     await expect(titulo).toBeInViewport();
     await expect(page.locator("#paso-inicio")).toBeFocused();
-    // Índice de la fase: va a la reducción de la DTD al pasar de MDI.
-    await page
-      .getByRole("navigation", { name: "En esta fase" })
-      .getByRole("button", { name: /Reducción de la DTD al pasar de MDI/ })
-      .click();
+    // Tareas de la fase: la de la transición desde MDI abre la reducción de la DTD.
+    await page.getByRole("button", { name: "Pauta previa y transición desde MDI" }).click();
     await expect(
       page.getByRole("heading", { name: /Reducción de la DTD al pasar de MDI/ }),
     ).toBeInViewport();
