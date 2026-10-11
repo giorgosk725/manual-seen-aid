@@ -255,9 +255,9 @@
         "pregunta": "¿Qué patrón orienta el ajuste y cuál no?",
         "opciones": [
           {
-            "texto": "La subida tardía tras las cenas de fin de semana se repite y orienta; las dos noches del pádel se explican por el uso irregular del objetivo temporal, no por un error de configuración.",
+            "texto": "La subida tardía tras las cenas de fin de semana se repite. Las noches bajas después del pádel requieren revisar el ejercicio y el uso del objetivo temporal antes de atribuirlas a una causa o decidir un ajuste global.",
             "tipo": "si",
-            "comentario": "Patrón repetido frente a episodio aislado, y función temporal mal usada frente a ajuste del sistema: la distinción que pide la fila.",
+            "comentario": "Patrón repetido frente a episodios que hay que revisar en contexto: la distinción que pide la fila, sin dar por establecida la causa de las noches bajas.",
             "citas": [
               {
                 "t": "Un patrón repetido orienta el ajuste; un episodio aislado, no.",
@@ -285,7 +285,7 @@
           {
             "texto": "Subir el objetivo nocturno todos los días por las dos alertas.",
             "tipo": "no",
-            "comentario": "No es un patrón de todas las noches: la actuación va a la función temporal y a la educación sobre su uso, antes que a un objetivo global.",
+            "comentario": "Las dos alertas no justifican por sí solas subir el objetivo todas las noches. Hay que revisar la franja afectada, el ejercicio, los bolos, la configuración y el uso del objetivo temporal antes de elegir un cambio.",
             "citas": [
               {
                 "t": "reforzar la educación si el problema deriva del uso de funciones temporales",
@@ -318,9 +318,9 @@
         "pregunta": "¿Cómo lo interpretas?",
         "opciones": [
           {
-            "texto": "Hiperglucemia tardía por la grasa y la proteína, con un bolo algo tardío: adelantar el bolo, individualizar la estrategia para esas comidas y evitar la corrección precoz.",
+            "texto": "La subida tardía es compatible con el efecto de la grasa y las proteínas. Hay que revisar también el momento y la cantidad del bolo, la estimación de hidratos y la ratio antes de decidir cómo individualizar la estrategia para estas comidas.",
             "tipo": "si",
-            "comentario": "Ascenso a las 3–5 h: efecto de la grasa y las proteínas. En MiniMed la estrategia se individualiza con las herramientas disponibles, y sin correcciones adicionales precoces.",
+            "comentario": "Ascenso a las 3–5 h: compatible con la grasa y las proteínas, pero se contrasta con el bolo, los hidratos y la ratio. En MiniMed la estrategia se individualiza con las herramientas disponibles, y sin correcciones adicionales precoces.",
             "citas": [
               {
                 "t": "Si el ascenso aparece 3–5 h después de la ingesta valorar el efecto de la grasa y las proteínas, un bolo insuficiente o una estrategia prandial inadecuada.",
@@ -346,9 +346,9 @@
             }
           },
           {
-            "texto": "Subir la ratio de la cena: le falta insulina.",
+            "texto": "Cambiar directamente la ratio de la cena: le falta insulina.",
             "tipo": "no",
-            "comentario": "La ratio se ajusta si el patrón es consistente; la subida tardía de una comida grasa responde a su composición, no a la ratio.",
+            "comentario": "Esta cena aislada no permite concluir que la ratio sea insuficiente ni justifica modificarla de entrada. Tampoco permite descartarla: hay que contrastar si el patrón se repite y revisar el momento del bolo, el recuento de hidratos y la composición de la comida.",
             "citas": [
               {
                 "t": "ajustar la ratio I/HC si el patrón es consistente",

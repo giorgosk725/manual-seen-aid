@@ -8,13 +8,21 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.39.0";
+export const VERSION_APP = "0.40.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — textos revisados del 11-10`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — ejemplo comentado coherente`,
+    detalle: [
+      "Pasos 5 y 6 del ejemplo: las opciones correctas y los comentarios de las incorrectas dicen lo mismo que el comentario en cuatro partes: las causas se mantienen como hipótesis, las noches bajas no se atribuyen de entrada al objetivo temporal y una cena grasa no descarta la ratio.",
+    ],
+  },
+  {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.39.0 — textos revisados del 11-10",
     detalle: [
       "«Cómo leer esta tabla» de la Tabla 3 precisa el factor de sensibilidad sistema a sistema: en MiniMed 780G se usa en el calculador de bolos fuera del modo automático y no modifica las autocorrecciones.",
       "Ejemplo comentado: los pasos 5 y 6 llevan el comentario en cuatro partes (qué observamos, qué puede explicarlo, qué falta comprobar, qué podemos concluir), con las hipótesis abiertas; los pasos 1 y 8 precisan que se habla de este ejemplo y de un episodio pasado.",

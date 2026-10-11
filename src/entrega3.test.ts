@@ -314,3 +314,26 @@ describe("Interpretaciones: prioridad del borrador y contenido aprobado (0.39.0)
     expect(ok(3).texto).toMatch(/remite a buscar/);
   });
 });
+
+describe("Pasos 5 y 6: opciones y comentarios coherentes con el desglose (0.40.0)", () => {
+  it("ninguna opción ni comentario da por establecida la causa ni excluye la ratio", async () => {
+    const { casoPorId } = await import("./casos");
+    const c = casoPorId("ejemplo-descarga")!;
+    const p5 = c.pasos[4];
+    const p6 = c.pasos[5];
+    const ok5 = p5.opciones.find((o) => o.tipo === "si")!;
+    expect(ok5.texto).toMatch(/antes de atribuirlas a una causa/);
+    expect(ok5.texto).not.toMatch(/no por un/);
+    const subir = p5.opciones.find((o) => o.texto.startsWith("Subir el objetivo nocturno"))!;
+    expect(subir.comentario).toMatch(/no justifican por sí solas/);
+    const ok6 = p6.opciones.find((o) => o.tipo === "si")!;
+    expect(ok6.texto).toMatch(/compatible con el efecto de la grasa/);
+    expect(ok6.texto).not.toMatch(/por la grasa y la proteína/);
+    const ratio = p6.opciones.find((o) => o.texto.startsWith("Cambiar directamente la ratio"))!;
+    expect(ratio.comentario).toMatch(/Tampoco permite descartarla/);
+    for (const o of [...p5.opciones, ...p6.opciones]) {
+      expect(o.comentario).not.toMatch(/responde a su composición, no a la ratio/);
+      expect(o.citas.length).toBeGreaterThan(0);
+    }
+  });
+});
