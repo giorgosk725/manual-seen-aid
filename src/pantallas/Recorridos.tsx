@@ -19,7 +19,7 @@ import {
 import { PiezaVista } from "../componentes/Piezas";
 import { frasesDe, kDe, type Pieza } from "../inicio";
 
-import { elegirRuta, href } from "../rutas";
+import { elegirRuta, fueNavegacionNueva, href } from "../rutas";
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
 import { CabeceraEditorial, PaginaBadge, Segmented } from "../ui";
@@ -95,39 +95,83 @@ const piezasDe = (m: Momento): Pieza[] =>
     k: x.k ?? kDe(x.apartado, x.bloque),
   }));
 const numeroApartado = (slug: string) => APARTADOS.find((a) => a.slug === slug)?.n ?? "";
-function fuentesDeMomentos(momentos: Momento[]): { texto: string; ruta: string }[] {
+/* La fuente de un momento: apartado y página de cada párrafo, con el enlace a ese párrafo. */
+function fuentesDeMomento(m: Momento): { texto: string; ruta: string }[] {
   const vistas = new Set<string>();
   const out: { texto: string; ruta: string }[] = [];
-  for (const m of momentos)
-    for (const pz of piezasDe(m)) {
-      if (pz.t !== "frase") continue;
-      const f = frasesDe(pz.apartado, pz.bloque, pz.k);
-      const texto = `Apartado ${numeroApartado(pz.apartado)}, p. ${f.pagina}`;
-      if (!vistas.has(texto)) {
-        vistas.add(texto);
-        out.push({ texto, ruta: f.ruta });
-      }
+  for (const pz of piezasDe(m)) {
+    if (pz.t !== "frase") continue;
+    const f = frasesDe(pz.apartado, pz.bloque, pz.k);
+    const texto = `Apartado ${numeroApartado(pz.apartado)}, p. ${f.pagina}`;
+    if (!vistas.has(texto)) {
+      vistas.add(texto);
+      out.push({ texto, ruta: f.ruta });
     }
+  }
   return out;
 }
+/* Los momentos abiertos de cada situación, en memoria mientras la app está abierta: abrir la
+   fuente de un momento y volver lo encuentra abierto. No se guarda nada. */
+const momentosMemoria = new Map<string, { abiertos: Set<number>; todos: boolean }>();
+/* «m6» → 5 (índice); cualquier otra cosa, null. */
+const indiceDeMomento = (m?: string) => {
+  const n = m && /^m\d+$/.test(m) ? Number(m.slice(1)) - 1 : NaN;
+  return Number.isInteger(n) && n >= 0 ? n : null;
+};
 function GuionVista({
   momentos,
   rotulo = "Lo que dice el capítulo, por momentos",
+  clave,
+  sistema,
+  momento,
 }: {
   momentos: Momento[];
   rotulo?: string;
+  /* La situación: los momentos abiertos se recuerdan por situación. */
+  clave: string;
+  sistema?: string;
+  /* Momento pedido en la ruta («m6»): se abre y, si se llega de nuevas, se lleva a la vista. */
+  momento?: string;
 }) {
-  const [todos, setTodos] = useState(false);
-  const [abiertos, setAbiertos] = useState<Set<number>>(new Set([0]));
-  const abierto = (i: number) => todos || abiertos.has(i);
-  const alternar = (i: number) =>
-    setAbiertos((prev) => {
-      const s = new Set(prev);
-      if (s.has(i)) s.delete(i);
-      else s.add(i);
-      return s;
-    });
-  const fuentes = fuentesDeMomentos(momentos);
+  const pedido = indiceDeMomento(momento);
+  const valido = pedido !== null && pedido < momentos.length ? pedido : null;
+  const [estado, setEstado] = useState(() => {
+    const m = momentosMemoria.get(clave);
+    const abiertos = new Set(m?.abiertos ?? [valido ?? 0]);
+    if (valido !== null) abiertos.add(valido);
+    return { abiertos, todos: m?.todos ?? false };
+  });
+  const guardar = (e: { abiertos: Set<number>; todos: boolean }) => {
+    momentosMemoria.set(clave, e);
+    setEstado(e);
+  };
+  useEffect(() => {
+    momentosMemoria.set(clave, estado);
+    // Enlace o búsqueda que pide un momento: a la vista. Al volver atrás manda la Shell.
+    if (valido !== null && fueNavegacionNueva())
+      window.setTimeout(
+        () => document.getElementById(`momento-${valido}`)?.scrollIntoView({ block: "start" }),
+        60,
+      );
+    // Solo al montar: después, el momento lo cambia la propia persona.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  // El momento consultado va en la ruta (sin apilar historial): sobrevive a la fuente y Atrás.
+  const marcarEnRuta = (i: number | null) =>
+    elegirRuta(
+      "consultar",
+      "situacion",
+      [clave, sistema ?? "", i !== null ? `m${i + 1}` : ""].join(":").replace(/:+$/, ""),
+    );
+  const abierto = (i: number) => estado.todos || estado.abiertos.has(i);
+  const alternar = (i: number) => {
+    const abiertos = new Set(estado.abiertos);
+    const abrir = !abierto(i);
+    if (abrir) abiertos.add(i);
+    else abiertos.delete(i);
+    guardar({ abiertos, todos: estado.todos && abrir });
+    marcarEnRuta(abrir ? i : null);
+  };
   return (
     <section
       aria-label={rotulo}
@@ -140,10 +184,10 @@ function GuionVista({
         </h2>
         <button
           type="button"
-          onClick={() => setTodos(!todos)}
+          onClick={() => guardar({ abiertos: estado.abiertos, todos: !estado.todos })}
           className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-6"
         >
-          {todos ? "Plegar" : "Abrir todos"}
+          {estado.todos ? "Plegar" : "Abrir todos"}
         </button>
       </div>
       <nav aria-label="Índice de la situación" className="mt-1">
@@ -154,9 +198,14 @@ function GuionVista({
                 type="button"
                 onClick={() => {
                   if (!abierto(i)) alternar(i);
-                  document
-                    .getElementById(`momento-${i}`)
-                    ?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+                  else marcarEnRuta(i);
+                  window.setTimeout(
+                    () =>
+                      document
+                        .getElementById(`momento-${i}`)
+                        ?.scrollIntoView({ block: "start", behavior: "smooth" }),
+                    0,
+                  );
                 }}
                 className="inline-flex min-h-8 items-center font-semibold hover:underline"
               >
@@ -199,6 +248,22 @@ function GuionVista({
                 {piezasDe(m).map((pz, k) => (
                   <PiezaVista key={k} pieza={pz} compacta />
                 ))}
+                {/* Una sola línea de fuente por momento, al párrafo exacto. */}
+                <p className="text-[13px] text-slate-500">
+                  Fuente:{" "}
+                  {fuentesDeMomento(m).map((f, k) => (
+                    <span key={f.texto}>
+                      {k > 0 && " · "}
+                      <a
+                        href={f.ruta}
+                        onClick={() => marcarEnRuta(i)}
+                        className="inline-flex min-h-6 items-center font-semibold text-slate-600 hover:underline"
+                      >
+                        {f.texto}
+                      </a>
+                    </span>
+                  ))}
+                </p>
               </div>
             )}
           </li>
@@ -208,16 +273,7 @@ function GuionVista({
         className="mt-2 border-t pt-2 text-[13px] text-slate-500"
         style={{ borderColor: "#eeeeee" }}
       >
-        Fuente:{" "}
-        {fuentes.map((f, k) => (
-          <span key={f.texto}>
-            {k > 0 && " · "}
-            <a href={f.ruta} className="font-semibold text-slate-600 hover:underline">
-              {f.texto}
-            </a>
-          </span>
-        ))}{" "}
-        · texto literal del capítulo; los rótulos son de la app.
+        Texto literal del capítulo; los rótulos de los momentos son de la app.
       </p>
     </section>
   );
@@ -324,7 +380,15 @@ function ListaSituaciones({
   );
 }
 
-export function SituacionSistema({ situacion, sistema }: { situacion?: string; sistema?: string }) {
+export function SituacionSistema({
+  situacion,
+  sistema,
+  momento,
+}: {
+  situacion?: string;
+  sistema?: string;
+  momento?: string;
+}) {
   const [filtro, setFiltro] = useState("");
   const sit = SITUACIONES.find((s) => s.id === situacion) || null;
   const guia = SITUACIONES_GUIA.find((s) => s.id === situacion) || null;
@@ -410,7 +474,12 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                 </div>
                 <p className="mt-1 text-sm text-slate-700">{guia.intro}</p>
               </section>
-              <GuionVista momentos={guia.guion} rotulo={guia.rotuloGuion} />
+              <GuionVista
+                momentos={guia.guion}
+                rotulo={guia.rotuloGuion}
+                clave={guia.id}
+                momento={momento}
+              />
               <div>
                 <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
                   Seguir en
@@ -558,7 +627,14 @@ export function SituacionSistema({ situacion, sistema }: { situacion?: string; s
                   </dl>
                 )}
               </section>
-              {GUION[sit.id] && <GuionVista momentos={GUION[sit.id]} />}
+              {GUION[sit.id] && (
+                <GuionVista
+                  momentos={GUION[sit.id]}
+                  clave={sit.id}
+                  sistema={sistema}
+                  momento={momento}
+                />
+              )}
               {(sit.tabla === "T6" || sit.id.startsWith("hiperglucemia")) && (
                 <a
                   href={href(

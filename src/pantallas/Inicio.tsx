@@ -99,10 +99,30 @@ function siglasPorPiezas(piezas: Pieza[], sis?: number): Set<string>[] {
 const capitalizar = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const esDeTabla2 = (p: Pieza) => (p.t === "fila" && p.tabla === "T2") || p.t === "inicializacion";
 
+/* Lo elegido y lo marcado en la guía vive en memoria mientras la app está abierta: sobrevive a
+   abrir una fuente y volver, y se va al recargar o al pulsar «Reiniciar». No se guarda nada. */
+const guiaMemoria: { resp: Record<string, string>; hechos: Set<string> } = {
+  resp: {},
+  hechos: new Set(),
+};
 /* Hoja de comprobación: una cara A4, casillas para marcar en papel (en pantalla se pueden
    marcar, pero no se guarda nada: ni datos del paciente ni de la consulta). */
 function Hoja({ sis }: { sis?: number }) {
   const ref = useRef<HTMLDivElement>(null);
+  // Las casillas son las mismas que las de la guía: lo marcado allí sale marcado aquí (y al
+  // revés), mientras dura la consulta. No se guarda nada.
+  const [hechos, setHechos] = useState<Set<string>>(guiaMemoria.hechos);
+  const marcar = (k: string) => {
+    const s = new Set(guiaMemoria.hechos);
+    if (s.has(k)) s.delete(k);
+    else s.add(k);
+    guiaMemoria.hechos = s;
+    setHechos(s);
+  };
+  const vaciar = () => {
+    guiaMemoria.hechos = new Set();
+    setHechos(guiaMemoria.hechos);
+  };
   const h = hojaDeComprobacion(sis);
   const sistema = sis !== undefined ? NOMBRES[sis] : "";
   const titulo = `Inicio de un sistema de asa cerrada${sistema ? ` · ${sistema}` : ""}`;
@@ -125,8 +145,21 @@ function Hoja({ sis }: { sis?: number }) {
           </a>
         )}
         <span className="text-xs text-slate-600">
-          Una cara A4. {sistema ? "" : "Elige el sistema para que salga solo su línea de inicio."}
+          Una cara A4.{" "}
+          {hechos.size > 0
+            ? "Resume lo marcado en la guía de esta consulta (no se guarda). "
+            : "Lo que marques en la guía paso a paso sale marcado aquí. "}
+          {sistema ? "" : "Elige el sistema para que salga solo su línea de inicio."}
         </span>
+        {hechos.size > 0 && (
+          <button
+            type="button"
+            onClick={vaciar}
+            className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
+          >
+            Vaciar las casillas (hoja en blanco)
+          </button>
+        )}
       </div>
       <div
         ref={ref}
@@ -145,7 +178,12 @@ function Hoja({ sis }: { sis?: number }) {
           {h.antes.map((it) => (
             <li key={it.texto}>
               <label className="flex gap-2 text-sm text-slate-800">
-                <input type="checkbox" className="h-7 w-7 shrink-0 accent-slate-700" />
+                <input
+                  type="checkbox"
+                  checked={hechos.has(it.texto)}
+                  onChange={() => marcar(it.texto)}
+                  className="h-7 w-7 shrink-0 accent-slate-700"
+                />
                 <span>
                   {it.texto}{" "}
                   <span className="whitespace-nowrap text-xs text-slate-500">p. {it.pagina}</span>
@@ -190,7 +228,12 @@ function Hoja({ sis }: { sis?: number }) {
           {h.citas.map((c) => (
             <li key={c}>
               <label className="flex gap-2 text-sm text-slate-800">
-                <input type="checkbox" className="h-7 w-7 shrink-0 accent-slate-700" />
+                <input
+                  type="checkbox"
+                  checked={hechos.has(c)}
+                  onChange={() => marcar(c)}
+                  className="h-7 w-7 shrink-0 accent-slate-700"
+                />
                 <span>{c}</span>
               </label>
             </li>
@@ -303,13 +346,17 @@ function LineaFuente({ fuentes }: { fuentes: { texto: string; ruta: string }[] }
 /* Guía paso a paso, con un paciente delante: seis pasos; las preguntas eligen qué texto del
    capítulo se enseña y las casillas se marcan durante la consulta. No se guarda nada (ni las
    respuestas ni lo marcado): sin datos del paciente. */
-/* Lo elegido y lo marcado en la guía vive en memoria mientras la app está abierta: sobrevive a
-   abrir una fuente y volver, y se va al recargar o al pulsar «Reiniciar». No se guarda nada. */
-const guiaMemoria: { resp: Record<string, string>; hechos: Set<string> } = {
-  resp: {},
-  hechos: new Set(),
-};
-function GuiaInicio({ sis, paso, onFases }: { sis?: number; paso: number; onFases: () => void }) {
+function GuiaInicio({
+  sis,
+  paso,
+  onFases,
+  onHoja,
+}: {
+  sis?: number;
+  paso: number;
+  onFases: () => void;
+  onHoja: () => void;
+}) {
   const n = Math.min(PASOS_GUIA.length, Math.max(1, paso));
   const p = PASOS_GUIA[n - 1];
   const [resp, setRespEstado] = useState<Record<string, string>>(guiaMemoria.resp);
@@ -371,6 +418,13 @@ function GuiaInicio({ sis, paso, onFases }: { sis?: number; paso: number; onFase
             className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
           >
             Consultar por fases
+          </button>
+          <button
+            type="button"
+            onClick={onHoja}
+            className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
+          >
+            Hoja de comprobación
           </button>
           {(Object.keys(resp).length > 0 || hechos.size > 0) && (
             <button
@@ -509,9 +563,8 @@ function GuiaInicio({ sis, paso, onFases }: { sis?: number; paso: number; onFase
         </button>
       </div>
       <p className="mt-2 text-xs text-slate-500">
-        Lo elegido y lo marcado se conserva mientras dura la consulta (también al abrir una fuente y
-        volver) y se borra al cerrar la app o con «Reiniciar la guía»: no se guarda nada. El texto
-        es el del capítulo, con su página.
+        Selecciones temporales de esta consulta: siguen al abrir una fuente y volver, y salen en la
+        hoja de comprobación; «Reiniciar la guía» las borra.
       </p>
     </section>
   );
@@ -703,6 +756,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
             sis={sis}
             paso={Number(tareaId) || 1}
             onFases={() => ir(FASES[1].id, sis, null)}
+            onHoja={() => ir(HOJA, sis, null)}
           />
         ) : (
           <Hoja sis={sis} />

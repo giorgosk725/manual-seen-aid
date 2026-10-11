@@ -115,7 +115,8 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     await expect(hipo).toHaveAttribute("aria-expanded", "false");
     await hipo.click();
     await expect(guion.getByText(/suele requerir menos hidratos/)).toBeVisible();
-    await expect(guion.getByText(/^Fuente:/)).toBeVisible();
+    // Una línea de fuente por momento abierto (el primero y el de hipoglucemia).
+    await expect(guion.getByText(/^Fuente:/)).toHaveCount(2);
   });
 
   test("tarjetas de la ampliación: cada rasgo con su nombre", async ({ page }) => {
@@ -127,5 +128,53 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
   test("objetivos: el TAR > 180 mg/dl lleva su cifra", async ({ page }) => {
     await page.goto("/#/visual/objetivos-mcg");
     await expect(page.getByText("< 25 %").locator("visible=true").first()).toBeVisible();
+  });
+
+  test("situación: el momento consultado sigue abierto al volver de su fuente y va en la ruta", async ({
+    page,
+  }) => {
+    await page.goto("/#/consultar/situacion/ejercicio-aerobico:omnipod-5");
+    const guion = page.getByRole("region", { name: "Lo que dice el capítulo, por momentos" });
+    const despues = guion.locator("h3 button", { hasText: /Después del ejercicio/ });
+    await despues.click();
+    await expect(despues).toHaveAttribute("aria-expanded", "true");
+    await expect(page).toHaveURL(/ejercicio-aerobico:omnipod-5:m6$/);
+    const fuente = page.locator("#momento-5").getByRole("link", { name: /Apartado 10, p\. 19/ });
+    await expect(fuente).toHaveAttribute("href", /10-situaciones\/b25$/);
+    await fuente.click();
+    await expect(page).toHaveURL(/#\/capitulo\//);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await page.getByRole("button", { name: /Volver a la consulta/ }).click();
+    await expect(page).toHaveURL(/ejercicio-aerobico:omnipod-5:m6$/);
+    await expect(
+      page
+        .getByRole("region", { name: "Lo que dice el capítulo, por momentos" })
+        .locator("h3 button", { hasText: /Después del ejercicio/ }),
+    ).toHaveAttribute("aria-expanded", "true");
+    // Un enlace a un momento lo abre (ingreso, sin sistema).
+    await page.goto("/#/consultar/situacion/ingreso-hospitalario::m7");
+    await expect(
+      page
+        .getByRole("region", { name: "Qué revisar durante el ingreso" })
+        .locator("h3 button", { hasText: /Período perioperatorio/ }),
+    ).toHaveAttribute("aria-expanded", "true");
+  });
+
+  test("la hoja de comprobación resume lo marcado en la guía", async ({ page }) => {
+    await page.goto("/#/consultar/inicio/guia:omnipod-5:4");
+    const casilla = page
+      .getByRole("list", { name: "Para marcar en la consulta" })
+      .getByRole("checkbox")
+      .first();
+    await casilla.check();
+    await page.getByRole("button", { name: "Hoja de comprobación" }).click();
+    await expect(page.getByText(/Resume lo marcado en la guía de esta consulta/)).toBeVisible();
+    await expect(page.locator(".hoja-inicio").getByRole("checkbox", { checked: true })).toHaveCount(
+      1,
+    );
+    await page.getByRole("button", { name: /Vaciar las casillas/ }).click();
+    await expect(page.locator(".hoja-inicio").getByRole("checkbox", { checked: true })).toHaveCount(
+      0,
+    );
   });
 });

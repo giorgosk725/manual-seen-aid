@@ -175,6 +175,7 @@ export default function App() {
             <SituacionSistema
               situacion={ruta.detalle?.split(":")[0]}
               sistema={ruta.detalle?.split(":")[1]}
+              momento={ruta.detalle?.split(":")[2]}
             />
           );
           titulo = "Situaciones";

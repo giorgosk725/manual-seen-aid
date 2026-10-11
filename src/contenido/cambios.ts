@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.43.1";
+export const VERSION_APP = "0.43.2";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-12",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — revisión de la 0.43: guía coherente, situaciones más cortas`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — el momento consultado y la hoja que resume`,
+    detalle: [
+      "Situaciones: el momento abierto (p. ej. «Después del ejercicio») sigue abierto al abrir su fuente y volver, y va en la dirección (…:m6), así que se puede enlazar y una búsqueda puede llevar a él. Cada momento abierto tiene una sola línea de fuente que lleva al párrafo exacto del capítulo.",
+      "Iniciar un sistema: la hoja de comprobación resume lo marcado en la guía paso a paso de esta consulta (y al revés); «Vaciar las casillas» da la hoja en blanco. No se guarda nada. La nota de la guía queda en una frase.",
+    ],
+  },
+  {
+    fecha: "2026-10-12",
+    ambito: "app",
+    titulo:
+      "Manual SEEN · AID 0.43.1 — revisión de la 0.43: guía coherente, situaciones más cortas",
     detalle: [
       "Guía paso a paso: la basal solo se pregunta si viene de plumas y su respuesta se borra al cambiar de pauta; la continuación corresponde a la pauta elegida. Lo elegido y lo marcado se conserva mientras dura la consulta (también al abrir una fuente y volver) y se borra al cerrar la app o con «Reiniciar la guía». Con la guía abierta, las fases no compiten: cabecera compacta con sistema y paso, y «Consultar por fases». En el arranque queda a la vista el requisito previo.",
       "Situaciones: con una elegida, en el móvil el catálogo se pliega («Cambiar» lo abre); dentro, un índice breve de necesidades, el primer momento abierto y los demás plegables («Abrir todos»), los dos párrafos de hipoglucemia bajo un rótulo y la fuente una sola vez al pie. «Ingreso» se llama «Qué revisar durante el ingreso»; «Gestación» va por necesidades.",
