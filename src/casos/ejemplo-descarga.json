@@ -14,7 +14,7 @@
           {
             "texto": "Los datos son representativos (uso ≥ 70 %) y se puede pasar a interpretar patrones; las salidas nocturnas por pérdida de señal se revisan antes de tocar ningún ajuste.",
             "tipo": "si",
-            "comentario": "Con uso del sensor ≥ 70 % en 14 días los patrones se pueden interpretar. Las salidas se revisan como causa antes de modificar parámetros.",
+            "comentario": "Con uso del sensor ≥ 70 % en 14 días los patrones se pueden interpretar. En este ejemplo, las salidas descritas se relacionan con pérdidas de señal: la causa técnica se resuelve antes de modificar parámetros.",
             "citas": [
               {
                 "t": "Uso de MCG ≥ 70 % en 14 días permite interpretar patrones",
@@ -136,7 +136,7 @@
         "pregunta": "¿Qué haces con estas cifras?",
         "opciones": [
           {
-            "texto": "El TBR ya es seguro: la hiperglucemia se interpreta en los pasos siguientes y se priorizarán uno o dos cambios concretos; el TAR > 250 obliga a buscar episodios persistentes.",
+            "texto": "El TBR ya es seguro: la hiperglucemia se interpreta en los pasos siguientes y se priorizarán uno o dos cambios concretos; el TAR > 250 remite a buscar episodios persistentes.",
             "tipo": "si",
             "comentario": "Con el TBR confirmado se interpreta la hiperglucemia. Pocos cambios, reevaluables; y el TAR > 250 remite a los episodios persistentes y al sistema de infusión.",
             "citas": [
@@ -274,7 +274,13 @@
                 "p": 14,
                 "f": "Tabla 5"
               }
-            ]
+            ],
+            "desglose": {
+              "hallazgo": "La subida tardía se repite tras las cenas de viernes y sábado. Hay dos noches con glucosa baja después del pádel; el objetivo temporal se utilizó en una de las cuatro tardes de ejercicio.",
+              "hipotesis": "Las subidas pueden relacionarse con la composición de esas cenas y con el momento o la cantidad del bolo. Las noches bajas pueden estar relacionadas con el ejercicio vespertino y con cómo se utiliza el objetivo temporal. Los datos no permiten atribuir cada patrón a una única causa.",
+              "falta": "Qué cenó y cuándo administró los bolos esos días; cómo y cuándo utilizó el objetivo temporal; y si intervinieron otros factores descritos en el capítulo, como correcciones manuales, bolo tardío, alcohol u objetivos y ratios. Comparar con noches sin ejercicio y con la descarga previa.",
+              "conclusion": "Hay que estudiar por separado el patrón de las cenas y el de las noches después del ejercicio. Antes de subir el objetivo de forma global, revisar la franja afectada, las conductas y el uso de las funciones temporales. Estos datos todavía no permiten elegir un ajuste definitivo."
+            }
           },
           {
             "texto": "Subir el objetivo nocturno todos los días por las dos alertas.",
@@ -331,7 +337,13 @@
                 "p": 14,
                 "f": "Tabla 5"
               }
-            ]
+            ],
+            "desglose": {
+              "hallazgo": "Cena con pizza, bolo diez minutos después de empezar a comer, estimación de 60 g de hidratos, subida hasta 240 mg/dl entre las tres y las cinco horas y una corrección manual a las dos horas.",
+              "hipotesis": "La subida tardía es compatible con el efecto de la grasa y las proteínas. También deben revisarse el retraso del bolo, la estimación de hidratos, la cantidad de insulina administrada y la estrategia prandial. Varios factores pueden coincidir.",
+              "falta": "Si el patrón se repite con comidas similares y con otras cenas, el momento y la cantidad de los bolos, la ratio utilizada y la insulina activa al realizar la corrección. Que ocurra con comidas grasas no permite descartar por sí solo una ratio insuficiente.",
+              "conclusion": "Hay que revisar el momento del bolo e individualizar la estrategia para estas comidas según las herramientas del sistema, la respuesta previa y el riesgo de hipoglucemia. Una cena aislada no determina qué ajuste hacer ni justifica repetir correcciones sin atender a la insulina activa."
+            }
           },
           {
             "texto": "Subir la ratio de la cena: le falta insulina.",
@@ -444,7 +456,7 @@
           {
             "texto": "Reconocerlo como sospecha de fallo de infusión: revisar con ella si aplicó el plan de seguridad (no midió cetonas), actualizarlo si procede y reforzar el entrenamiento con la Figura 3.",
             "tipo": "si",
-            "comentario": "Identificado retrospectivamente, la actuación de la tabla es revisar la aplicación del plan de seguridad, actualizarlo y reforzar el entrenamiento.",
+            "comentario": "En este ejemplo revisamos retrospectivamente si se aplicó el plan de seguridad durante el episodio: la actuación de la tabla es revisar su aplicación, actualizarlo y reforzar el entrenamiento. Una situación actual no se resuelve revisando después.",
             "citas": [
               {
                 "t": "Aplicar la figura 3. Si se identifica retrospectivamente, revisar si se aplicó correctamente el plan de seguridad, actualizarlo si procede y reforzar el entrenamiento",

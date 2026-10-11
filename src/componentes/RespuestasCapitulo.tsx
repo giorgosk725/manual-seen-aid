@@ -449,7 +449,7 @@ function BloqueFrecuente({
         </p>
       )}
       <p className="mt-2 text-[11px] text-slate-500">
-        Pasajes del capítulo revisados para esta pregunta.
+        Pasajes del capítulo relacionados con esta pregunta.
       </p>
     </section>
   );

@@ -268,3 +268,49 @@ describe("Aprobado el 11-10: Cómo funciona comparado, paso 7 e interpretaciones
     expect(ok.citas.length).toBe(3);
   });
 });
+
+describe("Interpretaciones: prioridad del borrador y contenido aprobado (0.39.0)", () => {
+  it("un borrador con el mismo id sustituye a la aprobada, sea cual sea el orden de las rutas", async () => {
+    const { fusionarInterpretaciones } = await import("./interpretaciones");
+    const aprobada = {
+      id: "x",
+      estado: "aprobada" as const,
+      tabla: "T3" as const,
+      texto: "vieja",
+      fuente: "",
+    };
+    const borrador = { ...aprobada, estado: "borrador" as const, texto: "nueva" };
+    const sinBorrador = fusionarInterpretaciones([
+      { ruta: "./interpretaciones/a.json", items: [aprobada] },
+    ]);
+    expect(sinBorrador.map((x) => x.texto)).toEqual(["vieja"]);
+    // «interpretaciones-borrador» va antes alfabéticamente: aun así gana.
+    const con = fusionarInterpretaciones([
+      { ruta: "./interpretaciones-borrador/t3.json", items: [borrador] },
+      { ruta: "./interpretaciones/a.json", items: [aprobada] },
+    ]);
+    expect(con.map((x) => x.texto)).toEqual(["nueva"]);
+    expect(con[0].estado).toBe("borrador");
+  });
+  it("la Tabla 3 aprobada lleva el matiz de MiniMed fuera del modo automático; sin borradores", async () => {
+    const { cargarInterpretaciones } = await import("./interpretaciones");
+    const todas = await cargarInterpretaciones();
+    const t3 = todas.find((x) => x.id === "t3-mismo-parametro")!;
+    expect(t3.estado).toBe("aprobada");
+    expect(t3.texto).toMatch(
+      /calculador de bolos fuera del modo automático y no modifica las autocorrecciones/,
+    );
+    expect(todas.every((x) => x.estado === "aprobada")).toBe(true);
+  });
+  it("los pasos 5 y 6 del ejemplo llevan las cuatro partes y el 8 se lee como retrospectivo", async () => {
+    const { casoPorId } = await import("./casos");
+    const c = casoPorId("ejemplo-descarga")!;
+    const ok = (n: number) => c.pasos[n - 1].opciones.find((o) => o.tipo === "si")!;
+    expect(ok(5).desglose?.conclusion).toMatch(/no permiten elegir un ajuste definitivo/);
+    expect(ok(6).desglose?.falta).toMatch(
+      /no permite descartar por sí solo una ratio insuficiente/,
+    );
+    expect(ok(8).comentario).toMatch(/retrospectivamente/);
+    expect(ok(3).texto).toMatch(/remite a buscar/);
+  });
+});

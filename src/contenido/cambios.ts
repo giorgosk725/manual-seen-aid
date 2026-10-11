@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.38.0";
+export const VERSION_APP = "0.39.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-11",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — preguntas que responden a lo preguntado`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — textos revisados del 11-10`,
+    detalle: [
+      "«Cómo leer esta tabla» de la Tabla 3 precisa el factor de sensibilidad sistema a sistema: en MiniMed 780G se usa en el calculador de bolos fuera del modo automático y no modifica las autocorrecciones.",
+      "Ejemplo comentado: los pasos 5 y 6 llevan el comentario en cuatro partes (qué observamos, qué puede explicarlo, qué falta comprobar, qué podemos concluir), con las hipótesis abiertas; los pasos 1 y 8 precisan que se habla de este ejemplo y de un episodio pasado.",
+      "Preguntas frecuentes: «Pasajes del capítulo relacionados con esta pregunta». Las explicaciones de la app cargan con prioridad explícita entre lo aprobado y los borradores de la copia de revisión.",
+    ],
+  },
+  {
+    fecha: "2026-10-11",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.38.0 — preguntas que responden a lo preguntado",
     detalle: [
       "Preguntas frecuentes: títulos ajustados a sus pasajes (irritación de la piel, fallos repetidos de infusión, corrección con pluma, control del aeropuerto), sin pasajes repetidos; la de Control-IQ frente a Control-IQ+ añade el bolo extendido y enseña primero la columna de Tandem; tras la respuesta, como mucho una continuación (Interrupción del sistema, Figura 3).",
       "Iniciar un sistema: en los aspectos de la Tabla 2 se puede abrir «Cómo leer esta tabla» (configuración inicial frente a funcionamiento posterior). Textos más cortos en la comparación de «Cómo funciona» y en el paso 7 del ejemplo.",

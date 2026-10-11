@@ -90,31 +90,30 @@ las palabras.
 | f49 | Situaciones especiales        | ¿Qué recomendar sobre el alcohol con un sistema AID?                         | `t/10-situaciones/b14/2` (p. 18)                                                                     |
 | f50 | Situaciones especiales        | ¿Se puede mantener el sistema con glucocorticoides?                          | `t/10-situaciones/b29/0` (p. 20); `t/10-situaciones/b29/1` (p. 20); `t/10-situaciones/b29/2` (p. 20) |
 
-## Diez más (0.31.0, 10-10-2026)
+## Las once añadidas en 2026-10 (f51–f61), estado actual
 
-Salen de las consultas sin pregunta frecuente de las dos pruebas simuladas (`docs/PRUEBA_SIMULADA_2026-10-10.md`).
-Pregunta y variantes son texto de la app; los pasajes, literales. Pendientes de la revisión del autor como las 50
-primeras.
+Salen de las consultas sin pregunta frecuente de las pruebas simuladas (f51–f60) y de la revisión de la 0.34 (f61).
+Pregunta y variantes son texto de la app; los pasajes, literales. Títulos y pasajes ajustados el 11-10-2026 tras la
+revisión de la 0.37 (f54, f55, f56 acotada a la pluma, f58, f59 sin pasaje repetido, f61 con el bolo extendido y la
+columna de Tandem primero; f51 y f60 con una continuación).
 
-| Id  | Tema                          | Pregunta                                                      | Pasajes                                                                      |
-| --- | ----------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| f51 | Educación y plan de seguridad | ¿Qué hacer si la bomba falla o se queda sin insulina?         | `t/07-educacion/b11/0`; `t/07-educacion/b11/4`; `t/07-educacion/b13/0`       |
-| f52 | Educación y plan de seguridad | ¿Cuándo confirmar la glucosa con glucemia capilar?            | `t/02-componentes/b4/1`; `t/10-situaciones/b38/2`                            |
-| f53 | Incidencias y cetonemia       | El sensor pierde la señal: ¿qué hacer?                        | `t/09-descarga/b22/0`; `t/09-descarga/b22/1`; `t/02-componentes/b4/2`        |
-| f54 | Incidencias y cetonemia       | ¿Qué hacer si el adhesivo se despega o irrita la piel?        | `t/09-descarga/b24/2`; `t/09-descarga/b24/1`; `t/09-descarga/b24/4`          |
-| f55 | Incidencias y cetonemia       | Fallos de infusión repetidos: ¿qué revisar y qué cánula usar? | `t/09-descarga/b25/0`; `t/09-descarga/b25/1`                                 |
-| f56 | Incidencias y cetonemia       | ¿Cuánto esperar antes de volver a corregir?                   | `F3/pie/0`; `l/09-descarga/b28/0`                                            |
-| f57 | Descarga y seguimiento        | ¿Cómo manejar una comida rica en grasa o proteína?            | `T4/5`; `t/09-descarga/b6/0`; `t/09-descarga/b6/1`; `t/09-descarga/b6/2`     |
-| f58 | Situaciones especiales        | ¿Qué hacer en un viaje o en el control del aeropuerto?        | `t/10-situaciones/b43/0`; `l/07-educacion/b3/4`                              |
-| f59 | Incidencias y cetonemia       | Demasiadas alarmas: ¿qué hacer con la fatiga por alarmas?     | `t/09-descarga/b26/0`; `t/09-descarga/b26/1`                                 |
-| f60 | Situaciones especiales        | ¿Qué hacer ante una enfermedad intercurrente (gripe, fiebre)? | `t/10-situaciones/b27/0`; `t/10-situaciones/b27/1`; `t/10-situaciones/b27/3` |
-| f61 | Sistemas y parámetros         | ¿Qué diferencia hay entre Control-IQ y Control-IQ+? (0.35.0)  | `T1/7`; `T1/8`; `T3/1`; `t/04-sistemas/b4/1`                                 |
+| Id  | Tema                          | Pregunta                                                                         | Pasajes                                                                      |
+| --- | ----------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| f51 | Educación y plan de seguridad | ¿Qué hacer si la bomba falla o se queda sin insulina?                            | `t/07-educacion/b11/0`; `t/07-educacion/b11/4`; `t/07-educacion/b13/0`       |
+| f52 | Educación y plan de seguridad | ¿Cuándo confirmar la glucosa con glucemia capilar?                               | `t/02-componentes/b4/1`; `t/10-situaciones/b38/2`                            |
+| f53 | Incidencias y cetonemia       | El sensor pierde la señal: ¿qué hacer?                                           | `t/09-descarga/b22/0`; `t/09-descarga/b22/1`; `t/02-componentes/b4/2`        |
+| f54 | Incidencias y cetonemia       | ¿Qué revisar ante irritación de la piel por sensores o sistemas de infusión?     | `t/09-descarga/b24/2`; `t/09-descarga/b24/1`; `t/09-descarga/b24/4`          |
+| f55 | Incidencias y cetonemia       | ¿Qué revisar ante fallos repetidos de infusión?                                  | `t/09-descarga/b25/0`; `t/09-descarga/b25/1`                                 |
+| f56 | Incidencias y cetonemia       | Tras una corrección con pluma, ¿qué precauciones hay antes de volver a corregir? | `F3/pie/0`; `l/09-descarga/b28/0`                                            |
+| f57 | Descarga y seguimiento        | ¿Cómo manejar una comida rica en grasa o proteína?                               | `T4/5`; `t/09-descarga/b6/0`; `t/09-descarga/b6/1`; `t/09-descarga/b6/2`     |
+| f58 | Situaciones especiales        | ¿Qué precauciones tomar con el sistema en el control del aeropuerto?             | `t/10-situaciones/b43/0`                                                     |
+| f59 | Incidencias y cetonemia       | Demasiadas alarmas: ¿qué hacer con la fatiga por alarmas?                        | `t/09-descarga/b26/1`                                                        |
+| f60 | Situaciones especiales        | ¿Qué hacer ante una enfermedad intercurrente (gripe, fiebre)?                    | `t/10-situaciones/b27/0`; `t/10-situaciones/b27/1`; `t/10-situaciones/b27/3` |
+| f61 | Sistemas y parámetros         | ¿Qué diferencia hay entre Control-IQ y Control-IQ+?                              | `T1/7`; `T1/8`; `T3/1`; `T4/5`; `t/09-descarga/b6/1`; `t/04-sistemas/b4/1`   |
 
-## Estado de revisión de las once nuevas (f51–f61)
+### Estado de revisión
 
-Dos cosas distintas, registradas por separado:
-
-- **Comprobación técnica** (Claude, 11-10-2026): cada pasaje existe en el capítulo, cada pregunta encuentra su ficha y sus variantes la encuentran (pruebas unitarias). Hecha para las once.
-- **Aprobación editorial** (autor): si la pregunta corresponde a sus pasajes y si se enseña así. **Pendiente para las once.**
-
-Cambios del 11-10-2026 tras la revisión de la 0.37 (propuestas del revisor, a validar por el autor): f54 «¿Qué revisar ante irritación de la piel por sensores o sistemas de infusión?»; f55 «¿Qué revisar ante fallos repetidos de infusión?»; f56 acotada a la pluma («Tras una corrección con pluma, ¿qué precauciones hay antes de volver a corregir?»); f58 «¿Qué precauciones tomar con el sistema en el control del aeropuerto?» (solo el pasaje de los controles aeroportuarios); f59 sin el pasaje repetido; f61 con la fila de la Tabla 4 y la frase del apartado 9 sobre el bolo extendido, y la columna de Tandem primero; f51 y f60 con una continuación (Interrupción del sistema; Figura 3). El rótulo de la app «Pasajes del capítulo revisados para esta pregunta» se refiere a la comprobación técnica.
+- **Comprobación técnica** (Claude, 11-10-2026): cada pasaje existe, cada pregunta encuentra su ficha y sus variantes la
+  encuentran (pruebas unitarias). Hecha para las once.
+- **Aprobación editorial** (autor): visto bueno editorial a la correspondencia pregunta–pasajes dado el 11-10-2026 para
+  las once (revisión de la 0.38). Cualquier cambio posterior de título o pasajes vuelve a pasar por aquí.

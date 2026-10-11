@@ -23,18 +23,27 @@ const modulos = import.meta.glob<Interpretacion[]>(
   { import: "default" },
 );
 
+/* Fusión con prioridad explícita: primero las aprobadas, después los borradores, que sustituyen
+   a la aprobada con el mismo id (solo en la copia de revisión, donde existen). No depende del
+   orden alfabético de las rutas («interpretaciones-borrador» va antes que «interpretaciones/»). */
+export function fusionarInterpretaciones(
+  listas: { ruta: string; items: Interpretacion[] }[],
+): Interpretacion[] {
+  const esBorrador = (ruta: string) => ruta.includes("interpretaciones-borrador");
+  const ordenadas = [...listas].sort(
+    (a, b) =>
+      Number(esBorrador(a.ruta)) - Number(esBorrador(b.ruta)) || a.ruta.localeCompare(b.ruta),
+  );
+  const porId = new Map<string, Interpretacion>();
+  for (const l of ordenadas) for (const x of l.items) porId.set(x.id, x);
+  return [...porId.values()];
+}
+
 let todas: Promise<Interpretacion[]> | null = null;
 export function cargarInterpretaciones(): Promise<Interpretacion[]> {
   todas ??= Promise.all(
-    Object.keys(modulos)
-      .sort()
-      .map((k) => modulos[k]()),
-  ).then((listas) => {
-    // Un borrador con el mismo id que una aprobada la sustituye en la copia de revisión.
-    const porId = new Map<string, Interpretacion>();
-    for (const x of listas.flat()) porId.set(x.id, x);
-    return [...porId.values()];
-  });
+    Object.keys(modulos).map((k) => modulos[k]().then((items) => ({ ruta: k, items }))),
+  ).then(fusionarInterpretaciones);
   return todas;
 }
 
