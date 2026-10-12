@@ -8,13 +8,21 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.48.1";
+export const VERSION_APP = "0.48.2";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-12",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — portada sin botones repetidos`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — portada más directa`,
+    detalle: [
+      "Portada: sin el título «Consultar» (cada bloque dice ya qué ofrece); «Para el paciente» lleva a lo que se entrega: la información para pacientes con su PDF, el plan de seguridad por sistema y todas las hojas. La barra de arriba ya no repite el título del capítulo.",
+    ],
+  },
+  {
+    fecha: "2026-10-12",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.48.1 — portada sin botones repetidos",
     detalle: [
       "Portada: fuera los botones «Leer capítulo» y «Para el paciente» de la cabecera (repetían el mapa y el menú). El mapa de Consultar añade abajo, a todo lo ancho, «Leer el capítulo» con el índice, las tablas y las figuras.",
     ],

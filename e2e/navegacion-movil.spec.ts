@@ -8,8 +8,15 @@ test.describe("Navegación y portada (393 px)", () => {
   }) => {
     await page.goto("/#/");
     await expect(
-      page.getByRole("link", { name: "Para el paciente", exact: true }).first(),
+      page
+        .getByRole("navigation", { name: "Barra inferior" })
+        .getByRole("link", { name: "Paciente" }),
     ).toBeVisible();
+    await expect(
+      page
+        .getByRole("region", { name: "Para el paciente" })
+        .getByRole("link", { name: /Plan de seguridad por sistema/ }),
+    ).toBeAttached();
     await expect(
       page.getByRole("navigation", { name: "Barra inferior" }).getByRole("link", { name: "Leer" }),
     ).toBeInViewport();

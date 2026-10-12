@@ -743,7 +743,7 @@ export function Shell({
             <Rotulo compacto />
           </a>
           <span className="hidden min-w-0 flex-1 truncate text-sm text-slate-600 md:block">
-            {titulo || CAPITULO.tituloCorto}
+            {titulo || (ruta.seccion === "" ? "" : CAPITULO.tituloCorto)}
           </span>
           <span className="flex-1 md:hidden" />
           {enLectura && (

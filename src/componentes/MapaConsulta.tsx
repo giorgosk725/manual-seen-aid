@@ -9,11 +9,8 @@ export function MapaConsulta() {
   const hex = CATEGORIA_HEX.consultar;
   return (
     <section aria-labelledby="mapa-consulta" className="space-y-3">
-      <h2
-        id="mapa-consulta"
-        className="font-display text-lg font-medium uppercase tracking-[0.04em] sm:text-xl"
-        style={{ color: hex.ink }}
-      >
+      {/* Cada bloque dice ya qué ofrece: el título del mapa, solo para lectores de pantalla. */}
+      <h2 id="mapa-consulta" className="sr-only">
         Consultar
       </h2>
       <div className="grid gap-2 md:grid-cols-2">

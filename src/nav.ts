@@ -11,8 +11,10 @@ import {
   Columns3,
   Cpu,
   Droplets,
-  Footprints,
+  Files,
+  FileText,
   FlaskConical,
+  Footprints,
   GitBranch,
   GraduationCap,
   Handshake,
@@ -24,10 +26,11 @@ import {
   LayoutGrid,
   Library,
   ListChecks,
-  MessageCircleQuestion,
   ListOrdered,
   ListTree,
+  type LucideIcon,
   MapPinned,
+  MessageCircleQuestion,
   Puzzle,
   Route,
   ScanLine,
@@ -39,7 +42,6 @@ import {
   Telescope,
   TrendingUp,
   Unplug,
-  type LucideIcon,
 } from "lucide-react";
 import { href } from "./rutas";
 import type { DiagramaId } from "./contenido/diagramas";
@@ -209,6 +211,37 @@ export const DESTINOS: Destino[] = [
     descripcion:
       "Las preguntas revisadas, por temas, con los pasajes del capítulo que las responden: el camino cuando la búsqueda libre no da nada.",
   },
+  // Las tres entradas del bloque «Para el paciente» del mapa (no van en el menú).
+  {
+    id: "pac-informacion",
+    etiqueta: "Información para pacientes (y su PDF)",
+    corto: "Información",
+    href: href("pacientes", "informacion"),
+    icono: FileText,
+    cat: "pacientes",
+    descripcion: "Las doce preguntas y respuestas y el mensaje final, para imprimir o descargar.",
+    fuente: "Información para pacientes",
+  },
+  {
+    id: "pac-plan",
+    etiqueta: "Plan de seguridad por sistema",
+    corto: "Plan",
+    href: href("pacientes", "plan"),
+    icono: ShieldCheck,
+    cat: "pacientes",
+    descripcion: "El plan de seguridad del capítulo para el sistema de la persona, con huecos.",
+    fuente: "Plan de seguridad",
+  },
+  {
+    id: "pac-hojas",
+    etiqueta: "Todas las hojas para entregar",
+    corto: "Hojas",
+    href: href("pacientes"),
+    icono: Files,
+    cat: "pacientes",
+    descripcion: "Hojas breves (cetonas, pruebas y cirugía…) y el resto de materiales.",
+    fuente: "Hojas para imprimir",
+  },
   {
     id: "pacientes",
     etiqueta: "Para el paciente",
@@ -292,7 +325,11 @@ export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[]; ancho?:
     ids: ["situacion", "figura-3", "interrupcion"],
   },
   { id: "en-consulta", titulo: "En la consulta", ids: ["inicio", "descarga"] },
-  { id: "pacientes", titulo: "Para el paciente", ids: ["pacientes"] },
+  {
+    id: "pacientes",
+    titulo: "Para el paciente",
+    ids: ["pac-informacion", "pac-plan", "pac-hojas"],
+  },
   // La lectura, abajo y a todo lo ancho, con sus tres entradas en fila.
   { id: "leer", titulo: "Leer el capítulo", ids: ["capitulo", "tablas", "visual"], ancho: true },
 ];
