@@ -282,6 +282,8 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
       «Consultar» opening `CONSULTA_RAPIDA` (nav.ts). Home page without the two doors; header
       lockup «Manual · de Endocrinología y Nutrición | Complemento interactivo». «Sobre» is one
       paragraph plus a folded block with build data and the materials register.
+    - **Version number lives in `src/version.ts`** (not in `contenido/cambios.ts`): the 80 KB
+      changelog stays out of the entry chunk (entry 165 → 141 KB in 0.51.0). Bump it there.
     - **Drafts.** New clinical, sheet or quiz wording goes to `borradores/` for the author;
       nothing is marked approved without a record. Details and pending items:
       `docs/EDICION_EDITORIAL.md`.

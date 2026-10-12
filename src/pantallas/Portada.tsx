@@ -5,7 +5,7 @@
 import { ArrowRight, BookOpen, ExternalLink } from "lucide-react";
 import { CAPITULO } from "../contenido";
 import { MapaConsulta } from "../componentes/MapaConsulta";
-import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
+import { VERSION_APP } from "../version";
 import { href } from "../rutas";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
 import { APARTADOS } from "../contenido";
@@ -51,7 +51,6 @@ function SeguirLeyendo() {
 }
 
 export function Portada() {
-  const ultimoCap = CAMBIOS.find((c) => c.ambito === "capitulo")!;
   return (
     <div className="space-y-4 sm:space-y-7">
       <section
@@ -107,7 +106,7 @@ export function Portada() {
           rel="noopener noreferrer"
           className="inline-flex min-h-11 items-center gap-1 font-semibold text-slate-700 hover:underline"
         >
-          Capítulo publicado en el Manual SEEN el {fecha(ultimoCap.fecha)}{" "}
+          Capítulo publicado en el Manual SEEN el {fecha(CAPITULO.fechaFuenteISO)}{" "}
           <ExternalLink size={13} aria-hidden="true" />
         </a>
         <a

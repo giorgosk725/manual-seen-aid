@@ -19,7 +19,7 @@ import { imprimirRegion } from "../imprimir";
 import { CabeceraEditorial } from "../ui";
 import { useIrAlCambiar } from "../irAlCambiar";
 import { CAPITULO } from "../contenido";
-import { VERSION_APP } from "../contenido/cambios";
+import { VERSION_APP } from "../version";
 import { Lineas } from "../texto";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { PiezaVista } from "../componentes/Piezas";

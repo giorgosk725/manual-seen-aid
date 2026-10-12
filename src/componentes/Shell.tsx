@@ -51,7 +51,7 @@ import { SugerenciasBusqueda } from "./SugerenciasBusqueda";
 import { SinResultados } from "./SinResultados";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
 import { AVISO_BUSQUEDA, irABuscar, ponerConsulta } from "../consultaBuscar";
-import { VERSION_APP } from "../contenido/cambios";
+import { VERSION_APP } from "../version";
 
 /* ---------- Espera mientras llega una pantalla perezosa ---------- */
 function CargandoPantalla() {

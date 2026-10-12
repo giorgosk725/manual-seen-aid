@@ -2,7 +2,7 @@
    cuándo se construyó, y la fuente clínica con su huella. Un solo sitio para portada, «Sobre»,
    hojas y aviso de actualización. */
 import { CAPITULO } from "./contenido";
-import { VERSION_APP } from "./contenido/cambios";
+import { VERSION_APP } from "./version";
 
 const build = typeof __BUILD__ !== "undefined" ? __BUILD__ : { sha: "desarrollo", fecha: "" };
 

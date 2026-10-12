@@ -21,7 +21,7 @@ import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { HOJAS_EXTRA, hojaExtraPorId } from "../hojas";
 import { Texto } from "../texto";
 import { abrirPlegables, imprimirRegion } from "../imprimir";
-import { VERSION_APP } from "../contenido/cambios";
+import { VERSION_APP } from "../version";
 import { fechaCorta, material } from "../materiales";
 
 const hex = CATEGORIA_HEX.pacientes;

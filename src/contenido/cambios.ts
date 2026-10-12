@@ -8,7 +8,8 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.51.0";
+import { VERSION_APP } from "../version";
+export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
