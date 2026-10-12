@@ -8,13 +8,24 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.44.0";
+export const VERSION_APP = "0.45.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-12",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — el móvil, más compacto`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — el móvil, más compacto (segunda tanda)`,
+    detalle: [
+      "Selector de sistemas (Sistemas AID, Iniciar un sistema, tablas y situaciones): en el móvil, las cuatro casillas en una sola fila, con la marca y el punto de color arriba y el nombre debajo; «Los cuatro» y la pista, en la fila siguiente.",
+      "Cetonemia paso a paso: los cuatro tramos de β-OHB en dos por dos. Revisar la descarga: «Paso n de 8» y el selector de paso en la misma fila.",
+      "Apartados: las páginas e «Imprimir / PDF» comparten fila en el móvil. Sistemas comparados: «Imprimir» junto al título. Criterios de elección: edad y peso en una fila. Casos guiados: «Empezar» en la línea de los datos de cada caso.",
+      "Entradillas más cortas en Interrupción del sistema, Criterios de elección, Figuras y diagramas, Revisar la descarga, Casos guiados, Autoevaluación, Buscar, Tarjetas de repaso y Hojas breves. En Para el paciente, la descripción de cada hoja ocupa como mucho dos líneas en el móvil.",
+    ],
+  },
+  {
+    fecha: "2026-10-12",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.44.0 — el móvil, más compacto",
     detalle: [
       "Portada: «Leer capítulo» y «Para el paciente» en una sola fila también en el móvil y sin la frase de entrada del mapa de consulta. Bajo el nombre va la afiliación, los dos en letra más discreta (la afiliación ya no está al pie).",
       "Para el paciente: cada hoja empieza con una línea de migas («Para el paciente › …») en lugar de las pastillas; los cuatro sistemas del plan de seguridad caben en una fila, y el formato e «Imprimir» comparten fila, con la explicación debajo en una línea.",

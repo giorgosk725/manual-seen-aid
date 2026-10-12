@@ -314,7 +314,7 @@ export function TablaVista({
                 <button
                   type="button"
                   onClick={() => setSel(() => [])}
-                  className="tap-44 rounded-md px-3 py-1.5 text-sm font-semibold text-slate-600 underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                  className="tap-44 shrink-0 whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-semibold text-slate-600 underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                 >
                   Los cuatro
                 </button>

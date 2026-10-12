@@ -42,7 +42,10 @@ describe("App", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Sistemas AID comercializados en España",
     );
-    expect(screen.getByText(/pp\. 3–4 del capítulo/)).toBeInTheDocument();
+    // «del capítulo» va en su propio elemento (en el móvil solo se ven las páginas).
+    expect(
+      screen.getAllByText(/^pp\. 3–4$/).some((el) => el.textContent === "pp. 3–4 del capítulo"),
+    ).toBe(true);
     expect(screen.getByRole("table", { name: /Tabla 1/ })).toBeInTheDocument();
     expect(screen.getAllByText(/peso 9–200 kg, DTD 5–200 UI\/día/).length).toBeGreaterThan(0);
   });

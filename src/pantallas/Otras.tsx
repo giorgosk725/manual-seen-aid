@@ -224,8 +224,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
     <div>
       <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1}>
         <p className="text-sm text-slate-600">
-          Escribe una duda con tus palabras: arriba, el pasaje que mejor la responde, con su página;
-          debajo, el resto.
+          Escribe una duda con tus palabras: arriba, el pasaje que mejor la responde, con su página.
         </p>
       </CabeceraEditorial>
       <label className="sr-only" htmlFor="buscar-q">
@@ -750,8 +749,8 @@ export function Test() {
     <div>
       <CabeceraEditorial titulo="Autoevaluación" hex={CATEGORIA_HEX.aprender} level={1}>
         <p className="text-sm text-slate-600">
-          Diez preguntas; al responder, la explicación y las frases del capítulo que la respaldan.
-          Para las cifras y las siglas,{" "}
+          Diez preguntas, con la explicación y las frases del capítulo que la respaldan. Cifras y
+          siglas:{" "}
           <a href={href("repaso")} className="font-semibold text-slate-800 underline">
             tarjetas de repaso
           </a>

@@ -72,15 +72,17 @@ function Numero({
   unidad,
   valor,
   onChange,
+  className = "",
 }: {
   id: string;
   etiqueta: string;
   unidad: string;
   valor?: number;
   onChange: (v?: number) => void;
+  className?: string;
 }) {
   return (
-    <label className="block text-sm">
+    <label className={`block text-sm ${className}`}>
       <span className="mb-1 block font-semibold text-slate-800">
         {etiqueta} <span className="font-normal text-slate-500">({unidad})</span>
       </span>
@@ -153,9 +155,8 @@ export function Elegir({ q }: { q?: string }) {
       </div>
       <CabeceraEditorial titulo="Criterios de elección" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Los factores que el capítulo pide integrar (apartado 6, p. 6), contrastados con la Tabla 1
-          (pp. 3–4). Cada sistema enseña la celda literal de la tabla; lo que la tabla no dice queda
-          como «no consta». Orienta la decisión compartida: no la sustituye.
+          Los factores del apartado 6 (p. 6) frente a la Tabla 1, celda a celda («no consta» si la
+          tabla no lo dice). Orienta la decisión compartida; no la sustituye.
         </p>
       </CabeceraEditorial>
 
@@ -187,7 +188,8 @@ export function Elegir({ q }: { q?: string }) {
           <h2 className="text-xs font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
             Factores clínicos
           </h2>
-          <div className="mt-2 grid gap-3 sm:grid-cols-3">
+          {/* En el móvil, edad y peso en una fila y la dosis debajo (antes, tres filas). */}
+          <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
             <Numero
               id="edad"
               etiqueta="Edad"
@@ -208,6 +210,7 @@ export function Elegir({ q }: { q?: string }) {
               unidad="UI/día"
               valor={c.dtd}
               onChange={(v) => poner({ dtd: v })}
+              className="col-span-2 sm:col-span-1"
             />
           </div>
           <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm">

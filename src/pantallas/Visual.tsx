@@ -48,8 +48,8 @@ export function Visual() {
     <div>
       <CabeceraEditorial titulo="Figuras y diagramas" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Figuras, tablas y diagramas del capítulo: los diagramas hechos a partir de su texto, las
-          figuras originales con zoom, las tablas y los sistemas.
+          Diagramas hechos con el texto del capítulo, las figuras originales con zoom, las tablas y
+          los sistemas.
         </p>
       </CabeceraEditorial>
       <div className="no-imprimir mb-4">

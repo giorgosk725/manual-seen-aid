@@ -175,7 +175,8 @@ function FilaHoja({
       )}
       <span className="min-w-0 flex-1">
         <span className="block font-semibold text-slate-900">{titulo}</span>
-        <span className="block text-xs text-slate-600">{detalle}</span>
+        {/* En el móvil, la descripción en dos líneas como mucho: la hoja lo dice entero. */}
+        <span className="line-clamp-2 text-xs text-slate-600 sm:line-clamp-none">{detalle}</span>
         {borrador && (
           <span className="mt-1 inline-block rounded-full bg-amber-100 px-2 text-[11px] font-semibold text-amber-900">
             Borrador en revisión
@@ -227,9 +228,8 @@ export function HubPacientes() {
           Hojas breves por situación
         </h2>
         <p className="mt-1 text-sm text-slate-600">
-          Para entregar según lo que haga falta ese día: dos a partir de la Figura 3 y de la Tabla 6
-          (cetonas; pruebas y cirugía) y tres con las mismas preguntas y respuestas de la
-          Información para pacientes.
+          Según lo que haga falta ese día: cetonas (Figura 3), pruebas y cirugía (Tabla 6) y tres
+          extractos de la Información para pacientes.
         </p>
         <ul className="mt-3 divide-y rounded-xl border bg-white" style={{ borderColor: "#e6e6e6" }}>
           {HOJAS_EXTRA.map((h) => (

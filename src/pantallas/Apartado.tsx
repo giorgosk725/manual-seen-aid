@@ -132,7 +132,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         />
       </div>
       <header className="mb-4 sm:mb-6">
-        <div className="no-imprimir mb-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+        <div className="no-imprimir mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:mb-3">
           <a
             href={href("capitulo")}
             className="inline-flex min-h-11 items-center font-semibold text-slate-600 hover:underline"
@@ -166,8 +166,9 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
               <span className="pagina-badge rounded-full bg-slate-100 px-2 py-0.5">
                 {apartado.paginas[0] === apartado.paginas[1]
                   ? `p. ${apartado.paginas[0]}`
-                  : `pp. ${apartado.paginas[0]}–${apartado.paginas[1]}`}{" "}
-                del capítulo
+                  : `pp. ${apartado.paginas[0]}–${apartado.paginas[1]}`}
+                {/* En el móvil, solo las páginas: así cabe Imprimir en la misma fila. */}
+                <span className="hidden sm:inline"> del capítulo</span>
               </span>
               <span className="no-imprimir flex flex-wrap items-center gap-1.5">
                 <BotonImprimir
@@ -181,7 +182,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
             </div>
           </div>
         </div>
-        <div aria-hidden="true" className="regla-seccion mt-4 flex h-px w-full">
+        <div aria-hidden="true" className="regla-seccion mt-3 flex h-px w-full sm:mt-4">
           <span className="w-16" style={{ background: colorApartado(apartado.n) }} />
           <span className="flex-1" />
         </div>

@@ -726,23 +726,26 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
     <div>
       <CabeceraEditorial titulo="Revisar la descarga" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          La Tabla 5 del capítulo (pp. 13–14) paso a paso: ocho pasos, de la visión global a la
-          causa y al plan de cambios.
+          La Tabla 5 (pp. 13–14) en ocho pasos: de la visión global a la causa y al plan de cambios.
         </p>
       </CabeceraEditorial>
-      <div className="no-imprimir mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-        <span className="font-semibold text-slate-900">
+      {/* «Paso n de 8» y el selector en una sola fila (en el móvil, sin el rótulo visible). */}
+      <div className="no-imprimir mb-3 flex items-center gap-x-3 text-sm">
+        <span className="shrink-0 font-semibold text-slate-900">
           Paso {n} de {t.filas.length}
         </span>
-        <label className="inline-flex min-h-11 items-center gap-2 sm:min-h-9">
-          <span className="text-xs font-semibold" style={{ color: hex.strong }}>
+        <label className="inline-flex min-h-11 min-w-0 flex-1 items-center gap-2 sm:min-h-9 sm:flex-none">
+          <span
+            className="sr-only text-xs font-semibold sm:not-sr-only"
+            style={{ color: hex.strong }}
+          >
             Cambiar paso
           </span>
           <select
             aria-label="Cambiar paso"
             value={n}
             onChange={(e) => ir(Number(e.target.value))}
-            className="max-w-[60vw] rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:max-w-md"
+            className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:max-w-md"
           >
             {t.filas.map((f, i) => (
               <option key={i} value={i + 1}>
@@ -917,8 +920,8 @@ export function Interrupcion({ tramo }: { tramo?: string }) {
     <div>
       <CabeceraEditorial titulo="Interrupción del sistema" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          El subapartado «Interrupción del sistema y pauta alternativa» (p. 9) como línea de tiempo:
-          elige cuánto va a durar la interrupción y lee el párrafo que corresponde.
+          «Interrupción del sistema y pauta alternativa» (p. 9): elige cuánto va a durar y lee su
+          párrafo.
         </p>
       </CabeceraEditorial>
       <div className="no-imprimir mb-4">

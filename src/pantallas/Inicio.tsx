@@ -625,7 +625,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
       </CabeceraEditorial>
 
       <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-        Sistema (sus indicaciones y los criterios comunes)
+        Sistema<span className="hidden sm:inline"> (sus indicaciones y los criterios comunes)</span>
       </div>
       <div className="mb-4">
         <CasillasSistema

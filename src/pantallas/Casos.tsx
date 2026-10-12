@@ -466,14 +466,19 @@ export function Casos({ id, paso }: { id?: string; paso?: string }) {
     <div className="space-y-4">
       <CabeceraEditorial titulo="Casos guiados" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          En cada paso se elige una opción y se ve lo que indica el capítulo, con sus frases
-          literales. Personas ficticias, sin dosis calculadas.
+          En cada paso, una opción y lo que indica el capítulo, literal. Personas ficticias, sin
+          dosis calculadas.
         </p>
       </CabeceraEditorial>
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {CASOS.map((c) => {
           const pr = progreso[c.id];
           const aMedias = pr && !pr.hecho && pr.paso > 0;
+          const estado = pr?.hecho
+            ? "Hecho · Repetir"
+            : aMedias
+              ? `Paso ${pr.paso + 1} de ${c.pasos.length} · Continuar`
+              : "Empezar";
           return (
             <li key={c.id}>
               <a
@@ -484,20 +489,24 @@ export function Casos({ id, paso }: { id?: string; paso?: string }) {
                 <span className="text-[15px] font-bold leading-snug text-slate-900">
                   {c.titulo}
                 </span>
-                <span className="mt-1 text-xs text-slate-600">
-                  {c.sistema} · {c.pasos.length} pasos · {c.paginas}
+                {/* En el móvil, «Empezar» va en la línea de los datos (una fila menos). */}
+                <span className="mt-1 flex items-baseline justify-between gap-2 text-xs text-slate-600">
+                  <span>
+                    {c.sistema} · {c.pasos.length} pasos · {c.paginas}
+                  </span>
+                  <span
+                    className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold sm:hidden"
+                    style={{ color: hex.ink }}
+                  >
+                    {estado} <ArrowRight size={13} aria-hidden="true" />
+                  </span>
                 </span>
-                <span className="mt-2 text-xs text-slate-600">{c.temas}</span>
+                <span className="mt-1 text-xs text-slate-600 sm:mt-2">{c.temas}</span>
                 <span
-                  className="mt-auto inline-flex items-center gap-1 pt-2 text-sm font-semibold"
+                  className="mt-auto hidden items-center gap-1 pt-2 text-sm font-semibold sm:inline-flex"
                   style={{ color: hex.ink }}
                 >
-                  {pr?.hecho
-                    ? "Hecho · Repetir"
-                    : aMedias
-                      ? `Paso ${pr.paso + 1} de ${c.pasos.length} · Continuar`
-                      : "Empezar"}{" "}
-                  <ArrowRight size={13} aria-hidden="true" />
+                  {estado} <ArrowRight size={13} aria-hidden="true" />
                 </span>
               </a>
             </li>

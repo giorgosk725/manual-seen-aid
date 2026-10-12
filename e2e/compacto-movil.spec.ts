@@ -90,3 +90,84 @@ test.describe("Móvil compacto (360 px)", () => {
     expect(cancelado).toBe(true);
   });
 });
+
+/* 0.45.0: segunda tanda («haz todo lo que consideres en esa dirección»). */
+test.describe("Móvil compacto, segunda tanda (360 px)", () => {
+  test("el selector de sistemas: las cuatro casillas en una fila (Sistemas, Iniciar, Tabla 4)", async ({
+    page,
+  }) => {
+    for (const [ruta, grupo] of [
+      ["/#/sistemas", "Sistemas"],
+      ["/#/consultar/inicio/inicio:omnipod-5", "Sistema"],
+      ["/#/consultar/tablas/T4", "Filtrar por sistema"],
+    ] as const) {
+      await page.goto(ruta);
+      const b = page.getByRole("group", { name: grupo, exact: true }).getByRole("button");
+      await expect(b.first(), ruta).toBeVisible();
+      for (const i of [1, 2, 3]) await mismaFila(b.nth(0), b.nth(i));
+      // Ningún nombre se sale de su casilla.
+      const fuera = await b.evaluateAll((bs) =>
+        bs.slice(0, 4).some((x) => {
+          const n = [...x.querySelectorAll(":scope > span")]
+            .filter((s) => getComputedStyle(s).display !== "none")
+            .pop()!;
+          const r = document.createRange();
+          r.selectNodeContents(n);
+          return [...r.getClientRects()].some((c) => c.right > x.getBoundingClientRect().right);
+        }),
+      );
+      expect(fuera, ruta).toBe(false);
+    }
+  });
+
+  test("cetonemia: los cuatro tramos en 2 × 2", async ({ page }) => {
+    await page.goto("/#/consultar/figura-3");
+    const t = page
+      .getByRole("navigation", { name: "Ir directamente al tramo" })
+      .getByRole("button");
+    await expect(t).toHaveCount(4);
+    await mismaFila(t.nth(0), t.nth(1));
+    await mismaFila(t.nth(2), t.nth(3));
+  });
+
+  test("revisar la descarga: «Paso n de 8» y el selector en una fila", async ({ page }) => {
+    await page.goto("/#/consultar/descarga/3");
+    await mismaFila(
+      page.getByText("Paso 3 de 8"),
+      page.getByRole("combobox", { name: "Cambiar paso" }),
+    );
+  });
+
+  test("apartado: páginas e Imprimir / PDF en una fila", async ({ page }) => {
+    await page.goto("/#/capitulo/07-educacion");
+    await mismaFila(
+      page.locator("main header .pagina-badge").first(),
+      page
+        .locator("main header")
+        .first()
+        .getByRole("button", { name: /Imprimir/ }),
+    );
+  });
+
+  test("comparación de sistemas: Imprimir junto al título", async ({ page }) => {
+    await page.goto("/#/sistemas/todos/funciona");
+    await mismaFila(
+      page.getByRole("heading", { level: 1, name: "Sistemas AID" }),
+      page.getByRole("button", { name: /Imprimir/ }),
+    );
+  });
+
+  test("criterios de elección: edad y peso en una fila", async ({ page }) => {
+    await page.goto("/#/sistemas/elegir");
+    await mismaFila(page.getByLabel(/^Edad/), page.getByLabel(/^Peso/));
+  });
+
+  test("casos guiados: «Empezar» en la línea de los datos", async ({ page }) => {
+    await page.goto("/#/casos");
+    const tarjeta = page.getByRole("link", { name: /Hiperglucemia que no baja/ });
+    await mismaFila(
+      tarjeta.getByText(/pasos ·/),
+      tarjeta.getByText("Empezar").filter({ visible: true }),
+    );
+  });
+});

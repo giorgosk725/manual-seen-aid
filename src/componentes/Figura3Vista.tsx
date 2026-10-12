@@ -282,7 +282,8 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
         <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-slate-700">
           <ArrowDown size={13} aria-hidden="true" /> ¿Ya tienes el β-OHB? Ir a su rama:
         </div>
-        <div className="flex flex-wrap gap-1.5">
+        {/* En el móvil, los cuatro tramos en 2 × 2 (antes, una fila cada uno). */}
+        <div className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-wrap">
           {FIGURA3.tramos.map((t) => {
             const hex = TRAMO_HEX[t.clave];
             return (
@@ -291,7 +292,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
                 type="button"
                 onClick={() => irATramo(t.clave)}
                 aria-label={`Ir a la rama: ${t.rango}`}
-                className="inline-flex min-h-9 items-center rounded-full border bg-white px-3 text-xs font-bold transition hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                className="inline-flex min-h-9 items-center justify-center rounded-lg border bg-white px-2 py-1 text-center text-xs font-bold leading-tight transition hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:rounded-full sm:px-3 sm:py-0"
                 style={{ borderColor: hex.border, color: hex.ink }}
               >
                 {t.rango}

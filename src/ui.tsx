@@ -506,12 +506,15 @@ export function CabeceraEditorial({
   titulo,
   hex,
   level = 2,
+  accion,
   children,
 }: {
   numero?: string | number;
   titulo: ReactNode;
   hex: { strong: string; ink: string };
   level?: 1 | 2 | 3;
+  /* Una acción breve (Imprimir) a la derecha del título: no ocupa una fila propia. */
+  accion?: ReactNode;
   children?: ReactNode;
 }) {
   const H = `h${level}` as "h1" | "h2" | "h3";
@@ -531,6 +534,7 @@ export function CabeceraEditorial({
         >
           {titulo}
         </H>
+        {accion && <div className="no-imprimir ml-auto shrink-0">{accion}</div>}
       </div>
       {children && <div className="mt-1">{children}</div>}
       <div aria-hidden="true" className="regla-seccion mt-2 flex h-px w-full">

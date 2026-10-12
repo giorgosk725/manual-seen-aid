@@ -910,7 +910,7 @@ function BarraSistemas({
               type="button"
               aria-pressed={ids.length === 0}
               onClick={() => window.location.replace(rutaCon([]))}
-              className="tap-44 inline-flex items-center rounded-md border px-2.5 py-1 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+              className="tap-44 inline-flex shrink-0 items-center whitespace-nowrap rounded-md border px-2.5 py-1 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               style={
                 ids.length === 0
                   ? { borderColor: SEEN.burdeos, background: "#f7eff3", color: "#1e293b" }
@@ -1233,7 +1233,18 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
   const nombres = cols.map((c) => TABLAS.T1.columnas[c]);
   return (
     <div ref={ref} className="imprimible">
-      <CabeceraEditorial titulo="Sistemas AID" hex={hex} level={1}>
+      <CabeceraEditorial
+        titulo="Sistemas AID"
+        hex={hex}
+        level={1}
+        accion={
+          seccion && (
+            <BotonImprimir objetivo={ref} compacto>
+              Imprimir
+            </BotonImprimir>
+          )
+        }
+      >
         <p className="text-sm text-slate-600">
           {!seccion
             ? "Los cuatro sistemas comercializados en España, de uno en uno o comparados."
@@ -1243,13 +1254,6 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
                 ? `Comparando ${listaNombres(nombres)}.`
                 : "Los cuatro sistemas, uno junto a otro."}
         </p>
-        {seccion && (
-          <div className="no-imprimir mt-2">
-            <BotonImprimir objetivo={ref} compacto>
-              Imprimir
-            </BotonImprimir>
-          </div>
-        )}
       </CabeceraEditorial>
       <BarraSistemas ids={ids} seccion={seccion} />
       {!seccion ? (
