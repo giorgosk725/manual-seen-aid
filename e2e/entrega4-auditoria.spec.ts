@@ -3,12 +3,9 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Entrega 4 (0.35.0)", () => {
-  test("Iniciar: la tarea va en la ruta, enlaza su fuente y vuelve tras Atrás", async ({
-    page,
-  }) => {
-    await page.goto("/#/consultar/inicio/inicio:omnipod-5");
-    await page.getByRole("button", { name: "Pauta previa y transición desde MDI" }).click();
-    await expect(page).toHaveURL(/#\/consultar\/inicio\/inicio:omnipod-5:transicion$/);
+  test("Iniciar: el paso va en la ruta, enlaza su fuente y vuelve tras Atrás", async ({ page }) => {
+    await page.goto("/#/consultar/inicio/inicio:omnipod-5:transicion");
+    await page.getByRole("button", { name: "Múltiples dosis (plumas)" }).click();
     await expect(page.getByText(/Reducción de la DTD al pasar de MDI/)).toBeVisible();
     await page
       .getByRole("link", { name: /Tabla 2, p\. 10/ })
@@ -20,13 +17,14 @@ test.describe("Entrega 4 (0.35.0)", () => {
     await page.goBack();
     await expect(page).toHaveURL(/:transicion$/);
     await expect(page.getByText(/Reducción de la DTD al pasar de MDI/)).toBeVisible();
-    // Un enlace antiguo con aspecto abre la tarea que contiene esa pieza.
+    await expect(page.getByRole("button", { name: "Múltiples dosis (plumas)" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    // Un enlace antiguo con aspecto abre el paso que contiene esa pieza.
     await page.goto("/#/consultar/inicio/inicio:omnipod-5:a4");
-    await expect(
-      page.getByRole("button", { name: "Basal, ratio y factor de sensibilidad" }),
-    ).toHaveAttribute("aria-expanded", "true");
+    await expect(page.getByRole("heading", { name: /^2\.\s*Programación inicial/ })).toBeVisible();
   });
-
   test("una comparación entre variantes no añade «También sobre»", async ({ page }) => {
     await page.goto(
       "/#/buscar/%C2%BFQu%C3%A9%20diferencia%20hay%20entre%20Control-IQ%20y%20Control-IQ%2B%3F",

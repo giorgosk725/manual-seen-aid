@@ -58,16 +58,12 @@ test.describe("Aprobado el 11-10 (0.37.0)", () => {
     await expect(page.getByText("Qué podemos concluir")).toBeVisible();
   });
 
-  test("«Cómo leer esta tabla» en la Tabla 3 y «Cómo interpretar este hallazgo» en el paso 7", async ({
+  test("sin «Cómo leer esta tabla»; «Cómo interpretar este hallazgo» sigue en el paso 7", async ({
     page,
   }) => {
     await page.goto("/#/consultar/tablas/T3");
-    const leer = page.getByText("Cómo leer esta tabla").first();
-    await expect(leer).toBeVisible();
-    await leer.click();
-    await expect(
-      page.getByText(/Un mismo parámetro no hace lo mismo en cada sistema/),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByText("Cómo leer esta tabla")).toHaveCount(0);
     await page.goto("/#/consultar/descarga/7");
     await expect(page.getByText("Cómo interpretar este hallazgo")).toBeVisible();
     await expect(page.getByText("Cómo leer esta tabla")).toHaveCount(0);

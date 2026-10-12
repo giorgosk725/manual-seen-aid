@@ -14,9 +14,9 @@ test.describe("Pertinencia y continuación (0.42.0)", () => {
       page.getByText(/Control-IQ frente a Control-IQ\+|diferencia hay entre Control-IQ/),
     ).toHaveCount(0);
     await expect(
-      page.getByRole("link", { name: /Seguir en: Iniciar un sistema · Basal, ratio/ }),
+      page.getByRole("link", { name: /Seguir en: Iniciar un sistema · Programación inicial/ }),
     ).toBeVisible();
-    await expect(page.getByText("Cómo leer esta tabla").first()).toBeVisible();
+    await expect(page.getByText("Cómo leer esta tabla")).toHaveCount(0);
   });
 
   test("f61: la columna de Tandem, otros sistemas plegados y los cuatro como ampliación", async ({

@@ -3,16 +3,14 @@
    con el sistema elegido o los cuatro, y la hoja de comprobación como herramienta del recorrido.
    El contenido sale de inicio.ts (referencias al texto literal); aquí solo se pinta. */
 import { useEffect, useRef, useState } from "react";
+import { ArrowRight, Check, ChevronDown, ChevronLeft, ChevronRight, Printer } from "lucide-react";
 import {
-  ArrowRight,
-  Check,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ListChecks,
-  Printer,
-} from "lucide-react";
-import { PASOS_GUIA, limpiarRespuestas, preguntasActivas } from "../guia-inicio";
+  PASOS_GUIA,
+  limpiarRespuestas,
+  pasoDeRuta,
+  piezasDePaso,
+  preguntasActivas,
+} from "../guia-inicio";
 import { GLOSARIO, TABLAS } from "../contenido";
 import { ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { SIS_IDS } from "../situaciones";
@@ -24,7 +22,6 @@ import { CAPITULO } from "../contenido";
 import { VERSION_APP } from "../contenido/cambios";
 import { Lineas } from "../texto";
 import { CasillasSistema } from "../componentes/CasillasSistema";
-import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { PiezaVista } from "../componentes/Piezas";
 import { siglasEn } from "../siglas";
 import { CATEGORIA_HEX } from "../tokens";
@@ -63,7 +60,6 @@ function siglasPorPiezas(piezas: Pieza[], sis?: number): Set<string>[] {
 }
 
 const capitalizar = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-const esDeTabla2 = (p: Pieza) => (p.t === "fila" && p.tabla === "T2") || p.t === "inicializacion";
 
 /* Lo elegido y lo marcado en la guía vive en memoria mientras la app está abierta: sobrevive a
    abrir una fuente y volver, y se va al recargar o al pulsar «Reiniciar». No se guarda nada. */
@@ -113,8 +109,8 @@ function Hoja({ sis }: { sis?: number }) {
         <span className="text-xs text-slate-600">
           Una cara A4.{" "}
           {hechos.size > 0
-            ? "Resume lo marcado en la guía de esta consulta (no se guarda). "
-            : "Lo que marques en la guía paso a paso sale marcado aquí. "}
+            ? "Resume lo marcado en el inicio paso a paso de esta consulta (no se guarda). "
+            : "Lo que marques en el inicio paso a paso sale marcado aquí. "}
           {sistema ? "" : "Elige el sistema para que salga solo su línea de inicio."}
         </span>
         {hechos.size > 0 && (
@@ -269,7 +265,6 @@ function TareaVista({
             ))}
           </div>
           <LineaFuente fuentes={fuentes} />
-          {tarea.piezas.some((i) => esDeTabla2(fase.piezas[i])) && <ComoInterpretar tabla="T2" />}
           {siguiente && (
             <p className="mt-2">
               <a
@@ -291,21 +286,22 @@ function LineaFuente({ fuentes }: { fuentes: { texto: string; ruta: string }[] }
   return <FuentePie fuentes={fuentes} className="mt-1" />;
 }
 
-/* Guía paso a paso, con un paciente delante: seis pasos; las preguntas eligen qué texto del
-   capítulo se enseña y las casillas se marcan durante la consulta. No se guarda nada (ni las
-   respuestas ni lo marcado): sin datos del paciente. */
-function GuiaInicio({
+/* La fase «Inicio del sistema», paso a paso y con la persona delante: cinco pasos en el orden en
+   que se trabaja. Las preguntas eligen qué pasajes se enseñan; las casillas se marcan durante la
+   consulta. Lo elegido y lo marcado vive en memoria mientras la app está abierta (guiaMemoria). */
+function PasosInicio({
   sis,
   paso,
-  onFases,
-  onHoja,
+  onAntesDelPrimero,
+  onTrasElUltimo,
 }: {
   sis?: number;
+  /* Índice del paso (0-4). */
   paso: number;
-  onFases: () => void;
-  onHoja: () => void;
+  onAntesDelPrimero: () => void;
+  onTrasElUltimo: () => void;
 }) {
-  const n = Math.min(PASOS_GUIA.length, Math.max(1, paso));
+  const n = Math.min(PASOS_GUIA.length, Math.max(1, paso + 1));
   const p = PASOS_GUIA[n - 1];
   const [resp, setRespEstado] = useState<Record<string, string>>(guiaMemoria.resp);
   const [hechos, setHechosEstado] = useState<Set<string>>(guiaMemoria.hechos);
@@ -322,13 +318,11 @@ function GuiaInicio({
     setResp({});
     setHechos(() => new Set());
   };
-  const ir = (k: number) => elegirRuta("consultar", "inicio", detalleDe(GUIA, sis, String(k)));
+  const ir = (k: number) =>
+    elegirRuta("consultar", "inicio", detalleDe("inicio", sis, PASOS_GUIA[k - 1].id));
   const alPaso = useIrAlCambiar(String(n), "paso-guia");
   const preguntas = preguntasActivas(p, resp);
-  const elegidas = preguntas.flatMap(
-    (q) => q.opciones.find((o) => o.id === resp[q.id])?.piezas ?? [],
-  );
-  const piezas = [...p.piezas, ...elegidas];
+  const piezas = piezasDePaso(p, resp);
   const siglas = siglasPorPiezas(piezas, sis);
   const hoja = hojaDeComprobacion(sis);
   const lista =
@@ -348,48 +342,12 @@ function GuiaInicio({
   const boton = (on: boolean) =>
     `inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`;
   return (
-    <section
-      id="paso-guia"
-      className="pantalla-in scroll-mt-24 rounded-2xl border bg-white px-4 pb-3 pt-4"
-      style={{ borderColor: "#e6e6e6" }}
-      aria-labelledby="guia-titulo"
-    >
-      <div className="mb-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-          Guía de inicio{sis !== undefined ? ` · ${CORTOS[sis]}` : ""} · Paso {n} de{" "}
-          {PASOS_GUIA.length}
-        </p>
-        <span className="flex flex-wrap gap-x-3">
-          <button
-            type="button"
-            onClick={onFases}
-            className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
-          >
-            Consultar por fases
-          </button>
-          <button
-            type="button"
-            onClick={onHoja}
-            className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
-          >
-            Hoja de comprobación
-          </button>
-          {(Object.keys(resp).length > 0 || hechos.size > 0) && (
-            <button
-              type="button"
-              onClick={reiniciar}
-              className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
-            >
-              Reiniciar la guía
-            </button>
-          )}
-        </span>
-      </div>
-      <ol className="mb-3 flex flex-wrap gap-1.5" aria-label="Pasos de la guía">
+    <div id="paso-guia" className="scroll-mt-24">
+      <ol className="mb-3 grid gap-1.5 sm:grid-cols-5" aria-label="Pasos de la fase">
         {PASOS_GUIA.map((x, i) => {
           const on = i === n - 1;
           return (
-            <li key={x.id}>
+            <li key={x.id} className="min-w-0">
               <button
                 type="button"
                 aria-current={on ? "step" : undefined}
@@ -398,26 +356,45 @@ function GuiaInicio({
                   alPaso();
                   ir(i + 1);
                 }}
-                className={boton(on).replace("min-h-11", "min-h-9").replace("px-3", "px-2.5")}
+                className={`flex h-full min-h-11 w-full items-start gap-2 rounded-lg border px-2.5 py-1.5 text-left text-[13px] font-semibold leading-snug transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"} ${on ? "" : "max-sm:hidden"}`}
                 style={
                   on
                     ? { background: hex.strong, borderColor: hex.strong }
                     : { borderColor: "#e6e6e6" }
                 }
               >
-                <span className="tabular-nums">{i + 1}</span>
-                <span className="hidden sm:inline">{x.titulo}</span>
+                <span
+                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold tabular-nums ${on ? "bg-white/20" : "bg-slate-100 text-slate-600"}`}
+                >
+                  {i + 1}
+                </span>
+                <span className="min-w-0">{x.titulo}</span>
               </button>
             </li>
           );
         })}
       </ol>
-      <h2 id="guia-titulo" className="text-lg font-extrabold text-slate-900">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+          Paso {n} de {PASOS_GUIA.length}
+          {sis !== undefined ? ` · ${CORTOS[sis]}` : ""}
+        </p>
+        {(Object.keys(resp).length > 0 || hechos.size > 0) && (
+          <button
+            type="button"
+            onClick={reiniciar}
+            className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
+          >
+            Reiniciar
+          </button>
+        )}
+      </div>
+      <h3 id="guia-titulo" className="text-lg font-extrabold text-slate-900">
         <span className="mr-2 tabular-nums" style={{ color: hex.strong }}>
           {n}.
         </span>
         {p.titulo}
-      </h2>
+      </h3>
       {p.intro && <p className="mt-1 text-sm text-slate-600">{p.intro}</p>}
       {preguntas.map((q) => (
         <div key={q.id} className="mt-3">
@@ -448,16 +425,18 @@ function GuiaInicio({
       {piezas.length > 0 && (
         <div className="mt-3 divide-y" style={{ borderColor: "#eeeeee" }}>
           {piezas.map((pz, k) => (
-            <div key={k} className="py-2.5 first:pt-0">
+            <div key={k} className="py-3 first:pt-0">
               <PiezaVista pieza={pz} sis={sis} compacta siglas={siglas[k]} />
             </div>
           ))}
         </div>
       )}
-      <LineaFuente fuentes={fuentesDePiezas(piezas)} />
-      {piezas.some(esDeTabla2) && <ComoInterpretar tabla="T2" />}
       {lista.length > 0 && (
-        <ul className="mt-3 space-y-1" aria-label="Para marcar en la consulta">
+        <ul
+          className="mt-3 space-y-1.5 rounded-xl border bg-slate-50 p-3"
+          style={{ borderColor: "#e6e6e6" }}
+          aria-label="Para marcar en la consulta"
+        >
           {lista.map((x) => (
             <li key={x}>
               <label className="flex gap-2 text-sm text-slate-800">
@@ -473,6 +452,7 @@ function GuiaInicio({
           ))}
         </ul>
       )}
+      <LineaFuente fuentes={fuentesDePiezas(piezas)} />
       {enlace && (
         <p className="mt-2">
           <a
@@ -483,38 +463,38 @@ function GuiaInicio({
           </a>
         </p>
       )}
-      <div className="no-imprimir mt-4 flex items-center justify-between">
+      <div className="no-imprimir mt-4 flex items-center justify-between gap-2">
         <button
           type="button"
-          disabled={n === 1}
           onClick={() => {
             alPaso();
-            ir(n - 1);
+            if (n === 1) onAntesDelPrimero();
+            else ir(n - 1);
           }}
-          className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 disabled:opacity-40"
+          className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700"
         >
-          <ChevronLeft size={14} aria-hidden="true" /> Anterior
+          <ChevronLeft size={14} aria-hidden="true" />
+          {n === 1 ? "Fase anterior" : "Paso anterior"}
         </button>
         <button
           type="button"
           onClick={() => {
             alPaso();
-            if (n === PASOS_GUIA.length)
-              elegirRuta("consultar", "inicio", detalleDe(HOJA, sis, null) || undefined);
+            if (n === PASOS_GUIA.length) onTrasElUltimo();
             else ir(n + 1);
           }}
           className="inline-flex min-h-11 items-center gap-1 rounded-lg px-3 text-sm font-semibold text-white"
           style={{ background: hex.strong }}
         >
-          {n === PASOS_GUIA.length ? "Hoja de comprobación" : "Siguiente"}{" "}
+          {n === PASOS_GUIA.length ? "Siguiente fase: 3 primeros meses" : "Siguiente paso"}{" "}
           <ChevronRight size={14} aria-hidden="true" />
         </button>
       </div>
       <p className="mt-2 text-xs text-slate-500">
-        Selecciones temporales de esta consulta: siguen al abrir una fuente y volver, y salen en la
-        hoja de comprobación; «Reiniciar la guía» las borra.
+        Lo elegido y lo marcado sigue al abrir una fuente y volver, y sale en la hoja de
+        comprobación; «Reiniciar» lo borra.
       </p>
-    </section>
+    </div>
   );
 }
 
@@ -522,11 +502,28 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
   const [faseId, sisId, tareaId] = (detalle ?? "").split(":");
   const sisIdx = sisId ? SIS_IDS.indexOf(sisId) : -1;
   const sis = sisIdx >= 0 ? sisIdx : undefined;
+  // «guia» (la guía paso a paso de antes) es ahora la fase Inicio.
   const actual = FASES.some((f) => f.id === faseId)
     ? faseId
-    : faseId === HOJA || faseId === GUIA
-      ? faseId
-      : FASES[0].id;
+    : faseId === GUIA
+      ? "inicio"
+      : faseId === HOJA
+        ? faseId
+        : FASES[0].id;
+  // En la fase Inicio, el paso: por id, por número o por el aspecto antiguo («a3»).
+  const pasoInicio =
+    tareaId && /^a\d+$/.test(tareaId)
+      ? pasoDeRuta(tareaDePieza("inicio", Number(tareaId.slice(1)))?.id)
+      : pasoDeRuta(tareaId);
+  useEffect(() => {
+    // La dirección antigua de la guía se reescribe a la de la fase.
+    if (faseId === GUIA)
+      elegirRuta(
+        "consultar",
+        "inicio",
+        detalleDe("inicio", sis, PASOS_GUIA[pasoInicio].id) || undefined,
+      );
+  }, [faseId, sis, pasoInicio]);
   const n = FASES.findIndex((f) => f.id === actual);
   const fase = FASES.find((f) => f.id === actual);
   const tareas = fase ? tareasDe(fase.id) : [];
@@ -579,17 +576,18 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
         <CasillasSistema
           seleccion={sis !== undefined ? [sis] : []}
           onToggle={(c) =>
-            ir(actual, sis === c ? undefined : c, actual === GUIA ? tareaId || null : pedida)
+            ir(
+              actual,
+              sis === c ? undefined : c,
+              actual === "inicio" ? PASOS_GUIA[pasoInicio].id : pedida,
+            )
           }
           nombres={CORTOS}
         />
       </div>
 
-      {/* Las cuatro fases en su fila; la guía y la hoja, aparte (en el móvil, debajo). Con la
-          guía abierta, las fases se pliegan: la guía ofrece «Consultar por fases». */}
-      <div
-        className={`mb-4 flex flex-col gap-2 sm:flex-row sm:items-start ${actual === GUIA ? "hidden" : ""}`}
-      >
+      {/* Las cuatro fases en su fila; la hoja de comprobación, aparte (en el móvil, debajo). */}
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start">
         <ol className="grid w-full grid-cols-2 gap-1.5 sm:flex-1 sm:grid-cols-4" aria-label="Fases">
           {FASES.map((f, i) => {
             const on = f.id === actual;
@@ -617,21 +615,8 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
             );
           })}
         </ol>
-        {/* La guía y la hoja son herramientas del recorrido, no fases (en el móvil, en una fila). */}
+        {/* La hoja es una herramienta del recorrido, no una fase. */}
         <div className="flex flex-wrap gap-1.5 sm:gap-2">
-          <button
-            type="button"
-            aria-current={actual === GUIA ? "page" : undefined}
-            onClick={() => ir(GUIA, sis, "1")}
-            className={`inline-flex min-h-11 items-center gap-1 rounded-lg border px-2 text-[13px] font-semibold transition sm:gap-1.5 sm:px-3 sm:text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${actual === GUIA ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
-            style={
-              actual === GUIA
-                ? { background: "#334155", borderColor: "#334155" }
-                : { borderColor: "#e6e6e6" }
-            }
-          >
-            <ListChecks size={14} aria-hidden="true" /> Guía paso a paso
-          </button>
           <button
             type="button"
             aria-current={actual === HOJA ? "page" : undefined}
@@ -663,31 +648,43 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                 </span>
                 {capitalizar(fase.nombre)}
               </h2>
-              <button
-                type="button"
-                aria-pressed={completa}
-                onClick={() => {
-                  setCompleta(!completa);
-                  if (completa) ir(actual, sis, null);
-                }}
-                className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
-              >
-                {completa ? "Plegar las tareas" : "Fase completa"}
-              </button>
+              {fase.id !== "inicio" && (
+                <button
+                  type="button"
+                  aria-pressed={completa}
+                  onClick={() => {
+                    setCompleta(!completa);
+                    if (completa) ir(actual, sis, null);
+                  }}
+                  className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
+                >
+                  {completa ? "Plegar las tareas" : "Fase completa"}
+                </button>
+              )}
             </div>
-            <div aria-live="polite">
-              {tareas.map((t) => (
-                <TareaVista
-                  key={t.id}
-                  fase={fase}
-                  tarea={t}
-                  sis={sis}
-                  abierta={abiertas.has(t.id)}
-                  onToggle={() => alternar(t.id)}
-                />
-              ))}
-            </div>
-            {piezasSueltas(fase).length > 0 && (
+            {fase.id === "inicio" && (
+              <PasosInicio
+                sis={sis}
+                paso={pasoInicio}
+                onAntesDelPrimero={() => ir(FASES[n - 1].id)}
+                onTrasElUltimo={() => ir(FASES[n + 1].id)}
+              />
+            )}
+            {fase.id !== "inicio" && (
+              <div aria-live="polite">
+                {tareas.map((t) => (
+                  <TareaVista
+                    key={t.id}
+                    fase={fase}
+                    tarea={t}
+                    sis={sis}
+                    abierta={abiertas.has(t.id)}
+                    onToggle={() => alternar(t.id)}
+                  />
+                ))}
+              </div>
+            )}
+            {fase.id !== "inicio" && piezasSueltas(fase).length > 0 && (
               <p
                 className="mt-2 flex flex-wrap gap-x-4 border-t pt-2 text-sm"
                 style={{ borderColor: "#e6e6e6" }}
@@ -697,23 +694,13 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                 ))}
               </p>
             )}
-            <p className="mt-2 text-[13px] text-slate-500">
-              Apartado 8 del capítulo, {fase.paginas}.
-            </p>
           </section>
-        ) : actual === GUIA ? (
-          <GuiaInicio
-            sis={sis}
-            paso={Number(tareaId) || 1}
-            onFases={() => ir(FASES[1].id, sis, null)}
-            onHoja={() => ir(HOJA, sis, null)}
-          />
         ) : (
           <Hoja sis={sis} />
         )}
       </div>
 
-      {fase && (
+      {fase && fase.id !== "inicio" && (
         <div className="no-imprimir mt-4 flex items-center justify-between">
           <button
             type="button"

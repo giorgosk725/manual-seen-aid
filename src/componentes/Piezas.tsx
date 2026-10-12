@@ -56,12 +56,14 @@ function Casilla({
       className="rounded-xl p-3 text-sm text-slate-800"
       style={{ background: SISTEMA_HEX[c].soft }}
     >
-      <span
-        className="mb-1 block text-xs font-bold uppercase tracking-wide"
-        style={{ color: SISTEMA_HEX[c].ink }}
-      >
-        {nombre}
-      </span>
+      {nombre && (
+        <span
+          className="mb-1 block text-xs font-bold uppercase tracking-wide"
+          style={{ color: SISTEMA_HEX[c].ink }}
+        >
+          {nombre}
+        </span>
+      )}
       <Lineas siglas={siglas}>{texto}</Lineas>
     </div>
   );
@@ -134,6 +136,30 @@ export function PiezaVista({
     case "fila": {
       const t = TABLAS[pieza.tabla];
       const f = t.filas[pieza.fila];
+      // En una tarea o un paso: la recomendación, a la vista; las demás columnas, como matiz.
+      if (compacta)
+        return (
+          <div>
+            <Rotulo tabla={pieza.tabla} etiqueta={f.etiqueta} />
+            <div className="rounded-lg p-3" style={{ background: hex.soft }}>
+              <div
+                className="mb-0.5 text-[11px] font-bold uppercase tracking-wide"
+                style={{ color: hex.ink }}
+              >
+                {t.columnas[0]}
+              </div>
+              <div className="text-[15px] font-medium text-slate-900">
+                <Lineas siglas={pend(f.celdas[0])}>{f.celdas[0]}</Lineas>
+              </div>
+            </div>
+            {t.columnas.slice(1).map((col, k) => (
+              <p key={col} className="mt-1.5 text-sm text-slate-600">
+                <span className="font-semibold text-slate-700">{col}: </span>
+                <Texto siglas={pend(f.celdas[k + 1])}>{f.celdas[k + 1].replace(/\n/g, " ")}</Texto>
+              </p>
+            ))}
+          </div>
+        );
       return (
         <div className={caja} style={borde}>
           <Rotulo tabla={pieza.tabla} etiqueta={f.etiqueta} />
@@ -167,7 +193,7 @@ export function PiezaVista({
           <Rotulo tabla={pieza.tabla} etiqueta={f.etiqueta} />
           {sis !== undefined ? (
             <Casilla
-              nombre={t.columnas[sis]}
+              nombre={compacta ? "" : t.columnas[sis]}
               texto={f.celdas[sis]}
               c={sis}
               siglas={pend(f.celdas[sis])}

@@ -21,18 +21,19 @@ test.describe("Entrega 2 (0.33.0)", () => {
     await expect(tambien.first()).toContainText(/Hipoglucemia nocturna/);
   });
 
-  test("Iniciar: tareas desplegables y «Fase completa»", async ({ page }) => {
+  test("Iniciar: la fase Inicio va por pasos; las demás, por tareas con «Fase completa»", async ({
+    page,
+  }) => {
     await page.goto("/#/consultar/inicio/inicio:omnipod-5");
-    await expect(
-      page.getByRole("button", { name: "Plan de respaldo antes de activar el automático" }),
-    ).toBeVisible();
-    await expect
-      .poll(() => page.getByRole("button", { expanded: false }).count())
-      .toBeGreaterThan(3);
-    await page.getByRole("button", { name: "Basal, ratio y factor de sensibilidad" }).click();
+    await expect(page.getByText(/Paso 1 de 5/)).toBeVisible();
+    await page
+      .getByRole("list", { name: "Pasos de la fase" })
+      .getByRole("button", { name: /^2\. Programación inicial/ })
+      .click();
     await expect(page).toHaveURL(/:parametros$/);
     await expect(page.getByText(/Regla del 450/)).toBeVisible();
+    await page.goto("/#/consultar/inicio/primeros-meses:omnipod-5");
     await page.getByRole("button", { name: "Fase completa" }).click();
-    await expect.poll(() => page.getByRole("button", { expanded: true }).count()).toBe(5);
+    await expect.poll(() => page.locator("h3 button[aria-expanded='true']").count()).toBe(2);
   });
 });

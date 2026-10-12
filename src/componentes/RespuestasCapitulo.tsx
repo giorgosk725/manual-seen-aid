@@ -54,7 +54,6 @@ function notaAsterisco(r: Respuesta): { nota: string; donde: string } | null {
 const SECCION_DE_TABLA: Record<string, string> = {
   T1: "esencial",
   T3: "parametros",
-  T4: "situaciones",
 };
 
 /* Un texto con una línea por sistema («MiniMed 780G: …», «Control-IQ: …»): con el sistema de la
@@ -651,7 +650,7 @@ export function RespuestasCapitulo({
         />
         {/* La explicación aprobada de esa tabla y una continuación, junto al dato. */}
         {!compacta && tablaDe(r.id) && (
-          <ComoInterpretar tabla={tablaDe(r.id)!} fila={filaDe(r.id)} general />
+          <ComoInterpretar tabla={tablaDe(r.id)!} fila={filaDe(r.id)} />
         )}
         {!compacta && continuacion && (
           <p className="mt-2">

@@ -259,18 +259,13 @@ export const TAREAS: Record<string, Tarea[]> = {
     },
   ],
   inicio: [
-    {
-      id: "respaldo",
-      titulo: "Plan de respaldo antes de activar el automático",
-      piezas: [0],
-      siguiente: planDeSeguridad,
-    },
-    { id: "arranque", titulo: "Cómo inicia el modo automático", piezas: [1, 2] },
-    { id: "transicion", titulo: "Pauta previa y transición desde MDI", piezas: [3, 12, 13, 14] },
+    // Orden de trabajo con la persona delante: de dónde viene, programar, objetivos, respaldo y,
+    // al final, activar el automático.
+    { id: "transicion", titulo: "Pauta previa y transición", piezas: [3, 12, 13, 14] },
     {
       id: "parametros",
-      titulo: "Basal, ratio y factor de sensibilidad",
-      piezas: [4, 5, 6, 7, 11],
+      titulo: "Programación inicial: basal, ratio y factor de sensibilidad",
+      piezas: [2, 4, 5, 6, 7, 11],
       siguiente: (sis) =>
         sis !== undefined
           ? {
@@ -283,6 +278,13 @@ export const TAREAS: Record<string, Tarea[]> = {
             },
     },
     { id: "objetivos", titulo: "Objetivos de glucosa", piezas: [8, 9, 10] },
+    {
+      id: "respaldo",
+      titulo: "Plan de respaldo antes de activar el automático",
+      piezas: [0],
+      siguiente: planDeSeguridad,
+    },
+    { id: "arranque", titulo: "Activar el modo automático", piezas: [1] },
   ],
   "primeros-meses": [
     { id: "calendario", titulo: "Calendario de revisiones", piezas: [0, 1, 2, 3] },

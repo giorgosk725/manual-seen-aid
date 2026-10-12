@@ -88,11 +88,11 @@ test.describe("Uso 0.10.0", () => {
     const titulo = page.getByRole("heading", { name: /Inicio del sistema/ });
     await expect(titulo).toBeInViewport();
     await expect(page.locator("#paso-inicio")).toBeFocused();
-    // Tareas de la fase: la de la transición desde MDI abre la reducción de la DTD.
-    await page.getByRole("button", { name: "Pauta previa y transición desde MDI" }).click();
+    // Primer paso de la fase: con plumas, la reducción de la DTD.
+    await page.getByRole("button", { name: "Múltiples dosis (plumas)" }).click();
     await expect(
       page.getByRole("heading", { name: /Reducción de la DTD al pasar de MDI/ }),
-    ).toBeInViewport();
+    ).toBeVisible();
   });
 
   test("Revisar la descarga: «Paso 2» lleva al principio del paso", async ({ page }) => {

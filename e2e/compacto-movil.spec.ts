@@ -73,13 +73,12 @@ test.describe("Móvil compacto (360 px)", () => {
     expect(await arriba(ficha)).toBeGreaterThan(await arriba(iniciar));
   });
 
-  test("iniciar un sistema: la guía y la hoja de comprobación en una fila", async ({ page }) => {
+  test("iniciar un sistema: la hoja de comprobación a mano y sin guía aparte", async ({ page }) => {
     await page.goto("/#/consultar/inicio/inicio:omnipod-5");
-    const guia = page.getByRole("button", { name: "Guía paso a paso" });
-    const hoja = page.getByRole("button", { name: "Hoja de comprobación" });
-    await mismaFila(guia, hoja);
+    await expect(page.getByRole("button", { name: "Hoja de comprobación" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Guía paso a paso" })).toHaveCount(0);
+    await expect(page.getByText(/Paso 1 de 5/)).toBeVisible();
   });
-
   test("el navegador no invita a instalar la app", async ({ page }) => {
     await page.goto("/#/");
     const cancelado = await page.evaluate(() => {

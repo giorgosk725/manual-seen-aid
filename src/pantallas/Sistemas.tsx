@@ -6,13 +6,35 @@
    (#/sistemas/<a+b|todos>/<seccion>) = la misma sección, un sistema junto a otro: eso son
    «Comparar sistemas» y «Parámetros por sistema». */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ArrowRight, Check, ExternalLink, Handshake, Minus, X } from "lucide-react";
+import {
+  Activity,
+  ArrowRight,
+  Baby,
+  BarChart3,
+  Box,
+  Brain,
+  Check,
+  Cpu,
+  ExternalLink,
+  Handshake,
+  Minus,
+  Radio,
+  SlidersHorizontal,
+  Syringe,
+  Target,
+  Timer,
+  TrendingDown,
+  Users,
+  Utensils,
+  X,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
 import {
   APARTADOS,
   TABLAS,
   algoritmoDelCapitulo,
   rutaDeTabla,
-  fichasDelCapitulo,
   idDeBloque,
   type Bloque,
   type Tabla,
@@ -34,13 +56,12 @@ import {
   sistemaPorId,
   type Sistema,
 } from "../ampliacion";
-import { href, fueNavegacionNueva } from "../rutas";
+import { elegirRuta, href, fueNavegacionNueva } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Foldable, PaginaBadge } from "../ui";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SEEN, SISTEMA_HEX } from "../tokens";
 import { plano } from "../marcado";
-import { SITUACIONES } from "../situaciones";
 import { FICHA_SISTEMA_EDUCATIVA } from "../enlaces";
 import type { SistemaId } from "../ampliacion/tipos";
 import { TablaVista } from "../componentes/TablaVista";
@@ -420,7 +441,6 @@ const SECCIONES_FICHA = [
   { id: "esencial", t: "Lo esencial" },
   { id: "funciona", t: "Cómo funciona" },
   { id: "parametros", t: "Parámetros" },
-  { id: "situaciones", t: "Situaciones" },
   { id: "ampliacion", t: "Ampliación técnica" },
 ] as const;
 
@@ -430,6 +450,30 @@ function rutaEnCapitulo(t: Tabla): string | null {
 }
 
 /* La columna de un sistema en una tabla del capítulo: filas literales, notas y página. */
+/* Iconos de las filas de las Tablas 1 y 3 (por índice de fila). */
+const ICONO_FILA: Record<string, Record<number, LucideIcon>> = {
+  T1: {
+    0: Box,
+    1: Radio,
+    2: Cpu,
+    3: Brain,
+    4: Syringe,
+    5: Zap,
+    6: Target,
+    7: Users,
+    8: Baby,
+    9: BarChart3,
+    10: SlidersHorizontal,
+  },
+  T3: { 0: Target, 1: Activity, 2: Utensils, 3: TrendingDown, 4: Timer },
+};
+const iconoDeFila = (tabla: string, i: number) => {
+  const I = ICONO_FILA[tabla]?.[i];
+  return I ? <I size={15} aria-hidden="true" className="shrink-0 text-slate-500" /> : null;
+};
+
+/* Las filas de una tabla para un sistema, como tarjetas con icono (rótulo de la fila y su
+   casilla literal), con las notas que tocan y la fuente al pie. */
 function ColumnaTabla({
   t,
   c,
@@ -441,6 +485,7 @@ function ColumnaTabla({
   filas?: (etiqueta: string, j: number) => boolean;
   pie?: ReactNode;
 }) {
+  const hexS = SISTEMA_HEX[c];
   // La nota del asterisco solo si alguna celda mostrada lo lleva; la lista de siglas, plegada.
   const vistas = t.filas.filter((f, j) => !filas || filas(f.etiqueta, j));
   const hayAsterisco = vistas.some((f) => (f.unida ? f.celdas[0] : f.celdas[c]).includes("*"));
@@ -451,19 +496,35 @@ function ColumnaTabla({
   return (
     <div className="rounded-xl border bg-white p-3 sm:p-4" style={{ borderColor: "#e6e6e6" }}>
       <div className="text-xs font-semibold text-slate-600">{t.titulo}</div>
-      <dl className="mt-1 divide-y" style={{ borderColor: "#e6e6e6" }}>
-        {t.filas.map((f, j) =>
-          filas && !filas(f.etiqueta, j) ? null : (
-            <div key={j} className="grid gap-1 py-2.5 sm:grid-cols-[13rem_1fr] sm:gap-4">
-              <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                <Lineas>{f.etiqueta}</Lineas>
+      <dl className="mt-2 grid gap-2 sm:grid-cols-2">
+        {t.filas.map((f, j) => {
+          if (filas && !filas(f.etiqueta, j)) return null;
+          const I = ICONO_FILA[t.id]?.[j];
+          return (
+            <div
+              key={j}
+              className="rounded-xl p-3"
+              style={{ background: hexS.soft, boxShadow: `inset 3px 0 0 0 ${hexS.strong}` }}
+            >
+              <dt
+                className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wide"
+                style={{ color: hexS.ink }}
+              >
+                {I && (
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white">
+                    <I size={15} aria-hidden="true" />
+                  </span>
+                )}
+                <span className="min-w-0">
+                  <Lineas>{f.etiqueta}</Lineas>
+                </span>
               </dt>
-              <dd className="text-[15px] text-slate-800">
+              <dd className="mt-1.5 text-[15px] text-slate-800">
                 <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
               </dd>
             </div>
-          ),
-        )}
+          );
+        })}
       </dl>
       {notas.length > 0 && (
         <div
@@ -615,6 +676,13 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             <ArrowRight size={13} aria-hidden="true" />
           </a>
           <a
+            href={href("consultar", "situacion", `:${slug}`)}
+            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
+            style={{ color: h.ink }}
+          >
+            Situaciones <ArrowRight size={13} aria-hidden="true" />
+          </a>
+          <a
             href={href("sistemas", s.id, completa ? "esencial" : "completa")}
             className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-600 hover:underline sm:min-h-8"
           >
@@ -636,23 +704,12 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         <TituloSeccion id="esencial" sistema={s.name} color={h.ink}>
           Lo esencial
         </TituloSeccion>
-        <dl className="mb-3 grid grid-cols-3 gap-2">
-          {fichasDelCapitulo(c).map(({ k, v }) => (
-            <div key={k} className="rounded-xl p-2.5" style={{ background: h.soft }}>
-              <dt className="text-[11px] text-slate-600">{k}</dt>
-              <dd className="text-sm font-bold leading-snug" style={{ color: h.ink }}>
-                {v}
-              </dd>
-            </div>
-          ))}
-        </dl>
-        {/* Qué es y para quién; el algoritmo va en «Cómo funciona» y lo configurable, en «Parámetros». */}
+        {/* Qué es y para quién, en tarjetas; cómo decide va en «Cómo funciona» y lo configurable,
+            en «Parámetros». */}
         <ColumnaTabla
           t={TABLAS.T1}
           c={c}
-          filas={(e) =>
-            ["Formato", "Indicación", "Gestación: autorización y evidencia"].includes(e)
-          }
+          filas={(_e, j) => [0, 1, 2, 7, 8, 9].includes(j)}
           pie={
             <>
               <EnlacePie ruta={href("sistemas", "todos", "esencial")}>
@@ -736,62 +793,6 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       </section>
 
       <section
-        aria-labelledby="situaciones"
-        className="mt-7 scroll-mt-56 sm:scroll-mt-44"
-        hidden={!ver("situaciones")}
-      >
-        <TituloSeccion id="situaciones" sistema={s.name} color={h.ink}>
-          Situaciones
-        </TituloSeccion>
-        <p className="mb-2 text-sm text-slate-600">
-          La conducta ante cada situación (Tablas 4 y 6) está en «Situaciones», una sola vez; de
-          aquí se abre con este sistema ya elegido.
-        </p>
-        <ul className="divide-y rounded-xl border bg-white" style={{ borderColor: "#e6e6e6" }}>
-          {SITUACIONES.filter((x) => x.tabla).map((x) => (
-            <li key={x.id}>
-              <a
-                href={href("consultar", "situacion", `${x.id}:${slug}`)}
-                className="flex min-h-11 items-center gap-2 px-3 py-1.5 text-sm text-slate-800 transition hover:bg-slate-50"
-              >
-                <span className="min-w-0 flex-1">{x.etiqueta}</span>
-                <ArrowRight size={13} className="shrink-0 text-slate-400" aria-hidden="true" />
-              </a>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-          <span className="flex flex-wrap gap-x-4">
-            <FuentePie
-              className=""
-              nota=""
-              fuentes={[
-                {
-                  texto: `Tabla 4, ${paginasDe(TABLAS.T4.paginas[0], TABLAS.T4.paginas[1])}`,
-                  ruta: rutaEnCapitulo(TABLAS.T4) ?? undefined,
-                },
-              ]}
-            />
-            <EnlacePie ruta={href("sistemas", "todos", "situaciones")}>
-              Los cuatro en la Tabla 4
-            </EnlacePie>
-            <EnlacePie ruta={href("consultar", "situacion", `rm:${slug}`)}>
-              Exploraciones y cirugía (Tabla 6)
-            </EnlacePie>
-          </span>
-        </div>
-        {TABLAS.T4.notas.length > 0 && (
-          <div className="mt-1 space-y-1 text-xs text-slate-600">
-            {TABLAS.T4.notas.map((n, k) => (
-              <p key={k}>
-                <Texto>{n}</Texto>
-              </p>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section
         aria-label="Más del capítulo sobre este sistema"
         className="mt-7 space-y-3"
         hidden={!completa}
@@ -837,9 +838,23 @@ function leerSeleccion(sel?: string): string[] {
   return IDS_SISTEMA.filter((id) => sel.split("+").includes(id));
 }
 
+/* «Situaciones» ya no es una sección de Sistemas: la dirección antigua lleva a Situaciones,
+   con el sistema elegido si era uno. */
+function AsituacionesConSistema({ ids }: { ids: string[] }) {
+  useEffect(() => {
+    elegirRuta(
+      "consultar",
+      "situacion",
+      ids.length === 1 ? `:${SLUG_TABLA[columnaDeSistema(ids[0] as SistemaId)]}` : undefined,
+    );
+  }, [ids]);
+  return null;
+}
+
 export function Sistemas({ sel, seccion }: { sel?: string; seccion?: string }) {
   if (sel === "elegir") return <Elegir q={seccion} />;
   const ids = sel === undefined ? [] : leerSeleccion(sel);
+  if (seccion === "situaciones") return <AsituacionesConSistema ids={ids} />;
   if (sel !== undefined && sel !== "todos" && !ids.length) return <Comparacion ids={[]} />;
   const sec = SECCIONES_FICHA.some((x) => x.id === seccion)
     ? seccion
@@ -1020,7 +1035,6 @@ function EntradaSistemas() {
           [
             ["esencial", "Comparar lo esencial", "Tabla 1"],
             ["parametros", "Comparar los parámetros", "Tabla 3"],
-            ["situaciones", "Comparar en las situaciones", "Tablas 4 y 6"],
           ] as const
         ).map(([sec, t, f]) => (
           <a
@@ -1292,7 +1306,12 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
         >
           {seccion === "esencial" && (
             <NivelTitulo.Provider value={2}>
-              <TablaVista tabla={TABLAS.T1} columnasFijas={cols} herramienta />
+              <TablaVista
+                tabla={TABLAS.T1}
+                columnasFijas={cols}
+                herramienta
+                iconoFila={(i) => iconoDeFila("T1", i)}
+              />
             </NivelTitulo.Provider>
           )}
           {seccion === "funciona" && (
@@ -1339,22 +1358,14 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
                 <FuentePie fuentes={[fuenteT1(4)]} />
               </details>
               <NivelTitulo.Provider value={2}>
-                <TablaVista tabla={TABLAS.T3} columnasFijas={cols} herramienta />
+                <TablaVista
+                  tabla={TABLAS.T3}
+                  columnasFijas={cols}
+                  herramienta
+                  iconoFila={(i) => iconoDeFila("T3", i)}
+                />
               </NivelTitulo.Provider>
             </>
-          )}
-          {seccion === "situaciones" && (
-            <div className="space-y-4">
-              <NivelTitulo.Provider value={2}>
-                <TablaVista tabla={TABLAS.T4} columnasFijas={cols} herramienta />
-              </NivelTitulo.Provider>
-              <NivelTitulo.Provider value={2}>
-                <TablaVista tabla={TABLAS.T6} herramienta />
-              </NivelTitulo.Provider>
-              <EnlacePie ruta={href("consultar", "situacion")}>
-                Una situación concreta, con el texto que la explica
-              </EnlacePie>
-            </div>
           )}
           {seccion === "ampliacion" && (
             <>

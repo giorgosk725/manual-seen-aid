@@ -1,8 +1,10 @@
-/* «Guía paso a paso» de Iniciar un sistema (#/consultar/inicio/guia[:sistema][:paso]): seis
-   pasos para recorrer con un paciente delante. Las preguntas eligen qué texto del capítulo se
-   enseña; las casillas son para ir marcando en la consulta (no se guarda nada). Solo
-   referencias al texto literal (piezas de inicio.ts); aquí no hay texto clínico propio. */
-import { FASES, tareasDe, type Pieza } from "./inicio";
+/* La fase «Inicio del sistema» de Iniciar un sistema, como recorrido paso a paso
+   (#/consultar/inicio/inicio[:sistema][:paso]): cinco pasos en el orden en que se trabaja con la
+   persona delante (de qué pauta viene, programación, objetivos, respaldo y activación). Las
+   preguntas eligen qué pasajes se enseñan (sin elegir, se enseñan todos); las casillas se marcan
+   durante la consulta (no se guarda nada). Solo referencias al texto del capítulo (piezas de
+   inicio.ts); los títulos son los de las tareas de la fase. */
+import { tituloDeTarea, type Pieza } from "./inicio";
 import { href } from "./rutas";
 import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 
@@ -30,14 +32,13 @@ export interface PasoGuia {
 }
 
 const I = "08-iniciacion";
-const PM = FASES.find((f) => f.id === "primeros-meses")!;
-const calendario = tareasDe("primeros-meses")[0].piezas.map((i) => PM.piezas[i]);
+const titulo = (id: string) => tituloDeTarea("inicio", id) ?? id;
 
 export const PASOS_GUIA: PasoGuia[] = [
   {
-    id: "pauta",
-    titulo: "De qué pauta viene",
-    intro: "Elige las opciones: la guía muestra los pasajes del capítulo relacionados con ellas.",
+    id: "transicion",
+    titulo: titulo("transicion"),
+    intro: "Elige de qué pauta viene para ver solo lo que le corresponde.",
     preguntas: [
       {
         id: "pauta",
@@ -83,21 +84,19 @@ export const PASOS_GUIA: PasoGuia[] = [
     ],
     piezas: [],
     enlace: (_sis, resp) =>
-      resp?.pauta === "mdi"
+      resp?.pauta === "mdi" || !resp?.pauta
         ? { texto: "Transición desde MDI (diagrama)", ruta: href("visual", "transicion") }
-        : resp?.pauta
-          ? { texto: "Criterios de elección del sistema", ruta: href("sistemas", "elegir") }
-          : null,
+        : { texto: "Criterios de elección del sistema", ruta: href("sistemas", "elegir") },
   },
   {
     id: "parametros",
-    titulo: "Parámetros iniciales",
+    titulo: titulo("parametros"),
     piezas: [
       { t: "frase", apartado: I, bloque: "b6", k: [0, 1] },
       { t: "fila", tabla: "T2", fila: 3 },
+      { t: "frase", apartado: I, bloque: "b8", k: [2, 3] },
       { t: "fila", tabla: "T2", fila: 4 },
       { t: "fila", tabla: "T2", fila: 5 },
-      { t: "fila", tabla: "T2", fila: 6 },
       { t: "casilla", tabla: "T1", fila: 10 },
     ],
     enlace: (sis) =>
@@ -113,10 +112,11 @@ export const PASOS_GUIA: PasoGuia[] = [
   },
   {
     id: "objetivos",
-    titulo: "Objetivos de glucosa",
+    titulo: titulo("objetivos"),
     piezas: [
-      { t: "casilla", tabla: "T1", fila: 6 },
+      { t: "fila", tabla: "T2", fila: 6 },
       { t: "fila", tabla: "T2", fila: 7 },
+      { t: "casilla", tabla: "T1", fila: 6 },
     ],
     enlace: () => ({
       texto: "Objetivos de MCG por población (figura)",
@@ -125,11 +125,9 @@ export const PASOS_GUIA: PasoGuia[] = [
   },
   {
     id: "respaldo",
-    titulo: "Plan de respaldo y educación",
-    piezas: [
-      { t: "fila", tabla: "T2", fila: 0 },
-      { t: "lista", apartado: "07-educacion", bloque: "b4" },
-    ],
+    titulo: titulo("respaldo"),
+    intro: "Marca lo que ya está hecho o entregado.",
+    piezas: [{ t: "fila", tabla: "T2", fila: 0 }],
     comprobar: "antes",
     enlace: (sis) =>
       sis !== undefined
@@ -141,22 +139,18 @@ export const PASOS_GUIA: PasoGuia[] = [
   },
   {
     id: "arranque",
-    titulo: "Arranque del modo automático",
-    // El requisito previo (núcleo configurado y plan de respaldo) queda a la vista aunque se
-    // entre directamente en este paso.
-    piezas: [{ t: "frase", apartado: I, bloque: "b6", k: [0] }, { t: "inicializacion" }],
-  },
-  {
-    id: "seguimiento",
-    titulo: "Primeras 72 h y 3 meses",
-    piezas: calendario,
-    comprobar: "citas",
-    enlace: () => ({
-      texto: "Revisar la descarga, paso a paso",
-      ruta: href("consultar", "descarga", "1"),
-    }),
+    titulo: titulo("arranque"),
+    piezas: [{ t: "inicializacion" }],
   },
 ];
+
+/* El paso pedido en la ruta: su id, su número (1-5) o el de la guía antigua («pauta», 1-6). */
+export function pasoDeRuta(x?: string): number {
+  if (!x) return 0;
+  if (/^\d+$/.test(x)) return Math.min(PASOS_GUIA.length, Math.max(1, Number(x))) - 1;
+  const i = PASOS_GUIA.findIndex((p) => p.id === (x === "pauta" ? "transicion" : x));
+  return i >= 0 ? i : 0;
+}
 
 /* Las preguntas que se hacen con las respuestas dadas, y las respuestas limpias (sin las de
    preguntas que ya no se hacen). Puro. */
@@ -168,4 +162,21 @@ export function limpiarRespuestas(resp: Record<string, string>): Record<string, 
   for (const p of PASOS_GUIA)
     for (const q of preguntasActivas(p, resp)) if (resp[q.id]) out[q.id] = resp[q.id];
   return out;
+}
+/* Los pasajes de un paso: los fijos y, de cada pregunta, los de la opción elegida o, si aún no
+   se ha elegido, los de todas (sin elegir no se esconde nada). Puro y sin repetidos. */
+export function piezasDePaso(paso: PasoGuia, resp: Record<string, string>): Pieza[] {
+  const out: Pieza[] = [...paso.piezas];
+  for (const q of paso.preguntas ?? []) {
+    const activa = !q.si || resp[q.si.pregunta] === q.si.opcion;
+    const padreSinElegir = !!q.si && !resp[q.si.pregunta];
+    if (!activa && !padreSinElegir) continue;
+    const o = q.opciones.find((x) => x.id === resp[q.id]);
+    out.push(...(o ? o.piezas : q.opciones.flatMap((x) => x.piezas)));
+  }
+  const vistas = new Set<string>();
+  return out.filter((pz) => {
+    const k = JSON.stringify(pz);
+    return !vistas.has(k) && !!vistas.add(k);
+  });
 }

@@ -771,7 +771,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
             </div>
           ))}
         </dl>
-        <ComoInterpretar tabla="T5" fila={n - 1} general />
+        <ComoInterpretar tabla="T5" fila={n - 1} />
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
           {casoPorId("ejemplo-descarga") && (
             <a

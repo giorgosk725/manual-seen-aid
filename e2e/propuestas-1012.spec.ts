@@ -56,22 +56,25 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     ).toBeVisible();
   });
 
-  test("la guía paso a paso pregunta y enseña solo lo que aplica", async ({ page }) => {
-    await page.goto("/#/consultar/inicio/guia:omnipod-5");
-    await expect(page.getByText("Paso 1 de 6")).toBeVisible();
-    await expect(page.getByText(/Reducción de la DTD/)).toHaveCount(0);
-    await page.getByRole("button", { name: "Múltiples dosis (plumas)" }).click();
-    await expect(page.getByText(/Reducción de la DTD/).first()).toBeVisible();
-    await page.getByRole("button", { name: /^Siguiente/ }).click();
-    await expect(page).toHaveURL(/guia:omnipod-5:2$/);
-    await expect(page.getByText("Paso 2 de 6")).toBeVisible();
-    await expect(page.getByText(/Regla del 450/).first()).toBeVisible();
-  });
-
-  test("la guía: la basal depende de MDI, el estado sobrevive a una fuente y se reinicia", async ({
+  test("la dirección de la guía lleva a la fase Inicio; preguntar filtra lo que se enseña", async ({
     page,
   }) => {
     await page.goto("/#/consultar/inicio/guia:omnipod-5");
+    await expect(page).toHaveURL(/inicio:omnipod-5:transicion$/);
+    await expect(page.getByText(/Paso 1 de 5/)).toBeVisible();
+    // Sin elegir, se enseña todo; con bomba, solo lo de bomba.
+    await expect(page.getByText(/Reducción de la DTD/).first()).toBeVisible();
+    await page.getByRole("button", { name: "Bomba sin automatización" }).click();
+    await expect(page.getByText(/Reducción de la DTD/)).toHaveCount(0);
+    await page.getByRole("button", { name: /^Siguiente paso/ }).click();
+    await expect(page).toHaveURL(/inicio:omnipod-5:parametros$/);
+    await expect(page.getByText(/Paso 2 de 5/)).toBeVisible();
+    await expect(page.getByText(/Regla del 450/).first()).toBeVisible();
+  });
+  test("inicio paso a paso: la basal depende de MDI, el estado sobrevive a una fuente y se reinicia", async ({
+    page,
+  }) => {
+    await page.goto("/#/consultar/inicio/inicio:omnipod-5:transicion");
     await expect(page.getByRole("group", { name: "La basal que lleva" })).toHaveCount(0);
     await page.getByRole("button", { name: "Múltiples dosis (plumas)" }).click();
     await page.getByRole("button", { name: "Glargina U-300 o degludec" }).click();
@@ -89,20 +92,16 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     await expect(page).toHaveURL(/#\/capitulo\//);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await page.getByRole("button", { name: /Volver a la consulta/ }).click();
-    await expect(page).toHaveURL(/guia:omnipod-5/);
+    await expect(page).toHaveURL(/inicio:omnipod-5:transicion/);
     await expect(page.getByRole("button", { name: "Múltiples dosis (plumas)" })).toHaveAttribute(
       "aria-pressed",
       "true",
     );
-    await page.getByRole("button", { name: "Reiniciar la guía" }).click();
+    await page.getByRole("button", { name: "Reiniciar", exact: true }).click();
     await expect(page.getByRole("button", { name: "Múltiples dosis (plumas)" })).toHaveAttribute(
       "aria-pressed",
       "false",
     );
-    // Con la guía abierta, las fases no compiten; «Consultar por fases» las devuelve.
-    await expect(page.getByRole("list", { name: "Fases" })).toBeHidden();
-    await page.getByRole("button", { name: "Consultar por fases" }).click();
-    await expect(page).toHaveURL(/inicio:omnipod-5$/);
   });
 
   test("situación elegida: índice de necesidades, detalle plegable y una sola fuente", async ({
@@ -161,14 +160,14 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
   });
 
   test("la hoja de comprobación resume lo marcado en la guía", async ({ page }) => {
-    await page.goto("/#/consultar/inicio/guia:omnipod-5:4");
+    await page.goto("/#/consultar/inicio/inicio:omnipod-5:respaldo");
     const casilla = page
       .getByRole("list", { name: "Para marcar en la consulta" })
       .getByRole("checkbox")
       .first();
     await casilla.check();
     await page.getByRole("button", { name: "Hoja de comprobación" }).click();
-    await expect(page.getByText(/Resume lo marcado en la guía de esta consulta/)).toBeVisible();
+    await expect(page.getByText(/Resume lo marcado en el inicio paso a paso/)).toBeVisible();
     await expect(page.locator(".hoja-inicio").getByRole("checkbox", { checked: true })).toHaveCount(
       1,
     );

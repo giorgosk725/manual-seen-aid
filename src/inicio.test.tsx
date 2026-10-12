@@ -109,7 +109,7 @@ describe("Guía paso a paso y momentos de las situaciones (0.43.0)", () => {
       const k = m.k ?? kDe(m.apartado, m.bloque);
       expect(frasesDe(m.apartado, m.bloque, k).frases.length, m.rotulo).toBeGreaterThan(0);
     }
-    expect(PASOS_GUIA.length).toBe(6);
+    expect(PASOS_GUIA.length).toBe(5);
   });
 });
 
@@ -122,6 +122,37 @@ describe("Guía: preguntas dependientes (0.43.1)", () => {
     expect(limpiarRespuestas({ pauta: "isci", basal: "larga" })).toEqual({ pauta: "isci" });
     expect(limpiarRespuestas({ pauta: "", basal: "larga" })).toEqual({});
     expect(p.enlace?.(3, { pauta: "isci" })?.texto).toMatch(/Criterios/);
-    expect(p.enlace?.(3, {})).toBeNull();
+    // Sin elegir, la continuación es la de MDI (la pauta más frecuente) y se enseña todo.
+    expect(p.enlace?.(3, {})?.texto).toMatch(/MDI/);
+  });
+});
+
+describe("Fase Inicio paso a paso (0.47.0)", () => {
+  it("los cinco pasos cubren todas las piezas de la fase, en el orden de trabajo", async () => {
+    const { PASOS_GUIA, piezasDePaso, pasoDeRuta } = await import("./guia-inicio");
+    const fase = FASES.find((f) => f.id === "inicio")!;
+    const enPasos = new Set(
+      PASOS_GUIA.flatMap((p) => piezasDePaso(p, {})).map((x) => JSON.stringify(x)),
+    );
+    for (const pz of fase.piezas)
+      if (pz.t !== "enlace") expect(enPasos.has(JSON.stringify(pz)), JSON.stringify(pz)).toBe(true);
+    expect(PASOS_GUIA.map((p) => p.id)).toEqual([
+      "transicion",
+      "parametros",
+      "objetivos",
+      "respaldo",
+      "arranque",
+    ]);
+    expect(pasoDeRuta("arranque")).toBe(4);
+    expect(pasoDeRuta("pauta")).toBe(0);
+    expect(pasoDeRuta("3")).toBe(2);
+  });
+  it("sin elegir pauta se enseña todo; con bomba, solo lo de bomba", async () => {
+    const { PASOS_GUIA, piezasDePaso } = await import("./guia-inicio");
+    const p = PASOS_GUIA[0];
+    expect(piezasDePaso(p, {}).length).toBe(6);
+    expect(piezasDePaso(p, { pauta: "isci" }).length).toBe(1);
+    expect(piezasDePaso(p, { pauta: "mdi" }).length).toBe(4);
+    expect(piezasDePaso(p, { pauta: "mdi", basal: "larga" }).length).toBe(3);
   });
 });

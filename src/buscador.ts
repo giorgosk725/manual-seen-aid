@@ -502,7 +502,10 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
           titulo: `${sec[2]} · ${s.name}`,
           texto: "",
           pagina: TABLAS.T1.paginas[0],
-          ruta: href("sistemas", s.id, sec[1]),
+          ruta:
+            sec[1] === "situaciones"
+              ? href("consultar", "situacion", `:${SIS_IDS[sis]}`)
+              : href("sistemas", s.id, sec[1]),
         },
         fragmento: "",
         puntos: 0,

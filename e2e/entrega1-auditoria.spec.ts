@@ -19,6 +19,9 @@ test.describe("Entrega 1 (0.32.0)", () => {
       .first()
       .click();
     await expect(page).toHaveURL(/#\/capitulo\//);
+    // Como una persona: el capítulo se pinta y se lee antes de volver.
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await page.waitForTimeout(300);
     await page.goBack();
     await expect(page).toHaveURL(/#\/sistemas\/op5\/parametros$/);
     await page.waitForTimeout(600);

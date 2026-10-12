@@ -5,7 +5,7 @@
      (1 = fichas grandes; 2–3 = columnas elegidas; todos = tabla completa). En las demás, un
      filtro por fila (p. ej. Tabla 6, por procedimiento). La selección viaja en la ruta
      (`T1:minimed-780g+omnipod-5`, `T6:3`) para poder compartirla. */
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { ExternalLink } from "lucide-react";
 import type { Tabla, TablaId } from "../contenido";
 import { Lineas, Texto } from "../texto";
@@ -15,7 +15,6 @@ import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
 import { CasillasSistema } from "./CasillasSistema";
 import { TituloBloque } from "../nivel";
-import { ComoInterpretar } from "./ComoInterpretar";
 import { FuentePie } from "./FuentePie";
 import { paginasDe } from "../paginas";
 import { rutaDeTabla } from "../contenido";
@@ -100,7 +99,18 @@ function Notas({ notas }: { notas: string[] }) {
 }
 
 /* Tabla completa (o con las columnas elegidas). */
-function TablaHTML({ tabla, columnas }: { tabla: Tabla; columnas: number[] }) {
+function TablaHTML({
+  tabla,
+  columnas,
+  herramienta = false,
+  iconoFila,
+}: {
+  tabla: Tabla;
+  columnas: number[];
+  /* Dentro de una herramienta: casillas tintadas con el color de cada sistema. */
+  herramienta?: boolean;
+  iconoFila?: (i: number) => ReactNode;
+}) {
   return (
     <div
       className="tabla-scroll fade-right-scroll rounded-xl border focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
@@ -156,7 +166,12 @@ function TablaHTML({ tabla, columnas }: { tabla: Tabla; columnas: number[] }) {
                 className="border-t px-3 py-2 text-left text-xs font-bold text-slate-800"
                 style={{ borderColor: "#e6e6e6", minWidth: "9rem" }}
               >
-                <Lineas>{f.etiqueta}</Lineas>
+                <span className="flex items-start gap-1.5">
+                  {iconoFila?.(i)}
+                  <span>
+                    <Lineas>{f.etiqueta}</Lineas>
+                  </span>
+                </span>
               </th>
               {f.unida ? (
                 <td
@@ -174,6 +189,9 @@ function TablaHTML({ tabla, columnas }: { tabla: Tabla; columnas: number[] }) {
                     style={{
                       borderColor: "#e6e6e6",
                       minWidth: tabla.porSistema ? "11rem" : "10rem",
+                      ...(herramienta && tabla.porSistema
+                        ? { background: SISTEMA_HEX[c].soft, boxShadow: "inset 0 0 0 2px #fff" }
+                        : {}),
                     }}
                   >
                     <Lineas>{f.celdas[c]}</Lineas>
@@ -271,10 +289,13 @@ export function TablaVista({
   ayuda,
   columnasFijas,
   herramienta = false,
+  iconoFila,
 }: {
   tabla: Tabla;
   /* Dentro de una herramienta (comparación de Sistemas): la fuente al pie, no arriba. */
   herramienta?: boolean;
+  /* Icono para el rótulo de cada fila (lo da quien la usa: Sistemas). */
+  iconoFila?: (i: number) => ReactNode;
   modo?: "lectura" | "interactiva";
   seleccionInicial?: string;
   /* Columnas (sistemas) decididas fuera, sin selector propio (comparación de Sistemas). */
@@ -318,7 +339,6 @@ export function TablaVista({
         enlaceConsultar={!interactiva && !columnasFijas && !herramienta}
         herramienta={herramienta}
       />
-      <ComoInterpretar tabla={tabla.id as TablaId} />
       {interactiva && tabla.porSistema && !columnasFijas && (
         <div className="no-imprimir mb-3">
           <div className="mb-1 text-xs font-semibold text-slate-500">
@@ -382,7 +402,12 @@ export function TablaVista({
       ) : (
         <>
           <div className="vista-tabla hidden md:block">
-            <TablaHTML tabla={tabla} columnas={columnas} />
+            <TablaHTML
+              tabla={tabla}
+              columnas={columnas}
+              herramienta={herramienta}
+              iconoFila={iconoFila}
+            />
           </div>
           <div className="vista-fichas md:hidden">
             <Fichas tabla={tabla} columnas={columnas} />

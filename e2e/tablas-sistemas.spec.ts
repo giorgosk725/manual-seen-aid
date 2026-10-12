@@ -134,20 +134,16 @@ test.describe("Tablas y sistemas", () => {
     page,
   }) => {
     await page.goto("/#/sistemas/mm780/completa");
-    for (const h of [
-      /^Lo esencial · MiniMed 780G/,
-      /^Parámetros · MiniMed 780G/,
-      /^Situaciones · MiniMed 780G/,
-    ])
+    for (const h of [/^Lo esencial · MiniMed 780G/, /^Parámetros · MiniMed 780G/])
       await expect(page.getByRole("heading", { level: 2, name: h })).toBeVisible();
     await expect(
       page.getByRole("heading", { name: /Ampliación técnica · fuera del capítulo/ }),
     ).toBeVisible();
-    // Cada situación se abre, en «Situaciones», con el sistema ya elegido (sin repetir la celda).
-    await page
-      .getByRole("region", { name: /Situaciones/ })
-      .getByRole("link", { name: /Ejercicio aeróbico planificado/ })
-      .click();
+    await expect(page.getByRole("heading", { level: 2, name: /^Situaciones/ })).toHaveCount(0);
+    // Situaciones vive en un solo sitio: desde la ficha se abre con el sistema ya elegido.
+    await page.locator('a[href="#/consultar/situacion/:minimed-780g"]').first().click();
+    await expect(page).toHaveURL(/#\/consultar\/situacion\/:minimed-780g$/);
+    await page.getByRole("button", { name: /Ejercicio aeróbico planificado/ }).click();
     await expect(page).toHaveURL(/#\/consultar\/situacion\/ejercicio-aerobico:minimed-780g$/);
   });
 });

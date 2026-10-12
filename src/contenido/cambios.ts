@@ -8,13 +8,25 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.46.1";
+export const VERSION_APP = "0.47.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-12",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — el PDF oficial para pacientes y menos frases sobre la propia herramienta`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — iniciar paso a paso, fichas visuales y Situaciones en un solo sitio`,
+    detalle: [
+      "Iniciar un sistema · Inicio: cinco pasos en el orden en que se trabaja con la persona delante (pauta previa y transición, programación inicial de basal, ratio y factor de sensibilidad, objetivos, plan de respaldo y activación del automático). El primer paso pregunta de qué pauta viene y la basal que lleva, y enseña solo lo que le corresponde (sin elegir, todo). En cada fila de la Tabla 2, la recomendación va destacada y las notas debajo. La «Guía paso a paso» aparte deja de existir: es esta fase.",
+      "Fuera «Cómo leer esta tabla» de tablas, tareas y buscador; solo queda «Cómo interpretar este hallazgo» donde explica un dato concreto (paso 7 de la descarga).",
+      "Fichas de sistema: «Lo esencial» y «Parámetros» en tarjetas con icono (formato, sensores, algoritmo, indicación, gestación, plataforma; objetivo, basal, ratio, factor, insulina activa), sin repetir el nombre del sistema en cada casilla. Las comparaciones de los sistemas, con cada columna en el color de su sistema e icono en cada fila.",
+      "Situaciones, en un solo sitio (Consultar › Situaciones): la pestaña de la ficha y «Comparar en las situaciones» desaparecen; desde la ficha, «Situaciones» abre la herramienta con ese sistema elegido. Las direcciones antiguas llevan allí.",
+    ],
+  },
+  {
+    fecha: "2026-10-12",
+    ambito: "app",
+    titulo:
+      "Manual SEEN · AID 0.46.1 — el PDF oficial para pacientes y menos frases sobre la propia herramienta",
     detalle: [
       "Para el paciente: el PDF para descargar es la «Información para pacientes» maquetada por el Manual SEEN el 9-10-2026 (3 páginas, 83 KB); su texto coincide palabra por palabra con el de la pantalla.",
       "Fuera las frases que hablaban de la propia herramienta («los rótulos son de la app», «texto literal del capítulo» en cada pie). «Cómo funciona» de cada sistema empieza directamente por lo que trata. La explicación de las tablas se rotula «Explicación complementaria, no es texto del capítulo»; en Buscar, la pestaña se llama «Otros recursos».",

@@ -31,10 +31,10 @@ export function ComoInterpretar({
   }, []);
   if (!lista) return null;
   const propias = interpretacionesDe(lista, tabla, fila);
-  const items = propias.length || !general ? propias : interpretacionesDe(lista, tabla);
+  // Solo la explicación de un hallazgo concreto (fila); la de la tabla entera ya no se enseña.
+  const items = general ? propias : propias.filter((x) => x.fila !== undefined);
   if (!items.length) return null;
-  const titulo =
-    items[0].fila !== undefined ? "Cómo interpretar este hallazgo" : "Cómo leer esta tabla";
+  const titulo = "Cómo interpretar este hallazgo";
   return (
     <details
       className="no-imprimir mt-2 rounded-lg border px-3 py-1"
