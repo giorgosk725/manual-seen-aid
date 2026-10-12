@@ -30,7 +30,9 @@ export function MapaConsulta() {
             </h3>
             <ul
               className={
-                b.ancho ? "divide-y sm:grid sm:grid-cols-3 sm:divide-x sm:divide-y-0" : "divide-y"
+                b.ancho
+                  ? `divide-y sm:grid sm:divide-x sm:divide-y-0 ${b.ids.length === 4 ? "sm:grid-cols-4" : "sm:grid-cols-3"}`
+                  : "divide-y"
               }
               style={{ borderColor: "#e6e6e6" }}
             >

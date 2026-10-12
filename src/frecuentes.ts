@@ -650,7 +650,7 @@ const TODAS: Frecuente[] = [
       "días de enfermedad con asa cerrada",
     ],
     pasajes: ["t/10-situaciones/b27/0", "t/10-situaciones/b27/1", "t/10-situaciones/b27/3"],
-    siguiente: { texto: "Hiperglucemia y cetonemia · Figura 3", ruta: "#/consultar/figura-3" },
+    siguiente: { texto: "Hiperglucemia y cetonemia", ruta: "#/consultar/figura-3" },
   },
   // 0.35.0: una comparación entre variantes del mismo sistema es una sola pregunta.
   {

@@ -90,7 +90,7 @@ test.describe("Visor de imágenes", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 393, height: 851 });
-    await page.goto("/#/visual");
+    await page.goto("/#/visual/figuras");
     await page.getByRole("button", { name: /Ampliar Infografía/ }).click();
     const visor = page.getByRole("dialog", { name: "Infografía." });
     await expect(visor).toBeVisible();
@@ -147,7 +147,9 @@ test.describe("Auditoría 0.6.1", () => {
   test("Atrás con la paleta abierta la cierra y deja la página de debajo", async ({ page }) => {
     await page.goto("/#/");
     await page.goto("/#/consultar/figura-3");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("cetonemia · Figura 3");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(
+      "Hiperglucemia y cetonemia",
+    );
     await page.keyboard.press("Control+k");
     await expect(page.getByRole("dialog")).toBeVisible();
     await page.goBack();
@@ -196,7 +198,7 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
     await expect(urgencia.first()).toContainText("URGENCIAS / VALORACIÓN HOSPITALARIA INMEDIATA");
     await expect(urgencia.first()).toContainText("Somnolencia o confusión.");
     await expect(
-      page.getByRole("link", { name: /Hiperglucemia y cetonemia · Figura 3 completa/ }),
+      page.getByRole("link", { name: /Hiperglucemia y cetonemia: la figura completa/ }),
     ).toHaveAttribute("href", "#/consultar/figura-3");
     const respuesta = page.getByRole("region", { name: "Pasajes relacionados" });
     await expect(respuesta).not.toContainText("Cetosis significativa / probable fallo de infusión");

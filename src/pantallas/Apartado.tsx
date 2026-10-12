@@ -32,7 +32,7 @@ import { retirado } from "../edicion";
 /* Recorridos de consulta que desarrollan cada apartado (los mismos de «Consultar»). */
 const RECORRIDOS: Record<string, { texto: string; ruta: string }[]> = {
   "07-educacion": [
-    { texto: "Hiperglucemia y cetonemia · Figura 3", ruta: href("consultar", "figura-3") },
+    { texto: "Hiperglucemia y cetonemia", ruta: href("consultar", "figura-3") },
     { texto: "Interrupción del sistema", ruta: href("consultar", "interrupcion") },
   ],
   "08-iniciacion": [{ texto: "Iniciar un sistema paso a paso", ruta: href("consultar", "inicio") }],

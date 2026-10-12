@@ -42,6 +42,7 @@ import {
   Telescope,
   TrendingUp,
   Unplug,
+  Workflow,
 } from "lucide-react";
 import { href } from "./rutas";
 import type { DiagramaId } from "./contenido/diagramas";
@@ -63,13 +64,21 @@ export interface Destino {
 export const DESTINOS: Destino[] = [
   {
     id: "visual",
-    etiqueta: "Figuras y diagramas",
-    corto: "Visual",
+    etiqueta: "Diagramas",
+    corto: "Diagramas",
     href: href("visual"),
+    icono: Workflow,
+    cat: "consultar",
+    descripcion: "Diagramas hechos con el texto del capítulo, con su página.",
+  },
+  {
+    id: "figuras",
+    etiqueta: "Figuras",
+    corto: "Figuras",
+    href: href("visual", "figuras"),
     icono: Images,
     cat: "consultar",
-    descripcion:
-      "Figuras, tablas y diagramas: los diagramas a partir del texto, las figuras con zoom, las tablas y los sistemas.",
+    descripcion: "Las figuras originales del capítulo y la infografía, con zoom.",
   },
   {
     id: "sistemas",
@@ -175,8 +184,8 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "figura-3",
-    etiqueta: "Hiperglucemia y cetonemia · Figura 3",
-    corto: "Figura 3",
+    etiqueta: "Hiperglucemia y cetonemia",
+    corto: "Cetonemia",
     href: href("consultar", "figura-3"),
     icono: Droplets,
     cat: "consultar",
@@ -331,7 +340,12 @@ export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[]; ancho?:
   { id: "pacientes", titulo: "Para el paciente", ids: ["pacientes"] },
   // La lectura también en el mapa, abajo y a todo lo ancho (la puerta «Leer y comprender» va
   // antes, en la cabecera).
-  { id: "leer", titulo: "Leer y comprender", ids: ["capitulo", "tablas", "visual"], ancho: true },
+  {
+    id: "leer",
+    titulo: "Leer y comprender",
+    ids: ["capitulo", "tablas", "figuras", "visual"],
+    ancho: true,
+  },
 ];
 
 /* Navegación global: cuatro áreas en la barra inferior (Inicio · Leer · Paciente · Buscar).
@@ -368,7 +382,7 @@ export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
   {
     area: "leer",
     titulo: "Leer y comprender",
-    ids: ["capitulo", "tablas", "visual", "preguntas", "casos", "repaso", "test"].filter(
+    ids: ["capitulo", "tablas", "figuras", "visual", "preguntas", "casos", "repaso", "test"].filter(
       (id) => !retirado(id),
     ),
   },
@@ -383,6 +397,9 @@ export function destinoActivo(
   ruta: { seccion: string; sub?: string; detalle?: string },
 ) {
   if (id === "capitulo") return ruta.seccion === "capitulo";
+  // Figuras (#/visual/figuras) y Diagramas (#/visual y #/visual/<diagrama>) comparten sección.
+  if (id === "figuras") return ruta.seccion === "visual" && ruta.sub === "figuras";
+  if (id === "visual") return ruta.seccion === "visual" && ruta.sub !== "figuras";
   const d = DESTINOS.find((x) => x.id === id);
   if (!d) return false;
   const [seccion, sub] = d.href.replace(/^#\//, "").split("/");

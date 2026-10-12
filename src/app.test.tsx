@@ -27,21 +27,16 @@ const AXE = {
 };
 
 describe("App", () => {
-  it("la portada: identidad editorial, título completo del capítulo y autor, sin la Sociedad", () => {
+  it("la portada: título del capítulo tal cual, qué es esta versión y el autor, sin la Sociedad", () => {
     render(<App />);
-    // Edición editorial (A08): la identidad es el título corto; el completo, debajo.
+    // El título del capítulo tal cual y, debajo, qué es esta versión (13-10-2026).
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      "Automatización de la insulinoterapia",
+      /Tratamiento insulínico del paciente con diabetes mellitus tipo 1: automatización de la insulinoterapia/i,
     );
-    expect(screen.getAllByText(/Complemento interactivo del capítulo 89/).length).toBeGreaterThan(
-      0,
-    );
-    expect(screen.getByText("En evaluación editorial")).toBeInTheDocument();
     expect(
-      screen.getByText(
-        /Tratamiento insulínico del paciente con diabetes mellitus tipo 1: automatización de la insulinoterapia/i,
-      ),
+      screen.getByText(/Complemento interactivo del capítulo 89 del Manual SEEN/),
     ).toBeInTheDocument();
+    expect(screen.queryByText(/evaluación editorial/)).toBeNull();
     const puertas = screen.getByRole("navigation", { name: "Dos formas de uso" });
     expect(within(puertas).getByRole("link", { name: /Leer y comprender/ })).toHaveAttribute(
       "href",
@@ -208,20 +203,24 @@ describe("App", () => {
     );
   });
 
-  it("Figuras y diagramas reúne diagramas, figuras, tablas y sistemas, y filtra", async () => {
+  it("Diagramas y Figuras van por separado, sin tablas ni sistemas", async () => {
     render(<App />);
     await ir("#/visual");
-    expect(
-      screen.getByRole("heading", { level: 1, name: "Figuras y diagramas" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Diagramas" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Escala de cetonemia/ })).toHaveAttribute(
       "href",
       "#/visual/cetonemia",
     );
-    expect(screen.getAllByRole("button", { name: /^Ampliar/ }).length).toBeGreaterThanOrEqual(8);
-    await userEvent.click(screen.getByRole("button", { name: /^Tablas \(6\)/ }));
-    expect(screen.queryByRole("link", { name: /Escala de cetonemia/ })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Tabla 6/ })).toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Tablas" })).toBeNull();
+    expect(screen.queryByRole("region", { name: "Sistemas" })).toBeNull();
+    expect(screen.queryByRole("button", { name: /^Ampliar/ })).toBeNull();
+    await ir("#/visual/figuras");
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Figuras del capítulo" }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /^Ampliar/ }).length).toBe(4);
+    expect(screen.queryByRole("link", { name: /Escala de cetonemia/ })).toBeNull();
+    expect(screen.queryByText(/Fotos oficiales de producto/)).toBeNull();
   });
 
   it("un diagrama a pantalla completa enlaza a su lugar en el capítulo", async () => {

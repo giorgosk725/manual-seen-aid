@@ -1,5 +1,5 @@
-/* Portada de la edición editorial (A08): identidad «Automatización de la insulinoterapia»,
-   complemento interactivo del capítulo 89 en evaluación editorial; dos puertas del mismo nivel
+/* Portada: el título del capítulo tal cual y, debajo, qué es esta versión (complemento
+   interactivo del capítulo 89; decisión del autor, 13-10-2026); dos puertas del mismo nivel
    («Leer y comprender» y «Consultar») antes del mapa de consulta (componentes/MapaConsulta); y
    el capítulo publicado. El buscador vive en la barra lateral (escritorio) y en la cabecera
    (móvil): la portada no lo repite. */
@@ -104,25 +104,16 @@ export function Portada() {
               <span>Capítulo {CAPITULO.numero} del Manual SEEN</span>
               <span aria-hidden="true">·</span>
               <span>{CAPITULO.area}</span>
-              <span className="rounded-full border border-slate-300 px-2 py-px font-semibold normal-case tracking-normal text-slate-600">
-                En evaluación editorial
-              </span>
             </div>
             <h1
               id="titulo-capitulo"
-              className="titulo-manual mt-1.5 text-balance text-[1.35rem] leading-[1.1] sm:mt-3 sm:text-[2.2rem] lg:text-[2.5rem]"
+              className="titulo-manual mt-1.5 text-balance text-[1.05rem] leading-[1.15] sm:mt-3 sm:text-[2rem] lg:text-[2.3rem]"
             >
-              {CAPITULO.tituloCorto}
+              {CAPITULO.titulo}
             </h1>
-            <p className="mt-1 text-sm font-semibold text-slate-800 sm:text-base">
-              Complemento interactivo del capítulo {CAPITULO.numero}
-            </p>
-            <p className="mt-1 text-[13px] leading-snug text-slate-700 sm:text-sm">
+            <p className="mt-1.5 text-[13px] font-semibold leading-snug text-slate-800 sm:mt-2 sm:text-base">
               Complemento interactivo del capítulo {CAPITULO.numero} del Manual SEEN. Facilita su
               lectura, comprensión y consulta.
-            </p>
-            <p className="mt-1.5 text-xs leading-snug text-slate-500">
-              Capítulo: {CAPITULO.titulo}
             </p>
             {/* Firma como en el Manual: nombre y afiliación, en letra discreta. */}
             <p className="mt-1.5 text-[13px] font-semibold leading-snug text-slate-700 sm:text-sm">

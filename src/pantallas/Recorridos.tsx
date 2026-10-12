@@ -53,7 +53,7 @@ const TEMAS_SITUACION: { t: string; ids: string[]; subs: RegExp; extras?: Extra[
     subs: /enfermedad|glucocorticoide/i,
     extras: [
       {
-        t: "Hiperglucemia y cetonemia · Figura 3",
+        t: "Hiperglucemia y cetonemia",
         fuente: "Figura 3",
         ruta: href("consultar", "figura-3"),
       },
@@ -748,9 +748,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
         className="no-imprimir mb-3 flex min-h-11 items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-semibold text-red-900 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-red-700"
       >
         <Siren size={15} className="shrink-0" aria-hidden="true" />
-        <span className="min-w-0 flex-1">
-          Bandera roja: hiperglucemia persistente o cetonemia · Figura 3
-        </span>
+        <span className="min-w-0 flex-1">Bandera roja: hiperglucemia persistente o cetonemia</span>
         <ArrowRight size={14} className="shrink-0" aria-hidden="true" />
       </a>
       <section

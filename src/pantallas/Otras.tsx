@@ -496,7 +496,7 @@ export function Sobre() {
       <CabeceraEditorial titulo="Sobre este complemento" hex={CATEGORIA_HEX.confiar} level={1}>
         <p className="text-sm text-slate-600">
           Complemento interactivo del capítulo {CAPITULO.numero} del Manual SEEN · versión{" "}
-          {BUILD.version} · en evaluación editorial.
+          {BUILD.version}.
         </p>
       </CabeceraEditorial>
       <div
@@ -547,9 +547,9 @@ export function Sobre() {
         </SeccionSobre>
         <SeccionSobre id="s-estado" titulo="Estado y revisión">
           <p>
-            Propuesta en evaluación editorial; no es un recurso oficial del Manual SEEN. La
-            autorización para reproducir el material editorial, el uso de la marca y el alojamiento
-            definitivo están pendientes de acuerdo con la SEEN y la editorial ({CAPITULO.editorial}
+            No es un recurso oficial del Manual SEEN. La autorización para reproducir el material
+            editorial, el uso de la marca y el alojamiento definitivo están pendientes de acuerdo
+            con la SEEN y la editorial ({CAPITULO.editorial}
             ).
           </p>
           <p>

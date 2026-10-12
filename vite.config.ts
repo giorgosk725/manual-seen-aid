@@ -154,7 +154,7 @@ export default defineConfig({
         name: "Automatización de la insulinoterapia · Complemento del capítulo 89",
         short_name: "Manual SEEN · AID",
         description:
-          "Complemento interactivo del capítulo 89 del Manual SEEN. Facilita su lectura, comprensión y consulta. En evaluación editorial.",
+          "Complemento interactivo del capítulo 89 del Manual SEEN. Facilita su lectura, comprensión y consulta.",
         lang: "es",
         dir: "ltr",
         start_url: "./",
@@ -184,7 +184,7 @@ export default defineConfig({
             icons: [{ src: "pwa-192.png", sizes: "192x192", type: "image/png" }],
           },
           {
-            name: "Hiperglucemia y cetonemia · Figura 3",
+            name: "Hiperglucemia y cetonemia",
             short_name: "Cetonemia",
             url: "./#/consultar/figura-3",
             icons: [{ src: "pwa-192.png", sizes: "192x192", type: "image/png" }],
@@ -217,7 +217,7 @@ export default defineConfig({
             sizes: "786x1704",
             type: "image/webp",
             form_factor: "narrow",
-            label: "Hiperglucemia y cetonemia · Figura 3",
+            label: "Hiperglucemia y cetonemia",
           },
           {
             src: "capturas-app/apartado-movil.webp",

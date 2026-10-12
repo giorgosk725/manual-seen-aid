@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.49.0";
+export const VERSION_APP = "0.49.1";
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: `Automatización de la insulinoterapia ${VERSION_APP} — portada con el título del capítulo; Figuras y Diagramas aparte`,
+    detalle: [
+      "Portada: el título del capítulo tal cual y, debajo, qué es esta versión: complemento interactivo del capítulo 89 del Manual SEEN, que facilita su lectura, comprensión y consulta. Sin el rótulo «En evaluación editorial».",
+      "«Hiperglucemia y cetonemia», sin «· Figura 3», en el menú, el mapa y los títulos.",
+      "«Figuras y diagramas» se divide en dos entradas: «Figuras» (las originales del capítulo y la infografía) y «Diagramas». Las tablas y los sistemas ya no se repiten ahí: tienen su propia entrada.",
+    ],
+  },
+  {
     fecha: "2026-10-12",
     ambito: "app",
-    titulo: `Automatización de la insulinoterapia ${VERSION_APP} — edición editorial (en evaluación)`,
+    titulo: "Automatización de la insulinoterapia 0.49.0 — edición editorial",
     detalle: [
       "Portada: «Automatización de la insulinoterapia», complemento interactivo del capítulo 89, en evaluación editorial; dos entradas del mismo nivel, «Leer y comprender» y «Consultar», antes del mapa. Menú en tres grupos: Consultar, Leer y comprender y Recursos.",
       "Cetonemia: una cifra de β-OHB escrita en la búsqueda ya no elige rama de la Figura 3. Delante va el texto de la figura sobre urgencia y signos de gravedad y el enlace a la figura completa; ese texto acompaña también a cada rama no roja. Los fragmentos de seguridad se enseñan enteros.",

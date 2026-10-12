@@ -13,7 +13,7 @@ test.describe("Uso 0.10.0", () => {
     await caja.press("ArrowDown");
     // Con una cifra de cetonas, lo primero es el enlace a la Figura 3 completa (A01).
     await expect(
-      dialogo.getByRole("link", { name: /Hiperglucemia y cetonemia · Figura 3 completa/ }),
+      dialogo.getByRole("link", { name: /Hiperglucemia y cetonemia: la figura completa/ }),
     ).toBeFocused();
     await page.keyboard.press("ArrowUp");
     await expect(caja).toBeFocused();

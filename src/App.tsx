@@ -218,7 +218,7 @@ export default function App() {
           break;
         case "figura-3":
           pantalla = <Figura3Pantalla tramo={ruta.detalle} />;
-          titulo = "Hiperglucemia y cetonemia · Figura 3";
+          titulo = "Hiperglucemia y cetonemia";
           break;
         case "infografia":
           pantalla = <Infografia />;
@@ -230,8 +230,18 @@ export default function App() {
       break;
     }
     case "visual":
-      pantalla = ruta.sub ? <DiagramaPantalla id={ruta.sub} opcion={ruta.detalle} /> : <Visual />;
-      titulo = DIAGRAMAS.find((d) => d.id === ruta.sub)?.titulo ?? "Figuras y diagramas";
+      pantalla =
+        ruta.sub === "figuras" ? (
+          <Visual vista="figuras" />
+        ) : ruta.sub ? (
+          <DiagramaPantalla id={ruta.sub} opcion={ruta.detalle} />
+        ) : (
+          <Visual />
+        );
+      titulo =
+        ruta.sub === "figuras"
+          ? "Figuras del capítulo"
+          : (DIAGRAMAS.find((d) => d.id === ruta.sub)?.titulo ?? "Diagramas");
       break;
     case "sistemas":
       pantalla = <Sistemas sel={ruta.sub} seccion={ruta.detalle} />;

@@ -52,7 +52,7 @@ export function UrgenciaF3({
             href={href("consultar", "figura-3")}
             className="inline-flex min-h-11 items-center gap-1 font-semibold underline focus:outline-none focus-visible:ring-2 focus-visible:ring-red-700 sm:min-h-6"
           >
-            Hiperglucemia y cetonemia · Figura 3 completa
+            Hiperglucemia y cetonemia: la figura completa
             <ArrowRight size={13} aria-hidden="true" />
           </a>
         )}
