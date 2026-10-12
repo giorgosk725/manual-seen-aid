@@ -111,8 +111,8 @@ describe("App", () => {
     await ir("#/test");
     expect(screen.queryByText(/Pendiente de validación/)).toBeNull();
     expect(screen.queryByText(/Provisional · ejemplo/)).toBeNull();
-    // q02 y q03 están fuera de la edición (A05).
-    expect(screen.queryByText(/TBR <54 mg\/dl 1,4 %/)).toBeNull();
+    // q02 y q03, de vuelta con las correcciones decididas por el autor (13-10-2026).
+    expect(screen.getByText(/TAR 26,7 %/)).toBeInTheDocument();
     expect(screen.queryByText(/deben ofrecerse como modalidad preferente/)).toBeNull();
     await userEvent.click(
       screen.getByRole("button", {

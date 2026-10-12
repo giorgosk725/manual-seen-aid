@@ -51,12 +51,17 @@ test.describe("Entrega 1 (0.32.0)", () => {
     await expect(rama.getByText(/Dosis orientativas para personas adultas/)).toBeVisible();
   });
 
-  test("ya no hay «Seguir leyendo» ni «Leído»", async ({ page }) => {
+  // «Seguir leyendo» vuelve en la 0.50 (decisión del 13-10-2026), solo con la ruta del apartado;
+  // «Leído» sigue fuera.
+  test("«Seguir leyendo» lleva al apartado; no hay «Leído»", async ({ page }) => {
     await page.goto("/#/capitulo/07-educacion");
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     await page.waitForTimeout(800);
     await page.goto("/#/");
-    await expect(page.getByText("Seguir leyendo")).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /Seguir leyendo/ })).toHaveAttribute(
+      "href",
+      "#/capitulo/07-educacion",
+    );
     await page.goto("/#/capitulo");
     await expect(page.getByText(/^Leído$/)).toHaveCount(0);
   });

@@ -286,29 +286,30 @@ function AvisoVersion() {
   );
 }
 
-/* ---------- Rótulo (inspirado en el del Manual SEEN, sin ser su logotipo) ----------
-   «Manual» en el azul oscuro del Manual (#3F6E9F): 4,5:1 también en el tamaño compacto. */
+/* ---------- Rótulo: identidad propia del complemento ----------
+   Mientras la SEEN no autorice el uso de su marca, la cabecera no imita el logotipo del Manual:
+   «Capítulo 89 · Complemento interactivo», con los colores del área. */
 export function Rotulo({ compacto = false }: { compacto?: boolean }) {
   return (
     <span className="flex items-center gap-1.5 leading-none" aria-hidden="true">
       <span
-        className={`font-display font-semibold uppercase tracking-tight ${compacto ? "text-[1.35rem] min-[400px]:text-[1.6rem]" : "text-[2.1rem]"}`}
+        className={`font-display font-semibold uppercase tracking-tight ${compacto ? "text-[1.2rem] min-[400px]:text-[1.4rem]" : "text-[1.75rem]"}`}
         style={{ color: SEEN.azulOsc }}
       >
-        Manual
+        Cap. 89
       </span>
       <span className="flex flex-col font-display font-medium uppercase leading-[0.95]">
         <span
           className={compacto ? "text-[0.62rem] min-[400px]:text-[0.72rem]" : "text-[0.85rem]"}
           style={{ color: SEEN.burdeos }}
         >
-          SEEN · AID
+          Complemento
         </span>
         <span
           className={compacto ? "text-[0.62rem] min-[400px]:text-[0.72rem]" : "text-[0.85rem]"}
           style={{ color: SEEN.mostazaOsc }}
         >
-          Diabetes
+          Interactivo
         </span>
       </span>
     </span>
@@ -346,7 +347,7 @@ function MenuNavegacion({
         if (!e.defaultPrevented) onIr?.();
       }}
       aria-current={on ? "page" : undefined}
-      className={`relative flex min-h-9 items-center gap-2.5 rounded-md px-3 py-1.5 text-[13.5px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"}`}
+      className={`relative flex min-h-11 items-center gap-2.5 rounded-md px-3 py-1.5 text-[13.5px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"}`}
     >
       {on && (
         <span
@@ -464,7 +465,7 @@ function Lateral({ ruta }: { ruta: Ruta }) {
     >
       <a
         href="#/"
-        aria-label="Automatización de la insulinoterapia, complemento del capítulo 89: inicio"
+        aria-label="Complemento del capítulo 89, inicio"
         className="rounded-md px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
         <Rotulo />
@@ -756,7 +757,7 @@ export function Shell({
           </button>
           <a
             href="#/"
-            aria-label="Automatización de la insulinoterapia, complemento del capítulo 89: inicio"
+            aria-label="Complemento del capítulo 89, inicio"
             className="inline-flex min-h-11 min-w-0 shrink-0 items-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
           >
             <Rotulo compacto />

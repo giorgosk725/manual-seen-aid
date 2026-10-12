@@ -124,7 +124,7 @@ test.describe("Uso 0.10.0", () => {
     await puertas.getByRole("button", { name: /Consultar/ }).click();
     await expect(page.getByRole("heading", { name: "Consultar", exact: true })).toBeFocused();
     await puertas.getByRole("link", { name: /Leer y comprender/ }).click();
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Leer capítulo");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Leer y comprender");
     const aprender = page.getByRole("region", { name: "Comprender y practicar" });
     await expect(aprender.getByRole("link", { name: /Tarjetas de repaso/ })).toHaveCount(0);
     await expect(aprender.getByRole("link", { name: /Autoevaluación/ })).toBeVisible();

@@ -270,6 +270,12 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
       plan templates say «Material complementario» on screen and paper; letter 12 pt only.
     - **Traceability (A10).** `src/build.ts` (version, code SHA, build date, source PDF SHA-256)
       is shown in «Sobre este complemento»; the update notice says the running version.
+    - **0.50.0 (13-10-2026).** `src/materiales.ts` registers every material (type, date, version,
+      evidence); «Sobre» lists it and sheet footers repeat it. q02/q03 back in the edition by the
+      author's decision. Own header identity (`Rotulo`: «Cap. 89 · Complemento interactivo»)
+      while the SEEN brand is not authorised. «Seguir leyendo» stores ONLY the canonical apartado
+      route (`mseen:ultimo`). Deep links keep their target in view while lazy figures load
+      (`mantenerEnVista`). Main mobile actions ≥ 44 px; night focus outline (index.css).
     - **Drafts.** New clinical, sheet or quiz wording goes to `borradores/` for the author;
       nothing is marked approved without a record. Details and pending items:
       `docs/EDICION_EDITORIAL.md`.

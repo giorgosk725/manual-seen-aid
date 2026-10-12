@@ -152,7 +152,7 @@ export default defineConfig({
         // alojamiento (p. ej., si la SEEN la aloja junto al capítulo).
         id: "/manual-seen-aid",
         name: "Automatización de la insulinoterapia · Complemento del capítulo 89",
-        short_name: "Manual SEEN · AID",
+        short_name: "Complemento cap. 89",
         description:
           "Complemento interactivo del capítulo 89 del Manual SEEN. Facilita su lectura, comprensión y consulta.",
         lang: "es",

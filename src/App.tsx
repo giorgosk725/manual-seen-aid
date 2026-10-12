@@ -159,7 +159,7 @@ export default function App() {
     case "capitulo": {
       if (!ruta.sub) {
         pantalla = <IndiceCapitulo />;
-        titulo = "Leer capítulo";
+        titulo = "Leer y comprender";
       } else if (ruta.sub === "resumen") {
         pantalla = <ResumenPacientes />;
         titulo = "Resumen del capítulo";

@@ -139,8 +139,9 @@ const TODAS: Frecuente[] = [
       "sistema sin bolos para las comidas",
       "CamAPS Liberty",
     ],
-    // Pasajes aprobados el 8-10-2026. La propuesta del 12-10 (añadir T1/8) está en
-    // borradores/frecuentes-f11-f37_2026-10-12.md, pendiente de revisión.
+    // Pasajes aprobados el 8-10-2026. La propuesta de 13-10 (CamAPS FX/Liberty primero y las
+    // filas de indicación y gestación de la Tabla 1, con los otros sistemas plegados) está en
+    // PROPUESTAS, abajo, pendiente de revisión.
     pasajes: ["t/03-algoritmos/b3/1", "t/03-algoritmos/b3/2"],
   },
   {
@@ -410,8 +411,9 @@ const TODAS: Frecuente[] = [
       "gramos de azúcar para una bajada",
       "regla de los 15 gramos en AID",
     ],
-    // Pasajes aprobados el 8-10-2026. La propuesta del 12-10 (añadir delante
-    // t/07-educacion/b6/1) está en borradores/frecuentes-f11-f37_2026-10-12.md, pendiente de revisión.
+    // Pasajes aprobados el 8-10-2026: condicionantes, cantidades y reevaluación juntos. La
+    // propuesta del 12-10 (poner delante «suele requerir menos hidratos», t/07-educacion/b6/1) se
+    // descartó el 13-10-2026 por decisión del autor: no es una regla universal.
     pasajes: ["t/07-educacion/b7/0", "t/07-educacion/b7/1"],
   },
   {
@@ -678,9 +680,15 @@ const TODAS: Frecuente[] = [
   {
     id: "f63",
     tema: "Uso en el día a día",
-    pregunta: "¿Cuándo hay que poner el bolo de la comida?",
-    variantes: ["cuánto antes de comer se pone el bolo", "bolo prandial anticipado"],
-    pasajes: ["l/07-educacion/b3/3", "t/09-descarga/b5/1"],
+    // Revisada el 13-10-2026 (sigue pendiente): el bolo prandial, en las modalidades que lo
+    // requieren (híbridas); las de asa cerrada completa, aparte.
+    pregunta: "En los sistemas híbridos, ¿cuándo hay que poner el bolo de la comida?",
+    variantes: [
+      "cuánto antes de comer se pone el bolo",
+      "bolo prandial anticipado",
+      "bolo de la comida con asa cerrada híbrida",
+    ],
+    pasajes: ["l/07-educacion/b3/3", "t/09-descarga/b2/3", "t/09-descarga/b5/1", "T5/nota/1/3"],
   },
   {
     id: "f64",
@@ -722,10 +730,15 @@ const TODAS: Frecuente[] = [
     tema: "Uso en el día a día",
     pregunta: "Desconexión breve (ducha, deporte, una prueba): ¿qué hacer con la insulina?",
     variantes: ["desconectar la bomba un rato", "bolo antes de desconectar la bomba"],
+    // Revisada el 13-10-2026 (sigue pendiente): con el umbral de aproximadamente 1 h sin
+    // administración y la pauta de respaldo individualizada.
     pasajes: [
+      "t/07-educacion/b11/1",
       "t/07-educacion/b11/2",
       "t/07-educacion/b11/3",
+      "t/07-educacion/b11/4",
       "t/07-educacion/b12/1",
+      "t/07-educacion/b12/2",
       "t/07-educacion/b12/3",
     ],
   },
@@ -1037,6 +1050,16 @@ export function revisionDe(id: string): Revision {
     registro: "Añadida en la 0.48.0; pendiente de la revisión del autor (docs/FRECUENTES.md)",
   };
 }
+
+/* Propuestas de cambio sobre preguntas ya aprobadas: no se usan en la app (la edición sigue con
+   los pasajes aprobados) hasta que el autor las revise. */
+export const PROPUESTAS: Record<string, { pasajes: string[]; nota: string; fecha: string }> = {
+  f11: {
+    pasajes: ["t/03-algoritmos/b3/1", "t/03-algoritmos/b3/2", "T1/7", "T1/8"],
+    nota: "Primero los pasajes propios de CamAPS FX/Liberty; en las filas de la Tabla 1, la casilla de myLoop CamAPS a la vista y los otros sistemas plegados. Para revisar: el apartado 3 dice «no se recomienda en menores de 13 años» (admite 13) y la Tabla 1 dice «Liberty: > 13 años» (no los admite).",
+    fecha: "2026-10-13",
+  },
+};
 
 export type FrecuenteRevisada = Frecuente & { revision: Revision };
 export const FRECUENTES_TODAS: FrecuenteRevisada[] = TODAS.map((f) => ({

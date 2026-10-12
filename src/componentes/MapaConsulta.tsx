@@ -43,7 +43,7 @@ export function MapaConsulta() {
                   <li key={id}>
                     <a
                       href={d.href}
-                      className="flex min-h-10 items-center gap-3 px-3 py-1.5 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                      className="flex min-h-11 items-center gap-3 px-3 py-1.5 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                     >
                       <I
                         size={16}

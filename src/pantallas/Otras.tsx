@@ -11,6 +11,7 @@ import {
 import { FRECUENTES } from "../frecuentes";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
 import { BUILD } from "../build";
+import { MATERIALES, ROTULO_TIPO, fechaCorta } from "../materiales";
 import { PREGUNTAS } from "../contenido/test";
 import { elegirRuta, href } from "../rutas";
 import {
@@ -531,8 +532,8 @@ export function Sobre() {
           </p>
           <p>
             No forman parte de esta edición: la ampliación técnica de cada sistema, los casos
-            guiados, las tarjetas de repaso, las preguntas frecuentes pendientes de revisión, dos
-            preguntas de autoevaluación en revisión y la hoja compacta de 7 pt.
+            guiados, las tarjetas de repaso, las preguntas frecuentes pendientes de revisión y la
+            hoja compacta de 7 pt.
           </p>
         </SeccionSobre>
         <SeccionSobre id="s-docente" titulo="Capa docente">
@@ -558,6 +559,29 @@ export function Sobre() {
             cuando su responsable lo revisa y aprueba; cada pregunta frecuente lleva su estado y la
             fecha de esa revisión.
           </p>
+        </SeccionSobre>
+        <SeccionSobre id="s-materiales" titulo="Materiales y su revisión">
+          <ul className="space-y-2">
+            {MATERIALES.map((m) => (
+              <li
+                key={m.id}
+                className="rounded-lg border px-3 py-2"
+                style={{ borderColor: "#e6e6e6" }}
+              >
+                <span className="block font-semibold text-slate-900">{m.nombre}</span>
+                <span className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  {ROTULO_TIPO[m.tipo]}
+                </span>
+                <span className="block text-slate-700">
+                  {m.fecha
+                    ? `${m.tipo === "publicado" ? "Publicado" : "Aprobado"} el ${fechaCorta(m.fecha)}${m.version !== "—" ? ` · versión ${m.version}` : ""}`
+                    : "Aprobación pendiente"}
+                  . {m.evidencia}.
+                </span>
+                {m.pendiente && <span className="block text-amber-900">{m.pendiente}.</span>}
+              </li>
+            ))}
+          </ul>
         </SeccionSobre>
         <SeccionSobre id="s-datos" titulo="Qué se transmite y qué se guarda">
           <p>
@@ -840,8 +864,7 @@ export function Test() {
       >
         <p className="text-sm text-slate-600">
           {PREGUNTAS.length} preguntas de repaso. Las explicaciones son de la capa docente; las
-          frases citadas, literales del capítulo con su página. Dos preguntas más están en revisión
-          y no se incluyen.
+          frases citadas, literales del capítulo con su página.
         </p>
       </CabeceraEditorial>
       {pendientes > 0 && (

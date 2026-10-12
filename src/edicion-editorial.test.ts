@@ -1,7 +1,9 @@
 /* Edición editorial, lote 1 (A01-A03): la cifra de β-OHB no elige rama, las Functions no
    reciben texto y la app no guarda búsquedas ni criterios. */
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { responder } from "./respuestas";
+import { responder, preguntaFrecuente, frecuentesRelacionadas, respuestaPorId } from "./respuestas";
+import { FRECUENTES, FRECUENTES_TODAS, PROPUESTAS } from "./frecuentes";
+import { indice, sugerir } from "./buscador";
 import { tramoDeConsulta } from "./busqueda";
 import { FIGURA3 } from "./contenido";
 import { EDICION, migrarPrivacidad } from "./edicion";
@@ -112,5 +114,60 @@ describe("A03 · privacidad", () => {
       expect(r.headers.get("X-Content-Type-Options")).toBe("nosniff");
     }
     expect(leer).not.toHaveBeenCalled();
+  });
+});
+
+describe("A04 · circuito de aprobación de las preguntas frecuentes", () => {
+  const pendientes = FRECUENTES_TODAS.filter((f) => f.revision.estado !== "aprobada");
+  it("f01–f61 aprobadas con fecha y registro; f62–f103 pendientes", () => {
+    expect(FRECUENTES.map((f) => f.id)).toEqual(
+      Array.from({ length: 61 }, (_, i) => `f${String(i + 1).padStart(2, "0")}`),
+    );
+    for (const f of FRECUENTES) {
+      expect(f.revision.fecha, f.id).toMatch(/^2026-10-(08|11)$/);
+      expect(f.revision.registro.length, f.id).toBeGreaterThan(20);
+    }
+    expect(pendientes).toHaveLength(42);
+  });
+  it("todos los pasajes de las pendientes y de las propuestas existen", () => {
+    for (const f of pendientes)
+      for (const id of f.pasajes) expect(respuestaPorId(id), `${f.id} ${id}`).not.toBeNull();
+    for (const [fid, p] of Object.entries(PROPUESTAS))
+      for (const id of p.pasajes) expect(respuestaPorId(id), `${fid} ${id}`).not.toBeNull();
+  });
+  it("ninguna pendiente responde, se sugiere, sale como relacionada ni entra en el índice", () => {
+    const ids = new Set(pendientes.map((f) => f.id));
+    const enIndice = indice().map((e) => JSON.stringify(e));
+    for (const f of pendientes) {
+      expect(ids.has(preguntaFrecuente(f.pregunta)?.id ?? ""), f.id).toBe(false);
+      for (const v of f.variantes)
+        expect(ids.has(preguntaFrecuente(v)?.id ?? ""), `${f.id} ${v}`).toBe(false);
+      expect(
+        sugerir(f.pregunta, 20).some((x) => x.frecuente && ids.has(x.frecuente.id)),
+        f.id,
+      ).toBe(false);
+      expect(
+        frecuentesRelacionadas(f.pasajes, undefined, 10).some((x) => ids.has(x.id)),
+        f.id,
+      ).toBe(false);
+      expect(
+        enIndice.some((e) => e.includes(f.pregunta)),
+        f.id,
+      ).toBe(false);
+    }
+  });
+  it("f63 precisa las modalidades híbridas; f69 recupera la hora sin insulina y la pauta individual", () => {
+    const f63 = FRECUENTES_TODAS.find((f) => f.id === "f63")!;
+    expect(f63.pregunta).toMatch(/híbridos/);
+    expect(f63.pasajes).toContain("t/09-descarga/b2/3");
+    const f69 = FRECUENTES_TODAS.find((f) => f.id === "f69")!;
+    expect(f69.pasajes).toEqual(
+      expect.arrayContaining(["t/07-educacion/b11/4", "t/07-educacion/b12/2"]),
+    );
+    // f37 conserva juntos condicionantes, cantidades y reevaluación, sin «menos hidratos» delante.
+    expect(FRECUENTES.find((f) => f.id === "f37")!.pasajes).toEqual([
+      "t/07-educacion/b7/0",
+      "t/07-educacion/b7/1",
+    ]);
   });
 });

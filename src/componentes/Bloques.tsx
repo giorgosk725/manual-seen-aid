@@ -3,6 +3,7 @@
    publicado: la versión extendida no se muestra en la lectura (decisión del autor, 9-10-2026);
    sigue en las fichas de sistema y en las tablas, rotulada. */
 import { Fragment, Suspense, lazy, memo, useEffect, useMemo } from "react";
+import { mantenerEnVista } from "../irAlCambiar";
 import { Link2 } from "lucide-react";
 import {
   FIGURAS,
@@ -195,18 +196,24 @@ export const Bloques = memo(function Bloques({
     const plegable = el.closest("details");
     if (plegable) plegable.open = true;
     el.scrollIntoView({ block: "start" });
+    // Lo perezoso de antes (Figura 3, diagramas) no lo saca de la vista al cargar.
+    const soltar = mantenerEnVista(el);
     const texto = frase !== undefined ? textoCitado(apartado, bloque, frase) : null;
     const quitar = texto ? resaltarFrase(el, texto) : null;
     if (quitar) {
       const t = setTimeout(quitar, 6000);
       return () => {
         clearTimeout(t);
+        soltar();
         quitar();
       };
     }
     el.classList.add("destello");
     const t = setTimeout(() => el.classList.remove("destello"), 2000);
-    return () => clearTimeout(t);
+    return () => {
+      clearTimeout(t);
+      soltar();
+    };
   }, [destacado, apartado]);
   // La primera aparición de cada sigla del glosario en el apartado se vuelve pulsable.
   const siglas = useMemo(() => primerasSiglas(apartado), [apartado]);

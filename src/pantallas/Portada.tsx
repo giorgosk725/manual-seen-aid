@@ -9,6 +9,8 @@ import { MapaConsulta } from "../componentes/MapaConsulta";
 import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
 import { href } from "../rutas";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
+import { APARTADOS } from "../contenido";
+import { useUltimo } from "../prefs";
 
 const fecha = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("es-ES", {
@@ -80,6 +82,27 @@ function Puertas() {
   );
 }
 
+/* El último apartado abierto: solo si su ruta es la canónica de un apartado del capítulo. */
+function SeguirLeyendo() {
+  const ultimo = useUltimo();
+  const a = ultimo && APARTADOS.find((x) => x.slug === ultimo.slug);
+  if (!a || ultimo!.ruta !== href("capitulo", a.slug)) return null;
+  return (
+    <a
+      href={href("capitulo", a.slug)}
+      className="-mt-1 flex min-h-11 items-center gap-2 rounded-md border bg-white px-3 text-sm text-slate-800 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:-mt-3"
+      style={{ borderColor: "#e6e6e6" }}
+    >
+      <BookOpen size={15} aria-hidden="true" style={{ color: CATEGORIA_HEX.leer.strong }} />
+      <span className="font-semibold">Seguir leyendo:</span>
+      <span className="min-w-0 flex-1 truncate">
+        {a.n}. {a.corto}
+      </span>
+      <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+    </a>
+  );
+}
+
 export function Portada() {
   const ultimoCap = CAMBIOS.find((c) => c.ambito === "capitulo")!;
   return (
@@ -125,6 +148,7 @@ export function Portada() {
       </section>
 
       <Puertas />
+      <SeguirLeyendo />
 
       <MapaConsulta />
 

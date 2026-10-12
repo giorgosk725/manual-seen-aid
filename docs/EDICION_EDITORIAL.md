@@ -87,3 +87,20 @@ condiciones y figuras. La capa docente necesita su propia revisión.
 - Edición ampliada: las fichas de ampliación dicen «julio» y citan publicaciones de septiembre y
   octubre; las compatibilidades de insulina necesitan documentos del dispositivo y la versión.
 - Dependencias: plan gradual en `docs/DEPENDENCIAS_2026-10-12.md`.
+
+## 0.50.0 (13-10-2026, local)
+
+Decisiones del autor y revisión de la 0.49.1 con la auditoría de la 0.48.2 como referencia.
+
+| Punto                        | Estado en 0.50.0                                                                                                                                                                        |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A01 cetonemia                | Comprobado: la cifra no elige rama; urgencia citada en búsqueda, ramas y enlaces profundos (pruebas unitarias y e2e).                                                                   |
+| A02 criterios                | Comprobado: sin entradas de perfil ni orden por compatibilidad; celdas literales con variantes y ámbito.                                                                                |
+| A03 privacidad               | Comprobado: cero envíos a `/api/*`, nada en la URL, visitas ni recientes; solo preferencias y la ruta de «Seguir leyendo».                                                              |
+| A04 frecuentes               | f01–f61 aprobadas con registro; 42 pendientes fuera de emparejador, sugerencias, relacionadas e índice (prueba nueva). f37 decidida; f11 en propuesta; f63 y f69 revisadas, pendientes. |
+| A05 autoevaluación           | q02 y q03 corregidas por decisión del autor y de vuelta en la edición.                                                                                                                  |
+| A12 materiales               | Registro de materiales con tipo, fecha, versión y evidencia, en «Sobre» y al pie de las hojas.                                                                                          |
+| A08-A09 portada y navegación | Un nombre para la lectura, «Seguir leyendo», PDF a un toque, identidad propia en la cabecera, 44 px, foco nocturno.                                                                     |
+| Navegación                   | Arreglado el desplazamiento de los enlaces a una frase cuando cargan figuras perezosas (fallo intermitente de la 0.49).                                                                 |
+
+Prueba con profesionales: `docs/PRUEBA_TRES_PROFESIONALES_2026-10.md`.

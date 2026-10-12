@@ -3,6 +3,7 @@
    apartado», barra de progreso, columna de lectura, paginación en círculos,
    anterior/siguiente e impresión. */
 import { useEffect, useRef, useState } from "react";
+import { guardarUltimo } from "../prefs";
 import {
   ArrowLeft,
   ArrowRight,
@@ -83,6 +84,14 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
   const ref = useRef<HTMLDivElement>(null);
   const barra = useRef<HTMLDivElement>(null);
   useProgreso(ref, barra);
+  // «Seguir leyendo» (portada): solo la ruta del apartado, sin ancla ni nada de la consulta.
+  useEffect(() => {
+    guardarUltimo({
+      ruta: href("capitulo", apartado.slug),
+      titulo: `${apartado.n}. ${apartado.corto}`,
+      slug: apartado.slug,
+    });
+  }, [apartado.slug, apartado.n, apartado.corto]);
   const i = APARTADOS.findIndex((a) => a.slug === apartado.slug);
   const prev = APARTADOS[i - 1];
   const next = APARTADOS[i + 1];

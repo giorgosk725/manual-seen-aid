@@ -221,11 +221,19 @@ describe("convenciones de escritura", () => {
   });
   it("el test: 10 preguntas confirmadas (9-10-2026), con citas literales del capítulo", () => {
     expect(PREGUNTAS_TODAS).toHaveLength(10);
-    // Edición editorial (A05): q02 y q03 fuera hasta la decisión del autor.
-    expect(Object.keys(PENDIENTES_EDICION)).toEqual(["q02", "q03"]);
-    expect(PREGUNTAS.map((p) => p.id)).not.toContain("q02");
-    expect(PREGUNTAS.map((p) => p.id)).not.toContain("q03");
-    expect(PREGUNTAS).toHaveLength(8);
+    // A05 resuelto por el autor el 13-10-2026: las diez, con q02 y q03 corregidas.
+    expect(Object.keys(PENDIENTES_EDICION)).toEqual([]);
+    expect(PREGUNTAS).toHaveLength(10);
+    const q02 = PREGUNTAS.find((p) => p.id === "q02")!;
+    const cifra = (re: RegExp) => Number(q02.enunciado.match(re)![1].replace(",", "."));
+    expect(
+      cifra(/TIR (\d+(?:,\d+)?) %/) +
+        cifra(/TAR (\d+(?:,\d+)?) %/) +
+        cifra(/TBR <70 mg\/dl (\d+(?:,\d+)?) %/),
+    ).toBeCloseTo(100, 5);
+    const q03 = PREGUNTAS.find((p) => p.id === "q03")!;
+    expect(q03.opciones[q03.correcta]).toContain("pueden considerarse");
+    expect(q03.opciones.join(" ")).not.toContain("deben ofrecerse");
     for (const p of PREGUNTAS_TODAS) {
       expect(p.validada, p.id).toBe(true);
       expect(p.opciones, p.id).toHaveLength(4);

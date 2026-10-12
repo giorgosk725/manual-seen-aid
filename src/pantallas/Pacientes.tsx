@@ -22,6 +22,7 @@ import { HOJAS_EXTRA, hojaExtraPorId } from "../hojas";
 import { Texto } from "../texto";
 import { abrirPlegables, imprimirRegion } from "../imprimir";
 import { VERSION_APP } from "../contenido/cambios";
+import { fechaCorta, material } from "../materiales";
 
 const hex = CATEGORIA_HEX.pacientes;
 
@@ -90,7 +91,10 @@ function Hoja({
   children,
   holgada = false,
   complementaria = false,
+  materialId,
 }: {
+  /* Material del registro (src/materiales.ts): su revisión sale en el pie. */
+  materialId?: string;
   holgada?: boolean;
   /* Hoja o plantilla de este complemento (no una publicación del Manual SEEN): se dice en la
      cabecera y en el pie, en pantalla y en papel (A12). */
@@ -128,8 +132,24 @@ function Hoja({
         {complementaria
           ? `Hoja complementaria del complemento interactivo del capítulo 89 (versión ${VERSION_APP}), hecha con texto del capítulo publicado el ${CAPITULO.fechaFuente}; no es una publicación del Manual SEEN.`
           : `Versión en pantalla del complemento ${VERSION_APP}; capítulo publicado el ${CAPITULO.fechaFuente}.`}
+        {materialId && <RevisionMaterial id={materialId} />}
       </footer>
     </div>
+  );
+}
+
+/* La revisión registrada de un material (src/materiales.ts), en una línea del pie. */
+function RevisionMaterial({ id }: { id: string }) {
+  const m = material(id);
+  if (!m) return null;
+  const aprobada = m.fecha
+    ? `Revisión: aprobada el ${fechaCorta(m.fecha)}${m.version !== "—" ? ` (versión ${m.version})` : ""}.`
+    : "Revisión: pendiente.";
+  return (
+    <span className="mt-1 block">
+      {aprobada}
+      {m.pendiente ? ` ${m.pendiente}.` : ""}
+    </span>
   );
 }
 
@@ -373,6 +393,7 @@ export function HojaPacientes({ id }: { id?: string }) {
         }
         holgada
         complementaria
+        materialId="extractos"
       >
         {secciones.map((sec) => (
           <section key={sec.pregunta} className="hoja-seccion mb-3">
@@ -419,6 +440,7 @@ function HojaExtraVista({
         pie={<>Fuente: {hoja.fuente}.</>}
         holgada
         complementaria
+        materialId={`hoja-${hoja.id}`}
       >
         {hoja.intro && (
           <p className="mb-3 text-[15px] leading-relaxed text-slate-800">{hoja.intro}</p>
@@ -457,7 +479,7 @@ function HojaExtraVista({
 }
 
 /* ---------- Resumen del capítulo (maquetación de la editorial): para profesionales, en
-   «Leer capítulo» (#/capitulo/resumen); no es material para el paciente. ---------- */
+   «Leer y comprender» (#/capitulo/resumen); no es material para el paciente. ---------- */
 export function ResumenPacientes() {
   const ref = useRef<HTMLDivElement>(null);
   return (
@@ -467,7 +489,7 @@ export function ResumenPacientes() {
           href={href("capitulo")}
           className="inline-flex min-h-11 items-center font-semibold text-slate-600 hover:underline"
         >
-          Leer capítulo ›
+          Leer y comprender ›
         </a>
       </nav>
       <Acciones hoja={ref} />
@@ -623,6 +645,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
         hojaRef={ref}
         rotulo={`Plantilla de plan de seguridad · ${nombre}`}
         complementaria
+        materialId="planes"
         titulo={CAPITULO.titulo}
         subtitulo={
           <>Hecha solo con el texto del capítulo. Para rellenar a mano; no se guarda nada.</>

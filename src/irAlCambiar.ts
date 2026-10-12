@@ -21,3 +21,30 @@ export function useIrAlCambiar(
     pendiente.current = true;
   };
 }
+
+/* Enlace profundo a un bloque: lo mantiene arriba mientras termina de cargar lo que hay antes
+   (figuras y diagramas perezosos hacen crecer la página y lo empujarían fuera de la vista).
+   Se suelta en cuanto el lector toca la pantalla, la rueda o el teclado, o a los `ms`. */
+export function mantenerEnVista(el: HTMLElement, ms = 2500): () => void {
+  if (typeof ResizeObserver === "undefined") return () => {};
+  let activo = true;
+  const parar = () => {
+    if (!activo) return;
+    activo = false;
+    obs.disconnect();
+    clearTimeout(t);
+    for (const e of ["wheel", "touchstart", "keydown", "pointerdown"] as const)
+      window.removeEventListener(e, parar);
+  };
+  // Donde quedó tras el primer desplazamiento (con su margen bajo la cabecera pegada).
+  const arriba = el.getBoundingClientRect().top;
+  const obs = new ResizeObserver(() => {
+    if (activo && Math.abs(el.getBoundingClientRect().top - arriba) > 2)
+      el.scrollIntoView({ block: "start" });
+  });
+  obs.observe(document.body);
+  for (const e of ["wheel", "touchstart", "keydown", "pointerdown"] as const)
+    window.addEventListener(e, parar, { passive: true });
+  const t = setTimeout(parar, ms);
+  return parar;
+}

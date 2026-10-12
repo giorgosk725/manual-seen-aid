@@ -6,11 +6,11 @@
    final con su página: el test de contenido comprueba que cada una está en su bloque.
    Comprobación del 3-10-2026: las 10 respaldadas por el texto final; la 3 con un matiz
    («deben ofrecerse» frente a «pueden considerarse», p. 1).
-   `validada: true` registra esa confirmación del 9-10 y no se cambia aquí. La auditoría de la
-   0.48.2 (A05) encontró dos puntos abiertos: q02 suma 101,3 % (TIR 68 + TAR 28 + TBR 5,3) y q03
-   dice «deben ofrecerse» donde el capítulo dice «pueden considerarse». Mientras el autor no los
-   resuelva (borradores/autoevaluacion-q02-q03_2026-10-12.md), las dos quedan fuera de la edición
-   (PENDIENTES_EDICION); sus datos se conservan en PREGUNTAS_TODAS. */
+   `validada: true` registra esa confirmación del 9-10. La auditoría de la 0.48.2 (A05) encontró
+   dos puntos en q02 (sumaba 101,3 %) y q03 («deben ofrecerse» frente a «pueden considerarse»).
+   El autor los resolvió el 13-10-2026 (REVISIONES_TEST): q02 con TAR 26,7 % y q03 con la opción
+   A del borrador, alineada con el capítulo. Una pregunta pendiente va en PENDIENTES_EDICION y
+   queda fuera de la edición; sus datos se conservan en PREGUNTAS_TODAS. */
 
 export interface CitaCapitulo {
   /* Apartado (slug) y ancla del bloque. */
@@ -76,7 +76,7 @@ export const PREGUNTAS_TODAS: Pregunta[] = [
     id: "q02",
     validada: true,
     enunciado:
-      "Una paciente con DM1 sobre AID muestra en la descarga de los últimos 14 días: uso de sensor 96 %, tiempo en automático 94 %, TIR 68 %, TAR 28 %, TBR <70 mg/dl 5,3 %, TBR <54 mg/dl 1,4 % y CV 38 %. ¿Cuál es la actuación inicial más adecuada?",
+      "Una paciente con DM1 sobre AID muestra en la descarga de los últimos 14 días: uso de sensor 96 %, tiempo en automático 94 %, TIR 68 %, TAR 26,7 %, TBR <70 mg/dl 5,3 %, TBR <54 mg/dl 1,4 % y CV 38 %. ¿Cuál es la actuación inicial más adecuada?",
     opciones: [
       "Reducir el objetivo glucémico configurable y acortar la duración de la insulina activa para incrementar el TIR.",
       "Revisar hipoglucemias y sobretratamiento, y reducir el TBR antes de intensificar parámetros dirigidos al TIR.",
@@ -114,7 +114,7 @@ export const PREGUNTAS_TODAS: Pregunta[] = [
       "No es candidato actualmente porque no cumple criterios de TIR <70 %, TBR ≥4 % o HbA1c >7 % que justifiquen el cambio.",
       "La indicación solo está justificada cuando exista hipoglucemia problemática o planificación de gestación.",
       "Procede primero un periodo mínimo obligatorio con ISCI no automatizada antes de plantear el inicio del sistema.",
-      "Es candidato; los AID deben ofrecerse como modalidad preferente de administración de insulina en personas con DM1 capaces de utilizarlos de forma segura y que deseen hacerlo, en el marco de una decisión compartida.",
+      "Es candidato; los AID pueden considerarse una modalidad preferente de administración de insulina en personas con DM1 capaces de utilizarlos con seguridad, por sí mismas o con apoyo, y que deseen hacerlo, en el marco de una decisión compartida.",
     ],
     correcta: 3,
     explicacion:
@@ -374,8 +374,22 @@ export const PREGUNTAS_TODAS: Pregunta[] = [
 ];
 
 /* Fuera de la edición editorial hasta la decisión del autor (A05). */
-export const PENDIENTES_EDICION: Record<string, string> = {
-  q02: "TIR + TAR + TBR suman 101,3 %",
-  q03: "«deben ofrecerse» frente a «pueden considerarse» (p. 1)",
-};
+export const PENDIENTES_EDICION: Record<string, string> = {};
+
+/* Registro de revisión de los cambios posteriores a la confirmación del 9-10-2026. */
+export const REVISIONES_TEST: Record<string, { fecha: string; version: string; registro: string }> =
+  {
+    q02: {
+      fecha: "2026-10-13",
+      version: "0.50.0",
+      registro:
+        "Decisión del autor (13-10-2026): TAR 26,7 %; TIR 68 % y TBR <70 mg/dl 5,3 % sin cambios; opciones, respuesta y explicación sin cambios.",
+    },
+    q03: {
+      fecha: "2026-10-13",
+      version: "0.50.0",
+      registro:
+        "Decisión del autor (13-10-2026): opción A del borrador, «pueden considerarse», como el capítulo (p. 1).",
+    },
+  };
 export const PREGUNTAS: Pregunta[] = PREGUNTAS_TODAS.filter((p) => !(p.id in PENDIENTES_EDICION));

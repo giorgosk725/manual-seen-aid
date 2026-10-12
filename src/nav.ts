@@ -220,6 +220,16 @@ export const DESTINOS: Destino[] = [
     descripcion:
       "Las preguntas revisadas, por temas, con los pasajes del capítulo que las responden: el camino cuando la búsqueda libre no da nada.",
   },
+  // El PDF publicado de «Información para pacientes» (en el precache: también sin conexión).
+  {
+    id: "pdf-pacientes",
+    etiqueta: "Información para pacientes (PDF publicado)",
+    corto: "PDF",
+    href: "pdf/manual-seen-aid-pacientes.pdf",
+    icono: FileText,
+    cat: "pacientes",
+    descripcion: "El PDF de la Información para pacientes publicado por el Manual SEEN.",
+  },
   // Las tres entradas del bloque «Para el paciente» del mapa (no van en el menú).
   {
     id: "pac-informacion",
@@ -336,8 +346,8 @@ export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[]; ancho?:
     ids: ["situacion", "figura-3", "interrupcion"],
   },
   { id: "en-consulta", titulo: "En la consulta", ids: ["inicio", "descarga"] },
-  // Una sola entrada a la información para pacientes (A08): dentro, el PDF publicado primero.
-  { id: "pacientes", titulo: "Para el paciente", ids: ["pacientes"] },
+  // El PDF publicado, a un toque; y el resto del material para el paciente.
+  { id: "pacientes", titulo: "Para el paciente", ids: ["pdf-pacientes", "pacientes"] },
   // La lectura también en el mapa, abajo y a todo lo ancho (la puerta «Leer y comprender» va
   // antes, en la cabecera).
   {

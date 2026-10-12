@@ -8,13 +8,26 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.49.1";
+export const VERSION_APP = "0.50.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Automatización de la insulinoterapia ${VERSION_APP} — portada con el título del capítulo; Figuras y Diagramas aparte`,
+    titulo: `Automatización de la insulinoterapia ${VERSION_APP} — autoevaluación completa, materiales con su revisión y navegación`,
+    detalle: [
+      "Autoevaluación: vuelven las diez preguntas, con q02 (TAR 26,7 %) y q03 («pueden considerarse», como el capítulo) corregidas tras su revisión.",
+      "«Sobre este complemento» lista cada material con su tipo (publicado, transcripción, hoja adaptada, plantilla, explicación complementaria), su fecha, su versión y la evidencia de su revisión; las hojas lo repiten al pie.",
+      "Portada: «Seguir leyendo» lleva al último apartado abierto (solo su dirección, nada de lo consultado) y el PDF publicado para pacientes está a un toque. La lectura se llama igual en todas partes: «Leer y comprender».",
+      "Cabecera con identidad propia («Cap. 89 · Complemento interactivo») mientras la SEEN no autorice el uso de su marca.",
+      "Acciones principales de 44 px en el móvil y foco visible en modo nocturno. Un enlace a una frase del capítulo ya no se desplaza cuando terminan de cargar las figuras de antes.",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo:
+      "Automatización de la insulinoterapia 0.49.1 — portada con el título del capítulo; Figuras y Diagramas aparte",
     detalle: [
       "Portada: el título del capítulo tal cual y, debajo, qué es esta versión: complemento interactivo del capítulo 89 del Manual SEEN, que facilita su lectura, comprensión y consulta. Sin el rótulo «En evaluación editorial».",
       "«Hiperglucemia y cetonemia», sin «· Figura 3», en el menú, el mapa y los títulos.",

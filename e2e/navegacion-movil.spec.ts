@@ -12,10 +12,11 @@ test.describe("Navegación y portada (393 px)", () => {
         .getByRole("navigation", { name: "Barra inferior" })
         .getByRole("link", { name: "Paciente" }),
     ).toBeVisible();
-    // Una sola entrada a pacientes en el mapa (A08); las dos puertas, en la primera pantalla.
+    // Pacientes en el mapa: el PDF publicado y el resto del material; las dos puertas, en la
+    // primera pantalla.
     await expect(
       page.getByRole("region", { name: "Para el paciente" }).getByRole("link"),
-    ).toHaveCount(1);
+    ).toHaveCount(2);
     const puertas = page.getByRole("navigation", { name: "Dos formas de uso" });
     await expect(puertas.getByRole("link", { name: /Leer y comprender/ })).toBeInViewport();
     await expect(puertas.getByRole("button", { name: /Consultar/ })).toBeInViewport();

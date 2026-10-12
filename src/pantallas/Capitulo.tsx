@@ -1,4 +1,4 @@
-/* «Leer capítulo» (#/capitulo): el índice de los trece apartados con sus páginas, nada más
+/* «Leer y comprender» (#/capitulo): el índice de los trece apartados con sus páginas, nada más
    empezar; debajo, lo que ayuda a comprender y repasar. Y el «capítulo entero» para imprimir
    de una vez. */
 import { useRef } from "react";
@@ -62,7 +62,7 @@ export function IndiceCapitulo() {
   const hex = CATEGORIA_HEX.leer;
   return (
     <div>
-      <CabeceraEditorial titulo="Leer capítulo" hex={hex} level={1}>
+      <CabeceraEditorial titulo="Leer y comprender" hex={hex} level={1}>
         {/* En el móvil, una línea: el título y la firma ya están en la portada. */}
         <p className="text-sm text-slate-600">
           <span className="hidden sm:inline">

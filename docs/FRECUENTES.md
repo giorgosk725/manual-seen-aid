@@ -28,6 +28,20 @@ t/07-educacion/b6/1 en f37) quedan como borrador para el autor. En la edición s
 El tema «Trucos de uso» se renombra «Uso en el día a día» y el rótulo «Por sistema: curiosidades y
 trucos», «Preguntas por sistema» (solo afecta a borradores).
 
+### Decisiones del autor del 13-10-2026
+
+- **f37:** se mantienen los pasajes aprobados (condicionantes, cantidades y reevaluación juntos). Se
+  descarta poner delante «suele requerir menos hidratos» (t/07-educacion/b6/1): no es una regla universal.
+- **f11:** propuesta para revisión en `PROPUESTAS` (src/frecuentes.ts): primero los pasajes de CamAPS
+  FX/Liberty y las filas de indicación y gestación de la Tabla 1, con los otros sistemas plegados. Para
+  revisar el matiz de edad: el apartado 3 dice «no se recomienda en menores de 13 años» y la Tabla 1,
+  «Liberty: > 13 años». La edición sigue con los pasajes aprobados.
+- **f63** (pendiente): la pregunta se limita a los sistemas híbridos y añade t/09-descarga/b2/3 y la nota
+  de la Tabla 5 sobre asa cerrada completa.
+- **f69** (pendiente): añade el umbral de aproximadamente 1 h sin administración (b11/4), las
+  interrupciones muy breves (b11/1) y la pauta de respaldo individualizada (b12/2).
+- Las 42 pendientes no se aprueban en bloque: cada una necesita su decisión.
+
 ## Cómo se empareja
 
 Con las mismas palabras, raíces, léxico y expresiones que el resto del motor. Responde la pregunta cuyo texto (o

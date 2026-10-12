@@ -1608,3 +1608,10 @@ html.night .border-orange-200 {
 html.night .text-orange-900 {
   color: #fed7aa;
 }
+
+/* Foco visible en modo nocturno (edición 0.50): un contorno claro de 2 px sobre el fondo oscuro
+   (contraste ≥ 3:1 con el fondo), aunque el control use focus:outline-none con un anillo gris. */
+html.night *:focus-visible {
+  outline: 2px solid #93c5fd !important;
+  outline-offset: 2px;
+}
