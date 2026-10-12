@@ -154,11 +154,6 @@ test.describe("Móvil compacto, segunda tanda (360 px)", () => {
     );
   });
 
-  test("criterios de elección: edad y peso en una fila", async ({ page }) => {
-    await page.goto("/#/sistemas/elegir");
-    await mismaFila(page.getByLabel(/^Edad/), page.getByLabel(/^Peso/));
-  });
-
   test("casos guiados: «Empezar» en la línea de los datos", async ({ page }) => {
     test.skip(retirado("casos"), "Los casos guiados no van en esta edición (src/edicion.ts).");
     await page.goto("/#/casos");

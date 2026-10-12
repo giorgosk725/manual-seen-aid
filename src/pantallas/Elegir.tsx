@@ -1,148 +1,47 @@
-/* Criterios de elección (#/sistemas/elegir[/criterios]): los factores del apartado 6
-   contrastados con la Tabla 1. Cada sistema enseña, criterio a criterio, la celda literal de la
-   tabla con lo que dice de ese criterio («dentro del criterio», «sin autorización», «no consta
-   en la tabla»…); nada se calcula fuera de lo que la tabla dice (eleccion.ts) y no hay un
-   veredicto global ni un recuento: los factores clínicos y regulatorios y las preferencias se
-   enseñan por separado, estado a estado. Los criterios viven en la ruta para poder enlazarlos. */
-import { useEffect, useState } from "react";
-import { ArrowRight, Check, HelpCircle, X } from "lucide-react";
-import { APARTADOS, TABLAS, rutaDeTabla } from "../contenido";
-import { ORDEN_SISTEMAS } from "../ampliacion/ids";
-import {
-  CLAVES_CRITERIO,
-  ETIQUETA_CRITERIO,
-  ETIQUETA_ESTADO,
-  FILA_CRITERIO,
-  SENSORES,
-  VARIANTES,
-  celdaT1,
-  escribirCriterios,
-  evaluar,
-  hayCriterios,
-  leerCriterios,
-  veredictos,
-  type Clave,
-  type Criterios,
-  type Estado,
-} from "../eleccion";
+/* Explorar criterios de elección (#/sistemas/elegir): una consulta descriptiva, no un evaluador
+   (edición editorial, A02). Enseña los factores de la elección del apartado 6 y la Figura 2 y,
+   para cada sistema en el orden fijo de la Tabla 1, sus celdas literales de indicación,
+   gestación, formato, sensores y localización del algoritmo. No hay datos de la persona (edad,
+   peso, dosis), ni recuento, ni orden por compatibilidad, ni etiquetas de aptitud: las
+   condiciones por variante y ámbito (CE, FDA, Europa, EE. UU.) quedan en sus celdas, tal cual.
+   El explorador anterior por criterios (eleccion.ts) se conserva fuera de esta edición; una
+   dirección antigua con criterios abre esta consulta y no reutiliza ni guarda sus valores. */
+import { useEffect } from "react";
+import { ArrowRight } from "lucide-react";
+import { APARTADOS, F2, TABLAS, rutaDeTabla } from "../contenido";
 import { elegirRuta, href } from "../rutas";
-import { CabeceraEditorial, Segmented } from "../ui";
+import { CabeceraEditorial } from "../ui";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { FuentePie } from "../componentes/FuentePie";
 import { paginasDe } from "../paginas";
 
 const hex = CATEGORIA_HEX.consultar;
-const campo =
-  "min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-base text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10 sm:text-sm";
-const casilla = "h-6 w-6 shrink-0 rounded border-slate-400 text-slate-800 focus:ring-slate-500";
-/* Dos dimensiones que no se suman: lo clínico y regulatorio (edad, peso, dosis, gestación, DM2)
-   y las preferencias o compatibilidades (formato, sensor, móvil). */
-const CLINICOS: Clave[] = ["edad", "peso", "dtd", "gestacion", "dm2"];
-const DIMENSIONES: [string, (k: Clave) => boolean][] = [
-  ["Clínicos y regulatorios", (k) => CLINICOS.includes(k)],
-  ["Preferencias y compatibilidad", (k) => !CLINICOS.includes(k)],
-];
 
-const TONO: Record<Estado, { color: string; fondo: string; Icono: typeof Check }> = {
-  cumple: { color: "#166534", fondo: "#f0fdf4", Icono: Check },
-  fuera: { color: "#9a3412", fondo: "#fff7ed", Icono: X },
-  "no-consta": { color: "#475569", fondo: "#f8fafc", Icono: HelpCircle },
-};
+/* Filas de la Tabla 1 que tratan los factores de elección, en este orden. */
+const FILAS_ELECCION = [
+  "Indicación",
+  "Gestación: autorización y evidencia",
+  "Formato",
+  "Sensores compatibles",
+  "Localización del algoritmo",
+] as const;
 
-/* Cómo se enseña cada criterio marcado («Edad 4 años», «Pod sin tubo»). */
-function textoCriterio(k: Clave, c: Criterios): string {
-  switch (k) {
-    case "edad":
-      return `Edad ${c.edad} años`;
-    case "peso":
-      return `Peso ${c.peso} kg`;
-    case "dtd":
-      return `${c.dtd} UI/día`;
-    case "formato":
-      return c.formato === "pod" ? "Pod sin tubo" : "Bomba con catéter";
-    case "sensor":
-      return c.sensor ?? "";
-    default:
-      return ETIQUETA_CRITERIO[k];
-  }
-}
+const enlace =
+  "inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8";
 
-function Numero({
-  id,
-  etiqueta,
-  unidad,
-  valor,
-  onChange,
-  className = "",
-}: {
-  id: string;
-  etiqueta: string;
-  unidad: string;
-  valor?: number;
-  onChange: (v?: number) => void;
-  className?: string;
-}) {
-  return (
-    <label className={`block text-sm ${className}`}>
-      <span className="mb-1 block font-semibold text-slate-800">
-        {etiqueta} <span className="font-normal text-slate-500">({unidad})</span>
-      </span>
-      <input
-        id={id}
-        type="number"
-        inputMode="decimal"
-        min={0}
-        step="any"
-        className={campo}
-        value={valor ?? ""}
-        onChange={(e) => {
-          const n = e.target.valueAsNumber;
-          onChange(Number.isFinite(n) && n >= 0 ? n : undefined);
-        }}
-      />
-    </label>
-  );
-}
-
-function Etiqueta({ clave, estado, nombre }: { clave: Clave; estado: Estado; nombre?: string }) {
-  const t = TONO[estado];
-  const texto = ETIQUETA_ESTADO[clave][estado];
-  return (
-    <span
-      className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold"
-      style={{ color: t.color, background: t.fondo }}
-    >
-      <t.Icono size={12} aria-hidden="true" />
-      {nombre ? `${nombre}: ${texto.toLowerCase()}` : texto}
-    </span>
-  );
-}
-
-export function Elegir({ q }: { q?: string }) {
-  // Los criterios viven en la ruta; la copia local responde al instante y la ruta la sigue.
-  const [c, setC] = useState<Criterios>(() => leerCriterios(q));
-  useEffect(() => setC(leerCriterios(q)), [q]);
-  // El formulario queda abierto mientras se edita; se pliega con «Ver resultados» o a mano.
-  const [abierto, setAbierto] = useState(() => !hayCriterios(leerCriterios(q)));
-  const poner = (cambio: Partial<Criterios>) => {
-    const nuevo = { ...c, ...cambio };
-    setC(nuevo);
-    elegirRuta("sistemas", "elegir", escribirCriterios(nuevo));
-  };
-  const verResultados = () => {
-    setAbierto(false);
-    requestAnimationFrame(() =>
-      document.getElementById("resultado-elegir")?.scrollIntoView({ block: "start" }),
-    );
-  };
-  const quitar = (k: Clave) => poner({ [k]: undefined });
-  const activos = CLAVES_CRITERIO.filter(
-    (k) => c[k] !== undefined && c[k] !== false && c[k] !== "",
-  );
+export function Elegir({ antigua = false }: { antigua?: boolean }) {
+  // Dirección antigua con criterios (#/sistemas/elegir/edad=…): se sustituye por la de la
+  // consulta, sin los valores, y no se guardan.
+  useEffect(() => {
+    if (antigua) elegirRuta("sistemas", "elegir");
+  }, [antigua]);
   const a6 = APARTADOS.find((a) => a.slug === "06-indicaciones")!;
   const b5 = a6.bloques[4];
-  const resultados = hayCriterios(c) ? veredictos(c) : null;
+  const T1 = TABLAS.T1;
+  const pT1 = paginasDe(T1.paginas[0], T1.paginas[1]);
+  const perfil = F2.cajas[0];
+  const sistema = F2.cajas[2];
   return (
     <div>
       <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
@@ -153,311 +52,98 @@ export function Elegir({ q }: { q?: string }) {
           Sistemas AID
         </a>
         <span aria-hidden="true">›</span>
-        <span>Criterios de elección</span>
+        <span>Explorar criterios de elección</span>
       </div>
-      <CabeceraEditorial titulo="Criterios de elección" hex={hex} level={1}>
+      <CabeceraEditorial titulo="Explorar criterios de elección" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Los factores de la elección frente a lo que el capítulo da de cada sistema, celda a celda
-          («no consta» si no lo dice). Orienta la decisión compartida; no la sustituye.
+          Los factores de la elección según el capítulo y lo que la Tabla 1 dice de cada sistema,
+          celda a celda y en el orden de la tabla.
         </p>
       </CabeceraEditorial>
 
-      <details
-        className="no-imprimir rounded-2xl border bg-white shadow-soft"
-        style={{ borderColor: "#e6e6e6" }}
-        open={abierto}
-        onToggle={(e) => setAbierto(e.currentTarget.open)}
-      >
-        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 px-4 py-2 text-sm font-bold text-slate-900 [&::-webkit-details-marker]:hidden">
-          <span>
-            Criterios{" "}
-            {activos.length > 0 && (
-              <span className="font-normal text-slate-500">
-                · {activos.length} {activos.length === 1 ? "marcado" : "marcados"}
-              </span>
-            )}
-          </span>
-          <span className="text-xs font-semibold text-slate-600">
-            {abierto ? "Plegar" : "Cambiar"}
-          </span>
-        </summary>
-        <form
-          className="border-t px-4 pb-4 pt-3"
-          style={{ borderColor: "#e6e6e6" }}
-          onSubmit={(e) => e.preventDefault()}
-          aria-label="Criterios"
-        >
-          <h2 className="text-xs font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
-            Factores clínicos
-          </h2>
-          {/* En el móvil, edad y peso en una fila y la dosis debajo (antes, tres filas). */}
-          <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <Numero
-              id="edad"
-              etiqueta="Edad"
-              unidad="años"
-              valor={c.edad}
-              onChange={(v) => poner({ edad: v })}
-            />
-            <Numero
-              id="peso"
-              etiqueta="Peso"
-              unidad="kg"
-              valor={c.peso}
-              onChange={(v) => poner({ peso: v })}
-            />
-            <Numero
-              id="dtd"
-              etiqueta="Dosis total diaria"
-              unidad="UI/día"
-              valor={c.dtd}
-              onChange={(v) => poner({ dtd: v })}
-              className="col-span-2 sm:col-span-1"
-            />
-          </div>
-          <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-            <label className="inline-flex min-h-11 items-center gap-2 sm:min-h-8">
-              <input
-                type="checkbox"
-                className={casilla}
-                checked={!!c.gestacion}
-                onChange={(e) => poner({ gestacion: e.target.checked || undefined })}
-              />
-              Gestación o planificación gestacional
-            </label>
-            <label className="inline-flex min-h-11 items-center gap-2 sm:min-h-8">
-              <input
-                type="checkbox"
-                className={casilla}
-                checked={!!c.dm2}
-                onChange={(e) => poner({ dm2: e.target.checked || undefined })}
-              />
-              Diabetes tipo 2
-            </label>
-          </div>
-          <h2 className="mt-5 text-xs font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
-            Factores personales
-          </h2>
-          <div className="mt-2 grid gap-3 sm:grid-cols-2">
-            <div className="text-sm">
-              <span className="mb-1 block font-semibold text-slate-800">Formato</span>
-              <Segmented
-                label="Formato"
-                wrap
-                options={[
-                  { id: "cualquiera", label: "Cualquiera" },
-                  { id: "cateter", label: "Bomba con catéter" },
-                  { id: "pod", label: "Pod sin tubo" },
-                ]}
-                value={c.formato ?? "cualquiera"}
-                onChange={(v) =>
-                  poner({ formato: v === "cualquiera" ? undefined : (v as "cateter" | "pod") })
-                }
-              />
-            </div>
-            <label className="block text-sm">
-              <span className="mb-1 block font-semibold text-slate-800">
-                Sensor que usa o prefiere
-              </span>
-              <select
-                className={campo}
-                value={c.sensor ?? ""}
-                onChange={(e) => poner({ sensor: e.target.value || undefined })}
-              >
-                <option value="">Cualquiera</option>
-                {SENSORES.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-sm">
-            <label className="inline-flex min-h-11 items-center gap-2 sm:min-h-8">
-              <input
-                type="checkbox"
-                className={casilla}
-                checked={!!c.movil}
-                onChange={(e) => poner({ movil: e.target.checked || undefined })}
-              />
-              Control desde el móvil (algoritmo en la app del smartphone)
-            </label>
-            {hayCriterios(c) && (
-              <span className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setC({});
-                    elegirRuta("sistemas", "elegir");
-                  }}
-                  className="inline-flex min-h-11 items-center rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-500 sm:min-h-9"
-                >
-                  Borrar criterios
-                </button>
-                <button
-                  type="button"
-                  onClick={verResultados}
-                  className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-white sm:min-h-9"
-                  style={{ background: hex.strong }}
-                >
-                  Ver resultados
-                </button>
-              </span>
-            )}
-          </div>
-        </form>
-      </details>
-
-      {resultados ? (
-        <section
-          id="resultado-elegir"
-          aria-label="Resultado por sistema"
-          className="mt-4 scroll-mt-24"
-          aria-live="polite"
-        >
-          <ul className="mb-3 flex flex-wrap items-center gap-1.5" aria-label="Criterios aplicados">
-            {activos.map((k) => (
-              <li key={k}>
-                <button
-                  type="button"
-                  onClick={() => quitar(k)}
-                  className="inline-flex min-h-9 items-center gap-1 rounded-full border bg-white px-3 text-xs font-semibold text-slate-800 hover:border-slate-500"
-                  style={{ borderColor: "#d4d4d4" }}
-                  aria-label={`Quitar: ${textoCriterio(k, c)}`}
-                >
-                  {textoCriterio(k, c)} <X size={12} aria-hidden="true" />
-                </button>
-              </li>
-            ))}
-          </ul>
-          <ul className="grid gap-3 lg:grid-cols-2">
-            {resultados.map((r) => {
-              const col = ORDEN_SISTEMAS.indexOf(r.id);
-              const h = SISTEMA_HEX[col];
-              const variantes = VARIANTES[r.id];
-              return (
-                <li
-                  key={r.id}
-                  className="rounded-2xl border bg-white p-4"
-                  style={{ borderColor: "#e6e6e6", boxShadow: `inset 0 3px 0 0 ${h.strong}` }}
-                >
-                  <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                    <h3 className="text-base font-extrabold" style={{ color: h.ink }}>
-                      {r.nombre}
-                    </h3>
-                    {variantes.length > 1 && (
-                      <p className="text-xs text-slate-600">
-                        {variantes.map((v) => v.nombre).join(" · ")}
-                      </p>
-                    )}
-                  </div>
-                  {DIMENSIONES.map(([dim, es]) => {
-                    const claves = activos.filter(es);
-                    if (!claves.length) return null;
-                    return (
-                      <div key={dim} className="mt-3">
-                        <h4
-                          className="text-[11px] font-bold uppercase tracking-wide"
-                          style={{ color: h.ink }}
-                        >
-                          {dim}
-                        </h4>
-                        <dl className="mt-1.5 space-y-3">
-                          {claves.map((k) => {
-                            const fila = FILA_CRITERIO[k];
-                            const texto = celdaT1(fila, col);
-                            const estados = variantes.map((v) => ({
-                              nombre: v.nombre,
-                              e: evaluar(r.id, v, k, c),
-                            }));
-                            return (
-                              <div key={k}>
-                                <dt className="flex flex-wrap items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">
-                                  {ETIQUETA_CRITERIO[k]}
-                                </dt>
-                                <dd className="mt-1 flex flex-wrap items-start gap-2">
-                                  <span className="min-w-0 flex-1 text-sm text-slate-800">
-                                    <Lineas>{texto}</Lineas>
-                                  </span>
-                                  <span className="flex shrink-0 flex-wrap gap-1">
-                                    {estados.map(
-                                      (x) =>
-                                        x.e && (
-                                          <Etiqueta
-                                            key={x.nombre ?? "unica"}
-                                            clave={k}
-                                            estado={x.e}
-                                            nombre={variantes.length > 1 ? x.nombre : undefined}
-                                          />
-                                        ),
-                                    )}
-                                  </span>
-                                </dd>
-                              </div>
-                            );
-                          })}
-                        </dl>
-                      </div>
-                    );
-                  })}
-                  <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-                    <a
-                      href={href("sistemas", r.id)}
-                      className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
-                    >
-                      Ficha de {r.nombre} <ArrowRight size={13} aria-hidden="true" />
-                    </a>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-          <FuentePie
-            fuentes={[
-              {
-                texto: `Tabla 1, ${paginasDe(TABLAS.T1.paginas[0], TABLAS.T1.paginas[1])}`,
-                ruta: rutaDeTabla("T1"),
-              },
-              { texto: "Apartado 6, p. 6", ruta: href("capitulo", "06-indicaciones") },
-            ]}
-          />
-        </section>
-      ) : (
-        <p className="mt-4 text-sm text-slate-600">
-          Marca uno o varios criterios: cada sistema enseñará lo que el capítulo dice de él para ese
-          criterio.
-        </p>
-      )}
-
       <section
         aria-label="Lo que dice el capítulo sobre la elección"
-        className="prosa mt-6 rounded-2xl border bg-white p-4"
+        className="prosa rounded-2xl border bg-white p-4"
         style={{ borderColor: "#e6e6e6" }}
       >
         <p className="text-sm">{b5.t === "p" && <Texto>{b5.texto}</Texto>}</p>
-        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
-          <a
-            href={href("capitulo", a6.slug, "b5")}
-            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
-          >
-            Fuente: apartado 6, p. 6 · Leer <ArrowRight size={13} aria-hidden="true" />
-          </a>
-          <a
-            href={href("visual", "eleccion")}
-            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
-          >
-            Figura 2: elección compartida <ArrowRight size={13} aria-hidden="true" />
-          </a>
-          {rutaDeTabla("T1") && (
-            <a
-              href={rutaDeTabla("T1")!}
-              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+        <a href={href("capitulo", a6.slug, "b5")} className={enlace}>
+          Apartado 6, p. 6 · Leer en el capítulo <ArrowRight size={13} aria-hidden="true" />
+        </a>
+      </section>
+
+      <section aria-labelledby="factores-f2" className="mt-4">
+        <h2 id="factores-f2" className="font-display text-lg font-semibold text-slate-900">
+          Factores de la Figura 2
+        </h2>
+        <div className="mt-2 grid gap-3 md:grid-cols-2">
+          {[perfil, sistema].map((caja) => (
+            <div
+              key={caja.titulo}
+              className="rounded-xl border bg-white p-3"
+              style={{ borderColor: "#e6e6e6" }}
             >
-              Tabla 1 en el capítulo <ArrowRight size={13} aria-hidden="true" />
-            </a>
-          )}
+              <h3 className="text-sm font-bold text-slate-900">{caja.titulo}</h3>
+              <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-slate-800">
+                {caja.items.map((it) => (
+                  <li key={it}>
+                    <Texto>{it}</Texto>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
+        <a href={href("visual", "eleccion")} className={`mt-1 ${enlace}`}>
+          Figura 2, p. {F2.pagina}: elección compartida <ArrowRight size={13} aria-hidden="true" />
+        </a>
+      </section>
+
+      <section aria-labelledby="celdas-t1" className="mt-5">
+        <h2 id="celdas-t1" className="font-display text-lg font-semibold text-slate-900">
+          Lo que dice la Tabla 1 de cada sistema
+        </h2>
+        <p className="mt-1 text-sm text-slate-600">
+          Texto literal de las celdas. «Localización del algoritmo» dice dónde funciona el
+          algoritmo, no desde dónde se maneja el sistema.
+        </p>
+        <div className="mt-3 space-y-4">
+          {FILAS_ELECCION.map((etiqueta) => {
+            const fila = T1.filas.find((f) => f.etiqueta === etiqueta);
+            if (!fila) return null;
+            return (
+              <section
+                key={etiqueta}
+                aria-label={etiqueta}
+                className="rounded-2xl border bg-white p-3"
+                style={{ borderColor: "#e6e6e6" }}
+              >
+                <h3 className="text-sm font-bold text-slate-900">{etiqueta}</h3>
+                <dl className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                  {T1.columnas.map((nombre, c) => (
+                    <div
+                      key={nombre}
+                      className="min-w-0 rounded-lg border-l-4 bg-slate-50 px-3 py-2"
+                      style={{ borderColor: SISTEMA_HEX[c]?.strong ?? "#94a3b8" }}
+                    >
+                      <dt className="text-xs font-bold text-slate-700">{nombre}</dt>
+                      <dd className="mt-0.5 text-sm text-slate-900">
+                        <Lineas>{fila.celdas[c] ?? ""}</Lineas>
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            );
+          })}
+        </div>
+        <FuentePie
+          fuentes={[
+            { texto: `Tabla 1, ${pT1}`, ruta: rutaDeTabla("T1") ?? href("tablas", "T1") },
+            { texto: "Apartado 6, p. 6", ruta: href("capitulo", "06-indicaciones") },
+            { texto: `Figura 2, p. ${F2.pagina}`, ruta: href("visual", "eleccion") },
+          ]}
+        />
       </section>
     </div>
   );

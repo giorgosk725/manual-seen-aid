@@ -12,7 +12,13 @@ import { FRECUENTES } from "../frecuentes";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
 import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
 import { PREGUNTAS } from "../contenido/test";
-import { href } from "../rutas";
+import { elegirRuta, href } from "../rutas";
+import {
+  AVISO_BUSQUEDA,
+  alCambiarConsulta,
+  consultaBuscar,
+  ponerConsulta,
+} from "../consultaBuscar";
 import { Badge, CabeceraEditorial, Revelar, Segmented, ToneCard } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
 import {
@@ -105,21 +111,18 @@ function ListaResultados({ res, q, fuera }: { res: Resultado[]; q: string; fuera
 }
 
 export function Buscar({ inicial }: { inicial?: string }) {
-  const [q, setQ] = useState(inicial ?? "");
+  // Lo escrito vive en memoria (consultaBuscar.ts), no en la URL: al volver con Atrás desde un
+  // resultado, la búsqueda sigue ahí, pero no queda en el historial ni en enlaces guardados.
+  const [q, setQ] = useState(() => inicial ?? consultaBuscar());
+  // Dirección antigua con el texto (#/buscar/<texto>): se toma una vez y se quita de la URL.
   useEffect(() => {
-    if (inicial != null) setQ(inicial);
+    if (inicial == null) return;
+    ponerConsulta(inicial);
+    setQ(inicial);
+    elegirRuta("buscar");
   }, [inicial]);
-  // Lo escrito se guarda en la URL (sin apilar historial): al volver con Atrás desde un
-  // resultado, la búsqueda sigue ahí y el enlace se puede compartir.
-  useEffect(() => {
-    const t = setTimeout(() => {
-      const destino = href("buscar", q || undefined);
-      // Solo si se sigue en Buscar: si el lector ya ha abierto un resultado, no se le trae de vuelta.
-      if (window.location.hash.startsWith("#/buscar") && window.location.hash !== destino)
-        window.location.replace(destino);
-    }, 400);
-    return () => clearTimeout(t);
-  }, [q]);
+  useEffect(() => alCambiarConsulta(() => setQ(consultaBuscar())), []);
+  useEffect(() => ponerConsulta(q), [q]);
   // Pocos resultados al principio (los mejores); el resto, con «Ver más resultados».
   const [tope, setTope] = useState(12);
   useEffect(() => setTope(12), [q]);
@@ -224,7 +227,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
     <div>
       <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1}>
         <p className="text-sm text-slate-600">
-          Escribe una duda con tus palabras: arriba, el pasaje que mejor la responde, con su página.
+          Escribe términos o una duda: arriba, los pasajes relacionados del capítulo, con su página.
         </p>
       </CabeceraEditorial>
       <label className="sr-only" htmlFor="buscar-q">
@@ -232,13 +235,17 @@ export function Buscar({ inicial }: { inicial?: string }) {
       </label>
       <input
         id="buscar-q"
+        aria-describedby="buscar-aviso"
         autoFocus
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Busca: cetonas 1,2, modo sueño, TBR…"
+        placeholder="Busca: cetonas, modo sueño, TBR…"
         className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-soft placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
         autoComplete="off"
       />
+      <p id="buscar-aviso" className="mt-1.5 text-xs text-slate-600">
+        {AVISO_BUSQUEDA}
+      </p>
       {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
       {!frecuente && <Autocompletar items={sugerencias} onElegir={setQ} />}
       {qEf !== q && (
@@ -632,7 +639,11 @@ export function ConsultasSinRespuesta() {
             {filas.map((f) => (
               <tr key={f.q} className="border-t" style={{ borderColor: "#e6e6e6" }}>
                 <td className="py-1.5 pr-2">
-                  <a href={href("buscar", f.q)} className="underline underline-offset-2">
+                  <a
+                    href={href("buscar")}
+                    onClick={() => ponerConsulta(f.q)}
+                    className="underline underline-offset-2"
+                  >
                     {f.q}
                   </a>
                 </td>
@@ -816,15 +827,17 @@ export function Test() {
 /* ---------- Preguntas frecuentes por temas (#/preguntas[/<id>]) ----------
    El camino cuando la búsqueda libre no da nada: las preguntas revisadas, agrupadas por tema;
    cada una abre sus pasajes literales con el mismo bloque que en la búsqueda. */
-/* Los temas en su orden: los generales, «Trucos de uso» y, al final, uno por sistema. */
+/* Los temas en su orden: los generales, «Uso en el día a día» y, al final, uno por sistema.
+   Solo las preguntas aprobadas (FRECUENTES); las pendientes no salen. */
 const TEMAS_SISTEMA = ["MiniMed 780G", "Tandem Control-IQ", "myLoop CamAPS", "Omnipod 5"];
 const TEMAS = [
   ...[...new Set(FRECUENTES.map((f) => f.tema))].filter(
-    (t) => t !== "Trucos de uso" && !TEMAS_SISTEMA.includes(t),
+    (t) => t !== "Uso en el día a día" && !TEMAS_SISTEMA.includes(t),
   ),
-  "Trucos de uso",
+  "Uso en el día a día",
   ...TEMAS_SISTEMA,
 ].filter((t) => FRECUENTES.some((f) => f.tema === t));
+const PRIMER_TEMA_SISTEMA = TEMAS.find((t) => TEMAS_SISTEMA.includes(t));
 
 export function Preguntas({ id }: { id?: string }) {
   const { motor, estado, reintentar } = useBuscador(true);
@@ -899,10 +912,15 @@ export function Preguntas({ id }: { id?: string }) {
     <div>
       <CabeceraEditorial titulo="Preguntas frecuentes" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          {FRECUENTES.length} preguntas, por temas; cada una abre los pasajes del capítulo que la
-          responden.
+          {FRECUENTES.length} preguntas revisadas, por temas; cada una abre los pasajes del capítulo
+          que la responden.
         </p>
       </CabeceraEditorial>
+      {id && (
+        <p role="status" className="mb-3 rounded-md bg-slate-100 px-3 py-2 text-sm text-slate-700">
+          Esa pregunta no está en esta edición: está pendiente de revisión. Abajo, las revisadas.
+        </p>
+      )}
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <input
           type="search"
@@ -947,9 +965,9 @@ export function Preguntas({ id }: { id?: string }) {
       <div className={filtradas ? "hidden" : "space-y-2"}>
         {TEMAS.map((tema) => (
           <div key={tema}>
-            {tema === TEMAS_SISTEMA[0] && (
+            {tema === PRIMER_TEMA_SISTEMA && (
               <h2 className="mb-1 mt-4 text-xs font-bold uppercase tracking-wide text-slate-500">
-                Por sistema: curiosidades y trucos
+                Preguntas por sistema
               </h2>
             )}
             <details

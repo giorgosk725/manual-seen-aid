@@ -12,6 +12,8 @@ import { ComoInterpretar } from "./ComoInterpretar";
 import { ESCALA_CETONEMIA } from "../contenido/diagramas";
 import { href } from "../rutas";
 import { Texto } from "../texto";
+import { UrgenciaF3 } from "./UrgenciaF3";
+import { ponerConsulta } from "../consultaBuscar";
 
 function Marcado({ texto, q }: { texto: string; q: string }) {
   return (
@@ -163,6 +165,12 @@ function accionesDe(r: Respuesta, punto?: string): { texto: string; ruta: string
   return out;
 }
 
+/* Fragmentos de seguridad (Figura 3 y resolución de incidencias: hiperglucemia persistente,
+   cetonemia, corrección con pluma): siempre enteros, sin destacar un punto ni recortar la lista,
+   para que ninguna condición, nota o excepción quede plegada (A01). */
+const esSeguridad = (id: string) =>
+  /^(F3\/|l\/09-descarga\/b17$|t\/09-descarga\/b(16|19)\/)/.test(id);
+
 /* El punto de una lista que más se parece a la búsqueda: va primero; el resto, plegado. */
 function puntoClave(items: string[] | undefined, q: string): number {
   if (!items || items.length < 3) return -1;
@@ -239,8 +247,10 @@ function Tarjeta({
   const [tocado, setTocado] = useState(false);
   const titulo = r.tipo === "texto" ? "" : r.titulo;
   const asterisco = notaAsterisco(r);
-  const items = compacta && r.items && r.items.length > 5 ? r.items.slice(0, 5) : r.items;
-  const clave = principal ? puntoClave(r.items, q) : -1;
+  const seguridad = esSeguridad(r.id);
+  const items =
+    compacta && !seguridad && r.items && r.items.length > 5 ? r.items.slice(0, 5) : r.items;
+  const clave = principal && !seguridad ? puntoClave(r.items, q) : -1;
   const casilla = casillas && sel !== null && sel >= 0 ? casillas[sel] : null;
   const ruta = casilla ? casilla.ruta : r.ruta;
   const ctx = verContexto && contexto ? contexto(r.id) : null;
@@ -359,6 +369,7 @@ function Tarjeta({
           </ul>
         )
       )}
+      {/^F3\/(inicio|verde|amarillo|naranja)$/.test(r.id) && <UrgenciaF3 className="mt-2" />}
       {r.partes && (
         <dl className="mt-1 space-y-1 text-sm">
           {r.partes.map((p) => (
@@ -603,8 +614,11 @@ export function RespuestasCapitulo({
         />
         {compacta ? (
           <a
-            href={href("buscar", q)}
-            onClick={onIr}
+            href={href("buscar")}
+            onClick={() => {
+              ponerConsulta(q);
+              onIr?.();
+            }}
             className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-600 hover:underline"
           >
             Más pasajes y todos los resultados
@@ -665,8 +679,11 @@ export function RespuestasCapitulo({
         )}
         {compacta ? (
           <a
-            href={href("buscar", q)}
-            onClick={onIr}
+            href={href("buscar")}
+            onClick={() => {
+              ponerConsulta(q);
+              onIr?.();
+            }}
             className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-600 hover:underline"
           >
             {otras.length > 0

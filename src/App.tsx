@@ -237,7 +237,7 @@ export default function App() {
       pantalla = <Sistemas sel={ruta.sub} seccion={ruta.detalle} />;
       titulo =
         ruta.sub === "elegir"
-          ? "Criterios de elección"
+          ? "Explorar criterios de elección"
           : (nombreDeSistema(ruta.sub) ?? "Sistemas AID");
       break;
     case "buscar":

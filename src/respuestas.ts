@@ -1539,6 +1539,10 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
   const cand: { a: Atomo; score: number; cob: number; tit: number }[] = [];
   const cercanas: { a: Atomo; score: number; cob: number; tit: number }[] = [];
   for (const a of ats) {
+    // Con una cifra de β-OHB escrita, ninguna rama de la Figura 3 se elige sola (edición
+    // editorial, A01): la cifra no ve los signos de gravedad ni el contexto. Responden la lista
+    // de tramos del capítulo y la entrada de la figura; la rama se elige en la propia figura.
+    if (tramo && a.tramo) continue;
     // Fila por sistema: con sistema nombrado, su casilla; sin él, la casilla que mejor
     // responde (no la suma de las cuatro: «ejercicio» de una y «80» de otra no responden).
     let celda = sis;
@@ -1571,8 +1575,7 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
       // Liberty (asa cerrada completa, no comercializado) no es ninguno de los cuatro.
       else if (a.parrafo.includes("liberty") || a.cuerpo.includes("liberty")) score -= 1.5;
     }
-    if (tramo && a.tramo) score += a.tramo === tramo ? 6 : -2;
-    else if (a.tramo) {
+    if (a.tramo) {
       const propias = propiasDeTramo().get(a.tramo) ?? [];
       if (!conPuntos.some((g) => g.palabras.some((t) => propias.some((x) => casa(t, x)))))
         score -= 3;

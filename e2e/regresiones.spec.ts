@@ -22,7 +22,9 @@ test.describe("Navegación e historial", () => {
   test("Atrás desde un resultado conserva la búsqueda", async ({ page }) => {
     await page.goto("/#/buscar");
     await page.getByLabel("Texto a buscar").fill("glargina");
-    await expect(page).toHaveURL(/#\/buscar\/glargina$/);
+    // La búsqueda no va en la URL (edición editorial, A03): queda en memoria.
+    await page.waitForTimeout(500);
+    await expect(page).toHaveURL(/#\/buscar$/);
     // Los resultados van plegados cuando hay respuesta: se abren para pulsar uno.
     const todos = page.getByTestId("todos-los-resultados");
     if (!(await todos.getAttribute("open"))) await todos.locator("summary").click();
@@ -175,31 +177,38 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
     await page
       .getByRole("textbox", { name: "Buscar en el capítulo" })
       .fill("modo ejercicio en control iq");
-    // Desde la 0.48.0 responde la pregunta frecuente propia de Control-IQ, con su casilla.
-    const dialogo = page.getByRole("dialog");
-    await expect(
-      dialogo.getByText(/Control-IQ: ¿cómo usar los modos sueño y ejercicio\?/).first(),
-    ).toBeVisible();
-    await expect(dialogo.getByText(/rango 140–160 mg\/dl|140–160 mg\/dl/).first()).toBeVisible();
+    // Las preguntas por sistema de la 0.48.0 están pendientes de revisión y no salen: responde
+    // el pasaje del capítulo con la casilla del sistema.
+    const respuesta = page.getByRole("dialog").getByRole("region", { name: "Pasaje del capítulo" });
+    await expect(respuesta).toContainText("Tandem Control-IQ");
+    await expect(respuesta).toContainText("rango 140–160 mg/dl");
+    await respuesta.getByRole("link", { name: /^Ver (en|la) / }).click();
+    await expect(page).toHaveURL(/#\/consultar\/situacion\/ejercicio-aerobico:control-iq/);
   });
 
-  test("Buscar: la cifra de cetonemia lleva a su tramo y lo de fuera no consta", async ({
+  test("Buscar: la cifra de cetonemia no elige rama, enseña la urgencia y lo de fuera no consta", async ({
     page,
   }) => {
     await page.goto("/#/buscar/cetonas%201%2C2");
+    const urgencia = page.getByRole("region", { name: "Urgencia y signos de gravedad (Figura 3)" });
+    await expect(urgencia.first()).toContainText("URGENCIAS / VALORACIÓN HOSPITALARIA INMEDIATA");
+    await expect(urgencia.first()).toContainText("Somnolencia o confusión.");
+    await expect(
+      page.getByRole("link", { name: /Hiperglucemia y cetonemia · Figura 3 completa/ }),
+    ).toHaveAttribute("href", "#/consultar/figura-3");
     const respuesta = page.getByRole("region", { name: "Pasaje del capítulo" });
-    await expect(respuesta).toContainText("Cetosis significativa / probable fallo de infusión");
-    await expect(respuesta).toContainText("Dosis orientativas para personas adultas");
+    await expect(respuesta).not.toContainText("Cetosis significativa / probable fallo de infusión");
     await page.getByRole("textbox", { name: "Texto a buscar" }).fill("precio del omnipod");
     await expect(page.getByRole("region", { name: "Pasaje del capítulo" })).toHaveCount(0);
   });
 
   test("la caja de la barra lateral lleva a Buscar con la fila de la Tabla 6", async ({ page }) => {
     await page.goto("/#/");
-    const caja = page.getByRole("searchbox", { name: "Pregunta al capítulo" });
+    const caja = page.getByRole("searchbox", { name: "Buscar en el capítulo" });
     await caja.fill("resonancia con 780G");
     await caja.press("Enter");
-    await expect(page).toHaveURL(/#\/buscar\//);
+    await expect(page).toHaveURL(/#\/buscar$/);
+    await expect(page.getByLabel("Texto a buscar")).toHaveValue("resonancia con 780G");
     const respuesta = page.getByRole("region", { name: "Pasaje del capítulo" });
     await expect(respuesta).toContainText("Resonancia magnética (RM)");
     await expect(respuesta).toContainText("Retirar antes de entrar en la sala");

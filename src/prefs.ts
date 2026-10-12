@@ -1,6 +1,7 @@
 /* Preferencias del lector (solo preferencias de interfaz, nunca datos clínicos): modo
    nocturno y tamaño de letra de lectura. localStorage con tolerancia a bloqueo. */
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { EDICION } from "./edicion";
 
 const leer = (clave: string): string | null => {
   try {
@@ -167,9 +168,11 @@ export const guardarProgresoCaso = (
 };
 
 /* Lo último que se consultó: las cuatro últimas pantallas (ruta y título de interfaz), sin la
-   portada ni la búsqueda. Para volver en un toque desde la portada. */
+   portada ni la búsqueda. Para volver en un toque desde la portada. En la edición editorial no se
+   guardan (EDICION.recientes): la portada ya no las enseña y una ruta puede llevar valores. */
 export const useVisitas = () => useLectura("mseen:visitas", [], validarFavoritos);
 export const guardarVisita = (m: Marcador) => {
+  if (!EDICION.recientes) return;
   const v = leerJSON("mseen:visitas", [], validarFavoritos);
   guardarJSON("mseen:visitas", [m, ...v.filter((x) => x.ruta !== m.ruta)].slice(0, 4));
 };
@@ -226,14 +229,19 @@ export const leerRepaso = () => leerJSON("mseen:repaso", SIN_PROGRESO, validarRe
 export const guardarRepaso = (p: ProgresoRepaso) => guardarJSON("mseen:repaso", p);
 
 /* Búsquedas recientes (las 6 últimas), para volver a ellas desde la paleta y Buscar. Solo en
-   este navegador; se borran con «Borrar» o con «Restablecer preferencias». */
+   este navegador; se borran con «Borrar» o con «Restablecer preferencias». En la edición
+   editorial no se guardan (EDICION.recientes) y la lista sale vacía. */
 const validarRecientes: Validar<string[]> = (v) =>
   Array.isArray(v)
     ? v.filter((x): x is string => typeof x === "string" && x.length <= 80).slice(0, 6)
     : undefined;
 const SIN_RECIENTES: string[] = [];
-export const useRecientes = () => useLectura("mseen:recientes", SIN_RECIENTES, validarRecientes);
+export const useRecientes = () => {
+  const r = useLectura("mseen:recientes", SIN_RECIENTES, validarRecientes);
+  return EDICION.recientes ? r : SIN_RECIENTES;
+};
 export const guardarReciente = (q: string) => {
+  if (!EDICION.recientes) return;
   const t = q.trim();
   if (t.length < 3) return;
   const previas = leerJSON("mseen:recientes", SIN_RECIENTES, validarRecientes);

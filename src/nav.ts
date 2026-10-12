@@ -83,14 +83,14 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "elegir",
-    etiqueta: "Criterios de elección",
+    etiqueta: "Explorar criterios de elección",
     corto: "Criterios",
     href: href("sistemas", "elegir"),
     icono: Handshake,
     cat: "consultar",
     descripcion:
-      "Los factores del apartado 6 (edad, peso, dosis, gestación, formato, sensor…) contrastados con la Tabla 1, sistema a sistema.",
-    fuente: "Apartado 6 y Tabla 1",
+      "Los factores de la elección (apartado 6 y Figura 2) y las celdas de indicación, gestación, formato, sensores y algoritmo de la Tabla 1.",
+    fuente: "Apartado 6, Figura 2 y Tabla 1",
   },
   {
     id: "comparar",

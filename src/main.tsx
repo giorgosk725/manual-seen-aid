@@ -4,6 +4,7 @@ import { registerSW } from "virtual:pwa-register";
 import { ErrorBoundary } from "./ui";
 import App from "./App";
 import { limpiarMarcaDeRecarga, recargarUnaVez } from "./recarga";
+import { migrarPrivacidad } from "./edicion";
 import "./index.css";
 
 /* Si Vite no puede precargar un trozo (despliegue a medias, red cortada), recarga una vez. */
@@ -11,6 +12,8 @@ window.addEventListener("vite:preloadError", (e) => {
   if (recargarUnaVez()) e.preventDefault();
 });
 limpiarMarcaDeRecarga();
+// Edición editorial: borra las búsquedas y criterios que guardaban versiones anteriores.
+migrarPrivacidad();
 
 /* Sin invitación a instalar: el navegador no ofrece por su cuenta «Instalar la app» (la barra o
    la ventana del móvil). La web sigue funcionando sin conexión. */

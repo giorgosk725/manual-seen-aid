@@ -1,8 +1,10 @@
 /* Consultas sin respuesta: cuando una búsqueda no encuentra ningún pasaje ni pregunta frecuente,
    la app manda solo su texto a /api/sin-respuesta (functions/api/sin-respuesta.ts), que cuenta
    cuántas veces se ha hecho. Sin ningún dato de quién la hizo. Una vez por consulta y sesión;
-   sin conexión o si la función falla, no pasa nada. */
+   sin conexión o si la función falla, no pasa nada.
+   EDICIÓN EDITORIAL: desactivado (EDICION.registroConsultas): no se manda nada. */
 import { useEffect } from "react";
+import { EDICION } from "./edicion";
 
 export const URL_SIN_RESPUESTA = new URL(/* @vite-ignore */ "../api/sin-respuesta", import.meta.url)
   .href;
@@ -26,6 +28,7 @@ export function consultaRegistrable(q: string): string | null {
 }
 
 export function registrarSinRespuesta(q: string, conIndice: boolean) {
+  if (!EDICION.registroConsultas) return;
   const t = consultaRegistrable(q);
   if (!t || typeof navigator === "undefined" || navigator.onLine === false) return;
   const ya = mandadas();
@@ -47,7 +50,7 @@ export function registrarSinRespuesta(q: string, conIndice: boolean) {
 /* Cuando la búsqueda lleva 2 s sin respuesta (y el lector ha dejado de escribir), se registra. */
 export function useRegistroSinRespuesta(q: string, sinRespuesta: boolean, conIndice: boolean) {
   useEffect(() => {
-    if (!sinRespuesta) return;
+    if (!EDICION.registroConsultas || !sinRespuesta) return;
     const t = setTimeout(() => registrarSinRespuesta(q, conIndice), 2000);
     return () => clearTimeout(t);
   }, [q, sinRespuesta, conIndice]);

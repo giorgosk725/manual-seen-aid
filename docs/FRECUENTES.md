@@ -10,6 +10,24 @@ los pasajes que elige el motor y todos los resultados.
   <https://claude.ai/artifact/Y1gSDm7UhFaYhn2e2fFt4V> (base de datos: colección `frecuentes`, una ficha por id).
 - Para cambiar una: editar `src/frecuentes.ts`, pasar la revisión y medir con un banco ciego nuevo.
 
+## Estado en la edición editorial (12-10-2026, A04)
+
+Cada pregunta lleva estado y registro de revisión (`revisionDe` en `src/frecuentes.ts`). Solo las
+**aprobadas** salen en la edición: `FRECUENTES` las filtra y todo lo demás (emparejador, página
+`#/preguntas`, sugerencias, relacionadas, índice de búsqueda) usa esa lista. `FRECUENTES_TODAS`
+conserva las demás.
+
+| Ids      | Estado   | Fecha      | Registro                                                                       |
+| -------- | -------- | ---------- | ------------------------------------------------------------------------------ |
+| f01–f50  | aprobada | 2026-10-08 | Revisión una a una del autor en la página de revisión (colección «frecuentes») |
+| f51–f61  | aprobada | 2026-10-11 | Visto bueno editorial del autor, revisión de la 0.38 (abajo)                   |
+| f62–f103 | borrador | 2026-10-12 | Añadidas en la 0.48.0; pendientes de la revisión del autor                     |
+
+f11 y f37 vuelven a sus pasajes aprobados del 8-10. Los añadidos del 12-10 (T1/8 en f11 y
+t/07-educacion/b6/1 en f37) quedan como borrador para el autor. En la edición salen 61 preguntas.
+El tema «Trucos de uso» se renombra «Uso en el día a día» y el rótulo «Por sistema: curiosidades y
+trucos», «Preguntas por sistema» (solo afecta a borradores).
+
 ## Cómo se empareja
 
 Con las mismas palabras, raíces, léxico y expresiones que el resto del motor. Responde la pregunta cuyo texto (o

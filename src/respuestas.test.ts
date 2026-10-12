@@ -52,16 +52,22 @@ describe("Preguntas al capítulo", () => {
       ["Ciego 1", ciego1 as PreguntaCiega[], 0.72, 0.86, 0.23],
       ["Ciego 2", ciego2 as PreguntaCiega[], 0.48, 0.53, 0.25],
       // Medido a ciegas con el motor ya cerrado (la cifra honesta de la 0.10.0).
-      ["Ciego 3", ciego3 as PreguntaCiega[], 0.4, 0.5, 0.19],
+      // Edición editorial (A01): una cifra de cetonas ya no elige rama de la Figura 3; «0,6 de
+      // cetonas… sigo normal?» responde la entrada de la figura y cuenta como directa equivocada
+      // (18,3 → 19,2 %). Regresión aceptada por diseño, no una mejora del motor.
+      ["Ciego 3", ciego3 as PreguntaCiega[], 0.4, 0.5, 0.2],
       // 80 preguntas de residentes, adjuntos y enfermería (auditoría externa del 6-10-2026),
       // medidas una vez con el motor de la 0.12.0 ya cerrado: 60 %, 73,8 % y 17,5 %.
-      ["Ciego 4", ciego4 as PreguntaCiega[], 0.57, 0.72, 0.2],
+      // Edición editorial: 58,8/73,8/18,8 → 56,3/72,5/21,3 (cetonas con cifra sin rama, A01, y
+      // solo frecuentes aprobadas, A04). Regresión aceptada; docs/EDICION_EDITORIAL.md.
+      ["Ciego 4", ciego4 as PreguntaCiega[], 0.56, 0.72, 0.22],
       // 80 preguntas nuevas, medidas una vez con el motor de la 0.13.0 ya cerrado: sin preguntas
       // frecuentes 55 %, 66,3 % y 18,8 %; con ellas, 57,5 %, 67,5 % y 17,5 %.
       ["Ciego 5", ciego5 as PreguntaCiega[], 0.56, 0.66, 0.19],
       // 100 preguntas nuevas, medidas una vez con la 0.14.0 ya cerrada. Aquí, solo por palabras
       // (66 %, 77 %, 18 %); con la búsqueda por el sentido, 70 %, 83 % y 15 % (docs/SEMANTICA.md).
-      ["Ciego 6", ciego6 as PreguntaCiega[], 0.65, 0.76, 0.18],
+      // Edición editorial: 67/77/17 → 63/75/18 (A01 y A04). Regresión aceptada.
+      ["Ciego 6", ciego6 as PreguntaCiega[], 0.62, 0.74, 0.18],
     ] as const) {
       const m = medirCiego(banco);
       console.log(
@@ -109,8 +115,12 @@ describe("Preguntas al capítulo", () => {
     expect(primera("¿Cómo interpretar muchas autocorrecciones con TIR bueno?").titulo).toMatch(
       /Exceso de autocorrecciones/,
     );
-    // Con cifra, la rama sigue respondiendo.
-    expect(primera("cetonas 1,2 qué hago").id).toBe("F3/naranja");
+    // Con cifra tampoco (edición editorial, A01): la cifra no elige rama.
+    expect(
+      responder("cetonas 1,2 qué hago").some((r) =>
+        /^F3\/(verde|amarillo|naranja|rojo)$/.test(r.id),
+      ),
+    ).toBe(false);
   });
 });
 
@@ -137,9 +147,9 @@ describe("Preguntas frecuentes", () => {
     expect(preguntaFrecuente("cetonas 1,2 qué hago")).toBeNull();
   });
   it("con un sistema nombrado, da su casilla o deja responder al motor", () => {
-    // Desde la 0.48.0, la pregunta propia del sistema gana a la general.
+    // Las preguntas por sistema de la 0.48.0 (f62-f103) están pendientes: responde la general.
     const r = preguntaFrecuente("qué parámetros influyen en el modo automático de la 780G");
-    expect(r?.id).toBe("f79");
+    expect(r?.id).toBe("f07");
     expect(r?.respuestas[0].sistema).toBe("MiniMed 780G");
     // f41 (preparar el ejercicio) no dice nada propio de cada sistema: responde el motor.
     expect(preguntaFrecuente("cómo preparar el ejercicio con Omnipod 5")).toBeNull();

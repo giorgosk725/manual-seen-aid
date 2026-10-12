@@ -13,7 +13,7 @@ const RUTAS = [
   "#/consultar/tablas/T1",
   "#/sistemas",
   "#/sistemas/ciq",
-  "#/sistemas/elegir/edad:4+gestacion",
+  "#/sistemas/elegir",
   "#/pacientes",
   "#/pacientes/informacion",
   "#/pacientes/plan/op5",
@@ -23,7 +23,7 @@ const RUTAS = [
   "#/test",
   "#/consultar/inicio/inicio:omnipod-5",
   "#/consultar/inicio/hoja",
-  "#/buscar/insulina",
+  "#/buscar",
 ];
 
 test("objetivos táctiles de al menos 24 px en las pantallas principales", async ({ page }) => {

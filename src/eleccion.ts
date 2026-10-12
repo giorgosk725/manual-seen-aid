@@ -1,4 +1,10 @@
-/* Elegir un sistema: los criterios que el capítulo pide integrar (apartado 6, p. 6: edad, peso,
+/* FUERA DE LA EDICIÓN EDITORIAL (A02): la pantalla que lo usaba se sustituyó por la consulta
+   descriptiva «Explorar criterios de elección» (pantallas/Elegir.tsx), que no importa este
+   módulo. Se conserva con su prueba para una edición posterior; tiene un error conocido
+   (evaluar() no cruza edad y DM2: Omnipod 5 sale «cumple» con 10 años, aunque la celda limita la
+   DM2 a ≥ 18 años y a la FDA) que eleccion.test.ts deja registrado.
+
+   Elegir un sistema: los criterios que el capítulo pide integrar (apartado 6, p. 6: edad, peso,
    dosis total de insulina, situación reproductiva, indicaciones regulatorias; formato de bomba,
    control desde el móvil…) contrastados con la Tabla 1 (pp. 3–4). Sin React.
 

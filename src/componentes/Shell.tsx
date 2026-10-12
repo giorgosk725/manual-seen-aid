@@ -33,7 +33,6 @@ import {
   marcarNavegacionNueva,
   parseHash,
   type Ruta,
-  navegar,
 } from "../rutas";
 import { TAMANOS, guardarVisita, useNocturno, useTamanoLetra } from "../prefs";
 import { precargarBuscador } from "../useBuscador";
@@ -50,6 +49,7 @@ import { guardarReciente } from "../prefs";
 import { SugerenciasBusqueda } from "./SugerenciasBusqueda";
 import { SinResultados } from "./SinResultados";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
+import { AVISO_BUSQUEDA, irABuscar, ponerConsulta } from "../consultaBuscar";
 
 /* ---------- Espera mientras llega una pantalla perezosa ---------- */
 function CargandoPantalla() {
@@ -98,7 +98,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
     } else if (e.key === "Enter" && q.trim().length >= 2) {
       e.preventDefault();
       cerrarYGuardar();
-      window.location.hash = href("buscar", q.trim()).replace(/^#/, "");
+      irABuscar(q);
     }
   };
   const alMoverse = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -127,7 +127,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
             onKeyDown={alTeclear}
             aria-describedby="paleta-ayuda"
             aria-label="Buscar en el capítulo"
-            placeholder="Una duda: cetonas 1,2, modo sueño en Control-IQ…"
+            placeholder="Términos del capítulo: cetonas, modo sueño en Control-IQ…"
             className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
             autoComplete="off"
           />
@@ -135,8 +135,12 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
             Esc
           </kbd>
         </div>
-        <p id="paleta-ayuda" className="mt-1 hidden text-[11px] text-slate-500 sm:block">
-          Intro abre todos los resultados · ↓ ↑ eligen uno · Esc cierra
+        <p id="paleta-ayuda" className="mt-1 text-[11px] text-slate-600">
+          {AVISO_BUSQUEDA}
+          <span className="hidden sm:inline">
+            {" "}
+            Intro abre todos los resultados · ↓ ↑ eligen uno · Esc cierra
+          </span>
         </p>
         <div ref={zona} onKeyDown={alMoverse}>
           {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
@@ -221,8 +225,11 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
               {res.length > 0 && (
                 <li>
                   <a
-                    href={href("buscar", q)}
-                    onClick={cerrarYGuardar}
+                    href={href("buscar")}
+                    onClick={() => {
+                      ponerConsulta(q.trim());
+                      cerrarYGuardar();
+                    }}
                     className="block px-2 py-2 text-sm font-semibold text-slate-700 hover:underline"
                   >
                     Ver todos los resultados de «{q}»
@@ -481,11 +488,11 @@ function BuscadorLateral() {
       className="mb-3 mt-3 px-1"
       onSubmit={(e) => {
         e.preventDefault();
-        if (q.trim()) navegar("buscar", q.trim());
+        if (q.trim()) irABuscar(q);
       }}
     >
       <label htmlFor="lateral-q" className="sr-only">
-        Pregunta al capítulo
+        Buscar en el capítulo
       </label>
       <div className="flex items-center gap-2 rounded-md border border-slate-300 bg-white px-2.5 py-1.5 transition focus-within:border-slate-500">
         <Search size={14} className="shrink-0 text-slate-500" aria-hidden="true" />
@@ -495,11 +502,15 @@ function BuscadorLateral() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           onFocus={() => void precargarBuscador()}
-          placeholder="Pregunta al capítulo"
+          placeholder="Buscar en el capítulo"
+          aria-describedby="lateral-aviso"
           autoComplete="off"
           className="w-full min-w-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none"
         />
       </div>
+      <p id="lateral-aviso" className="mt-1 px-1 text-[11px] leading-snug text-slate-500">
+        {AVISO_BUSQUEDA}
+      </p>
     </form>
   );
 }

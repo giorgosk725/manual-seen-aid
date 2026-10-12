@@ -56,9 +56,19 @@ describe("App", () => {
     expect(screen.getByText(/Elige un tramo de β-OHB/)).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: /^β-OHB 1,0-2,9 mmol\/l/ }));
     expect(screen.getByText(/0,1 UI\/kg/)).toBeInTheDocument();
-    expect(
-      screen.queryByText(/URGENCIAS \/ VALORACIÓN HOSPITALARIA INMEDIATA/),
-    ).not.toBeInTheDocument();
+    // La rama roja no se abre, pero su urgencia y sus signos de gravedad se citan antes del
+    // selector y junto a la rama abierta (A01).
+    expect(screen.queryByText("Hidratación según glucemia, si la tolera.")).not.toBeInTheDocument();
+    const urgencias = screen.getAllByRole("region", {
+      name: "Urgencia y signos de gravedad (Figura 3)",
+    });
+    expect(urgencias.length).toBe(2);
+    for (const u of urgencias) {
+      expect(
+        within(u).getByText(/URGENCIAS \/ VALORACIÓN HOSPITALARIA INMEDIATA/),
+      ).toBeInTheDocument();
+      expect(within(u).getByText("Somnolencia o confusión.")).toBeInTheDocument();
+    }
     expect(window.location.hash).toBe("#/consultar/figura-3/naranja");
   });
 
@@ -77,7 +87,7 @@ describe("App", () => {
   it("la paleta de búsqueda (Ctrl K) encuentra texto literal con su página", async () => {
     render(<App />);
     fireEvent.keyDown(window, { key: "k", ctrlKey: true });
-    const caja = await screen.findByLabelText("Buscar en el capítulo");
+    const caja = within(await screen.findByRole("dialog")).getByLabelText("Buscar en el capítulo");
     await userEvent.type(caja, "regla del 450");
     const lista = await screen.findByRole("list", { name: "Resultados" });
     expect(within(lista).getAllByText(/p\. 10/).length).toBeGreaterThan(0);

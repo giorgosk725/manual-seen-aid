@@ -852,7 +852,7 @@ function AsituacionesConSistema({ ids }: { ids: string[] }) {
 }
 
 export function Sistemas({ sel, seccion }: { sel?: string; seccion?: string }) {
-  if (sel === "elegir") return <Elegir q={seccion} />;
+  if (sel === "elegir") return <Elegir antigua={!!seccion} />;
   const ids = sel === undefined ? [] : leerSeleccion(sel);
   if (seccion === "situaciones") return <AsituacionesConSistema ids={ids} />;
   if (sel !== undefined && sel !== "todos" && !ids.length) return <Comparacion ids={[]} />;
@@ -1023,9 +1023,9 @@ function EntradaSistemas() {
           aria-hidden="true"
         />
         <span className="min-w-0 flex-1">
-          Criterios de elección
+          Explorar criterios de elección
           <span className="block text-xs font-normal text-slate-500">
-            Edad, peso, dosis, gestación, formato, sensor…, sistema a sistema
+            Factores del apartado 6 y celdas de la Tabla 1, sistema a sistema
           </span>
         </span>
         <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />

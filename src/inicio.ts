@@ -248,7 +248,10 @@ export const TAREAS: Record<string, Tarea[]> = {
       id: "requisitos",
       titulo: "Requisitos e indicación",
       piezas: [0, 1],
-      siguiente: () => ({ texto: "Criterios de elección", ruta: href("sistemas", "elegir") }),
+      siguiente: () => ({
+        texto: "Explorar criterios de elección",
+        ruta: href("sistemas", "elegir"),
+      }),
     },
     { id: "eleccion", titulo: "Elección compartida del sistema", piezas: [2, 3, 4] },
     {

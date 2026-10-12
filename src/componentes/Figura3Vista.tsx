@@ -28,6 +28,7 @@ import { ImagenFigura } from "./FiguraVista";
 import { INFO_F3 } from "./figura3-imagen";
 import { TituloBloque } from "../nivel";
 import { FuentePie } from "./FuentePie";
+import { UrgenciaF3 } from "./UrgenciaF3";
 
 const ICONOS: Record<PasoTramo["icono"], LucideIcon> = {
   pluma: Syringe,
@@ -74,7 +75,15 @@ function Paso({ paso, hex, i }: { paso: PasoTramo; hex: (typeof TRAMO_HEX)[Tramo
   );
 }
 
-function Rama({ tramo, completa }: { tramo: TramoFigura3; completa?: boolean }) {
+function Rama({
+  tramo,
+  completa,
+  aviso,
+}: {
+  tramo: TramoFigura3;
+  completa?: boolean;
+  aviso?: boolean;
+}) {
   const hex = TRAMO_HEX[tramo.clave];
   return (
     <section
@@ -102,6 +111,8 @@ function Rama({ tramo, completa }: { tramo: TramoFigura3; completa?: boolean }) 
           </div>
         </div>
       </div>
+      {/* Junto a una rama no roja abierta sola, la urgencia y los signos de gravedad de la figura. */}
+      {aviso && tramo.clave !== "rojo" && <UrgenciaF3 className="mb-3" />}
       {JSON.stringify(tramo.pasos).includes("*") && (
         <p className="mb-3 rounded-lg bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
           {FIGURA3.notaAsterisco}
@@ -283,13 +294,15 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
   return (
     <section aria-label="Figura 3, recorrido paso a paso">
       <Cabecera herramienta />
+      {/* Antes de elegir rama: la urgencia y los signos de gravedad, tal cual en la figura. */}
+      <UrgenciaF3 className="mb-3" />
       <nav
         aria-label="Ir directamente al tramo"
         className="no-imprimir mb-4 rounded-xl border bg-slate-50 p-2.5"
         style={{ borderColor: "#e6e6e6" }}
       >
         <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-slate-700">
-          <ArrowDown size={13} aria-hidden="true" /> ¿Ya tienes el β-OHB? Ir a su rama:
+          <ArrowDown size={13} aria-hidden="true" /> Ir a una rama de la figura:
         </div>
         {/* En el móvil, los cuatro tramos en 2 × 2 (antes, una fila cada uno). */}
         <div className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-wrap">
@@ -379,7 +392,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
           </div>
           {actual ? (
             <div key={actual.clave} className="pantalla-in">
-              <Rama tramo={actual} />
+              <Rama tramo={actual} aviso />
               <NotasComunes />
             </div>
           ) : (

@@ -327,8 +327,8 @@ export function indice(): Entrada[] {
       href("capitulo", "11-diy"),
     ],
     [
-      "Elegir un sistema (criterios de elección)",
-      "Elegir, elección, qué sistema le pongo, cuál conviene, indicación por edad, peso, dosis total diaria, gestación, diabetes tipo 2, pod o bomba con catéter, sensor compatible: los criterios del apartado 6 contrastados con la Tabla 1",
+      "Explorar criterios de elección",
+      "Elegir, elección, criterios, indicación, edad, peso, dosis total diaria, gestación, diabetes tipo 2, pod o bomba con catéter, sensor compatible, dónde está el algoritmo: los factores del apartado 6 y la Figura 2 y las celdas de la Tabla 1",
       6,
       href("sistemas", "elegir"),
     ],
@@ -685,7 +685,7 @@ export interface Sugerencia {
 const HERRAMIENTAS: [string, string][] = [
   ["Revisar la descarga (Tabla 5, ocho pasos)", href("consultar", "descarga", "1")],
   ["Iniciar un sistema (apartado 8)", href("consultar", "inicio")],
-  ["Criterios de elección (apartado 6 y Tabla 1)", href("sistemas", "elegir")],
+  ["Explorar criterios de elección (apartado 6 y Tabla 1)", href("sistemas", "elegir")],
   ["Comparar sistemas (Tabla 1)", href("sistemas", "todos", "esencial")],
   ["Parámetros por sistema (Tabla 3)", href("sistemas", "todos", "parametros")],
   ["Cetonemia paso a paso (Figura 3)", href("consultar", "figura-3")],

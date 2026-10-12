@@ -2,7 +2,10 @@
    encuentra ningún pasaje ni pregunta frecuente: guarda en KV solo el texto de la consulta (en
    minúsculas, sin espacios de más), cuántas veces se ha hecho, cuántas de ellas tenían al menos
    resultados del índice y el mes de la última. Nada de quién la hizo: ni IP, ni navegador, ni
-   fecha exacta. GET con la clave (cabecera X-Clave) devuelve la lista para mejorar el buscador. */
+   fecha exacta. GET con la clave (cabecera X-Clave) devuelve la lista para mejorar el buscador.
+   EDICIÓN EDITORIAL: el POST responde 410 sin leer ni guardar nada (_lib/edicion.ts). */
+
+import { RECOGIDA_CERRADA, cerrada } from "../_lib/edicion";
 
 interface KV {
   get: (clave: string, tipo: "json") => Promise<Registro | null>;
@@ -43,6 +46,7 @@ export function limpiar(q: unknown): string | null {
 }
 
 export async function onRequestPost({ request, env }: { request: Request; env: Env }) {
+  if (RECOGIDA_CERRADA) return cerrada();
   if (!env.CONSULTAS) return new Response(null, { status: 204 });
   let cuerpo: { q?: unknown; i?: unknown };
   try {

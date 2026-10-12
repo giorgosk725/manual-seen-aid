@@ -80,4 +80,17 @@ describe("Elegir un sistema", () => {
     expect(escribirCriterios({})).toBeUndefined();
     expect(leerCriterios("edad:abc+sensor:Otro+dm2")).toEqual({ dm2: true });
   });
+
+  // A02, error conocido del explorador retirado: si vuelve a exponerse, este caso debe dejar
+  // de dar «cumple» (y la prueba, que hoy pasa porque falla, avisará al corregirlo).
+  it.fails("10 años y DM2: Omnipod 5 no debe salir «cumple» (la celda dice ≥ 18 años, FDA)", () => {
+    const op5 = veredictos({ edad: 10, dm2: true }).find((v) => v.id === "op5")!;
+    expect(JSON.stringify(op5)).not.toContain('"dm2","estado":"cumple"');
+    expect(celdaT1("Indicación", ORDEN_SISTEMAS.indexOf("op5"))).toContain(
+      "(≥ 18 años) por la FDA",
+    );
+    expect(
+      VARIANTES.op5.some((v) => v.dm2 === "cumple" && v.edadMin !== undefined && v.edadMin >= 18),
+    ).toBe(true);
+  });
 });

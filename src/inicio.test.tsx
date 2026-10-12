@@ -121,7 +121,7 @@ describe("Guía: preguntas dependientes (0.43.1)", () => {
     expect(preguntasActivas(p, { pauta: "mdi" }).map((q) => q.id)).toEqual(["pauta", "basal"]);
     expect(limpiarRespuestas({ pauta: "isci", basal: "larga" })).toEqual({ pauta: "isci" });
     expect(limpiarRespuestas({ pauta: "", basal: "larga" })).toEqual({});
-    expect(p.enlace?.(3, { pauta: "isci" })?.texto).toMatch(/Criterios/);
+    expect(p.enlace?.(3, { pauta: "isci" })?.texto).toMatch(/criterios/i);
     // Sin elegir, la continuación es la de MDI (la pauta más frecuente) y se enseña todo.
     expect(p.enlace?.(3, {})?.texto).toMatch(/MDI/);
   });

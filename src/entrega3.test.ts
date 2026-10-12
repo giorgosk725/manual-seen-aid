@@ -85,7 +85,7 @@ describe("Contexto, preguntas cercanas y relacionadas", () => {
     expect(faqsCercanas([])).toEqual([]);
   });
   it("frecuentesRelacionadas: las que citan la respuesta o son del mismo tema", () => {
-    const f = FRECUENTES[10];
+    const f = FRECUENTES.find((x) => FRECUENTES.some((y) => y.tema === x.tema && y.id !== x.id))!;
     const rel = frecuentesRelacionadas(f.pasajes, f.id);
     expect(rel.every((x) => x.id !== f.id)).toBe(true);
     expect(rel.length).toBeGreaterThan(0);

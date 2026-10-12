@@ -98,7 +98,9 @@ export interface Busqueda {
   parcial?: boolean;
 }
 
-/* Atajo por cifra: «β-OHB 1,2», «cetonemia 0,8», «cetonas 3» llevan al tramo de la Figura 3. */
+/* Cifra de β-OHB en la búsqueda («β-OHB 1,2», «cetonemia 0,8», «cetonas 3»). En la edición
+   editorial no elige rama: solo sirve para poner delante la urgencia de la Figura 3 y el enlace a
+   la figura entera, y para que el motor no responda con una rama sola (A01). */
 export function tramoDeConsulta(consulta: string): { clave: string; valor: number } | null {
   // La cifra va pegada a la palabra (como mucho «de», «en», «:» o «=» en medio) y no es una
   // hora, una glucemia ni un porcentaje: «cetonas y glucemia 250» o «cetonas 2 h» no cuentan.

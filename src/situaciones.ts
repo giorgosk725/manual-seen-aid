@@ -301,7 +301,7 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
     enlaces: [
       { texto: "Objetivos de la gestación (figura)", ruta: "#/visual/objetivos-mcg/gestacion" },
       { texto: "Objetivo del calculador en gestación (Tabla 2)", ruta: "#/consultar/tablas/T2" },
-      { texto: "Criterios de elección", ruta: "#/sistemas/elegir" },
+      { texto: "Explorar criterios de elección", ruta: "#/sistemas/elegir" },
     ],
   },
 ];

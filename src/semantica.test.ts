@@ -30,9 +30,10 @@ describe("Búsqueda por el sentido", () => {
     for (const q of ["cetonas 1,2", "modo sueño Control-IQ", "resonancia con 780G"])
       expect(fusionar(q, [])).toEqual(responder(q));
   });
-  it("con una cifra de β-OHB manda la rama de la Figura 3", () => {
+  it("con una cifra de β-OHB manda el motor y no elige rama de la Figura 3 (A01)", () => {
     const r = fusionar("cetonas 1,2 qué hago", [{ id: "t/09-descarga/b21/0", s: 0.9 }]);
-    expect(r[0].id).toBe("F3/naranja");
+    expect(r.map((x) => x.id)).not.toContain("t/09-descarga/b21/0");
+    expect(r.some((x) => /^F3\/(verde|amarillo|naranja|rojo)$/.test(x.id))).toBe(false);
   });
   it("lo que solo aporta el sentido, con similitud baja, va como coincidencia parcial", () => {
     const r = fusionar("modo sueño Control-IQ", [

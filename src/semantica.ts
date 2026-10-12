@@ -2,8 +2,11 @@
    significado de Workers AI) los pasajes más parecidos a lo que se busca, para fundirlos con los
    del buscador por palabras (fusionar, respuestas.ts). Es una mejora, nunca un requisito: sin
    conexión, con la función caída o si tarda más de 3 s, la búsqueda sigue solo por palabras.
-   Se manda solo el texto buscado; la función no lo guarda. */
+   Se manda solo el texto buscado; la función no lo guarda.
+   EDICIÓN EDITORIAL: desactivada (EDICION.busquedaRemota): no se manda nada y la búsqueda es
+   solo la local por palabras. */
 import { useEffect, useState } from "react";
+import { EDICION } from "./edicion";
 
 export interface Parecido {
   id: string;
@@ -20,6 +23,7 @@ const valido = (x: unknown): x is Parecido =>
   Number.isFinite((x as Parecido).s);
 
 export function pedirParecidos(q: string): Promise<Parecido[]> {
+  if (!EDICION.busquedaRemota) return Promise.resolve([]);
   const clave = q.replace(/\s+/g, " ").trim().toLowerCase().slice(0, 300);
   if (clave.length < 3 || (typeof navigator !== "undefined" && navigator.onLine === false))
     return Promise.resolve([]);
@@ -52,7 +56,7 @@ export function pedirParecidos(q: string): Promise<Parecido[]> {
 export function useParecidos(q: string, activo = true): Parecido[] {
   const [estado, setEstado] = useState<{ q: string; p: Parecido[] }>({ q: "", p: [] });
   useEffect(() => {
-    if (!activo || q.trim().length < 3) return;
+    if (!EDICION.busquedaRemota || !activo || q.trim().length < 3) return;
     let vivo = true;
     const t = setTimeout(() => {
       pedirParecidos(q).then((p) => {

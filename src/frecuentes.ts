@@ -1,7 +1,8 @@
 /* Preguntas frecuentes del buscador: cada una lleva los pasajes del capítulo (ids de los átomos
    de respuestas.ts) que se enseñan primero, rotulados «Pregunta frecuente», cuando la búsqueda se
-   le parece. Las 50 se revisaron y aprobaron una a una el 8-10-2026 (docs/FRECUENTES.md); las
-   f62-f103 (trucos de uso y por sistema, 12-10-2026) están pendientes de esa revisión. La
+   le parece. Cada una lleva su estado de revisión (REVISIONES, abajo, y docs/FRECUENTES.md):
+   solo las aprobadas salen en la edición (FRECUENTES); las demás se conservan en FRECUENTES_TODAS
+   y no entran en el emparejador, la página, las sugerencias ni el índice de búsqueda. La
    pregunta y sus «variantes» (otras formas de preguntarlo) son texto de la app; los pasajes, texto
    literal del capítulo. Para cambiar una, se edita aquí y se vuelve a pasar la revisión. */
 
@@ -17,7 +18,7 @@ export interface Frecuente {
   siguiente?: { texto: string; ruta: string };
 }
 
-export const FRECUENTES: Frecuente[] = [
+const TODAS: Frecuente[] = [
   {
     id: "f01",
     tema: "Selección e indicación",
@@ -138,7 +139,9 @@ export const FRECUENTES: Frecuente[] = [
       "sistema sin bolos para las comidas",
       "CamAPS Liberty",
     ],
-    pasajes: ["t/03-algoritmos/b3/1", "t/03-algoritmos/b3/2", "T1/8"],
+    // Pasajes aprobados el 8-10-2026. La propuesta del 12-10 (añadir T1/8) está en
+    // borradores/frecuentes-f11-f37_2026-10-12.md, pendiente de revisión.
+    pasajes: ["t/03-algoritmos/b3/1", "t/03-algoritmos/b3/2"],
   },
   {
     id: "f12",
@@ -407,7 +410,9 @@ export const FRECUENTES: Frecuente[] = [
       "gramos de azúcar para una bajada",
       "regla de los 15 gramos en AID",
     ],
-    pasajes: ["t/07-educacion/b6/1", "t/07-educacion/b7/0", "t/07-educacion/b7/1"],
+    // Pasajes aprobados el 8-10-2026. La propuesta del 12-10 (añadir delante
+    // t/07-educacion/b6/1) está en borradores/frecuentes-f11-f37_2026-10-12.md, pendiente de revisión.
+    pasajes: ["t/07-educacion/b7/0", "t/07-educacion/b7/1"],
   },
   {
     id: "f38",
@@ -662,7 +667,7 @@ export const FRECUENTES: Frecuente[] = [
   },
   {
     id: "f62",
-    tema: "Trucos de uso",
+    tema: "Uso en el día a día",
     pregunta: "En el ejercicio, ¿se anuncian al sistema los hidratos para evitar la bajada?",
     variantes: [
       "hidratos durante el ejercicio sin anunciar",
@@ -672,49 +677,49 @@ export const FRECUENTES: Frecuente[] = [
   },
   {
     id: "f63",
-    tema: "Trucos de uso",
+    tema: "Uso en el día a día",
     pregunta: "¿Cuándo hay que poner el bolo de la comida?",
     variantes: ["cuánto antes de comer se pone el bolo", "bolo prandial anticipado"],
     pasajes: ["l/07-educacion/b3/3", "t/09-descarga/b5/1"],
   },
   {
     id: "f64",
-    tema: "Trucos de uso",
+    tema: "Uso en el día a día",
     pregunta: "La glucosa sube en la primera hora después de comer: ¿qué revisar?",
     variantes: ["pico posprandial precoz", "sube mucho después de comer"],
     pasajes: ["t/09-descarga/b5/0", "t/09-descarga/b5/1"],
   },
   {
     id: "f65",
-    tema: "Trucos de uso",
+    tema: "Uso en el día a día",
     pregunta: "Glucosa alta al despertar: ¿qué revisar?",
     variantes: ["hiperglucemia matutina", "fenómeno del alba con asa cerrada"],
     pasajes: ["t/09-descarga/b8/0", "t/09-descarga/b8/1"],
   },
   {
     id: "f66",
-    tema: "Trucos de uso",
+    tema: "Uso en el día a día",
     pregunta: "El TIR está bien pero la glucosa oscila mucho: ¿qué mirar?",
     variantes: ["mucha variabilidad con buen tiempo en rango", "coeficiente de variación alto"],
     pasajes: ["t/09-descarga/b9/0", "t/09-descarga/b9/1"],
   },
   {
     id: "f67",
-    tema: "Trucos de uso",
+    tema: "Uso en el día a día",
     pregunta: "Ejercicio de fuerza o muy intenso: ¿se sube el objetivo?",
     variantes: ["pesas o sprint con asa cerrada", "ejercicio anaeróbico sube la glucosa"],
     pasajes: ["T4/1", "t/10-situaciones/b23/1"],
   },
   {
     id: "f68",
-    tema: "Trucos de uso",
+    tema: "Uso en el día a día",
     pregunta: "Después del ejercicio, ¿hasta cuándo mantener el objetivo alto?",
     variantes: ["hipoglucemia diferida tras el deporte", "cuándo quitar el modo ejercicio"],
     pasajes: ["t/10-situaciones/b25/0", "t/10-situaciones/b25/1"],
   },
   {
     id: "f69",
-    tema: "Trucos de uso",
+    tema: "Uso en el día a día",
     pregunta: "Desconexión breve (ducha, deporte, una prueba): ¿qué hacer con la insulina?",
     variantes: ["desconectar la bomba un rato", "bolo antes de desconectar la bomba"],
     pasajes: [
@@ -726,14 +731,14 @@ export const FRECUENTES: Frecuente[] = [
   },
   {
     id: "f70",
-    tema: "Trucos de uso",
+    tema: "Uso en el día a día",
     pregunta: "Tras una resonancia con el sensor puesto, ¿se puede fiar de las lecturas?",
     variantes: ["lecturas del sensor después de una resonancia", "sensor tras RM"],
     pasajes: ["t/10-situaciones/b42/0", "t/10-situaciones/b42/1"],
   },
   {
     id: "f71",
-    tema: "Trucos de uso",
+    tema: "Uso en el día a día",
     pregunta: "¿Qué errores conviene evitar al revisar una descarga?",
     variantes: ["errores frecuentes en la consulta de descarga", "qué no hacer con la descarga"],
     pasajes: ["l/09-descarga/b28/0", "l/09-descarga/b28/1", "l/09-descarga/b28/2"],
@@ -1000,3 +1005,45 @@ export const FRECUENTES: Frecuente[] = [
     sistema: 3,
   },
 ];
+
+/* Registro de revisión. Aprobación = visto bueno del autor a la correspondencia pregunta–pasajes
+   (docs/FRECUENTES.md, «Estado de revisión»). Un cambio posterior de pregunta o pasajes vuelve a
+   «borrador» hasta una nueva revisión registrada aquí. */
+export type EstadoFrecuente = "aprobada" | "borrador";
+export interface Revision {
+  estado: EstadoFrecuente;
+  fecha: string;
+  registro: string;
+}
+const num = (id: string) => Number(id.slice(1));
+export function revisionDe(id: string): Revision {
+  const n = num(id);
+  if (n >= 1 && n <= 50)
+    return {
+      estado: "aprobada",
+      fecha: "2026-10-08",
+      registro:
+        "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+    };
+  if (n >= 51 && n <= 61)
+    return {
+      estado: "aprobada",
+      fecha: "2026-10-11",
+      registro: "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
+    };
+  return {
+    estado: "borrador",
+    fecha: "2026-10-12",
+    registro: "Añadida en la 0.48.0; pendiente de la revisión del autor (docs/FRECUENTES.md)",
+  };
+}
+
+export type FrecuenteRevisada = Frecuente & { revision: Revision };
+export const FRECUENTES_TODAS: FrecuenteRevisada[] = TODAS.map((f) => ({
+  ...f,
+  revision: revisionDe(f.id),
+}));
+/* Las que salen en esta edición: solo las aprobadas. */
+export const FRECUENTES: FrecuenteRevisada[] = FRECUENTES_TODAS.filter(
+  (f) => f.revision.estado === "aprobada",
+);

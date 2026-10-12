@@ -86,7 +86,7 @@ export const PASOS_GUIA: PasoGuia[] = [
     enlace: (_sis, resp) =>
       resp?.pauta === "mdi" || !resp?.pauta
         ? { texto: "Transición desde MDI (diagrama)", ruta: href("visual", "transicion") }
-        : { texto: "Criterios de elección del sistema", ruta: href("sistemas", "elegir") },
+        : { texto: "Explorar criterios de elección", ruta: href("sistemas", "elegir") },
   },
   {
     id: "parametros",

@@ -2,9 +2,11 @@
    el sentido a la búsqueda (modelo multilingüe de Workers AI). La app los funde con los de su
    buscador por palabras (fusionar, src/respuestas.ts). No guarda ni registra la búsqueda: solo
    la manda al modelo y devuelve ids de pasajes y su similitud. Sin servicio, la app sigue con el
-   buscador por palabras. */
+   buscador por palabras.
+   EDICIÓN EDITORIAL: el POST responde 410 sin leer la búsqueda (_lib/edicion.ts). */
 import { MODELO } from "../_datos/vectores";
 import { parecidos } from "../_lib/parecidos";
+import { RECOGIDA_CERRADA, cerrada } from "../_lib/edicion";
 
 interface Env {
   AI?: { run: (modelo: string, entrada: { text: string[] }) => Promise<{ data: number[][] }> };
@@ -21,6 +23,7 @@ const json = (datos: unknown, status = 200) =>
   });
 
 export async function onRequestPost({ request, env }: { request: Request; env: Env }) {
+  if (RECOGIDA_CERRADA) return cerrada();
   let cuerpo: { q?: unknown };
   try {
     cuerpo = (await request.json()) as { q?: unknown };
