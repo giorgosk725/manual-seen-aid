@@ -1,5 +1,6 @@
 /* El mapa de consulta: cuatro bloques, cada uno con la pregunta que responde y sus entradas en
-   filas (solo el nombre: la fuente se ve al entrar). Es la portada misma: no hay otra pantalla «Consultar». */
+   filas (solo el nombre: la fuente se ve al entrar), y «Leer el capítulo» abajo, a todo lo
+   ancho. Es la portada misma: no hay otra pantalla «Consultar». */
 import { ArrowRight } from "lucide-react";
 import { DESTINOS, MAPA_CONSULTA } from "../nav";
 import { CATEGORIA_HEX } from "../tokens";
@@ -20,7 +21,7 @@ export function MapaConsulta() {
           <section
             key={b.id}
             aria-labelledby={`mapa-${b.id}`}
-            className="rounded-md border bg-white"
+            className={`rounded-md border bg-white ${b.ancho ? "md:col-span-2" : ""}`}
             style={{ borderColor: "#e6e6e6" }}
           >
             <h3
@@ -30,7 +31,12 @@ export function MapaConsulta() {
             >
               {b.titulo}
             </h3>
-            <ul className="divide-y" style={{ borderColor: "#e6e6e6" }}>
+            <ul
+              className={
+                b.ancho ? "divide-y sm:grid sm:grid-cols-3 sm:divide-x sm:divide-y-0" : "divide-y"
+              }
+              style={{ borderColor: "#e6e6e6" }}
+            >
               {b.ids.map((id) => {
                 const d = DESTINOS.find((x) => x.id === id)!;
                 const I = d.icono;

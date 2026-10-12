@@ -11,7 +11,7 @@ test.describe("Navegación y portada (393 px)", () => {
       page.getByRole("link", { name: "Para el paciente", exact: true }).first(),
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Leer capítulo", exact: true }).first(),
+      page.getByRole("navigation", { name: "Barra inferior" }).getByRole("link", { name: "Leer" }),
     ).toBeInViewport();
     const { alto, vh } = await page.evaluate(() => ({
       alto: document.documentElement.scrollHeight,

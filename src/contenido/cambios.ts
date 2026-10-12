@@ -8,13 +8,21 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.48.0";
+export const VERSION_APP = "0.48.1";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-12",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — preguntas por sistema y trucos de uso`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — portada sin botones repetidos`,
+    detalle: [
+      "Portada: fuera los botones «Leer capítulo» y «Para el paciente» de la cabecera (repetían el mapa y el menú). El mapa de Consultar añade abajo, a todo lo ancho, «Leer el capítulo» con el índice, las tablas y las figuras.",
+    ],
+  },
+  {
+    fecha: "2026-10-12",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.48.0 — preguntas por sistema y trucos de uso",
     detalle: [
       "Preguntas frecuentes: 42 nuevas (103 en total). «Trucos de uso» (hidratos en el ejercicio, cuándo poner el bolo, subida tras comer, glucosa alta al despertar, variabilidad, ejercicio de fuerza, después del ejercicio, desconexiones breves, sensor tras una resonancia, errores en la descarga) y, por sistema, curiosidades y trucos de MiniMed 780G, Tandem Control-IQ, myLoop CamAPS y Omnipod 5, con la casilla de ese sistema delante. También persona mayor, diálisis, seguimiento remoto en adolescentes, cuándo reconsiderar el tratamiento y visitas con buen control. Las respuestas son el texto del capítulo con su página.",
       "Esta edición no lleva casos guiados ni tarjetas de repaso (se guardan para una siguiente). «Sobre esta app» cuenta las herramientas actuales.",

@@ -1,13 +1,12 @@
-/* Portada = Consultar: identidad del Manual y título del capítulo, las dos entradas (Leer
-   capítulo y Para el paciente), el mapa de consulta en cuatro bloques
+/* Portada = Consultar: identidad del Manual y título del capítulo, el mapa de consulta (cuatro bloques y «Leer el capítulo»)
    (componentes/MapaConsulta) y el capítulo publicado. El buscador vive en la barra lateral
    (escritorio) y en la cabecera (móvil): la portada no lo repite. */
-import { ArrowRight, BookOpen, ExternalLink, HeartHandshake } from "lucide-react";
+import { ArrowRight, ExternalLink } from "lucide-react";
 import { CAPITULO } from "../contenido";
 import { MapaConsulta } from "../componentes/MapaConsulta";
 import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
 import { href } from "../rutas";
-import { FICHA_AREA, SEEN } from "../tokens";
+import { SEEN } from "../tokens";
 
 const fecha = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("es-ES", {
@@ -63,23 +62,6 @@ export function Portada() {
               {CAPITULO.autor}
             </p>
             <p className="mt-0.5 text-xs leading-snug text-slate-500">{CAPITULO.filiacion}</p>
-            {/* Las dos entradas en una sola fila, también en el móvil. */}
-            <div className="mt-3 flex flex-wrap items-center gap-1.5 sm:mt-4 sm:gap-2">
-              <a
-                href={href("capitulo")}
-                className="boton-seen inline-flex min-h-11 flex-auto items-center justify-center gap-1 whitespace-nowrap rounded-[3px] px-2 text-[13px] font-semibold uppercase text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:flex-none sm:gap-2 sm:px-4 sm:text-sm sm:tracking-wide"
-                style={{ background: SEEN.burdeos }}
-              >
-                <BookOpen size={14} aria-hidden="true" /> Leer capítulo
-              </a>
-              <a
-                href={href("pacientes")}
-                className="inline-flex min-h-11 flex-auto items-center justify-center gap-1 whitespace-nowrap rounded-[3px] border-2 px-2 text-[13px] font-semibold uppercase transition hover:bg-rose-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:flex-none sm:gap-2 sm:px-4 sm:text-sm sm:tracking-wide"
-                style={{ borderColor: FICHA_AREA.rosa, color: SEEN.diabetesOsc }}
-              >
-                <HeartHandshake size={14} aria-hidden="true" /> Para el paciente
-              </a>
-            </div>
           </div>
         </div>
       </section>

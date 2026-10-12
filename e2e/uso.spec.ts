@@ -117,7 +117,10 @@ test.describe("Uso 0.10.0", () => {
   }) => {
     await page.goto("/#/");
     await expect(page.getByRole("heading", { name: "Consultar", exact: true })).toBeVisible();
-    await page.getByRole("link", { name: "Leer capítulo", exact: true }).first().click();
+    await page
+      .getByRole("region", { name: "Leer el capítulo" })
+      .getByRole("link", { name: "Índice del capítulo" })
+      .click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Leer capítulo");
     const aprender = page.getByRole("region", { name: "Comprender y practicar" });
     await expect(aprender.getByRole("link", { name: /Tarjetas de repaso/ })).toHaveCount(0);

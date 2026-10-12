@@ -280,7 +280,7 @@ export const DESTINOS: Destino[] = [
 ];
 
 /* El mapa de consulta (portada): cuatro bloques, cada uno con la pregunta que responde. */
-export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[] }[] = [
+export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[]; ancho?: boolean }[] = [
   {
     id: "sistemas",
     titulo: "¿Qué sistema y cómo se ajusta?",
@@ -293,6 +293,8 @@ export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[] }[] = [
   },
   { id: "en-consulta", titulo: "En la consulta", ids: ["inicio", "descarga"] },
   { id: "pacientes", titulo: "Para el paciente", ids: ["pacientes"] },
+  // La lectura, abajo y a todo lo ancho, con sus tres entradas en fila.
+  { id: "leer", titulo: "Leer el capítulo", ids: ["capitulo", "tablas", "visual"], ancho: true },
 ];
 
 /* Navegación global: cuatro áreas en la barra inferior (Inicio · Leer · Paciente · Buscar).

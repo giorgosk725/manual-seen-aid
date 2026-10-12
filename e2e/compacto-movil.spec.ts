@@ -15,24 +15,21 @@ const mismaFila = async (a: Locator, b: Locator) =>
   expect(Math.abs((await centro(a)) - (await centro(b)))).toBeLessThanOrEqual(6);
 
 test.describe("Móvil compacto (360 px)", () => {
-  test("portada: las dos entradas en una fila, sin la frase del mapa y con la afiliación bajo el nombre", async ({
+  test("portada: sin botones en la cabecera; la lectura, en el mapa; la afiliación bajo el nombre", async ({
     page,
   }) => {
     await page.goto("/#/");
     const cabecera = page.locator("section[aria-labelledby=titulo-capitulo]");
-    const leer = cabecera.getByRole("link", { name: "Leer capítulo", exact: true });
-    const paciente = cabecera.getByRole("link", { name: "Para el paciente", exact: true });
-    await mismaFila(leer, paciente);
+    await expect(cabecera.getByRole("link")).toHaveCount(0);
     await expect(page.getByText(/Si prefieres entrar por tema/)).toHaveCount(0);
     const nombre = cabecera.getByText("Georgios Kyriakos", { exact: true });
     const filiacion = cabecera.getByText(/^Servicio de Endocrinología y Nutrición/);
     await expect(filiacion).toBeVisible();
     expect(await arriba(filiacion)).toBeGreaterThan(await arriba(nombre));
-    expect(await arriba(filiacion)).toBeLessThan(await arriba(leer));
-    // Solo una vez: ya no se repite al pie.
-    await expect(page.getByText(/^Servicio de Endocrinología y Nutrición/)).toHaveCount(1);
+    const leer = page.getByRole("region", { name: "Leer el capítulo" });
+    await expect(leer.getByRole("link", { name: "Índice del capítulo" })).toBeVisible();
+    await expect(leer.getByRole("link", { name: "Tablas" })).toBeVisible();
   });
-
   test("plan de seguridad: migas en una línea, los cuatro sistemas en una fila, formato e Imprimir juntos", async ({
     page,
   }) => {
