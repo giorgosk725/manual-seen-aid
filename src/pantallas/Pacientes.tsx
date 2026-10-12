@@ -218,7 +218,7 @@ export function HubPacientes() {
           <FilaHoja
             href={PDF_PACIENTES}
             titulo="Descargar el PDF oficial del Manual SEEN · Información para pacientes"
-            detalle="Las mismas doce preguntas y respuestas, maquetadas por el Manual SEEN (PDF, 51 KB), para imprimir o enviar."
+            detalle="Las mismas doce preguntas y respuestas y el mensaje final, maquetados por el Manual SEEN (PDF de 3 páginas, 83 KB), para imprimir o enviar."
             descarga
           />
         </li>
@@ -398,8 +398,7 @@ function HojaExtraVista({
       {hoja.estado === "borrador" && (
         <ToneCard tone="amber" title="Borrador en revisión" className="mb-3">
           <p className="text-sm text-slate-800">
-            Texto preparado por la app a partir del capítulo y pendiente de aprobación: no entregar
-            todavía.
+            Texto preparado a partir del capítulo y pendiente de aprobación: no entregar todavía.
           </p>
         </ToneCard>
       )}
@@ -616,7 +615,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
         rotulo={`Plan de seguridad · ${nombre}`}
         titulo={CAPITULO.titulo}
         subtitulo={
-          <>Hecha solo con el texto del capítulo. Para rellenar a mano; la app no guarda nada.</>
+          <>Hecha solo con el texto del capítulo. Para rellenar a mano; no se guarda nada.</>
         }
         pie={
           <>

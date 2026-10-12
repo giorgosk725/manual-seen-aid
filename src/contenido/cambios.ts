@@ -8,13 +8,22 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.46.0";
+export const VERSION_APP = "0.46.1";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-12",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — la fuente, al pie`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — el PDF oficial para pacientes y menos frases sobre la propia herramienta`,
+    detalle: [
+      "Para el paciente: el PDF para descargar es la «Información para pacientes» maquetada por el Manual SEEN el 9-10-2026 (3 páginas, 83 KB); su texto coincide palabra por palabra con el de la pantalla.",
+      "Fuera las frases que hablaban de la propia herramienta («los rótulos son de la app», «texto literal del capítulo» en cada pie). «Cómo funciona» de cada sistema empieza directamente por lo que trata. La explicación de las tablas se rotula «Explicación complementaria, no es texto del capítulo»; en Buscar, la pestaña se llama «Otros recursos».",
+    ],
+  },
+  {
+    fecha: "2026-10-12",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.46.0 — la fuente, al pie",
     detalle: [
       "En las herramientas (Sistemas y sus comparaciones, Situaciones, Criterios de elección, Revisar la descarga, Cetonemia paso a paso, Interrupción, Iniciar un sistema, Para el paciente y las tarjetas del buscador) ya no salen «Tabla N» ni páginas en títulos, filas, tarjetas o cabeceras: cada bloque lleva una sola línea «Fuente: Tabla 1, p. 3 · …» al pie, con el enlace al sitio exacto del capítulo.",
       "La lectura del capítulo, el índice de tablas y las citas de los casos guiados conservan su numeración y sus páginas. Las hojas para imprimir dicen la procedencia una vez, en su pie.",

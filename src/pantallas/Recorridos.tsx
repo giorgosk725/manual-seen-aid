@@ -258,12 +258,6 @@ function GuionVista({
           </li>
         ))}
       </ol>
-      <p
-        className="mt-2 border-t pt-2 text-[13px] text-slate-500"
-        style={{ borderColor: "#eeeeee" }}
-      >
-        Texto literal del capítulo; los rótulos de los momentos son de la app.
-      </p>
     </section>
   );
 }

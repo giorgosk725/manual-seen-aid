@@ -372,7 +372,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
                 options={[
                   { id: "texto", label: `Texto del capítulo (${textoRes.length})` },
                   { id: "tablas", label: `Tablas y figuras (${tablasRes.length})` },
-                  { id: "fuera", label: `Recursos de la app (${fueraRes.length})` },
+                  { id: "fuera", label: `Otros recursos (${fueraRes.length})` },
                 ]}
               />
             </div>
@@ -381,7 +381,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
             {activa === "fuera" && fueraRes.length > 0 && (
               <section aria-labelledby="fuera" className="mt-3">
                 <h2 id="fuera" className="sr-only">
-                  Recursos de la app
+                  Otros recursos
                 </h2>
                 <p className="text-xs text-slate-600">
                   No es el texto del capítulo: accesos, ampliación técnica (en violeta), hojas para

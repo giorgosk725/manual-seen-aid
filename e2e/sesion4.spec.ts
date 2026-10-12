@@ -109,7 +109,7 @@ test.describe("Búsqueda y enlaces", () => {
     if (!(await todos.getAttribute("open"))) await todos.locator("summary").click();
     await page
       .getByRole("group", { name: "Tipo de resultado" })
-      .getByRole("button", { name: /^Recursos de la app \(\d+\)/ })
+      .getByRole("button", { name: /^Otros recursos \(\d+\)/ })
       .click();
     await expect(page.getByText(/No es el texto del capítulo/)).toBeVisible();
     await page

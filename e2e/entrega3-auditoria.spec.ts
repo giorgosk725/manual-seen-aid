@@ -16,6 +16,15 @@ test.describe("Entrega 3 (0.34.0)", () => {
       "aria-pressed",
       "false",
     );
+    // Al elegir un sistema la ficha baja a su sección y la barra pegada se recoloca: se espera a
+    // que el desplazamiento termine (bajo carga tardaba y el clic caía a mitad de movimiento).
+    await expect
+      .poll(async () => {
+        const a = await page.evaluate(() => window.scrollY);
+        await page.waitForTimeout(200);
+        return a === (await page.evaluate(() => window.scrollY));
+      })
+      .toBe(true);
     await grupo.getByRole("button", { name: "Los cuatro" }).click();
     await expect(page).toHaveURL(/#\/sistemas\/todos\/parametros$/);
   });

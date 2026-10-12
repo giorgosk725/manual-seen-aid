@@ -56,7 +56,7 @@ export function ComoInterpretar({
               </a>
             )}
             <p className="mt-1 text-xs text-slate-600">
-              Explicación de la app, no texto del capítulo
+              Explicación complementaria, no es texto del capítulo
               {x.estado === "borrador" ? " · borrador pendiente de revisión" : ""} · Fuente:{" "}
               {x.fuente}
             </p>

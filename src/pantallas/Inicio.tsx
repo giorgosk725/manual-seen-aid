@@ -206,8 +206,7 @@ function Hoja({ sis }: { sis?: number }) {
           {[...new Set([...h.antes.map((x) => x.pagina), h.seguimiento.pagina])]
             .sort((a, b) => a - b)
             .join(", ")}
-          {h.sistema ? " y Tabla 1, pp. 3-4" : ""}; texto literal. Los rótulos de las citas son de
-          la app.
+          {h.sistema ? " y Tabla 1, pp. 3-4" : ""}.
         </p>
       </div>
     </div>

@@ -680,9 +680,8 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           Cómo funciona
         </TituloSeccion>
         <p className="mb-3 text-sm text-slate-600">
-          Lo que dice el capítulo de este sistema, en el orden en que se entiende: qué mide, dónde
-          decide, cómo administra la insulina, hacia qué objetivo y qué queda en manos de la persona
-          y del profesional. Los rótulos de los pasos son de la app; el texto, literal.
+          Qué mide, dónde decide, cómo administra la insulina, hacia qué objetivo y qué queda en
+          manos de la persona y del profesional.
         </p>
         <ol className="space-y-4">
           {comoFunciona(c, s.id).pasos.map((paso, i) => (

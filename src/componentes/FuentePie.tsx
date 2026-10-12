@@ -1,5 +1,5 @@
 /* La procedencia de un bloque de una herramienta, en una sola línea al pie: «Fuente: Tabla 1,
-   p. 3 · Apartado 8, p. 12 · texto literal del capítulo». Dentro de las herramientas no se
+   p. 3 · Apartado 8, p. 12». Dentro de las herramientas no se
    repiten tablas ni páginas en títulos, filas o cabeceras: van aquí, con su enlace exacto.
    (La lectura del capítulo y el índice de tablas conservan su numeración.) */
 export interface Fuente {
@@ -9,7 +9,7 @@ export interface Fuente {
 
 export function FuentePie({
   fuentes,
-  nota = "texto literal del capítulo",
+  nota = "",
   className = "mt-2",
 }: {
   fuentes: Fuente[];

@@ -254,7 +254,7 @@ function AvisoVersion() {
       role="status"
       className="aviso-version fixed inset-x-3 bottom-32 z-40 mx-auto max-w-md rounded-xl border border-slate-300 bg-white p-3 shadow-xl md:bottom-4"
     >
-      <p className="text-sm text-slate-800">Hay una versión nueva de la app.</p>
+      <p className="text-sm text-slate-800">Hay una versión nueva.</p>
       <div className="mt-2 flex gap-2">
         <button
           type="button"

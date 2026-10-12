@@ -418,8 +418,8 @@ function Cierre({ caso }: { caso: Caso }) {
 function Nota() {
   return (
     <p className="text-xs text-slate-600">
-      Personas ficticias y sin dosis calculadas. Cada respuesta se apoya en frases literales del
-      capítulo, con su página; los escenarios y los comentarios son de la app.
+      Personas ficticias y sin dosis calculadas. Cada respuesta se apoya en frases del capítulo, con
+      su página; los escenarios y los comentarios no son texto del capítulo.
     </p>
   );
 }
