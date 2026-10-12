@@ -72,7 +72,7 @@ test.describe("Primera visita a un enlace profundo", () => {
     ["#/sistemas/ciq", "Sistemas"],
     ["#/visual", "Visual"],
     ["#/bibliografia", "Otras"],
-    ["#/repaso/siglas", "Repaso"],
+    // «#/repaso/siglas» vuelve cuando las tarjetas de repaso vuelvan a la edición.
     ["#/consultar/inicio/inicio:omnipod-5", "Inicio"],
   ] as const;
   const PANTALLAS =

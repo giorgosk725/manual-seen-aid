@@ -1,6 +1,7 @@
 /* 0.44.0, el móvil más compacto (encargo del 12-10-2026), a 360 px (el ancho más común en
    Android): lo que iba apilado en dos o tres filas cabe en una. */
 import { expect, test, type Locator } from "@playwright/test";
+import { retirado } from "../src/edicion";
 
 test.use({ viewport: { width: 360, height: 780 } });
 
@@ -162,6 +163,7 @@ test.describe("Móvil compacto, segunda tanda (360 px)", () => {
   });
 
   test("casos guiados: «Empezar» en la línea de los datos", async ({ page }) => {
+    test.skip(retirado("casos"), "Los casos guiados no van en esta edición (src/edicion.ts).");
     await page.goto("/#/casos");
     const tarjeta = page.getByRole("link", { name: /Hiperglucemia que no baja/ });
     await mismaFila(

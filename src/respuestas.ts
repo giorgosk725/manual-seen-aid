@@ -1758,7 +1758,9 @@ export interface RespuestaFrecuente {
   sistema?: number;
 }
 
-let CANDIDATAS: { f: Frecuente; formas: { grupos: Grupo[]; negadas: Grupo[] }[] }[] | null = null;
+let CANDIDATAS:
+  | { f: Frecuente; formas: { grupos: Grupo[]; negadas: Grupo[]; nombraSistema: boolean }[] }[]
+  | null = null;
 const UMBRAL_BUSQUEDA = 0.7;
 const UMBRAL_PREGUNTA = 0.6;
 
@@ -1798,8 +1800,13 @@ export function mejorFrecuente(
   CANDIDATAS ??= FRECUENTES.map((f) => ({
     f,
     formas: [f.pregunta, ...f.variantes].map((t) => {
-      const grupos = contenido(gruposDe(t));
-      return { grupos, negadas: negadasDe(t, grupos) };
+      const todos = gruposDe(t);
+      const grupos = contenido(todos);
+      return {
+        grupos,
+        negadas: negadasDe(t, grupos),
+        nombraSistema: todos.some((g) => g.sistema !== undefined),
+      };
     }),
   }));
   const sis = grupos.find((g) => g.sistema !== undefined)?.sistema;
@@ -1810,8 +1817,12 @@ export function mejorFrecuente(
   // La búsqueda tiene que estar casi entera en la pregunta y al revés: manda la menor de las dos
   // coberturas; desempata la suma.
   const valor = (a: number, b: number) => Math.min(a, b) + 0.5 * (a + b);
-  let mejor: { f: Frecuente; deBusqueda: number; dePregunta: number } | null = null;
+  let mejor: { f: Frecuente; deBusqueda: number; dePregunta: number; ajuste: number } | null = null;
   for (const { f, formas } of CANDIDATAS) {
+    // Una pregunta de otro sistema no responde a la de este.
+    if (sis !== undefined && f.sistema !== undefined && f.sistema !== sis) continue;
+    // La pregunta del sistema nombrado gana a la general en empate; sin sistema nombrado, al revés.
+    const ajuste = f.sistema === undefined ? 0 : sis === f.sistema ? 0.2 : -0.15;
     // Con un sistema nombrado, solo vale una pregunta cuyos pasajes digan algo de ese sistema
     // (una fila por sistema o un texto que lo nombra); si no, responde el motor con lo suyo.
     if (
@@ -1822,14 +1833,22 @@ export function mejorFrecuente(
       })
     )
       continue;
-    for (const { grupos: c, negadas: niega } of formas) {
+    for (const { grupos: c, negadas: niega, nombraSistema } of formas) {
+      // Sin sistema en la búsqueda, una pregunta de un sistema solo responde por una forma que no
+      // lo nombra (lo propio de ese sistema: «qué es Boost»); «modo sueño» lo contesta la fila
+      // con los cuatro.
+      if (sis === undefined && f.sistema !== undefined && nombraSistema) continue;
       const choca = (n: Grupo) =>
         c.some((g) => casanGrupos(n, g) && !niega.some((m) => casanGrupos(m, g)));
       if (negadas.some(choca)) continue;
       const deBusqueda = cubre(q, c);
       const dePregunta = cubre(c, q);
-      if (!mejor || valor(deBusqueda, dePregunta) > valor(mejor.deBusqueda, mejor.dePregunta))
-        mejor = { f, deBusqueda, dePregunta };
+      if (
+        !mejor ||
+        valor(deBusqueda, dePregunta) + ajuste >
+          valor(mejor.deBusqueda, mejor.dePregunta) + mejor.ajuste
+      )
+        mejor = { f, deBusqueda, dePregunta, ajuste };
     }
   }
   if (!mejor) return null;

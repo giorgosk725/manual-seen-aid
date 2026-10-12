@@ -10,6 +10,7 @@ import { BotonImprimir, CabeceraEditorial, Revelar } from "../ui";
 import { CATEGORIA_HEX, colorApartado } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
 import { HAY_CASOS } from "../casos-hay";
+import { retirado } from "../edicion";
 
 function IconoApartado({ slug }: { slug: string }) {
   const I = ICONO_APARTADO[slug] ?? BookOpen;
@@ -24,7 +25,7 @@ const PRACTICAR = [
   { id: "casos", t: "Casos guiados" },
   { id: "repaso", t: "Tarjetas de repaso" },
   { id: "test", t: "Autoevaluación" },
-].filter((c) => c.id !== "casos" || HAY_CASOS);
+].filter((c) => (c.id !== "casos" || HAY_CASOS) && !retirado(c.id));
 
 function ComprenderYPracticar() {
   return (

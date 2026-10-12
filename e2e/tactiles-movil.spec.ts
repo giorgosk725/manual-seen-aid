@@ -21,7 +21,6 @@ const RUTAS = [
   "#/bibliografia",
   "#/sobre",
   "#/test",
-  "#/repaso",
   "#/consultar/inicio/inicio:omnipod-5",
   "#/consultar/inicio/hoja",
   "#/buscar/insulina",

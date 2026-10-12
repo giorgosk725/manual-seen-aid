@@ -1,11 +1,13 @@
 /* El buscador pone primero el recurso pedido («Abrir …») cuando la consulta lo nombra, encima
    de los pasajes; y no avisa de «ninguna palabra» cuando ya hay una respuesta pertinente. */
 import { expect, test } from "@playwright/test";
+import { retirado } from "../src/edicion";
 
 test.describe("Buscador: primero el recurso pedido", () => {
   test("«ejemplo de descarga» abre el ejemplo comentado antes que los pasajes", async ({
     page,
   }) => {
+    test.skip(retirado("casos"), "Los casos guiados no van en esta edición (src/edicion.ts).");
     await page.goto("/#/buscar/ejemplo de descarga");
     const abrir = page.getByRole("list", { name: "Abrir" });
     await expect(abrir.getByRole("link").first()).toContainText("Ejemplo comentado");

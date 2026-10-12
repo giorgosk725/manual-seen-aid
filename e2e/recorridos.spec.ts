@@ -2,6 +2,7 @@
    transición desde plumas; aspecto de Iniciar y su fuente; diferencias entre variantes; paso 7 y
    el ejemplo. */
 import { expect, test } from "@playwright/test";
+import { retirado } from "../src/edicion";
 
 test.describe("Recorridos completos (0.36.0)", () => {
   test("1 · Leer Tabla 3 → consultar Omnipod → comparar → volver al punto de lectura", async ({
@@ -75,6 +76,7 @@ test.describe("Recorridos completos (0.36.0)", () => {
   });
 
   test("5 · Revisar paso 7 → abrir el ejemplo → comprender → regresar", async ({ page }) => {
+    test.skip(retirado("casos"), "Los casos guiados no van en esta edición (src/edicion.ts).");
     await page.goto("/#/consultar/descarga/7");
     await expect(page.getByText(/Paso 7 de 8/)).toBeVisible();
     await page.getByRole("link", { name: /Ver este paso en el ejemplo comentado/ }).click();

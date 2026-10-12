@@ -31,6 +31,7 @@ import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { FuentePie } from "../componentes/FuentePie";
 import { paginasDe } from "../paginas";
 import { fuentesDePiezas } from "../fuentesPiezas";
+import { retirado } from "../edicion";
 
 const hex = CATEGORIA_HEX.consultar;
 
@@ -773,7 +774,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
         </dl>
         <ComoInterpretar tabla="T5" fila={n - 1} />
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-          {casoPorId("ejemplo-descarga") && (
+          {!retirado("casos") && casoPorId("ejemplo-descarga") && (
             <a
               href={href("casos", "ejemplo-descarga", String(n))}
               className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 hover:border-slate-500"

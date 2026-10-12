@@ -102,10 +102,13 @@ describe("Contexto, preguntas cercanas y relacionadas", () => {
 
 describe("Recurso pedido (prueba simulada del 10-10)", () => {
   const rec = (q: string) => recursosPedidos(q, buscarConTotales(q, 12).resultados);
-  it("«paso 7 de la descarga» abre ese paso; «descarga comentada» y «practicar descarga», el ejemplo", () => {
+  it("«paso 7 de la descarga» abre ese paso; sin casos en esta edición, ningún acceso a ellos", () => {
     expect(rec("paso 7 de la descarga")[0].entrada.ruta).toBe("#/consultar/descarga/7");
-    expect(rec("descarga comentada")[0].entrada.titulo).toMatch(/Ejemplo comentado/);
-    expect(rec("practicar descarga")[0].entrada.titulo).toMatch(/Ejemplo comentado/);
+    // 0.48.0: los casos guiados no van en esta edición (src/edicion.ts).
+    for (const q of ["descarga comentada", "practicar descarga"])
+      expect(
+        rec(q).some((r) => /Ejemplo comentado|#\/casos/.test(r.entrada.titulo + r.entrada.ruta)),
+      ).toBe(false);
   });
   it("«qué puedo cambiar en Omnipod 5 en automático» abre sus parámetros", () => {
     expect(rec("que puedo cambiar en omnipod 5 en automatico")[0].entrada.ruta).toBe(

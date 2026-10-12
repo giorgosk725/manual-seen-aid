@@ -64,6 +64,7 @@ import {
 } from "./respuestas";
 import { FRECUENTES, type Frecuente } from "./frecuentes";
 import { HOJAS_EXTRA } from "./hojas";
+import { retirado } from "./edicion";
 
 const sinMarcado = (s: string) => plano(s);
 
@@ -338,10 +339,11 @@ export function indice(): Entrada[] {
       href("repaso"),
     ],
   ] as const)
-    out.push({ id: `atajo/${ruta}`, tipo: "atajo", titulo, texto, pagina, ruta });
+    if (!(ruta === href("repaso") && retirado("repaso")))
+      out.push({ id: `atajo/${ruta}`, tipo: "atajo", titulo, texto, pagina, ruta });
   // Casos guiados y ejemplos comentados de la app: para que «ejemplo de descarga» o «practicar
   // con un caso» lleven al caso, no a un pasaje que contiene «por ejemplo».
-  for (const c of CASOS_INDICE)
+  for (const c of retirado("casos") ? [] : CASOS_INDICE)
     out.push({
       id: `caso/${c.id}`,
       tipo: "caso",
@@ -689,7 +691,14 @@ const HERRAMIENTAS: [string, string][] = [
   ["Cetonemia paso a paso (Figura 3)", href("consultar", "figura-3")],
   ["Interrupción del sistema", href("consultar", "interrupcion")],
   ["Hojas para el paciente", href("pacientes")],
-  ["Ejemplo comentado de una descarga", href("casos", "ejemplo-descarga")],
+  ...(retirado("casos")
+    ? []
+    : [
+        ["Ejemplo comentado de una descarga", href("casos", "ejemplo-descarga")] as [
+          string,
+          string,
+        ],
+      ]),
 ];
 const PRIORIDAD: Record<Sugerencia["tipo"], number> = {
   herramienta: 0,

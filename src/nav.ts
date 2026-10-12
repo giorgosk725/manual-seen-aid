@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { href } from "./rutas";
 import type { DiagramaId } from "./contenido/diagramas";
+import { retirado } from "./edicion";
 
 export interface Destino {
   id: string;
@@ -326,7 +327,11 @@ export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
     ids: ["sistemas", "situacion", "inicio", "descarga", "pacientes"],
   },
   { area: "leer", titulo: "Leer capítulo", ids: ["capitulo", "tablas", "visual", "bibliografia"] },
-  { area: "aprender", titulo: "Aprender", ids: ["preguntas", "casos", "repaso", "test"] },
+  {
+    area: "aprender",
+    titulo: "Aprender",
+    ids: ["preguntas", "casos", "repaso", "test"].filter((id) => !retirado(id)),
+  },
 ];
 
 /* ¿Está activo este destino en esta ruta? (un único criterio para lateral, menú y hubs).

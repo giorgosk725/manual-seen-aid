@@ -10,6 +10,30 @@ import { CapituloEntero, IndiceCapitulo } from "./pantallas/Capitulo";
 import { Apartado } from "./pantallas/Apartado";
 import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import type { SistemaId } from "./ampliacion/tipos";
+import { retirado } from "./edicion";
+
+/* Dirección de un módulo que no va en esta edición (src/edicion.ts). */
+function Retirado() {
+  return (
+    <div
+      className="rounded-xl border bg-white p-4 text-sm text-slate-700"
+      style={{ borderColor: "#e6e6e6" }}
+    >
+      <h1 className="text-lg font-extrabold text-slate-900">
+        Esta sección no está en esta edición
+      </h1>
+      <p className="mt-1">
+        Las preguntas frecuentes y la autoevaluación siguen en el menú, en «Aprender».
+      </p>
+      <a
+        href="#/preguntas"
+        className="mt-2 inline-flex min-h-11 items-center font-semibold underline"
+      >
+        Ir a las preguntas frecuentes
+      </a>
+    </div>
+  );
+}
 
 const consultar = () => import("./pantallas/Consultar");
 const Tablas = lazy(() => consultar().then((m) => ({ default: m.Tablas })));
@@ -242,7 +266,7 @@ export default function App() {
       titulo = "Autoevaluación";
       break;
     case "repaso":
-      pantalla = <Repaso filtro={ruta.sub} />;
+      pantalla = retirado("repaso") ? <Retirado /> : <Repaso filtro={ruta.sub} />;
       titulo = "Tarjetas de repaso";
       break;
     case "pacientes":
@@ -268,7 +292,7 @@ export default function App() {
       titulo = "Sobre esta app";
       break;
     case "casos":
-      pantalla = <Casos id={ruta.sub} paso={ruta.detalle} />;
+      pantalla = retirado("casos") ? <Retirado /> : <Casos id={ruta.sub} paso={ruta.detalle} />;
       titulo = "Casos guiados";
       break;
     case "preguntas":

@@ -1,6 +1,7 @@
 /* Entrega 3 del plan del 9-10-2026 (docs/PLAN_2026-10-09.md), escritorio: siglas pulsables con
    teclado (UX05) y «Cómo funciona» de un sistema por enlace directo. */
 import { expect, test } from "@playwright/test";
+import { retirado } from "../src/edicion";
 
 test.describe("Comprensión", () => {
   test("UX05: una sigla se abre con el teclado, se lee, Esc cierra y devuelve el foco", async ({
@@ -44,6 +45,7 @@ test.describe("Comprensión", () => {
   test("un caso guiado: elegir enseña el veredicto, el comentario y las citas con enlace", async ({
     page,
   }) => {
+    test.skip(retirado("casos"), "Los casos guiados no van en esta edición (src/edicion.ts).");
     await page.goto("/#/casos/hiperglucemia-pod");
     await expect(page.getByText("Paso 1 de 5")).toBeVisible();
     await page.getByRole("button", { name: /Otro bolo de corrección/ }).click();
@@ -98,6 +100,7 @@ test.describe("Comprensión", () => {
   });
 
   test("Buscar encuentra el ejemplo de descarga y los casos", async ({ page }) => {
+    test.skip(retirado("casos"), "Los casos guiados no van en esta edición (src/edicion.ts).");
     await page.goto("/#/buscar/ejemplo%20de%20descarga");
     const caso = page.getByRole("link", { name: /Ejemplo comentado · Una descarga de 14 días/ });
     await expect(caso.first()).toBeVisible();

@@ -27,6 +27,7 @@ import { href } from "../rutas";
 import { BotonImprimir } from "../ui";
 import { CATEGORIA_HEX, SEEN, colorApartado } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
+import { retirado } from "../edicion";
 
 /* Recorridos de consulta que desarrollan cada apartado (los mismos de «Consultar»). */
 const RECORRIDOS: Record<string, { texto: string; ruta: string }[]> = {
@@ -305,12 +306,14 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                 </li>
               ))}
             </ul>
-            <a
-              href={href("repaso", apartado.slug)}
-              className="mt-1 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
-            >
-              Repasar estas cifras como tarjetas <ArrowRight size={14} aria-hidden="true" />
-            </a>
+            {!retirado("repaso") && (
+              <a
+                href={href("repaso", apartado.slug)}
+                className="mt-1 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+              >
+                Repasar estas cifras como tarjetas <ArrowRight size={14} aria-hidden="true" />
+              </a>
+            )}
             {/* Las dosis con asterisco (Figura 3) llevan siempre su nota. */}
             {cifras.some((c) => c.valor.includes("*")) && (
               <p className="mt-2 text-xs text-slate-600">

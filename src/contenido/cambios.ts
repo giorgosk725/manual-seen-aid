@@ -8,13 +8,23 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.47.0";
+export const VERSION_APP = "0.48.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-12",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — iniciar paso a paso, fichas visuales y Situaciones en un solo sitio`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — preguntas por sistema y trucos de uso`,
+    detalle: [
+      "Preguntas frecuentes: 42 nuevas (103 en total). «Trucos de uso» (hidratos en el ejercicio, cuándo poner el bolo, subida tras comer, glucosa alta al despertar, variabilidad, ejercicio de fuerza, después del ejercicio, desconexiones breves, sensor tras una resonancia, errores en la descarga) y, por sistema, curiosidades y trucos de MiniMed 780G, Tandem Control-IQ, myLoop CamAPS y Omnipod 5, con la casilla de ese sistema delante. También persona mayor, diálisis, seguimiento remoto en adolescentes, cuándo reconsiderar el tratamiento y visitas con buen control. Las respuestas son el texto del capítulo con su página.",
+      "Esta edición no lleva casos guiados ni tarjetas de repaso (se guardan para una siguiente). «Sobre esta app» cuenta las herramientas actuales.",
+    ],
+  },
+  {
+    fecha: "2026-10-12",
+    ambito: "app",
+    titulo:
+      "Manual SEEN · AID 0.47.0 — iniciar paso a paso, fichas visuales y Situaciones en un solo sitio",
     detalle: [
       "Iniciar un sistema · Inicio: cinco pasos en el orden en que se trabaja con la persona delante (pauta previa y transición, programación inicial de basal, ratio y factor de sensibilidad, objetivos, plan de respaldo y activación del automático). El primer paso pregunta de qué pauta viene y la basal que lleva, y enseña solo lo que le corresponde (sin elegir, todo). En cada fila de la Tabla 2, la recomendación va destacada y las notas debajo. La «Guía paso a paso» aparte deja de existir: es esta fase.",
       "Fuera «Cómo leer esta tabla» de tablas, tareas y buscador; solo queda «Cómo interpretar este hallazgo» donde explica un dato concreto (paso 7 de la descarga).",

@@ -175,11 +175,12 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
     await page
       .getByRole("textbox", { name: "Buscar en el capítulo" })
       .fill("modo ejercicio en control iq");
-    const respuesta = page.getByRole("dialog").getByRole("region", { name: "Pasaje del capítulo" });
-    await expect(respuesta).toContainText("Tandem Control-IQ");
-    await expect(respuesta).toContainText("rango 140–160 mg/dl");
-    await respuesta.getByRole("link", { name: /^Ver (en|la) / }).click();
-    await expect(page).toHaveURL(/#\/consultar\/situacion\/ejercicio-aerobico:control-iq/);
+    // Desde la 0.48.0 responde la pregunta frecuente propia de Control-IQ, con su casilla.
+    const dialogo = page.getByRole("dialog");
+    await expect(
+      dialogo.getByText(/Control-IQ: ¿cómo usar los modos sueño y ejercicio\?/).first(),
+    ).toBeVisible();
+    await expect(dialogo.getByText(/rango 140–160 mg\/dl|140–160 mg\/dl/).first()).toBeVisible();
   });
 
   test("Buscar: la cifra de cetonemia lleva a su tramo y lo de fuera no consta", async ({

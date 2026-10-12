@@ -2,6 +2,7 @@
    con contexto y comentario desglosado, y «Cómo leer esta tabla» / «Cómo interpretar este
    hallazgo» en producción. */
 import { expect, test } from "@playwright/test";
+import { retirado } from "../src/edicion";
 
 test.describe("Aprobado el 11-10 (0.37.0)", () => {
   test("Cómo funciona comparado: cuatro aspectos, Liberty solo con CamAPS, parámetros con la selección", async ({
@@ -47,6 +48,7 @@ test.describe("Aprobado el 11-10 (0.37.0)", () => {
   test("paso 7 del ejemplo: contexto plegable antes de las opciones y comentario en cuatro partes", async ({
     page,
   }) => {
+    test.skip(retirado("casos"), "Los casos guiados no van en esta edición (src/edicion.ts).");
     await page.goto("/#/casos/ejemplo-descarga/7");
     await expect(
       page.getByText(/Este paso se interpreta junto con los datos de comidas y bolos/),

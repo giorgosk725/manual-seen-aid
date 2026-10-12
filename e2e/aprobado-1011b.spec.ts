@@ -1,6 +1,7 @@
 /* Cierre de la tanda del 11-10 (0.39.0): la Tabla 3 enseña el texto corregido sin rótulo de
    borrador; los pasos 5 y 6 del ejemplo van en cuatro partes. */
 import { expect, test } from "@playwright/test";
+import { retirado } from "../src/edicion";
 
 test.describe("Cierre de la tanda del 11-10 (0.39.0)", () => {
   test("Comparar los parámetros: sin «Cómo leer esta tabla» ni «borrador»", async ({ page }) => {
@@ -11,6 +12,7 @@ test.describe("Cierre de la tanda del 11-10 (0.39.0)", () => {
   });
 
   test("paso 5 del ejemplo: comentario en cuatro partes", async ({ page }) => {
+    test.skip(retirado("casos"), "Los casos guiados no van en esta edición (src/edicion.ts).");
     await page.goto("/#/casos/ejemplo-descarga/5");
     await page
       .getByRole("button", { name: /La subida tardía tras las cenas de fin de semana/ })
@@ -22,6 +24,7 @@ test.describe("Cierre de la tanda del 11-10 (0.39.0)", () => {
   test("pasos 5 y 6 en «Ver todo»: opciones y comentarios alineados con el desglose", async ({
     page,
   }) => {
+    test.skip(retirado("casos"), "Los casos guiados no van en esta edición (src/edicion.ts).");
     await page.goto("/#/casos/ejemplo-descarga");
     await page.getByRole("button", { name: "Ver todo" }).click();
     await expect(

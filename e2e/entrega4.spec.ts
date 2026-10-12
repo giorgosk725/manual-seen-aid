@@ -1,6 +1,7 @@
 /* Entrega 4 (0.29.0): pestañas por tipo en Buscar, filtros por texto, un solo selector de
    sistema, hojas como filas, casos con progreso y «Lo último que consultaste». */
 import { expect, test } from "@playwright/test";
+import { retirado } from "../src/edicion";
 
 test.describe("Listas y tarjetas (0.29.0)", () => {
   test("Buscar separa texto, tablas y figuras y fuera del capítulo en pestañas", async ({
@@ -49,6 +50,7 @@ test.describe("Listas y tarjetas (0.29.0)", () => {
   });
 
   test("un caso recuerda el paso alcanzado", async ({ page }) => {
+    test.skip(retirado("casos"), "Los casos guiados no van en esta edición (src/edicion.ts).");
     await page.goto("/#/casos/hiperglucemia-pod/3");
     await expect(page.getByText(/Paso 3 de/)).toBeVisible();
     await page.goto("/#/casos");

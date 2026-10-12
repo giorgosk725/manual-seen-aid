@@ -112,7 +112,7 @@ test.describe("Uso 0.10.0", () => {
     await expect(page.locator("main")).toBeFocused();
   });
 
-  test("la portada dice qué es y lleva a Consultar y a Leer; el repaso y el test, en Leer", async ({
+  test("la portada dice qué es y lleva a Consultar y a Leer; el test, en Leer (sin repaso en esta edición)", async ({
     page,
   }) => {
     await page.goto("/#/");
@@ -120,7 +120,7 @@ test.describe("Uso 0.10.0", () => {
     await page.getByRole("link", { name: "Leer capítulo", exact: true }).first().click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Leer capítulo");
     const aprender = page.getByRole("region", { name: "Comprender y practicar" });
-    await expect(aprender.getByRole("link", { name: /Tarjetas de repaso/ })).toBeVisible();
+    await expect(aprender.getByRole("link", { name: /Tarjetas de repaso/ })).toHaveCount(0);
     await expect(aprender.getByRole("link", { name: /Autoevaluación/ })).toBeVisible();
   });
 

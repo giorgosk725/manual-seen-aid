@@ -489,8 +489,10 @@ export function Sobre() {
         </h2>
         <p className="mt-2 text-sm">
           El capítulo «{CAPITULO.titulo}» ({CAPITULO.obra}, capítulo {CAPITULO.numero}), preparado
-          para consultarlo en el día a día: por sistema, por situación o con el buscador, con el
-          texto completo y la página de cada dato. Funciona sin conexión.{" "}
+          para consultarlo en el día a día: por sistema, por situación, en la consulta o con el
+          buscador (arriba a la izquierda; en el móvil, la lupa). El texto clínico es el del
+          capítulo, y cada bloque dice al pie de qué tabla, figura o apartado sale, con su página.
+          Funciona sin conexión y no hace falta instalarla.{" "}
           <a
             href={CAPITULO.url}
             target="_blank"
@@ -506,16 +508,27 @@ export function Sobre() {
         </h2>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
           <li>
+            <strong>Herramientas de consulta</strong>: los sistemas uno a uno o comparados;
+            Situaciones (Tablas 4 y 6, con los pasajes del capítulo por momentos, incluidos el
+            ingreso y la gestación); Iniciar un sistema, con el inicio en cinco pasos que preguntan
+            de qué pauta viene la persona y una hoja de comprobación que se marca en la consulta;
+            Revisar la descarga en ocho pasos; Cetonemia paso a paso y Criterios de elección. No
+            calculan dosis ni guardan lo que se marca.
+          </li>
+          <li>
             <strong>Ampliación técnica</strong>, en cada ficha de sistema: datos de ficha técnica
             con sus fuentes y su fecha, rotulada «fuera del capítulo».
           </li>
           <li>
-            <strong>Para el paciente</strong>: la información publicada, hojas breves, el plan de
-            seguridad de cada sistema y hojas a partir de la Figura 3 y la Tabla 6.
+            <strong>Para el paciente</strong>: el PDF de la Información para pacientes del Manual
+            SEEN, hojas breves, el plan de seguridad de cada sistema y hojas a partir de la Figura 3
+            y la Tabla 6.
           </li>
           <li>
-            <strong>Casos guiados, preguntas frecuentes y autoevaluación</strong>: material de la
-            app, revisado, que cita siempre la frase literal del capítulo con su página.
+            <strong>Preguntas frecuentes y autoevaluación</strong>: preguntas por tema, por sistema
+            (curiosidades y trucos de cada uno) y de trucos de uso, que responden siempre con el
+            texto del capítulo y su página. Las preguntas son una forma de entrar; la respuesta es
+            el capítulo.
           </li>
         </ul>
         <p className="mt-4 text-sm text-slate-600">
@@ -749,12 +762,7 @@ export function Test() {
     <div>
       <CabeceraEditorial titulo="Autoevaluación" hex={CATEGORIA_HEX.aprender} level={1}>
         <p className="text-sm text-slate-600">
-          Diez preguntas, con la explicación y las frases del capítulo que la respaldan. Cifras y
-          siglas:{" "}
-          <a href={href("repaso")} className="font-semibold text-slate-800 underline">
-            tarjetas de repaso
-          </a>
-          .
+          Diez preguntas, con la explicación y las frases del capítulo que la respaldan.
         </p>
       </CabeceraEditorial>
       {pendientes > 0 && (
@@ -789,12 +797,7 @@ export function Test() {
             Resultado: {aciertos} de {PREGUNTAS.length}
           </h2>
           <p className="mt-1 text-sm text-slate-700">
-            Repasa las que fallaste con su explicación y su página; las cifras y las siglas se
-            afianzan mejor con las{" "}
-            <a href={href("repaso")} className="font-semibold text-slate-800 underline">
-              tarjetas de repaso
-            </a>
-            .
+            Repasa las que fallaste con su explicación y su página.
           </p>
           <button
             type="button"
@@ -813,7 +816,15 @@ export function Test() {
 /* ---------- Preguntas frecuentes por temas (#/preguntas[/<id>]) ----------
    El camino cuando la búsqueda libre no da nada: las preguntas revisadas, agrupadas por tema;
    cada una abre sus pasajes literales con el mismo bloque que en la búsqueda. */
-const TEMAS = [...new Set(FRECUENTES.map((f) => f.tema))];
+/* Los temas en su orden: los generales, «Trucos de uso» y, al final, uno por sistema. */
+const TEMAS_SISTEMA = ["MiniMed 780G", "Tandem Control-IQ", "myLoop CamAPS", "Omnipod 5"];
+const TEMAS = [
+  ...[...new Set(FRECUENTES.map((f) => f.tema))].filter(
+    (t) => t !== "Trucos de uso" && !TEMAS_SISTEMA.includes(t),
+  ),
+  "Trucos de uso",
+  ...TEMAS_SISTEMA,
+].filter((t) => FRECUENTES.some((f) => f.tema === t));
 
 export function Preguntas({ id }: { id?: string }) {
   const { motor, estado, reintentar } = useBuscador(true);
@@ -935,38 +946,48 @@ export function Preguntas({ id }: { id?: string }) {
       )}
       <div className={filtradas ? "hidden" : "space-y-2"}>
         {TEMAS.map((tema) => (
-          <details
-            key={tema}
-            open={todas || undefined}
-            className="group rounded-xl border bg-white"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 text-sm font-bold text-slate-900 [&::-webkit-details-marker]:hidden">
-              <MessageCircleQuestion size={15} aria-hidden="true" style={{ color: hex.strong }} />
-              <span className="flex-1">{tema}</span>
-              <span className="text-xs font-semibold text-slate-500">
-                {FRECUENTES.filter((x) => x.tema === tema).length}
-              </span>
-              <ArrowRight
-                size={14}
-                className="text-slate-400 transition group-open:rotate-90"
-                aria-hidden="true"
-              />
-            </summary>
-            <ul className="divide-y border-t" style={{ borderColor: "#e6e6e6" }}>
-              {FRECUENTES.filter((x) => x.tema === tema).map((x) => (
-                <li key={x.id}>
-                  <a
-                    href={href("preguntas", x.id)}
-                    className="flex min-h-11 items-center gap-2 px-3 py-2 text-sm text-slate-800 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                  >
-                    <span className="flex-1">{x.pregunta}</span>
-                    <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </details>
+          <div key={tema}>
+            {tema === TEMAS_SISTEMA[0] && (
+              <h2 className="mb-1 mt-4 text-xs font-bold uppercase tracking-wide text-slate-500">
+                Por sistema: curiosidades y trucos
+              </h2>
+            )}
+            <details
+              open={todas || undefined}
+              className="group rounded-xl border bg-white"
+              style={{ borderColor: "#e6e6e6" }}
+            >
+              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 text-sm font-bold text-slate-900 [&::-webkit-details-marker]:hidden">
+                <MessageCircleQuestion size={15} aria-hidden="true" style={{ color: hex.strong }} />
+                <span className="flex-1">{tema}</span>
+                <span className="text-xs font-semibold text-slate-500">
+                  {FRECUENTES.filter((x) => x.tema === tema).length}
+                </span>
+                <ArrowRight
+                  size={14}
+                  className="text-slate-400 transition group-open:rotate-90"
+                  aria-hidden="true"
+                />
+              </summary>
+              <ul className="divide-y border-t" style={{ borderColor: "#e6e6e6" }}>
+                {FRECUENTES.filter((x) => x.tema === tema).map((x) => (
+                  <li key={x.id}>
+                    <a
+                      href={href("preguntas", x.id)}
+                      className="flex min-h-11 items-center gap-2 px-3 py-2 text-sm text-slate-800 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                    >
+                      <span className="flex-1">{x.pregunta}</span>
+                      <ArrowRight
+                        size={14}
+                        className="shrink-0 text-slate-400"
+                        aria-hidden="true"
+                      />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          </div>
         ))}
       </div>
     </div>
