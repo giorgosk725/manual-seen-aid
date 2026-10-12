@@ -50,6 +50,7 @@ import { SugerenciasBusqueda } from "./SugerenciasBusqueda";
 import { SinResultados } from "./SinResultados";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
 import { AVISO_BUSQUEDA, irABuscar, ponerConsulta } from "../consultaBuscar";
+import { VERSION_APP } from "../contenido/cambios";
 
 /* ---------- Espera mientras llega una pantalla perezosa ---------- */
 function CargandoPantalla() {
@@ -261,19 +262,22 @@ function AvisoVersion() {
       role="status"
       className="aviso-version fixed inset-x-3 bottom-32 z-40 mx-auto max-w-md rounded-xl border border-slate-300 bg-white p-3 shadow-xl md:bottom-4"
     >
-      <p className="text-sm text-slate-800">Hay una versión nueva.</p>
+      <p className="text-sm text-slate-800">
+        Hay una versión nueva del complemento. Ahora usas la {VERSION_APP}; se actualiza solo si
+        pulsas «Actualizar».
+      </p>
       <div className="mt-2 flex gap-2">
         <button
           type="button"
           onClick={update}
-          className="rounded-lg bg-slate-800 px-3 py-1.5 text-sm font-semibold text-white"
+          className="min-h-11 rounded-lg bg-slate-800 px-3 py-1.5 text-sm font-semibold text-white"
         >
           Actualizar
         </button>
         <button
           type="button"
           onClick={() => setUpdate(null)}
-          className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700"
+          className="min-h-11 rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700"
         >
           Más tarde
         </button>
@@ -447,7 +451,6 @@ function MenuNavegacion({
           </div>
         ),
       )}
-      <ul className="mt-4 space-y-0.5">{item("sobre")}</ul>
     </nav>
   );
 }
@@ -461,12 +464,15 @@ function Lateral({ ruta }: { ruta: Ruta }) {
     >
       <a
         href="#/"
-        aria-label="Manual SEEN · AID Diabetes, inicio"
+        aria-label="Automatización de la insulinoterapia, complemento del capítulo 89: inicio"
         className="rounded-md px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
         <Rotulo />
-        <span className="mt-1.5 block truncate text-[11px] text-slate-500">
+        <span className="mt-1.5 block text-[12px] font-semibold leading-snug text-slate-800">
           {CAPITULO.tituloCorto}
+        </span>
+        <span className="block text-[11px] leading-snug text-slate-500">
+          Complemento interactivo del capítulo {CAPITULO.numero}
         </span>
       </a>
       <BuscadorLateral />
@@ -696,7 +702,9 @@ export function Shell({
   }, [clavePantalla]);
 
   useEffect(() => {
-    document.title = titulo ? `${titulo} · Manual SEEN · AID` : "Manual SEEN · AID";
+    document.title = titulo
+      ? `${titulo} · Automatización de la insulinoterapia`
+      : "Automatización de la insulinoterapia · Complemento del capítulo 89";
     // «Lo último que consultaste» (portada): pantallas con título, salvo portada y búsqueda.
     if (titulo && !["", "buscar", "mas", "cambios", "sobre"].includes(ruta.seccion))
       guardarVisita({
@@ -748,7 +756,7 @@ export function Shell({
           </button>
           <a
             href="#/"
-            aria-label="Manual SEEN · AID Diabetes, inicio"
+            aria-label="Automatización de la insulinoterapia, complemento del capítulo 89: inicio"
             className="inline-flex min-h-11 min-w-0 shrink-0 items-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
           >
             <Rotulo compacto />

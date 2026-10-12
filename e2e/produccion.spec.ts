@@ -22,7 +22,7 @@ test.describe("Producción con service worker", () => {
   test("sin conexión: pantallas perezosas y figuras", async ({ page }) => {
     await instalarYCortar(page);
     for (const [ruta, titulo] of [
-      ["#/consultar/figura-3/naranja", /Cetonemia paso a paso/],
+      ["#/consultar/figura-3/naranja", /Hiperglucemia y cetonemia · Figura 3/],
       ["#/sistemas/ciq", /Tandem Control-IQ/],
       ["#/pacientes/informacion", /Tratamiento insulínico/],
       ["#/visual/gestacion-sistemas", /Gestación, sistema a sistema/],

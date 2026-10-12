@@ -218,7 +218,7 @@ export default function App() {
           break;
         case "figura-3":
           pantalla = <Figura3Pantalla tramo={ruta.detalle} />;
-          titulo = "Cetonemia paso a paso";
+          titulo = "Hiperglucemia y cetonemia · Figura 3";
           break;
         case "infografia":
           pantalla = <Infografia />;
@@ -250,7 +250,7 @@ export default function App() {
       break;
     case "cambios":
       pantalla = <Sobre />;
-      titulo = "Sobre esta app";
+      titulo = "Sobre este complemento";
       break;
     case "sobre":
       if (ruta.sub === "consultas") {
@@ -258,7 +258,7 @@ export default function App() {
         titulo = "Consultas sin respuesta";
       } else {
         pantalla = <Sobre />;
-        titulo = "Sobre esta app";
+        titulo = "Sobre este complemento";
       }
       break;
     case "test":
@@ -289,7 +289,7 @@ export default function App() {
       break;
     case "mas":
       pantalla = <Sobre />;
-      titulo = "Sobre esta app";
+      titulo = "Sobre este complemento";
       break;
     case "casos":
       pantalla = retirado("casos") ? <Retirado /> : <Casos id={ruta.sub} paso={ruta.detalle} />;

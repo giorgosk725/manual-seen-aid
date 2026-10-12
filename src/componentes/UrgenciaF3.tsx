@@ -14,13 +14,16 @@ const SIGNOS = ROJO.pasos.find((p) => p.icono === "urgente")!;
 export function UrgenciaF3({
   enlace = false,
   className = "",
+  donde = "",
 }: {
   enlace?: boolean;
   className?: string;
+  /* Dónde va (junto a qué rama o tarjeta): el nombre de la región es único en la página. */
+  donde?: string;
 }) {
   return (
     <section
-      aria-label="Urgencia y signos de gravedad (Figura 3)"
+      aria-label={`Urgencia y signos de gravedad (Figura 3)${donde ? `, ${donde}` : ""}`}
       className={`rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-900 ${className}`}
     >
       <p className="flex items-start gap-2 font-bold">

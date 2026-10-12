@@ -10,7 +10,7 @@ export function MapaConsulta() {
   return (
     <section aria-labelledby="mapa-consulta" className="space-y-3">
       {/* Cada bloque dice ya qué ofrece: el título del mapa, solo para lectores de pantalla. */}
-      <h2 id="mapa-consulta" className="sr-only">
+      <h2 id="mapa-consulta" tabIndex={-1} className="sr-only scroll-mt-24">
         Consultar
       </h2>
       <div className="grid gap-2 md:grid-cols-2">

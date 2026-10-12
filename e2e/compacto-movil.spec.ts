@@ -26,7 +26,7 @@ test.describe("Móvil compacto (360 px)", () => {
     const filiacion = cabecera.getByText(/^Servicio de Endocrinología y Nutrición/);
     await expect(filiacion).toBeVisible();
     expect(await arriba(filiacion)).toBeGreaterThan(await arriba(nombre));
-    const leer = page.getByRole("region", { name: "Leer el capítulo" });
+    const leer = page.getByRole("region", { name: "Leer y comprender" });
     await expect(leer.getByRole("link", { name: "Índice del capítulo" })).toBeVisible();
     await expect(leer.getByRole("link", { name: "Tablas" })).toBeVisible();
   });
@@ -59,16 +59,27 @@ test.describe("Móvil compacto (360 px)", () => {
     ).toHaveAttribute("href", "#/sistemas/todos/funciona");
   });
 
-  test("ficha de un sistema: los cuatro enlaces de la cabecera en dos filas", async ({ page }) => {
+  /* Edición editorial (A09): Imprimir junto al título y tres enlaces debajo; «Ficha completa»
+     sale de la cabecera y va al final de la ficha. */
+  test("ficha de un sistema: Imprimir junto al título y tres enlaces debajo", async ({ page }) => {
     await page.goto("/#/sistemas/mm780");
     const cab = page.locator("main header").first();
+    const titulo = cab.getByRole("heading", { level: 1 });
+    const imprimir = cab.getByRole("button", { name: /Imprimir/ });
+    // En la línea del título: sus cajas se solapan en vertical.
+    const t = (await titulo.boundingBox())!;
+    const im = (await imprimir.boundingBox())!;
+    expect(im.y).toBeLessThan(t.y + t.height);
+    expect(im.y + im.height).toBeGreaterThan(t.y);
     const iniciar = cab.getByRole("link", { name: "Iniciar paso a paso" });
     const plan = cab.getByRole("link", { name: "Plan de seguridad" });
-    const ficha = cab.getByRole("link", { name: "Ficha completa" });
-    const imprimir = cab.getByRole("button", { name: /Imprimir/ });
-    await mismaFila(iniciar, plan);
-    await mismaFila(ficha, imprimir);
-    expect(await arriba(ficha)).toBeGreaterThan(await arriba(iniciar));
+    const situaciones = cab.getByRole("link", { name: "Situaciones" });
+    for (const l of [iniciar, plan, situaciones]) await expect(l).toBeInViewport();
+    expect(await arriba(iniciar)).toBeGreaterThan(await arriba(imprimir));
+    await expect(cab.getByRole("link", { name: /Ficha completa/ })).toHaveCount(0);
+    await expect(
+      page.getByRole("main").getByRole("link", { name: "Ficha completa de este sistema" }),
+    ).toHaveAttribute("href", "#/sistemas/mm780/completa");
   });
 
   test("iniciar un sistema: la hoja de comprobación a mano y sin guía aparte", async ({ page }) => {

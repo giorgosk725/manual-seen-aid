@@ -176,7 +176,7 @@ function FilaHoja({
   );
 }
 /* El PDF oficial de «Información para pacientes» tal como lo publica el Manual SEEN
-   (public/pdf; no entra en la precarga: se baja al pedirlo). */
+   (public/pdf; entra en la precarga: se descarga también sin conexión). */
 const PDF_PACIENTES = `${import.meta.env.BASE_URL}pdf/manual-seen-aid-pacientes.pdf`;
 
 export function HubPacientes() {
@@ -715,15 +715,13 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
                     </li>
                   ))}
                 </ul>
-                {/* La nota de las dosis con asterisco, junto a la rama que las da (A12). */}
-                {JSON.stringify(t.pasos).includes("*") && (
-                  <p className="mt-1 text-xs text-slate-700">
-                    <Texto>{FIGURA3.notaAsterisco}</Texto>
-                  </p>
-                )}
               </li>
             ))}
           </ul>
+          {/* La nota de las dosis con asterisco, justo debajo de las ramas que las dan (A12). */}
+          <p className="mt-1 text-xs text-slate-700">
+            <Texto>{FIGURA3.notaAsterisco}</Texto>
+          </p>
           {FIGURA3.pie.map((p) => (
             <p key={p.titulo} className="mt-1.5 text-[13px] text-slate-800">
               <strong>{p.titulo}</strong> <Texto>{p.texto}</Texto>

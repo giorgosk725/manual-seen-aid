@@ -135,7 +135,7 @@ function TablaPantalla({ tid, seleccion }: { tid: TablaId; seleccion?: string })
 export function Figura3Pantalla({ tramo }: { tramo?: string }) {
   return (
     <div>
-      <CabeceraEditorial titulo="Cetonemia paso a paso" hex={hex} level={1}>
+      <CabeceraEditorial titulo="Hiperglucemia y cetonemia · Figura 3" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
           La Figura 3 del capítulo (p. 8), como recorrido. El color de cada tramo es el de la
           figura.

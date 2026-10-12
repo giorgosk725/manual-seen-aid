@@ -14,7 +14,9 @@ test.describe("Buscador: primero el recurso pedido", () => {
     const main = page.getByRole("main");
     const yAbrir = await abrir.evaluate((el) => el.getBoundingClientRect().top);
     const yPasaje = await main
-      .getByRole("heading", { name: /Pasaje del capítulo|Coincidencia parcial|Pregunta frecuente/ })
+      .getByRole("heading", {
+        name: /Pasajes relacionados|Coincidencia parcial|Pregunta frecuente/,
+      })
       .first()
       .evaluate((el) => el.getBoundingClientRect().top);
     expect(yAbrir).toBeLessThan(yPasaje);
@@ -41,7 +43,7 @@ test.describe("Buscar con más mano (0.28.0)", () => {
     await expect(page.getByRole("region", { name: "Pregunta frecuente" })).toBeVisible();
     await caja.fill("hipoglucemia nocturna 780G");
     await expect(
-      page.getByRole("heading", { name: /Pregunta frecuente|Pasaje del capítulo/ }).first(),
+      page.getByRole("heading", { name: /Pregunta frecuente|Pasajes relacionados/ }).first(),
     ).toBeVisible();
     await caja.fill("y en Omnipod 5");
     await expect(page.getByText(/Entendido como «hipoglucemia nocturna/)).toBeVisible();

@@ -130,7 +130,7 @@ test.describe("Tablas y sistemas", () => {
     );
   });
 
-  test("la ficha separa lo esencial, los parámetros, las situaciones y la ampliación", async ({
+  test("la ficha separa lo esencial y los parámetros, sin la ampliación (A06)", async ({
     page,
   }) => {
     await page.goto("/#/sistemas/mm780/completa");
@@ -138,7 +138,7 @@ test.describe("Tablas y sistemas", () => {
       await expect(page.getByRole("heading", { level: 2, name: h })).toBeVisible();
     await expect(
       page.getByRole("heading", { name: /Ampliación técnica · fuera del capítulo/ }),
-    ).toBeVisible();
+    ).toHaveCount(0);
     await expect(page.getByRole("heading", { level: 2, name: /^Situaciones/ })).toHaveCount(0);
     // Situaciones vive en un solo sitio: desde la ficha se abre con el sistema ya elegido.
     await page.locator('a[href="#/consultar/situacion/:minimed-780g"]').first().click();

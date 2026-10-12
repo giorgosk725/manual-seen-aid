@@ -94,7 +94,7 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "comparar",
-    etiqueta: "Comparar sistemas (lo esencial)",
+    etiqueta: "Comparar lo esencial",
     corto: "Comparar",
     href: href("sistemas", "todos", "esencial"),
     icono: Columns3,
@@ -175,13 +175,13 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "figura-3",
-    etiqueta: "Cetonemia paso a paso",
-    corto: "Cetonemia",
+    etiqueta: "Hiperglucemia y cetonemia · Figura 3",
+    corto: "Figura 3",
     href: href("consultar", "figura-3"),
     icono: Droplets,
     cat: "consultar",
     descripcion:
-      "La Figura 3 como recorrido: elige el tramo de β-OHB para ver su rama, con las notas comunes de la figura.",
+      "La Figura 3: la urgencia y los signos de gravedad delante; cada rama se abre a mano, con las notas comunes de la figura.",
     fuente: "Figura 3",
   },
   {
@@ -250,7 +250,7 @@ export const DESTINOS: Destino[] = [
     icono: HeartHandshake,
     cat: "pacientes",
     descripcion:
-      "Hojas para entregar al paciente: la información completa, hojas breves por situación y el plan de seguridad de cada sistema; con letra grande.",
+      "La Información para pacientes publicada por el Manual SEEN y material complementario: hojas breves y plantillas del plan de seguridad, con letra grande.",
     fuente: "Hojas para imprimir",
   },
   {
@@ -274,12 +274,13 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "sobre",
-    etiqueta: "Sobre esta app",
+    etiqueta: "Sobre este complemento",
     corto: "Sobre",
     href: href("sobre"),
     icono: Info,
     cat: "confiar",
-    descripcion: "Qué es, de dónde sale el texto, datos, lo pendiente y el historial de versiones.",
+    descripcion:
+      "Fuente, alcance, capa docente, estado de evaluación, qué se transmite y guarda, y uso sin conexión.",
   },
   {
     id: "casos",
@@ -293,12 +294,13 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "test",
-    etiqueta: "Autoevaluación",
+    etiqueta: "Autoevaluación complementaria",
     corto: "Test",
     href: href("test"),
     icono: GraduationCap,
     cat: "aprender",
-    descripcion: "Test con respuesta razonada y la página del capítulo que la justifica.",
+    descripcion:
+      "Preguntas de repaso basadas en el capítulo, con la explicación y la página que la justifica.",
   },
   {
     id: "repaso",
@@ -325,13 +327,11 @@ export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[]; ancho?:
     ids: ["situacion", "figura-3", "interrupcion"],
   },
   { id: "en-consulta", titulo: "En la consulta", ids: ["inicio", "descarga"] },
-  {
-    id: "pacientes",
-    titulo: "Para el paciente",
-    ids: ["pac-informacion", "pac-plan", "pac-hojas"],
-  },
-  // La lectura, abajo y a todo lo ancho, con sus tres entradas en fila.
-  { id: "leer", titulo: "Leer el capítulo", ids: ["capitulo", "tablas", "visual"], ancho: true },
+  // Una sola entrada a la información para pacientes (A08): dentro, el PDF publicado primero.
+  { id: "pacientes", titulo: "Para el paciente", ids: ["pacientes"] },
+  // La lectura también en el mapa, abajo y a todo lo ancho (la puerta «Leer y comprender» va
+  // antes, en la cabecera).
+  { id: "leer", titulo: "Leer y comprender", ids: ["capitulo", "tablas", "visual"], ancho: true },
 ];
 
 /* Navegación global: cuatro áreas en la barra inferior (Inicio · Leer · Paciente · Buscar).
@@ -357,20 +357,22 @@ const AREA_DE_SECCION: Record<string, Area> = {
 };
 export const areaDe = (seccion: string): Area => AREA_DE_SECCION[seccion] ?? "inicio";
 
-/* Menú (barra lateral de escritorio y menú del móvil): tres grupos, el esqueleto del mapa de
-   consulta. El índice de los apartados solo se despliega dentro de la lectura. */
+/* Menú (barra lateral de escritorio y menú del móvil): las dos formas de uso y los recursos
+   (edición editorial, A09). El índice de los apartados solo se despliega dentro de la lectura. */
 export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
   {
     area: "inicio",
     titulo: "Consultar",
-    ids: ["sistemas", "situacion", "inicio", "descarga", "pacientes"],
+    ids: ["sistemas", "situacion", "figura-3", "inicio", "descarga"],
   },
-  { area: "leer", titulo: "Leer capítulo", ids: ["capitulo", "tablas", "visual", "bibliografia"] },
   {
-    area: "aprender",
-    titulo: "Aprender",
-    ids: ["preguntas", "casos", "repaso", "test"].filter((id) => !retirado(id)),
+    area: "leer",
+    titulo: "Leer y comprender",
+    ids: ["capitulo", "tablas", "visual", "preguntas", "casos", "repaso", "test"].filter(
+      (id) => !retirado(id),
+    ),
   },
+  { area: "pacientes", titulo: "Recursos", ids: ["pacientes", "bibliografia", "sobre"] },
 ];
 
 /* ¿Está activo este destino en esta ruta? (un único criterio para lateral, menú y hubs).

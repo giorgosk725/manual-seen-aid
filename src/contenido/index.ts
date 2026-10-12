@@ -31,6 +31,10 @@ export const CAPITULO = {
   /* El PDF publicado de «Información para pacientes» lleva otra fecha en su pie (A12). */
   fechaPdfPacientes: "9 de octubre de 2026",
   fechaPdfPacientesISO: "2026-10-09",
+  /* Huellas SHA-256 de los PDF publicados (el del capítulo, el de la auditoría; el de pacientes,
+     public/pdf). */
+  pdfSha256: "3362f82fd93b75a978075b0624c5ccb99d9abcdfb953a05f90f940c1abd3d1e0",
+  pdfPacientesSha256: "a46b385f30586203a122e475d337c6e3e20db5b51517f0c0a8fea81ad8033ec5",
   paginas: 25,
   numero: 89,
   area: "Área II. Diabetes",

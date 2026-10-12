@@ -12,7 +12,8 @@ const LIMITES = {
   entradaJs: 165 * 1024,
   entradaCss: 16 * 1024,
   trozoPerezoso: 25 * 1024,
-  precache: 1.9 * 1024 * 1024,
+  // 2,0 MB desde la edición editorial (A10): el PDF de pacientes (83 KB) entra en el precache.
+  precache: 2.0 * 1024 * 1024,
 };
 
 const DIST = "dist";

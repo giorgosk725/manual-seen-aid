@@ -5,7 +5,7 @@
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
 import { useEffect, useState } from "react";
-import { ArrowRight, Check, ChevronLeft, ChevronRight, HeartHandshake } from "lucide-react";
+import { ArrowRight, Check, ChevronLeft, ChevronRight, HeartHandshake, Siren } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, rutaDeTabla } from "../contenido";
 import {
   GUION,
@@ -52,7 +52,11 @@ const TEMAS_SITUACION: { t: string; ids: string[]; subs: RegExp; extras?: Extra[
     ids: ["sueno", "necesidad-transitoria", "hiperglucemia-puntual", "hiperglucemia-persistente"],
     subs: /enfermedad|glucocorticoide/i,
     extras: [
-      { t: "Cetonemia paso a paso", fuente: "Figura 3", ruta: href("consultar", "figura-3") },
+      {
+        t: "Hiperglucemia y cetonemia · Figura 3",
+        fuente: "Figura 3",
+        ruta: href("consultar", "figura-3"),
+      },
     ],
   },
   {
@@ -738,6 +742,17 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           </select>
         </label>
       </div>
+      {/* La bandera roja (paso 8) a mano desde cualquier paso, sin terminar los anteriores (A09). */}
+      <a
+        href={href("consultar", "figura-3")}
+        className="no-imprimir mb-3 flex min-h-11 items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-semibold text-red-900 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-red-700"
+      >
+        <Siren size={15} className="shrink-0" aria-hidden="true" />
+        <span className="min-w-0 flex-1">
+          Bandera roja: hiperglucemia persistente o cetonemia · Figura 3
+        </span>
+        <ArrowRight size={14} className="shrink-0" aria-hidden="true" />
+      </a>
       <section
         key={n}
         id="paso-descarga"

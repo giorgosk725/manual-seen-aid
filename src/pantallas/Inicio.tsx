@@ -197,8 +197,9 @@ function Hoja({ sis }: { sis?: number }) {
           className="mt-3 border-t pt-2 text-[11px] text-slate-500"
           style={{ borderColor: "#e6e6e6" }}
         >
-          Manual SEEN · AID {VERSION_APP}. Fuente: capítulo del Manual SEEN (texto final del{" "}
-          {CAPITULO.fechaFuente}), pp.{" "}
+          Hoja de comprobación del complemento interactivo del capítulo {CAPITULO.numero} (versión{" "}
+          {VERSION_APP}); no es una publicación del Manual SEEN. Fuente: capítulo publicado el{" "}
+          {CAPITULO.fechaFuente}, pp.{" "}
           {[...new Set([...h.antes.map((x) => x.pagina), h.seguimiento.pagina])]
             .sort((a, b) => a - b)
             .join(", ")}

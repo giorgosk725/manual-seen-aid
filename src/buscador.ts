@@ -297,7 +297,7 @@ export function indice(): Entrada[] {
     });
   for (const [titulo, texto, pagina, ruta] of [
     [
-      "Cetonemia paso a paso (Figura 3)",
+      "Hiperglucemia y cetonemia · Figura 3",
       "Cetonemia, cetonas, β-OHB, cetosis, fallo de infusión, hiperglucemia persistente: qué hacer según el tramo",
       8,
       href("consultar", "figura-3"),
@@ -688,7 +688,7 @@ const HERRAMIENTAS: [string, string][] = [
   ["Explorar criterios de elección (apartado 6 y Tabla 1)", href("sistemas", "elegir")],
   ["Comparar sistemas (Tabla 1)", href("sistemas", "todos", "esencial")],
   ["Parámetros por sistema (Tabla 3)", href("sistemas", "todos", "parametros")],
-  ["Cetonemia paso a paso (Figura 3)", href("consultar", "figura-3")],
+  ["Hiperglucemia y cetonemia · Figura 3", href("consultar", "figura-3")],
   ["Interrupción del sistema", href("consultar", "interrupcion")],
   ["Hojas para el paciente", href("pacientes")],
   ...(retirado("casos")

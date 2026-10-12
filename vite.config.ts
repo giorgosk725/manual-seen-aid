@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -97,8 +98,28 @@ function arranqueEnLinea(): Plugin {
 /* Web estática, instalable y con uso sin conexión (PWA). Base relativa para poder servirla
    desde cualquier subruta (si la SEEN la aloja junto al capítulo). El service worker se
    registra en modo «prompt»: la versión nueva no recarga sola; se avisa y el lector decide. */
+/* Identificación del build (A10): SHA del código (con «+cambios» si el árbol no está limpio) y
+   fecha de construcción. Se ven en «Sobre este complemento» y en el aviso de versión. */
+function infoDelBuild() {
+  const git = (cmd: string) => {
+    try {
+      return execSync(cmd, { stdio: ["ignore", "pipe", "ignore"] })
+        .toString()
+        .trim();
+    } catch {
+      return "";
+    }
+  };
+  const sha = git("git rev-parse --short=12 HEAD") || "sin-git";
+  const sucio = git("git status --porcelain --untracked-files=no") !== "";
+  return { sha: sucio ? `${sha}+cambios` : sha, fecha: new Date().toISOString().slice(0, 10) };
+}
+
 export default defineConfig({
   base: "./",
+  define: {
+    __BUILD__: JSON.stringify(infoDelBuild()),
+  },
   build: {
     rollupOptions: {
       output: {
@@ -130,10 +151,10 @@ export default defineConfig({
         // Identidad estable de la app instalada: no cambia aunque cambie start_url o el
         // alojamiento (p. ej., si la SEEN la aloja junto al capítulo).
         id: "/manual-seen-aid",
-        name: "Manual SEEN · AID — Automatización de la insulinoterapia",
+        name: "Automatización de la insulinoterapia · Complemento del capítulo 89",
         short_name: "Manual SEEN · AID",
         description:
-          "El capítulo del Manual SEEN sobre automatización de la insulinoterapia en la diabetes tipo 1, para leerlo y consultarlo en dos toques, con hojas para el paciente. Educativo; no es producto sanitario.",
+          "Complemento interactivo del capítulo 89 del Manual SEEN. Facilita su lectura, comprensión y consulta. En evaluación editorial.",
         lang: "es",
         dir: "ltr",
         start_url: "./",
@@ -163,7 +184,7 @@ export default defineConfig({
             icons: [{ src: "pwa-192.png", sizes: "192x192", type: "image/png" }],
           },
           {
-            name: "Cetonemia paso a paso (Figura 3)",
+            name: "Hiperglucemia y cetonemia · Figura 3",
             short_name: "Cetonemia",
             url: "./#/consultar/figura-3",
             icons: [{ src: "pwa-192.png", sizes: "192x192", type: "image/png" }],
@@ -196,7 +217,7 @@ export default defineConfig({
             sizes: "786x1704",
             type: "image/webp",
             form_factor: "narrow",
-            label: "Cetonemia paso a paso: la rama de la Figura 3 según el β-OHB",
+            label: "Hiperglucemia y cetonemia · Figura 3",
           },
           {
             src: "capturas-app/apartado-movil.webp",
@@ -224,7 +245,8 @@ export default defineConfig({
       workbox: {
         // Precachea todo el build, imágenes de las figuras incluidas: el capítulo entero
         // tiene que leerse sin red.
-        globPatterns: ["**/*.{js,css,html,svg,png,webp,woff2}"],
+        // El PDF publicado de pacientes también (A10): se descarga sin conexión.
+        globPatterns: ["**/*.{js,css,html,svg,png,webp,woff2}", "pdf/*.pdf"],
         // Las capturas del manifiesto solo las usa el diálogo de instalación.
         globIgnores: ["capturas-app/**", "404.html", "redirige.js"],
         // Los iconos del manifiesto ya entran por globPatterns: sin duplicados en el precache.

@@ -645,9 +645,20 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           />
         </AbrirEnVisor>
         <div className="min-w-0">
-          <h1 className="text-2xl font-black tracking-tight sm:text-3xl" style={{ color: h.ink }}>
-            {s.name}
-          </h1>
+          {/* Imprimir, junto al título (A09): la única acción secundaria de la cabecera. */}
+          <div className="flex items-start justify-between gap-2">
+            <h1
+              className="min-w-0 text-2xl font-black tracking-tight sm:text-3xl"
+              style={{ color: h.ink }}
+            >
+              {s.name}
+            </h1>
+            <div className="no-imprimir shrink-0">
+              <BotonImprimir objetivo={ref} compacto>
+                Imprimir
+              </BotonImprimir>
+            </div>
+          </div>
           <p className="mt-1 text-sm text-slate-600">{algoritmoDelCapitulo(c)}</p>
         </div>
         <div className="no-imprimir col-span-2 mt-2 flex flex-wrap gap-x-3 gap-y-1 sm:col-span-1 sm:col-start-2">
@@ -676,16 +687,6 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           >
             Situaciones <ArrowRight size={13} aria-hidden="true" />
           </a>
-          <a
-            href={href("sistemas", s.id, completa ? "esencial" : "completa")}
-            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-600 hover:underline sm:min-h-8"
-          >
-            {completa ? "Por secciones" : "Ficha completa"}{" "}
-            <ArrowRight size={13} aria-hidden="true" />
-          </a>
-          <BotonImprimir objetivo={ref} compacto>
-            Imprimir
-          </BotonImprimir>
         </div>
       </header>
 
@@ -813,6 +814,16 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       </section>
 
       {!retirado("ampliacion") && ver("ampliacion") && <Ampliacion s={s} />}
+      {/* La ficha entera (para leer o imprimir), al final: fuera de la cabecera en el móvil. */}
+      <p className="no-imprimir mt-6 border-t pt-3" style={{ borderColor: "#e6e6e6" }}>
+        <a
+          href={href("sistemas", s.id, completa ? "esencial" : "completa")}
+          className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+        >
+          {completa ? "Ver por secciones" : "Ficha completa de este sistema"}{" "}
+          <ArrowRight size={13} aria-hidden="true" />
+        </a>
+      </p>
     </div>
   );
 }

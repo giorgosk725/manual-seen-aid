@@ -1,6 +1,6 @@
 /* Buscar, Bibliografía, Sobre esta app, Autoevaluación y Preguntas frecuentes. */
 import { guardarReciente } from "../prefs";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   ArrowRight,
   CheckCircle2,
@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { FRECUENTES } from "../frecuentes";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
-import { CAMBIOS, VERSION_APP } from "../contenido/cambios";
+import { BUILD } from "../build";
 import { PREGUNTAS } from "../contenido/test";
 import { elegirRuta, href } from "../rutas";
 import {
@@ -38,13 +38,6 @@ import { RecursosPedidos } from "../componentes/RecursosPedidos";
 import { Autocompletar } from "../componentes/Autocompletar";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
 import { SinResultados } from "../componentes/SinResultados";
-
-const fecha = (iso: string) =>
-  new Date(iso + "T00:00:00").toLocaleDateString("es-ES", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
 
 const TIPO: Record<string, string> = {
   diagrama: "Diagrama",
@@ -476,76 +469,145 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
   );
 }
 
-/* ---------- Sobre esta app: qué es y qué hay además del capítulo ---------- */
+/* ---------- Sobre este complemento (A13): fuente, alcance, capa docente, estado, qué se
+   transmite y guarda, uso sin conexión e identificación de la versión ---------- */
+function SeccionSobre({
+  id,
+  titulo,
+  children,
+}: {
+  id: string;
+  titulo: string;
+  children: ReactNode;
+}) {
+  return (
+    <section aria-labelledby={id} className="mt-4 first:mt-0">
+      <h2 id={id} className="text-base font-extrabold text-slate-900">
+        {titulo}
+      </h2>
+      <div className="mt-1.5 space-y-2 text-sm">{children}</div>
+    </section>
+  );
+}
+
 export function Sobre() {
-  const ultimoCap = CAMBIOS.find((c) => c.ambito === "capitulo")!;
   return (
     <div className="space-y-4">
-      <CabeceraEditorial titulo="Sobre esta app" hex={CATEGORIA_HEX.confiar} level={1}>
+      <CabeceraEditorial titulo="Sobre este complemento" hex={CATEGORIA_HEX.confiar} level={1}>
         <p className="text-sm text-slate-600">
-          Versión {VERSION_APP} · capítulo publicado el {fecha(ultimoCap.fecha)}.
+          Complemento interactivo del capítulo {CAPITULO.numero} del Manual SEEN · versión{" "}
+          {BUILD.version} · en evaluación editorial.
         </p>
       </CabeceraEditorial>
-      <section
+      <div
         className="prosa rounded-2xl border bg-white p-4 shadow-soft"
         style={{ borderColor: "#e6e6e6" }}
-        aria-labelledby="s-que"
       >
-        <h2 id="s-que" className="text-base font-extrabold text-slate-900">
-          Qué es
-        </h2>
-        <p className="mt-2 text-sm">
-          El capítulo «{CAPITULO.titulo}» ({CAPITULO.obra}, capítulo {CAPITULO.numero}), preparado
-          para consultarlo en el día a día: por sistema, por situación, en la consulta o con el
-          buscador (arriba a la izquierda; en el móvil, la lupa). El texto clínico es el del
-          capítulo, y cada bloque dice al pie de qué tabla, figura o apartado sale, con su página.
-          Funciona sin conexión y no hace falta instalarla.{" "}
-          <a
-            href={CAPITULO.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold text-slate-800 underline underline-offset-2"
-          >
-            Ver el capítulo en el Manual SEEN
-          </a>
-          .
-        </p>
-        <h2 className="mt-4 text-base font-extrabold text-slate-900">
-          Qué hay además del capítulo
-        </h2>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
-          <li>
-            <strong>Herramientas de consulta</strong>: los sistemas uno a uno o comparados;
-            Situaciones (Tablas 4 y 6, con los pasajes del capítulo por momentos, incluidos el
-            ingreso y la gestación); Iniciar un sistema, con el inicio en cinco pasos que preguntan
-            de qué pauta viene la persona y una hoja de comprobación que se marca en la consulta;
-            Revisar la descarga en ocho pasos; Cetonemia paso a paso y Criterios de elección. No
-            calculan dosis ni guardan lo que se marca.
-          </li>
-          <li>
-            <strong>Ampliación técnica</strong>, en cada ficha de sistema: datos de ficha técnica
-            con sus fuentes y su fecha, rotulada «fuera del capítulo».
-          </li>
-          <li>
-            <strong>Para el paciente</strong>: el PDF de la Información para pacientes del Manual
-            SEEN, hojas breves, el plan de seguridad de cada sistema y hojas a partir de la Figura 3
-            y la Tabla 6.
-          </li>
-          <li>
-            <strong>Preguntas frecuentes y autoevaluación</strong>: preguntas por tema, por sistema
-            (curiosidades y trucos de cada uno) y de trucos de uso, que responden siempre con el
-            texto del capítulo y su página. Las preguntas son una forma de entrar; la respuesta es
-            el capítulo.
-          </li>
-        </ul>
-        <p className="mt-4 text-sm text-slate-600">
-          No pide datos de pacientes: escribe las dudas sin ellos. Si una búsqueda se queda sin
-          respuesta, se guarda su texto (recortado a 80 caracteres, sin correos, direcciones ni
-          cifras largas) y cuántas veces se ha hecho, durante seis meses, sin fecha exacta ni ningún
-          dato de quién la hizo, para mejorar el buscador. No sustituye la ficha técnica de cada
-          sistema, los protocolos del centro ni el juicio clínico.
-        </p>
-      </section>
+        <SeccionSobre id="s-fuente" titulo="Fuente">
+          <p>
+            Una sola fuente clínica: el capítulo «{CAPITULO.titulo}» ({CAPITULO.obra}, capítulo{" "}
+            {CAPITULO.numero}), publicado el {CAPITULO.fechaFuente}, {CAPITULO.paginas} páginas,
+            ISBN {CAPITULO.isbn}.{" "}
+            <a
+              href={CAPITULO.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-slate-800 underline underline-offset-2"
+            >
+              Ver el capítulo en el Manual SEEN
+            </a>
+            . Cada bloque dice al pie de qué tabla, figura o apartado sale, con su página.
+          </p>
+          <p>
+            Para el paciente, el recurso principal es la Información para pacientes publicada por el
+            Manual SEEN (PDF con fecha {CAPITULO.fechaPdfPacientes}).
+          </p>
+        </SeccionSobre>
+        <SeccionSobre id="s-alcance" titulo="Alcance">
+          <p>
+            Dos formas de uso: leer y comprender el capítulo, o consultarlo por sistema, por
+            situación y en la consulta. Las herramientas ordenan el texto del capítulo; no calculan
+            dosis, no recomiendan un sistema y no piden datos de pacientes.
+          </p>
+          <p>
+            No forman parte de esta edición: la ampliación técnica de cada sistema, los casos
+            guiados, las tarjetas de repaso, las preguntas frecuentes pendientes de revisión, dos
+            preguntas de autoevaluación en revisión y la hoja compacta de 7 pt.
+          </p>
+        </SeccionSobre>
+        <SeccionSobre id="s-docente" titulo="Capa docente">
+          <p>
+            Además del texto del capítulo hay una capa docente pequeña y rotulada: las preguntas
+            frecuentes ({FRECUENTES.length}, revisadas; la pregunta es de este complemento y la
+            respuesta, texto literal del capítulo), la autoevaluación complementaria (
+            {PREGUNTAS.length} preguntas) y el material complementario para el paciente (hojas
+            breves y plantillas del plan de seguridad). Nada de ello es una publicación del Manual
+            SEEN.
+          </p>
+        </SeccionSobre>
+        <SeccionSobre id="s-estado" titulo="Estado y revisión">
+          <p>
+            Propuesta en evaluación editorial; no es un recurso oficial del Manual SEEN. La
+            autorización para reproducir el material editorial, el uso de la marca y el alojamiento
+            definitivo están pendientes de acuerdo con la SEEN y la editorial ({CAPITULO.editorial}
+            ).
+          </p>
+          <p>
+            Responsable del contenido: {CAPITULO.autor}, autor del capítulo. Todo texto nuevo
+            (preguntas, explicaciones, hojas) se prepara como borrador y solo entra en la edición
+            cuando su responsable lo revisa y aprueba; cada pregunta frecuente lleva su estado y la
+            fecha de esa revisión.
+          </p>
+        </SeccionSobre>
+        <SeccionSobre id="s-datos" titulo="Qué se transmite y qué se guarda">
+          <p>
+            La búsqueda funciona en el propio dispositivo: esta edición no envía el texto buscado a
+            ningún servicio, no lo pone en la dirección de la página y no guarda búsquedas recientes
+            ni criterios. Busca términos del capítulo; no introduzcas datos de pacientes.
+          </p>
+          <p>
+            En este navegador solo se guardan preferencias: modo nocturno, tamaño de letra, la
+            última posición de lectura del capítulo y los apartados leídos. Se borran desde el
+            navegador.
+          </p>
+          <p>
+            Como cualquier web, el servicio de alojamiento puede registrar datos técnicos de las
+            peticiones (dirección IP, navegador, página pedida); esta edición no le envía el texto
+            de las búsquedas.
+          </p>
+        </SeccionSobre>
+        <SeccionSobre id="s-offline" titulo="Sin conexión y actualizaciones">
+          <p>
+            Tras la primera visita funciona sin conexión, con el capítulo entero, sus figuras y el
+            PDF de pacientes. Cuando hay una versión nueva, un aviso lo dice y se actualiza al
+            aceptarlo; nunca se recarga sola en medio de una consulta.
+          </p>
+        </SeccionSobre>
+        <SeccionSobre id="s-version" titulo="Esta versión">
+          <dl className="grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[12rem_1fr]">
+            <dt className="font-semibold text-slate-700">Complemento</dt>
+            <dd>versión {BUILD.version}</dd>
+            <dt className="font-semibold text-slate-700">Código</dt>
+            <dd className="break-all font-mono text-xs">{BUILD.sha}</dd>
+            <dt className="font-semibold text-slate-700">Construido el</dt>
+            <dd>{BUILD.fecha || "—"}</dd>
+            <dt className="font-semibold text-slate-700">Capítulo (PDF)</dt>
+            <dd>
+              {BUILD.fuente.fecha} · SHA-256{" "}
+              <span className="break-all font-mono text-xs">{BUILD.fuente.sha256}</span>
+            </dd>
+            <dt className="font-semibold text-slate-700">Pacientes (PDF)</dt>
+            <dd>
+              {BUILD.pacientes.fecha} · SHA-256{" "}
+              <span className="break-all font-mono text-xs">{BUILD.pacientes.sha256}</span>
+            </dd>
+          </dl>
+          <p className="text-slate-600">
+            No sustituye la ficha técnica de cada sistema, los protocolos del centro ni el juicio
+            clínico.
+          </p>
+        </SeccionSobre>
+      </div>
     </div>
   );
 }

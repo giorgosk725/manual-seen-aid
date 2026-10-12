@@ -17,10 +17,14 @@ import { TextoConRemisiones } from "./Remisiones";
 import { PaginaBadge } from "../ui";
 import { TablaVista } from "./TablaVista";
 import { FiguraVista } from "./FiguraVista";
-import { Figura3Lectura } from "./Figura3Vista";
 import { Figura1Animada } from "./Figura1Animada";
 /* Los diagramas (SVG grandes) se cargan al pedirlos: fuera del trozo de arranque. */
 const DiagramaVista = lazy(() => import("./Diagramas").then((m) => ({ default: m.DiagramaVista })));
+// La Figura 3 de lectura, también perezosa: solo la pide el apartado 7 (y deja sitio en la
+// entrada para lo nuevo de la edición editorial).
+const Figura3Lectura = lazy(() =>
+  import("./Figura3Vista").then((m) => ({ default: m.Figura3Lectura })),
+);
 const Diagrama = (props: { id: DiagramaId; enApartado?: boolean }) => (
   <Suspense fallback={<div className="min-h-40" aria-busy="true" />}>
     <DiagramaVista {...props} />
@@ -155,7 +159,13 @@ function BloqueVista({
               <Figura1Animada />
             </div>
           )}
-          {b.id === "F3" ? <Figura3Lectura /> : <FiguraVista figura={FIGURAS[b.id]!} />}
+          {b.id === "F3" ? (
+            <Suspense fallback={<div className="min-h-40" aria-busy="true" />}>
+              <Figura3Lectura />
+            </Suspense>
+          ) : (
+            <FiguraVista figura={FIGURAS[b.id]!} />
+          )}
         </div>
       );
   }

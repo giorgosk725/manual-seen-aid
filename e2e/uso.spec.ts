@@ -9,14 +9,18 @@ test.describe("Uso 0.10.0", () => {
     const caja = page.getByRole("textbox", { name: "Buscar en el capítulo" });
     await caja.fill("cetonas 1,2");
     const dialogo = page.getByRole("dialog");
-    await expect(dialogo.getByRole("region", { name: "Pasaje del capítulo" })).toBeVisible();
+    await expect(dialogo.getByRole("region", { name: "Pasajes relacionados" })).toBeVisible();
     await caja.press("ArrowDown");
-    await expect(dialogo.getByRole("link", { name: /^Ver (en|la) / })).toBeFocused();
+    // Con una cifra de cetonas, lo primero es el enlace a la Figura 3 completa (A01).
+    await expect(
+      dialogo.getByRole("link", { name: /Hiperglucemia y cetonemia · Figura 3 completa/ }),
+    ).toBeFocused();
     await page.keyboard.press("ArrowUp");
     await expect(caja).toBeFocused();
     // Intro no salta a escondidas al primer pasaje: abre Buscar con la búsqueda.
     await caja.press("Enter");
-    await expect(page).toHaveURL(/#\/buscar\/cetonas%201%2C2$/);
+    await expect(page).toHaveURL(/#\/buscar$/);
+    await expect(page.getByLabel("Texto a buscar")).toHaveValue("cetonas 1,2");
     await expect(page.getByRole("dialog")).toHaveCount(0);
   });
 
@@ -24,7 +28,7 @@ test.describe("Uso 0.10.0", () => {
     await page.goto("/#/buscar/cu%C3%A1nto%20tiempo%20puedo%20estar%20desconectado");
     // Desde la 0.13.0 responde la pregunta frecuente; antes, el pasaje del motor.
     const respuesta = page
-      .getByRole("region", { name: /^(Pregunta frecuente|Pasaje del capítulo)$/ })
+      .getByRole("region", { name: /^(Pregunta frecuente|Pasajes relacionados)$/ })
       .first();
     await expect(respuesta).toContainText("a partir de aproximadamente 1 h");
     await respuesta
@@ -52,7 +56,7 @@ test.describe("Uso 0.10.0", () => {
     await expect(
       page.getByRole("region", { name: "Coincidencia parcial en el capítulo" }),
     ).toContainText("no depende únicamente del coste del dispositivo");
-    await expect(page.getByRole("region", { name: "Pasaje del capítulo" })).toHaveCount(0);
+    await expect(page.getByRole("region", { name: "Pasajes relacionados" })).toHaveCount(0);
   });
 
   test("pregunta frecuente: sale primero, con sus pasajes y su página", async ({ page }) => {
@@ -75,7 +79,7 @@ test.describe("Uso 0.10.0", () => {
   test("la nota del asterisco es la de su tabla", async ({ page }) => {
     await page.goto("/#/buscar/par%C3%A1metros%20modo%20autom%C3%A1tico%20control%20iq");
     const respuesta = page
-      .getByRole("region", { name: /^(Pregunta frecuente|Pasaje del capítulo)$/ })
+      .getByRole("region", { name: /^(Pregunta frecuente|Pasajes relacionados)$/ })
       .first();
     await expect(respuesta).toContainText("Parámetro con efecto directo sobre el algoritmo");
     await expect(respuesta).not.toContainText("Dosis orientativas para personas adultas");
@@ -112,15 +116,14 @@ test.describe("Uso 0.10.0", () => {
     await expect(page.locator("main")).toBeFocused();
   });
 
-  test("la portada dice qué es y lleva a Consultar y a Leer; el test, en Leer (sin repaso en esta edición)", async ({
+  test("la portada: dos puertas, Leer y comprender y Consultar; el test, en Leer (sin repaso)", async ({
     page,
   }) => {
     await page.goto("/#/");
-    await expect(page.getByRole("heading", { name: "Consultar", exact: true })).toBeVisible();
-    await page
-      .getByRole("region", { name: "Leer el capítulo" })
-      .getByRole("link", { name: "Índice del capítulo" })
-      .click();
+    const puertas = page.getByRole("navigation", { name: "Dos formas de uso" });
+    await puertas.getByRole("button", { name: /Consultar/ }).click();
+    await expect(page.getByRole("heading", { name: "Consultar", exact: true })).toBeFocused();
+    await puertas.getByRole("link", { name: /Leer y comprender/ }).click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Leer capítulo");
     const aprender = page.getByRole("region", { name: "Comprender y practicar" });
     await expect(aprender.getByRole("link", { name: /Tarjetas de repaso/ })).toHaveCount(0);

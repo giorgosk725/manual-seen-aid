@@ -11,7 +11,7 @@ test.describe("Recorrido básico (escritorio)", () => {
       /automatización de la insulinoterapia/i,
     );
     await page
-      .getByRole("region", { name: "Leer el capítulo" })
+      .getByRole("region", { name: "Leer y comprender" })
       .getByRole("link", { name: "Índice del capítulo" })
       .click();
     await expect(page).toHaveURL(/#\/capitulo$/);
@@ -55,7 +55,9 @@ test.describe("Recorrido básico (escritorio)", () => {
     page,
   }) => {
     await page.goto("/#/consultar/figura-3/rojo");
-    await expect(page.getByText("URGENCIAS / VALORACIÓN HOSPITALARIA INMEDIATA.")).toBeVisible();
+    // La urgencia sale citada antes del selector (A01) y dentro de la rama roja.
+    const rama = page.getByRole("region", { name: /^β-OHB ≥3,0 mmol\/l o signos de gravedad:/ });
+    await expect(rama.getByText("URGENCIAS / VALORACIÓN HOSPITALARIA INMEDIATA.")).toBeVisible();
     await expect(page.getByText(/Dosis orientativas para personas adultas/).first()).toBeVisible();
     await expect(page.getByText(/0,1 UI\/kg/)).toHaveCount(0);
   });
@@ -80,7 +82,7 @@ test.describe("Recorrido básico (escritorio)", () => {
     await expect(doi).toHaveAttribute("href", "https://doi.org/10.2337/dci26-0122");
   });
 
-  test("Sistemas: la ficha muestra la foto, el capítulo y la ampliación; Situación filtra por sistema", async ({
+  test("Sistemas: la ficha muestra la foto y el capítulo, sin la ampliación; Situación filtra por sistema", async ({
     page,
   }) => {
     await page.goto("/#/sistemas");
@@ -90,9 +92,9 @@ test.describe("Recorrido básico (escritorio)", () => {
       .click();
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("myLoop CamAPS");
     await expect(page.getByRole("img", { name: /Foto oficial de myLoop CamAPS/ })).toBeVisible();
-    await page.getByRole("link", { name: "Ampliación técnica", exact: true }).click();
-    await expect(page).toHaveURL(/#\/sistemas\/camaps\/ampliacion$/);
-    await expect(page.getByText("Ampliación técnica · fuera del capítulo")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Ampliación técnica", exact: true })).toHaveCount(
+      0,
+    );
     await page.goto("/#/consultar/situacion");
     await page.getByRole("button", { name: /Resonancia magnética/ }).click();
     await expect(page.getByText(/retirar también el set si la cánula es metálica/)).toBeVisible();

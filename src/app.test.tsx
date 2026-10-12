@@ -27,11 +27,27 @@ const AXE = {
 };
 
 describe("App", () => {
-  it("la portada muestra el título completo del capítulo y el autor, sin la Sociedad", () => {
+  it("la portada: identidad editorial, título completo del capítulo y autor, sin la Sociedad", () => {
     render(<App />);
+    // Edición editorial (A08): la identidad es el título corto; el completo, debajo.
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      /Tratamiento insulínico del paciente con diabetes mellitus tipo 1: automatización de la insulinoterapia/i,
+      "Automatización de la insulinoterapia",
     );
+    expect(screen.getAllByText(/Complemento interactivo del capítulo 89/).length).toBeGreaterThan(
+      0,
+    );
+    expect(screen.getByText("En evaluación editorial")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /Tratamiento insulínico del paciente con diabetes mellitus tipo 1: automatización de la insulinoterapia/i,
+      ),
+    ).toBeInTheDocument();
+    const puertas = screen.getByRole("navigation", { name: "Dos formas de uso" });
+    expect(within(puertas).getByRole("link", { name: /Leer y comprender/ })).toHaveAttribute(
+      "href",
+      "#/capitulo",
+    );
+    expect(within(puertas).getByRole("button", { name: /Consultar/ })).toBeInTheDocument();
     expect(screen.getAllByText(/Georgios Kyriakos/).length).toBeGreaterThan(0);
     expect(screen.queryByText(/Sociedad Española de Endocrinología y Nutrición/)).toBeNull();
   });
@@ -60,7 +76,7 @@ describe("App", () => {
     // selector y junto a la rama abierta (A01).
     expect(screen.queryByText("Hidratación según glucemia, si la tolera.")).not.toBeInTheDocument();
     const urgencias = screen.getAllByRole("region", {
-      name: "Urgencia y signos de gravedad (Figura 3)",
+      name: /^Urgencia y signos de gravedad \(Figura 3\)/,
     });
     expect(urgencias.length).toBe(2);
     for (const u of urgencias) {

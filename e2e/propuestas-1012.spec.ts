@@ -13,10 +13,11 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     await expect(page.getByRole("navigation", { name: "Lo último que consultaste" })).toHaveCount(
       0,
     );
-    const caja = page.getByRole("searchbox", { name: "Pregunta al capítulo" });
+    const caja = page.getByRole("searchbox", { name: "Buscar en el capítulo" });
     await caja.fill("modo sueño");
     await caja.press("Enter");
-    await expect(page).toHaveURL(/#\/buscar\/modo/);
+    await expect(page).toHaveURL(/#\/buscar$/);
+    await expect(page.getByLabel("Texto a buscar")).toHaveValue("modo sueño");
   });
 
   test("Cómo funciona comparado es una cuadrícula con los sistemas una sola vez", async ({

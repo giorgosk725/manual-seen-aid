@@ -1,4 +1,4 @@
-/* «Pasaje del capítulo»: lo que devuelve «Preguntas al capítulo» (respuestas.ts), arriba de
+/* «Pasajes relacionados»: lo que devuelve la búsqueda en el capítulo (respuestas.ts), arriba de
    los resultados de la búsqueda. Todo es texto literal del capítulo con su página; lo único de
    la app son los rótulos. Se usa en la paleta (compacta), en «¿Qué necesitas?» de la portada
    (compacta) y en la pantalla Buscar (con las otras respuestas). */
@@ -369,7 +369,9 @@ function Tarjeta({
           </ul>
         )
       )}
-      {/^F3\/(inicio|verde|amarillo|naranja)$/.test(r.id) && <UrgenciaF3 className="mt-2" />}
+      {/^F3\/(inicio|verde|amarillo|naranja)$/.test(r.id) && (
+        <UrgenciaF3 className="mt-2" donde={`junto a «${r.titulo}»`} />
+      )}
       {r.partes && (
         <dl className="mt-1 space-y-1 text-sm">
           {r.partes.map((p) => (
@@ -632,7 +634,8 @@ export function RespuestasCapitulo({
   if (!resto.length) return null;
   const [r, ...otras] = resto;
   const cercana = !!r.aproximada;
-  const titulo = cercana ? "Coincidencia parcial en el capítulo" : "Pasaje del capítulo";
+  // Recuperación libre (A09): pasajes relacionados con lo buscado, no una respuesta validada.
+  const titulo = cercana ? "Coincidencia parcial en el capítulo" : "Pasajes relacionados";
   return (
     <>
       <section

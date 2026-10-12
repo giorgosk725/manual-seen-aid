@@ -8,13 +8,27 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.48.2";
+export const VERSION_APP = "0.49.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-12",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — portada más directa`,
+    titulo: `Automatización de la insulinoterapia ${VERSION_APP} — edición editorial (en evaluación)`,
+    detalle: [
+      "Portada: «Automatización de la insulinoterapia», complemento interactivo del capítulo 89, en evaluación editorial; dos entradas del mismo nivel, «Leer y comprender» y «Consultar», antes del mapa. Menú en tres grupos: Consultar, Leer y comprender y Recursos.",
+      "Cetonemia: una cifra de β-OHB escrita en la búsqueda ya no elige rama de la Figura 3. Delante va el texto de la figura sobre urgencia y signos de gravedad y el enlace a la figura completa; ese texto acompaña también a cada rama no roja. Los fragmentos de seguridad se enseñan enteros.",
+      "«Explorar criterios de elección» sustituye al evaluador de criterios: factores del apartado 6 y la Figura 2 y las celdas literales de la Tabla 1, sin datos de la persona ni orden por compatibilidad.",
+      "Privacidad: la búsqueda no sale del dispositivo, no va en la dirección y no se guarda; sin búsquedas recientes. Junto al campo: «Busca términos del capítulo; no introduzcas datos de pacientes».",
+      "Solo las preguntas frecuentes revisadas (61) y ocho preguntas de autoevaluación; sin la ampliación técnica. Las tablas de varias páginas citan el intervalo entero.",
+      "Para el paciente: el PDF publicado, primero y disponible sin conexión; hojas y plantillas rotuladas como material complementario; solo letra grande.",
+      "«Sobre este complemento»: fuente, alcance, capa docente, estado de evaluación, qué se transmite y se guarda, uso sin conexión y la identificación de esta versión.",
+    ],
+  },
+  {
+    fecha: "2026-10-12",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.48.2 — portada más directa",
     detalle: [
       "Portada: sin el título «Consultar» (cada bloque dice ya qué ofrece); «Para el paciente» lleva a lo que se entrega: la información para pacientes con su PDF, el plan de seguridad por sistema y todas las hojas. La barra de arriba ya no repite el título del capítulo.",
     ],

@@ -147,7 +147,7 @@ test.describe("Auditoría 0.6.1", () => {
   test("Atrás con la paleta abierta la cierra y deja la página de debajo", async ({ page }) => {
     await page.goto("/#/");
     await page.goto("/#/consultar/figura-3");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Cetonemia");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("cetonemia · Figura 3");
     await page.keyboard.press("Control+k");
     await expect(page.getByRole("dialog")).toBeVisible();
     await page.goBack();
@@ -179,7 +179,9 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
       .fill("modo ejercicio en control iq");
     // Las preguntas por sistema de la 0.48.0 están pendientes de revisión y no salen: responde
     // el pasaje del capítulo con la casilla del sistema.
-    const respuesta = page.getByRole("dialog").getByRole("region", { name: "Pasaje del capítulo" });
+    const respuesta = page
+      .getByRole("dialog")
+      .getByRole("region", { name: "Pasajes relacionados" });
     await expect(respuesta).toContainText("Tandem Control-IQ");
     await expect(respuesta).toContainText("rango 140–160 mg/dl");
     await respuesta.getByRole("link", { name: /^Ver (en|la) / }).click();
@@ -196,10 +198,10 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
     await expect(
       page.getByRole("link", { name: /Hiperglucemia y cetonemia · Figura 3 completa/ }),
     ).toHaveAttribute("href", "#/consultar/figura-3");
-    const respuesta = page.getByRole("region", { name: "Pasaje del capítulo" });
+    const respuesta = page.getByRole("region", { name: "Pasajes relacionados" });
     await expect(respuesta).not.toContainText("Cetosis significativa / probable fallo de infusión");
     await page.getByRole("textbox", { name: "Texto a buscar" }).fill("precio del omnipod");
-    await expect(page.getByRole("region", { name: "Pasaje del capítulo" })).toHaveCount(0);
+    await expect(page.getByRole("region", { name: "Pasajes relacionados" })).toHaveCount(0);
   });
 
   test("la caja de la barra lateral lleva a Buscar con la fila de la Tabla 6", async ({ page }) => {
@@ -209,7 +211,7 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
     await caja.press("Enter");
     await expect(page).toHaveURL(/#\/buscar$/);
     await expect(page.getByLabel("Texto a buscar")).toHaveValue("resonancia con 780G");
-    const respuesta = page.getByRole("region", { name: "Pasaje del capítulo" });
+    const respuesta = page.getByRole("region", { name: "Pasajes relacionados" });
     await expect(respuesta).toContainText("Resonancia magnética (RM)");
     await expect(respuesta).toContainText("Retirar antes de entrar en la sala");
   });

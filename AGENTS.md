@@ -60,6 +60,8 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
    text: the UI always shows it under the amber «Ampliación del autor · fuera del capítulo»
    label, below the literal chapter layer, never mixed with it. To refresh it, re-run the
    extraction from asistente-aid (`src/data`) — do not hand-edit clinical values here.
+   **Editorial edition (0.49.0): retired** (`RETIRADOS` in `src/edicion.ts`, rule 29): no tab,
+   section, card, search entry or link uses it; the data stays for a later edition.
    `src/contenido/cifras.ts` («Cifras del apartado») is NOT an exception: every figure there is a
    literal value from the chapter with its page, and the test checks pages and anchors.
 
@@ -93,7 +95,8 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
 11. **Reader preferences** (`src/prefs.ts`): night mode, font size, last reading position, read
     apartados and favourites — app routes and interface titles only, never clinical data.
     Everything read back is validated by shape (`#/` routes only); a bad value falls back to
-    the default, never crashes a screen.
+    the default, never crashes a screen. Editorial edition (rule 29): no recent searches, no
+    visits, no routes with criteria or search text; `migrarPrivacidad` removes old keys.
 
 12. **One route source.** `App` reads the route and passes it to `Shell`; never call `useRuta()`
     in a second place (a stale copy re-mounted the previous screen and broke scroll and
@@ -183,10 +186,15 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     publicación oficial» on every screen; layers are named «Versión extendida», «Ampliación
     técnica», «Pendiente de validación». The chapter byline (name and affiliation) stays, as on the
     Manual. Editorial working notes live in `docs/NOTAS_EDITORIALES.md`, not in the web.
-    `contenido.test.ts` enforces it. The home page puts consultation first (Consultar, search,
-    systems, diagrams); the full chapter text stays in the app as the second door (Leer, Índice),
-    because search, citations, review cards and routes all point into it.
-24. **Frequent questions (0.13.0).** `src/frecuentes.ts` holds 50 questions APPROVED by the author
+    `contenido.test.ts` enforces it. **Harmonised by rule 29 (editorial edition):** the home
+    page now has TWO doors of equal level, «Leer y comprender» and «Consultar», before the
+    consultation map; it shows «En evaluación editorial» once, discreetly, and «Sobre este
+    complemento» states source, scope, teaching layer, pending authorisation and hosting, the
+    person responsible and the review circuit. The neutral-voice rule still holds elsewhere.
+24. **Frequent questions (0.13.0; states since 0.49.0).** Each question has a review state
+    (`revisionDe`: aprobada/borrador, date, record); only `FRECUENTES` (approved) feed the matcher,
+    the page, suggestions, related questions and the index; `FRECUENTES_TODAS` keeps the rest.
+    `src/frecuentes.ts` holds questions APPROVED by the author
     (review page and process in `docs/FRECUENTES.md`), each with variants and the atom ids of
     its literal passages. `preguntaFrecuente` (respuestas.ts) shows one first, as «Pregunta
     frecuente», only when both coverages pass (70 % of the search, 60 % of the question), never
@@ -194,7 +202,8 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     never when the search negates what the question asks. Adding or changing a question needs the
     author's approval and a NEW blind bank to claim any improvement (`medirCiego` counts the
     frequent questions; `scripts/auditoria/medir-ciego.mjs` compares with and without them).
-25. **Search by meaning (0.14.0).** With a connection, `src/semantica.ts` posts the query to
+25. **Search by meaning (0.14.0). DISABLED in the editorial edition (rule 29):** no request
+    leaves the device and the Function answers POST with 410. When re-enabled: with a connection, `src/semantica.ts` posts the query to
     the Pages Function `functions/api/pasajes.ts` (Workers AI `@cf/baai/bge-m3`, binding `AI` in
     `wrangler.toml`), which returns the 10 most similar atom ids from the precomputed vectors
     `functions/_datos/vectores.ts`; `fusionar` (respuestas.ts) merges them with `responder` by
@@ -239,6 +248,31 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     goes to the Pages branch `prueba`. To see drafts in `npm run dev`, copy them by hand and
     delete the copy afterwards. Once the
     author approves, the file moves into `src/casos/` with a changelog entry.
+
+29. **Editorial edition (0.49.0, brief of 12-10-2026 on audit 0.48.2, A01-A14).** A reviewable
+    edition of the companion to chapter 89. Central switches in `src/edicion.ts`: `RETIRADOS`
+    (casos, repaso, ampliacion) and `EDICION` (no remote meaning search, no logging of queries
+    without answer, no recents). Rules:
+    - **Ketones (A01).** A typed β-OHB value never selects a Figure 3 branch (engine skips the
+      branch atoms; no shortcut). `UrgenciaF3` cites, by reference, the red-branch urgency and
+      severity signs before the selector, next to every non-red branch, in F3 search cards and
+      whenever the search has a value. Safety fragments (`F3/*`, list b17 and paragraphs b16/b19
+      of apartado 9) are never truncated nor reduced to one highlighted point.
+    - **Choice (A02).** «Explorar criterios de elección» is descriptive: apartado 6, Figure 2
+      factors and literal Table 1 cells in fixed order; no profile inputs, ranking or verdicts.
+      `eleccion.ts` is kept outside the edition with its known bug as `it.fails`.
+    - **Privacy (A03).** The search text lives in memory (`consultaBuscar.ts`), never in the URL
+      or storage; legacy `#/buscar/<text>` is read once and replaced. Functions POST → 410.
+    - **Content (A04-A07).** Only approved FAQs; q02/q03 out (`PENDIENTES_EDICION`) without
+      touching `validada`; no ampliación; no 2019-consensus TAR value (`complementario`).
+    - **Sources and sheets (A11-A12).** Multipage table rows cite the whole range. The published
+      patient PDF is the main resource (date 9-10-2026, precached); sheets, extracts and safety
+      plan templates say «Material complementario» on screen and paper; letter 12 pt only.
+    - **Traceability (A10).** `src/build.ts` (version, code SHA, build date, source PDF SHA-256)
+      is shown in «Sobre este complemento»; the update notice says the running version.
+    - **Drafts.** New clinical, sheet or quiz wording goes to `borradores/` for the author;
+      nothing is marked approved without a record. Details and pending items:
+      `docs/EDICION_EDITORIAL.md`.
 
 ## 2. Quality gates (all must pass before a push)
 
