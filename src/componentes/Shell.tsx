@@ -298,11 +298,12 @@ export function Rotulo({
   breve?: boolean;
 }) {
   const fuera = `max-[359px]:hidden ${breve ? "hidden" : ""}`;
-  const pequeno = compacto ? "text-[0.52rem] min-[400px]:text-[0.6rem]" : "text-[0.7rem]";
+  // Sin saltos de línea: en la barra lateral (escritorio) el rótulo entero cabe en su ancho.
+  const pequeno = `whitespace-nowrap ${compacto ? "text-[0.52rem] min-[400px]:text-[0.6rem]" : "text-[0.56rem]"}`;
   return (
     <span className="flex items-center gap-1.5 leading-none" aria-hidden="true">
       <span
-        className={`font-display font-semibold uppercase tracking-tight ${compacto ? "text-[1.15rem] min-[400px]:text-[1.35rem]" : "text-[1.75rem]"}`}
+        className={`font-display font-semibold uppercase tracking-tight ${compacto ? "text-[1.15rem] min-[400px]:text-[1.35rem]" : "text-[1.3rem]"}`}
         style={{ color: SEEN.azulOsc }}
       >
         Manual
