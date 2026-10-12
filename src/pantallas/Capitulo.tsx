@@ -1,5 +1,5 @@
-/* «Leer capítulo» (#/capitulo): seguir leyendo, el índice de los trece apartados con sus
-   páginas y, aparte, lo que ayuda a comprender y repasar. Y el «capítulo entero» para imprimir
+/* «Leer capítulo» (#/capitulo): el índice de los trece apartados con sus páginas, nada más
+   empezar; debajo, lo que ayuda a comprender y repasar. Y el «capítulo entero» para imprimir
    de una vez. */
 import { useRef } from "react";
 import { ArrowRight, BookOpen, ExternalLink, Printer } from "lucide-react";
@@ -16,25 +16,19 @@ function IconoApartado({ slug }: { slug: string }) {
   return <I size={20} strokeWidth={1.5} />;
 }
 
-/* Para comprender y practicar, antes del índice y en una sola fila: cómo funciona cada sistema
-   (directo a su sección), los casos guiados, las tarjetas y el test. */
-const SISTEMAS_CORTO: [string, string][] = [
-  ["mm780", "MiniMed 780G"],
-  ["ciq", "Control-IQ"],
-  ["camaps", "CamAPS"],
-  ["op5", "Omnipod 5"],
-];
+/* Comprender y practicar, después del índice (en el móvil, la primera pantalla es para
+   leer): cómo funcionan los cuatro sistemas comparados, los casos guiados, las tarjetas y el
+   test. Todo está también en el menú. */
 const PRACTICAR = [
+  { id: "funciona", t: "Cómo funciona cada sistema" },
   { id: "casos", t: "Casos guiados" },
   { id: "repaso", t: "Tarjetas de repaso" },
   { id: "test", t: "Autoevaluación" },
 ].filter((c) => c.id !== "casos" || HAY_CASOS);
 
 function ComprenderYPracticar() {
-  const chip =
-    "inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 text-sm font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9";
   return (
-    <section aria-labelledby="comprender" className="mb-6">
+    <section aria-labelledby="comprender" className="mt-6">
       <h2
         id="comprender"
         className="mb-2 text-sm font-bold uppercase tracking-wide"
@@ -42,25 +36,17 @@ function ComprenderYPracticar() {
       >
         Comprender y practicar
       </h2>
-      <div className="flex flex-wrap items-center gap-1.5">
-        <span className="mr-1 text-sm text-slate-600">Cómo funciona:</span>
-        {SISTEMAS_CORTO.map(([id, nombre]) => (
-          <a
-            key={id}
-            href={href("sistemas", id, "funciona")}
-            className={chip}
-            style={{ borderColor: "#d4d4d4" }}
-          >
-            {nombre}
-          </a>
-        ))}
-      </div>
-      <div className="mt-2 flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap gap-1.5">
         {PRACTICAR.map((c) => {
-          const d = destino(c.id);
+          const d = c.id === "funciona" ? destino("sistemas") : destino(c.id);
           const I = d.icono;
           return (
-            <a key={c.id} href={d.href} className={chip} style={{ borderColor: "#d4d4d4" }}>
+            <a
+              key={c.id}
+              href={c.id === "funciona" ? href("sistemas", "todos", "funciona") : d.href}
+              className="inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 text-sm font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9"
+              style={{ borderColor: "#d4d4d4" }}
+            >
               <I size={14} aria-hidden="true" style={{ color: CATEGORIA_HEX[d.cat].strong }} />
               {c.t}
             </a>
@@ -76,12 +62,14 @@ export function IndiceCapitulo() {
   return (
     <div>
       <CabeceraEditorial titulo="Leer capítulo" hex={hex} level={1}>
+        {/* En el móvil, una línea: el título y la firma ya están en la portada. */}
         <p className="text-sm text-slate-600">
-          {CAPITULO.titulo}. {CAPITULO.autor}. Capítulo {CAPITULO.numero} del Manual SEEN, publicado
-          el {CAPITULO.fechaFuente}.
+          <span className="hidden sm:inline">
+            {CAPITULO.titulo}. {CAPITULO.autor}.{" "}
+          </span>
+          Capítulo {CAPITULO.numero} del Manual SEEN, publicado el {CAPITULO.fechaFuente}.
         </p>
       </CabeceraEditorial>
-      <ComprenderYPracticar />
       <section aria-labelledby="indice-apartados">
         <h2
           id="indice-apartados"
@@ -130,6 +118,7 @@ export function IndiceCapitulo() {
           })}
         </ol>
       </section>
+      <ComprenderYPracticar />
       <div className="mt-6 flex flex-wrap gap-2">
         <a
           href={href("bibliografia")}

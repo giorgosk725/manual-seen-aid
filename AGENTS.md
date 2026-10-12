@@ -117,6 +117,9 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
     `/manual-seen-aid`: never change it (it identifies the installed app). QR codes and «Cómo
     citar» use `direccion()` from `src/compartir.ts`, which maps localhost and Pages previews to
     the public URL. `public/404.html` serves unknown real paths (routes are hash-based).
+    Since 0.44.0 the app does NOT invite installation: `main.tsx` cancels `beforeinstallprompt`
+    (author's request, 12-10-2026); the manifest and the offline service worker stay. Do not add
+    an install button or banner.
 
 16. **Search (0.6.1).** `src/busqueda.ts` holds the light part (types, `terminosDe` with the
     query synonyms, `posiciones` — short acronyms match whole words only —, `marcar`,

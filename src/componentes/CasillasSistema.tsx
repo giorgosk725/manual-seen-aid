@@ -5,8 +5,7 @@ import type { ReactNode } from "react";
 import { Check } from "lucide-react";
 import { TABLAS } from "../contenido";
 import { SEEN, SISTEMA_HEX } from "../tokens";
-
-const CORTO_SISTEMA = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
+import { CORTO_SISTEMA } from "../ampliacion/ids";
 
 export function CasillasSistema({
   seleccion,

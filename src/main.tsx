@@ -12,6 +12,10 @@ window.addEventListener("vite:preloadError", (e) => {
 });
 limpiarMarcaDeRecarga();
 
+/* Sin invitación a instalar: el navegador no ofrece por su cuenta «Instalar la app» (la barra o
+   la ventana del móvil). La web sigue funcionando sin conexión. */
+window.addEventListener("beforeinstallprompt", (e) => e.preventDefault());
+
 /* Service worker en modo «prompt»: al detectar una versión nueva se avisa a la app (evento)
    y es el lector quien decide recargar. Comprobación cada hora y al volver a primer plano:
    el contenido es clínico y una versión vieja no debe quedarse semanas en un dispositivo. */

@@ -58,27 +58,26 @@ export function Portada() {
             >
               {CAPITULO.titulo}
             </h1>
-            <p className="mt-1.5 text-sm text-slate-700 sm:mt-2">
-              <span className="font-semibold text-slate-900">{CAPITULO.autor}</span>
+            {/* Firma como en el Manual: nombre y afiliación, en letra discreta. */}
+            <p className="mt-1.5 text-[13px] font-semibold leading-snug text-slate-700 sm:mt-2 sm:text-sm">
+              {CAPITULO.autor}
             </p>
-            {/* En el móvil la afiliación va al pie: la primera pantalla es para consultar. */}
-            <p className="mt-0.5 hidden text-xs leading-snug text-slate-600 sm:block">
-              {CAPITULO.filiacion}
-            </p>
-            <div className="mt-3 grid gap-2 min-[400px]:flex min-[400px]:flex-wrap min-[400px]:items-center sm:mt-4">
+            <p className="mt-0.5 text-xs leading-snug text-slate-500">{CAPITULO.filiacion}</p>
+            {/* Las dos entradas en una sola fila, también en el móvil. */}
+            <div className="mt-3 flex flex-wrap items-center gap-1.5 sm:mt-4 sm:gap-2">
               <a
                 href={href("capitulo")}
-                className="boton-seen inline-flex min-h-11 items-center justify-center gap-2 rounded-[3px] px-4 text-sm font-semibold uppercase tracking-wide text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2"
+                className="boton-seen inline-flex min-h-11 flex-auto items-center justify-center gap-1 whitespace-nowrap rounded-[3px] px-2 text-[13px] font-semibold uppercase text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 sm:flex-none sm:gap-2 sm:px-4 sm:text-sm sm:tracking-wide"
                 style={{ background: SEEN.burdeos }}
               >
-                <BookOpen size={15} aria-hidden="true" /> Leer capítulo
+                <BookOpen size={14} aria-hidden="true" /> Leer capítulo
               </a>
               <a
                 href={href("pacientes")}
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[3px] border-2 px-4 text-sm font-semibold uppercase tracking-wide transition hover:bg-rose-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                className="inline-flex min-h-11 flex-auto items-center justify-center gap-1 whitespace-nowrap rounded-[3px] border-2 px-2 text-[13px] font-semibold uppercase transition hover:bg-rose-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:flex-none sm:gap-2 sm:px-4 sm:text-sm sm:tracking-wide"
                 style={{ borderColor: FICHA_AREA.rosa, color: SEEN.diabetesOsc }}
               >
-                <HeartHandshake size={15} aria-hidden="true" /> Para el paciente
+                <HeartHandshake size={14} aria-hidden="true" /> Para el paciente
               </a>
             </div>
           </div>
@@ -91,7 +90,6 @@ export function Portada() {
         className="flex flex-col gap-1 border-t pt-4 text-sm text-slate-600 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5"
         style={{ borderColor: "#e6e6e6" }}
       >
-        <span className="sm:hidden">{CAPITULO.filiacion}</span>
         <a
           href={CAPITULO.url}
           target="_blank"

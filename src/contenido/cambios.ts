@@ -8,13 +8,25 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.43.2";
+export const VERSION_APP = "0.44.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-12",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — el momento consultado y la hoja que resume`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — el móvil, más compacto`,
+    detalle: [
+      "Portada: «Leer capítulo» y «Para el paciente» en una sola fila también en el móvil y sin la frase de entrada del mapa de consulta. Bajo el nombre va la afiliación, los dos en letra más discreta (la afiliación ya no está al pie).",
+      "Para el paciente: cada hoja empieza con una línea de migas («Para el paciente › …») en lugar de las pastillas; los cuatro sistemas del plan de seguridad caben en una fila, y el formato e «Imprimir» comparten fila, con la explicación debajo en una línea.",
+      "Leer capítulo: el índice empieza nada más entrar. «Comprender y practicar» pasa debajo del índice, con «Cómo funciona cada sistema» (los cuatro comparados), los casos guiados, las tarjetas y el test.",
+      "Ficha de cada sistema: en el móvil, los enlaces (iniciar paso a paso, plan de seguridad, ficha completa e imprimir) van a lo ancho en dos filas. Iniciar un sistema: «Guía paso a paso» y «Hoja de comprobación» en una fila.",
+      "El navegador ya no invita a instalar la app; la web sigue funcionando sin conexión.",
+    ],
+  },
+  {
+    fecha: "2026-10-12",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.43.2 — el momento consultado y la hoja que resume",
     detalle: [
       "Situaciones: el momento abierto (p. ej. «Después del ejercicio») sigue abierto al abrir su fuente y volver, y va en la dirección (…:m6), así que se puede enlazar y una búsqueda puede llevar a él. Cada momento abierto tiene una sola línea de fuente que lleva al párrafo exacto del capítulo.",
       "Iniciar un sistema: la hoja de comprobación resume lo marcado en la guía paso a paso de esta consulta (y al revés); «Vaciar las casillas» da la hoja en blanco. No se guarda nada. La nota de la guía queda en una frase.",

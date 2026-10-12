@@ -7,7 +7,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { ArrowRight, FileText, Printer, ShieldCheck, FileDown } from "lucide-react";
 import { CAPITULO, FIGURA3, TABLAS, apartadoPorSlug, idDeBloque } from "../contenido";
-import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import type { SistemaId } from "../ampliacion/tipos";
 import {
   AUTOR_PACIENTES,
@@ -32,12 +32,15 @@ const FORMATOS: { id: FormatoHoja; label: string; shortLabel: string }[] = [
   { id: "letra-grande", label: "Letra grande · doble cara", shortLabel: "Letra grande" },
   { id: "una-cara", label: "Compacta · una cara, letra pequeña", shortLabel: "Compacta" },
 ];
+/* En el móvil, formato e imprimir en una sola fila (el botón dice «Imprimir»; su nombre
+   accesible y el de escritorio dicen el formato) y la explicación debajo, en una línea. */
 function Acciones({ hoja }: { hoja: React.RefObject<HTMLElement | null> }) {
   const formato = useFormatoHoja();
+  const imprimir = formato === "una-cara" ? "Imprimir en una cara" : "Imprimir con letra grande";
   return (
-    <div className="no-imprimir mb-3 space-y-2">
+    <div className="no-imprimir mb-3 space-y-1.5">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <span className="hidden text-xs font-semibold uppercase tracking-wide text-slate-500 sm:inline">
           Formato de impresión
         </span>
         <Segmented
@@ -47,22 +50,22 @@ function Acciones({ hoja }: { hoja: React.RefObject<HTMLElement | null> }) {
           onChange={guardarFormatoHoja}
           wrap
         />
-      </div>
-      <p className="text-xs text-slate-600">
-        {formato === "una-cara"
-          ? "En papel: una cara A4, dos columnas, letra pequeña (7 pt). Para entregar al paciente, mejor la letra grande."
-          : "En papel: una columna con letra de 12 pt; ocupa dos o tres caras A4. Mejor a doble cara."}
-      </p>
-      <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"
           onClick={() => imprimirRegion(() => hoja.current)}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-slate-800 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+          aria-label={imprimir}
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-slate-800 px-3 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 sm:min-h-0 sm:py-2"
         >
-          <Printer size={15} aria-hidden="true" />{" "}
-          {formato === "una-cara" ? "Imprimir en una cara" : "Imprimir con letra grande"}
+          <Printer size={15} aria-hidden="true" />
+          <span className="sm:hidden">Imprimir</span>
+          <span className="hidden sm:inline">{imprimir}</span>
         </button>
       </div>
+      <p className="text-xs text-slate-600">
+        {formato === "una-cara"
+          ? "Una cara A4, dos columnas, letra de 7 pt. Para entregar al paciente, mejor la letra grande."
+          : "Una columna, letra de 12 pt: dos o tres caras A4, mejor a doble cara."}
+      </p>
     </div>
   );
 }
@@ -285,7 +288,7 @@ export function InformacionPacientes() {
   const ref = useRef<HTMLDivElement>(null);
   return (
     <div>
-      <Volver />
+      <Volver actual="Información para pacientes" />
       <Acciones hoja={ref} />
       <Hoja
         hojaRef={ref}
@@ -353,7 +356,7 @@ export function HojaPacientes({ id }: { id?: string }) {
     .filter((x): x is (typeof INFORMACION_PACIENTES.secciones)[number] => !!x);
   return (
     <div>
-      <Volver />
+      <Volver actual={h.titulo} />
       <Acciones hoja={ref} />
       <Hoja
         hojaRef={ref}
@@ -391,7 +394,7 @@ function HojaExtraVista({
 }) {
   return (
     <div>
-      <Volver />
+      <Volver actual={hoja.titulo} />
       {hoja.estado === "borrador" && (
         <ToneCard tone="amber" title="Borrador en revisión" className="mb-3">
           <p className="text-sm text-slate-800">
@@ -478,36 +481,24 @@ export function ResumenPacientes() {
   );
 }
 
-function Volver() {
-  const ruta = typeof window === "undefined" ? "" : window.location.hash;
-  const hojas = [
-    { href: href("pacientes", "informacion"), t: "Información" },
-    { href: href("pacientes", "plan"), t: "Plan de seguridad" },
-  ];
+/* Migas de una hoja, en una línea como las de Sistemas y Tablas: vuelve a «Para el paciente»
+   (donde están todas las hojas) y dice cuál se está viendo. */
+function Volver({ actual }: { actual: string }) {
   return (
     <nav
       aria-label="Hojas para el paciente"
-      className="no-imprimir mb-3 flex flex-wrap items-center gap-1.5"
+      className="no-imprimir mb-2 flex min-w-0 items-center gap-2 text-xs text-slate-500"
     >
       <a
         href={href("pacientes")}
-        className="inline-flex min-h-11 items-center pr-2 text-sm font-semibold text-slate-600 hover:underline"
+        className="inline-flex min-h-11 shrink-0 items-center font-semibold hover:underline"
       >
-        Para el paciente ›
+        Para el paciente
       </a>
-      {hojas.map((h) => {
-        const on = ruta.startsWith(h.href);
-        return (
-          <a
-            key={h.href}
-            href={h.href}
-            aria-current={on ? "page" : undefined}
-            className={`inline-flex min-h-11 items-center rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "border-slate-700 bg-slate-800 text-white" : "border-slate-300 bg-white text-slate-700 hover:border-slate-500"}`}
-          >
-            {h.t}
-          </a>
-        );
-      })}
+      <span aria-hidden="true">›</span>
+      <span aria-current="page" className="min-w-0 truncate">
+        {actual}
+      </span>
     </nav>
   );
 }
@@ -559,7 +550,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
   if (!s)
     return (
       <div>
-        <Volver />
+        <Volver actual="Plan de seguridad" />
         <ToneCard tone="slate" title="Elige el sistema">
           <ul className="grid grid-cols-2 gap-2">
             {ORDEN_SISTEMAS.map((id, c) => (
@@ -590,15 +581,20 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
   const t4 = TABLAS.T4;
   return (
     <div>
-      <Volver />
-      <div className="no-imprimir mb-3 flex flex-wrap gap-1.5" role="group" aria-label="Sistema">
+      <Volver actual="Plan de seguridad" />
+      {/* Los cuatro sistemas en una fila también en el móvil (nombre corto). */}
+      <div
+        className="no-imprimir mb-3 grid grid-cols-4 gap-1 sm:flex sm:flex-wrap sm:gap-1.5"
+        role="group"
+        aria-label="Sistema"
+      >
         {ORDEN_SISTEMAS.map((id, k) => (
           <button
             key={id}
             type="button"
             onClick={() => elegirRuta("pacientes", "plan", id)}
             aria-pressed={id === s.id}
-            className="rounded-full border px-3 py-1.5 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            className="min-h-11 rounded-lg border px-1 py-1 text-xs font-semibold leading-tight transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-0 sm:rounded-full sm:px-3 sm:py-1.5"
             style={
               id === s.id
                 ? {
@@ -609,7 +605,8 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
                 : { borderColor: "#d4d4d4", color: "#334155", background: "#ffffff" }
             }
           >
-            {TABLAS.T1.columnas[k]}
+            <span className="sm:hidden">{CORTO_SISTEMA[k]}</span>
+            <span className="hidden sm:inline">{TABLAS.T1.columnas[k]}</span>
           </button>
         ))}
       </div>

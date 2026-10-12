@@ -15,10 +15,6 @@ export function MapaConsulta() {
       >
         Consultar
       </h2>
-      <p className="-mt-1 text-sm text-slate-600">
-        Si prefieres entrar por tema: los sistemas, una situación, lo que se hace en consulta y lo
-        que se entrega al paciente.
-      </p>
       <div className="grid gap-2 md:grid-cols-2">
         {MAPA_CONSULTA.map((b) => (
           <section

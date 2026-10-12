@@ -491,8 +491,7 @@ export function Sobre() {
         <p className="mt-2 text-sm">
           El capítulo «{CAPITULO.titulo}» ({CAPITULO.obra}, capítulo {CAPITULO.numero}), preparado
           para consultarlo en el día a día: por sistema, por situación o con el buscador, con el
-          texto completo y la página de cada dato. Se instala como aplicación y funciona sin
-          conexión.{" "}
+          texto completo y la página de cada dato. Funciona sin conexión.{" "}
           <a
             href={CAPITULO.url}
             target="_blank"

@@ -558,10 +558,11 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         <span aria-hidden="true">›</span>
         <span>{s.name}</span>
       </div>
-      <header className="mb-4 flex gap-3 sm:gap-4">
+      {/* En el móvil, los enlaces van a lo ancho debajo de la foto (dos filas en vez de tres). */}
+      <header className="mb-4 grid grid-cols-[auto_1fr] gap-x-3 sm:gap-x-4">
         <AbrirEnVisor
           imagen={{ src: FOTO_SISTEMA[s.id], alt: `Foto oficial de ${s.name}`, titulo: s.name }}
-          className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl border bg-white shadow-soft focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:h-32 sm:w-32"
+          className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl border bg-white shadow-soft focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:row-span-2 sm:h-32 sm:w-32"
           etiqueta={`Ampliar la foto de ${s.name}`}
         >
           <img
@@ -570,39 +571,43 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             className="h-full w-full object-cover"
           />
         </AbrirEnVisor>
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0">
           <h1 className="text-2xl font-black tracking-tight sm:text-3xl" style={{ color: h.ink }}>
             {s.name}
           </h1>
           <p className="mt-1 text-sm text-slate-600">
             {algoritmoDelCapitulo(c)} <span className="pagina-badge">· Tabla 1, p. 3</span>
           </p>
-          <div className="no-imprimir mt-2 flex flex-wrap gap-x-3 gap-y-1">
-            <a
-              href={href("consultar", "inicio", `inicio:${slug}:arranque`)}
-              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
-              style={{ color: h.ink }}
-            >
-              Iniciar este sistema paso a paso <ArrowRight size={13} aria-hidden="true" />
-            </a>
-            <a
-              href={href("pacientes", "plan", s.id)}
-              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
-              style={{ color: h.ink }}
-            >
-              Plan de seguridad para entregar <ArrowRight size={13} aria-hidden="true" />
-            </a>
-            <a
-              href={href("sistemas", s.id, completa ? "esencial" : "completa")}
-              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-600 hover:underline sm:min-h-8"
-            >
-              {completa ? "Por secciones" : "Ficha completa"}{" "}
-              <ArrowRight size={13} aria-hidden="true" />
-            </a>
-            <BotonImprimir objetivo={ref} compacto>
-              Imprimir
-            </BotonImprimir>
-          </div>
+        </div>
+        <div className="no-imprimir col-span-2 mt-2 flex flex-wrap gap-x-3 gap-y-1 sm:col-span-1 sm:col-start-2">
+          <a
+            href={href("consultar", "inicio", `inicio:${slug}:arranque`)}
+            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
+            style={{ color: h.ink }}
+          >
+            <span className="sm:hidden">Iniciar paso a paso</span>
+            <span className="hidden sm:inline">Iniciar este sistema paso a paso</span>
+            <ArrowRight size={13} aria-hidden="true" />
+          </a>
+          <a
+            href={href("pacientes", "plan", s.id)}
+            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
+            style={{ color: h.ink }}
+          >
+            <span className="sm:hidden">Plan de seguridad</span>
+            <span className="hidden sm:inline">Plan de seguridad para entregar</span>
+            <ArrowRight size={13} aria-hidden="true" />
+          </a>
+          <a
+            href={href("sistemas", s.id, completa ? "esencial" : "completa")}
+            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-600 hover:underline sm:min-h-8"
+          >
+            {completa ? "Por secciones" : "Ficha completa"}{" "}
+            <ArrowRight size={13} aria-hidden="true" />
+          </a>
+          <BotonImprimir objetivo={ref} compacto>
+            Imprimir
+          </BotonImprimir>
         </div>
       </header>
 

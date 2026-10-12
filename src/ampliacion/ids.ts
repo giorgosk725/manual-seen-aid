@@ -19,6 +19,9 @@ export const FOTO_SISTEMA: Record<SistemaId, string> = {
 /* Orden de las columnas de las tablas por sistema del capítulo (Tabla 1, 3 y 4). */
 export const ORDEN_SISTEMAS: SistemaId[] = ["mm780", "ciq", "camaps", "op5"];
 
+/* Nombre corto de cada sistema (selectores en el móvil), en el orden de las columnas. */
+export const CORTO_SISTEMA = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
+
 export const columnaDeSistema = (id: SistemaId) => ORDEN_SISTEMAS.indexOf(id);
 
 /* Web oficial del fabricante o distribuidor en España. */

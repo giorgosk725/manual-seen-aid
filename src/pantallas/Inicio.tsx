@@ -669,33 +669,35 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
             );
           })}
         </ol>
-        {/* La guía y la hoja son herramientas del recorrido, no fases. */}
-        <button
-          type="button"
-          aria-current={actual === GUIA ? "page" : undefined}
-          onClick={() => ir(GUIA, sis, "1")}
-          className={`inline-flex min-h-11 items-center gap-1.5 self-start rounded-lg border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${actual === GUIA ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
-          style={
-            actual === GUIA
-              ? { background: "#334155", borderColor: "#334155" }
-              : { borderColor: "#e6e6e6" }
-          }
-        >
-          <ListChecks size={14} aria-hidden="true" /> Guía paso a paso
-        </button>
-        <button
-          type="button"
-          aria-current={actual === HOJA ? "page" : undefined}
-          onClick={() => ir(HOJA)}
-          className={`inline-flex min-h-11 items-center gap-1.5 self-start rounded-lg border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${actual === HOJA ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
-          style={
-            actual === HOJA
-              ? { background: "#334155", borderColor: "#334155" }
-              : { borderColor: "#e6e6e6" }
-          }
-        >
-          <Check size={14} aria-hidden="true" /> Hoja de comprobación
-        </button>
+        {/* La guía y la hoja son herramientas del recorrido, no fases (en el móvil, en una fila). */}
+        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+          <button
+            type="button"
+            aria-current={actual === GUIA ? "page" : undefined}
+            onClick={() => ir(GUIA, sis, "1")}
+            className={`inline-flex min-h-11 items-center gap-1 rounded-lg border px-2 text-[13px] font-semibold transition sm:gap-1.5 sm:px-3 sm:text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${actual === GUIA ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
+            style={
+              actual === GUIA
+                ? { background: "#334155", borderColor: "#334155" }
+                : { borderColor: "#e6e6e6" }
+            }
+          >
+            <ListChecks size={14} aria-hidden="true" /> Guía paso a paso
+          </button>
+          <button
+            type="button"
+            aria-current={actual === HOJA ? "page" : undefined}
+            onClick={() => ir(HOJA)}
+            className={`inline-flex min-h-11 items-center gap-1 rounded-lg border px-2 text-[13px] font-semibold transition sm:gap-1.5 sm:px-3 sm:text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${actual === HOJA ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
+            style={
+              actual === HOJA
+                ? { background: "#334155", borderColor: "#334155" }
+                : { borderColor: "#e6e6e6" }
+            }
+          >
+            <Check size={14} aria-hidden="true" /> Hoja de comprobación
+          </button>
+        </div>
       </div>
 
       <div id="paso-inicio" tabIndex={-1} className="scroll-mt-24 focus:outline-none">
