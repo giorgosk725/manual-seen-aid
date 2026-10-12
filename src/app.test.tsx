@@ -34,15 +34,13 @@ describe("App", () => {
       /Tratamiento insulínico del paciente con diabetes mellitus tipo 1: automatización de la insulinoterapia/i,
     );
     expect(
-      screen.getByText(/Complemento interactivo del capítulo 89 del Manual SEEN/),
+      screen.getByText(
+        "Complemento interactivo del capítulo. Facilita su lectura, comprensión y consulta.",
+      ),
     ).toBeInTheDocument();
     expect(screen.queryByText(/evaluación editorial/)).toBeNull();
-    const puertas = screen.getByRole("navigation", { name: "Dos formas de uso" });
-    expect(within(puertas).getByRole("link", { name: /Leer y comprender/ })).toHaveAttribute(
-      "href",
-      "#/capitulo",
-    );
-    expect(within(puertas).getByRole("button", { name: /Consultar/ })).toBeInTheDocument();
+    // Sin las dos puertas (decisión del 13-10-2026).
+    expect(screen.queryByRole("navigation", { name: "Dos formas de uso" })).toBeNull();
     expect(screen.getAllByText(/Georgios Kyriakos/).length).toBeGreaterThan(0);
     expect(screen.queryByText(/Sociedad Española de Endocrinología y Nutrición/)).toBeNull();
   });

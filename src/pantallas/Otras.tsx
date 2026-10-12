@@ -1,6 +1,6 @@
 /* Buscar, Bibliografía, Sobre esta app, Autoevaluación y Preguntas frecuentes. */
 import { guardarReciente } from "../prefs";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   CheckCircle2,
@@ -470,154 +470,48 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
   );
 }
 
-/* ---------- Sobre este complemento (A13): fuente, alcance, capa docente, estado, qué se
-   transmite y guarda, uso sin conexión e identificación de la versión ---------- */
-function SeccionSobre({
-  id,
-  titulo,
-  children,
-}: {
-  id: string;
-  titulo: string;
-  children: ReactNode;
-}) {
-  return (
-    <section aria-labelledby={id} className="mt-4 first:mt-0">
-      <h2 id={id} className="text-base font-extrabold text-slate-900">
-        {titulo}
-      </h2>
-      <div className="mt-1.5 space-y-2 text-sm">{children}</div>
-    </section>
-  );
-}
-
+/* ---------- Sobre este complemento: un párrafo (decisión del autor, 13-10-2026) y, plegados, los
+   datos de esta versión y de cada material (trazabilidad) ---------- */
 export function Sobre() {
   return (
     <div className="space-y-4">
-      <CabeceraEditorial titulo="Sobre este complemento" hex={CATEGORIA_HEX.confiar} level={1}>
-        <p className="text-sm text-slate-600">
-          Complemento interactivo del capítulo {CAPITULO.numero} del Manual SEEN · versión{" "}
-          {BUILD.version}.
-        </p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo="Sobre este complemento" hex={CATEGORIA_HEX.confiar} level={1} />
       <div
         className="prosa rounded-2xl border bg-white p-4 shadow-soft"
         style={{ borderColor: "#e6e6e6" }}
       >
-        <SeccionSobre id="s-fuente" titulo="Fuente">
-          <p>
-            Una sola fuente clínica: el capítulo «{CAPITULO.titulo}» ({CAPITULO.obra}, capítulo{" "}
-            {CAPITULO.numero}), publicado el {CAPITULO.fechaFuente}, {CAPITULO.paginas} páginas,
-            ISBN {CAPITULO.isbn}.{" "}
-            <a
-              href={CAPITULO.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-slate-800 underline underline-offset-2"
-            >
-              Ver el capítulo en el Manual SEEN
-            </a>
-            . Cada bloque dice al pie de qué tabla, figura o apartado sale, con su página.
-          </p>
-          <p>
-            Para el paciente, el recurso principal es la Información para pacientes publicada por el
-            Manual SEEN (PDF con fecha {CAPITULO.fechaPdfPacientes}).
-          </p>
-        </SeccionSobre>
-        <SeccionSobre id="s-alcance" titulo="Alcance">
-          <p>
-            Dos formas de uso: leer y comprender el capítulo, o consultarlo por sistema, por
-            situación y en la consulta. Las herramientas ordenan el texto del capítulo; no calculan
-            dosis, no recomiendan un sistema y no piden datos de pacientes.
-          </p>
-          <p>
-            No forman parte de esta edición: la ampliación técnica de cada sistema, los casos
-            guiados, las tarjetas de repaso, las preguntas frecuentes pendientes de revisión y la
-            hoja compacta de 7 pt.
-          </p>
-        </SeccionSobre>
-        <SeccionSobre id="s-docente" titulo="Capa docente">
-          <p>
-            Además del texto del capítulo hay una capa docente pequeña y rotulada: las preguntas
-            frecuentes ({FRECUENTES.length}, revisadas; la pregunta es de este complemento y la
-            respuesta, texto literal del capítulo), la autoevaluación complementaria (
-            {PREGUNTAS.length} preguntas) y el material complementario para el paciente (hojas
-            breves y plantillas del plan de seguridad). Nada de ello es una publicación del Manual
-            SEEN.
-          </p>
-        </SeccionSobre>
-        <SeccionSobre id="s-estado" titulo="Estado y revisión">
-          <p>
-            No es un recurso oficial del Manual SEEN. La autorización para reproducir el material
-            editorial, el uso de la marca y el alojamiento definitivo están pendientes de acuerdo
-            con la SEEN y la editorial ({CAPITULO.editorial}
-            ).
-          </p>
-          <p>
-            Responsable del contenido: {CAPITULO.autor}, autor del capítulo. Todo texto nuevo
-            (preguntas, explicaciones, hojas) se prepara como borrador y solo entra en la edición
-            cuando su responsable lo revisa y aprueba; cada pregunta frecuente lleva su estado y la
-            fecha de esa revisión.
-          </p>
-        </SeccionSobre>
-        <SeccionSobre id="s-materiales" titulo="Materiales y su revisión">
-          <ul className="space-y-2">
-            {MATERIALES.map((m) => (
-              <li
-                key={m.id}
-                className="rounded-lg border px-3 py-2"
-                style={{ borderColor: "#e6e6e6" }}
-              >
-                <span className="block font-semibold text-slate-900">{m.nombre}</span>
-                <span className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  {ROTULO_TIPO[m.tipo]}
-                </span>
-                <span className="block text-slate-700">
-                  {m.fecha
-                    ? `${m.tipo === "publicado" ? "Publicado" : "Aprobado"} el ${fechaCorta(m.fecha)}${m.version !== "—" ? ` · versión ${m.version}` : ""}`
-                    : "Aprobación pendiente"}
-                  . {m.evidencia}.
-                </span>
-                {m.pendiente && <span className="block text-amber-900">{m.pendiente}.</span>}
-              </li>
-            ))}
-          </ul>
-        </SeccionSobre>
-        <SeccionSobre id="s-datos" titulo="Qué se transmite y qué se guarda">
-          <p>
-            La búsqueda funciona en el propio dispositivo: esta edición no envía el texto buscado a
-            ningún servicio, no lo pone en la dirección de la página y no guarda búsquedas recientes
-            ni criterios. Busca términos del capítulo; no introduzcas datos de pacientes.
-          </p>
-          <p>
-            En este navegador solo se guardan preferencias: modo nocturno, tamaño de letra, la
-            última posición de lectura del capítulo y los apartados leídos. Se borran desde el
-            navegador.
-          </p>
-          <p>
-            Como cualquier web, el servicio de alojamiento puede registrar datos técnicos de las
-            peticiones (dirección IP, navegador, página pedida); esta edición no le envía el texto
-            de las búsquedas.
-          </p>
-        </SeccionSobre>
-        <SeccionSobre id="s-offline" titulo="Sin conexión y actualizaciones">
-          <p>
-            Tras la primera visita funciona sin conexión, con el capítulo entero, sus figuras y el
-            PDF de pacientes. Cuando hay una versión nueva, un aviso lo dice y se actualiza al
-            aceptarlo; nunca se recarga sola en medio de una consulta.
-          </p>
-        </SeccionSobre>
-        <SeccionSobre id="s-version" titulo="Esta versión">
-          <dl className="grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[12rem_1fr]">
-            <dt className="font-semibold text-slate-700">Complemento</dt>
-            <dd>versión {BUILD.version}</dd>
+        <p className="text-[15px] leading-relaxed">
+          Complemento interactivo del capítulo {CAPITULO.numero} del {CAPITULO.obra} («
+          {CAPITULO.titulo}», publicado el {CAPITULO.fechaFuente}), que ordena su texto para leerlo
+          y consultarlo: lo clínico es texto literal del capítulo, con su página, y las preguntas
+          frecuentes, la autoevaluación y las hojas para el paciente son material complementario
+          revisado, no una publicación del Manual SEEN; la autorización y el alojamiento definitivo
+          están pendientes. No calcula dosis ni pide datos de pacientes; la búsqueda se hace en el
+          propio dispositivo, no se envía ni se guarda, y todo funciona sin conexión. Responsable:{" "}
+          {CAPITULO.autor}. Versión {BUILD.version}. No sustituye la ficha técnica de cada sistema,
+          los protocolos del centro ni el juicio clínico.{" "}
+          <a
+            href={CAPITULO.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-slate-800 underline underline-offset-2"
+          >
+            Ver el capítulo en el Manual SEEN
+          </a>
+          .
+        </p>
+        <details className="mt-3 text-sm">
+          <summary className="min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-8">
+            Datos de esta versión y revisión de cada material
+          </summary>
+          <dl className="mt-2 grid gap-x-4 gap-y-1 sm:grid-cols-[12rem_1fr]">
             <dt className="font-semibold text-slate-700">Código</dt>
-            <dd className="break-all font-mono text-xs">{BUILD.sha}</dd>
-            <dt className="font-semibold text-slate-700">Construido el</dt>
-            <dd>{BUILD.fecha || "—"}</dd>
+            <dd className="break-all font-mono text-xs">
+              {BUILD.sha} · construido el {BUILD.fecha || "—"}
+            </dd>
             <dt className="font-semibold text-slate-700">Capítulo (PDF)</dt>
             <dd>
-              {BUILD.fuente.fecha} · SHA-256{" "}
+              {BUILD.fuente.fecha} · ISBN {BUILD.fuente.isbn} · SHA-256{" "}
               <span className="break-all font-mono text-xs">{BUILD.fuente.sha256}</span>
             </dd>
             <dt className="font-semibold text-slate-700">Pacientes (PDF)</dt>
@@ -626,11 +520,19 @@ export function Sobre() {
               <span className="break-all font-mono text-xs">{BUILD.pacientes.sha256}</span>
             </dd>
           </dl>
-          <p className="text-slate-600">
-            No sustituye la ficha técnica de cada sistema, los protocolos del centro ni el juicio
-            clínico.
-          </p>
-        </SeccionSobre>
+          <ul className="mt-3 space-y-1.5">
+            {MATERIALES.map((m) => (
+              <li key={m.id}>
+                <span className="font-semibold text-slate-900">{m.nombre}</span> ·{" "}
+                {ROTULO_TIPO[m.tipo].toLowerCase()} ·{" "}
+                {m.fecha
+                  ? `${m.tipo === "publicado" ? "publicado" : "aprobado"} el ${fechaCorta(m.fecha)}`
+                  : "aprobación pendiente"}
+                . {m.evidencia}.{m.pendiente ? ` ${m.pendiente}.` : ""}
+              </li>
+            ))}
+          </ul>
+        </details>
       </div>
     </div>
   );

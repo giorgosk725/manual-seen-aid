@@ -71,19 +71,19 @@ export const MATERIALES: Material[] = [
     id: "hoja-pruebas-cirugia",
     nombre: "Hoja «Pruebas y cirugía»",
     tipo: "adaptado",
-    fecha: "2026-10-09",
-    version: "0.20.0",
-    evidencia: "Aprobación registrada (commit 24726c4)",
-    pendiente: "Propuesta de cambio de la sección «más de 1 hora», en revisión desde el 13-10-2026",
+    fecha: "2026-10-13",
+    version: "0.51.0",
+    evidencia:
+      "Aprobada el 9-10-2026 (commit 24726c4); sección de la insulina con el sistema quitado revisada el 13-10-2026 (delegada)",
   },
   {
     id: "planes",
     nombre: "Plantillas del plan de seguridad (cuatro sistemas)",
     tipo: "plantilla",
-    fecha: "",
-    version: "—",
-    evidencia: "Solo texto literal del capítulo (pp. 7-9, Figura 3 y Tabla 4)",
-    pendiente: "Revisión clínica y visual antes del piloto",
+    fecha: "2026-10-13",
+    version: "0.51.0",
+    evidencia:
+      "Solo texto literal del capítulo (pp. 7-9, Figura 3 y Tabla 4); revisión clínica y visual del 13-10-2026 (delegada), a letra grande, tres caras",
   },
   {
     id: "como-interpretar",
@@ -103,12 +103,13 @@ export const MATERIALES: Material[] = [
   },
   {
     id: "frecuentes",
-    nombre: "Preguntas frecuentes f01–f61",
+    nombre: "Preguntas frecuentes f01–f103",
     tipo: "preguntas",
-    fecha: "2026-10-11",
-    version: "0.38.0",
-    evidencia: "f01–f50 aprobadas el 8-10-2026 y f51–f61 el 11-10-2026 (docs/FRECUENTES.md)",
-    pendiente: "f62–f103, en revisión; no salen en la edición",
+    fecha: "2026-10-13",
+    version: "0.51.0",
+    evidencia:
+      "f01–f50 aprobadas el 8-10-2026, f51–f61 el 11-10-2026 y f62–f103 el 13-10-2026 (revisión delegada), docs/FRECUENTES.md",
+    pendiente: "f11: matiz de edad de Liberty entre el apartado 3 y la Tabla 1, para el autor",
   },
   {
     id: "autoevaluacion",

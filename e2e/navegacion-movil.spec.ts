@@ -17,9 +17,12 @@ test.describe("Navegación y portada (393 px)", () => {
     await expect(
       page.getByRole("region", { name: "Para el paciente" }).getByRole("link"),
     ).toHaveCount(2);
-    const puertas = page.getByRole("navigation", { name: "Dos formas de uso" });
-    await expect(puertas.getByRole("link", { name: /Leer y comprender/ })).toBeInViewport();
-    await expect(puertas.getByRole("button", { name: /Consultar/ })).toBeInViewport();
+    // «Consultar» en la barra inferior, a mano en cualquier pantalla (13-10-2026).
+    await expect(
+      page
+        .getByRole("navigation", { name: "Barra inferior" })
+        .getByRole("button", { name: "Consultar" }),
+    ).toBeInViewport();
     await expect(
       page.getByRole("navigation", { name: "Barra inferior" }).getByRole("link", { name: "Leer" }),
     ).toBeInViewport();
@@ -52,10 +55,11 @@ test.describe("Navegación y portada (393 px)", () => {
   test("la barra inferior marca el área de cada pantalla", async ({ page }) => {
     const barra = page.getByRole("navigation", { name: "Barra inferior" });
     for (const [ruta, area] of [
-      ["/#/sistemas/op5", "Inicio"],
-      ["/#/sistemas/todos/parametros", "Inicio"],
+      ["/#/", "Inicio"],
+      ["/#/sistemas/op5", "Consultar"],
+      ["/#/sistemas/todos/parametros", "Consultar"],
       ["/#/visual", "Leer"],
-      ["/#/consultar/tablas/T3", "Inicio"],
+      ["/#/consultar/tablas/T3", "Consultar"],
       ["/#/capitulo/04-sistemas", "Leer"],
       ["/#/test", "Leer"],
       ["/#/repaso", "Leer"],
@@ -63,10 +67,12 @@ test.describe("Navegación y portada (393 px)", () => {
       ["/#/buscar/insulina", "Buscar"],
     ]) {
       await page.goto(ruta);
-      await expect(barra.getByRole("link", { name: area }), ruta).toHaveAttribute(
-        "aria-current",
-        "page",
-      );
+      // «Consultar» es un botón (abre la hoja de tareas); las demás, enlaces.
+      const item =
+        area === "Consultar"
+          ? barra.getByRole("button", { name: area })
+          : barra.getByRole("link", { name: area });
+      await expect(item, ruta).toHaveAttribute("aria-current", "page");
       await expect(barra.locator('[aria-current="page"]'), ruta).toHaveCount(1);
     }
   });

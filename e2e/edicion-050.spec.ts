@@ -4,18 +4,28 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Portada y navegación (0.50)", () => {
-  test("móvil 393 × 852: las dos entradas, en la primera pantalla", async ({ page }) => {
+  test("móvil: «Consultar» en la barra inferior abre las tareas de consulta", async ({ page }) => {
     await page.setViewportSize({ width: 393, height: 852 });
-    await page.goto("/#/");
-    const puertas = page.getByRole("navigation", { name: "Dos formas de uso" });
-    for (const p of [
-      puertas.getByRole("link", { name: /Leer y comprender/ }),
-      puertas.getByRole("button", { name: /Consultar/ }),
-    ]) {
-      await expect(p).toBeInViewport();
-      const caja = (await p.boundingBox())!;
-      expect(caja.y + caja.height).toBeLessThan(852 - 56); // por encima de la barra inferior
-    }
+    await page.goto("/#/capitulo/09-descarga");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    const barra = page.getByRole("navigation", { name: "Barra inferior" });
+    await expect(barra.getByRole("link")).toHaveCount(4);
+    await barra.getByRole("button", { name: "Consultar" }).click();
+    const hoja = page.getByRole("dialog", { name: "Consultar" });
+    for (const n of [
+      "Sistemas AID",
+      "Situaciones",
+      "Hiperglucemia y cetonemia",
+      "Revisar la descarga",
+      "Tablas",
+    ])
+      await expect(hoja.getByRole("link", { name: n, exact: true })).toBeVisible();
+    await hoja.getByRole("link", { name: "Hiperglucemia y cetonemia", exact: true }).click();
+    await expect(page).toHaveURL(/#\/consultar\/figura-3$/);
+    await expect(barra.getByRole("button", { name: "Consultar" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
   });
 
   test("un nombre para la lectura: «Leer y comprender» (la barra inferior, «Leer»)", async ({
@@ -57,11 +67,16 @@ test.describe("Portada y navegación (0.50)", () => {
     await expect(pdf).toHaveAttribute("href", "pdf/manual-seen-aid-pacientes.pdf");
   });
 
-  test("identidad propia en la cabecera, sin el logotipo del Manual", async ({ page }) => {
+  test("cabecera: el Manual de Endocrinología y Nutrición y «Complemento interactivo»", async ({
+    page,
+  }) => {
     await page.goto("/#/");
-    const inicio = page.getByRole("link", { name: "Complemento del capítulo 89, inicio" }).first();
+    const inicio = page
+      .getByRole("link", {
+        name: "Manual de Endocrinología y Nutrición, complemento interactivo: inicio",
+      })
+      .first();
     await expect(inicio).toBeVisible();
-    await expect(inicio).not.toContainText("MANUAL");
   });
 
   test("móvil: las acciones principales miden al menos 44 px", async ({ page }) => {
@@ -77,12 +92,8 @@ test.describe("Portada y navegación (0.50)", () => {
       }
       return pequenos;
     };
-    const puertas = page
-      .getByRole("navigation", { name: "Dos formas de uso" })
-      .locator("a, button");
     const mapa = page.locator("section[aria-labelledby^='mapa-'] a");
     const barra = page.getByRole("navigation", { name: "Barra inferior" }).getByRole("link");
-    expect(await medir(puertas)).toEqual([]);
     expect(await medir(mapa)).toEqual([]);
     expect(await medir(barra)).toEqual([]);
     await page.getByRole("button", { name: "Menú", exact: true }).click();

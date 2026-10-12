@@ -119,15 +119,17 @@ describe("A03 · privacidad", () => {
 
 describe("A04 · circuito de aprobación de las preguntas frecuentes", () => {
   const pendientes = FRECUENTES_TODAS.filter((f) => f.revision.estado !== "aprobada");
-  it("f01–f61 aprobadas con fecha y registro; f62–f103 pendientes", () => {
+  it("las 103 aprobadas, cada una con fecha y registro de su revisión", () => {
     expect(FRECUENTES.map((f) => f.id)).toEqual(
-      Array.from({ length: 61 }, (_, i) => `f${String(i + 1).padStart(2, "0")}`),
+      Array.from({ length: 103 }, (_, i) => `f${String(i + 1).padStart(2, "0")}`),
     );
     for (const f of FRECUENTES) {
-      expect(f.revision.fecha, f.id).toMatch(/^2026-10-(08|11)$/);
+      expect(f.revision.fecha, f.id).toMatch(/^2026-10-(08|11|13)$/);
       expect(f.revision.registro.length, f.id).toBeGreaterThan(20);
     }
-    expect(pendientes).toHaveLength(42);
+    // Solo las aprobadas salen: FRECUENTES es exactamente el filtro de FRECUENTES_TODAS.
+    expect(FRECUENTES).toEqual(FRECUENTES_TODAS.filter((f) => f.revision.estado === "aprobada"));
+    expect(pendientes).toHaveLength(0);
   });
   it("todos los pasajes de las pendientes y de las propuestas existen", () => {
     for (const f of pendientes)

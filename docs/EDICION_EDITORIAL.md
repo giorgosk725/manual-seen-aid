@@ -104,3 +104,12 @@ Decisiones del autor y revisión de la 0.49.1 con la auditoría de la 0.48.2 com
 | Navegación                   | Arreglado el desplazamiento de los enlaces a una frase cuando cargan figuras perezosas (fallo intermitente de la 0.49).                                                                 |
 
 Prueba con profesionales: `docs/PRUEBA_TRES_PROFESIONALES_2026-10.md`.
+
+## 0.51.0 (13-10-2026)
+
+Decisiones del autor y revisión delegada: las 103 preguntas frecuentes aprobadas con su registro; f11
+con las filas de la Tabla 1; hoja «Pruebas y cirugía» con la sección de la insulina con el sistema
+quitado; revisión clínica y visual de las plantillas de plan (quitada la frase de otro sistema en las
+filas unidas de la Tabla 4). Portada sin las dos puertas, título en negrita, subtítulo corto; cabecera
+con el rótulo del Manual de Endocrinología y Nutrición y «Complemento interactivo»; «Consultar» en la
+barra inferior del móvil; «Sobre» en un párrafo. Pendiente del autor: el matiz de edad de Liberty.

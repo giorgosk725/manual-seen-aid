@@ -116,14 +116,14 @@ test.describe("Uso 0.10.0", () => {
     await expect(page.locator("main")).toBeFocused();
   });
 
-  test("la portada: dos puertas, Leer y comprender y Consultar; el test, en Leer (sin repaso)", async ({
-    page,
-  }) => {
+  test("la portada lleva a Leer y comprender; el test, en Leer (sin repaso)", async ({ page }) => {
     await page.goto("/#/");
-    const puertas = page.getByRole("navigation", { name: "Dos formas de uso" });
-    await puertas.getByRole("button", { name: /Consultar/ }).click();
-    await expect(page.getByRole("heading", { name: "Consultar", exact: true })).toBeFocused();
-    await puertas.getByRole("link", { name: /Leer y comprender/ }).click();
+    // Sin las dos puertas (13-10-2026): la lectura, desde el mapa.
+    await expect(page.getByRole("navigation", { name: "Dos formas de uso" })).toHaveCount(0);
+    await page
+      .getByRole("region", { name: "Leer y comprender" })
+      .getByRole("link", { name: "Índice del capítulo" })
+      .click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Leer y comprender");
     const aprender = page.getByRole("region", { name: "Comprender y practicar" });
     await expect(aprender.getByRole("link", { name: /Tarjetas de repaso/ })).toHaveCount(0);

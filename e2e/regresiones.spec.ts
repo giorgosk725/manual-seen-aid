@@ -179,15 +179,13 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
     await page
       .getByRole("textbox", { name: "Buscar en el capítulo" })
       .fill("modo ejercicio en control iq");
-    // Las preguntas por sistema de la 0.48.0 están pendientes de revisión y no salen: responde
-    // el pasaje del capítulo con la casilla del sistema.
-    const respuesta = page
-      .getByRole("dialog")
-      .getByRole("region", { name: "Pasajes relacionados" });
-    await expect(respuesta).toContainText("Tandem Control-IQ");
-    await expect(respuesta).toContainText("rango 140–160 mg/dl");
-    await respuesta.getByRole("link", { name: /^Ver (en|la) / }).click();
-    await expect(page).toHaveURL(/#\/consultar\/situacion\/ejercicio-aerobico:control-iq/);
+    // Desde la 0.51.0 (preguntas por sistema aprobadas) responde la pregunta frecuente propia de
+    // Control-IQ, con su casilla.
+    const dialogo = page.getByRole("dialog");
+    await expect(
+      dialogo.getByText(/Control-IQ: ¿cómo usar los modos sueño y ejercicio\?/).first(),
+    ).toBeVisible();
+    await expect(dialogo.getByText(/140–160 mg\/dl/).first()).toBeVisible();
   });
 
   test("Buscar: la cifra de cetonemia no elige rama, enseña la urgencia y lo de fuera no consta", async ({

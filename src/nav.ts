@@ -361,11 +361,11 @@ export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[]; ancho?:
 /* Navegación global: cuatro áreas en la barra inferior (Inicio · Leer · Paciente · Buscar).
    Cada sección de la ruta pertenece a una, y el destino activo sale de aquí. «Aprender» y «mas»
    son grupos del menú sin botón propio. */
-export type Area = "inicio" | "leer" | "aprender" | "pacientes" | "buscar" | "mas";
+export type Area = "inicio" | "consultar" | "leer" | "aprender" | "pacientes" | "buscar" | "mas";
 const AREA_DE_SECCION: Record<string, Area> = {
   "": "inicio",
-  consultar: "inicio",
-  sistemas: "inicio",
+  consultar: "consultar",
+  sistemas: "consultar",
   visual: "leer",
   capitulo: "leer",
   repaso: "leer",
@@ -397,6 +397,15 @@ export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
     ),
   },
   { area: "pacientes", titulo: "Recursos", ids: ["pacientes", "bibliografia", "sobre"] },
+];
+
+/* La hoja «Consultar» de la barra inferior del móvil: las tareas de consulta, a dos toques desde
+   cualquier pantalla, y debajo lo que más se busca al lado (tablas y preguntas frecuentes). */
+export const CONSULTA_RAPIDA: { titulo: string; ids: string[] }[] = [
+  { titulo: "Sistemas", ids: ["sistemas", "comparar", "parametros", "elegir"] },
+  { titulo: "Situaciones", ids: ["situacion", "figura-3", "interrupcion"] },
+  { titulo: "En la consulta", ids: ["inicio", "descarga"] },
+  { titulo: "También", ids: ["tablas", "preguntas"] },
 ];
 
 /* ¿Está activo este destino en esta ruta? (un único criterio para lateral, menú y hubs).

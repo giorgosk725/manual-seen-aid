@@ -147,9 +147,9 @@ describe("Preguntas frecuentes", () => {
     expect(preguntaFrecuente("cetonas 1,2 qué hago")).toBeNull();
   });
   it("con un sistema nombrado, da su casilla o deja responder al motor", () => {
-    // Las preguntas por sistema de la 0.48.0 (f62-f103) están pendientes: responde la general.
+    // Desde la 0.51.0 (f62-f103 aprobadas), la pregunta propia del sistema gana a la general.
     const r = preguntaFrecuente("qué parámetros influyen en el modo automático de la 780G");
-    expect(r?.id).toBe("f07");
+    expect(r?.id).toBe("f79");
     expect(r?.respuestas[0].sistema).toBe("MiniMed 780G");
     // f41 (preparar el ejercicio) no dice nada propio de cada sistema: responde el motor.
     expect(preguntaFrecuente("cómo preparar el ejercicio con Omnipod 5")).toBeNull();

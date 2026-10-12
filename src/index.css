@@ -1410,6 +1410,10 @@ html.night .tramo-plan {
   line-height: 1.12;
   color: #161616;
 }
+/* Portada: el título del capítulo, en negrita (13-10-2026). */
+.titulo-manual.titulo-portada {
+  font-weight: 700;
+}
 html.night .titulo-manual {
   color: #f3f4f6;
 }

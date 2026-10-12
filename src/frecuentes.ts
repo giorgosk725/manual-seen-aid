@@ -139,10 +139,11 @@ const TODAS: Frecuente[] = [
       "sistema sin bolos para las comidas",
       "CamAPS Liberty",
     ],
-    // Pasajes aprobados el 8-10-2026. La propuesta de 13-10 (CamAPS FX/Liberty primero y las
-    // filas de indicación y gestación de la Tabla 1, con los otros sistemas plegados) está en
-    // PROPUESTAS, abajo, pendiente de revisión.
-    pasajes: ["t/03-algoritmos/b3/1", "t/03-algoritmos/b3/2"],
+    // 13-10-2026: primero los pasajes propios de CamAPS FX/Liberty; en las filas de la Tabla 1
+    // (indicación y gestación), la casilla de myLoop CamAPS a la vista y los otros sistemas
+    // plegados. Matiz de edad pendiente del autor: el apartado 3 dice «no se recomienda en menores
+    // de 13 años» y la Tabla 1, «Liberty: > 13 años».
+    pasajes: ["t/03-algoritmos/b3/1", "t/03-algoritmos/b3/2", "T1/7", "T1/8"],
   },
   {
     id: "f12",
@@ -885,6 +886,7 @@ const TODAS: Frecuente[] = [
       "t/10-situaciones/b9/0",
       "t/10-situaciones/b9/1",
       "t/10-situaciones/b9/2",
+      "t/10-situaciones/b9/3",
       "t/10-situaciones/b9/4",
     ],
     sistema: 1,
@@ -1031,6 +1033,14 @@ export interface Revision {
 const num = (id: string) => Number(id.slice(1));
 export function revisionDe(id: string): Revision {
   const n = num(id);
+  // f11 cambió de pasajes el 13-10-2026, con la misma revisión delegada.
+  if (id === "f11")
+    return {
+      estado: "aprobada",
+      fecha: "2026-10-13",
+      registro:
+        "Pasajes revisados por delegación del autor el 13-10-2026 (versión 0.51.0); docs/FRECUENTES.md",
+    };
   if (n >= 1 && n <= 50)
     return {
       estado: "aprobada",
@@ -1044,16 +1054,24 @@ export function revisionDe(id: string): Revision {
       fecha: "2026-10-11",
       registro: "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
     };
+  if (n >= 62 && n <= 103)
+    return {
+      estado: "aprobada",
+      fecha: "2026-10-13",
+      registro:
+        "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+    };
   return {
     estado: "borrador",
-    fecha: "2026-10-12",
-    registro: "Añadida en la 0.48.0; pendiente de la revisión del autor (docs/FRECUENTES.md)",
+    fecha: "",
+    registro: "Sin revisión registrada",
   };
 }
 
 /* Propuestas de cambio sobre preguntas ya aprobadas: no se usan en la app (la edición sigue con
    los pasajes aprobados) hasta que el autor las revise. */
 export const PROPUESTAS: Record<string, { pasajes: string[]; nota: string; fecha: string }> = {
+  /* f11 (13-10-2026), ya aplicada arriba; se conserva aquí como registro. */
   f11: {
     pasajes: ["t/03-algoritmos/b3/1", "t/03-algoritmos/b3/2", "T1/7", "T1/8"],
     nota: "Primero los pasajes propios de CamAPS FX/Liberty; en las filas de la Tabla 1, la casilla de myLoop CamAPS a la vista y los otros sistemas plegados. Para revisar: el apartado 3 dice «no se recomienda en menores de 13 años» (admite 13) y la Tabla 1 dice «Liberty: > 13 años» (no los admite).",

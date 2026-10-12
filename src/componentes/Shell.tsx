@@ -16,6 +16,7 @@ import {
   BookOpen,
   ChevronDown,
   ChevronLeft,
+  Columns3,
   HeartHandshake,
   Home,
   Menu,
@@ -26,7 +27,7 @@ import {
 } from "lucide-react";
 import { APARTADOS, CAPITULO } from "../contenido";
 import { contextoDeRuta } from "../contexto";
-import { DESTINOS, MENU, areaDe, destinoActivo, type Area } from "../nav";
+import { CONSULTA_RAPIDA, DESTINOS, MENU, areaDe, destinoActivo, type Area } from "../nav";
 import {
   consumirNavegacionNueva,
   href,
@@ -286,31 +287,43 @@ function AvisoVersion() {
   );
 }
 
-/* ---------- Rótulo: identidad propia del complemento ----------
-   Mientras la SEEN no autorice el uso de su marca, la cabecera no imita el logotipo del Manual:
-   «Capítulo 89 · Complemento interactivo», con los colores del área. */
-export function Rotulo({ compacto = false }: { compacto?: boolean }) {
+/* ---------- Rótulo: «Manual de Endocrinología y Nutrición» y, al lado, «Complemento
+   interactivo» (decisión del autor, 13-10-2026). */
+export function Rotulo({
+  compacto = false,
+  breve = false,
+}: {
+  compacto?: boolean;
+  /* Sin «Complemento interactivo» (la cabecera de la lectura lleva el tamaño de letra). */
+  breve?: boolean;
+}) {
+  const fuera = `max-[359px]:hidden ${breve ? "hidden" : ""}`;
+  const pequeno = compacto ? "text-[0.52rem] min-[400px]:text-[0.6rem]" : "text-[0.7rem]";
   return (
     <span className="flex items-center gap-1.5 leading-none" aria-hidden="true">
       <span
-        className={`font-display font-semibold uppercase tracking-tight ${compacto ? "text-[1.2rem] min-[400px]:text-[1.4rem]" : "text-[1.75rem]"}`}
+        className={`font-display font-semibold uppercase tracking-tight ${compacto ? "text-[1.15rem] min-[400px]:text-[1.35rem]" : "text-[1.75rem]"}`}
         style={{ color: SEEN.azulOsc }}
       >
-        Cap. 89
+        Manual
       </span>
       <span className="flex flex-col font-display font-medium uppercase leading-[0.95]">
-        <span
-          className={compacto ? "text-[0.62rem] min-[400px]:text-[0.72rem]" : "text-[0.85rem]"}
-          style={{ color: SEEN.burdeos }}
-        >
-          Complemento
+        <span className={pequeno} style={{ color: SEEN.burdeos }}>
+          de Endocrinología
         </span>
-        <span
-          className={compacto ? "text-[0.62rem] min-[400px]:text-[0.72rem]" : "text-[0.85rem]"}
-          style={{ color: SEEN.mostazaOsc }}
-        >
-          Interactivo
+        <span className={pequeno} style={{ color: SEEN.mostazaOsc }}>
+          y Nutrición
         </span>
+      </span>
+      <span
+        className={`mx-0.5 self-stretch border-l ${fuera}`}
+        style={{ borderColor: "#d4d4d4" }}
+      />
+      <span
+        className={`flex flex-col font-display font-medium uppercase leading-[0.95] text-slate-600 ${fuera}`}
+      >
+        <span className={pequeno}>Complemento</span>
+        <span className={pequeno}>interactivo</span>
       </span>
     </span>
   );
@@ -465,7 +478,7 @@ function Lateral({ ruta }: { ruta: Ruta }) {
     >
       <a
         href="#/"
-        aria-label="Complemento del capítulo 89, inicio"
+        aria-label="Manual de Endocrinología y Nutrición, complemento interactivo: inicio"
         className="rounded-md px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
         <Rotulo />
@@ -522,41 +535,119 @@ function BuscadorLateral() {
   );
 }
 
-/* ---------- Barra inferior (móvil): las cuatro áreas ---------- */
-const AREAS: { area: Area; etiqueta: string; href: string; icono: typeof Home }[] = [
+/* ---------- Barra inferior (móvil): cinco áreas ----------
+   «Consultar» abre una hoja con las tareas de consulta (Sistemas, Situaciones, Figura 3,
+   Iniciar, Descarga…): a dos toques desde cualquier pantalla. */
+const AREAS: { area: Area; etiqueta: string; href?: string; icono: typeof Home }[] = [
   { area: "inicio", etiqueta: "Inicio", href: "#/", icono: Home },
+  { area: "consultar", etiqueta: "Consultar", icono: Columns3 },
   { area: "leer", etiqueta: "Leer", href: href("capitulo"), icono: BookOpen },
   { area: "pacientes", etiqueta: "Paciente", href: href("pacientes"), icono: HeartHandshake },
   { area: "buscar", etiqueta: "Buscar", href: href("buscar"), icono: Search },
 ];
 
+function HojaConsultar({
+  open,
+  onClose,
+  ruta,
+}: {
+  open: boolean;
+  onClose: () => void;
+  ruta: Ruta;
+}) {
+  return (
+    <Modal open={open} onClose={onClose} ariaLabel="Consultar" maxW="max-w-md">
+      <div className="p-3">
+        <div className="flex items-center justify-between">
+          <div className="px-3 text-sm font-bold text-slate-800">Consultar</div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Cerrar"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+          >
+            <X size={18} />
+          </button>
+        </div>
+        {CONSULTA_RAPIDA.map((g) => (
+          <div key={g.titulo} className="mt-2">
+            <div className="etiqueta-area px-3 text-[11px] text-slate-500">{g.titulo}</div>
+            <ul className="mt-0.5">
+              {g.ids.map((id) => {
+                const d = DESTINOS.find((x) => x.id === id)!;
+                const I = d.icono;
+                const on = destinoActivo(id, ruta);
+                return (
+                  <li key={id}>
+                    <a
+                      href={d.href}
+                      onClick={onClose}
+                      aria-current={on ? "page" : undefined}
+                      className={`flex min-h-11 items-center gap-2.5 rounded-md px-3 text-[14px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-800 hover:bg-slate-50"}`}
+                    >
+                      <I
+                        size={16}
+                        aria-hidden="true"
+                        style={{ color: CATEGORIA_HEX[d.cat].strong }}
+                      />
+                      {d.etiqueta}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </Modal>
+  );
+}
+
 function Inferior({ ruta }: { ruta: Ruta }) {
   const actual = areaDe(ruta.seccion);
+  const [hoja, setHoja] = useState(false);
+  const clase = (on: boolean) =>
+    `flex min-h-14 w-full flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`;
   return (
     <nav
       aria-label="Barra inferior"
       className="fixed inset-x-0 bottom-0 z-30 border-t bg-white md:hidden"
       style={{ borderColor: "#e6e6e6", paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <ul className="grid grid-cols-4">
+      <ul className="grid grid-cols-5">
         {AREAS.map((it) => {
           const I = it.icono;
           const on = it.area === actual;
           return (
             <li key={it.area}>
-              <a
-                href={it.href}
-                aria-current={on ? "page" : undefined}
-                className={`flex min-h-14 flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`}
-                style={on ? { color: SEEN.burdeos } : undefined}
-              >
-                <I size={20} aria-hidden="true" />
-                {it.etiqueta}
-              </a>
+              {it.href ? (
+                <a
+                  href={it.href}
+                  aria-current={on ? "page" : undefined}
+                  className={clase(on)}
+                  style={on ? { color: SEEN.burdeos } : undefined}
+                >
+                  <I size={20} aria-hidden="true" />
+                  {it.etiqueta}
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setHoja(true)}
+                  aria-haspopup="dialog"
+                  aria-current={on ? "page" : undefined}
+                  className={clase(on)}
+                  style={on ? { color: SEEN.burdeos } : undefined}
+                >
+                  <I size={20} aria-hidden="true" />
+                  {it.etiqueta}
+                </button>
+              )}
             </li>
           );
         })}
       </ul>
+      <HojaConsultar open={hoja} onClose={() => setHoja(false)} ruta={ruta} />
     </nav>
   );
 }
@@ -757,10 +848,10 @@ export function Shell({
           </button>
           <a
             href="#/"
-            aria-label="Complemento del capítulo 89, inicio"
+            aria-label="Manual de Endocrinología y Nutrición, complemento interactivo: inicio"
             className="inline-flex min-h-11 min-w-0 shrink-0 items-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
           >
-            <Rotulo compacto />
+            <Rotulo compacto breve={enLectura} />
           </a>
           <span className="hidden min-w-0 flex-1 truncate text-sm text-slate-600 md:block">
             {titulo || (ruta.seccion === "" ? "" : CAPITULO.tituloCorto)}

@@ -138,6 +138,19 @@ function Hoja({
   );
 }
 
+/* Fila unida de la Tabla 4 en el plan de un sistema: sin la frase que empieza nombrando otro
+   sistema («En CamAPS FX, no usar Boost…» no va en el plan de MiniMed 780G). El resto, literal. */
+const NOMBRE_SISTEMA = [/MiniMed|780G/, /Control-IQ/, /CamAPS/, /Omnipod/];
+function celdaUnidaDelSistema(texto: string, c: number): string {
+  return texto
+    .split(/(?<=\.)\s+(?=En )/)
+    .filter((frase) => {
+      const otro = NOMBRE_SISTEMA.findIndex((re) => /^En /.test(frase) && re.test(frase));
+      return otro < 0 || otro === c;
+    })
+    .join(" ");
+}
+
 /* La revisión registrada de un material (src/materiales.ts), en una línea del pie. */
 function RevisionMaterial({ id }: { id: string }) {
   const m = material(id);
@@ -766,7 +779,10 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
               <div key={f.etiqueta}>
                 <dt className="font-bold text-slate-900">{f.etiqueta.replace(/\n/g, " ")}</dt>
                 <dd className="text-slate-800">
-                  {(f.unida ? f.celdas[0] : f.celdas[c]).replace(/\n/g, " · ")}
+                  {(f.unida ? celdaUnidaDelSistema(f.celdas[0], c) : f.celdas[c]).replace(
+                    /\n/g,
+                    " · ",
+                  )}
                 </dd>
               </div>
             ))}

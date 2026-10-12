@@ -8,13 +8,25 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.50.0";
+export const VERSION_APP = "0.51.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Automatización de la insulinoterapia ${VERSION_APP} — autoevaluación completa, materiales con su revisión y navegación`,
+    titulo: `Complemento interactivo ${VERSION_APP} — Consultar en la barra inferior`,
+    detalle: [
+      "Móvil: «Consultar» en la barra inferior, con las tareas de consulta a dos toques.",
+      "Portada sin las dos puertas, título en negrita; cabecera del Manual de Endocrinología y Nutrición.",
+      "Las 103 preguntas frecuentes revisadas; hoja «Pruebas y cirugía» y plantillas de plan revisadas.",
+      "«Sobre este complemento», en un párrafo.",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo:
+      "Automatización de la insulinoterapia 0.50.0 — autoevaluación completa, materiales con su revisión y navegación",
     detalle: [
       "Autoevaluación: vuelven las diez preguntas, con q02 (TAR 26,7 %) y q03 («pueden considerarse», como el capítulo) corregidas tras su revisión.",
       "«Sobre este complemento» lista cada material con su tipo (publicado, transcripción, hoja adaptada, plantilla, explicación complementaria), su fecha, su versión y la evidencia de su revisión; las hojas lo repiten al pie.",

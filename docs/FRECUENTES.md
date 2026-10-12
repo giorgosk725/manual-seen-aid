@@ -28,6 +28,17 @@ t/07-educacion/b6/1 en f37) quedan como borrador para el autor. En la edición s
 El tema «Trucos de uso» se renombra «Uso en el día a día» y el rótulo «Por sistema: curiosidades y
 trucos», «Preguntas por sistema» (solo afecta a borradores).
 
+### Revisión de f62–f103 (13-10-2026, delegada por el autor)
+
+Revisión pregunta por pregunta, con el criterio de siempre: cada pregunta la contestan sus pasajes,
+literales y con su página, sin añadir una regla que el capítulo no da; en las de un sistema, su casilla.
+Resultado: las 42 aprobadas. Cambios: f63 limitada a los sistemas híbridos; f69 con el umbral de
+aproximadamente 1 h y la pauta individual; f87 añade t/10-situaciones/b9/3 (la estrategia del modo
+sueño en CIRCUIT y las recomendaciones de Tandem). Observación sin cambio: f83 y f94 juntan dos
+situaciones en una pregunta; las casillas responden a las dos. f11 aplica su propuesta (CamAPS FX y
+Liberty primero; filas de indicación y gestación de la Tabla 1). Queda para el autor el matiz de edad de
+Liberty: el apartado 3 dice «no se recomienda en menores de 13 años» y la Tabla 1, «Liberty: > 13 años».
+
 ### Decisiones del autor del 13-10-2026
 
 - **f37:** se mantienen los pasajes aprobados (condicionantes, cantidades y reevaluación juntos). Se
