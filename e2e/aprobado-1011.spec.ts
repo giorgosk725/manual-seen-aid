@@ -31,7 +31,7 @@ test.describe("Aprobado el 11-10 (0.37.0)", () => {
     await page.waitForTimeout(400);
     const antes = await page.evaluate(() => window.scrollY);
     await page
-      .getByRole("link", { name: /«.*».* Ver en el capítulo/ })
+      .getByRole("link", { name: /^Tabla 1, p\. 3$/ })
       .first()
       .click();
     await expect(page).toHaveURL(/#\/capitulo\//);

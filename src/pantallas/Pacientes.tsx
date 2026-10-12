@@ -228,8 +228,8 @@ export function HubPacientes() {
           Hojas breves por situación
         </h2>
         <p className="mt-1 text-sm text-slate-600">
-          Según lo que haga falta ese día: cetonas (Figura 3), pruebas y cirugía (Tabla 6) y tres
-          extractos de la Información para pacientes.
+          Según lo que haga falta ese día: cetonas, pruebas y cirugía, y tres extractos de la
+          Información para pacientes.
         </p>
         <ul className="mt-3 divide-y rounded-xl border bg-white" style={{ borderColor: "#e6e6e6" }}>
           {HOJAS_EXTRA.map((h) => (
@@ -259,8 +259,8 @@ export function HubPacientes() {
           seguridad, por sistema
         </h2>
         <p className="mt-1 text-sm text-slate-600">
-          Lo que el capítulo pide que contenga el plan (p. 7), el algoritmo de la Figura 3 y la
-          conducta de la Tabla 4 para ese sistema, con huecos para rellenar a mano.
+          Lo que el capítulo pide que contenga el plan, qué hacer según las cetonas y las
+          herramientas de ese sistema en cada situación, con huecos para rellenar a mano.
         </p>
         <ul className="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-4">
           {ORDEN_SISTEMAS.map((id, c) => (
@@ -616,12 +616,15 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
         rotulo={`Plan de seguridad · ${nombre}`}
         titulo={CAPITULO.titulo}
         subtitulo={
+          <>Hecha solo con el texto del capítulo. Para rellenar a mano; la app no guarda nada.</>
+        }
+        pie={
           <>
-            Hecha solo con el texto del capítulo (pp. 7-9, Figura 3 y Tabla 4). Para rellenar a
-            mano; la app no guarda nada.
+            Manual SEEN · {CAPITULO.autor}. Fuente: plan de seguridad (p. {plan?.p ?? 7}), dos
+            reglas operativas (pp. 8-9), Figura 3 (p. {FIGURA3.pagina}) y Tabla 4 (pp. 11-12); texto
+            literal del capítulo.
           </>
         }
-        pie={<>Manual SEEN · {CAPITULO.autor}. Texto literal del capítulo con su página.</>}
       >
         <div className="hoja-seccion mb-3 flex flex-wrap gap-x-4 gap-y-2">
           <Hueco etiqueta="Nombre:" ancho="min-w-[12rem] flex-[2]" />
@@ -630,7 +633,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
         {plan && plan.t === "lista" && (
           <section className="hoja-seccion mb-3">
             <h2 className="text-base font-extrabold" style={{ color: hex.ink }}>
-              {plan.intro} <span className="pagina-badge">p. {plan.p}</span>
+              {plan.intro}
             </h2>
             <ol className="mt-1.5 space-y-2 text-sm text-slate-800">
               {plan.items.map((it, i) => (
@@ -664,7 +667,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
         )}
         <section className="hoja-seccion mb-3">
           <h2 className="text-base font-extrabold" style={{ color: hex.ink }}>
-            Dos reglas operativas <span className="pagina-badge">pp. 8-9</span>
+            Dos reglas operativas
           </h2>
           <ul className="mt-1 space-y-1 text-sm text-slate-800">
             {reglas.map((r) => (
@@ -674,7 +677,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
         </section>
         <section className="hoja-seccion mb-3">
           <h2 className="text-base font-extrabold" style={{ color: hex.ink }}>
-            {FIGURA3.cabecera} <span className="pagina-badge">Figura 3, p. {FIGURA3.pagina}</span>
+            {FIGURA3.cabecera}
           </h2>
           <p className="mt-1 text-sm text-slate-800">
             <strong>{FIGURA3.sospechar.titulo}</strong> {FIGURA3.sospechar.items.join(" ")}
@@ -721,8 +724,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
         </section>
         <section className="hoja-seccion mb-1">
           <h2 className="text-base font-extrabold" style={{ color: SISTEMA_HEX[c].ink }}>
-            {nombre}: {t4.titulo.toLowerCase()}{" "}
-            <span className="pagina-badge">Tabla 4, pp. 11-12</span>
+            {nombre}: {t4.titulo.toLowerCase()}
           </h2>
           <dl className="plan-t4 mt-1 space-y-1.5 text-sm">
             {t4.filas.map((f) => (

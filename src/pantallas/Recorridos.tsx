@@ -17,17 +17,20 @@ import {
   type SituacionGuia,
 } from "../situaciones";
 import { PiezaVista } from "../componentes/Piezas";
-import { frasesDe, kDe, type Pieza } from "../inicio";
+import { kDe, type Pieza } from "../inicio";
 
 import { elegirRuta, fueNavegacionNueva, href } from "../rutas";
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
-import { CabeceraEditorial, PaginaBadge, Segmented } from "../ui";
+import { CabeceraEditorial, Segmented } from "../ui";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { normalizar } from "../busqueda";
 import { useIrAlCambiar } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
+import { FuentePie } from "../componentes/FuentePie";
+import { paginasDe } from "../paginas";
+import { fuentesDePiezas } from "../fuentesPiezas";
 
 const hex = CATEGORIA_HEX.consultar;
 
@@ -94,22 +97,8 @@ const piezasDe = (m: Momento): Pieza[] =>
     bloque: x.bloque,
     k: x.k ?? kDe(x.apartado, x.bloque),
   }));
-const numeroApartado = (slug: string) => APARTADOS.find((a) => a.slug === slug)?.n ?? "";
 /* La fuente de un momento: apartado y página de cada párrafo, con el enlace a ese párrafo. */
-function fuentesDeMomento(m: Momento): { texto: string; ruta: string }[] {
-  const vistas = new Set<string>();
-  const out: { texto: string; ruta: string }[] = [];
-  for (const pz of piezasDe(m)) {
-    if (pz.t !== "frase") continue;
-    const f = frasesDe(pz.apartado, pz.bloque, pz.k);
-    const texto = `Apartado ${numeroApartado(pz.apartado)}, p. ${f.pagina}`;
-    if (!vistas.has(texto)) {
-      vistas.add(texto);
-      out.push({ texto, ruta: f.ruta });
-    }
-  }
-  return out;
-}
+const fuentesDeMomento = (m: Momento) => fuentesDePiezas(piezasDe(m));
 /* Los momentos abiertos de cada situación, en memoria mientras la app está abierta: abrir la
    fuente de un momento y volver lo encuentra abierto. No se guarda nada. */
 const momentosMemoria = new Map<string, { abiertos: Set<number>; todos: boolean }>();
@@ -339,11 +328,6 @@ function ListaSituaciones({
                     >
                       {on && <Check size={14} aria-hidden="true" />}
                       <span className="flex-1">{s.etiqueta}</span>
-                      <span
-                        className={`shrink-0 text-[11px] ${on ? "text-white/80" : "text-slate-500"}`}
-                      >
-                        {"tabla" in s ? `Tabla ${s.tabla.slice(1)}` : s.fuente}
-                      </span>
                     </button>
                   </li>
                 );
@@ -356,7 +340,6 @@ function ListaSituaciones({
                     style={{ borderColor: "#e6e6e6" }}
                   >
                     <span className="flex-1">{x.t}</span>
-                    <span className="shrink-0 text-[11px] text-slate-500">{x.fuente}</span>
                   </a>
                 </li>
               ))}
@@ -368,7 +351,6 @@ function ListaSituaciones({
                     style={{ borderColor: "#e6e6e6" }}
                   >
                     <span className="flex-1">{b.texto}</span>
-                    <span className="pagina-badge shrink-0">p. {b.p}</span>
                   </a>
                 </li>
               ))}
@@ -470,7 +452,6 @@ export function SituacionSistema({
               >
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <h2 className="text-base font-bold text-slate-900">{guia.etiqueta}</h2>
-                  <PaginaBadge p={guia.pagina} />
                 </div>
                 <p className="mt-1 text-sm text-slate-700">{guia.intro}</p>
               </section>
@@ -523,8 +504,8 @@ export function SituacionSistema({
               </div>
               {!porSistema && (
                 <p className="rounded-md bg-slate-100 px-3 py-2 text-xs text-slate-700">
-                  En la Tabla {tabla.numero}, esta situación tiene una conducta común a los cuatro
-                  sistemas (no distingue sistema). Lo propio de cada uno está en su ficha de{" "}
+                  Esta situación tiene una conducta común a los cuatro sistemas (el capítulo no
+                  distingue sistema). Lo propio de cada uno está en su ficha de{" "}
                   <a href={href("sistemas")} className="font-semibold underline">
                     Sistemas
                   </a>
@@ -561,13 +542,12 @@ export function SituacionSistema({
                       className="text-xs font-bold uppercase tracking-wide"
                       style={{ color: hex.ink }}
                     >
-                      Tabla {tabla.numero} · {tabla.cabeceraEtiqueta}
+                      {tabla.cabeceraEtiqueta}
                     </div>
                     <h2 className="text-base font-bold text-slate-900">
                       <Lineas>{fila.etiqueta}</Lineas>
                     </h2>
                   </div>
-                  <PaginaBadge p={tabla.paginas[0]} p2={tabla.paginas[1]} />
                 </div>
                 {fila.unida ? (
                   <p
@@ -626,6 +606,14 @@ export function SituacionSistema({
                     ))}
                   </dl>
                 )}
+                <FuentePie
+                  fuentes={[
+                    {
+                      texto: `Tabla ${tabla.numero}, ${paginasDe(tabla.paginas[0], tabla.paginas[1])}`,
+                      ruta: rutaDeTabla(sit.tabla),
+                    },
+                  ]}
+                />
               </section>
               {GUION[sit.id] && (
                 <GuionVista
@@ -726,7 +714,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
     <div>
       <CabeceraEditorial titulo="Revisar la descarga" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          La Tabla 5 (pp. 13–14) en ocho pasos: de la visión global a la causa y al plan de cambios.
+          Ocho pasos: de la visión global a la causa y al plan de cambios.
         </p>
       </CabeceraEditorial>
       {/* «Paso n de 8» y el selector en una sola fila (en el móvil, sin el rótulo visible). */}
@@ -770,7 +758,6 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
             </span>
             {fila.celdas[0]}
           </h2>
-          <PaginaBadge p={t.paginas[0]} p2={t.paginas[1]} />
         </div>
         <dl
           className="mt-3 divide-y md:grid md:grid-cols-3 md:gap-4 md:divide-y-0"
@@ -805,7 +792,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
               href={rutaDeTabla("T5")}
               className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
             >
-              Ver en el capítulo · Tabla 5, pp. {t.paginas[0]}–{t.paginas[1]}{" "}
+              Fuente: Tabla 5, {paginasDe(t.paginas[0], t.paginas[1])} · Ver en el capítulo{" "}
               <ArrowRight size={13} aria-hidden="true" />
             </a>
           )}
@@ -963,12 +950,12 @@ export function Interrupcion({ tramo }: { tramo?: string }) {
           </p>
         )}
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          {p && <PaginaBadge p={p.b.p} />}
           <a
             href={href("capitulo", "07-educacion", "interrupcion")}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 hover:underline"
+            className="inline-flex min-h-6 items-center gap-1 text-xs font-semibold text-slate-600 hover:underline"
           >
-            Leer el subapartado completo <ArrowRight size={11} aria-hidden="true" />
+            {p ? `Fuente: Apartado 7, p. ${p.b.p} · ` : ""}Leer el subapartado completo{" "}
+            <ArrowRight size={11} aria-hidden="true" />
           </a>
           {sel === "prolongada" || sel === "programada" ? (
             <a

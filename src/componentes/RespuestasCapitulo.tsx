@@ -253,15 +253,13 @@ function Tarjeta({
       className={principal ? "" : "rounded-lg border bg-white p-3"}
       style={principal ? undefined : { borderColor: "#e6e6e6" }}
     >
-      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-600">
-        <span className="font-semibold">{r.fuente}</span>
-        {casilla && (
+      {casilla && (
+        <p className="text-xs">
           <span className="rounded-full border border-slate-300 px-1.5 font-semibold text-slate-700">
             {casilla.nombre}
           </span>
-        )}
-        <span className="pagina-badge">{paginas(r)}</span>
-      </p>
+        </p>
+      )}
       {titulo && (
         <p className={`mt-1 font-bold text-slate-900 ${principal ? "text-base" : "text-sm"}`}>
           <Marcado texto={titulo} q={q} />
@@ -392,11 +390,11 @@ function Tarjeta({
           ))}
         </dl>
       )}
-      {asterisco && !sinNota && (
-        <p className="mt-1 text-xs text-slate-600">
-          {asterisco.nota} <span className="pagina-badge">{asterisco.donde}</span>
-        </p>
-      )}
+      {asterisco && !sinNota && <p className="mt-1 text-xs text-slate-600">{asterisco.nota}</p>}
+      {/* La procedencia, al pie de la tarjeta (no encima del dato). */}
+      <p className="mt-1.5 text-[13px] text-slate-500">
+        Fuente: {r.fuente}, {paginas(r)}
+      </p>
       <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-0">
         <a href={ruta} onClick={onIr} className={enlace}>
           {r.tipo === "texto"

@@ -83,7 +83,11 @@ test.describe("Comprensión", () => {
   }) => {
     await page.goto("/#/sistemas/op5/parametros");
     const seccion = page.getByRole("region", { name: /^Parámetros · Omnipod 5/ });
-    await seccion.getByRole("link", { name: "Ver en el capítulo" }).last().click();
+    // 0.46.0: la fuente al pie lleva el nombre de la tabla.
+    await seccion
+      .getByRole("link", { name: /^Tabla 3, p\. \d+$/ })
+      .last()
+      .click();
     await expect(page).toHaveURL(/#\/capitulo\/[^/]+\/b\d+$/);
     await expect(page.getByRole("heading", { level: 1 })).not.toContainText("Omnipod 5");
     await page.goBack();

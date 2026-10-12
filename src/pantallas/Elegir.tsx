@@ -26,9 +26,11 @@ import {
   type Estado,
 } from "../eleccion";
 import { elegirRuta, href } from "../rutas";
-import { CabeceraEditorial, PaginaBadge, Segmented } from "../ui";
+import { CabeceraEditorial, Segmented } from "../ui";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
+import { FuentePie } from "../componentes/FuentePie";
+import { paginasDe } from "../paginas";
 
 const hex = CATEGORIA_HEX.consultar;
 const campo =
@@ -155,8 +157,8 @@ export function Elegir({ q }: { q?: string }) {
       </div>
       <CabeceraEditorial titulo="Criterios de elección" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Los factores del apartado 6 (p. 6) frente a la Tabla 1, celda a celda («no consta» si la
-          tabla no lo dice). Orienta la decisión compartida; no la sustituye.
+          Los factores de la elección frente a lo que el capítulo da de cada sistema, celda a celda
+          («no consta» si no lo dice). Orienta la decisión compartida; no la sustituye.
         </p>
       </CabeceraEditorial>
 
@@ -373,9 +375,6 @@ export function Elegir({ q }: { q?: string }) {
                               <div key={k}>
                                 <dt className="flex flex-wrap items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">
                                   {ETIQUETA_CRITERIO[k]}
-                                  <span className="font-normal normal-case tracking-normal">
-                                    · Tabla 1, {fila.toLowerCase()}
-                                  </span>
                                 </dt>
                                 <dd className="mt-1 flex flex-wrap items-start gap-2">
                                   <span className="min-w-0 flex-1 text-sm text-slate-800">
@@ -409,17 +408,25 @@ export function Elegir({ q }: { q?: string }) {
                     >
                       Ficha de {r.nombre} <ArrowRight size={13} aria-hidden="true" />
                     </a>
-                    <PaginaBadge p={TABLAS.T1.paginas[0]} p2={TABLAS.T1.paginas[1]} />
                   </div>
                 </li>
               );
             })}
           </ul>
+          <FuentePie
+            fuentes={[
+              {
+                texto: `Tabla 1, ${paginasDe(TABLAS.T1.paginas[0], TABLAS.T1.paginas[1])}`,
+                ruta: rutaDeTabla("T1"),
+              },
+              { texto: "Apartado 6, p. 6", ruta: href("capitulo", "06-indicaciones") },
+            ]}
+          />
         </section>
       ) : (
         <p className="mt-4 text-sm text-slate-600">
-          Marca uno o varios criterios: cada sistema enseñará la celda de la Tabla 1 que responde a
-          ese criterio y lo que dice de él.
+          Marca uno o varios criterios: cada sistema enseñará lo que el capítulo dice de él para ese
+          criterio.
         </p>
       )}
 
@@ -430,12 +437,11 @@ export function Elegir({ q }: { q?: string }) {
       >
         <p className="text-sm">{b5.t === "p" && <Texto>{b5.texto}</Texto>}</p>
         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
-          <PaginaBadge p={6} />
           <a
             href={href("capitulo", a6.slug, "b5")}
             className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
           >
-            Leer en el apartado 6 <ArrowRight size={13} aria-hidden="true" />
+            Fuente: apartado 6, p. 6 · Leer <ArrowRight size={13} aria-hidden="true" />
           </a>
           <a
             href={href("visual", "eleccion")}

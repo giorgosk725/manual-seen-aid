@@ -8,13 +8,22 @@ export interface Cambio {
   detalle: string[];
 }
 
-export const VERSION_APP = "0.45.0";
+export const VERSION_APP = "0.46.0";
 
 export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-12",
     ambito: "app",
-    titulo: `Manual SEEN · AID ${VERSION_APP} — el móvil, más compacto (segunda tanda)`,
+    titulo: `Manual SEEN · AID ${VERSION_APP} — la fuente, al pie`,
+    detalle: [
+      "En las herramientas (Sistemas y sus comparaciones, Situaciones, Criterios de elección, Revisar la descarga, Cetonemia paso a paso, Interrupción, Iniciar un sistema, Para el paciente y las tarjetas del buscador) ya no salen «Tabla N» ni páginas en títulos, filas, tarjetas o cabeceras: cada bloque lleva una sola línea «Fuente: Tabla 1, p. 3 · …» al pie, con el enlace al sitio exacto del capítulo.",
+      "La lectura del capítulo, el índice de tablas y las citas de los casos guiados conservan su numeración y sus páginas. Las hojas para imprimir dicen la procedencia una vez, en su pie.",
+    ],
+  },
+  {
+    fecha: "2026-10-12",
+    ambito: "app",
+    titulo: "Manual SEEN · AID 0.45.0 — el móvil, más compacto (segunda tanda)",
     detalle: [
       "Selector de sistemas (Sistemas AID, Iniciar un sistema, tablas y situaciones): en el móvil, las cuatro casillas en una sola fila, con la marca y el punto de color arriba y el nombre debajo; «Los cuatro» y la pista, en la fila siguiente.",
       "Cetonemia paso a paso: los cuatro tramos de β-OHB en dos por dos. Revisar la descarga: «Paso n de 8» y el selector de paso en la misma fila.",

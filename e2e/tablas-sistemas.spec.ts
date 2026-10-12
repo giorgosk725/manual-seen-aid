@@ -25,7 +25,7 @@ test.describe("Tablas y sistemas", () => {
     await expect(
       page.getByRole("heading", { level: 2, name: /^Parámetros · Omnipod 5/ }),
     ).toBeVisible();
-    await expect(page.getByRole("link", { name: "Ver en el capítulo" })).toHaveAttribute(
+    await expect(page.getByRole("link", { name: /^Tabla 3, p\. \d+$/ }).first()).toHaveAttribute(
       "href",
       /#\/capitulo\/[^/]+\/b\d+$/,
     );

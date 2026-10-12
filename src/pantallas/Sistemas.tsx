@@ -1,6 +1,7 @@
 /* Sistemas: una sola pantalla para uno o varios. Uno = su ficha, la misma para entender y para
    consultar, en secciones con ruta propia (#/sistemas/<id>/<seccion>): Lo esencial (Tabla 1),
-   Cómo funciona, Parámetros (Tablas 1 y 3), Situaciones (Tabla 4), literales y con página, y
+   Cómo funciona, Parámetros (Tablas 1 y 3), Situaciones (Tabla 4), literales, con la fuente al
+   pie de cada bloque (componentes/FuentePie), y
    aparte la Ampliación técnica, fuera del capítulo y con sus fuentes. Varios o todos
    (#/sistemas/<a+b|todos>/<seccion>) = la misma sección, un sistema junto a otro: eso son
    «Comparar sistemas» y «Parámetros por sistema». */
@@ -50,6 +51,9 @@ import { Elegir } from "./Elegir";
 export { Elegir };
 import { comoFunciona } from "../guias";
 import { PiezaVista } from "../componentes/Piezas";
+import { FuentePie } from "../componentes/FuentePie";
+import { paginasDe } from "../paginas";
+import { fuentesDePiezas } from "../fuentesPiezas";
 
 const hex = CATEGORIA_HEX.consultar;
 
@@ -370,9 +374,12 @@ function Ampliacion({ s }: { s: Sistema }) {
 function ParametrosAutomatico({
   c,
   hexSistema,
+  fuente = true,
 }: {
   c: number;
   hexSistema: { soft: string; ink: string; strong: string };
+  /* La línea de fuente al pie (en la comparación va una sola, debajo de todos). */
+  fuente?: boolean;
 }) {
   const fila = TABLAS.T1.filas.find(
     (f) => f.etiqueta === "Parámetros configurables en modo automático",
@@ -384,7 +391,7 @@ function ParametrosAutomatico({
       style={{ borderLeftColor: hexSistema.strong }}
     >
       <div className="text-xs font-bold uppercase tracking-wide text-slate-600">
-        Parámetros configurables en modo automático <PaginaBadge p={4} />
+        Parámetros configurables en modo automático
       </div>
       <div className="mt-1 text-sm font-semibold">
         <ParametrosConfigurables c={c} ink={hexSistema.ink} />
@@ -392,9 +399,16 @@ function ParametrosAutomatico({
       <p className="mt-1 text-xs text-slate-600">
         <Texto>{TABLAS.T1.notas[0]}</Texto>
       </p>
+      {fuente && <FuentePie fuentes={[fuenteT1(4)]} className="mt-1" />}
     </div>
   );
 }
+
+/* La Tabla 1 como fuente, con su página. */
+const fuenteT1 = (p = TABLAS.T1.paginas[0]) => ({
+  texto: `Tabla 1, p. ${p}`,
+  ruta: rutaDeTabla("T1"),
+});
 
 /* Identificador de cada sistema en las rutas de tablas, situaciones e inicio (orden de la
    Tabla 1). */
@@ -436,9 +450,7 @@ function ColumnaTabla({
   const siglas = t.notas.filter(esSiglas);
   return (
     <div className="rounded-xl border bg-white p-3 sm:p-4" style={{ borderColor: "#e6e6e6" }}>
-      <div className="text-xs font-semibold text-slate-600">
-        Tabla {t.numero} · {t.titulo}
-      </div>
+      <div className="text-xs font-semibold text-slate-600">{t.titulo}</div>
       <dl className="mt-1 divide-y" style={{ borderColor: "#e6e6e6" }}>
         {t.filas.map((f, j) =>
           filas && !filas(f.etiqueta, j) ? null : (
@@ -477,12 +489,18 @@ function ColumnaTabla({
           ))}
         </details>
       )}
-      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-        <span className="flex flex-wrap gap-x-4">
-          {rutaEnCapitulo(t) && <EnlacePie ruta={rutaEnCapitulo(t)!}>Ver en el capítulo</EnlacePie>}
-          {pie}
-        </span>
-        <PaginaBadge p={t.paginas[0]} p2={t.paginas[1]} />
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+        <FuentePie
+          className=""
+          nota=""
+          fuentes={[
+            {
+              texto: `Tabla ${t.numero}, ${paginasDe(t.paginas[0], t.paginas[1])}`,
+              ruta: rutaEnCapitulo(t) ?? undefined,
+            },
+          ]}
+        />
+        {pie}
       </div>
     </div>
   );
@@ -575,9 +593,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           <h1 className="text-2xl font-black tracking-tight sm:text-3xl" style={{ color: h.ink }}>
             {s.name}
           </h1>
-          <p className="mt-1 text-sm text-slate-600">
-            {algoritmoDelCapitulo(c)} <span className="pagina-badge">· Tabla 1, p. 3</span>
-          </p>
+          <p className="mt-1 text-sm text-slate-600">{algoritmoDelCapitulo(c)}</p>
         </div>
         <div className="no-imprimir col-span-2 mt-2 flex flex-wrap gap-x-3 gap-y-1 sm:col-span-1 sm:col-start-2">
           <a
@@ -666,8 +682,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         <p className="mb-3 text-sm text-slate-600">
           Lo que dice el capítulo de este sistema, en el orden en que se entiende: qué mide, dónde
           decide, cómo administra la insulina, hacia qué objetivo y qué queda en manos de la persona
-          y del profesional. Los rótulos de los pasos son de la app; el texto, literal y con su
-          página.
+          y del profesional. Los rótulos de los pasos son de la app; el texto, literal.
         </p>
         <ol className="space-y-4">
           {comoFunciona(c, s.id).pasos.map((paso, i) => (
@@ -683,13 +698,17 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
                 <h3 className="text-sm font-bold text-slate-900">{paso.rotulo}</h3>
                 <div className="mt-1.5 space-y-2">
                   {paso.piezas.map((p, j) => (
-                    <PiezaVista key={j} pieza={p} sis={c} />
+                    <PiezaVista key={j} pieza={p} sis={c} compacta />
                   ))}
                 </div>
               </div>
             </li>
           ))}
         </ol>
+        <FuentePie
+          className="mt-3"
+          fuentes={fuentesDePiezas(comoFunciona(c, s.id).pasos.flatMap((x) => x.piezas))}
+        />
       </section>
 
       <section
@@ -701,8 +720,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           Parámetros
         </TituloSeccion>
         <p className="mb-2 text-sm text-slate-600">
-          Cuáles se pueden configurar en modo automático (Tabla 1) y cómo se ajusta cada uno en este
-          sistema (Tabla 3).
+          Cuáles se pueden configurar en modo automático y cómo se ajusta cada uno en este sistema.
         </p>
         <ParametrosAutomatico c={c} hexSistema={h} />
         <div className="mt-3">
@@ -738,9 +756,6 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
                 className="flex min-h-11 items-center gap-2 px-3 py-1.5 text-sm text-slate-800 transition hover:bg-slate-50"
               >
                 <span className="min-w-0 flex-1">{x.etiqueta}</span>
-                <span className="shrink-0 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-                  Tabla {x.tabla === "T4" ? 4 : 6}
-                </span>
                 <ArrowRight size={13} className="shrink-0 text-slate-400" aria-hidden="true" />
               </a>
             </li>
@@ -748,9 +763,16 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         </ul>
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
           <span className="flex flex-wrap gap-x-4">
-            {rutaEnCapitulo(TABLAS.T4) && (
-              <EnlacePie ruta={rutaEnCapitulo(TABLAS.T4)!}>Ver en el capítulo</EnlacePie>
-            )}
+            <FuentePie
+              className=""
+              nota=""
+              fuentes={[
+                {
+                  texto: `Tabla 4, ${paginasDe(TABLAS.T4.paginas[0], TABLAS.T4.paginas[1])}`,
+                  ruta: rutaEnCapitulo(TABLAS.T4) ?? undefined,
+                },
+              ]}
+            />
             <EnlacePie ruta={href("sistemas", "todos", "situaciones")}>
               Los cuatro en la Tabla 4
             </EnlacePie>
@@ -758,7 +780,6 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
               Exploraciones y cirugía (Tabla 6)
             </EnlacePie>
           </span>
-          <PaginaBadge p={TABLAS.T4.paginas[0]} p2={TABLAS.T4.paginas[1]} />
         </div>
         {TABLAS.T4.notas.length > 0 && (
           <div className="mt-1 space-y-1 text-xs text-slate-600">
@@ -968,9 +989,7 @@ function EntradaSistemas() {
                   <span className="block text-base font-extrabold" style={{ color: h.ink }}>
                     {s.name}
                   </span>
-                  <span className="block text-xs text-slate-600">
-                    {algoritmoDelCapitulo(c)} · Tabla 1, p. 3
-                  </span>
+                  <span className="block text-xs text-slate-600">{algoritmoDelCapitulo(c)}</span>
                 </span>
                 <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
               </a>
@@ -992,7 +1011,7 @@ function EntradaSistemas() {
         <span className="min-w-0 flex-1">
           Criterios de elección
           <span className="block text-xs font-normal text-slate-500">
-            Edad, peso, dosis, gestación, formato, sensor… contrastados con la Tabla 1
+            Edad, peso, dosis, gestación, formato, sensor…, sistema a sistema
           </span>
         </span>
         <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
@@ -1015,6 +1034,7 @@ function EntradaSistemas() {
           </a>
         ))}
       </nav>
+      <FuentePie fuentes={[fuenteT1()]} nota="los nombres de los algoritmos, del capítulo" />
     </div>
   );
 }
@@ -1032,7 +1052,6 @@ const ASPECTOS_FUNCIONA: [string, number][] = [
 function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: string }) {
   const t = TABLAS.T1;
   const fuente = rutaEnCapitulo(t);
-  const rotuloDe = (fila: number) => plano(t.filas[fila].etiqueta).split("\n")[0];
   return (
     <div className="space-y-3">
       {/* Tableta y escritorio: una cuadrícula; los sistemas, con su foto, una sola vez. */}
@@ -1047,7 +1066,7 @@ function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: strin
                 scope="col"
                 className="w-40 p-3 text-left align-bottom text-[11px] font-bold uppercase tracking-wide text-slate-500"
               >
-                Aspecto · Tabla 1, p. {t.paginas[0]}
+                Aspecto
               </th>
               {cols.map((c) => (
                 <th
@@ -1077,11 +1096,6 @@ function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: strin
               <tr key={fila} className="border-t align-top" style={{ borderColor: "#e6e6e6" }}>
                 <th scope="row" className="p-3 text-left font-normal">
                   <span className="block text-sm font-extrabold text-slate-900">{rotulo}</span>
-                  {fuente && (
-                    <span className="mt-1 block text-xs">
-                      <EnlacePie ruta={fuente}>«{rotuloDe(fila)}» · Ver en el capítulo</EnlacePie>
-                    </span>
-                  )}
                 </th>
                 {cols.map((c) => (
                   <td
@@ -1108,11 +1122,6 @@ function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: strin
           >
             <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
               <h3 className="text-sm font-extrabold text-slate-900">{rotulo}</h3>
-              {fuente && (
-                <EnlacePie ruta={fuente}>
-                  Tabla 1, «{rotuloDe(fila)}», p. {t.paginas[0]} · Ver en el capítulo
-                </EnlacePie>
-              )}
             </div>
             <div className="grid gap-2">
               {cols.map((c) => (
@@ -1142,7 +1151,10 @@ function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: strin
           Modalidad híbrida · los cuatro sistemas
         </p>
         <div className="mt-1 text-sm">
-          <PiezaVista pieza={{ t: "frase", apartado: "03-algoritmos", bloque: "b2", k: [0] }} />
+          <PiezaVista
+            pieza={{ t: "frase", apartado: "03-algoritmos", bloque: "b2", k: [0] }}
+            compacta
+          />
         </div>
         {cols.includes(2) && (
           <>
@@ -1152,11 +1164,26 @@ function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: strin
             <div className="mt-1 text-sm">
               <PiezaVista
                 pieza={{ t: "frase", apartado: "03-algoritmos", bloque: "b3", k: [1, 2] }}
+                compacta
               />
             </div>
           </>
         )}
       </section>
+      <FuentePie
+        fuentes={[
+          {
+            texto: `Tabla 1, p. ${t.paginas[0]}`,
+            ruta: fuente ?? undefined,
+          },
+          ...fuentesDePiezas([
+            { t: "frase", apartado: "03-algoritmos", bloque: "b2", k: [0] },
+            ...(cols.includes(2)
+              ? [{ t: "frase" as const, apartado: "03-algoritmos", bloque: "b3", k: [1, 2] }]
+              : []),
+          ]),
+        ]}
+      />
       <p>
         <EnlacePie ruta={href("sistemas", selStr, "parametros")}>
           Comparar los parámetros (objetivos y ajustes) de estos sistemas
@@ -1266,7 +1293,7 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
         >
           {seccion === "esencial" && (
             <NivelTitulo.Provider value={2}>
-              <TablaVista tabla={TABLAS.T1} columnasFijas={cols} />
+              <TablaVista tabla={TABLAS.T1} columnasFijas={cols} herramienta />
             </NivelTitulo.Provider>
           )}
           {seccion === "funciona" && (
@@ -1284,12 +1311,7 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
                     key={c}
                     c={c}
                     seccion="funciona"
-                    texto={
-                      <>
-                        {algoritmoDelCapitulo(c)}{" "}
-                        <span className="pagina-badge">· Tabla 1, p. 3</span>
-                      </>
-                    }
+                    texto={<>{algoritmoDelCapitulo(c)}</>}
                     enlace="Cómo funciona, paso a paso"
                   />
                 ))}
@@ -1300,7 +1322,7 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
             <>
               <details className="mb-3">
                 <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
-                  Qué se configura en modo automático (Tabla 1)
+                  Qué se configura en modo automático
                 </summary>
                 <div className="mt-2 grid gap-2 sm:grid-cols-2">
                   {cols.map((c) => (
@@ -1311,30 +1333,24 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
                       >
                         {TABLAS.T1.columnas[c]}
                       </div>
-                      <ParametrosAutomatico c={c} hexSistema={SISTEMA_HEX[c]} />
+                      <ParametrosAutomatico c={c} hexSistema={SISTEMA_HEX[c]} fuente={false} />
                     </div>
                   ))}
                 </div>
+                <FuentePie fuentes={[fuenteT1(4)]} />
               </details>
               <NivelTitulo.Provider value={2}>
-                <TablaVista tabla={TABLAS.T3} columnasFijas={cols} />
+                <TablaVista tabla={TABLAS.T3} columnasFijas={cols} herramienta />
               </NivelTitulo.Provider>
-              {rutaEnCapitulo(TABLAS.T3) && (
-                <p className="mt-2">
-                  <EnlacePie ruta={rutaEnCapitulo(TABLAS.T3)!}>
-                    Ver en el capítulo · Tabla 3, p. {TABLAS.T3.paginas[0]}
-                  </EnlacePie>
-                </p>
-              )}
             </>
           )}
           {seccion === "situaciones" && (
             <div className="space-y-4">
               <NivelTitulo.Provider value={2}>
-                <TablaVista tabla={TABLAS.T4} columnasFijas={cols} />
+                <TablaVista tabla={TABLAS.T4} columnasFijas={cols} herramienta />
               </NivelTitulo.Provider>
               <NivelTitulo.Provider value={2}>
-                <TablaVista tabla={TABLAS.T6} />
+                <TablaVista tabla={TABLAS.T6} herramienta />
               </NivelTitulo.Provider>
               <EnlacePie ruta={href("consultar", "situacion")}>
                 Una situación concreta, con el texto que la explica

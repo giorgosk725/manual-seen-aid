@@ -16,6 +16,9 @@ import { href } from "../rutas";
 import { CasillasSistema } from "./CasillasSistema";
 import { TituloBloque } from "../nivel";
 import { ComoInterpretar } from "./ComoInterpretar";
+import { FuentePie } from "./FuentePie";
+import { paginasDe } from "../paginas";
+import { rutaDeTabla } from "../contenido";
 
 const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
 
@@ -35,10 +38,19 @@ const listaNombres = (n: string[]) =>
 export function CabeceraTabla({
   tabla,
   enlaceConsultar,
+  herramienta = false,
 }: {
   tabla: Tabla;
   enlaceConsultar?: boolean;
+  /* Dentro de una herramienta: solo el título (la fuente va al pie). */
+  herramienta?: boolean;
 }) {
+  if (herramienta)
+    return (
+      <div className="mb-2">
+        <TituloBloque className="text-sm font-semibold text-slate-800">{tabla.titulo}</TituloBloque>
+      </div>
+    );
   return (
     <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
       <div>
@@ -258,8 +270,11 @@ export function TablaVista({
   onSeleccion,
   ayuda,
   columnasFijas,
+  herramienta = false,
 }: {
   tabla: Tabla;
+  /* Dentro de una herramienta (comparación de Sistemas): la fuente al pie, no arriba. */
+  herramienta?: boolean;
   modo?: "lectura" | "interactiva";
   seleccionInicial?: string;
   /* Columnas (sistemas) decididas fuera, sin selector propio (comparación de Sistemas). */
@@ -298,7 +313,11 @@ export function TablaVista({
   const interactiva = modo === "interactiva";
   return (
     <section aria-label={`Tabla ${tabla.numero}`} className="bloque-papel">
-      <CabeceraTabla tabla={tabla} enlaceConsultar={!interactiva && !columnasFijas} />
+      <CabeceraTabla
+        tabla={tabla}
+        enlaceConsultar={!interactiva && !columnasFijas && !herramienta}
+        herramienta={herramienta}
+      />
       <ComoInterpretar tabla={tabla.id as TablaId} />
       {interactiva && tabla.porSistema && !columnasFijas && (
         <div className="no-imprimir mb-3">
@@ -371,6 +390,16 @@ export function TablaVista({
         </>
       )}
       <Notas notas={tabla.notas} />
+      {herramienta && (
+        <FuentePie
+          fuentes={[
+            {
+              texto: `Tabla ${tabla.numero}, ${paginasDe(tabla.paginas[0], tabla.paginas[1])}`,
+              ruta: rutaDeTabla(tabla.id as TablaId),
+            },
+          ]}
+        />
+      )}
     </section>
   );
 }

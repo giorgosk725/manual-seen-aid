@@ -27,6 +27,7 @@ import { elegirRuta, href, fueNavegacionNueva } from "../rutas";
 import { ImagenFigura } from "./FiguraVista";
 import { INFO_F3 } from "./figura3-imagen";
 import { TituloBloque } from "../nivel";
+import { FuentePie } from "./FuentePie";
 
 const ICONOS: Record<PasoTramo["icono"], LucideIcon> = {
   pluma: Syringe,
@@ -168,7 +169,15 @@ function Pies({ sinNotas }: { sinNotas?: boolean }) {
   );
 }
 
-function Cabecera() {
+function Cabecera({ herramienta = false }: { herramienta?: boolean }) {
+  if (herramienta)
+    return (
+      <div className="mb-3">
+        <TituloBloque className="text-sm font-semibold text-slate-800">
+          {FIGURA3.cabecera}
+        </TituloBloque>
+      </div>
+    );
   return (
     <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
       <div>
@@ -273,7 +282,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
   };
   return (
     <section aria-label="Figura 3, recorrido paso a paso">
-      <Cabecera />
+      <Cabecera herramienta />
       <nav
         aria-label="Ir directamente al tramo"
         className="no-imprimir mb-4 rounded-xl border bg-slate-50 p-2.5"
@@ -384,6 +393,9 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
         </li>
       </ol>
       <Pies sinNotas={!!actual} />
+      <FuentePie
+        fuentes={[{ texto: `Figura 3, p. ${FIGURA3.pagina}`, ruta: "#/capitulo/07-educacion/b5" }]}
+      />
       <ImagenFigura figura={INFO_F3} />
     </section>
   );

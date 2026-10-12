@@ -15,7 +15,7 @@ test.describe("Entrega 1 (0.32.0)", () => {
     await page
       .locator("#parametros")
       .locator("..")
-      .getByRole("link", { name: "Ver en el capítulo" })
+      .getByRole("link", { name: /^Tabla \d, pp?\. [\d-]+$/ })
       .first()
       .click();
     await expect(page).toHaveURL(/#\/capitulo\//);

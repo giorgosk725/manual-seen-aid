@@ -13,7 +13,7 @@ import {
   Printer,
 } from "lucide-react";
 import { PASOS_GUIA, limpiarRespuestas, preguntasActivas } from "../guia-inicio";
-import { APARTADOS, GLOSARIO, TABLAS, rutaDeTabla } from "../contenido";
+import { GLOSARIO, TABLAS } from "../contenido";
 import { ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { SIS_IDS } from "../situaciones";
 import { elegirRuta, href } from "../rutas";
@@ -30,9 +30,7 @@ import { siglasEn } from "../siglas";
 import { CATEGORIA_HEX } from "../tokens";
 import {
   FASES,
-  frasesDe,
   hojaDeComprobacion,
-  listaDe,
   piezasSueltas,
   tareaDePieza,
   tareasDe,
@@ -41,6 +39,8 @@ import {
   type Pieza,
   type Tarea,
 } from "../inicio";
+import { fuentesDePiezas } from "../fuentesPiezas";
+import { FuentePie } from "../componentes/FuentePie";
 
 const hex = CATEGORIA_HEX.consultar;
 const NOMBRES = TABLAS.T1.columnas;
@@ -49,40 +49,6 @@ const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
 const HOJA = "hoja";
 const GUIA = "guia";
 
-/* La procedencia de una pieza, en una línea («Tabla 2, p. 10»), con su sitio en el capítulo. */
-const numeroApartado = (slug: string) => APARTADOS.find((a) => a.slug === slug)?.n ?? "";
-function fuentesDePieza(p: Pieza): { texto: string; ruta: string }[] {
-  switch (p.t) {
-    case "fila":
-    case "casilla": {
-      const t = TABLAS[p.tabla];
-      const r = rutaDeTabla(p.tabla);
-      return r ? [{ texto: `Tabla ${t.numero}, p. ${t.paginas[0]}`, ruta: r }] : [];
-    }
-    case "inicializacion": {
-      const r = rutaDeTabla("T2");
-      return r ? [{ texto: `Tabla 2, p. ${TABLAS.T2.paginas[0]}`, ruta: r }] : [];
-    }
-    case "frase":
-    case "hito": {
-      const f = frasesDe(p.apartado, p.bloque, p.k, p.t === "frase" ? p.trozo : undefined);
-      return [{ texto: `Apartado ${numeroApartado(p.apartado)}, p. ${f.pagina}`, ruta: f.ruta }];
-    }
-    case "lista": {
-      const l = listaDe(p.apartado, p.bloque);
-      return [{ texto: `Apartado ${numeroApartado(p.apartado)}, p. ${l.pagina}`, ruta: l.ruta }];
-    }
-    default:
-      return [];
-  }
-}
-/* Las fuentes de unas piezas, sin repetir. */
-function fuentesDePiezas(piezas: Pieza[]): { texto: string; ruta: string }[] {
-  const vistas = new Set<string>();
-  return piezas
-    .flatMap(fuentesDePieza)
-    .filter((f) => !vistas.has(f.texto) && !!vistas.add(f.texto));
-}
 const fuentesDeTarea = (fase: Fase, t: Tarea) =>
   fuentesDePiezas(t.piezas.map((i) => fase.piezas[i]));
 /* Las siglas del glosario, pulsables la primera vez que salen en el bloque: a cada pieza le
@@ -184,10 +150,7 @@ function Hoja({ sis }: { sis?: number }) {
                   onChange={() => marcar(it.texto)}
                   className="h-7 w-7 shrink-0 accent-slate-700"
                 />
-                <span>
-                  {it.texto}{" "}
-                  <span className="whitespace-nowrap text-xs text-slate-500">p. {it.pagina}</span>
-                </span>
+                <span>{it.texto}</span>
               </label>
             </li>
           ))}
@@ -198,7 +161,7 @@ function Hoja({ sis }: { sis?: number }) {
               className="mt-3 text-sm font-bold uppercase tracking-wide"
               style={{ color: hex.ink }}
             >
-              Qué se programa en {sistema} · Tabla 1, pp. 3-4
+              Qué se programa en {sistema}
             </h3>
             <dl className="mt-1 grid gap-2 sm:grid-cols-2">
               {[h.sistema.objetivo, h.sistema.parametros].map((x) => (
@@ -218,12 +181,7 @@ function Hoja({ sis }: { sis?: number }) {
         <h3 className="mt-3 text-sm font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
           Seguimiento de los primeros 3 meses
         </h3>
-        <p className="mt-1 text-sm text-slate-800">
-          {h.seguimiento.texto}{" "}
-          <span className="whitespace-nowrap text-xs text-slate-500">
-            p. {h.seguimiento.pagina}
-          </span>
-        </p>
+        <p className="mt-1 text-sm text-slate-800">{h.seguimiento.texto}</p>
         <ul className="mt-1 grid gap-1 sm:grid-cols-2">
           {h.citas.map((c) => (
             <li key={c}>
@@ -243,8 +201,13 @@ function Hoja({ sis }: { sis?: number }) {
           className="mt-3 border-t pt-2 text-[11px] text-slate-500"
           style={{ borderColor: "#e6e6e6" }}
         >
-          Manual SEEN · AID {VERSION_APP}. Texto literal del capítulo (texto final del{" "}
-          {CAPITULO.fechaFuente}) con su página; los rótulos de las citas son de la app.
+          Manual SEEN · AID {VERSION_APP}. Fuente: capítulo del Manual SEEN (texto final del{" "}
+          {CAPITULO.fechaFuente}), pp.{" "}
+          {[...new Set([...h.antes.map((x) => x.pagina), h.seguimiento.pagina])]
+            .sort((a, b) => a - b)
+            .join(", ")}
+          {h.sistema ? " y Tabla 1, pp. 3-4" : ""}; texto literal. Los rótulos de las citas son de
+          la app.
         </p>
       </div>
     </div>
@@ -326,21 +289,7 @@ function TareaVista({
 
 /* Fuente de un bloque de piezas, en una línea. */
 function LineaFuente({ fuentes }: { fuentes: { texto: string; ruta: string }[] }) {
-  if (!fuentes.length) return null;
-  return (
-    <p className="mt-1 text-[13px] text-slate-500">
-      Fuente:{" "}
-      {fuentes.map((f, k) => (
-        <span key={f.texto}>
-          {k > 0 && " · "}
-          <a href={f.ruta} className="font-semibold text-slate-600 hover:underline">
-            {f.texto}
-          </a>
-        </span>
-      ))}{" "}
-      · <span className="whitespace-nowrap">texto literal del capítulo</span>
-    </p>
-  );
+  return <FuentePie fuentes={fuentes} className="mt-1" />;
 }
 
 /* Guía paso a paso, con un paciente delante: seis pasos; las preguntas eligen qué texto del
