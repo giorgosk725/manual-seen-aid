@@ -13,7 +13,7 @@ import {
   F1,
   F2,
 } from "./contenido";
-import { PREGUNTAS } from "./contenido/test";
+import { PENDIENTES_EDICION, PREGUNTAS, PREGUNTAS_TODAS } from "./contenido/test";
 import { CIFRAS } from "./contenido/cifras";
 import { idDeBloque, posicionDeAncla } from "./contenido";
 import { plano } from "./marcado";
@@ -34,7 +34,7 @@ const todoElTexto = () =>
     FIGURA3,
     BIBLIOGRAFIA,
     GLOSARIO,
-    PREGUNTAS,
+    PREGUNTAS_TODAS,
   });
 
 describe("apartados", () => {
@@ -220,8 +220,13 @@ describe("convenciones de escritura", () => {
     for (const g of GLOSARIO) expect(g.pagina).toBeGreaterThan(0);
   });
   it("el test: 10 preguntas confirmadas (9-10-2026), con citas literales del capítulo", () => {
-    expect(PREGUNTAS).toHaveLength(10);
-    for (const p of PREGUNTAS) {
+    expect(PREGUNTAS_TODAS).toHaveLength(10);
+    // Edición editorial (A05): q02 y q03 fuera hasta la decisión del autor.
+    expect(Object.keys(PENDIENTES_EDICION)).toEqual(["q02", "q03"]);
+    expect(PREGUNTAS.map((p) => p.id)).not.toContain("q02");
+    expect(PREGUNTAS.map((p) => p.id)).not.toContain("q03");
+    expect(PREGUNTAS).toHaveLength(8);
+    for (const p of PREGUNTAS_TODAS) {
       expect(p.validada, p.id).toBe(true);
       expect(p.opciones, p.id).toHaveLength(4);
       expect(p.correcta).toBeLessThan(p.opciones.length);

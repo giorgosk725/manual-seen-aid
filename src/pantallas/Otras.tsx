@@ -391,8 +391,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
                   Otros recursos
                 </h2>
                 <p className="text-xs text-slate-600">
-                  No es el texto del capítulo: accesos, ampliación técnica (en violeta), hojas para
-                  el paciente, casos y test (en gris), cada entrada con su rótulo.
+                  No es el texto del capítulo: accesos a las herramientas, hojas para el paciente y
+                  autoevaluación, cada entrada con su rótulo.
                 </p>
                 <ListaResultados res={fueraRes} q={q} fuera />
               </section>
@@ -771,9 +771,15 @@ export function Test() {
   };
   return (
     <div>
-      <CabeceraEditorial titulo="Autoevaluación" hex={CATEGORIA_HEX.aprender} level={1}>
+      <CabeceraEditorial
+        titulo="Autoevaluación complementaria basada en el capítulo"
+        hex={CATEGORIA_HEX.aprender}
+        level={1}
+      >
         <p className="text-sm text-slate-600">
-          Diez preguntas, con la explicación y las frases del capítulo que la respaldan.
+          {PREGUNTAS.length} preguntas de repaso. Las explicaciones son de la capa docente; las
+          frases citadas, literales del capítulo con su página. Dos preguntas más están en revisión
+          y no se incluyen.
         </p>
       </CabeceraEditorial>
       {pendientes > 0 && (

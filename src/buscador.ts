@@ -198,8 +198,8 @@ export function indice(): Entrada[] {
       ruta: href("capitulo", apartadoDePagina(g.pagina)?.slug ?? APARTADOS[0].slug),
     });
   }
-  // Fuera del capítulo (grupo aparte, rotulado).
-  for (const s of SISTEMAS_AMPLIACION) {
+  // Fuera del capítulo (grupo aparte, rotulado). No en la edición editorial (A06).
+  for (const s of retirado("ampliacion") ? [] : SISTEMAS_AMPLIACION) {
     const ruta = href("sistemas", s.id);
     for (const g of FICHA_FILAS)
       for (const r of g.rows) {
@@ -281,7 +281,7 @@ export function indice(): Entrada[] {
       id: `atajo/sis/${s.id}`,
       tipo: "atajo",
       titulo: `Ficha del sistema · ${s.name}`,
-      texto: `${s.name} ${s.short}: lo que dice el capítulo (Tablas 1, 3 y 4), parámetros configurables en modo automático, algoritmo, sensores y ficha ampliada.`,
+      texto: `${s.name} ${s.short}: lo que dice el capítulo (Tablas 1, 3 y 4), parámetros configurables en modo automático, algoritmo y sensores.`,
       pagina: TABLAS.T1.paginas[0],
       pagina2: TABLAS.T1.paginas[1],
       ruta: href("sistemas", s.id),
@@ -442,7 +442,7 @@ const SECCION_PEDIDA: [RegExp, string, string][] = [
   [/c[oó]mo funciona|algoritmo/, "funciona", "Cómo funciona"],
   [/situaci/, "situaciones", "Situaciones"],
   [/ficha t[eé]cnica|ampliaci/, "ampliacion", "Ampliación técnica"],
-];
+].filter(([, id]) => !retirado(id as string)) as [RegExp, string, string][];
 export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[] {
   // El sistema nombrado no es una palabra del recurso: va en la ruta («…:minimed-780g»).
   const terminos = terminosDe(consulta)

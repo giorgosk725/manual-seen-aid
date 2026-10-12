@@ -5,7 +5,12 @@
    `explicacion` es texto del autor (no del capítulo). `citas` son frases LITERALES del capítulo
    final con su página: el test de contenido comprueba que cada una está en su bloque.
    Comprobación del 3-10-2026: las 10 respaldadas por el texto final; la 3 con un matiz
-   («deben ofrecerse» frente a «pueden considerarse», p. 1), pendiente de decisión del autor. */
+   («deben ofrecerse» frente a «pueden considerarse», p. 1).
+   `validada: true` registra esa confirmación del 9-10 y no se cambia aquí. La auditoría de la
+   0.48.2 (A05) encontró dos puntos abiertos: q02 suma 101,3 % (TIR 68 + TAR 28 + TBR 5,3) y q03
+   dice «deben ofrecerse» donde el capítulo dice «pueden considerarse». Mientras el autor no los
+   resuelva (borradores/autoevaluacion-q02-q03_2026-10-12.md), las dos quedan fuera de la edición
+   (PENDIENTES_EDICION); sus datos se conservan en PREGUNTAS_TODAS. */
 
 export interface CitaCapitulo {
   /* Apartado (slug) y ancla del bloque. */
@@ -32,7 +37,7 @@ export interface Pregunta {
   pagina: number;
 }
 
-export const PREGUNTAS: Pregunta[] = [
+export const PREGUNTAS_TODAS: Pregunta[] = [
   {
     id: "q01",
     validada: true,
@@ -367,3 +372,10 @@ export const PREGUNTAS: Pregunta[] = [
     pagina: 20,
   },
 ];
+
+/* Fuera de la edición editorial hasta la decisión del autor (A05). */
+export const PENDIENTES_EDICION: Record<string, string> = {
+  q02: "TIR + TAR + TBR suman 101,3 %",
+  q03: "«deben ofrecerse» frente a «pueden considerarse» (p. 1)",
+};
+export const PREGUNTAS: Pregunta[] = PREGUNTAS_TODAS.filter((p) => !(p.id in PENDIENTES_EDICION));

@@ -143,29 +143,33 @@ function Escalera({ i }: { i: number }) {
         <PaginaBadge p={p.pagina} />
       </div>
       <ol className="space-y-1">
-        {p.franjas.map((f, j) => {
-          const t = TONO[f.tono];
-          return (
-            <li
-              key={j}
-              className="flex items-stretch overflow-hidden rounded-lg border"
-              style={{ borderColor: "#e6e6e6" }}
-            >
-              <span
-                className="flex w-28 shrink-0 items-center px-2 py-2 text-xs font-bold"
-                style={{ background: t.bg, color: t.fg }}
+        {/* Solo los objetivos del capítulo: el TAR > 180 de adultos (consenso de 2019) no va
+            en la edición editorial (A07). */}
+        {p.franjas
+          .filter((f) => !f.complementario)
+          .map((f, j) => {
+            const t = TONO[f.tono];
+            return (
+              <li
+                key={j}
+                className="flex items-stretch overflow-hidden rounded-lg border"
+                style={{ borderColor: "#e6e6e6" }}
               >
-                {f.franja}
-              </span>
-              <span className="flex min-w-0 flex-1 items-center gap-2 bg-white px-2 py-1.5">
-                <span className="w-16 shrink-0 whitespace-nowrap text-base font-extrabold tabular-nums text-slate-900">
-                  {f.objetivo}
+                <span
+                  className="flex w-28 shrink-0 items-center px-2 py-2 text-xs font-bold"
+                  style={{ background: t.bg, color: t.fg }}
+                >
+                  {f.franja}
                 </span>
-                {f.nota && <span className="text-xs leading-snug text-slate-600">{f.nota}</span>}
-              </span>
-            </li>
-          );
-        })}
+                <span className="flex min-w-0 flex-1 items-center gap-2 bg-white px-2 py-1.5">
+                  <span className="w-16 shrink-0 whitespace-nowrap text-base font-extrabold tabular-nums text-slate-900">
+                    {f.objetivo}
+                  </span>
+                  {f.nota && <span className="text-xs leading-snug text-slate-600">{f.nota}</span>}
+                </span>
+              </li>
+            );
+          })}
       </ol>
       <ul className="mt-2 space-y-1 text-xs text-slate-700">
         {p.extras.map((e) => (
@@ -205,18 +209,7 @@ function ObjetivosMCG({ opcion }: { opcion?: string }) {
         ))}
       </div>
       <p className="mt-3 text-xs text-slate-500">
-        Objetivos recogidos en el capítulo. El TAR &gt; 180 mg/dl de adultos no gestantes se añade
-        como dato complementario del{" "}
-        <a
-          href="https://doi.org/10.2337/dci19-0028"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-semibold underline"
-        >
-          consenso internacional de MCG de 2019
-        </a>{" "}
-        (Battelino et al., Diabetes Care), que diferencia poblaciones; el capítulo no lo reproduce.
-        «—»: sin objetivo para esa franja.
+        Objetivos recogidos en el capítulo, con su página. «—»: sin objetivo para esa franja.
       </p>
     </div>
   );

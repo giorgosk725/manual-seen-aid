@@ -78,7 +78,7 @@ export const DESTINOS: Destino[] = [
     icono: Cpu,
     cat: "consultar",
     descripcion:
-      "Los cuatro sistemas con foto: lo que dice el capítulo de cada uno y su ficha técnica ampliada.",
+      "Los cuatro sistemas con foto: lo que dice el capítulo de cada uno (Tablas 1, 3 y 4).",
     fuente: "Tablas 1, 3 y 4",
   },
   {

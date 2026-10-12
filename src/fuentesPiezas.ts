@@ -3,6 +3,7 @@
    herramientas. */
 import { APARTADOS, TABLAS, rutaDeTabla } from "./contenido";
 import { frasesDe, listaDe, type Pieza } from "./inicio";
+import { paginasDe } from "./paginas";
 
 /* La procedencia de una pieza, en una línea («Tabla 2, p. 10»), con su sitio en el capítulo. */
 export const numeroApartado = (slug: string) => APARTADOS.find((a) => a.slug === slug)?.n ?? "";
@@ -10,13 +11,19 @@ export function fuentesDePieza(p: Pieza): { texto: string; ruta: string }[] {
   switch (p.t) {
     case "fila":
     case "casilla": {
+      // Sin página por fila, el intervalo entero de la tabla (A11): una fila de la Tabla 1 puede
+      // estar en la p. 4 aunque la tabla empiece en la 3.
       const t = TABLAS[p.tabla];
       const r = rutaDeTabla(p.tabla);
-      return r ? [{ texto: `Tabla ${t.numero}, p. ${t.paginas[0]}`, ruta: r }] : [];
+      return r
+        ? [{ texto: `Tabla ${t.numero}, ${paginasDe(t.paginas[0], t.paginas[1])}`, ruta: r }]
+        : [];
     }
     case "inicializacion": {
       const r = rutaDeTabla("T2");
-      return r ? [{ texto: `Tabla 2, p. ${TABLAS.T2.paginas[0]}`, ruta: r }] : [];
+      return r
+        ? [{ texto: `Tabla 2, ${paginasDe(TABLAS.T2.paginas[0], TABLAS.T2.paginas[1])}`, ruta: r }]
+        : [];
     }
     case "frase":
     case "hito": {

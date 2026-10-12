@@ -62,11 +62,11 @@ import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SEEN, SISTEMA_HEX } from "../tokens";
 import { plano } from "../marcado";
-import { FICHA_SISTEMA_EDUCATIVA } from "../enlaces";
 import type { SistemaId } from "../ampliacion/tipos";
 import { TablaVista } from "../componentes/TablaVista";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { NivelTitulo } from "../nivel-contexto";
+import { retirado } from "../edicion";
 import { Elegir } from "./Elegir";
 
 export { Elegir };
@@ -157,16 +157,7 @@ function Ampliacion({ s }: { s: Sistema }) {
         <p className="mt-1 text-sm text-violet-900">
           Ficha técnica con sus fuentes al pie (última verificación: {s.verified}). No forma parte
           del texto del Manual SEEN. La disponibilidad y las condiciones pueden cambiar: confirmar
-          siempre en la ficha técnica vigente.{" "}
-          <a
-            href={FICHA_SISTEMA_EDUCATIVA[s.id]}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold underline underline-offset-2"
-          >
-            Más detalle en la edición educativa de asistente-aid
-          </a>
-          .
+          siempre en la ficha técnica vigente.
         </p>
       </div>
       <div className="space-y-3">
@@ -425,9 +416,10 @@ function ParametrosAutomatico({
   );
 }
 
-/* La Tabla 1 como fuente, con su página. */
-const fuenteT1 = (p = TABLAS.T1.paginas[0]) => ({
-  texto: `Tabla 1, p. ${p}`,
+/* La Tabla 1 como fuente: con una página dada si la fila está en ella; si no, el intervalo
+   entero de la tabla (A11). */
+const fuenteT1 = (p?: number) => ({
+  texto: `Tabla 1, ${p ? `p. ${p}` : paginasDe(TABLAS.T1.paginas[0], TABLAS.T1.paginas[1])}`,
   ruta: rutaDeTabla("T1"),
 });
 
@@ -437,12 +429,14 @@ const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 const SLUG_CORTO = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
 
 /* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
-const SECCIONES_FICHA = [
+const TODAS_LAS_SECCIONES = [
   { id: "esencial", t: "Lo esencial" },
   { id: "funciona", t: "Cómo funciona" },
   { id: "parametros", t: "Parámetros" },
   { id: "ampliacion", t: "Ampliación técnica" },
 ] as const;
+/* La ampliación técnica no va en la edición editorial (A06): ni pestaña ni sección. */
+const SECCIONES_FICHA = TODAS_LAS_SECCIONES.filter((x) => !retirado(x.id));
 
 /* La tabla en su sitio del capítulo (para comprobar la fuente y volver). */
 function rutaEnCapitulo(t: Tabla): string | null {
@@ -818,7 +812,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         </Foldable>
       </section>
 
-      {ver("ampliacion") && <Ampliacion s={s} />}
+      {!retirado("ampliacion") && ver("ampliacion") && <Ampliacion s={s} />}
     </div>
   );
 }
@@ -855,6 +849,8 @@ export function Sistemas({ sel, seccion }: { sel?: string; seccion?: string }) {
   if (sel === "elegir") return <Elegir antigua={!!seccion} />;
   const ids = sel === undefined ? [] : leerSeleccion(sel);
   if (seccion === "situaciones") return <AsituacionesConSistema ids={ids} />;
+  // Dirección antigua de la ampliación técnica: aviso de alcance y la ficha del capítulo.
+  if (seccion === "ampliacion" && retirado("ampliacion")) return <AmpliacionRetirada ids={ids} />;
   if (sel !== undefined && sel !== "todos" && !ids.length) return <Comparacion ids={[]} />;
   const sec = SECCIONES_FICHA.some((x) => x.id === seccion)
     ? seccion
@@ -863,6 +859,27 @@ export function Sistemas({ sel, seccion }: { sel?: string; seccion?: string }) {
       : undefined;
   if (ids.length === 1) return <FichaSistema id={ids[0]} seccion={sec} />;
   return <Comparacion ids={ids} seccion={sec === "completa" ? "esencial" : sec} />;
+}
+
+function AmpliacionRetirada({ ids }: { ids: string[] }) {
+  const destino = ids.length === 1 ? href("sistemas", ids[0], "esencial") : href("sistemas");
+  return (
+    <div
+      className="rounded-xl border bg-white p-4 text-sm text-slate-700"
+      style={{ borderColor: "#e6e6e6" }}
+    >
+      <h1 className="text-lg font-extrabold text-slate-900">
+        La ampliación técnica no está en esta edición
+      </h1>
+      <p className="mt-1">
+        Este complemento recoge solo lo que dice el capítulo 89. Los datos de ficha técnica de cada
+        sistema quedan para una edición posterior.
+      </p>
+      <a href={destino} className="mt-2 inline-flex min-h-11 items-center font-semibold underline">
+        {ids.length === 1 ? "Ir a lo esencial del sistema" : "Ir a Sistemas AID"}
+      </a>
+    </div>
+  );
 }
 
 /* Selector de sistemas y pestañas de sección, pegados arriba al desplazarse: el sistema y la
@@ -1186,7 +1203,7 @@ function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: strin
       <FuentePie
         fuentes={[
           {
-            texto: `Tabla 1, p. ${t.paginas[0]}`,
+            texto: `Tabla 1, ${paginasDe(t.paginas[0], t.paginas[1])}`,
             ruta: fuente ?? undefined,
           },
           ...fuentesDePiezas([
@@ -1219,20 +1236,18 @@ function TarjetaSistema({
   texto: ReactNode;
   enlace: string;
 }) {
-  const s = SISTEMAS_AMPLIACION[c];
+  // Solo el nombre de la Tabla 1 y lo que dice el capítulo (`texto`): sin el resumen ni los
+  // rasgos de la ampliación técnica (edición editorial, A06).
+  const id = ORDEN_SISTEMAS[c];
+  const nombre = TABLAS.T1.columnas[c];
   const h = SISTEMA_HEX[c];
-  const etiquetas = [
-    `Edad: ${s.tags.pedsAge}`,
-    `Control desde el móvil: ${s.tags.movil.toLowerCase()}`,
-    `Sin tubo: ${s.tags.sintubo.toLowerCase()}`,
-  ];
   return (
     <li
       className="flex gap-3 rounded-xl border bg-white p-3"
       style={{ borderColor: "#e6e6e6", boxShadow: `inset 0 3px 0 0 ${h.strong}` }}
     >
       <img
-        src={FOTO_SISTEMA[s.id]}
+        src={FOTO_SISTEMA[id]}
         alt=""
         className="h-16 w-16 shrink-0 rounded-lg border object-cover"
         style={{ borderColor: "#e6e6e6" }}
@@ -1240,24 +1255,11 @@ function TarjetaSistema({
       />
       <div className="min-w-0 flex-1">
         <div className="text-base font-extrabold" style={{ color: h.ink }}>
-          {s.name}
+          {nombre}
         </div>
-        <p className="mt-0.5 text-sm text-slate-800">{s.takeaway}</p>
-        {etiquetas.length > 0 && (
-          <ul className="mt-1.5 flex flex-wrap gap-1" aria-label="Rasgos">
-            {etiquetas.map((e) => (
-              <li
-                key={e}
-                className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700"
-              >
-                {e}
-              </li>
-            ))}
-          </ul>
-        )}
-        <div className="mt-1 text-xs text-slate-500">{texto}</div>
+        <div className="mt-1 text-sm text-slate-700">{texto}</div>
         <a
-          href={href("sistemas", s.id, seccion)}
+          href={href("sistemas", id, seccion)}
           className="mt-1 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
         >
           {enlace} <ArrowRight size={13} aria-hidden="true" />
@@ -1367,7 +1369,7 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
               </NivelTitulo.Provider>
             </>
           )}
-          {seccion === "ampliacion" && (
+          {seccion === "ampliacion" && !retirado("ampliacion") && (
             <>
               <p className="mb-3 text-sm text-slate-600">
                 Ficha técnica de cada sistema con sus fuentes, fuera del capítulo; se consulta

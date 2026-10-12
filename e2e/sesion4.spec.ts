@@ -15,39 +15,41 @@ const paginasAlImprimir = async (page: Page) => {
   return (pdf.toString("latin1").match(/\/Type\s*\/Page[^s]/g) || []).length;
 };
 
-test.describe("Para el paciente: una cara A4", () => {
-  for (const [ruta, nombre] of [
-    ["/#/pacientes/informacion", "Información para pacientes"],
-    ["/#/pacientes/resumen", "Resumen"],
-    ["/#/pacientes/plan/mm780", "Plan de seguridad · MiniMed 780G"],
-    ["/#/pacientes/plan/ciq", "Plan de seguridad · Control-IQ"],
-    ["/#/pacientes/plan/camaps", "Plan de seguridad · CamAPS"],
-    ["/#/pacientes/plan/op5", "Plan de seguridad · Omnipod 5"],
-  ] as const) {
-    test(`${nombre} cabe en una cara (versión compacta)`, async ({ page }) => {
-      await page.addInitScript(() =>
-        localStorage.setItem("mseen:hoja", JSON.stringify("una-cara")),
-      );
-      await page.goto(ruta);
-      await expect(page.locator(".hoja-a4")).toBeVisible();
-      expect(await paginasAlImprimir(page), nombre).toBe(1);
-    });
-  }
+/* Edición editorial (A12): solo letra grande. La compacta de 7 pt no se ofrece, aunque una
+   versión anterior la dejara guardada. Las hojas y plantillas se rotulan complementarias. */
+test.describe("Para el paciente: sin la versión compacta", () => {
+  test("con «una-cara» guardada, la hoja sale con letra grande y sin selector", async ({
+    page,
+  }) => {
+    await page.addInitScript(() => localStorage.setItem("mseen:hoja", JSON.stringify("una-cara")));
+    await page.goto("/#/pacientes/plan/mm780");
+    await expect(page.locator(".hoja-a4.grande")).toHaveCount(1);
+    await expect(page.getByRole("button", { name: /Compacta|Imprimir en una cara/ })).toHaveCount(
+      0,
+    );
+    await expect(page.locator(".hoja-a4")).toContainText(
+      "Material complementario · Plantilla de plan de seguridad · MiniMed 780G",
+    );
+    await expect(page.locator(".hoja-a4 .hoja-pie")).toContainText(
+      "no es una publicación del Manual SEEN",
+    );
+  });
+  test("la Información para pacientes lleva la fecha del PDF publicado", async ({ page }) => {
+    await page.goto("/#/pacientes/informacion");
+    await expect(page.locator(".hoja-a4 .hoja-pie")).toContainText(
+      "PDF publicado el 9 de octubre de 2026",
+    );
+  });
 });
 
 /* Letra grande (decisión del autor, 3-10-2026): 12 pt en una columna, aunque ocupe tres caras;
    el resumen, dos. Desde la 0.12.0 es el formato por defecto (auditoría externa del 6-10-2026);
    la compacta se elige en la propia hoja y se recuerda en el navegador. */
 test.describe("Para el paciente: letra grande", () => {
-  test("letra grande por defecto; el selector cambia el formato y el botón", async ({ page }) => {
+  test("letra grande siempre; un solo botón de imprimir", async ({ page }) => {
     await page.goto("/#/pacientes/resumen");
     await expect(page.getByRole("button", { name: "Imprimir con letra grande" })).toBeVisible();
     await expect(page.locator(".hoja-a4.grande")).toHaveCount(1);
-    await page.getByRole("button", { name: /Compacta/ }).click();
-    await expect(page.getByRole("button", { name: "Imprimir en una cara" })).toBeVisible();
-    await expect(page.locator(".hoja-a4.grande")).toHaveCount(0);
-    await page.reload();
-    await expect(page.locator(".hoja-a4.grande")).toHaveCount(0);
   });
   for (const [ruta, nombre, maximo] of [
     ["/#/pacientes/informacion", "Información para pacientes", 3],

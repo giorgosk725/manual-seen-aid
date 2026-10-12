@@ -90,7 +90,9 @@ describe("App", () => {
     const caja = within(await screen.findByRole("dialog")).getByLabelText("Buscar en el capítulo");
     await userEvent.type(caja, "regla del 450");
     const lista = await screen.findByRole("list", { name: "Resultados" });
-    expect(within(lista).getAllByText(/p\. 10/).length).toBeGreaterThan(0);
+    expect(
+      (await within(lista).findAllByText(/p\. 10/, {}, { timeout: 5000 })).length,
+    ).toBeGreaterThan(0);
   });
 
   it("el test razona la respuesta con la explicación del autor y el capítulo", async () => {
@@ -98,16 +100,19 @@ describe("App", () => {
     await ir("#/test");
     expect(screen.queryByText(/Pendiente de validación/)).toBeNull();
     expect(screen.queryByText(/Provisional · ejemplo/)).toBeNull();
+    // q02 y q03 están fuera de la edición (A05).
+    expect(screen.queryByText(/TBR <54 mg\/dl 1,4 %/)).toBeNull();
+    expect(screen.queryByText(/deben ofrecerse como modalidad preferente/)).toBeNull();
     await userEvent.click(
       screen.getByRole("button", {
-        name: /Revisar hipoglucemias y sobretratamiento, y reducir el TBR/,
+        name: /Persisten retos relacionados con el predominio de sistemas híbridos/,
       }),
     );
     expect(screen.getByText(/^Correcto\./)).toBeInTheDocument();
     expect(screen.getByText(/Lo que dice el capítulo/)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Leer en el apartado 5/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Leer en el apartado 12/ })).toHaveAttribute(
       "href",
-      "#/capitulo/05-resultados/b2",
+      "#/capitulo/12-horizonte/b2",
     );
   });
 
@@ -116,7 +121,7 @@ describe("App", () => {
     await ir("#/pacientes/informacion");
     expect(screen.getByText("¿Qué es un sistema de asa cerrada?")).toBeInTheDocument();
     await ir("#/pacientes/plan/op5");
-    expect(screen.getByText(/Plan de seguridad · Omnipod 5/)).toBeInTheDocument();
+    expect(screen.getByText(/Plantilla de plan de seguridad · Omnipod 5/)).toBeInTheDocument();
     // La hoja se rellena a mano: no hay ni un campo de texto.
     expect(document.querySelectorAll("main input, main textarea")).toHaveLength(0);
     expect(screen.getAllByText(/Función Actividad/).length).toBeGreaterThan(0);
@@ -157,13 +162,14 @@ describe("App", () => {
     expect(document.getElementById("b36")).not.toBeNull();
   });
 
-  it("la ficha de un sistema separa el capítulo de la ampliación del autor", async () => {
+  it("la ficha completa es solo del capítulo: sin la ampliación técnica (A06)", async () => {
     render(<App />);
     await ir("#/sistemas/op5/completa");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Omnipod 5");
     expect(screen.getByRole("heading", { name: /^Lo esencial · Omnipod 5/ })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /^Parámetros · Omnipod 5/ })).toBeInTheDocument();
-    expect(screen.getByText(/Ampliación técnica · fuera del capítulo/)).toBeInTheDocument();
+    expect(screen.queryByText(/Ampliación técnica · fuera del capítulo/)).toBeNull();
+    expect(screen.queryByText(/Insulinas rápidas compatibles/)).toBeNull();
     expect(screen.getAllByText(/sin peso mínimo; DTD ≥ 5 UI\/día/).length).toBeGreaterThan(0);
   });
 

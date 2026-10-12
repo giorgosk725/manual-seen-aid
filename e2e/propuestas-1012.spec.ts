@@ -31,7 +31,9 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
 
   test("Para el paciente ofrece el PDF oficial para descargar", async ({ page }) => {
     await page.goto("/#/pacientes");
-    const pdf = page.getByRole("link", { name: /Descargar el PDF oficial del Manual SEEN/ });
+    const pdf = page.getByRole("link", {
+      name: /Información para pacientes · PDF publicado por el Manual SEEN/,
+    });
     await expect(pdf).toHaveAttribute("href", /pdf\/manual-seen-aid-pacientes\.pdf$/);
     await expect(pdf).toHaveAttribute("download", "");
   });
@@ -118,15 +120,30 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     await expect(guion.getByText(/^Fuente:/)).toHaveCount(2);
   });
 
-  test("tarjetas de la ampliación: cada rasgo con su nombre", async ({ page }) => {
+  test("ampliación técnica: fuera de la edición; la ruta antigua explica el alcance (A06)", async ({
+    page,
+  }) => {
     await page.goto("/#/sistemas/todos/ampliacion");
-    await expect(page.getByText("Control desde el móvil: no").first()).toBeVisible();
-    await expect(page.getByText("Sin tubo: sí").first()).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "La ampliación técnica no está en esta edición",
+    );
+    await page.goto("/#/sistemas/mm780/ampliacion");
+    await expect(page.getByRole("link", { name: "Ir a lo esencial del sistema" })).toHaveAttribute(
+      "href",
+      "#/sistemas/mm780/esencial",
+    );
+    await page.goto("/#/sistemas/todos/funciona");
+    await expect(page.getByText(/Control desde el móvil:|Sin tubo:/)).toHaveCount(0);
+    await expect(page.getByRole("tab", { name: "Ampliación técnica" })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /asistente-aid/ })).toHaveCount(0);
   });
 
-  test("objetivos: el TAR > 180 mg/dl lleva su cifra", async ({ page }) => {
-    await page.goto("/#/visual/objetivos-mcg");
-    await expect(page.getByText("< 25 %").locator("visible=true").first()).toBeVisible();
+  test("objetivos: solo los del capítulo; sin el TAR > 180 del consenso de 2019 (A07)", async ({
+    page,
+  }) => {
+    await page.goto("/#/visual/objetivos-mcg/general");
+    await expect(page.getByText(/consenso internacional de MCG de 2019/)).toHaveCount(0);
+    await expect(page.getByText("< 5 %").locator("visible=true").first()).toBeVisible();
   });
 
   test("situación: el momento consultado sigue abierto al volver de su fuente y va en la ruta", async ({

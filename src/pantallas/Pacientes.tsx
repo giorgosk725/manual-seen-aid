@@ -16,8 +16,7 @@ import {
   TITULO_CAPITULO_PACIENTES,
 } from "../pacientes/textos";
 import { elegirRuta, href } from "../rutas";
-import { CabeceraEditorial, Segmented, ToneCard } from "../ui";
-import { guardarFormatoHoja, useFormatoHoja, type FormatoHoja } from "../prefs";
+import { CabeceraEditorial, ToneCard } from "../ui";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { HOJAS_EXTRA, hojaExtraPorId } from "../hojas";
 import { Texto } from "../texto";
@@ -27,29 +26,13 @@ import { VERSION_APP } from "../contenido/cambios";
 const hex = CATEGORIA_HEX.pacientes;
 
 /* ---------- Barra de acciones de una hoja: formato e imprimir ---------- */
-/* Para entregar al paciente, letra grande (la opción por defecto); la de una cara es compacta. */
-const FORMATOS: { id: FormatoHoja; label: string; shortLabel: string }[] = [
-  { id: "letra-grande", label: "Letra grande · doble cara", shortLabel: "Letra grande" },
-  { id: "una-cara", label: "Compacta · una cara, letra pequeña", shortLabel: "Compacta" },
-];
-/* En el móvil, formato e imprimir en una sola fila (el botón dice «Imprimir»; su nombre
-   accesible y el de escritorio dicen el formato) y la explicación debajo, en una línea. */
+/* Edición editorial (A12): las hojas se imprimen solo con letra grande, 12 pt, una columna. La
+   opción compacta de 7 pt (una cara, dos columnas) queda fuera de esta edición. */
 function Acciones({ hoja }: { hoja: React.RefObject<HTMLElement | null> }) {
-  const formato = useFormatoHoja();
-  const imprimir = formato === "una-cara" ? "Imprimir en una cara" : "Imprimir con letra grande";
+  const imprimir = "Imprimir con letra grande";
   return (
     <div className="no-imprimir mb-3 space-y-1.5">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="hidden text-xs font-semibold uppercase tracking-wide text-slate-500 sm:inline">
-          Formato de impresión
-        </span>
-        <Segmented
-          label="Formato de impresión"
-          options={FORMATOS}
-          value={formato}
-          onChange={guardarFormatoHoja}
-          wrap
-        />
         <button
           type="button"
           onClick={() => imprimirRegion(() => hoja.current)}
@@ -62,9 +45,7 @@ function Acciones({ hoja }: { hoja: React.RefObject<HTMLElement | null> }) {
         </button>
       </div>
       <p className="text-xs text-slate-600">
-        {formato === "una-cara"
-          ? "Una cara A4, dos columnas, letra de 7 pt. Para entregar al paciente, mejor la letra grande."
-          : "Una columna, letra de 12 pt: dos o tres caras A4, mejor a doble cara."}
+        Una columna, letra de 12 pt: dos o tres caras A4, mejor a doble cara.
       </p>
     </div>
   );
@@ -108,8 +89,12 @@ function Hoja({
   pie,
   children,
   holgada = false,
+  complementaria = false,
 }: {
   holgada?: boolean;
+  /* Hoja o plantilla de este complemento (no una publicación del Manual SEEN): se dice en la
+     cabecera y en el pie, en pantalla y en papel (A12). */
+  complementaria?: boolean;
   hojaRef: React.RefObject<HTMLDivElement>;
   rotulo: string;
   titulo: string;
@@ -118,7 +103,7 @@ function Hoja({
   children: ReactNode;
 }) {
   useImprimirConTeclado(hojaRef);
-  const grande = useFormatoHoja() === "letra-grande";
+  const grande = true;
   return (
     <div
       ref={hojaRef}
@@ -127,7 +112,7 @@ function Hoja({
     >
       <header className="hoja-cabecera mb-3 border-b pb-3" style={{ borderColor: "#e6e6e6" }}>
         <div className="text-xs font-bold uppercase tracking-wider" style={{ color: hex.ink }}>
-          {rotulo}
+          {complementaria ? `Material complementario · ${rotulo}` : rotulo}
         </div>
         <h1 className="mt-0.5 text-balance text-xl font-black leading-tight text-slate-900">
           {titulo}
@@ -139,7 +124,10 @@ function Hoja({
         className="hoja-pie mt-4 border-t pt-3 text-xs text-slate-600"
         style={{ borderColor: "#e6e6e6" }}
       >
-        {pie} Hoja de la versión {VERSION_APP}; capítulo publicado el {CAPITULO.fechaFuente}.
+        {pie}{" "}
+        {complementaria
+          ? `Hoja complementaria del complemento interactivo del capítulo 89 (versión ${VERSION_APP}), hecha con texto del capítulo publicado el ${CAPITULO.fechaFuente}; no es una publicación del Manual SEEN.`
+          : `Versión en pantalla del complemento ${VERSION_APP}; capítulo publicado el ${CAPITULO.fechaFuente}.`}
       </footer>
     </div>
   );
@@ -196,37 +184,47 @@ export function HubPacientes() {
     {
       href: href("pacientes", "informacion"),
       icono: FileText,
-      t: "Información para pacientes",
-      s: "Doce preguntas y respuestas y un mensaje final: qué es el sistema, qué material llevar, qué hacer si la glucosa baja o sube, ejercicio, viajes y pruebas.",
+      t: "Información para pacientes · en pantalla",
+      s: "El mismo texto del PDF, para leer o imprimir desde aquí: qué es el sistema, qué material llevar, qué hacer si la glucosa baja o sube, ejercicio, viajes y pruebas.",
     },
   ];
   return (
     <div>
       <CabeceraEditorial titulo="Para el paciente" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Hojas para entregar en la consulta; se imprimen con letra grande o, compactas, en una cara
-          A4.
+          El recurso principal es la Información para pacientes publicada por el Manual SEEN.
+          Debajo, material complementario de este complemento, para imprimir con letra grande.
         </p>
       </CabeceraEditorial>
+      <h2 className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
+        Recurso principal
+      </h2>
       <ul className="divide-y rounded-xl border bg-white" style={{ borderColor: "#e6e6e6" }}>
+        <li>
+          <FilaHoja
+            href={PDF_PACIENTES}
+            titulo="Información para pacientes · PDF publicado por el Manual SEEN"
+            detalle={`Doce preguntas y respuestas y un mensaje final, maquetados por el Manual SEEN (PDF de 3 páginas, 83 KB, ${CAPITULO.fechaPdfPacientes}). Disponible también sin conexión.`}
+            descarga
+          />
+        </li>
         {tarjetas.map((c) => (
           <li key={c.t}>
             <FilaHoja href={c.href} titulo={c.t} detalle={c.s} />
           </li>
         ))}
-        <li>
-          <FilaHoja
-            href={PDF_PACIENTES}
-            titulo="Descargar el PDF oficial del Manual SEEN · Información para pacientes"
-            detalle="Las mismas doce preguntas y respuestas y el mensaje final, maquetados por el Manual SEEN (PDF de 3 páginas, 83 KB), para imprimir o enviar."
-            descarga
-          />
-        </li>
       </ul>
-      <section aria-labelledby="hojas-breves" className="mt-6">
-        <h2 id="hojas-breves" className="text-base font-extrabold text-slate-900">
+      <h2 className="mb-1 mt-6 text-xs font-bold uppercase tracking-wide text-slate-500">
+        Material complementario
+      </h2>
+      <p className="text-sm text-slate-600">
+        Hojas y plantillas de este complemento, hechas con texto del capítulo. No son una
+        publicación del Manual SEEN.
+      </p>
+      <section aria-labelledby="hojas-breves" className="mt-3">
+        <h3 id="hojas-breves" className="text-base font-extrabold text-slate-900">
           Hojas breves por situación
-        </h2>
+        </h3>
         <p className="mt-1 text-sm text-slate-600">
           Según lo que haga falta ese día: cetonas, pruebas y cirugía, y tres extractos de la
           Información para pacientes.
@@ -254,10 +252,10 @@ export function HubPacientes() {
         </ul>
       </section>
       <section aria-labelledby="planes" className="mt-6">
-        <h2 id="planes" className="flex items-center gap-2 text-base font-extrabold text-slate-900">
-          <ShieldCheck size={18} style={{ color: hex.strong }} aria-hidden="true" /> Plan de
-          seguridad, por sistema
-        </h2>
+        <h3 id="planes" className="flex items-center gap-2 text-base font-extrabold text-slate-900">
+          <ShieldCheck size={18} style={{ color: hex.strong }} aria-hidden="true" /> Plantilla de
+          plan de seguridad, por sistema
+        </h3>
         <p className="mt-1 text-sm text-slate-600">
           Lo que el capítulo pide que contenga el plan, qué hacer según las cetonas y las
           herramientas de ese sistema en cada situación, con huecos para rellenar a mano.
@@ -295,7 +293,11 @@ export function InformacionPacientes() {
         rotulo={INFORMACION_PACIENTES.rotulo}
         titulo={TITULO_CAPITULO_PACIENTES}
         subtitulo={AUTOR_PACIENTES}
-        pie={<>Manual SEEN · {INFORMACION_PACIENTES.fuente}.</>}
+        pie={
+          <>
+            Manual SEEN · Información para pacientes; PDF publicado el {CAPITULO.fechaPdfPacientes}.
+          </>
+        }
       >
         {INFORMACION_PACIENTES.secciones.map((s) => (
           <section key={s.pregunta} className="hoja-seccion mb-3">
@@ -363,8 +365,14 @@ export function HojaPacientes({ id }: { id?: string }) {
         rotulo={`${INFORMACION_PACIENTES.rotulo} · extracto`}
         titulo={h.titulo}
         subtitulo={`${TITULO_CAPITULO_PACIENTES} · ${AUTOR_PACIENTES}`}
-        pie={<>Manual SEEN · {INFORMACION_PACIENTES.fuente}.</>}
+        pie={
+          <>
+            Extracto literal de la Información para pacientes del Manual SEEN (PDF publicado el{" "}
+            {CAPITULO.fechaPdfPacientes}).
+          </>
+        }
         holgada
+        complementaria
       >
         {secciones.map((sec) => (
           <section key={sec.pregunta} className="hoja-seccion mb-3">
@@ -408,8 +416,9 @@ function HojaExtraVista({
         rotulo={hoja.estado === "borrador" ? `${hoja.rotulo} · borrador` : hoja.rotulo}
         titulo={hoja.titulo}
         subtitulo={`${TITULO_CAPITULO_PACIENTES} · ${AUTOR_PACIENTES}`}
-        pie={<>Manual SEEN · {hoja.fuente}.</>}
+        pie={<>Fuente: {hoja.fuente}.</>}
         holgada
+        complementaria
       >
         {hoja.intro && (
           <p className="mb-3 text-[15px] leading-relaxed text-slate-800">{hoja.intro}</p>
@@ -612,16 +621,16 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
       <Acciones hoja={ref} />
       <Hoja
         hojaRef={ref}
-        rotulo={`Plan de seguridad · ${nombre}`}
+        rotulo={`Plantilla de plan de seguridad · ${nombre}`}
+        complementaria
         titulo={CAPITULO.titulo}
         subtitulo={
           <>Hecha solo con el texto del capítulo. Para rellenar a mano; no se guarda nada.</>
         }
         pie={
           <>
-            Manual SEEN · {CAPITULO.autor}. Fuente: plan de seguridad (p. {plan?.p ?? 7}), dos
-            reglas operativas (pp. 8-9), Figura 3 (p. {FIGURA3.pagina}) y Tabla 4 (pp. 11-12); texto
-            literal del capítulo.
+            Fuente: plan de seguridad (p. {plan?.p ?? 7}), dos reglas operativas (pp. 8-9), Figura 3
+            (p. {FIGURA3.pagina}) y Tabla 4 (pp. 11-12); texto literal del capítulo.
           </>
         }
       >
@@ -706,6 +715,12 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
                     </li>
                   ))}
                 </ul>
+                {/* La nota de las dosis con asterisco, junto a la rama que las da (A12). */}
+                {JSON.stringify(t.pasos).includes("*") && (
+                  <p className="mt-1 text-xs text-slate-700">
+                    <Texto>{FIGURA3.notaAsterisco}</Texto>
+                  </p>
+                )}
               </li>
             ))}
           </ul>
@@ -718,7 +733,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
             <Texto>{FIGURA3.reglaDeOro}</Texto>
           </p>
           <p className="mt-1 text-xs text-slate-600">
-            <Texto>{FIGURA3.notaAsterisco}</Texto> <Texto>{FIGURA3.abreviaturas}</Texto>
+            <Texto>{FIGURA3.abreviaturas}</Texto>
           </p>
         </section>
         <section className="hoja-seccion mb-1">

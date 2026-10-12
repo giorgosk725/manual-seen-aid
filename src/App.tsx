@@ -263,7 +263,7 @@ export default function App() {
       break;
     case "test":
       pantalla = <Test />;
-      titulo = "Autoevaluación";
+      titulo = "Autoevaluación complementaria";
       break;
     case "repaso":
       pantalla = retirado("repaso") ? <Retirado /> : <Repaso filtro={ruta.sub} />;

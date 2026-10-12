@@ -28,6 +28,9 @@ export const CAPITULO = {
   /* Publicación en el Manual (manual.seen.es): fuente única de esta app desde el 8-10-2026. */
   fechaFuente: "8 de octubre de 2026",
   fechaFuenteISO: "2026-10-08",
+  /* El PDF publicado de «Información para pacientes» lleva otra fecha en su pie (A12). */
+  fechaPdfPacientes: "9 de octubre de 2026",
+  fechaPdfPacientesISO: "2026-10-09",
   paginas: 25,
   numero: 89,
   area: "Área II. Diabetes",

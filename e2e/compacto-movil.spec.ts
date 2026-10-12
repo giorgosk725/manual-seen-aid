@@ -40,9 +40,9 @@ test.describe("Móvil compacto (360 px)", () => {
     const sistemas = page.getByRole("group", { name: "Sistema" }).getByRole("button");
     await expect(sistemas).toHaveCount(4);
     for (const i of [1, 2, 3]) await mismaFila(sistemas.nth(0), sistemas.nth(i));
-    const formato = page.getByRole("group", { name: "Formato de impresión" });
-    const imprimir = page.getByRole("button", { name: "Imprimir con letra grande" });
-    await mismaFila(formato, imprimir);
+    // Solo letra grande (A12): el botón de imprimir, sin selector de formato.
+    await expect(page.getByRole("group", { name: "Formato de impresión" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Imprimir con letra grande" })).toBeVisible();
     await expect(page.locator(".hoja-a4")).toBeInViewport();
   });
 

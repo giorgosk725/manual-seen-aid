@@ -136,6 +136,8 @@ export interface FranjaObjetivo {
   objetivo: string; // «< 5 %»
   nota?: string; // «TAR de nivel 2»
   tono: TonoFranja;
+  /* Dato que no es del capítulo (consenso de 2019): no sale en la edición editorial (A07). */
+  complementario?: true;
 }
 
 export interface PoblacionObjetivos {
@@ -159,6 +161,7 @@ export const OBJETIVOS_MCG: PoblacionObjetivos[] = [
         objetivo: "< 25 %",
         nota: "TAR: complementa al TIR. Cifra del consenso internacional de MCG de 2019 (dato complementario, no del capítulo)",
         tono: "alto",
+        complementario: true,
       },
       {
         franja: "70-180 mg/dl",
