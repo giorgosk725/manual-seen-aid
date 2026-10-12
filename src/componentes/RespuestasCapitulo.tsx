@@ -393,7 +393,7 @@ function Tarjeta({
       {asterisco && !sinNota && <p className="mt-1 text-xs text-slate-600">{asterisco.nota}</p>}
       {/* La procedencia, al pie de la tarjeta (no encima del dato). */}
       <p className="mt-1.5 text-[13px] text-slate-500">
-        Fuente: {r.fuente}, {paginas(r)}
+        Fuente: {r.fuente.replace(/^(Tabla \d+)\..*$/s, "$1")}, {paginas(r)}
       </p>
       <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-0">
         <a href={ruta} onClick={onIr} className={enlace}>
