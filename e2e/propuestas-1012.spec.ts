@@ -100,7 +100,8 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
       "aria-pressed",
       "true",
     );
-    await page.getByRole("button", { name: "Reiniciar", exact: true }).click();
+    // «Nuevo inicio» vacía todo el trabajo (0.63.0; antes, «Reiniciar» solo la guía).
+    await page.getByRole("button", { name: /Nuevo inicio/ }).click();
     await expect(page.getByRole("button", { name: "Múltiples dosis (plumas)" })).toHaveAttribute(
       "aria-pressed",
       "false",

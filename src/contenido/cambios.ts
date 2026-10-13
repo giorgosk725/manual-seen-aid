@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — qué programar en cada sistema`,
+    titulo: `Complemento interactivo ${VERSION_APP} — revisión de Sistemas, Situaciones e Iniciar`,
+    detalle: [
+      "Calculadora: sin datos completos y válidos no hay cifras; un vacío o un error no se leen como cero; fuera de la indicación de la Tabla 1 no hay propuesta, y dentro de una sola variante queda pendiente confirmarla.",
+      "Desde bomba u otro sistema: se pide la DTD y el peso cuando el sistema arranca con ellos, aunque se traslade la programación. En MDI, ratio y factor propios o las reglas del 450 y del 1700.",
+      "Un solo trabajo para la calculadora, los pasos y la hoja, con «Nuevo inicio»; lo cambiado a mano se marca; en el móvil, «Ir al paso». La ficha de cada sistema lleva a «Preparar e iniciar».",
+      "Situaciones: en el ejercicio, las comprobaciones antes de la conducta; filtro con siglas y alias; guías por momentos para enfermedad intercurrente, glucocorticoides, mayores, diálisis y adolescencia; incidencias del día a día; interrupción y plan desde exploraciones y ejercicio.",
+      "Sistemas: la condición junto al Sí/No de los bolos, «Hacia qué objetivo» en «Cómo funciona», el papel de la basal programada y la nota de Liberty también en la guía.",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.62.0 — qué programar en cada sistema",
     detalle: [
       "Calculadora de inicio: qué programar ordenado por importancia: lo que cuenta en el modo automático (o lo que necesita para arrancar), los modos y funciones del sistema (en Control-IQ, el modo sueño y el de ejercicio; Boost y Ease-off en CamAPS FX; Actividad en Omnipod 5; objetivo temporal en MiniMed 780G), lo que interviene sobre todo en los bolos y el modo manual, y qué esperar del algoritmo.",
       "Cada parámetro, con la celda entera de la Tabla 3 (p. ej., en MiniMed 780G, que una insulina activa más corta intensifica las autocorrecciones).",

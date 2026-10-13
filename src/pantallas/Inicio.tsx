@@ -12,8 +12,16 @@ import {
   ChevronRight,
   ListOrdered,
   Printer,
+  RotateCcw,
 } from "lucide-react";
 import { CalculadoraInicio } from "../componentes/CalculadoraInicio";
+import {
+  cambiarHechos,
+  cambiarRespuestas,
+  hayTrabajo,
+  nuevoTrabajo,
+  useTrabajo,
+} from "../trabajo-inicio";
 import {
   PASOS_GUIA,
   limpiarRespuestas,
@@ -73,30 +81,23 @@ function siglasPorPiezas(piezas: Pieza[], sis?: number): Set<string>[] {
 
 const capitalizar = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-/* Lo elegido y lo marcado en la guía vive en memoria mientras la app está abierta: sobrevive a
-   abrir una fuente y volver, y se va al recargar o al pulsar «Reiniciar». No se guarda nada. */
-const guiaMemoria: { resp: Record<string, string>; hechos: Set<string> } = {
-  resp: {},
-  hechos: new Set(),
-};
+/* Lo elegido y lo marcado vive en el trabajo del inicio (trabajo-inicio.ts), con la
+   calculadora: sobrevive a abrir una fuente y volver, y se va con «Nuevo inicio» o al recargar.
+   No se guarda nada. */
 /* Hoja de comprobación: una cara A4, casillas para marcar en papel (en pantalla se pueden
    marcar, pero no se guarda nada: ni datos del paciente ni de la consulta). */
 function Hoja({ sis }: { sis?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   // Las casillas son las mismas que las de la guía: lo marcado allí sale marcado aquí (y al
   // revés), mientras dura la consulta. No se guarda nada.
-  const [hechos, setHechos] = useState<Set<string>>(guiaMemoria.hechos);
+  const { hechos } = useTrabajo();
   const marcar = (k: string) => {
-    const s = new Set(guiaMemoria.hechos);
+    const s = new Set(hechos);
     if (s.has(k)) s.delete(k);
     else s.add(k);
-    guiaMemoria.hechos = s;
-    setHechos(s);
+    cambiarHechos(s);
   };
-  const vaciar = () => {
-    guiaMemoria.hechos = new Set();
-    setHechos(guiaMemoria.hechos);
-  };
+  const vaciar = () => cambiarHechos(new Set());
   const h = hojaDeComprobacion(sis);
   const sistema = sis !== undefined ? NOMBRES[sis] : "";
   const titulo = `Inicio de un sistema de asa cerrada${sistema ? ` · ${sistema}` : ""}`;
@@ -316,21 +317,9 @@ function PasosInicio({
 }) {
   const n = Math.min(PASOS_GUIA.length, Math.max(1, paso + 1));
   const p = PASOS_GUIA[n - 1];
-  const [resp, setRespEstado] = useState<Record<string, string>>(guiaMemoria.resp);
-  const [hechos, setHechosEstado] = useState<Set<string>>(guiaMemoria.hechos);
-  const setResp = (r: Record<string, string>) => {
-    const limpio = limpiarRespuestas(r);
-    guiaMemoria.resp = limpio;
-    setRespEstado(limpio);
-  };
-  const setHechos = (f: (prev: Set<string>) => Set<string>) => {
-    guiaMemoria.hechos = f(guiaMemoria.hechos);
-    setHechosEstado(guiaMemoria.hechos);
-  };
-  const reiniciar = () => {
-    setResp({});
-    setHechos(() => new Set());
-  };
+  const { resp, hechos } = useTrabajo();
+  const setResp = (r: Record<string, string>) => cambiarRespuestas(limpiarRespuestas(r));
+  const setHechos = (f: (prev: Set<string>) => Set<string>) => cambiarHechos(f(hechos));
   const ir = (k: number) =>
     elegirRuta("consultar", "inicio", detalleDe("inicio", sis, PASOS_GUIA[k - 1].id));
   const alPaso = useIrAlCambiar(String(n), "paso-guia");
@@ -387,20 +376,32 @@ function PasosInicio({
           );
         })}
       </ol>
+      {/* En el móvil solo se ve el paso activo: un selector lleva a cualquier otro. */}
+      <label className="no-imprimir mb-2 flex items-center gap-2 sm:hidden">
+        <span className="shrink-0 text-xs font-semibold" style={{ color: hex.strong }}>
+          Ir al paso
+        </span>
+        <select
+          aria-label="Ir al paso"
+          value={n}
+          onChange={(e) => {
+            alPaso();
+            ir(Number(e.target.value));
+          }}
+          className="min-h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-2 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        >
+          {PASOS_GUIA.map((x, i) => (
+            <option key={x.id} value={i + 1}>
+              {i + 1}. {x.titulo}
+            </option>
+          ))}
+        </select>
+      </label>
       <div className="flex flex-wrap items-baseline justify-between gap-x-3">
         <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
           Paso {n} de {PASOS_GUIA.length}
           {sis !== undefined ? ` · ${CORTOS[sis]}` : ""}
         </p>
-        {(Object.keys(resp).length > 0 || hechos.size > 0) && (
-          <button
-            type="button"
-            onClick={reiniciar}
-            className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
-          >
-            Reiniciar
-          </button>
-        )}
       </div>
       <h3 id="guia-titulo" className="text-lg font-extrabold text-slate-900">
         <span className="mr-2 tabular-nums" style={{ color: hex.strong }}>
@@ -514,7 +515,7 @@ function PasosInicio({
       </div>
       <p className="mt-2 text-xs text-slate-500">
         Lo elegido y lo marcado sigue al abrir una fuente y volver, y sale en la hoja de
-        comprobación; «Reiniciar» lo borra.
+        comprobación; «Nuevo inicio», arriba, lo vacía todo, también la calculadora.
       </p>
     </div>
   );
@@ -586,6 +587,17 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
   };
   return (
     <div>
+      {hayTrabajo() && (
+        <div className="no-imprimir mb-2 flex justify-end">
+          <button
+            type="button"
+            onClick={nuevoTrabajo}
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 hover:border-slate-500"
+          >
+            <RotateCcw size={14} aria-hidden="true" /> Nuevo inicio (vaciar datos)
+          </button>
+        </div>
+      )}
       <CabeceraEditorial titulo="Iniciar un sistema" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
           Los parámetros de partida con las reglas del capítulo, y la preparación, la puesta en

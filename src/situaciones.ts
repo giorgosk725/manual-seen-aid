@@ -1,3 +1,4 @@
+import { normalizar } from "./busqueda";
 /* Situaciones de «Situación y sistema» (filas de las Tablas 4 y 6) y los identificadores de
    sistema en la dirección. Datos de interfaz, sin texto propio: la conducta es la celda
    literal de la tabla. Los usa la pantalla (Recorridos.tsx) y el índice de búsqueda (para
@@ -304,5 +305,188 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
       { texto: "Explorar criterios de elección", ruta: "#/sistemas/elegir" },
     ],
   },
+  // 0.63.0 (auditoría de la 0.61, S61-03): los temas del apartado 10 que solo enlazaban al
+  // capítulo, por momentos. Cada momento son frases literales de su párrafo; los rótulos son de
+  // la app. Sin texto clínico nuevo.
+  {
+    id: "enfermedad-intercurrente",
+    etiqueta: "Enfermedad intercurrente y riesgo de cetosis",
+    intro:
+      "Qué cambia con la enfermedad, qué hacer si hay cetosis con glucosa normal o baja y cuándo pasar a la Figura 3. La enfermedad leve sin sospecha de fallo, sistema a sistema, está en la Tabla 4.",
+    fuente: "p. 20",
+    pagina: 20,
+    rotuloGuion: "Por momentos",
+    guion: [
+      { rotulo: "Qué cambia", apartado: S, bloque: "b27", k: [0] },
+      { rotulo: "Qué hacer: el plan de seguridad", apartado: S, bloque: "b27", k: [1] },
+      {
+        rotulo: "Cetosis con glucosa normal o baja: no suspender la insulina",
+        apartado: S,
+        bloque: "b27",
+        k: [2],
+      },
+      {
+        rotulo: "Hiperglucemia persistente o sospecha de cetosis",
+        apartado: S,
+        bloque: "b27",
+        k: [3],
+      },
+    ],
+    enlaces: [
+      { texto: "Hiperglucemia y cetonemia (Figura 3)", ruta: "#/consultar/figura-3" },
+      {
+        texto: "Enfermedad leve, sin sospecha de fallo (Tabla 4)",
+        ruta: "#/consultar/situacion/necesidad-transitoria",
+      },
+      { texto: "Hoja para el paciente: cetonas", ruta: "#/pacientes/hoja/cetonas" },
+    ],
+  },
+  {
+    id: "glucocorticoides",
+    etiqueta: "Glucocorticoides sistémicos",
+    intro:
+      "Qué cambian, cuándo puede mantenerse el sistema y cuándo usar las funciones que intensifican la administración.",
+    fuente: "p. 20",
+    pagina: 20,
+    rotuloGuion: "Por momentos",
+    guion: [
+      { rotulo: "Qué cambian", apartado: S, bloque: "b29", k: [0] },
+      { rotulo: "Mantener el sistema, o no", apartado: S, bloque: "b29", k: [1] },
+      {
+        rotulo: "Funciones que intensifican la administración",
+        apartado: S,
+        bloque: "b29",
+        k: [2],
+      },
+    ],
+    enlaces: [
+      {
+        texto: "Sospecha de fallo de infusión (Tabla 4)",
+        ruta: "#/consultar/situacion/hiperglucemia-persistente",
+      },
+      { texto: "Hiperglucemia y cetonemia (Figura 3)", ruta: "#/consultar/figura-3" },
+    ],
+  },
+  {
+    id: "mayores",
+    etiqueta: "Población mayor con DM1",
+    intro:
+      "Qué muestran los datos, a quién incluyó la evidencia, cómo se individualizan los objetivos y qué valorar al elegir y al seguir.",
+    fuente: "p. 19",
+    pagina: 19,
+    rotuloGuion: "Por momentos",
+    guion: [
+      { rotulo: "Qué muestran los datos", apartado: S, bloque: "b17", k: [0] },
+      {
+        rotulo: "Deterioro cognitivo: a quién incluyó la evidencia",
+        apartado: S,
+        bloque: "b17",
+        k: [1],
+      },
+      { rotulo: "Objetivos según el estado funcional", apartado: S, bloque: "b17", k: [2] },
+      { rotulo: "Qué valorar al elegir", apartado: S, bloque: "b17", k: [3] },
+      { rotulo: "Deterioro progresivo: reevaluar", apartado: S, bloque: "b17", k: [4] },
+    ],
+    enlaces: [
+      { texto: "Objetivos de MCG por población (figura)", ruta: "#/visual/objetivos-mcg" },
+      { texto: "Explorar criterios de elección", ruta: "#/sistemas/elegir" },
+    ],
+  },
+  {
+    id: "dialisis",
+    etiqueta: "Diálisis y enfermedad renal avanzada",
+    intro:
+      "Qué cambia, cuándo puede mantenerse el sistema y qué ocurre en hemodiálisis y en diálisis peritoneal. La evidencia específica es limitada.",
+    fuente: "p. 20",
+    pagina: 20,
+    rotuloGuion: "Por momentos",
+    guion: [
+      { rotulo: "Qué cambia", apartado: S, bloque: "b31", k: [0] },
+      { rotulo: "Mantener el sistema", apartado: S, bloque: "b31", k: [1] },
+      { rotulo: "Hemodiálisis", apartado: S, bloque: "b31", k: [2] },
+      { rotulo: "Diálisis peritoneal", apartado: S, bloque: "b31", k: [3] },
+      { rotulo: "Evidencia y seguridad", apartado: S, bloque: "b31", k: [4, 5] },
+    ],
+    enlaces: [
+      { texto: "Parámetros de cada sistema (Tabla 3)", ruta: "#/sistemas/todos/parametros" },
+    ],
+  },
+  {
+    id: "adolescencia",
+    etiqueta: "Adolescencia y transición",
+    intro:
+      "Bolos omitidos, banderas rojas, alcohol, seguimiento compartido con la familia y el traspaso de pediatría a adultos.",
+    fuente: "p. 18",
+    pagina: 18,
+    rotuloGuion: "Por momentos",
+    guion: [
+      { rotulo: "Una etapa de vulnerabilidad: los bolos", apartado: S, bloque: "b13" },
+      {
+        rotulo: "Banderas rojas: conducta alimentaria y diabulimia",
+        apartado: S,
+        bloque: "b14",
+        k: [0, 1],
+      },
+      { rotulo: "Alcohol", apartado: S, bloque: "b14", k: [2] },
+      {
+        rotulo: "Seguimiento compartido con los progenitores",
+        apartado: S,
+        bloque: "b15",
+        k: [0, 1],
+      },
+      { rotulo: "Transición a adultos: el traspaso", apartado: S, bloque: "b15", k: [2, 3] },
+      { rotulo: "En cada descarga", apartado: S, bloque: "b15", k: [4] },
+    ],
+    enlaces: [
+      { texto: "Bolos omitidos o retrasados (apartado 9)", ruta: "#/capitulo/09-descarga/b20" },
+    ],
+  },
 ];
 export const situacionGuia = (id?: string) => SITUACIONES_GUIA.find((x) => x.id === id);
+
+/* Otros nombres con los que se busca cada situación (S61-02): siglas y palabras de la consulta.
+   Las siglas cortas (hasta 3 letras) solo casan con una palabra entera: «tac» no es «gestación». */
+export const ALIAS: Record<string, string[]> = {
+  rm: ["rm", "rmn", "resonancia"],
+  tc: ["tc", "tac", "tomografia", "escaner", "scanner"],
+  rx: ["rx", "radiografia", "dexa", "densitometria"],
+  pet: ["pet", "radioterapia", "medicina nuclear", "gammagrafia"],
+  diatermia: ["bisturi", "electrocirugia", "diatermia"],
+  eco: [
+    "eco",
+    "ecografia",
+    "ecg",
+    "electrocardiograma",
+    "endoscopia",
+    "colonoscopia",
+    "gastroscopia",
+  ],
+  "cirugia-corta": ["cirugia", "quirofano", "operacion", "intervencion"],
+  "cirugia-larga": ["cirugia", "quirofano", "operacion", "intervencion"],
+  "ingreso-hospitalario": ["ingreso", "hospital", "planta", "hospitalizado"],
+  sueno: ["noche", "nocturno", "dormir", "sueno"],
+  "comida-grasa": ["grasa", "proteina", "pizza"],
+  "ejercicio-aerobico": ["deporte", "correr", "ejercicio", "aerobico"],
+  "ejercicio-anaerobico": ["deporte", "pesas", "ejercicio", "anaerobico", "intensidad"],
+  "necesidad-transitoria": ["menstruacion", "regla", "estres", "catarro", "enfermedad leve"],
+  "hiperglucemia-persistente": ["fallo", "set", "infusion", "cetonas"],
+  gestacion: ["embarazo", "embarazada", "parto", "posparto", "gestante"],
+  "enfermedad-intercurrente": ["enfermedad", "fiebre", "vomitos", "gripe", "cetosis", "cetonas"],
+  glucocorticoides: ["corticoides", "prednisona", "dexametasona", "esteroides"],
+  dialisis: ["dialisis", "hemodialisis", "renal", "rinon"],
+  mayores: ["mayores", "ancianos", "anciano", "edad avanzada", "fragilidad"],
+  adolescencia: ["adolescente", "adolescentes", "jovenes", "transicion", "alcohol", "diabulimia"],
+};
+
+/* ¿Casa el filtro con estos textos? Cada palabra escrita debe casar; las de hasta 3 letras
+   (siglas: RM, TC, ECG) solo como palabra entera, para que «tac» no sea «gestación». */
+export function casaFiltro(filtro: string, textos: string[]): boolean {
+  const ps = normalizar(filtro).trim().split(/\s+/).filter(Boolean);
+  if (!ps.length) return true;
+  const ns = textos.map((t) => normalizar(t));
+  return ps.every((w) =>
+    w.length <= 3
+      ? ns.some((t) => t.split(/[^a-z0-9ñ]+/).includes(w))
+      : ns.some((t) => t.includes(w)),
+  );
+}

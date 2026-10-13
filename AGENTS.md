@@ -14,7 +14,10 @@ insulínico del paciente con diabetes mellitus tipo 1: automatización de la ins
 ec-europe). Readers are senior endocrinologists who READ it, LOOK THINGS UP in clinic (on the phone)
 and SEE when it changed. The SEEN may link or host it next to the chapter.
 
-It is **not** the `asistente-aid` console and does not compete with it. No calculators.
+It is **not** the `asistente-aid` console and does not compete with it. Since 0.58.0 (decision of the
+person responsible, 13-10-2026) it has ONE calculation aid: the start calculator in «Iniciar un
+sistema» (`src/calculadora.ts`), limited to Table 2 / section 8 rules plus registered starting points.
+No other calculators.
 
 ## 1. CRITICAL RULES
 
@@ -24,8 +27,10 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
    `docs/CORRECCIONES.md`; local copy `Downloads\Capitulo_AID_SEEN_PUBLICADO_08-10-2026.pdf`). Each block carries its source page. **Never invent content, never
    import text from other sources, never "improve" the author's wording.** Figures that are images
    in the PDF are transcribed box by box.
-2. **Educational, no clinical data.** No calculators, no patient inputs, no storage of anything
-   clinical. The only persisted things are reader preferences (night mode, font size) in
+2. **No clinical data stored or sent.** The only clinical inputs are the start calculator's figures
+   (doses, weight), kept in memory (`src/trabajo-inicio.ts`) and cleared with «Nuevo inicio»; no
+   identifying data, no storage of anything clinical, nothing in URLs. Any change to its rules,
+   starting points or input contract needs a registered review (`src/materiales.ts`, `calculadora`). The only persisted things are reader preferences (night mode, font size) in
    `localStorage` via `src/prefs.ts`. This keeps the SEEN free of regulatory filing.
 3. **Layer separation.**
    - Content → `src/contenido/` only (typed by `tipos.ts`; `index.ts` re-exports). One file per

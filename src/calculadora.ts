@@ -5,7 +5,7 @@
    abierta. Orden de los sistemas: columnas de la Tabla 1. */
 import { TABLAS } from "./contenido";
 
-export type Origen = "mdi" | "isci";
+export type Origen = "mdi" | "isci" | "aid";
 export type Control = "bueno" | "riesgo" | "deficiente";
 
 /* ---------- Las reglas, como las da el capítulo ---------- */
@@ -189,68 +189,134 @@ export const indicacionDe = (c: number) => celda("T1", "Indicación", c);
 export const objetivoAlgoritmoDe = (c: number) =>
   celda("T1", "Objetivo glucémico en modo automático", c);
 
-/* ---------- El cálculo ---------- */
-export type Entrada = {
+/* ---------- El cálculo (0.63.0: contrato de la auditoría de la 0.61, I61-01/02/03/09) ----------
+   - Cada campo se lee una sola vez: vacío, válido o inválido (leerCifra). Un vacío o un error no
+     son nunca un cero; el campo, el cálculo y los avisos usan la misma lectura.
+   - Sin todos los datos necesarios, o con uno inválido, no hay cifras ni propuesta.
+   - Los valores se guardan sin redondear; solo se redondean al enseñarlos (y la tasa horaria va
+     como aproximación, «≈»). La DTD que admite la ayuda va de 1 a 400 UI/día (límite de software,
+     no clínico).
+   - La comparación con la Tabla 1 (DTD y peso, nada más) gobierna la propuesta: fuera de la
+     indicación de todas las variantes, no hay propuesta; dentro de una sola variante, queda
+     pendiente confirmarla. */
+export type Lectura =
+  { estado: "vacio" } | { estado: "valido"; v: number } | { estado: "invalido"; motivo: string };
+export const LIMITES = { dosis: 400, peso: 250, dtdMin: 1, dtdMax: 400 };
+export function leerCifra(s: string, max: number): Lectura {
+  const t = s.trim();
+  if (!t) return { estado: "vacio" };
+  if (!/^\d+([.,]\d+)?$/.test(t))
+    return { estado: "invalido", motivo: "Escribe solo cifras, con coma o punto decimal." };
+  const v = Number(t.replace(",", "."));
+  if (!Number.isFinite(v)) return { estado: "invalido", motivo: "Cifra no válida." };
+  if (v > max) return { estado: "invalido", motivo: `Revisa la cifra (máximo ${max}).` };
+  return { estado: "valido", v };
+}
+
+/* Origen: plumas, bomba sin automatización u otro sistema de asa cerrada (apartado 8 y paso 1
+   de la fase Inicio). «referencia»: en MDI, una ratio y un factor propios que funcionan; en
+   bomba u otro AID, una programación que funcionaba. */
+export type Caso = {
   origen: Origen;
-  basal: number; // UI/día (MDI)
-  rapida: number; // UI/día (MDI)
-  dtdIsci: number; // UI/día (ISCI)
-  peso: number; // kg (0 = sin escribir)
-  reduccion: number; // % (MDI)
-  basalPct: number; // 40-50
+  referencia: boolean;
+  basal: string;
+  rapida: string;
+  dtd: string;
+  peso: string;
+  reduccion: number;
+  basalPct: number;
   regla: 1700 | 1800;
-  objetivo: number; // mg/dl
 };
-export type Resultado = {
-  dtdPrevia: number;
-  dtdInicial: number;
-  basalDia: number;
-  basalHora: number;
-  ratio: number;
-  factor: number;
+export type Evaluacion = {
+  faltan: string[];
+  errores: string[];
+  dtdPrevia: number | null;
+  dtdInicio: number | null;
+  /* Qué se calcula en este caso (lo demás se traslada de la pauta o programación previa). */
+  calcula: { basal: boolean; ratioFactor: boolean };
+  basalDia: number | null;
+  basalHora: number | null;
+  ratio: number | null;
+  factor: number | null;
+  indicacion: { fuera: string[]; variante: string | null };
+  /* Todo lo necesario, sin errores ni datos fuera de la indicación comprobada. */
+  lista: boolean;
 };
+/* Control-IQ y CamAPS FX arrancan «tras introducir peso y DTD» (Tabla 2). */
+export const pidePesoYDtd = (c?: number) => c === 1 || c === 2;
 
-const r1 = (x: number) => Math.round(x * 10) / 10;
-const r2 = (x: number) => Math.round(x * 100) / 100;
-
-export function calcular(e: Entrada): Resultado | null {
-  const dtdPrevia = e.origen === "mdi" ? e.basal + e.rapida : e.dtdIsci;
-  if (!(dtdPrevia > 0)) return null;
-  const dtdInicial = e.origen === "mdi" ? dtdPrevia * (1 - e.reduccion / 100) : dtdPrevia;
-  const basalDia = (dtdInicial * e.basalPct) / 100;
+export function evaluar(c: number | undefined, k: Caso): Evaluacion {
+  const faltan: string[] = [];
+  const errores: string[] = [];
+  const lee = (s: string, max: number, nombre: string, necesario: boolean) => {
+    const l = leerCifra(s, max);
+    if (l.estado === "vacio" && necesario) faltan.push(nombre);
+    if (l.estado === "invalido") errores.push(`${nombre}: ${l.motivo}`);
+    return l.estado === "valido" ? l.v : null;
+  };
+  const mdi = k.origen === "mdi";
+  const basal = mdi ? lee(k.basal, LIMITES.dosis, "Insulina basal", true) : null;
+  const rapida = mdi ? lee(k.rapida, LIMITES.dosis, "Insulina rápida", true) : null;
+  const dtdEscrita = mdi
+    ? null
+    : lee(k.dtd, LIMITES.dosis, "DTD actual", !k.referencia || pidePesoYDtd(c));
+  const peso = lee(k.peso, LIMITES.peso, "Peso", pidePesoYDtd(c));
+  let dtdPrevia = mdi ? (basal !== null && rapida !== null ? basal + rapida : null) : dtdEscrita;
+  if (dtdPrevia !== null && (dtdPrevia < LIMITES.dtdMin || dtdPrevia > LIMITES.dtdMax)) {
+    errores.push(
+      `La DTD (${coma(redondea(dtdPrevia, 1))} UI/día) queda fuera de lo que admite esta ayuda (${LIMITES.dtdMin}–${LIMITES.dtdMax} UI/día).`,
+    );
+    dtdPrevia = null;
+  }
+  const dtdInicio =
+    dtdPrevia === null ? null : mdi ? dtdPrevia * (1 - k.reduccion / 100) : dtdPrevia;
+  const calcula = { basal: mdi || !k.referencia, ratioFactor: !k.referencia };
+  // Al trasladar una programación, la DTD solo hace falta si el sistema la pide para arrancar.
+  const necesitaDtd = mdi || !k.referencia || pidePesoYDtd(c);
+  const completo = !faltan.length && !errores.length && (dtdInicio !== null || !necesitaDtd);
+  const basalDia =
+    completo && calcula.basal && dtdInicio !== null ? (dtdInicio * k.basalPct) / 100 : null;
+  const indicacion = { fuera: [] as string[], variante: null as string | null };
+  if (c !== undefined) {
+    const vs = INDICACION[c];
+    const ok = vs.filter(
+      (v) =>
+        (dtdInicio === null || dentro(dtdInicio, v.dtd)) && (peso === null || dentro(peso, v.peso)),
+    );
+    if (!ok.length) {
+      if (dtdInicio !== null && vs.every((v) => !dentro(dtdInicio, v.dtd)))
+        indicacion.fuera.push(
+          `La DTD de inicio (${coma(redondea(dtdInicio, 1))} UI/día) queda fuera de la indicación de ${vs.map((v) => v.nombre).join(" y ")}.`,
+        );
+      if (peso !== null && vs.every((v) => !dentro(peso, v.peso)))
+        indicacion.fuera.push(
+          `El peso (${coma(peso)} kg) queda fuera de la indicación de ${vs.map((v) => v.nombre).join(" y ")}.`,
+        );
+      if (!indicacion.fuera.length)
+        indicacion.fuera.push(
+          `Con esta DTD y este peso no entra en la indicación de ninguna variante (${vs.map((v) => v.nombre).join(", ")}).`,
+        );
+    } else if (ok.length < vs.length)
+      indicacion.variante = `Con estas cifras entra en la indicación de ${ok.map((v) => v.nombre).join(" y ")}, no en la de ${vs
+        .filter((v) => !ok.includes(v))
+        .map((v) => v.nombre)
+        .join(" y ")}: confirma la variante.`;
+  }
   return {
-    dtdPrevia: r1(dtdPrevia),
-    dtdInicial: r1(dtdInicial),
-    basalDia: r1(basalDia),
-    basalHora: r2(basalDia / 24),
-    ratio: r1(450 / dtdInicial),
-    factor: Math.round(e.regla / dtdInicial),
+    faltan,
+    errores,
+    dtdPrevia,
+    dtdInicio,
+    calcula,
+    basalDia,
+    basalHora: basalDia === null ? null : basalDia / 24,
+    ratio: completo && calcula.ratioFactor && dtdInicio !== null ? 450 / dtdInicio : null,
+    factor: completo && calcula.ratioFactor && dtdInicio !== null ? k.regla / dtdInicio : null,
+    indicacion,
+    lista: completo && !indicacion.fuera.length,
   };
 }
 
-/* Avisos de la Tabla 1 para el sistema elegido: qué variante deja fuera la DTD o el peso. */
-export function fueraDeIndicacion(c: number, dtd: number, peso: number): string[] {
-  const avisos: string[] = [];
-  const vs = INDICACION[c];
-  const dtdFuera = vs.filter((v) => !dentro(dtd, v.dtd));
-  if (dtdFuera.length)
-    avisos.push(
-      `La DTD de inicio (${String(dtd).replace(".", ",")} UI/día) queda fuera de la indicación de ${dtdFuera.map((v) => v.nombre).join(" y ")}.`,
-    );
-  if (peso > 0) {
-    const pesoFuera = vs.filter((v) => !dentro(peso, v.peso));
-    if (pesoFuera.length)
-      avisos.push(
-        `El peso (${peso} kg) queda fuera de la indicación de ${pesoFuera.map((v) => v.nombre).join(" y ")}.`,
-      );
-  }
-  return avisos;
-}
-
-/* Límites de lo que se acepta en los campos (para no calcular con un error de tecleo). */
-export const LIMITES = { dosis: 400, peso: 250 };
-export const num = (s: string) => {
-  const v = Number(s.replace(",", "."));
-  return Number.isFinite(v) && v >= 0 ? v : 0;
-};
+/* Redondeo solo para enseñar. */
+export const redondea = (x: number, d: number) => Math.round(x * 10 ** d) / 10 ** d;
 export const coma = (x: number) => String(x).replace(".", ",");

@@ -1,15 +1,22 @@
 /* Calculadora de parámetros iniciales (#/consultar/inicio/calculadora[:<sistema>]): de qué
    tratamiento viene, qué sistema, las dosis, y salen la DTD de inicio, la basal, la ratio, el
    factor y qué programar en ese sistema. Solo las reglas de la Tabla 2 y del apartado 8
-   (calculadora.ts); lo escrito vive en memoria mientras la app está abierta. */
-import { useState, type ReactNode } from "react";
+   (calculadora.ts). 0.63.0 (auditoría de la 0.61): una sola lectura de cada campo; sin datos
+   completos y válidos no hay cifras; la comparación con la Tabla 1 decide si hay propuesta; la
+   pauta previa se comparte con los pasos (trabajo-inicio.ts) y «Nuevo inicio» lo vacía todo. */
+import type { ReactNode } from "react";
 import {
   Activity,
   AlertTriangle,
+  ArrowRight,
   Calculator,
+  CalendarCheck,
+  Check,
   Moon,
   Pen,
+  Power,
   RefreshCw,
+  Repeat,
   ShieldCheck,
   SlidersHorizontal,
   Syringe,
@@ -23,61 +30,46 @@ import {
   DESDE_ISCI,
   INICIALIZACION,
   LIMITES,
-  RECAMBIOS,
-  aprendizajeDe,
-  gruposDeProgramar,
-  materialDe,
-  modosDe,
   NUCLEO_COMUN,
   OBJETIVOS_CALCULADOR,
+  RECAMBIOS,
   REGLAS,
-  calcular,
+  aprendizajeDe,
   coma,
-  fueraDeIndicacion,
+  evaluar,
+  gruposDeProgramar,
   indicacionDe,
-  num,
+  leerCifra,
+  materialDe,
+  modosDe,
   objetivoAlgoritmoDe,
-  reduccionDePartida,
   papelEnAutomatico,
+  pidePesoYDtd,
+  redondea,
+  reduccionDePartida,
   type Clave,
   type Control,
+  type Evaluacion,
   type Origen,
 } from "../calculadora";
 import { TABLAS, rutaDeTabla } from "../contenido";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { SIS_IDS } from "../situaciones";
 import { href } from "../rutas";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { FuentePie } from "./FuentePie";
+import { cambiarCalculadora, useTrabajo } from "../trabajo-inicio";
 
 const hex = CATEGORIA_HEX.consultar;
 const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
-
-/* Lo escrito sigue al cambiar de fase y volver, mientras la app está abierta. */
-const memoria = {
-  origen: "mdi" as Origen,
-  basal: "",
-  rapida: "",
-  dtdIsci: "",
-  peso: "",
-  control: "bueno" as Control,
-  reduccion: 10,
-  basalPct: 45,
-  regla: 1700 as 1700 | 1800,
-  objetivo: 100,
-  ultralarga: false,
-  isciFunciona: true,
+/* La pauta previa, por origen: lo que se traslada y lo que se calcula (apartado 8, p. 12). */
+const PREVIA: Record<Origen, string> = {
+  mdi: "su pauta",
+  isci: "la bomba actual",
+  aid: "el sistema actual",
 };
-
-function useMemoria<K extends keyof typeof memoria>(k: K) {
-  const [v, setV] = useState(memoria[k]);
-  return [
-    v,
-    (x: (typeof memoria)[K]) => {
-      memoria[k] = x;
-      setV(x);
-    },
-  ] as const;
-}
+const PARTIDA_MDI =
+  "La fuente de partida es la pauta previa del paciente, trasladada al esquema del sistema elegido";
 
 function Paso({ n, titulo, children }: { n: number; titulo: string; children: ReactNode }) {
   return (
@@ -102,15 +94,21 @@ function Opciones<T extends string | number>({
   opciones,
   valor,
   onChange,
+  marca,
 }: {
   etiqueta: string;
   opciones: { v: T; t: ReactNode }[];
   valor: T;
   onChange: (v: T) => void;
+  /* «punto de partida» / «modificado», junto al rótulo. */
+  marca?: ReactNode;
 }) {
   return (
     <div>
-      <div className="mb-1 text-sm font-semibold text-slate-800">{etiqueta}</div>
+      <div className="mb-1 flex flex-wrap items-baseline gap-x-2 text-sm font-semibold text-slate-800">
+        {etiqueta}
+        {marca}
+      </div>
       <div role="group" aria-label={etiqueta} className="flex flex-wrap gap-1.5">
         {opciones.map((o) => {
           const on = o.v === valor;
@@ -120,7 +118,7 @@ function Opciones<T extends string | number>({
               type="button"
               aria-pressed={on}
               onClick={() => onChange(o.v)}
-              className={`inline-flex min-h-11 items-center rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
+              className={`inline-flex min-h-11 items-center rounded-full border px-3 text-left text-sm font-semibold leading-tight transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
               style={
                 on ? { background: "#334155", borderColor: "#334155" } : { borderColor: "#d4d4d4" }
               }
@@ -134,9 +132,29 @@ function Opciones<T extends string | number>({
   );
 }
 
+function Marca({ modificado, onRestablecer }: { modificado: boolean; onRestablecer?: () => void }) {
+  return modificado ? (
+    <span className="text-xs font-semibold text-amber-900">
+      modificado
+      {onRestablecer && (
+        <button
+          type="button"
+          onClick={onRestablecer}
+          className="ml-1.5 inline-flex min-h-11 items-center font-semibold text-slate-700 underline underline-offset-2 sm:min-h-6"
+        >
+          volver al punto de partida
+        </button>
+      )}
+    </span>
+  ) : (
+    <span className="text-xs font-normal text-slate-500">punto de partida</span>
+  );
+}
+
 function Campo({
   id,
   etiqueta,
+  ayuda,
   unidad,
   valor,
   onChange,
@@ -144,17 +162,19 @@ function Campo({
 }: {
   id: string;
   etiqueta: string;
+  ayuda?: string;
   unidad: string;
   valor: string;
   onChange: (v: string) => void;
   max: number;
 }) {
-  const v = num(valor);
-  const error = valor !== "" && (v > max || !/^\d+([.,]\d+)?$/.test(valor.trim()));
+  const l = leerCifra(valor, max);
+  const error = l.estado === "invalido" ? l.motivo : null;
   return (
     <div>
       <label htmlFor={id} className="mb-1 block text-sm font-semibold text-slate-800">
         {etiqueta}
+        {ayuda && <span className="block text-xs font-normal text-slate-500">{ayuda}</span>}
       </label>
       <div className="flex items-center gap-2">
         <input
@@ -163,9 +183,9 @@ function Campo({
           autoComplete="off"
           value={valor}
           onChange={(e) => onChange(e.target.value)}
-          aria-invalid={error || undefined}
+          aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
-          placeholder="0"
+          placeholder="—"
           className="h-12 w-full min-w-0 rounded-lg border bg-white px-3 text-lg tabular-nums text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           style={{ borderColor: error ? "#b91c1c" : "#cbd5e1" }}
         />
@@ -173,7 +193,7 @@ function Campo({
       </div>
       {error && (
         <p id={`${id}-error`} className="mt-1 text-xs font-semibold text-red-800">
-          Revisa la cifra (entre 0 y {max}).
+          {error}
         </p>
       )}
     </div>
@@ -221,6 +241,64 @@ const NOMBRE_CLAVE: Record<Clave, string> = {
   ia: "Duración de la insulina activa",
 };
 
+/* Lo que bloquea o deja pendiente la propuesta, siempre antes de las cifras (I61-03). */
+function Estado({ ev, sis }: { ev: Evaluacion; sis?: number }) {
+  return (
+    <div className="space-y-2" aria-live="polite">
+      {ev.indicacion.fuera.length > 0 && sis !== undefined && (
+        <div
+          role="alert"
+          className="rounded-xl border-2 px-3 py-2 text-sm text-red-900"
+          style={{ borderColor: "#fca5a5", background: "#fef2f2" }}
+        >
+          <p className="flex items-center gap-1.5 font-bold">
+            <AlertTriangle size={16} aria-hidden="true" /> Fuera de la indicación: no hay propuesta
+          </p>
+          <ul className="mt-1 list-disc pl-5">
+            {ev.indicacion.fuera.map((a) => (
+              <li key={a}>{a}</li>
+            ))}
+          </ul>
+          <p className="mt-1 text-xs">
+            Indicación de {CORTOS[sis]}: «{indicacionDe(sis).replace(/\n/g, " · ")}».
+          </p>
+        </div>
+      )}
+      {ev.errores.length > 0 && (
+        <ul
+          className="list-disc rounded-lg border px-3 py-2 pl-7 text-sm font-semibold text-red-900"
+          style={{ borderColor: "#fca5a5", background: "#fef2f2" }}
+        >
+          {ev.errores.map((e) => (
+            <li key={e}>{e}</li>
+          ))}
+        </ul>
+      )}
+      {ev.faltan.length > 0 && (
+        <p
+          className="rounded-lg border border-dashed px-3 py-3 text-center text-sm text-slate-700"
+          style={{ borderColor: "#cbd5e1" }}
+        >
+          <Calculator size={18} className="mx-auto mb-1 text-slate-400" aria-hidden="true" />
+          Falta: {ev.faltan.join(", ").toLowerCase()}.
+        </p>
+      )}
+      {ev.indicacion.variante && (
+        <p
+          role="note"
+          className="flex gap-2 rounded-lg border px-3 py-2 text-sm text-amber-900"
+          style={{ borderColor: "#f3d38a", background: "#fffbeb" }}
+        >
+          <AlertTriangle size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
+          <span>
+            {ev.indicacion.variante} Indicación: «{indicacionDe(sis!).replace(/\n/g, " · ")}».
+          </span>
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function CalculadoraInicio({
   sis,
   onSistema,
@@ -228,73 +306,78 @@ export function CalculadoraInicio({
   sis?: number;
   onSistema: (c: number) => void;
 }) {
-  const [origen, setOrigen] = useMemoria("origen");
-  const [basal, setBasal] = useMemoria("basal");
-  const [rapida, setRapida] = useMemoria("rapida");
-  const [dtdIsci, setDtdIsci] = useMemoria("dtdIsci");
-  const [peso, setPeso] = useMemoria("peso");
-  const [control, setControl] = useMemoria("control");
-  const [reduccion, setReduccion] = useMemoria("reduccion");
-  const [basalPct, setBasalPct] = useMemoria("basalPct");
-  const [regla, setRegla] = useMemoria("regla");
-  const [objetivo, setObjetivo] = useMemoria("objetivo");
-  const [ultralarga, setUltralarga] = useMemoria("ultralarga");
-  const [isciFunciona, setIsciFunciona] = useMemoria("isciFunciona");
+  const { calc: d } = useTrabajo();
+  const set = cambiarCalculadora;
+  const mdi = d.origen === "mdi";
+  const previa = PREVIA[d.origen];
 
   const elegirControl = (c: Control) => {
     const x = CONTROLES.find((k) => k.id === c)!;
-    setControl(c);
-    setReduccion(reduccionDePartida(c, ultralarga));
-    setRegla(x.regla);
-    if (c === "riesgo") setObjetivo(120);
+    // Lo cambiado a mano se respeta; lo que sigue en su valor de partida acompaña al control.
+    set({
+      control: c,
+      ...(d.tocado.reduccion ? {} : { reduccion: reduccionDePartida(c, d.ultralarga) }),
+      ...(d.tocado.regla ? {} : { regla: x.regla }),
+      ...(d.tocado.objetivo ? {} : { objetivo: c === "riesgo" ? 120 : 100 }),
+    });
   };
-  const invalido = (s: string, max: number) => s !== "" && num(s) > max;
-  const calculaIsci = origen === "isci" && !isciFunciona;
-  const r =
-    (origen === "mdi" && !invalido(basal, LIMITES.dosis) && !invalido(rapida, LIMITES.dosis)) ||
-    (calculaIsci && !invalido(dtdIsci, LIMITES.dosis))
-      ? calcular({
-          origen,
-          basal: num(basal),
-          rapida: num(rapida),
-          dtdIsci: num(dtdIsci),
-          peso: num(peso),
-          reduccion,
-          basalPct,
-          regla,
-          objetivo,
-        })
-      : null;
+  const ev = evaluar(sis, {
+    origen: d.origen,
+    referencia: d.referencia,
+    basal: d.basal,
+    rapida: d.rapida,
+    dtd: d.dtd,
+    peso: d.peso,
+    reduccion: d.reduccion,
+    basalPct: d.basalPct,
+    regla: d.regla,
+  });
   const h = sis !== undefined ? SISTEMA_HEX[sis] : null;
   const color = h?.ink ?? "#1f2f5c";
-  const pesoKg = invalido(peso, LIMITES.peso) ? 0 : num(peso);
-  const avisos = r && sis !== undefined ? fueraDeIndicacion(sis, r.dtdInicial, pesoKg) : [];
+  const peso = leerCifra(d.peso, LIMITES.peso);
+  const pideObjetivo = mdi || !d.referencia;
+  const ruta = (fase: string, tarea = "") =>
+    href(
+      "consultar",
+      "inicio",
+      [fase, sis !== undefined ? SIS_IDS[sis] : "", tarea].join(":").replace(/:+$/, ""),
+    );
 
   const valorDe = (k: Clave, c: number): ReactNode => {
-    const aCalcular = origen === "mdi" || calculaIsci;
-    const desdeBomba = (
-      <span className="font-normal italic text-slate-600">el de la bomba actual</span>
+    const traslado = (
+      <span className="font-normal italic text-slate-600">
+        {k === "basal" ? "la de" : "el de"} {previa}
+      </span>
     );
+    const sinPropuesta = <span className="font-normal text-slate-500">—</span>;
     switch (k) {
       case "peso":
-        return pesoKg > 0 ? (
-          `${coma(pesoKg)} kg`
+        return peso.estado === "valido" ? (
+          `${coma(peso.v)} kg`
         ) : (
-          <span className="font-normal italic text-slate-600">escribe el peso</span>
+          <span className="font-normal italic text-slate-600">falta el peso</span>
         );
       case "dtd":
-        return r ? `${coma(r.dtdInicial)} UI/día` : "—";
+        return ev.lista && ev.dtdInicio !== null
+          ? `${coma(redondea(ev.dtdInicio, 1))} UI/día`
+          : sinPropuesta;
       case "basal":
-        if (!aCalcular) return desdeBomba;
-        return r ? `${coma(r.basalHora)} UI/h (basal plana; ${coma(r.basalDia)} UI/día)` : "—";
+        if (!ev.calcula.basal) return traslado;
+        return ev.lista && ev.basalHora !== null && ev.basalDia !== null
+          ? `≈ ${coma(redondea(ev.basalHora, 2))} UI/h (basal plana; ${coma(redondea(ev.basalDia, 1))} UI/día)`
+          : sinPropuesta;
       case "factor":
-        if (!aCalcular) return desdeBomba;
-        return r ? `1 UI por ${r.factor} mg/dl` : "—";
+        if (!ev.calcula.ratioFactor) return mdi ? "el de su pauta" : traslado;
+        return ev.lista && ev.factor !== null
+          ? `1 UI por ${Math.round(ev.factor)} mg/dl`
+          : sinPropuesta;
       case "ratio":
-        if (!aCalcular) return desdeBomba;
-        return r ? `1 UI por ${coma(r.ratio)} g de HC` : "—";
+        if (!ev.calcula.ratioFactor) return mdi ? "la de su pauta" : traslado;
+        return ev.lista && ev.ratio !== null
+          ? `1 UI por ${coma(redondea(ev.ratio, 1))} g de HC`
+          : sinPropuesta;
       case "objetivo":
-        return `${objetivo} mg/dl`;
+        return pideObjetivo ? `${d.objetivo} mg/dl` : traslado;
       case "objetivoAlg":
         return <span className="font-normal">{objetivoAlgoritmoDe(c).replace(/\n/g, " · ")}</span>;
       case "ia":
@@ -311,22 +394,69 @@ export function CalculadoraInicio({
 
   return (
     <div className="space-y-5">
+      {/* La calculadora es una ayuda dentro del inicio: el respaldo, la activación y el
+          calendario, a un toque (I61-04/08). */}
+      <nav
+        aria-label="El resto del inicio"
+        className="overflow-hidden rounded-md border bg-white"
+        style={{ borderColor: "#e6e6e6" }}
+      >
+        <div
+          className="px-3 pb-0.5 pt-2 text-xs font-bold uppercase tracking-wide"
+          style={{ color: hex.ink }}
+        >
+          El resto del inicio
+        </div>
+        <ul
+          className="divide-y sm:grid sm:grid-cols-4 sm:divide-y-0"
+          style={{ borderColor: "#eeeeee" }}
+        >
+          {[
+            { t: "Preparación", r: ruta("preparacion"), I: Check },
+            { t: "Plan de respaldo", r: ruta("inicio", "respaldo"), I: ShieldCheck },
+            { t: "Activar el automático", r: ruta("inicio", "arranque"), I: Power },
+            {
+              t: "Calendario de revisiones",
+              r: ruta("primeros-meses", "calendario"),
+              I: CalendarCheck,
+            },
+          ].map((x) => (
+            <li key={x.t}>
+              <a
+                href={x.r}
+                className="flex min-h-11 items-center gap-2 px-3 py-1.5 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
+              >
+                <x.I
+                  size={15}
+                  className="shrink-0"
+                  style={{ color: hex.strong }}
+                  aria-hidden="true"
+                />
+                <span className="min-w-0 flex-1 font-semibold text-slate-900">{x.t}</span>
+                <ArrowRight size={13} className="shrink-0 text-slate-400" aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
       <Paso n={1} titulo="¿De qué tratamiento viene?">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-3 gap-2">
           {(
             [
-              { v: "mdi", t: "MDI", d: "Plumas: basal y rápida", I: Pen },
-              { v: "isci", t: "Bomba de insulina", d: "ISCI", I: Syringe },
+              { v: "mdi", t: "MDI", dd: "Plumas: basal y rápida", I: Pen },
+              { v: "isci", t: "Bomba de insulina", dd: "ISCI sin automatización", I: Syringe },
+              { v: "aid", t: "Otro sistema AID", dd: "Cambio de sistema", I: Repeat },
             ] as const
           ).map((o) => {
-            const on = origen === o.v;
+            const on = d.origen === o.v;
             return (
               <button
                 key={o.v}
                 type="button"
                 aria-pressed={on}
-                onClick={() => setOrigen(o.v)}
-                className="flex min-h-20 flex-col items-center justify-center gap-1 rounded-xl border-2 px-2 py-3 text-center transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                onClick={() => set({ origen: o.v })}
+                className="flex min-h-20 flex-col items-center justify-center gap-1 rounded-xl border-2 px-1 py-3 text-center transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                 style={
                   on
                     ? { borderColor: hex.strong, background: hex.soft }
@@ -334,8 +464,10 @@ export function CalculadoraInicio({
                 }
               >
                 <o.I size={22} aria-hidden="true" style={{ color: on ? hex.strong : "#64748b" }} />
-                <span className="text-base font-extrabold text-slate-900">{o.t}</span>
-                <span className="text-xs text-slate-600">{o.d}</span>
+                <span className="text-sm font-extrabold leading-tight text-slate-900 sm:text-base">
+                  {o.t}
+                </span>
+                <span className="text-[11px] leading-tight text-slate-600 sm:text-xs">{o.dd}</span>
               </button>
             );
           })}
@@ -375,51 +507,84 @@ export function CalculadoraInicio({
             );
           })}
         </div>
+        {sis === 2 && (
+          <p className="text-xs text-slate-600">
+            La inicialización de la Tabla 2 es la de CamAPS FX. Liberty, en la Tabla 1: «Liberty:
+            &gt; 13 años».
+          </p>
+        )}
       </Paso>
 
-      <Paso n={3} titulo={origen === "mdi" ? "Dosis actuales y perfil" : "Programación actual"}>
-        {origen === "mdi" ? (
+      <Paso n={3} titulo={mdi ? "Dosis actuales y perfil" : "Programación actual"}>
+        {mdi ? (
           <div className="space-y-4">
             <div className="grid gap-3 sm:grid-cols-3">
               <Campo
                 id="calc-basal"
                 etiqueta="Insulina basal"
                 unidad="UI/día"
-                valor={basal}
-                onChange={setBasal}
+                valor={d.basal}
+                onChange={(v) => set({ basal: v })}
                 max={LIMITES.dosis}
               />
               <Campo
                 id="calc-rapida"
                 etiqueta="Insulina rápida"
+                ayuda="De un día; escribe 0 si no lleva"
                 unidad="UI/día"
-                valor={rapida}
-                onChange={setRapida}
+                valor={d.rapida}
+                onChange={(v) => set({ rapida: v })}
                 max={LIMITES.dosis}
               />
               <Campo
                 id="calc-peso"
                 etiqueta="Peso"
+                ayuda={
+                  pidePesoYDtd(sis)
+                    ? `${CORTOS[sis!]} lo pide para arrancar`
+                    : "Para comprobar la indicación"
+                }
                 unidad="kg"
-                valor={peso}
-                onChange={setPeso}
+                valor={d.peso}
+                onChange={(v) => set({ peso: v })}
                 max={LIMITES.peso}
               />
             </div>
             <Opciones
+              etiqueta="Ratio y factor de sensibilidad"
+              opciones={[
+                { v: "no", t: "Sin referencia: reglas del 450 y del 1700" },
+                { v: "si", t: "Tiene unos propios que funcionan" },
+              ]}
+              valor={d.referencia ? "si" : "no"}
+              onChange={(v) => set({ referencia: v === "si" })}
+            />
+            {d.referencia && <p className="text-xs text-slate-600">{PARTIDA_MDI}.</p>}
+            <Opciones
               etiqueta="Control previo"
               opciones={CONTROLES.map((c) => ({ v: c.id, t: c.texto }))}
-              valor={control}
+              valor={d.control}
               onChange={elegirControl}
             />
             <div>
               <label
                 htmlFor="calc-reduccion"
-                className="mb-1 flex items-baseline justify-between text-sm font-semibold text-slate-800"
+                className="mb-1 flex flex-wrap items-baseline justify-between gap-x-2 text-sm font-semibold text-slate-800"
               >
-                <span>Reducción de la DTD</span>
+                <span>
+                  Reducción de la DTD{" "}
+                  <Marca
+                    modificado={d.tocado.reduccion}
+                    onRestablecer={() =>
+                      set({
+                        reduccion: reduccionDePartida(d.control, d.ultralarga),
+                        tocado: { ...d.tocado, reduccion: false },
+                      })
+                    }
+                  />
+                </span>
                 <span className="text-lg font-extrabold tabular-nums" style={{ color: hex.strong }}>
-                  {reduccion} %
+                  {d.reduccion} %
                 </span>
               </label>
               <input
@@ -428,8 +593,13 @@ export function CalculadoraInicio({
                 min={0}
                 max={20}
                 step={5}
-                value={reduccion}
-                onChange={(e) => setReduccion(Number(e.target.value))}
+                value={d.reduccion}
+                onChange={(e) =>
+                  set({
+                    reduccion: Number(e.target.value),
+                    tocado: { ...d.tocado, reduccion: true },
+                  })
+                }
                 className="h-11 w-full"
                 style={{ accentColor: hex.strong }}
               />
@@ -446,20 +616,24 @@ export function CalculadoraInicio({
               <p className="mt-1 text-xs text-slate-600">{REGLAS.reduccion.texto}.</p>
               <p className="mt-1 text-xs font-semibold text-slate-700">
                 Es un punto de partida dentro del intervalo del capítulo: ajústalo.
-                {control === "bueno" &&
-                  ultralarga &&
+                {d.control === "bueno" &&
+                  d.ultralarga &&
+                  !d.tocado.reduccion &&
                   " Con glargina U–300 o degludec y buen control previo parte del 20 %, por el riesgo de hipoglucemia de los primeros días."}
               </p>
             </div>
             <label className="flex min-h-11 items-center gap-2 text-sm text-slate-800">
               <input
                 type="checkbox"
-                checked={ultralarga}
-                onChange={(e) => {
-                  setUltralarga(e.target.checked);
-                  if (control === "bueno")
-                    setReduccion(reduccionDePartida("bueno", e.target.checked));
-                }}
+                checked={d.ultralarga}
+                onChange={(e) =>
+                  set({
+                    ultralarga: e.target.checked,
+                    ...(d.control === "bueno" && !d.tocado.reduccion
+                      ? { reduccion: reduccionDePartida("bueno", e.target.checked) }
+                      : {}),
+                  })
+                }
                 className="h-6 w-6 shrink-0 accent-slate-700"
               />
               La basal previa es glargina U–300 o degludec
@@ -468,143 +642,181 @@ export function CalculadoraInicio({
         ) : (
           <div className="space-y-4">
             <Opciones
-              etiqueta="¿La programación de la bomba funcionaba?"
+              etiqueta={`¿La programación de ${previa} funcionaba?`}
               opciones={[
                 { v: "si", t: "Sí: se traslada" },
                 { v: "no", t: "No, o no hay referencia" },
               ]}
-              valor={isciFunciona ? "si" : "no"}
-              onChange={(v) => setIsciFunciona(v === "si")}
+              valor={d.referencia ? "si" : "no"}
+              onChange={(v) => set({ referencia: v === "si" })}
             />
             <p
               className="rounded-lg px-3 py-2 text-sm text-slate-800"
               style={{ background: "#f1f5f9" }}
             >
-              {isciFunciona
+              {d.referencia
                 ? `${DESDE_ISCI.trasladar.charAt(0).toUpperCase()}${DESDE_ISCI.trasladar.slice(1)}.`
                 : `${DESDE_ISCI.sinReferencia.charAt(0).toUpperCase()}${DESDE_ISCI.sinReferencia.slice(1)}. ${DESDE_ISCI.basalPlana}.`}
             </p>
+            {d.origen === "aid" && (
+              <p className="text-xs text-slate-600">
+                Al cambiar de sistema, lo que cuenta en automático no es lo mismo en todos:{" "}
+                <a
+                  href={href("sistemas", "todos", "parametros")}
+                  className="font-semibold underline"
+                >
+                  compara los parámetros
+                </a>
+                .
+              </p>
+            )}
             <div className="grid gap-3 sm:grid-cols-3">
-              {!isciFunciona && (
-                <Campo
-                  id="calc-dtd"
-                  etiqueta="DTD actual"
-                  unidad="UI/día"
-                  valor={dtdIsci}
-                  onChange={setDtdIsci}
-                  max={LIMITES.dosis}
-                />
-              )}
+              <Campo
+                id="calc-dtd"
+                etiqueta="DTD actual"
+                ayuda={
+                  !d.referencia
+                    ? "Para las reglas del 450 y del 1700"
+                    : pidePesoYDtd(sis)
+                      ? `${CORTOS[sis!]} la pide para arrancar`
+                      : "Para comprobar la indicación"
+                }
+                unidad="UI/día"
+                valor={d.dtd}
+                onChange={(v) => set({ dtd: v })}
+                max={LIMITES.dosis}
+              />
               <Campo
                 id="calc-peso"
                 etiqueta="Peso"
+                ayuda={
+                  pidePesoYDtd(sis)
+                    ? `${CORTOS[sis!]} lo pide para arrancar`
+                    : "Para comprobar la indicación"
+                }
                 unidad="kg"
-                valor={peso}
-                onChange={setPeso}
+                valor={d.peso}
+                onChange={(v) => set({ peso: v })}
                 max={LIMITES.peso}
               />
             </div>
           </div>
         )}
-        {(origen === "mdi" || calculaIsci) && (
+        {(ev.calcula.basal || ev.calcula.ratioFactor || pideObjetivo) && (
           <div className="grid gap-3 sm:grid-cols-3">
-            <Opciones
-              etiqueta="Basal, % de la DTD"
-              opciones={[40, 45, 50].map((v) => ({ v, t: `${v} %` }))}
-              valor={basalPct}
-              onChange={setBasalPct}
-            />
-            <Opciones
-              etiqueta="Factor de sensibilidad"
-              opciones={[
-                { v: 1700 as const, t: "Regla del 1700" },
-                { v: 1800 as const, t: "Regla del 1800" },
-              ]}
-              valor={regla}
-              onChange={setRegla}
-            />
-            <Opciones
-              etiqueta="Objetivo del calculador manual"
-              opciones={OBJETIVOS_CALCULADOR.map((o) => ({ v: o.mgdl, t: `${o.mgdl}` }))}
-              valor={objetivo}
-              onChange={setObjetivo}
-            />
+            {ev.calcula.basal && (
+              <Opciones
+                etiqueta="Basal, % de la DTD"
+                opciones={[40, 45, 50].map((v) => ({ v, t: `${v} %` }))}
+                valor={d.basalPct}
+                onChange={(v) => set({ basalPct: v })}
+              />
+            )}
+            {ev.calcula.ratioFactor && (
+              <Opciones
+                etiqueta="Factor de sensibilidad"
+                marca={<Marca modificado={d.tocado.regla} />}
+                opciones={[
+                  { v: 1700 as const, t: "Regla del 1700" },
+                  { v: 1800 as const, t: "Regla del 1800" },
+                ]}
+                valor={d.regla}
+                onChange={(v) => set({ regla: v, tocado: { ...d.tocado, regla: true } })}
+              />
+            )}
+            {pideObjetivo && (
+              <Opciones
+                etiqueta="Objetivo del calculador de bolos manual"
+                marca={<Marca modificado={d.tocado.objetivo} />}
+                opciones={OBJETIVOS_CALCULADOR.map((o) => ({
+                  v: o.mgdl,
+                  t: (
+                    <span>
+                      {o.mgdl} mg/dl
+                      <span className="block text-[11px] font-normal opacity-80">{o.texto}</span>
+                    </span>
+                  ),
+                }))}
+                valor={d.objetivo}
+                onChange={(v) => set({ objetivo: v, tocado: { ...d.tocado, objetivo: true } })}
+              />
+            )}
           </div>
         )}
       </Paso>
 
       <Paso n={4} titulo="Parámetros de partida">
-        {(origen === "mdi" || calculaIsci) && !r && (
-          <p
-            className="rounded-lg border border-dashed px-3 py-4 text-center text-sm text-slate-600"
-            style={{ borderColor: "#cbd5e1" }}
-          >
-            <Calculator size={18} className="mx-auto mb-1 text-slate-400" aria-hidden="true" />
-            {origen === "mdi"
-              ? "Escribe la insulina basal y la rápida de un día."
-              : "Escribe la DTD actual."}
-          </p>
-        )}
-        {r && (
+        <Estado ev={ev} sis={sis} />
+        {ev.lista && (ev.calcula.basal || ev.calcula.ratioFactor) && (
           <div aria-live="polite" className="grid grid-cols-2 gap-2 lg:grid-cols-4">
             <Cifra
               titulo="DTD de inicio"
-              valor={coma(r.dtdInicial)}
+              valor={coma(redondea(ev.dtdInicio!, 1))}
               unidad="UI/día"
               cuenta={
-                origen === "mdi"
-                  ? `${coma(r.dtdPrevia)} UI − ${reduccion} %`
-                  : `${coma(r.dtdPrevia)} UI (sin reducción)`
+                mdi
+                  ? `${coma(redondea(ev.dtdPrevia!, 1))} UI − ${d.reduccion} %`
+                  : `${coma(redondea(ev.dtdPrevia!, 1))} UI (sin reducción)`
               }
-              regla={origen === "mdi" ? "Reducción respecto a MDI" : "DTD de la bomba"}
+              regla={mdi ? "Reducción respecto a MDI" : `DTD de ${previa}`}
               color={color}
             />
-            <Cifra
-              titulo="Tasa basal"
-              valor={coma(r.basalHora)}
-              unidad="UI/h"
-              cuenta={`${basalPct} % = ${coma(r.basalDia)} UI/día ÷ 24 h`}
-              regla="Basal plana; o individualizar según MCG"
-              color={color}
-            />
-            <Cifra
-              titulo="Ratio I/HC"
-              valor={coma(r.ratio)}
-              unidad="g por 1 UI"
-              cuenta={`450 ÷ ${coma(r.dtdInicial)}`}
-              regla="Regla del 450"
-              color={color}
-            />
-            <Cifra
-              titulo="Factor de sensibilidad"
-              valor={String(r.factor)}
-              unidad="mg/dl por 1 UI"
-              cuenta={`${regla} ÷ ${coma(r.dtdInicial)}`}
-              regla={`Regla del ${regla}`}
-              color={color}
-            />
+            {ev.calcula.basal && (
+              <Cifra
+                titulo="Tasa basal"
+                valor={`≈ ${coma(redondea(ev.basalHora!, 2))}`}
+                unidad="UI/h"
+                cuenta={`${d.basalPct} % = ${coma(redondea(ev.basalDia!, 1))} UI/día ÷ 24 h (redondeado)`}
+                regla="Basal plana; o individualizar según MCG"
+                color={color}
+              />
+            )}
+            {ev.calcula.ratioFactor && (
+              <>
+                <Cifra
+                  titulo="Ratio I/HC"
+                  valor={coma(redondea(ev.ratio!, 1))}
+                  unidad="g por 1 UI"
+                  cuenta={`450 ÷ ${coma(redondea(ev.dtdInicio!, 1))}`}
+                  regla="Regla del 450"
+                  color={color}
+                />
+                <Cifra
+                  titulo="Factor de sensibilidad"
+                  valor={String(Math.round(ev.factor!))}
+                  unidad="mg/dl por 1 UI"
+                  cuenta={`${d.regla} ÷ ${coma(redondea(ev.dtdInicio!, 1))}`}
+                  regla={`Regla del ${d.regla}`}
+                  color={color}
+                />
+              </>
+            )}
           </div>
         )}
-        {(origen === "mdi" || calculaIsci) && (
+        {ev.lista && !ev.calcula.basal && !ev.calcula.ratioFactor && (
+          <p
+            className="rounded-lg px-3 py-2 text-sm text-slate-800"
+            style={{ background: "#f1f5f9" }}
+          >
+            Se traslada la programación de {previa}: no hay nada que calcular.
+          </p>
+        )}
+        {ev.lista && ev.calcula.ratioFactor && (
           <p className="text-xs text-slate-600">
-            Objetivo del calculador de bolos manual: <strong>{objetivo} mg/dl</strong>.{" "}
+            Las reglas se aplican a la DTD de inicio, la misma con la que se calcula la basal.
+          </p>
+        )}
+        <p className="text-xs text-slate-500">
+          Solo se comparan la DTD y el peso con la indicación de la Tabla 1; la edad, la gestación,
+          la variante del sistema y la experiencia previa, no.
+        </p>
+        {pideObjetivo && (
+          <p className="text-xs text-slate-600">
+            Objetivo del calculador de bolos manual: <strong>{d.objetivo} mg/dl</strong>.{" "}
             {REGLAS.objetivo.nota.replace(" (v. Tabla 1)", "")}.
           </p>
         )}
-        {avisos.map((a) => (
-          <p
-            key={a}
-            role="note"
-            className="flex gap-2 rounded-lg border px-3 py-2 text-sm text-amber-900"
-            style={{ borderColor: "#f3d38a", background: "#fffbeb" }}
-          >
-            <AlertTriangle size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
-            <span>
-              {a} Indicación: «{indicacionDe(sis!).replace(/\n/g, " · ")}».
-            </span>
-          </p>
-        ))}
-        {origen === "mdi" && ultralarga && (
+        {mdi && d.ultralarga && (
           <p
             role="note"
             className="flex gap-2 rounded-lg border px-3 py-2 text-sm text-amber-900"
@@ -634,6 +846,17 @@ export function CalculadoraInicio({
                 INICIALIZACION[sis].previo.slice(1)}
               .
             </p>
+            {!ev.lista && (
+              <p
+                className="border-t px-3 py-2 text-sm font-semibold text-slate-700"
+                style={{ borderColor: "#eceff3", background: "#f8fafc" }}
+              >
+                {ev.indicacion.fuera.length
+                  ? "Sin propuesta: hay un dato fuera de la indicación (paso 4)."
+                  : "Sin cifras hasta completar los datos del paso 3."}{" "}
+                Lo que hace cada parámetro sigue debajo.
+              </p>
+            )}
             <Lista
               titulo="Cuentan en el modo automático"
               nota="Efecto directo sobre el algoritmo, o lo que necesita para arrancar"
@@ -689,7 +912,13 @@ export function CalculadoraInicio({
               className="border-t px-3 py-2 text-xs text-slate-600"
               style={{ borderColor: "#eceff3" }}
             >
-              {NUCLEO_COMUN.texto}.
+              {NUCLEO_COMUN.texto}.{" "}
+              <a
+                href={href("sistemas", ORDEN_SISTEMAS[sis], "parametros")}
+                className="font-semibold underline"
+              >
+                Qué hace cada parámetro en {CORTOS[sis]}
+              </a>
             </p>
           </div>
         )}
@@ -726,13 +955,17 @@ export function CalculadoraInicio({
         <ShieldCheck size={18} className="mt-0.5 shrink-0 text-slate-600" aria-hidden="true" />
         <span>
           <strong>Antes del inicio:</strong>{" "}
-          {REGLAS.respaldo.texto.charAt(0).toLowerCase() + REGLAS.respaldo.texto.slice(1)}.
+          {REGLAS.respaldo.texto.charAt(0).toLowerCase() + REGLAS.respaldo.texto.slice(1)}.{" "}
+          <a href={ruta("inicio", "respaldo")} className="font-semibold underline">
+            Plan de respaldo
+          </a>
         </span>
       </div>
       <div className="space-y-1 text-xs text-slate-600">
         <p>{REGLAS.partida}</p>
         <p>
-          Las cuentas aplican las reglas del capítulo a lo que se escribe; la pauta la decide el
+          Ayuda de cálculo orientativo: aplica las reglas del capítulo y unos puntos de partida
+          decididos por el responsable del complemento a lo que se escribe; la pauta la decide el
           profesional. Nada de lo escrito se guarda ni se envía.
         </p>
       </div>

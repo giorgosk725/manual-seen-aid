@@ -71,7 +71,8 @@ test.describe("Móvil compacto (360 px)", () => {
     const im = (await imprimir.boundingBox())!;
     expect(im.y).toBeLessThan(t.y + t.height);
     expect(im.y + im.height).toBeGreaterThan(t.y);
-    const iniciar = cab.getByRole("link", { name: "Iniciar paso a paso" });
+    const iniciar = cab.getByRole("link", { name: "Preparar e iniciar" });
+    await expect(iniciar).toHaveAttribute("href", "#/consultar/inicio/preparacion:minimed-780g");
     const plan = cab.getByRole("link", { name: "Plan de seguridad" });
     const situaciones = cab.getByRole("link", { name: "Situaciones" });
     for (const l of [iniciar, plan, situaciones]) await expect(l).toBeInViewport();

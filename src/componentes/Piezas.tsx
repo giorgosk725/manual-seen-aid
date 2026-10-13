@@ -1,3 +1,4 @@
+import { NOTAS_POR_PASAJE } from "../notas-complementarias";
 /* Pinta una «pieza» por referencia (inicio.ts): frases de un párrafo, una lista, una fila de
    tabla, la casilla de un sistema, la línea de inicialización, un hito o un enlace. La usan «Iniciar un sistema» y las guías por referencias (guias/) de la ficha
    de cada sistema. Aquí no hay texto propio: todo sale del capítulo con su página. */
@@ -72,7 +73,36 @@ function Casilla({
 /* `compacta`: dentro de una tarea de «Iniciar un sistema», la pieza va sin su cabecera de tabla,
    sin badge de página y sin enlace de página junto a cada frase; la procedencia la pone la
    tarea, una sola vez, al pie. Fuera de ahí (guías de la ficha), todo como siempre. */
-export function PiezaVista({
+/* La nota complementaria registrada de una pieza (M61-03), la misma que en la lectura y en la
+   búsqueda: junto a la frase del apartado 3 sobre Liberty y a la fila de indicación. */
+function notaDePieza(pieza: Pieza, sis?: number): string | null {
+  if (pieza.t === "frase") {
+    for (const k of pieza.k) {
+      const x = NOTAS_POR_PASAJE[`t/${pieza.apartado}/${pieza.bloque}/${k}`];
+      if (x) return x;
+    }
+  }
+  if (pieza.t === "casilla" && (sis === undefined || sis === 2))
+    return NOTAS_POR_PASAJE[`${pieza.tabla}/${pieza.fila}`] ?? null;
+  return null;
+}
+
+export function PiezaVista(props: Parameters<typeof PiezaVistaBase>[0]) {
+  const nota = notaDePieza(props.pieza, props.sis);
+  const base = <PiezaVistaBase {...props} />;
+  return nota ? (
+    <>
+      {base}
+      <p className="mt-1 rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs text-slate-600">
+        {nota}
+      </p>
+    </>
+  ) : (
+    base
+  );
+}
+
+function PiezaVistaBase({
   pieza,
   sis,
   compacta = false,

@@ -519,8 +519,12 @@ export function Sobre() {
             Los contenidos pueden consultarse sin conexión una vez cargados.
           </p>
           <p>
-            No calcula dosis. No introduzcas datos de pacientes en el buscador. No sustituye las
-            instrucciones de cada sistema, los protocolos del centro ni el juicio clínico.
+            «Iniciar un sistema» incluye una ayuda de cálculo orientativo: aplica a las cifras que
+            se escriben las reglas de la Tabla 2 y del apartado 8 y unos puntos de partida decididos
+            por el responsable de este complemento (no por el Manual SEEN), sin guardarlas ni
+            enviarlas. Su resultado es un punto de partida para revisión profesional, no una pauta.
+            No introduzcas datos que identifiquen a una persona. No sustituye las instrucciones de
+            cada sistema, los protocolos del centro ni el juicio clínico.
           </p>
           <p>
             <a

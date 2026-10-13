@@ -24,18 +24,23 @@ import {
   Magnet,
   Moon,
   Pill,
+  Plane,
   Radiation,
   Radio,
   Scan,
   ScanLine,
   Scissors,
+  ShieldCheck,
   Siren,
+  Syringe,
   Table2,
   Thermometer,
+  TrendingDown,
   TrendingUp,
   Unplug,
   Users,
   UtensilsCrossed,
+  WifiOff,
   Zap,
   type LucideIcon,
 } from "lucide-react";
@@ -45,6 +50,8 @@ import {
   SIS_IDS,
   SITUACIONES,
   SITUACIONES_GUIA,
+  ALIAS,
+  casaFiltro,
   type Momento,
   type Situacion,
   type SituacionGuia,
@@ -58,7 +65,6 @@ import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
 import { CabeceraEditorial, Segmented } from "../ui";
 import { CasillasSistema } from "../componentes/CasillasSistema";
-import { normalizar } from "../busqueda";
 import { useIrAlCambiar } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
@@ -74,22 +80,66 @@ const hex = CATEGORIA_HEX.consultar;
 /* Las situaciones, por tema (no por la tabla de la que salen): las filas de las Tablas 4 y 6 y
    los subapartados del apartado 10 que no tienen tabla, juntos. Los nombres de los temas son de
    la app; cada entrada conserva su rótulo del capítulo y su página o tabla. */
-type Extra = { t: string; fuente: string; ruta: string };
-const TEMAS_SITUACION: { t: string; ids: string[]; subs: RegExp; extras?: Extra[] }[] = [
+type Extra = { t: string; fuente: string; ruta: string; alias?: string[] };
+/* 0.63.0: cada entrada va en su tema por su id (no por palabras de su título: «Diálisis y
+   enfermedad renal» caía en «enfermedad»); los subapartados del apartado 10 tienen ya su guía. */
+const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
   {
     t: "Ejercicio y comidas",
     ids: ["ejercicio-aerobico", "ejercicio-anaerobico", "comida-grasa"],
-    subs: /^$/,
   },
   {
     t: "Noche, enfermedad e hiperglucemia",
-    ids: ["sueno", "necesidad-transitoria", "hiperglucemia-puntual", "hiperglucemia-persistente"],
-    subs: /enfermedad|glucocorticoide/i,
+    ids: [
+      "sueno",
+      "necesidad-transitoria",
+      "hiperglucemia-puntual",
+      "hiperglucemia-persistente",
+      "enfermedad-intercurrente",
+      "glucocorticoides",
+    ],
     extras: [
       {
         t: "Hiperglucemia y cetonemia",
         fuente: "Figura 3",
         ruta: href("consultar", "figura-3"),
+        alias: ["cetonas", "cetonemia", "bohb"],
+      },
+    ],
+  },
+  {
+    t: "Incidencias del día a día",
+    ids: [],
+    extras: [
+      {
+        t: "Hipoglucemia en asa cerrada",
+        fuente: "Apartado 7",
+        ruta: href("visual", "hipoglucemia"),
+        alias: ["hipo", "bajada", "hidratos"],
+      },
+      {
+        t: "Bolo omitido o retrasado",
+        fuente: "Apartado 9",
+        ruta: href("capitulo", "09-descarga", "b20"),
+        alias: ["olvido", "olvidado", "bolo"],
+      },
+      {
+        t: "Lectura baja al dormir sobre el sensor (compresión)",
+        fuente: "Apartado 9",
+        ruta: href("capitulo", "09-descarga", "b23"),
+        alias: ["falsa", "sensor", "discordancia", "compresion"],
+      },
+      {
+        t: "Pérdida de señal y salidas del modo automático",
+        fuente: "Apartado 9",
+        ruta: href("capitulo", "09-descarga", "b22"),
+        alias: ["bluetooth", "senal", "manual"],
+      },
+      {
+        t: "Viajes y controles del aeropuerto",
+        fuente: "Apartado 10",
+        ruta: href("capitulo", "10-situaciones", "b43"),
+        alias: ["viaje", "avion", "aeropuerto"],
       },
     ],
   },
@@ -106,21 +156,23 @@ const TEMAS_SITUACION: { t: string; ids: string[]; subs: RegExp; extras?: Extra[
       "cirugia-larga",
       "ingreso-hospitalario",
     ],
-    subs: /^$/,
   },
   {
     t: "Interrupción del sistema",
     ids: [],
-    subs: /^$/,
     extras: [
       {
         t: "Cuánto va a durar la interrupción y qué hacer",
         fuente: "p. 9",
         ruta: href("consultar", "interrupcion"),
+        alias: ["desconectar", "desconexion", "quitar", "retirar"],
       },
     ],
   },
-  { t: "Poblaciones y situaciones especiales", ids: ["gestacion"], subs: /./ },
+  {
+    t: "Poblaciones y situaciones especiales",
+    ids: ["gestacion", "adolescencia", "mayores", "dialisis"],
+  },
 ];
 
 /* Un icono por tema y por situación (13-10-2026): la lista se recorre de un vistazo. */
@@ -129,6 +181,7 @@ const ICONO_TEMA: Record<string, LucideIcon> = {
   "Noche, enfermedad e hiperglucemia": Moon,
   "Exploraciones, cirugía e ingreso": Hospital,
   "Interrupción del sistema": Unplug,
+  "Incidencias del día a día": AlertTriangle,
   "Poblaciones y situaciones especiales": Users,
 };
 const ICONO_SITUACION: Record<string, LucideIcon> = {
@@ -149,25 +202,42 @@ const ICONO_SITUACION: Record<string, LucideIcon> = {
   "cirugia-larga": Scissors,
   "ingreso-hospitalario": BedDouble,
   gestacion: Baby,
+  "enfermedad-intercurrente": Thermometer,
+  glucocorticoides: Pill,
+  dialisis: Activity,
+  mayores: Users,
+  adolescencia: Users,
 };
 const iconoDeTexto = (t: string): LucideIcon =>
-  /cetonemia/i.test(t)
-    ? Droplet
-    : /enfermedad intercurrente/i.test(t)
-      ? Thermometer
-      : /glucocorticoide/i.test(t)
-        ? Pill
-        : /diálisis/i.test(t)
-          ? Activity
-          : /interrupción/i.test(t)
-            ? Unplug
-            : /adolescencia/i.test(t)
-              ? Users
-              : /mayor/i.test(t)
-                ? Users
-                : ArrowRight;
+  /^hipoglucemia/i.test(t)
+    ? TrendingDown
+    : /bolo omitido/i.test(t)
+      ? Syringe
+      : /compresión/i.test(t)
+        ? BedDouble
+        : /señal/i.test(t)
+          ? WifiOff
+          : /viajes/i.test(t)
+            ? Plane
+            : /cetonemia/i.test(t)
+              ? Droplet
+              : /enfermedad intercurrente/i.test(t)
+                ? Thermometer
+                : /glucocorticoide/i.test(t)
+                  ? Pill
+                  : /diálisis/i.test(t)
+                    ? Activity
+                    : /interrupción/i.test(t)
+                      ? Unplug
+                      : /adolescencia/i.test(t)
+                        ? Users
+                        : /mayor/i.test(t)
+                          ? Users
+                          : ArrowRight;
 
 type SituacionLista = Situacion | SituacionGuia;
+/* Situaciones con comprobaciones previas (su primer momento) antes de la conducta. */
+const ANTES_DE_ACTUAR = ["ejercicio-aerobico", "ejercicio-anaerobico"];
 const TODAS: SituacionLista[] = [...SITUACIONES, ...SITUACIONES_GUIA];
 
 /* Los momentos de una situación: párrafos literales del capítulo. Un índice breve arriba, el
@@ -196,9 +266,12 @@ function GuionVista({
   clave,
   sistema,
   momento,
+  desde = 0,
 }: {
   momentos: Momento[];
   rotulo?: string;
+  /* Los primeros momentos que ya van arriba (p. ej., las comprobaciones antes del ejercicio). */
+  desde?: number;
   /* La situación: los momentos abiertos se recuerdan por situación. */
   clave: string;
   sistema?: string;
@@ -209,7 +282,7 @@ function GuionVista({
   const valido = pedido !== null && pedido < momentos.length ? pedido : null;
   const [estado, setEstado] = useState(() => {
     const m = momentosMemoria.get(clave);
-    const abiertos = new Set(m?.abiertos ?? [valido ?? 0]);
+    const abiertos = new Set(m?.abiertos ?? [valido ?? desde]);
     if (valido !== null) abiertos.add(valido);
     return { abiertos, todos: m?.todos ?? false };
   });
@@ -265,73 +338,75 @@ function GuionVista({
       {/* Los momentos en orden, como una línea de tiempo: el número en su círculo y una raya
           que los une; el título abre el párrafo literal (13-10-2026: sin el índice repetido). */}
       <ol className="mt-2" aria-label="Momentos">
-        {momentos.map((m, i) => (
-          <li
-            key={`${m.bloque}-${i}`}
-            id={`momento-${i}`}
-            className="relative scroll-mt-24 pb-1 pl-10"
-          >
-            {i < momentos.length - 1 && (
+        {momentos.map((m, i) =>
+          i < desde ? null : (
+            <li
+              key={`${m.bloque}-${i}`}
+              id={`momento-${i}`}
+              className="relative scroll-mt-24 pb-1 pl-10"
+            >
+              {i < momentos.length - 1 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute bottom-0 left-[13px] top-8 w-0.5"
+                  style={{ background: "#e6dfe3" }}
+                />
+              )}
               <span
                 aria-hidden="true"
-                className="absolute bottom-0 left-[13px] top-8 w-0.5"
-                style={{ background: "#e6dfe3" }}
-              />
-            )}
-            <span
-              aria-hidden="true"
-              className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold tabular-nums"
-              style={
-                abierto(i)
-                  ? { background: hex.strong, color: "#fff" }
-                  : { background: hex.soft, color: hex.ink }
-              }
-            >
-              {i + 1}
-            </span>
-            <h3>
-              <button
-                type="button"
-                aria-expanded={abierto(i)}
-                onClick={() => alternar(i)}
-                className="flex min-h-11 w-full items-center justify-between gap-3 py-1 text-left text-sm font-bold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold tabular-nums"
+                style={
+                  abierto(i)
+                    ? { background: hex.strong, color: "#fff" }
+                    : { background: hex.soft, color: hex.ink }
+                }
               >
-                <span>
-                  <span className="sr-only">{i + 1}. </span>
-                  {m.rotulo}
-                </span>
-                <ChevronRight
-                  size={15}
-                  aria-hidden="true"
-                  className={`shrink-0 text-slate-500 transition ${abierto(i) ? "rotate-90" : ""}`}
-                />
-              </button>
-            </h3>
-            {abierto(i) && (
-              <div className="space-y-2 pb-2">
-                {piezasDe(m).map((pz, k) => (
-                  <PiezaVista key={k} pieza={pz} compacta />
-                ))}
-                {/* Una sola línea de fuente por momento, al párrafo exacto. */}
-                <p className="text-[13px] text-slate-500">
-                  Fuente:{" "}
-                  {fuentesDeMomento(m).map((f, k) => (
-                    <span key={f.texto}>
-                      {k > 0 && " · "}
-                      <a
-                        href={f.ruta}
-                        onClick={() => marcarEnRuta(i)}
-                        className="inline-flex min-h-11 items-center font-semibold text-slate-600 hover:underline sm:min-h-6"
-                      >
-                        {f.texto}
-                      </a>
-                    </span>
+                {i + 1}
+              </span>
+              <h3>
+                <button
+                  type="button"
+                  aria-expanded={abierto(i)}
+                  onClick={() => alternar(i)}
+                  className="flex min-h-11 w-full items-center justify-between gap-3 py-1 text-left text-sm font-bold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                >
+                  <span>
+                    <span className="sr-only">{i + 1}. </span>
+                    {m.rotulo}
+                  </span>
+                  <ChevronRight
+                    size={15}
+                    aria-hidden="true"
+                    className={`shrink-0 text-slate-500 transition ${abierto(i) ? "rotate-90" : ""}`}
+                  />
+                </button>
+              </h3>
+              {abierto(i) && (
+                <div className="space-y-2 pb-2">
+                  {piezasDe(m).map((pz, k) => (
+                    <PiezaVista key={k} pieza={pz} compacta />
                   ))}
-                </p>
-              </div>
-            )}
-          </li>
-        ))}
+                  {/* Una sola línea de fuente por momento, al párrafo exacto. */}
+                  <p className="text-[13px] text-slate-500">
+                    Fuente:{" "}
+                    {fuentesDeMomento(m).map((f, k) => (
+                      <span key={f.texto}>
+                        {k > 0 && " · "}
+                        <a
+                          href={f.ruta}
+                          onClick={() => marcarEnRuta(i)}
+                          className="inline-flex min-h-11 items-center font-semibold text-slate-600 hover:underline sm:min-h-6"
+                        >
+                          {f.texto}
+                        </a>
+                      </span>
+                    ))}
+                  </p>
+                </div>
+              )}
+            </li>
+          ),
+        )}
       </ol>
     </section>
   );
@@ -427,21 +502,25 @@ function ListaSituaciones({
   sit,
   sistema,
   filtro = "",
+  onLimpiar,
 }: {
   sit: Situacion | null;
   sistema?: string;
-  /* Texto escrito en «Filtrar»: solo las filas que lo contienen. */
+  /* Texto escrito en «Filtrar»: las entradas cuyo nombre o alias casan (casaFiltro). */
   filtro?: string;
+  onLimpiar?: () => void;
 }) {
-  const a = APARTADOS.find((x) => x.slug === "10-situaciones")!;
-  const f = normalizar(filtro).trim();
-  const pasa = (t: string) => !f || normalizar(t).includes(f);
-  let subs = a.bloques.filter(
-    (b): b is Extract<Bloque, { t: "h3" }> =>
-      b.t === "h3" &&
-      !["ejercicio", "exploraciones", "ingreso", "gestacion"].includes(b.id) &&
-      pasa(b.texto),
-  );
+  const f = filtro.trim();
+  const visibles = TEMAS_SITUACION.map((tema) => ({
+    tema,
+    sits: tema.ids
+      .map((id) => TODAS.find((x) => x.id === id))
+      .filter(
+        (x): x is SituacionLista => !!x && casaFiltro(f, [x.etiqueta, ...(ALIAS[x.id] ?? [])]),
+      ),
+    extras: (tema.extras ?? []).filter((x) => casaFiltro(f, [x.t, ...(x.alias ?? [])])),
+  }));
+  const total = visibles.reduce((n, v) => n + v.sits.length + v.extras.length, 0);
   const fila =
     "flex min-h-12 w-full items-center gap-3 px-3 py-2 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500";
   const Fila = ({
@@ -482,14 +561,30 @@ function ListaSituaciones({
   );
   return (
     <div id="lista-situaciones" className="scroll-mt-20 space-y-2">
-      {TEMAS_SITUACION.map((tema) => {
-        const mios = subs.filter((b) => tema.subs.test(b.texto));
-        subs = subs.filter((b) => !mios.includes(b));
-        const sits = tema.ids
-          .map((id) => TODAS.find((x) => x.id === id))
-          .filter((x): x is SituacionLista => !!x && pasa(x.etiqueta));
-        const extras = (tema.extras ?? []).filter((x) => pasa(x.t));
-        if (!sits.length && !mios.length && !extras.length) return null;
+      {f && (
+        <p className="text-xs text-slate-600" aria-live="polite">
+          {total === 1 ? "1 resultado" : `${total} resultados`}
+        </p>
+      )}
+      {f && total === 0 && (
+        <div
+          className="rounded-md border border-dashed px-3 py-3 text-sm text-slate-700"
+          style={{ borderColor: "#d4d4d4" }}
+        >
+          Ninguna situación coincide con «{f}».{" "}
+          {onLimpiar && (
+            <button
+              type="button"
+              onClick={onLimpiar}
+              className="inline-flex min-h-11 items-center font-semibold underline underline-offset-2 sm:min-h-6"
+            >
+              Borrar el filtro
+            </button>
+          )}
+        </div>
+      )}
+      {visibles.map(({ tema, sits, extras }) => {
+        if (!sits.length && !extras.length) return null;
         const IT = ICONO_TEMA[tema.t] ?? ArrowRight;
         return (
           <section
@@ -544,16 +639,6 @@ function ListaSituaciones({
                   </a>
                 </li>
               ))}
-              {mios.map((b) => (
-                <li key={b.id}>
-                  <a
-                    href={href("capitulo", a.slug, b.id)}
-                    className={`${fila} text-slate-900 hover:bg-slate-50`}
-                  >
-                    <Fila I={iconoDeTexto(b.texto)} texto={b.texto} />
-                  </a>
-                </li>
-              ))}
             </ul>
           </section>
         );
@@ -589,10 +674,15 @@ export function SituacionSistema({
   const fila = sit && tabla ? tabla.filas[sit.fila] : null;
   const porSistema = !!tabla?.porSistema && !fila?.unida;
   // Al elegir el sistema, su casilla a la vista (en el móvil quedaba bajo la barra inferior).
-  const aLaCasilla = useIrAlCambiar(`${situacion}:${sistema}`, "conducta-situacion", {
-    bloque: "nearest",
-    enfocar: false,
-  });
+  // Con comprobaciones previas (ejercicio), al elegir el sistema se va a ellas, no a la conducta.
+  const aLaCasilla = useIrAlCambiar(
+    `${situacion}:${sistema}`,
+    ANTES_DE_ACTUAR.includes(situacion ?? "") ? "antes-situacion" : "conducta-situacion",
+    {
+      bloque: "nearest",
+      enfocar: false,
+    },
+  );
   return (
     <div>
       <CabeceraEditorial titulo="Situaciones" hex={hex} level={1}>
@@ -613,7 +703,12 @@ export function SituacionSistema({
             onChange={(e) => setFiltro(e.target.value)}
             className="mb-2 min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10"
           />
-          <ListaSituaciones sit={sit} sistema={sistema} filtro={filtro} />
+          <ListaSituaciones
+            sit={sit}
+            sistema={sistema}
+            filtro={filtro}
+            onLimpiar={() => setFiltro("")}
+          />
         </div>
         <div aria-live="polite" className={sit || guia ? "order-first lg:order-none" : undefined}>
           {!sit && !guia && (
@@ -672,6 +767,27 @@ export function SituacionSistema({
                 etiqueta={sit.etiqueta}
                 onCambiar={cambiar}
               />
+              {/* En el ejercicio, las comprobaciones antes de empezar van antes de la conducta de
+                  cada sistema (S61-01): pueden obligar a retrasar o a no hacer el ejercicio. */}
+              {ANTES_DE_ACTUAR.includes(sit.id) && GUION[sit.id] && (
+                <section
+                  id="antes-situacion"
+                  aria-label="Antes de actuar"
+                  className="scroll-mt-24 rounded-2xl border-2 p-4"
+                  style={{ borderColor: "#f3d38a", background: "#fffbeb" }}
+                >
+                  <h2 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-amber-900">
+                    <AlertTriangle size={14} aria-hidden="true" /> Antes de actuar ·{" "}
+                    {GUION[sit.id][0].rotulo}
+                  </h2>
+                  <div className="mt-2 space-y-2">
+                    {piezasDe(GUION[sit.id][0]).map((pz, k) => (
+                      <PiezaVista key={k} pieza={pz} compacta />
+                    ))}
+                  </div>
+                  <FuentePie fuentes={fuentesDeMomento(GUION[sit.id][0])} />
+                </section>
+              )}
               <section
                 id="conducta-situacion"
                 className="scroll-mb-28 scroll-mt-24 space-y-3 rounded-2xl border bg-white p-4 shadow-soft"
@@ -815,6 +931,7 @@ export function SituacionSistema({
                   clave={sit.id}
                   sistema={sistema}
                   momento={momento}
+                  desde={ANTES_DE_ACTUAR.includes(sit.id) ? 1 : 0}
                 />
               )}
               <ParaSeguir
@@ -839,6 +956,24 @@ export function SituacionSistema({
                     I: BookOpen,
                     color: CATEGORIA_HEX.leer.strong,
                   })),
+                  ...(sit.tabla === "T6" || sit.id.startsWith("ejercicio")
+                    ? [
+                        {
+                          href: href("consultar", "interrupcion"),
+                          t: "Interrupción del sistema: cuánto dura y qué hacer con la insulina",
+                          I: Unplug,
+                        },
+                        {
+                          href: href(
+                            "pacientes",
+                            "plan",
+                            sisIdx >= 0 ? ORDEN_SISTEMAS[sisIdx] : undefined,
+                          ),
+                          t: `Plan de seguridad${sisIdx >= 0 ? ` · ${TABLAS.T1.columnas[sisIdx]}` : ""}`,
+                          I: ShieldCheck,
+                        },
+                      ]
+                    : []),
                   {
                     href: href("consultar", "tablas", sit.tabla),
                     t: `Tabla ${tabla.numero} completa`,
@@ -1053,6 +1188,8 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
 }
 
 /* ---------- Interrupción del sistema (línea de tiempo) ---------- */
+const FIGURA3_SI =
+  "Si existe cetonemia, hiperglucemia persistente o sospecha de fallo de infusión, se seguirá el algoritmo de la figura 3.";
 /* «clave»: las frases del párrafo que responden a ese tramo (índices), resaltadas dentro del
    párrafo entero, que sigue a la vista (13-10-2026: el de «Muy breve» se leía como un bloque). */
 const TRAMOS_INTERRUPCION = [
@@ -1190,14 +1327,13 @@ export function Interrupcion({ tramo }: { tramo?: string }) {
             {p ? `Fuente: Apartado 7, p. ${p.b.p} · ` : ""}Leer el subapartado completo{" "}
             <ArrowRight size={11} aria-hidden="true" />
           </a>
-          {sel === "prolongada" || sel === "programada" ? (
-            <a
-              href={href("consultar", "figura-3")}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 hover:underline"
-            >
-              Si hay cetonemia: Figura 3 <ArrowRight size={11} aria-hidden="true" />
-            </a>
-          ) : null}
+          {/* Desde cualquier duración (S61-06), con la frase del capítulo (p. 9). */}
+          <a
+            href={href("consultar", "figura-3")}
+            className="inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-slate-600 hover:underline sm:min-h-6"
+          >
+            {FIGURA3_SI} <ArrowRight size={11} aria-hidden="true" />
+          </a>
         </div>
       </section>
       <p className="mt-3 text-xs text-slate-500">

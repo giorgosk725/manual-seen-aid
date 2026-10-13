@@ -4,7 +4,7 @@
    Un material sin aprobación registrada dice «pendiente»; nada se da por aprobado sin registro. */
 import { hojaExtraPorId, huellaDeHoja } from "./hojas";
 export type TipoMaterial =
-  "publicado" | "transcripcion" | "adaptado" | "plantilla" | "explicacion" | "preguntas";
+  "publicado" | "transcripcion" | "adaptado" | "plantilla" | "explicacion" | "preguntas" | "ayuda";
 
 export interface Material {
   id: string;
@@ -29,6 +29,7 @@ export const ROTULO_TIPO: Record<TipoMaterial, string> = {
   plantilla: "Plantilla con texto literal del capítulo",
   explicacion: "Explicación complementaria",
   preguntas: "Capa docente",
+  ayuda: "Ayuda de cálculo del complemento",
 };
 
 export const MATERIALES: Material[] = [
@@ -100,6 +101,18 @@ export const MATERIALES: Material[] = [
     version: "0.61.0",
     evidencia:
       "Solo texto literal del capítulo (pp. 7-9, Figura 3 y Tabla 4); revisión clínica y visual del 13-10-2026 (delegada), a letra grande; el 13-10-2026 el responsable aprobó el título operativo y el recuadro de urgencia en la primera cara",
+  },
+  {
+    id: "calculadora",
+    estado: "aprobado",
+    nombre: "Calculadora de inicio («Iniciar un sistema»)",
+    tipo: "ayuda",
+    fecha: "2026-10-13",
+    version: "0.58.0",
+    evidencia:
+      "Función decidida por el responsable el 13-10-2026 (opción C del borrador de inicio); reglas literales de la Tabla 2 y del apartado 8 (calculadora.test.ts); puntos de partida 10/20/0 % y 20 % con buen control y basal ultralarga, decididos el 13-10-2026",
+    pendiente:
+      "Revisión clínica del contrato de la 0.63.0: lectura de entradas, límites de la ayuda (1–400 UI/día), rutas de pauta previa (MDI con o sin referencia, bomba u otro AID) y reglas del 450 y del 1700 sobre la DTD de inicio",
   },
   {
     id: "como-interpretar",

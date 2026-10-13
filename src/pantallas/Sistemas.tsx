@@ -666,12 +666,13 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         {/* En el móvil, tres botones iguales en una fila; en pantalla ancha, enlaces (0.53.0). */}
         <div className="no-imprimir col-span-2 mt-2 grid grid-cols-3 gap-2 sm:col-span-1 sm:col-start-2 sm:flex sm:flex-wrap sm:gap-x-3 sm:gap-y-1">
           <a
-            href={href("consultar", "inicio", `inicio:${slug}:arranque`)}
+            // I61-04: al principio del recorrido (preparación), con el sistema; no al paso 5.
+            href={href("consultar", "inicio", `preparacion:${slug}`)}
             className="flex min-h-11 items-center justify-center gap-1 rounded-lg border border-slate-300 bg-white px-1.5 text-center text-sm font-semibold leading-tight hover:underline sm:inline-flex sm:min-h-8 sm:justify-start sm:border-0 sm:bg-transparent sm:px-0 sm:text-left"
             style={{ color: h.ink }}
           >
-            <span className="sm:hidden">Iniciar paso a paso</span>
-            <span className="hidden sm:inline">Iniciar este sistema paso a paso</span>
+            <span className="sm:hidden">Preparar e iniciar</span>
+            <span className="hidden sm:inline">Preparar e iniciar este sistema</span>
             <ArrowRight size={13} aria-hidden="true" className="hidden sm:block" />
           </a>
           <a
@@ -1110,6 +1111,10 @@ function EntradaSistemas() {
                       {k.correccion.si ? "Sí" : "No"}
                     </span>
                   </span>
+                  {/* M61-01: la condición, junto al Sí/No (fragmentos literales de la Tabla 1). */}
+                  <span className="col-span-2 -mt-1 block pl-5 text-xs leading-snug text-slate-600">
+                    {k.correccion.texto.join(" · ")}
+                  </span>
                   {/* Lo que cuenta en automático y lo que se ajusta sobre todo para los bolos. */}
                   <div className="col-span-2 border-t pt-2" style={{ borderColor: "#eceff3" }}>
                     <ParametrosAuto c={c} compacto />
@@ -1215,6 +1220,12 @@ function ParametrosAuto({ c, compacto = false }: { c: number; compacto?: boolean
     <div className={compacto ? "space-y-1.5" : "space-y-2"}>
       {grupo("Efecto directo en automático", directos, true)}
       {grupo("Sobre todo en bolos o modo manual", resto, false)}
+      {/* M61-04: el papel de la basal programada en cada sistema (Tabla 3, celda entera): en
+          Omnipod 5, por ejemplo, cuenta para el primer pod y luego no. */}
+      <p className="text-xs leading-snug text-slate-600">
+        <span className="font-semibold text-slate-700">Tasa basal programada: </span>
+        {TABLAS.T3.filas.find((f) => f.etiqueta === "Tasa basal programada")!.celdas[c]}
+      </p>
     </div>
   );
 }
@@ -1268,6 +1279,8 @@ const ASPECTOS_FUNCIONA: [string, number][] = [
   ["Dónde está el algoritmo", 2],
   ["Cómo decide y aprende", 3],
   ["Cómo administra la insulina", 4],
+  // M61-02: hacia qué objetivo trabaja (fila 6 de la Tabla 1, celda entera).
+  ["Hacia qué objetivo", 6],
   ["Bolos automáticos de corrección", 5],
   ["Qué parámetros cuentan en automático", FILA_PARAMETROS],
 ];

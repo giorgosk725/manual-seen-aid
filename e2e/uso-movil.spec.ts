@@ -29,7 +29,8 @@ test.describe("Uso 0.10.0 en el móvil", () => {
       .getByRole("button", { name: /Omnipod 5/ })
       .click();
     await expect(page).toHaveURL(/ejercicio-aerobico:omnipod-5/);
-    const conducta = page.getByRole("region", { name: "Conducta recomendada" });
+    // 0.63.0: en el ejercicio, al elegir el sistema se va a las comprobaciones previas.
+    const conducta = page.getByRole("region", { name: "Antes de actuar" });
     const barra = await page.getByRole("navigation", { name: "Barra inferior" }).boundingBox();
     await expect
       .poll(async () => {
