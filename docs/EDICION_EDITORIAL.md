@@ -150,3 +150,18 @@ quitado; revisión clínica y visual de las plantillas de plan (quitada la frase
 filas unidas de la Tabla 4). Portada sin las dos puertas, título en negrita, subtítulo corto; cabecera
 con el rótulo del Manual de Endocrinología y Nutrición y «Complemento interactivo»; «Consultar» en la
 barra inferior del móvil; «Sobre» en un párrafo. Pendiente del autor: el matiz de edad de Liberty.
+
+## Decisiones del 13-10-2026 (0.61.0)
+
+Aprobadas por el responsable, tal como se propusieron:
+
+- **Calculadora de inicio:** reducción de partida 10 % (buen control), 20 % (riesgo de
+  hipoglucemia) y 0 % (control deficiente), dentro del «10-20 %» y el «poco o nada» de la Tabla 2;
+  con buen control y glargina U–300 o degludec, 20 % (la Tabla 2 avisa del riesgo de hipoglucemia
+  con buen control previo). Bajo el deslizador: es un punto de partida que se ajusta.
+- **Hoja de cetonas:** la alarma primero; en el tramo 0,6–0,9, la remisión al tramo siguiente
+  separada de los signos de alarma («acuda a urgencias de inmediato», Figura 3); «hoja» en vez de
+  «tarjeta» en la introducción. Huella nueva registrada en `src/materiales.ts`.
+- **Planes de seguridad:** título operativo y recuadro literal de urgencia en la primera cara.
+- **Diagramas:** las seis decisiones de interfaz de la revisión del 13-10-2026, tal como están
+  (la barra del horizonte ya se quitó en la 0.57.0).

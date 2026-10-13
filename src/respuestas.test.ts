@@ -25,6 +25,7 @@ import ciego6 from "./bancos/ciego6.json";
 import ciego7 from "./bancos/ciego7.json";
 import ciego8 from "./bancos/ciego8.json";
 import ciego9 from "./bancos/ciego9.json";
+import ciego10 from "./bancos/ciego10.json";
 
 const informe = (nombre: string, m: ReturnType<typeof medir>) =>
   console.log(
@@ -87,6 +88,10 @@ describe("Preguntas al capítulo", () => {
       // (570d7a5) y medidas una vez al final: 0.58.0, 72,5/79,2/9,2 %; 0.59.0, 72,5/80,0/8,3 %
       // (precisión de las directas 82,8 → 84,6 %). Lo afinado en 7 y 8 apenas generaliza.
       ["Ciego 9", ciego9 as PreguntaCiega[], 0.72, 0.8, 0.09],
+      // 120 preguntas de otro agente (13-10-2026), 84 de ellas sobre un detalle dentro de un
+      // párrafo, congeladas (a5eb6e6) y medidas una vez: el motor de la 0.60.0 y el de la 0.61.0
+      // (la frase que dice el detalle, junto a la principal) dan lo mismo: 74,2/85,0/5,8 %.
+      ["Ciego 10", ciego10 as PreguntaCiega[], 0.74, 0.85, 0.06],
     ] as const) {
       const m = medirCiego(banco);
       console.log(

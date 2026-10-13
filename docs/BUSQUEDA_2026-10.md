@@ -118,3 +118,25 @@ En desarrollo, el banco 7 pasó de 70,8 a 76,7 % a la primera y el 8 de 70,0 a 7
 nuevo la mejora apenas se nota: los cambios de léxico arreglan las preguntas vistas, no las
 nuevas. Para subir de verdad hace falta otra cosa (búsqueda por el sentido sin conexión, o
 elegir la frase dentro del párrafo), y medirla con un banco 10 nuevo.
+
+## 0.61.0 · la frase del detalle (13-10-2026)
+
+**Cambio.** Como mucho sale una respuesta por párrafo; ahora, si otra frase del mismo párrafo
+casa una palabra específica de la pregunta que la principal no casa (y puntúa al menos la mitad),
+sale junto a ella: el plazo, la condición o la excepción suelen ir en otra frase.
+
+**Medida.** Otro agente escribió el **banco 10** sin ver el motor (120 preguntas, 15 ajenas, 159
+fragmentos; 84 de las 105 contestables preguntan por un detalle dentro de un párrafo). Se congeló
+(a5eb6e6) y se midió una vez con el motor de la 0.60.0 y con el de la 0.61.0.
+
+| Banco 10 (n = 120)        | 0.60.0 | 0.61.0 |
+| ------------------------- | ------ | ------ |
+| Primera                   | 74,2 % | 74,2 % |
+| Entre las tres            | 85,0 % | 85,0 % |
+| Directas equivocadas      | 5,8 %  | 5,8 %  |
+| Precisión de las directas | 88,7 % | 88,7 % |
+
+En desarrollo (bancos 1-9) sube algo (p. ej., banco 1 de 76,3 a 77,1 %; banco 7 de 76,7 a
+77,5 %) y en el banco nuevo no cambia: se queda porque no empeora nada y enseña el detalle junto a
+la frase principal. Lo que falla en los bancos nuevos es sobre todo encontrar el párrafo, no la
+frase dentro de él.

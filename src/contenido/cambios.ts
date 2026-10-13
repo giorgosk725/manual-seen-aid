@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — qué cuenta en automático`,
+    titulo: `Complemento interactivo ${VERSION_APP} — decisiones de la revisión`,
+    detalle: [
+      "Calculadora de inicio: con buen control previo y glargina U–300 o degludec, la reducción parte del 20 %; bajo el deslizador se recuerda que es un punto de partida.",
+      "Hoja de cetonas aprobada con su orden nuevo; en el tramo 0,6–0,9, los signos de alarma llevan a urgencias de inmediato, aparte de la subida de tramo; «hoja» en vez de «tarjeta».",
+      "Planes de seguridad y diagramas: aprobada la composición revisada.",
+      "Interrupción del sistema: en cada duración, la frase que responde va resaltada dentro del párrafo entero.",
+      "Búsqueda: si el detalle que se pregunta está en otra frase del mismo párrafo, sale junto a la principal.",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.60.0 — qué cuenta en automático",
     detalle: [
       "Tarjetas de los sistemas: los parámetros en dos grupos, como dice la nota de la Tabla 1: los de efecto directo en el modo automático y los que intervienen sobre todo en los bolos o en el modo manual.",
       "«Cómo funciona» comparado: lo esencial de cada celda arriba y en negrita (tipo de algoritmo, aprendizaje, cada cuánto actúa y con qué predicción, si corrige solo) y la celda entera debajo; y una fila nueva con los parámetros que cuentan en automático.",

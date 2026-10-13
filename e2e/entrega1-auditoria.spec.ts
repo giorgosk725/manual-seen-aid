@@ -24,9 +24,13 @@ test.describe("Entrega 1 (0.32.0)", () => {
     await page.waitForTimeout(300);
     await page.goBack();
     await expect(page).toHaveURL(/#\/sistemas\/op5\/parametros$/);
-    await page.waitForTimeout(600);
-    const despues = await page.evaluate(() => window.scrollY);
-    expect(Math.abs(despues - antes)).toBeLessThan(120);
+    // La posición se recupera tras pintar la ficha: se espera a ella (con la máquina cargada,
+    // 600 ms fijos no siempre bastaban).
+    await expect
+      .poll(async () => Math.abs((await page.evaluate(() => window.scrollY)) - antes), {
+        timeout: 5000,
+      })
+      .toBeLessThan(120);
   });
 
   test("un sistema que el capítulo no trata se dice antes de lo general", async ({ page }) => {

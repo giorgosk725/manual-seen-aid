@@ -210,7 +210,7 @@ function RevisionMaterial({ id }: { id: string }) {
 
 /* ---------- Hub ---------- */
 /* Una hoja como fila: título, para qué sirve y la flecha; toda la fila abre. */
-/* La primera frase de una entradilla («Esta tarjeta resume qué hacer según las cetonas…»). */
+/* La primera frase de una entradilla («Esta hoja resume qué hacer según las cetonas…»). */
 const primeraFrase = (t?: string) => (t ? (t.match(/^[^.]+\./)?.[0] ?? t) : "");
 
 function FilaHoja({

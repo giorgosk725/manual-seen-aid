@@ -18,6 +18,7 @@ import {
   indicacionDe,
   num,
   objetivoAlgoritmoDe,
+  reduccionDePartida,
   papelEnAutomatico,
   type Clave,
   type Control,
@@ -224,7 +225,7 @@ export function CalculadoraInicio({
   const elegirControl = (c: Control) => {
     const x = CONTROLES.find((k) => k.id === c)!;
     setControl(c);
-    setReduccion(x.reduccion);
+    setReduccion(reduccionDePartida(c, ultralarga));
     setRegla(x.regla);
     if (c === "riesgo") setObjetivo(120);
   };
@@ -424,12 +425,22 @@ export function CalculadoraInicio({
                 <span>20 %</span>
               </div>
               <p className="mt-1 text-xs text-slate-600">{REGLAS.reduccion.texto}.</p>
+              <p className="mt-1 text-xs font-semibold text-slate-700">
+                Es un punto de partida dentro del intervalo del capítulo: ajústalo.
+                {control === "bueno" &&
+                  ultralarga &&
+                  " Con glargina U–300 o degludec y buen control previo parte del 20 %, por el riesgo de hipoglucemia de los primeros días."}
+              </p>
             </div>
             <label className="flex min-h-11 items-center gap-2 text-sm text-slate-800">
               <input
                 type="checkbox"
                 checked={ultralarga}
-                onChange={(e) => setUltralarga(e.target.checked)}
+                onChange={(e) => {
+                  setUltralarga(e.target.checked);
+                  if (control === "bueno")
+                    setReduccion(reduccionDePartida("bueno", e.target.checked));
+                }}
                 className="h-6 w-6 shrink-0 accent-slate-700"
               />
               La basal previa es glargina U–300 o degludec

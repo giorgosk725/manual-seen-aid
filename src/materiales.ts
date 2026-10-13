@@ -74,12 +74,11 @@ export const MATERIALES: Material[] = [
     estado: "aprobado",
     nombre: "Hoja «Cetonas: qué hacer según el resultado»",
     tipo: "adaptado",
-    fecha: "2026-10-09",
-    version: "0.20.0",
-    evidencia: "Aprobación registrada (commit 24726c4)",
-    huella: "1omug978rq221",
-    pendiente:
-      "Orden reorganizado el 13-10-2026 (0.55.0): el bloque de alarma va el primero, con el mismo texto; revisar el orden nuevo (borradores/hoja-cetonas-orden_2026-10-13.md)",
+    fecha: "2026-10-13",
+    version: "0.61.0",
+    evidencia:
+      "Aprobada el 9-10-2026 (commit 24726c4); el 13-10-2026 el responsable aprobó el orden nuevo (la alarma primero), la remisión del tramo 0,6–0,9 con los signos de alarma aparte y «hoja» en vez de «tarjeta»",
+    huella: "qrxbj313on7ct",
   },
   {
     id: "hoja-pruebas-cirugia",
@@ -98,11 +97,9 @@ export const MATERIALES: Material[] = [
     nombre: "Plantillas del plan de seguridad (cuatro sistemas)",
     tipo: "plantilla",
     fecha: "2026-10-13",
-    version: "0.51.0",
+    version: "0.61.0",
     evidencia:
-      "Solo texto literal del capítulo (pp. 7-9, Figura 3 y Tabla 4); revisión clínica y visual del 13-10-2026 (delegada), a letra grande, tres caras",
-    pendiente:
-      "Composición cambiada el 13-10-2026 (0.55.0): título operativo arriba y el recuadro literal de urgencia y signos de gravedad de la Figura 3 en la primera cara; ramas con dosis juntas con su nota al imprimir; revisar (borradores/planes-primera-cara_2026-10-13.md)",
+      "Solo texto literal del capítulo (pp. 7-9, Figura 3 y Tabla 4); revisión clínica y visual del 13-10-2026 (delegada), a letra grande; el 13-10-2026 el responsable aprobó el título operativo y el recuadro de urgencia en la primera cara",
   },
   {
     id: "como-interpretar",

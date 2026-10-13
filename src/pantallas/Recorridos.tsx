@@ -1053,28 +1053,47 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
 }
 
 /* ---------- Interrupción del sistema (línea de tiempo) ---------- */
+/* «clave»: las frases del párrafo que responden a ese tramo (índices), resaltadas dentro del
+   párrafo entero, que sigue a la vista (13-10-2026: el de «Muy breve» se leía como un bloque). */
 const TRAMOS_INTERRUPCION = [
-  { id: "breve", titulo: "Muy breve", sub: "reanudación o sustitución inmediata", parrafo: 0 },
-  { id: "una-hora", titulo: "≈ 1 h sin insulina", sub: "umbral operativo: actuar", parrafo: 0 },
+  {
+    id: "breve",
+    titulo: "Muy breve",
+    sub: "reanudación o sustitución inmediata",
+    parrafo: 0,
+    clave: [1, 2, 3],
+  },
+  {
+    id: "una-hora",
+    titulo: "≈ 1 h sin insulina",
+    sub: "umbral operativo: actuar",
+    parrafo: 0,
+    clave: [4],
+  },
   {
     id: "pocas-horas",
     titulo: "Hasta 2-3 h, programada",
     sub: "deporte, baño, exploraciones",
     parrafo: 1,
+    clave: [1],
   },
   {
     id: "prolongada",
     titulo: "Prolongada o fallo definitivo",
     sub: "múltiples dosis con pluma",
     parrafo: 2,
+    clave: [0],
   },
   {
     id: "programada",
     titulo: "Cirugía, ingreso, exploración larga",
     sub: "glargina programada y reinicio",
     parrafo: 3,
+    clave: [0, 1],
   },
 ];
+/* Las frases de un párrafo: corte tras punto y espacio, antes de mayúscula. */
+const frasesDeParrafo = (t: string) => t.split(/(?<=\.)\s+(?=[A-ZÁÉÍÓÚÑ¿«])/);
 
 export function Interrupcion({ tramo }: { tramo?: string }) {
   const a = APARTADOS.find((x) => x.slug === "07-educacion")!;
@@ -1130,9 +1149,38 @@ export function Interrupcion({ tramo }: { tramo?: string }) {
         <h2 className="text-lg font-extrabold text-slate-900">{actual.titulo}</h2>
         <p className="text-sm text-slate-500">{actual.sub}</p>
         {p && (
-          <p className="prosa mt-3">
-            <Texto>{p.b.texto}</Texto>
-          </p>
+          <>
+            <p
+              className="mt-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide"
+              style={{ color: hex.ink }}
+            >
+              <span
+                aria-hidden="true"
+                className="inline-block h-2.5 w-2.5 rounded-sm"
+                style={{ background: hex.soft, boxShadow: `inset 0 0 0 1px ${hex.strong}` }}
+              />
+              Lo que responde a este caso, resaltado en el párrafo
+            </p>
+            <p className="prosa mt-1">
+              {frasesDeParrafo(p.b.texto).map((f, k) => (
+                <span key={k}>
+                  {k > 0 && " "}
+                  {actual.clave.includes(k) ? (
+                    <mark
+                      className="rounded px-0.5 font-semibold text-slate-900"
+                      style={{ background: hex.soft, boxShadow: `inset 0 -2px 0 0 ${hex.strong}` }}
+                    >
+                      <Texto>{f}</Texto>
+                    </mark>
+                  ) : (
+                    <span className="text-slate-600">
+                      <Texto>{f}</Texto>
+                    </span>
+                  )}
+                </span>
+              ))}
+            </p>
+          </>
         )}
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <a

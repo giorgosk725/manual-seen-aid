@@ -1450,16 +1450,18 @@ function puntuarPalabra(a: Atomo, t: string, cuerpo: string[], prefijo: boolean,
   const [pt, pc] = a.r.tipo === "texto" ? [2.2, 1.8] : [3, 1.6];
   const c = (x: string) => casa(t, x, prefijo);
   let w: string | undefined;
-  if ((w = a.titulo.find(c))) return { s: pt * peso(w), casa: true, titulo: true };
-  if ((w = a.claves.find(c))) return { s: 1.5 * peso(w), casa: true, titulo: false };
-  if ((w = cuerpo.find(c))) return { s: pc * peso(w), casa: true, titulo: false };
-  if ((w = a.parrafo.find(c))) return { s: 0.4 * peso(w), casa: true, titulo: false };
+  if ((w = a.titulo.find(c))) return { s: pt * peso(w), casa: true, titulo: true, propio: true };
+  if ((w = a.claves.find(c))) return { s: 1.5 * peso(w), casa: true, titulo: false, propio: true };
+  if ((w = cuerpo.find(c))) return { s: pc * peso(w), casa: true, titulo: false, propio: true };
+  // Casa en otra frase del párrafo: cubre, pero no es «propio» de esta frase (0.61.0).
+  if ((w = a.parrafo.find(c)))
+    return { s: 0.4 * peso(w), casa: true, titulo: false, propio: false };
   // Una errata: en el título cubre; en el cuerpo suma poco y no cubre («precio» no es «previo»).
   if (t.length >= 5 && (w = a.titulo.find((x) => casiIgual(t, x))))
-    return { s: 0.8 * peso(w), casa: true, titulo: true };
+    return { s: 0.8 * peso(w), casa: true, titulo: true, propio: true };
   if (t.length >= 5 && (w = cuerpo.find((x) => casiIgual(t, x))))
-    return { s: 0.4 * peso(w), casa: false, titulo: false };
-  return { s: 0, casa: false, titulo: false };
+    return { s: 0.4 * peso(w), casa: false, titulo: false, propio: false };
+  return { s: 0, casa: false, titulo: false, propio: false };
 }
 
 /* Sistemas y bombas que el capítulo no trata: la consulta que los nombra no tiene respuesta
@@ -1559,7 +1561,7 @@ export function coberturaDe(pregunta: string): { ajenas: string[] } {
 }
 
 /* Solo para medir (pruebas): ve los candidatos puntuados de cada consulta. */
-type Cand = { a: Atomo; score: number; cob: number; tit: number; cas: number };
+type Cand = { a: Atomo; score: number; cob: number; tit: number; cas: number; prop: number[] };
 let ESPIA: ((x: { cand: Cand[]; cercanas: Cand[]; sis?: number; utiles: number }) => void) | null =
   null;
 export const espiar = (f: typeof ESPIA) => void (ESPIA = f);
@@ -1627,8 +1629,10 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
     let casados = 0;
     let cubierto = 0;
     let enTitulo = 0;
-    for (const g of conPuntos) {
-      let mejor = { s: 0, casa: false, titulo: false };
+    // Las palabras específicas que casa esta frase misma (no otra de su párrafo).
+    const propios: number[] = [];
+    conPuntos.forEach((g, gi) => {
+      let mejor = { s: 0, casa: false, titulo: false, propio: false };
       let segunda = 0;
       const techo = PESO!.get(g.palabras[0]) ?? 1;
       g.palabras.forEach((t, k) => {
@@ -1641,14 +1645,15 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
       // Si la respuesta dice la idea de dos maneras («fallo» e «interrupción»), suma un poco.
       const s = mejor.s + 0.25 * segunda;
       score += g.generica && especificas.length ? 0.4 * s : s;
-      if (g.bonus) continue;
+      if (g.bonus) return;
       if (mejor.casa) {
         casados++;
         if (conocidas.includes(g)) cubierto += pesoDe(g);
       }
+      if (mejor.propio && !g.generica) propios.push(gi);
       if (mejor.titulo) enTitulo++;
-    }
-    return { score, casados, enTitulo, cobertura: cubierto / pesoTotal };
+    });
+    return { score, casados, enTitulo, cobertura: cubierto / pesoTotal, propios };
   };
 
   const cand: Cand[] = [];
@@ -1671,7 +1676,7 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
         });
     }
     let { score } = r;
-    const { casados, enTitulo, cobertura } = r;
+    const { casados, enTitulo, cobertura, propios } = r;
     if (!casados || score <= 0) continue;
     // Responde si cubre la pregunta: la mitad (por peso) con el título a favor, o casi toda sin
     // él. Si cubre al menos un tercio, vale solo como «lo más cercano», cuando nada responde.
@@ -1735,7 +1740,14 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
       score += 0.5;
     // Las frases muy cortas («Ejercicio físico») no son una respuesta.
     if (a.r.tipo === "texto" && !a.r.items && a.r.texto.length < 40) score -= 2;
-    (floja ? cercanas : cand).push({ a, score, cob: cobertura, tit: enTitulo, cas: casados });
+    (floja ? cercanas : cand).push({
+      a,
+      score,
+      cob: cobertura,
+      tit: enTitulo,
+      cas: casados,
+      prop: propios,
+    });
   }
   // Nada responde de lleno: lo más cercano, marcado como tal (la pregunta es sobre todo del
   // capítulo; si las palabras ajenas eran mayoría, ya no consta).
@@ -1776,8 +1788,16 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
     // Otra frase del mismo párrafo casi igual de buena: va con ella, en el orden del texto, en
     // vez de quedar escondida (como mucho una respuesta por párrafo).
     const m = /^t\/(.+)\/(\d+)$/.exec(c.a.r.id);
+    // 0.61.0: también la que dice lo que esta no dice (una palabra específica de la pregunta que
+    // casa en ella y no en la primera), aunque puntúe menos: el detalle suele ir en otra frase.
     const otra = m
-      ? lista.find((o) => o !== c && o.a.r.id.startsWith(`t/${m[1]}/`) && o.score >= 0.85 * c.score)
+      ? lista.find(
+          (o) =>
+            o !== c &&
+            o.a.r.id.startsWith(`t/${m[1]}/`) &&
+            (o.score >= 0.85 * c.score ||
+              (o.score >= 0.5 * c.score && o.prop.some((i) => !c.prop.includes(i)))),
+        )
       : undefined;
     if (m && otra) {
       const [k1, k2] = [Number(m[2]), Number(otra.a.r.id.split("/").pop())];

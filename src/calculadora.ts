@@ -63,6 +63,11 @@ export const CONTROLES: { id: Control; texto: string; reduccion: number; regla: 
   { id: "riesgo", texto: "Riesgo de hipoglucemia", reduccion: 20, regla: 1800 },
   { id: "deficiente", texto: "Control deficiente (HbA1c > 8 %)", reduccion: 0, regla: 1700 },
 ];
+/* La reducción de partida (decisión del responsable, 13-10-2026): la de cada control y, con
+   buen control previo y basal ultralarga (glargina U–300 o degludec), el 20 %: es el caso en
+   que la Tabla 2 avisa de «posible riesgo de hipoglucemia en personas con buen control previo». */
+export const reduccionDePartida = (c: Control, ultralarga: boolean) =>
+  c === "bueno" && ultralarga ? 20 : CONTROLES.find((k) => k.id === c)!.reduccion;
 export const OBJETIVOS_CALCULADOR: { mgdl: number; texto: string }[] = [
   { mgdl: 100, texto: "general" },
   { mgdl: 90, texto: "preconcepcional/gestación" },

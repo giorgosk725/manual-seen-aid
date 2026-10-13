@@ -10,6 +10,7 @@ import {
   calcular,
   fueraDeIndicacion,
   papelEnAutomatico,
+  reduccionDePartida,
 } from "./calculadora";
 
 const t2 = (etiqueta: string) => TABLAS.T2.filas.find((f) => f.etiqueta === etiqueta)!.celdas;
@@ -90,6 +91,13 @@ describe("calculadora de inicio: las cuentas", () => {
     const r = calcular({ ...base, origen: "isci", dtdIsci: 40, reduccion: 20 })!;
     expect(r.dtdInicial).toBe(40);
     expect(r.basalHora).toBe(0.75);
+  });
+  it("reducción de partida: 10, 20 y 0 %; con ultralarga y buen control, 20 %", () => {
+    expect(
+      ["bueno", "riesgo", "deficiente"].map((c) => reduccionDePartida(c as never, false)),
+    ).toEqual([10, 20, 0]);
+    expect(reduccionDePartida("bueno", true)).toBe(20);
+    expect(reduccionDePartida("deficiente", true)).toBe(0);
   });
   it("sin dosis no calcula", () => {
     expect(calcular({ ...base, basal: 0, rapida: 0 })).toBeNull();
