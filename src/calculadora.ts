@@ -112,19 +112,79 @@ export const INICIALIZACION: { previo: string; programar: Clave[] }[] = [
   { previo: "iniciar modo automático desde el primer pod", programar: ["objetivoAlg", "ia"] },
 ];
 
-const celda = (tabla: "T1" | "T3", etiqueta: string, c: number) =>
+const celda = (tabla: "T1" | "T3" | "T4", etiqueta: string, c: number) =>
   TABLAS[tabla].filas.find((f) => f.etiqueta === etiqueta)?.celdas[c] ?? "";
-/* Lo que la Tabla 3 dice de cada parámetro en ese sistema (la primera línea de la celda). */
+/* Lo que la Tabla 3 dice de cada parámetro en ese sistema: la celda entera (13-10-2026: antes
+   solo la primera línea, y se perdía, p. ej., que en el 780G una insulina activa más corta
+   intensifica las autocorrecciones). */
 export function papelEnAutomatico(k: Clave, c: number): string | null {
   const fila: Partial<Record<Clave, string>> = {
     basal: "Tasa basal programada",
     factor: "Factor de sensibilidad",
+    ratio: "Ratio insulina/hidratos de carbono",
     ia: "Duración de la insulina activa",
     objetivoAlg: "Objetivo glucémico y funciones temporales con impacto en automático",
   };
   const e = fila[k];
-  return e ? celda("T3", e, c).split("\n")[0] : null;
+  return e ? celda("T3", e, c).split("\n").join(" · ") : null;
 }
+
+/* Qué programar, por importancia (13-10-2026), con la Tabla 1 y su nota: lo que cuenta en el
+   modo automático (o para arrancarlo: peso y DTD en Control-IQ y CamAPS FX, la tasa basal
+   inicial de Omnipod 5, Tabla 2 y Tabla 3) y lo que interviene sobre todo en los bolos, el modo
+   manual y el respaldo. */
+const CLAVE_DE_PARAMETRO: Record<string, Clave> = {
+  "Objetivo de glucosa": "objetivoAlg",
+  "Duración de la insulina activa": "ia",
+  "Ratios I/HC": "ratio",
+  "Factor de sensibilidad": "factor",
+  "Basal programada": "basal",
+};
+export function gruposDeProgramar(c: number): { automatico: Clave[]; manual: Clave[] } {
+  const lineas = celda("T1", "Parámetros configurables en modo automático", c)
+    .split("\n")
+    .map((x) => x.trim())
+    .filter(Boolean);
+  const clave = (x: string) => CLAVE_DE_PARAMETRO[x.replace(/\*$/, "")];
+  const automatico = lineas.filter((x) => x.endsWith("*")).map(clave);
+  const manual = lineas.filter((x) => !x.endsWith("*")).map(clave);
+  if (c === 1 || c === 2) automatico.unshift("peso", "dtd");
+  if (c === 3) automatico.push("basal");
+  else if (!automatico.includes("basal") && !manual.includes("basal")) manual.unshift("basal");
+  if (!automatico.includes("factor") && !manual.includes("factor")) manual.push("factor");
+  manual.push("objetivo");
+  return { automatico, manual };
+}
+
+/* Modos y funciones de cada sistema, celda a celda (Tabla 3, fila del objetivo; Tabla 4, filas
+   de ejercicio aeróbico, sueño y comida grasa o proteica). */
+export function modosDe(c: number): { situacion: string; texto: string; tabla: "T3" | "T4" }[] {
+  const t4 = (i: number) => TABLAS.T4.filas[i].celdas[c];
+  return [
+    {
+      situacion: "Objetivo y funciones temporales",
+      texto: celda("T3", "Objetivo glucémico y funciones temporales con impacto en automático", c),
+      tabla: "T3" as const,
+    },
+    { situacion: "Ejercicio aeróbico planificado", texto: t4(0), tabla: "T4" as const },
+    { situacion: "Sueño / período nocturno", texto: t4(2), tabla: "T4" as const },
+    { situacion: "Comida rica en grasa/proteína", texto: t4(5), tabla: "T4" as const },
+  ];
+}
+/* Qué esperar del algoritmo (Tabla 1, «Lógica del algoritmo y aprendizaje»). */
+export const aprendizajeDe = (c: number) => celda("T1", "Lógica del algoritmo y aprendizaje", c);
+
+/* Material del sistema (Tabla 1) y los recambios que piden la educación y el plan de seguridad
+   (apartado 7, pp. 7-8). */
+export const materialDe = (c: number) => [
+  { rotulo: "Formato", texto: celda("T1", "Formato", c) },
+  { rotulo: "Sensores compatibles", texto: celda("T1", "Sensores compatibles", c) },
+  { rotulo: "Plataforma de descarga", texto: celda("T1", "Plataforma de descarga", c) },
+];
+export const RECAMBIOS = {
+  educacion: "Recambio de set, reservorio, pod y sensor.",
+  plan: "Recambios de set, cánula, reservorio o pods, sensores y baterías/cargadores.",
+};
 export const indicacionDe = (c: number) => celda("T1", "Indicación", c);
 export const objetivoAlgoritmoDe = (c: number) =>
   celda("T1", "Objetivo glucémico en modo automático", c);

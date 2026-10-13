@@ -3,12 +3,31 @@
    factor y qué programar en ese sistema. Solo las reglas de la Tabla 2 y del apartado 8
    (calculadora.ts); lo escrito vive en memoria mientras la app está abierta. */
 import { useState, type ReactNode } from "react";
-import { AlertTriangle, Calculator, Pen, ShieldCheck, Syringe } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  Calculator,
+  Moon,
+  Pen,
+  RefreshCw,
+  ShieldCheck,
+  SlidersHorizontal,
+  Syringe,
+  Target,
+  Utensils,
+  Zap,
+} from "lucide-react";
+import { Lineas } from "../texto";
 import {
   CONTROLES,
   DESDE_ISCI,
   INICIALIZACION,
   LIMITES,
+  RECAMBIOS,
+  aprendizajeDe,
+  gruposDeProgramar,
+  materialDe,
+  modosDe,
   NUCLEO_COMUN,
   OBJETIVOS_CALCULADOR,
   REGLAS,
@@ -616,22 +635,89 @@ export function CalculadoraInicio({
               .
             </p>
             <Lista
-              titulo="Núcleo común a todos los sistemas"
-              claves={NUCLEO_COMUN.claves}
+              titulo="Cuentan en el modo automático"
+              nota="Efecto directo sobre el algoritmo, o lo que necesita para arrancar"
+              claves={gruposDeProgramar(sis).automatico}
               sis={sis}
               valorDe={valorDe}
               color={h!.strong}
+              destacado
             />
+            <div className="border-t" style={{ borderColor: "#eceff3" }}>
+              <div
+                className="flex items-center gap-1.5 px-3 pt-2 text-[11px] font-bold uppercase tracking-wide"
+                style={{ color: h!.ink }}
+              >
+                <Moon size={13} aria-hidden="true" /> Modos y funciones de {CORTOS[sis]}
+              </div>
+              <ul className="divide-y" style={{ borderColor: "#eceff3" }}>
+                {modosDe(sis).map((m, i) => {
+                  const I = [Target, Activity, Moon, Utensils][i] ?? Moon;
+                  return (
+                    <li key={m.situacion} className="flex gap-2.5 px-3 py-2">
+                      <I
+                        size={16}
+                        className="mt-0.5 shrink-0"
+                        style={{ color: h!.strong }}
+                        aria-hidden="true"
+                      />
+                      <div className="min-w-0">
+                        <div className="text-xs font-semibold text-slate-600">{m.situacion}</div>
+                        <div className="text-sm text-slate-900">
+                          <Lineas>{m.texto}</Lineas>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
             <Lista
-              titulo={`Además, en ${CORTOS[sis]}`}
-              claves={INICIALIZACION[sis].programar}
+              titulo="Sobre todo para los bolos, el modo manual y el respaldo"
+              claves={gruposDeProgramar(sis).manual}
               sis={sis}
               valorDe={valorDe}
-              color={h!.strong}
+              color="#94a3b8"
             />
+            <div className="border-t px-3 py-2" style={{ borderColor: "#eceff3" }}>
+              <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                <RefreshCw size={13} aria-hidden="true" /> Qué esperar del algoritmo
+              </div>
+              <p className="mt-0.5 text-sm text-slate-800">{aprendizajeDe(sis)}</p>
+            </div>
+            <p
+              className="border-t px-3 py-2 text-xs text-slate-600"
+              style={{ borderColor: "#eceff3" }}
+            >
+              {NUCLEO_COMUN.texto}.
+            </p>
           </div>
         )}
       </Paso>
+
+      {sis !== undefined && (
+        <Paso n={6} titulo={`Material de ${CORTOS[sis]}`}>
+          <dl
+            className="divide-y overflow-hidden rounded-xl border bg-white"
+            style={{ borderColor: "#e2e8f0" }}
+          >
+            {materialDe(sis).map((m) => (
+              <div key={m.rotulo} className="px-3 py-2">
+                <dt className="text-xs font-semibold text-slate-600">{m.rotulo}</dt>
+                <dd className="text-sm font-semibold text-slate-900">
+                  <Lineas>{m.texto}</Lineas>
+                </dd>
+              </div>
+            ))}
+            <div className="px-3 py-2">
+              <dt className="text-xs font-semibold text-slate-600">
+                Recambios que hay que tener siempre (plan de seguridad)
+              </dt>
+              <dd className="text-sm text-slate-900">{RECAMBIOS.plan}</dd>
+            </div>
+          </dl>
+        </Paso>
+      )}
 
       <div
         className="flex gap-2 rounded-xl border px-3 py-2.5 text-sm text-slate-800"
@@ -657,27 +743,45 @@ export function CalculadoraInicio({
 
 function Lista({
   titulo,
+  nota,
   claves,
   sis,
   valorDe,
   color,
+  destacado = false,
 }: {
   titulo: string;
+  nota?: string;
   claves: Clave[];
   sis: number;
   valorDe: (k: Clave, c: number) => ReactNode;
   color: string;
+  /* Lo que cuenta en automático: con el color del sistema y el rayo. */
+  destacado?: boolean;
 }) {
   return (
     <div className="border-t" style={{ borderColor: "#eceff3" }}>
-      <div className="px-3 pt-2 text-[11px] font-bold uppercase tracking-wide text-slate-500">
+      <div
+        className="flex items-center gap-1.5 px-3 pt-2 text-[11px] font-bold uppercase tracking-wide"
+        style={{ color: destacado ? color : "#64748b" }}
+      >
+        {destacado ? (
+          <Zap size={13} aria-hidden="true" />
+        ) : (
+          <SlidersHorizontal size={13} aria-hidden="true" />
+        )}
         {titulo}
       </div>
+      {nota && <div className="px-3 text-xs text-slate-500">{nota}</div>}
       <ul className="divide-y" style={{ borderColor: "#eceff3" }}>
         {claves.map((k) => {
           const papel = k === "ia" || k === "objetivoAlg" ? null : papelEnAutomatico(k, sis);
           return (
-            <li key={k} className="flex gap-2.5 px-3 py-2">
+            <li
+              key={k}
+              className="flex gap-2.5 px-3 py-2"
+              style={destacado ? { boxShadow: `inset 3px 0 0 0 ${color}` } : undefined}
+            >
               <span
                 aria-hidden="true"
                 className="mt-1.5 h-2 w-2 shrink-0 rounded-full"

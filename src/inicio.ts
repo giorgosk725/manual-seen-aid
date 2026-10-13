@@ -53,6 +53,13 @@ export const FASES: Fase[] = [
       { t: "enlace", texto: "Elección compartida (Figura 2)", ruta: href("visual", "eleccion") },
       { t: "frase", apartado: "07-educacion", bloque: "b1", k: [2] },
       { t: "lista", apartado: "07-educacion", bloque: "b4" },
+      // 13-10-2026: lo que el capítulo pide en la preparación y no salía aquí.
+      { t: "lista", apartado: "07-educacion", bloque: "b3" },
+      { t: "frase", apartado: "07-educacion", bloque: "b16", k: [0] },
+      { t: "frase", apartado: "07-educacion", bloque: "b17", k: [0, 1] },
+      { t: "casilla", tabla: "T1", fila: 0 },
+      { t: "casilla", tabla: "T1", fila: 1 },
+      { t: "casilla", tabla: "T1", fila: 9 },
     ],
   },
   {
@@ -77,6 +84,19 @@ export const FASES: Fase[] = [
       { t: "fila", tabla: "T2", fila: 8 },
       { t: "enlace", texto: "Transición desde MDI (diagrama)", ruta: href("visual", "transicion") },
       { t: "enlace", texto: "Tabla 2 completa", ruta: href("consultar", "tablas", "T2") },
+      // 13-10-2026: respaldo y transición (apartado 7), qué esperar del algoritmo (Tabla 1),
+      // funciones temporales (Tabla 3), gestación y el «punto de partida» del apartado 8.
+      { t: "frase", apartado: "07-educacion", bloque: "b13", k: [0, 1] },
+      { t: "frase", apartado: "07-educacion", bloque: "b14", k: [1] },
+      { t: "casilla", tabla: "T1", fila: 3 },
+      { t: "casilla", tabla: "T3", fila: 0 },
+      { t: "frase", apartado: "10-situaciones", bloque: "b6", k: [0, 2] },
+      {
+        t: "enlace",
+        texto: "Gestación, sistema a sistema (diagrama)",
+        ruta: href("visual", "gestacion-sistemas"),
+      },
+      { t: "frase", apartado: "08-iniciacion", bloque: "b6", k: [2] },
     ],
   },
   {
@@ -113,6 +133,9 @@ export const FASES: Fase[] = [
         texto: "Revisar la descarga (Tabla 5, ocho pasos)",
         ruta: href("consultar", "descarga", "1"),
       },
+      // 13-10-2026: qué vigilar en las primeras descargas (Tabla 5, paso 1; apartado 9).
+      { t: "fila", tabla: "T5", fila: 0 },
+      { t: "frase", apartado: "09-descarga", bloque: "b12", k: [0] },
     ],
   },
   {
@@ -272,18 +295,23 @@ export const TAREAS: Record<string, Tarea[]> = {
     {
       id: "educacion",
       titulo: "Educación y plan de seguridad",
-      piezas: [5, 6],
+      piezas: [5, 7, 6, 8, 9],
       siguiente: planDeSeguridad,
+    },
+    {
+      id: "material",
+      titulo: "Material del sistema y plataforma de descarga",
+      piezas: [10, 11, 12],
     },
   ],
   inicio: [
     // Orden de trabajo con la persona delante: de dónde viene, programar, objetivos, respaldo y,
     // al final, activar el automático.
-    { id: "transicion", titulo: "Pauta previa y transición", piezas: [3, 12, 13, 14] },
+    { id: "transicion", titulo: "Pauta previa y transición", piezas: [3, 12, 13, 17, 14] },
     {
       id: "parametros",
       titulo: "Programación inicial: basal, ratio y factor de sensibilidad",
-      piezas: [2, 4, 5, 6, 7, 11],
+      piezas: [2, 4, 5, 6, 7, 11, 22],
       siguiente: (sis) =>
         sis !== undefined
           ? {
@@ -295,17 +323,26 @@ export const TAREAS: Record<string, Tarea[]> = {
               ruta: href("sistemas", "todos", "parametros"),
             },
     },
-    { id: "objetivos", titulo: "Objetivos de glucosa", piezas: [8, 9, 10] },
+    {
+      id: "objetivos",
+      titulo: "Objetivos de glucosa, modos y gestación",
+      piezas: [8, 9, 10, 19, 20, 21],
+    },
     {
       id: "respaldo",
       titulo: "Plan de respaldo antes de activar el automático",
-      piezas: [0],
+      piezas: [0, 16],
       siguiente: planDeSeguridad,
     },
-    { id: "arranque", titulo: "Activar el modo automático", piezas: [1] },
+    {
+      id: "arranque",
+      titulo: "Activar el modo automático y qué esperar del algoritmo",
+      piezas: [1, 18],
+    },
   ],
   "primeros-meses": [
     { id: "calendario", titulo: "Calendario de revisiones", piezas: [0, 1, 2, 3] },
+    { id: "vigilar", titulo: "Qué vigilar en las primeras descargas", piezas: [6, 7] },
     {
       id: "ajustes",
       titulo: "Qué se ajusta en las primeras descargas",

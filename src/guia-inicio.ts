@@ -55,6 +55,8 @@ export const PASOS_GUIA: PasoGuia[] = [
             piezas: [
               { t: "frase", apartado: I, bloque: "b7", k: [0] },
               { t: "fila", tabla: "T2", fila: 2 },
+              // El efecto residual de la basal previa, menor con glargina U-100 (p. 9).
+              { t: "frase", apartado: "07-educacion", bloque: "b14", k: [1] },
             ],
           },
           {
@@ -103,6 +105,7 @@ export const PASOS_GUIA: PasoGuia[] = [
       { t: "fila", tabla: "T2", fila: 4 },
       { t: "fila", tabla: "T2", fila: 5 },
       { t: "casilla", tabla: "T1", fila: 10 },
+      { t: "frase", apartado: I, bloque: "b6", k: [2] },
     ],
     enlace: (sis) =>
       sis !== undefined
@@ -122,6 +125,9 @@ export const PASOS_GUIA: PasoGuia[] = [
       { t: "fila", tabla: "T2", fila: 6 },
       { t: "fila", tabla: "T2", fila: 7 },
       { t: "casilla", tabla: "T1", fila: 6 },
+      // Modos y funciones temporales de cada sistema (Tabla 3) y la gestación (p. 17).
+      { t: "casilla", tabla: "T3", fila: 0 },
+      { t: "frase", apartado: "10-situaciones", bloque: "b6", k: [0, 2] },
     ],
     enlace: () => ({
       texto: "Objetivos de MCG por población (figura)",
@@ -132,7 +138,11 @@ export const PASOS_GUIA: PasoGuia[] = [
     id: "respaldo",
     titulo: titulo("respaldo"),
     intro: "Marca lo que ya está hecho o entregado.",
-    piezas: [{ t: "fila", tabla: "T2", fila: 0 }],
+    piezas: [
+      { t: "fila", tabla: "T2", fila: 0 },
+      // La dosis basal de la pauta de respaldo (p. 9).
+      { t: "frase", apartado: "07-educacion", bloque: "b13", k: [0, 1] },
+    ],
     comprobar: "antes",
     enlace: (sis) =>
       sis !== undefined
@@ -145,7 +155,8 @@ export const PASOS_GUIA: PasoGuia[] = [
   {
     id: "arranque",
     titulo: titulo("arranque"),
-    piezas: [{ t: "inicializacion" }],
+    // Y qué esperar de cada algoritmo (Tabla 1, «Lógica del algoritmo y aprendizaje»).
+    piezas: [{ t: "inicializacion" }, { t: "casilla", tabla: "T1", fila: 3 }],
   },
 ];
 

@@ -150,9 +150,9 @@ describe("Fase Inicio paso a paso (0.47.0)", () => {
   it("sin elegir pauta se enseña todo; con bomba, solo lo de bomba", async () => {
     const { PASOS_GUIA, piezasDePaso } = await import("./guia-inicio");
     const p = PASOS_GUIA[0];
-    expect(piezasDePaso(p, {}).length).toBe(6);
+    expect(piezasDePaso(p, {}).length).toBe(7);
     expect(piezasDePaso(p, { pauta: "isci" }).length).toBe(1);
-    expect(piezasDePaso(p, { pauta: "mdi" }).length).toBe(4);
-    expect(piezasDePaso(p, { pauta: "mdi", basal: "larga" }).length).toBe(3);
+    expect(piezasDePaso(p, { pauta: "mdi" }).length).toBe(5);
+    expect(piezasDePaso(p, { pauta: "mdi", basal: "larga" }).length).toBe(4);
   });
 });

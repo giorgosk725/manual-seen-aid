@@ -11,6 +11,9 @@ import {
   fueraDeIndicacion,
   papelEnAutomatico,
   reduccionDePartida,
+  gruposDeProgramar,
+  modosDe,
+  RECAMBIOS,
 } from "./calculadora";
 
 const t2 = (etiqueta: string) => TABLAS.T2.filas.find((f) => f.etiqueta === etiqueta)!.celdas;
@@ -55,7 +58,41 @@ describe("calculadora de inicio: texto del capítulo", () => {
       "Se utiliza en modo manual o de respaldo; no influye en el modo automático",
     );
     expect(papelEnAutomatico("ia", 3)).toMatch(/^Ajustable, 2–6 h/);
-    expect(papelEnAutomatico("ratio", 0)).toBeNull();
+    expect(papelEnAutomatico("ratio", 3)).toMatch(/basal adaptativa en pods sucesivos$/);
+    // La celda entera: en el 780G, la segunda línea de la insulina activa.
+    expect(papelEnAutomatico("ia", 0)).toContain("intensifica especialmente las autocorrecciones");
+  });
+});
+
+describe("calculadora de inicio: qué programar, por importancia", () => {
+  it("lo que cuenta en automático es lo marcado con asterisco en la Tabla 1 (y lo de arrancar)", () => {
+    expect([0, 1, 2, 3].map((c) => gruposDeProgramar(c))).toEqual([
+      { automatico: ["objetivoAlg", "ia"], manual: ["basal", "ratio", "factor", "objetivo"] },
+      { automatico: ["peso", "dtd", "factor", "basal"], manual: ["ratio", "objetivo"] },
+      {
+        automatico: ["peso", "dtd", "objetivoAlg"],
+        manual: ["basal", "ratio", "factor", "objetivo"],
+      },
+      { automatico: ["objetivoAlg", "basal"], manual: ["factor", "ia", "ratio", "objetivo"] },
+    ]);
+  });
+  it("los modos de Control-IQ incluyen el modo sueño y el de ejercicio, tal cual en las tablas", () => {
+    const m = modosDe(1)
+      .map((x) => x.texto)
+      .join(" ");
+    expect(m).toContain("Modo sueño: franja horaria configurable");
+    expect(m).toContain("Modo ejercicio, rango 140–160 mg/dl");
+    for (const x of modosDe(2))
+      expect(JSON.stringify([TABLAS.T3, TABLAS.T4])).toContain(
+        JSON.stringify(x.texto).slice(1, -1),
+      );
+  });
+  it("los recambios son ítems literales del apartado 7", () => {
+    const items = APARTADOS.find((a) => a.slug === "07-educacion")!.bloques.flatMap((b) =>
+      "items" in b ? b.items : [],
+    );
+    expect(items).toContain(RECAMBIOS.educacion);
+    expect(items).toContain(RECAMBIOS.plan);
   });
 });
 

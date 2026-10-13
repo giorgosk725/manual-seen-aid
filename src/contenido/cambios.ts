@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — decisiones de la revisión`,
+    titulo: `Complemento interactivo ${VERSION_APP} — qué programar en cada sistema`,
+    detalle: [
+      "Calculadora de inicio: qué programar ordenado por importancia: lo que cuenta en el modo automático (o lo que necesita para arrancar), los modos y funciones del sistema (en Control-IQ, el modo sueño y el de ejercicio; Boost y Ease-off en CamAPS FX; Actividad en Omnipod 5; objetivo temporal en MiniMed 780G), lo que interviene sobre todo en los bolos y el modo manual, y qué esperar del algoritmo.",
+      "Cada parámetro, con la celda entera de la Tabla 3 (p. ej., en MiniMed 780G, que una insulina activa más corta intensifica las autocorrecciones).",
+      "Material de cada sistema: formato, sensores, plataforma de descarga y recambios que hay que tener siempre.",
+      "Iniciar un sistema: contenidos mínimos de la educación, a quién llamar, educación simplificada, material, pauta de respaldo, efecto residual de la basal previa, gestación y qué vigilar en las primeras descargas, con el texto del capítulo.",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.61.0 — decisiones de la revisión",
     detalle: [
       "Calculadora de inicio: con buen control previo y glargina U–300 o degludec, la reducción parte del 20 %; bajo el deslizador se recuerda que es un punto de partida.",
       "Hoja de cetonas aprobada con su orden nuevo; en el tramo 0,6–0,9, los signos de alarma llevan a urgencias de inmediato, aparte de la subida de tramo; «hoja» en vez de «tarjeta».",
