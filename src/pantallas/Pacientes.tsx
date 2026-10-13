@@ -197,9 +197,7 @@ function celdaUnidaDelSistema(texto: string, c: number): string {
 function RevisionMaterial({ id }: { id: string }) {
   const m = material(id);
   if (!m) return null;
-  const aprobada = m.fecha
-    ? `Revisión: aprobada el ${fechaCorta(m.fecha)}${m.version !== "—" ? ` (versión ${m.version})` : ""}.`
-    : "Revisión: pendiente.";
+  const aprobada = m.fecha ? `Revisada el ${fechaCorta(m.fecha)}.` : "Revisión: pendiente.";
   return (
     <span className="mt-1 block">
       {aprobada}

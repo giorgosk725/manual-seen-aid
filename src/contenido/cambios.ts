@@ -13,9 +13,22 @@ export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-14",
+    ambito: "app",
+    titulo: `Complemento interactivo ${VERSION_APP} — «Cómo funciona» de un vistazo`,
+    detalle: [
+      "«Cómo funciona» de cada sistema: arriba, el recorrido de la decisión (mide, decide, administra, hacia qué objetivo) con lo esencial del sistema; debajo, cómo decide y se adapta, los bolos automáticos de corrección y lo que puede ajustar el profesional, con los parámetros en sus dos grupos.",
+      "Lo que sigue haciendo la persona, lo que distingue al sistema y lo que devuelve, en tarjetas; las frases generales del capítulo, iguales para los cuatro, plegadas al final.",
+      "Omnipod 5: junto a la casilla de la Tabla 1 que dice «autoaprendizaje por pod», una nota complementaria rotulada: lo que hace es actualizar la basal adaptativa con la insulina administrada en cada cambio de pod (Brown et al., Diabetes Care 2021). Va en la ficha, la comparación, la Tabla 1, «Los cuatro algoritmos», la calculadora y la búsqueda; el texto de la tabla no cambia.",
+      "Búsqueda: «se despega el sensor» ya no lleva a la pregunta del pod de Omnipod 5.",
+      "El aviso de versión actualizada se cierra solo a los pocos segundos.",
+      "Revisión previa al envío: las fuentes de los diagramas, agrupadas por apartado; los dos grupos de parámetros con el mismo nombre también en la pestaña Parámetros; la calculadora separa lo que cuenta en automático o para iniciarlo; las hojas dicen «Revisada el …» sin versión interna; sin «Tabla N» ni páginas dentro de las herramientas; textos de la búsqueda y de la calculadora más claros; el registro de «Fuentes y revisión» incluye lo nuevo, pendiente de revisión.",
+    ],
+  },
+  {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — búsqueda`,
+    titulo: "Complemento interactivo 0.65.0 — búsqueda",
     detalle: [
       "La búsqueda reconoce más formas de preguntar: cada pasaje lleva unas consultas escritas para el índice (cómo lo preguntaría un clínico o un paciente), que solo sirven para encontrarlo; lo que se enseña sigue siendo el texto literal del capítulo.",
       "Un segundo ordenador (BM25) reordena «lo más cercano» cuando no hay una respuesta segura.",

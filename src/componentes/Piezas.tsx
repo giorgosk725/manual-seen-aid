@@ -1,4 +1,4 @@
-import { NOTAS_POR_PASAJE } from "../notas-complementarias";
+import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
 /* Pinta una «pieza» por referencia (inicio.ts): frases de un párrafo, una lista, una fila de
    tabla, la casilla de un sistema, la línea de inicialización, un hito o un enlace. La usan «Iniciar un sistema» y las guías por referencias (guias/) de la ficha
    de cada sistema. Aquí no hay texto propio: todo sale del capítulo con su página. */
@@ -82,8 +82,11 @@ function notaDePieza(pieza: Pieza, sis?: number): string | null {
       if (x) return x;
     }
   }
-  if (pieza.t === "casilla" && (sis === undefined || sis === 2))
-    return NOTAS_POR_PASAJE[`${pieza.tabla}/${pieza.fila}`] ?? null;
+  if (pieza.t === "casilla") {
+    const clave = `${pieza.tabla}/${pieza.fila}`;
+    if (sis === undefined || COLUMNA_DE_NOTA[clave] === undefined || sis === COLUMNA_DE_NOTA[clave])
+      return NOTAS_POR_PASAJE[clave] ?? null;
+  }
   return null;
 }
 

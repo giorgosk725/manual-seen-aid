@@ -237,7 +237,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
       {!frecuente && <Autocompletar items={sugerencias} onElegir={setQ} />}
       {qEf !== q && (
         <p className="mt-2 text-xs text-slate-600" role="status">
-          Entendido como «{qEf}».{" "}
+          Buscado junto con la consulta anterior: «{qEf}».{" "}
           <button
             type="button"
             onClick={() => {
@@ -354,8 +354,11 @@ export function Buscar({ inicial }: { inicial?: string }) {
             data-testid="todos-los-resultados"
           >
             <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-9">
-              Todos los resultados ({res.length}
-              {hayMas ? ` de ${busqueda.totalCapitulo + busqueda.totalFuera}` : ""})
+              Todos los resultados (
+              {hayMas
+                ? `se muestran ${res.length} de ${busqueda.totalCapitulo + busqueda.totalFuera}`
+                : res.length}
+              )
             </summary>
             <div className="mt-2">
               <Segmented
@@ -589,7 +592,7 @@ export function Sobre() {
                 {!m.fecha
                   ? "revisión pendiente"
                   : m.tipo === "publicado"
-                    ? `del ${fechaCorta(m.fecha)}`
+                    ? fechaCorta(m.fecha)
                     : `revisión registrada el ${fechaCorta(m.fecha)}`}
                 {m.pendiente ? " · con cambios pendientes de revisión" : ""}.
               </li>
@@ -869,7 +872,7 @@ export function Preguntas({ id }: { id?: string }) {
       </CabeceraEditorial>
       {id && (
         <p role="status" className="mb-3 rounded-md bg-slate-100 px-3 py-2 text-sm text-slate-700">
-          Esa pregunta no está en esta edición: está pendiente de revisión. Abajo, las revisadas.
+          Esa pregunta no existe o no está en esta edición. Abajo, las preguntas revisadas.
         </p>
       )}
       <div className="mb-3 flex flex-wrap items-center gap-2">

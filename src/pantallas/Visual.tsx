@@ -1,6 +1,7 @@
 /* «Diagramas» (#/visual) y «Figuras» (#/visual/figuras), por separado (13-10-2026): los
    diagramas hechos con el texto y las figuras originales con visor y zoom. Las tablas y los
    sistemas tienen su propia entrada (Tablas, Sistemas AID): aquí no se repiten. */
+import { paginasPorApartado } from "../paginasApartado";
 import { ArrowLeft, ArrowRight, Images, Maximize2 } from "lucide-react";
 import { ICONO_DIAGRAMA } from "../nav";
 import { DIAGRAMAS, type DiagramaId } from "../contenido/diagramas";
@@ -105,8 +106,7 @@ function GaleriaDiagramas() {
                         {d.resumen}
                       </span>
                       <span className="mt-1.5 block text-xs text-slate-500">
-                        {ap ? `Apartado ${ap.n} · ` : ""}
-                        {d.paginas.length === 1 ? "p." : "pp."} {intervalos(d.paginas)}
+                        {paginasPorApartado(d.paginas, ap?.n)}
                       </span>
                     </span>
                   </a>
@@ -119,19 +119,6 @@ function GaleriaDiagramas() {
     </div>
   );
 }
-
-/* Páginas seguidas, como intervalo: [3, 4] → «3-4»; [4, 5, 15, 17, 19, 20] → «4-5, 15, 17, 19-20». */
-const intervalos = (ps: number[]) => {
-  const xs = [...new Set(ps)].sort((a, b) => a - b);
-  const out: string[] = [];
-  for (let k = 0; k < xs.length; k++) {
-    let j = k;
-    while (j + 1 < xs.length && xs[j + 1] === xs[j] + 1) j++;
-    out.push(j > k ? `${xs[k]}-${xs[j]}` : String(xs[k]));
-    k = j;
-  }
-  return out.join(", ");
-};
 
 export function Visual({ vista = "diagramas" }: { vista?: "diagramas" | "figuras" }) {
   const ver = (f: "diagramas" | "figuras") => vista === f;

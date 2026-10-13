@@ -2,7 +2,8 @@
    los resultados de la búsqueda. Todo es texto literal del capítulo con su página; lo único de
    la app son los rótulos. Se usa en la paleta (compacta), en «¿Qué necesitas?» de la portada
    (compacta) y en la pantalla Buscar (con las otras respuestas). */
-import { NOTAS_POR_PASAJE } from "../notas-complementarias";
+import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
+import { TABLAS } from "../contenido";
 import { useId, useState, type ReactNode } from "react";
 import { ArrowRight, MessageCircleQuestion, Quote } from "lucide-react";
 import { marcar, type Respuesta } from "../busqueda";
@@ -405,11 +406,14 @@ function Tarjeta({
       )}
       {asterisco && !sinNota && <p className="mt-1 text-xs text-slate-600">{asterisco.nota}</p>}
       {/* Una decisión registrada que ayuda a leer el pasaje (V54-11), rotulada aparte. */}
-      {NOTAS_POR_PASAJE[r.id] && (
-        <p className="mt-1.5 rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs text-slate-600">
-          {NOTAS_POR_PASAJE[r.id]}
-        </p>
-      )}
+      {NOTAS_POR_PASAJE[r.id] &&
+        (!r.sistema ||
+          COLUMNA_DE_NOTA[r.id] === undefined ||
+          r.sistema === TABLAS.T1.columnas[COLUMNA_DE_NOTA[r.id]]) && (
+          <p className="mt-1.5 rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs text-slate-600">
+            {NOTAS_POR_PASAJE[r.id]}
+          </p>
+        )}
       {/* La procedencia, al pie de la tarjeta (no encima del dato). */}
       <p className="mt-1.5 text-[13px] text-slate-500">
         Fuente: {r.fuente.replace(/^(Tabla \d+)\..*$/s, "$1")}, {paginas(r)}
@@ -512,7 +516,7 @@ function BloqueFrecuente({
             {ampliacion.length > 0 && (
               <details className="mt-2">
                 <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
-                  Ampliación: los cuatro sistemas
+                  Ver los cuatro sistemas
                 </summary>
                 <div className="mt-2 space-y-2">{ampliacion.map(tarjeta)}</div>
               </details>

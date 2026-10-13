@@ -145,7 +145,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
           <Autocompletar items={sugerencias} onElegir={setQ} onIr={cerrarYGuardar} />
           {qEf !== q && (
             <p className="mt-1 text-xs text-slate-600" role="status">
-              Entendido como «{qEf}».
+              Buscado junto con la consulta anterior: «{qEf}».
             </p>
           )}
           {motor && qEf.trim().length >= 2 && (
@@ -262,6 +262,15 @@ function AvisoVersion() {
       window.removeEventListener("mseen:sw-actualizado", hecho);
     };
   }, []);
+  // 14-10-2026: el aviso de «Actualizado» se va solo a los 8 s (tapaba el contenido).
+  useEffect(() => {
+    if (update || !desde || desde === VERSION_APP) return;
+    const t = window.setTimeout(() => {
+      setDesde(null);
+      delete (window as unknown as { __mseenActualizado?: string }).__mseenActualizado;
+    }, 8000);
+    return () => window.clearTimeout(t);
+  }, [update, desde]);
   if (!update && desde)
     return (
       <div

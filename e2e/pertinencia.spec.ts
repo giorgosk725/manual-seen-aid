@@ -26,7 +26,7 @@ test.describe("Pertinencia y continuación (0.42.0)", () => {
     await expect(page.getByText(/Control-IQ\+: ≥ 2 años/).first()).toBeVisible();
     await expect(page.getByText("Ver otros sistemas").first()).toBeVisible();
     await expect(page.getByRole("group", { name: "Sistema" })).toHaveCount(0);
-    await expect(page.getByText("Ampliación: los cuatro sistemas")).toBeVisible();
+    await expect(page.getByText("Ver los cuatro sistemas")).toBeVisible();
   });
 
   test("Iniciar: una sigla de la tarea es pulsable y define sin salir", async ({ page }) => {

@@ -4,6 +4,7 @@
    (calculadora.ts). 0.63.0 (auditoría de la 0.61): una sola lectura de cada campo; sin datos
    completos y válidos no hay cifras; la comparación con la Tabla 1 decide si hay propuesta; la
    pauta previa se comparte con los pasos (trabajo-inicio.ts) y «Nuevo inicio» lo vacía todo. */
+import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
 import type { ReactNode } from "react";
 import {
   Activity,
@@ -551,7 +552,7 @@ export function CalculadoraInicio({
               etiqueta="Ratio y factor de sensibilidad"
               opciones={[
                 { v: "no", t: "Sin referencia: reglas del 450 y del 1700" },
-                { v: "si", t: "Tiene los suyos y funcionan" },
+                { v: "si", t: "Ya tiene ratio y factor propios que le funcionan" },
               ]}
               valor={d.referencia ? "si" : "no"}
               onChange={(v) => set({ referencia: v === "si" })}
@@ -804,8 +805,8 @@ export function CalculadoraInicio({
           </p>
         )}
         <p className="text-xs text-slate-500">
-          Solo se comparan la DTD y el peso con la indicación de la Tabla 1; la edad, la gestación,
-          la variante del sistema y la experiencia previa, no.
+          Solo se comparan la DTD y el peso con la indicación del sistema; la edad, la gestación, la
+          variante del sistema y la experiencia previa, no.
         </p>
         {pideObjetivo && (
           <p className="text-xs text-slate-600">
@@ -855,8 +856,8 @@ export function CalculadoraInicio({
               </p>
             )}
             <Lista
-              titulo="Efecto directo en el modo automático"
-              nota="Efecto directo sobre el algoritmo, o lo que necesita para iniciar el modo automático"
+              titulo="Lo que cuenta en el modo automático o para iniciarlo"
+              nota="Efecto directo sobre el algoritmo, o lo que el sistema necesita para iniciar el modo automático"
               claves={gruposDeProgramar(sis).automatico}
               sis={sis}
               valorDe={valorDe}
@@ -904,6 +905,11 @@ export function CalculadoraInicio({
                 <RefreshCw size={13} aria-hidden="true" /> Qué esperar del algoritmo
               </div>
               <p className="mt-0.5 text-sm text-slate-800">{aprendizajeDe(sis)}</p>
+              {sis === COLUMNA_DE_NOTA["T1/3"] && (
+                <p className="mt-1 rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs text-slate-600">
+                  {NOTAS_POR_PASAJE["T1/3"]}
+                </p>
+              )}
             </div>
             <p
               className="border-t px-3 py-2 text-xs text-slate-600"
@@ -961,8 +967,8 @@ export function CalculadoraInicio({
       <div className="space-y-1 text-xs text-slate-600">
         <p>{REGLAS.partida}</p>
         <p>
-          Ayuda de cálculo orientativa: aplica las reglas del capítulo y unos puntos de partida
-          decididos por el responsable del complemento a lo que se escribe; la pauta la decide el
+          Ayuda de cálculo orientativa: aplica a los datos introducidos las reglas del capítulo y
+          unos puntos de partida decididos por el responsable del complemento; la pauta la decide el
           profesional. Nada de lo escrito se guarda ni se envía.
         </p>
       </div>

@@ -682,9 +682,22 @@ const FRASES: [RegExp, string, Modo][] = [
     "glucemia normal|independencia",
     "sustituye",
   ],
-  // «se me cae el pod», «se suelta el sensor»: el adhesivo que se despega.
+  // «se suelta el sensor»: el adhesivo que se despega, y se queda «sensor»: no es la pregunta
+  // del pod (14-10-2026).
   [
-    /(se )?(me |le )?(cae|caen|ha caido|suelta|sueltan|despega|despegan|ha despegado) (el |la |un |una )?(pod|sensor|parche|bomba|set|cateter)/,
+    /(se )?(me |le )?(cae|caen|ha caido|suelta|sueltan|despega|despegan|ha despegado) (el |la |un |una )?sensor/,
+    "despega despegado adhesivo sensor",
+    "sustituye",
+  ],
+  // «se me cae el pod», «se despega el parche»: el adhesivo del pod, y se queda «pod».
+  [
+    /(se )?(me |le )?(cae|caen|ha caido|suelta|sueltan|despega|despegan|ha despegado) (el |la |un |una )?(pod|parche)/,
+    "despega despegado adhesivo pod",
+    "sustituye",
+  ],
+  // «se suelta el set»: el adhesivo que se despega.
+  [
+    /(se )?(me |le )?(cae|caen|ha caido|suelta|sueltan|despega|despegan|ha despegado) (el |la |un |una )?(bomba|set|cateter)/,
     "despega despegado adhesivo",
     "sustituye",
   ],

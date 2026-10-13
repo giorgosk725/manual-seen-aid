@@ -20,10 +20,13 @@ import {
   Minus,
   Radio,
   SlidersHorizontal,
+  Sparkles,
+  Stethoscope,
   Syringe,
   Target,
   Timer,
   TrendingDown,
+  UserRound,
   Users,
   Utensils,
   X,
@@ -73,6 +76,8 @@ import { Elegir } from "./Elegir";
 
 export { Elegir };
 import { comoFunciona } from "../guias";
+import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
+import type { Pieza } from "../inicio";
 import { PiezaVista } from "../componentes/Piezas";
 import { FuentePie } from "../componentes/FuentePie";
 import { paginasDe } from "../paginas";
@@ -111,11 +116,11 @@ function ParametrosConfigurables({ c, ink }: { c: number; ink: string }) {
   const lineas = (PARAMETROS_AUTO?.celdas[c] ?? "").split("\n").map((l) => l.trim());
   const grupos = [
     {
-      rotulo: "Efecto directo sobre el algoritmo (*)",
+      rotulo: "Efecto directo en el modo automático (*)",
       items: lineas.filter((l) => l.endsWith("*")),
     },
     {
-      rotulo: "Sobre todo en los bolos o en el modo manual",
+      rotulo: "Sobre todo en los bolos y el modo manual",
       items: lineas.filter((l) => l && !l.endsWith("*")),
     },
   ].filter((g) => g.items.length);
@@ -735,35 +740,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         <TituloSeccion id="funciona" sistema={s.name} color={h.ink}>
           Cómo funciona
         </TituloSeccion>
-        <p className="mb-3 text-sm text-slate-600">
-          Qué mide, dónde decide, cómo administra la insulina, hacia qué objetivo y qué queda en
-          manos de la persona y del profesional.
-        </p>
-        <ol className="space-y-4">
-          {comoFunciona(c, s.id).pasos.map((paso, i) => (
-            <li key={paso.rotulo} className="flex gap-3">
-              <span
-                aria-hidden="true"
-                className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-display text-sm font-medium text-white"
-                style={{ background: h.strong }}
-              >
-                {i + 1}
-              </span>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-sm font-bold text-slate-900">{paso.rotulo}</h3>
-                <div className="mt-1.5 space-y-2">
-                  {paso.piezas.map((p, j) => (
-                    <PiezaVista key={j} pieza={p} sis={c} compacta />
-                  ))}
-                </div>
-              </div>
-            </li>
-          ))}
-        </ol>
-        <FuentePie
-          className="mt-3"
-          fuentes={fuentesDePiezas(comoFunciona(c, s.id).pasos.flatMap((x) => x.piezas))}
-        />
+        <ComoFuncionaSistema c={c} id={s.id as SistemaId} />
       </section>
 
       <section
@@ -1223,7 +1200,7 @@ function ParametrosAuto({ c, compacto = false }: { c: number; compacto?: boolean
       {/* M61-04: el papel de la basal programada en cada sistema (Tabla 3, celda entera): en
           Omnipod 5, por ejemplo, cuenta para el primer pod y luego no. */}
       <p className="text-xs leading-snug text-slate-600">
-        <span className="font-semibold text-slate-700">Tasa basal programada: </span>
+        <span className="block font-semibold text-slate-700">Tasa basal programada</span>
         {TABLAS.T3.filas.find((f) => f.etiqueta === "Tasa basal programada")!.celdas[c]}
       </p>
     </div>
@@ -1291,12 +1268,18 @@ function CeldaFunciona({ fila, c }: { fila: number; c: number }) {
   if (fila === FILA_PARAMETROS) return <ParametrosAuto c={c} compacto />;
   const clave = claveDeCelda(fila, c);
   const celda = TABLAS.T1.filas[fila].celdas[c];
+  const nota = COLUMNA_DE_NOTA[`T1/${fila}`] === c ? NOTAS_POR_PASAJE[`T1/${fila}`] : null;
   return clave ? (
     <>
       <span className="block font-bold leading-snug text-slate-900">{clave}</span>
       <span className="mt-1 block text-[13px] leading-snug text-slate-600">
         <Lineas>{celda}</Lineas>
       </span>
+      {nota && fila === 3 && (
+        <span className="mt-1.5 block rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs font-normal text-slate-600">
+          {nota}
+        </span>
+      )}
     </>
   ) : (
     <span className="font-semibold text-slate-900">
@@ -1304,6 +1287,184 @@ function CeldaFunciona({ fila, c }: { fila: number; c: number }) {
     </span>
   );
 }
+/* «Cómo funciona» de un sistema (14-10-2026): de un vistazo. Arriba, el recorrido de la
+   decisión (mide → decide → administra → hacia qué objetivo) con lo esencial de este sistema en
+   negrita (casillas literales de la Tabla 1 y CLAVE_ALGORITMO); debajo, cómo se adapta, los bolos
+   de corrección y los parámetros que cuentan en automático; luego, en tarjetas, lo que queda en
+   manos de la persona y del profesional, lo que lo distingue y lo que devuelve. Las frases
+   generales de los apartados 2 y 3 (las mismas para los cuatro), plegadas al final. Las piezas
+   salen de la guía comoFunciona (guias/index.ts), así que siguen comprobadas frase a frase. */
+const RECORRIDO: { rotulo: string; icono: LucideIcon; fila: number }[] = [
+  { rotulo: "Mide", icono: Radio, fila: 1 },
+  { rotulo: "Decide", icono: Cpu, fila: 2 },
+  { rotulo: "Administra", icono: Syringe, fila: 4 },
+  { rotulo: "Hacia el objetivo", icono: Target, fila: 6 },
+];
+function ClaveRecorrido({ fila, c }: { fila: number; c: number }) {
+  const h = SISTEMA_HEX[c];
+  const celda = TABLAS.T1.filas[fila].celdas[c];
+  if (fila === 1)
+    return (
+      <ul className="flex flex-wrap gap-1">
+        {celda.split(";").map((x) => (
+          <li
+            key={x}
+            className="rounded-md px-1.5 py-0.5 text-sm font-bold"
+            style={{ background: h.soft, color: h.ink }}
+          >
+            {x.trim()}
+          </li>
+        ))}
+      </ul>
+    );
+  if (fila === 2) {
+    const tipo = algoritmoDelCapitulo(c).split(": algoritmo de tipo ")[1];
+    return (
+      <>
+        <span className="block font-bold leading-snug text-slate-900">{celda}</span>
+        {tipo && (
+          <span
+            className="mt-1 inline-block rounded-full px-2 text-[11px] font-bold text-white"
+            style={{ background: h.ink }}
+          >
+            {tipo}
+          </span>
+        )}
+      </>
+    );
+  }
+  if (fila === 4) return <CeldaFunciona fila={4} c={c} />;
+  return (
+    <span className="block font-bold leading-snug text-slate-900">
+      <Lineas>{celda}</Lineas>
+    </span>
+  );
+}
+function TarjetaFunciona({
+  titulo,
+  icono: Icono,
+  color,
+  children,
+}: {
+  titulo: string;
+  icono: LucideIcon;
+  color: string;
+  children: ReactNode;
+}) {
+  return (
+    <section
+      aria-label={titulo}
+      className="min-w-0 rounded-xl border bg-white p-3"
+      style={{ borderColor: "#e6e6e6" }}
+    >
+      <h3 className="mb-1.5 flex items-center gap-1.5 text-sm font-extrabold text-slate-900">
+        <Icono size={15} aria-hidden="true" style={{ color }} />
+        {titulo}
+      </h3>
+      <div className="space-y-2 text-sm text-slate-800">{children}</div>
+    </section>
+  );
+}
+/* Las frases generales de «Cómo funciona» (las mismas para los cuatro sistemas). */
+const esGeneral = (p: Pieza) =>
+  p.t === "frase" &&
+  ((p.apartado === "02-componentes" && (p.bloque === "b4" || p.bloque === "b3")) ||
+    (p.apartado === "03-algoritmos" && p.bloque === "b1"));
+const TARJETAS_FUNCIONA: { rotulo: string; icono: LucideIcon }[] = [
+  { rotulo: "Qué sigue haciendo la persona", icono: UserRound },
+  { rotulo: "Qué lo distingue en la práctica", icono: Sparkles },
+  { rotulo: "Qué información devuelve", icono: BarChart3 },
+];
+function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
+  const h = SISTEMA_HEX[c];
+  const guia = comoFunciona(c, id);
+  const todas = guia.pasos.flatMap((x) => x.piezas);
+  const generales = todas.filter(esGeneral);
+  const piezasDe = (rotulo: string) => guia.pasos.find((x) => x.rotulo === rotulo)?.piezas ?? [];
+  return (
+    <div className="space-y-3">
+      {/* El recorrido de la decisión: cuatro pasos seguidos; en el móvil, uno debajo de otro. */}
+      <ol
+        aria-label="Recorrido de la decisión"
+        className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        {RECORRIDO.map(({ rotulo, icono: Icono, fila }, k) => (
+          <li
+            key={fila}
+            className="min-w-0 rounded-xl border bg-white p-3"
+            style={{ borderColor: "#e6e6e6", borderTop: `4px solid ${h.strong}` }}
+          >
+            <div
+              className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide"
+              style={{ color: h.ink }}
+            >
+              <span
+                aria-hidden="true"
+                className="flex h-5 w-5 items-center justify-center rounded-full text-[11px] text-white"
+                style={{ background: h.strong }}
+              >
+                {k + 1}
+              </span>
+              <Icono size={14} aria-hidden="true" />
+              {rotulo}
+            </div>
+            <p className="mt-0.5 text-[11px] text-slate-500">{TABLAS.T1.filas[fila].etiqueta}</p>
+            <div className="mt-1.5 text-sm">
+              <ClaveRecorrido fila={fila} c={c} />
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        <TarjetaFunciona titulo="Cómo decide y se adapta" icono={Brain} color={h.ink}>
+          <CeldaFunciona fila={3} c={c} />
+        </TarjetaFunciona>
+        <TarjetaFunciona titulo="Bolos automáticos de corrección" icono={Activity} color={h.ink}>
+          <CeldaFunciona fila={5} c={c} />
+        </TarjetaFunciona>
+      </div>
+      {/* Lo que puede ajustar el profesional: la frase del apartado 2, los parámetros de este
+          sistema en sus dos grupos y el enlace a «Parámetros». */}
+      <TarjetaFunciona titulo="Qué puede ajustar el profesional" icono={Stethoscope} color={h.ink}>
+        {piezasDe("Qué puede ajustar el profesional").map((p, j) =>
+          p.t === "enlace" ? null : <PiezaVista key={j} pieza={p} sis={c} compacta />,
+        )}
+        <ParametrosAuto c={c} compacto />
+        <p className="text-xs text-slate-600">{NOTA_PARAMETROS}</p>
+        <a
+          href={href("sistemas", id, "parametros")}
+          className="no-imprimir inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
+          style={{ color: h.ink }}
+        >
+          Parámetros de este sistema (Tablas 1 y 3) <ArrowRight size={13} aria-hidden="true" />
+        </a>
+      </TarjetaFunciona>
+
+      <div className="grid gap-2 md:grid-cols-3">
+        {TARJETAS_FUNCIONA.map((t) => (
+          <TarjetaFunciona key={t.rotulo} titulo={t.rotulo} icono={t.icono} color="#475569">
+            {piezasDe(t.rotulo)
+              .filter((p) => !esGeneral(p))
+              .map((p, j) => (
+                <PiezaVista key={j} pieza={p} sis={c} compacta />
+              ))}
+          </TarjetaFunciona>
+        ))}
+      </div>
+
+      <Foldable title="Cómo funcionan los sistemas AID, en general" count={generales.length}>
+        <div className="space-y-2 text-sm">
+          {generales.map((p, j) => (
+            <PiezaVista key={j} pieza={p} sis={c} compacta />
+          ))}
+        </div>
+      </Foldable>
+      <FuentePie fuentes={fuentesDePiezas(todas)} />
+    </div>
+  );
+}
+
 function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: string }) {
   const t = TABLAS.T1;
   const fuente = rutaEnCapitulo(t);
@@ -1558,7 +1719,7 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
                     c={c}
                     seccion="funciona"
                     texto={<>{algoritmoDelCapitulo(c)}</>}
-                    enlace="Cómo funciona, paso a paso"
+                    enlace="Ver cómo funciona este sistema"
                   />
                 ))}
               </ul>

@@ -46,7 +46,7 @@ export function UrgenciaF3({
         ))}
       </ul>
       <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-        <span>Texto literal de la Figura 3, p. {FIGURA3.pagina}.</span>
+        <span>Texto literal de la Figura 3.</span>
         {enlace && (
           <a
             href={href("consultar", "figura-3")}

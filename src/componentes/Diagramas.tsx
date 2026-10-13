@@ -1,5 +1,7 @@
 /* Diagramas a partir del texto del capítulo (datos en src/contenido/diagramas.ts). HTML y CSS,
    no SVG: el texto es real (se lee a 360 px, se busca, se imprime y lo lee un lector de pantalla). */
+import { paginasPorApartado } from "../paginasApartado";
+import { NOTA_ADAPTA_OMNIPOD } from "../notas-complementarias";
 import { FuentePie } from "./FuentePie";
 import {
   createContext,
@@ -127,7 +129,7 @@ export function MarcoDiagrama({
           className="mt-3"
           fuentes={[
             {
-              texto: `${donde ? `Apartado ${donde.apartado.n}, ` : ""}${meta.paginas.length === 1 ? "p." : "pp."} ${meta.paginas.join(", ")}`,
+              texto: paginasPorApartado(meta.paginas, donde?.apartado.n),
               ruta: donde ? href("capitulo", donde.apartado.slug, donde.ancla) : undefined,
             },
           ]}
@@ -700,7 +702,7 @@ function Algoritmos() {
               </DatoAlgoritmo>
               <details className="border-t px-3 py-2 text-xs" style={{ borderColor: "#eceff3" }}>
                 <summary className="tap-44 cursor-pointer font-semibold text-slate-700">
-                  Celdas completas (Tabla 1)
+                  Celdas completas
                 </summary>
                 <dl className="mt-2 space-y-1.5">
                   {FILAS_ALGORITMO.map((e) => (
@@ -718,6 +720,9 @@ function Algoritmos() {
         })}
       </div>
       <p className="mt-2 text-xs text-slate-600">{TABLAS.T1.notas[0]}</p>
+      <p className="mt-1.5 rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs text-slate-600">
+        {NOTA_ADAPTA_OMNIPOD}
+      </p>
     </div>
   );
 }
@@ -848,7 +853,7 @@ function TarjetaGestacion({ c }: { c: number }) {
       )}
       <dl className="space-y-2 text-xs">
         {GESTACION_SISTEMAS[c].map((x) => (
-          <div key={x.tema}>
+          <div key={`${x.tema}-${x.texto}`}>
             <dt className="flex items-center justify-between gap-2 font-bold text-slate-600">
               {x.tema}
               {x.texto !== "—" && <PaginaBadge p={x.p} />}
@@ -1162,7 +1167,7 @@ function Exploraciones() {
         ))}
       </ul>
       <p className="mt-1 text-xs text-slate-500">
-        El color resume cada celda; manda el texto de la Tabla 6 (apartado 10, pp. 21-22).
+        El color resume cada celda; manda el texto de la tabla.
       </p>
     </div>
   );
@@ -1267,9 +1272,7 @@ function Eleccion() {
         <p>{ELECCION_TEXTO.factores}</p>
         <p className="mt-1">{ELECCION_TEXTO.noJerarquia}</p>
       </div>
-      <p className="text-xs text-slate-500">
-        Dibujo hecho con el texto de la Figura 2 (p. 6), caja a caja.
-      </p>
+      <p className="text-xs text-slate-500">Dibujo hecho con el texto de la figura, caja a caja.</p>
     </div>
   );
 }

@@ -133,6 +133,26 @@ export const MATERIALES: Material[] = [
     evidencia: "Aprobación registrada (commit 7bb0a4c)",
   },
   {
+    id: "como-funciona-sistema",
+    estado: "pendiente",
+    nombre: "«Cómo funciona» de cada sistema, de un vistazo (14-10-2026)",
+    tipo: "plantilla",
+    fecha: "",
+    version: "0.65.1",
+    evidencia:
+      "Mismas piezas literales que la guía revisada; nueva disposición, sin revisión registrada",
+  },
+  {
+    id: "notas-complementarias",
+    estado: "pendiente",
+    nombre: "Notas complementarias (edad de CamAPS Liberty; «autoaprendizaje» de Omnipod 5)",
+    tipo: "explicacion",
+    fecha: "",
+    version: "0.65.1",
+    evidencia:
+      "Decisiones del responsable del 13-10-2026 (Liberty) y del 14-10-2026 (Omnipod 5; Brown SA et al. Diabetes Care 2021;44:1630-40)",
+  },
+  {
     id: "frecuentes",
     estado: "aprobado",
     nombre: "Preguntas frecuentes (103)",

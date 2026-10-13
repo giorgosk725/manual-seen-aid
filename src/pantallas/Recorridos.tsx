@@ -1248,8 +1248,7 @@ export function Interrupcion({ tramo }: { tramo?: string }) {
     <div>
       <CabeceraEditorial titulo="Interrupción del sistema" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          «Interrupción del sistema y pauta alternativa» (p. 9): elige cuánto va a durar y lee su
-          párrafo.
+          «Interrupción del sistema y pauta alternativa»: elige cuánto va a durar y lee su párrafo.
         </p>
       </CabeceraEditorial>
       <div className="no-imprimir mb-4">

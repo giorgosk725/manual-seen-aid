@@ -46,7 +46,9 @@ test.describe("Buscar con más mano (0.28.0)", () => {
       page.getByRole("heading", { name: /Pregunta frecuente|Pasajes relacionados/ }).first(),
     ).toBeVisible();
     await caja.fill("y en Omnipod 5");
-    await expect(page.getByText(/Entendido como «hipoglucemia nocturna/)).toBeVisible();
+    await expect(
+      page.getByText(/Buscado junto con la consulta anterior: «hipoglucemia nocturna/),
+    ).toBeVisible();
   });
 
   test("una fila por sistema se cambia de sistema dentro de la tarjeta", async ({ page }) => {

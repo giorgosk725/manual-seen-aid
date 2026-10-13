@@ -5,6 +5,7 @@
      (1 = fichas grandes; 2–3 = columnas elegidas; todos = tabla completa). En las demás, un
      filtro por fila (p. ej. Tabla 6, por procedimiento). La selección viaja en la ruta
      (`T1:minimed-780g+omnipod-5`, `T6:3`) para poder compartirla. */
+import { NOTAS_POR_TABLA } from "../notas-complementarias";
 import { useMemo, useState, type ReactNode } from "react";
 import { ExternalLink } from "lucide-react";
 import type { Tabla, TablaId } from "../contenido";
@@ -415,6 +416,14 @@ export function TablaVista({
         </>
       )}
       <Notas notas={tabla.notas} />
+      {(NOTAS_POR_TABLA[tabla.id] ?? []).map((n) => (
+        <p
+          key={n}
+          className="mt-1.5 rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs text-slate-600"
+        >
+          {n}
+        </p>
+      ))}
       {herramienta && (
         <FuentePie
           fuentes={[

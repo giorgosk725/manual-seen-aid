@@ -29,9 +29,14 @@ test.describe("Comprensión", () => {
     await expect(
       page.getByRole("heading", { level: 2, name: /^Cómo funciona · Omnipod 5/ }),
     ).toBeInViewport();
-    await expect(
-      page.getByRole("heading", { level: 3, name: "Sensor y señal de glucosa" }),
-    ).toBeVisible();
+    // 14-10-2026: el recorrido de la decisión con las casillas del sistema; las frases
+    // generales, plegadas.
+    await expect(page.getByRole("list", { name: "Recorrido de la decisión" })).toContainText(
+      "FreeStyle Libre 2 Plus",
+    );
+    await page
+      .locator("summary", { hasText: "Cómo funcionan los sistemas AID, en general" })
+      .click();
     await expect(
       page.getByText(/^De su precisión depende la seguridad del algoritmo/),
     ).toBeVisible();

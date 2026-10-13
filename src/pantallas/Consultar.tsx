@@ -174,8 +174,7 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
     <div>
       <CabeceraEditorial titulo="Hiperglucemia y cetonemia" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          La Figura 3 del capítulo (p. 8), como recorrido. El color de cada tramo es el de la
-          figura.
+          La Figura 3 del capítulo, como recorrido. El color de cada tramo es el de la figura.
         </p>
       </CabeceraEditorial>
       <div
