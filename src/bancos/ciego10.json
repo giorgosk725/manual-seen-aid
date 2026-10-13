@@ -1,0 +1,852 @@
+[
+  {
+    "q": "la pluma la cuenta como insulina activa?",
+    "perfil": "residente",
+    "aceptables": [
+      "Tras una corrección con pluma, el sistema no contabiliza esa insulina como activa",
+      "El sistema no contabiliza la insulina administrada con pluma como insulina activa"
+    ]
+  },
+  {
+    "q": "modo sueño tandem hace autocorrecciones",
+    "perfil": "residente",
+    "aceptables": [
+      "mantiene la modulación basal sin bolos de autocorrección",
+      "En Tandem, el modo sueño no autocorrige, pero ajusta basal"
+    ]
+  },
+  {
+    "q": "corticoides con asa cerrada se puede mantener",
+    "perfil": "residente",
+    "aceptables": [
+      "En personas seleccionadas, puede mantenerse el sistema AID con monitorización estrecha y ajustes individualizados",
+      "las dosis altas o los cambios rápidos de pauta pueden requerir perfiles alternativos, modo manual o insulina adicional bajo supervisión del equipo"
+    ]
+  },
+  {
+    "q": "cuanto tarda en hacer efecto la rapida sc",
+    "perfil": "residente",
+    "aceptables": ["La insulina rápida subcutánea inicia su efecto a los 15-30 min"]
+  },
+  {
+    "q": "liberty en niños o embarazadas",
+    "perfil": "residente",
+    "aceptables": [
+      "Por el momento no se recomienda en menores de 13 años ni en gestación.",
+      "su modalidad Liberty, en cambio, no está autorizada durante la gestación"
+    ]
+  },
+  {
+    "q": "objetivo tir adulto %",
+    "perfil": "residente",
+    "aceptables": [
+      "El TIR 70-180 mg/dl es la métrica principal de control global (objetivo general > 70 % en adultos no gestantes)"
+    ]
+  },
+  {
+    "q": "objetivo del calculador de bolos en embarazo mg/dl",
+    "perfil": "residente",
+    "aceptables": [
+      "orientativamente 100 mg/dl general; 90 mg/dl preconcepcional/gestación; 120 mg/dl en riesgo elevado de hipoglucemia"
+    ]
+  },
+  {
+    "q": "cuando sospechar fallo del set",
+    "perfil": "residente",
+    "aceptables": [
+      "Una glucemia ≥ 250 mg/dl persistente (orientativamente ≥ 2 h) o cualquier hiperglucemia inexplicada que no responde a la corrección",
+      "Glucosa del sensor ≥250 mg/dl persistente ≥2 h."
+    ]
+  },
+  {
+    "q": "donde va el algoritmo en omnipod 5",
+    "perfil": "residente",
+    "aceptables": [
+      "En el pod; control mediante el controlador (Europa) o la app del smartphone (EE. UU.)",
+      "alojado en el pod, sin tubo externo, objetivo configurable por tramos y función de actividad"
+    ]
+  },
+  {
+    "q": "titr es objetivo principal?",
+    "perfil": "residente",
+    "aceptables": [
+      "sin sustituir al TIR ni al TBR ni considerarse todavía un objetivo clínico primario universal"
+    ]
+  },
+  {
+    "q": "basal temporal control iq+ %",
+    "perfil": "residente",
+    "aceptables": [
+      "Control-IQ+ añade además basal temporal configurable del 0 al 250 % durante 15 min–72 h"
+    ]
+  },
+  {
+    "q": "criterios hba1c tir para priorizar aid",
+    "perfil": "residente",
+    "aceptables": [
+      "Valores como HbA1c > 7 %, TIR < 70 %, TBR ≥ 4 % o TAR de nivel 2 > 250 mg/dl ≥ 5 %",
+      "pero no deben utilizarse como umbrales rígidos de elegibilidad"
+    ]
+  },
+  {
+    "q": "aid en dm2 cuales estan aprobados",
+    "perfil": "residente",
+    "aceptables": [
+      "MiniMed 780G, Control-IQ+ y Omnipod 5 ya cuentan con autorización para su uso en este grupo"
+    ]
+  },
+  {
+    "q": "aid fibrosis quistica o pancreatica 3c",
+    "perfil": "residente",
+    "aceptables": [
+      "En la diabetes asociada a fibrosis quística, la postrasplante y la de origen pancreático (tipo 3c) la evidencia es aún limitada"
+    ]
+  },
+  {
+    "q": "cuanto antes poner el bolo de la comida",
+    "perfil": "residente",
+    "aceptables": [
+      "administrarlo 10-15 min antes de comer, salvo hipoglucemia o glucemia en descenso"
+    ]
+  },
+  {
+    "q": "regla 450 ratio",
+    "perfil": "residente",
+    "aceptables": [
+      "Regla del 450: g de HC por unidad = 450/DTD",
+      "las reglas del 450 y del 1700 sobre la DTD orientan la ratio y el factor de sensibilidad iniciales"
+    ]
+  },
+  {
+    "q": "fsi inicial 1700 o 1800",
+    "perfil": "residente",
+    "aceptables": [
+      "Regla del 1700: mg/dl por unidad = 1700/DTD",
+      "Puede valorarse la regla del 1800 en personas con riesgo elevado de hipoglucemia"
+    ]
+  },
+  {
+    "q": "cuanto reducir dtd de mdi a bomba",
+    "perfil": "residente",
+    "aceptables": [
+      "Valorar una reducción inicial de la DTD respecto a MDI (orientativamente del 10-20 %) en casos de buen control previo o riesgo de hipoglucemia"
+    ]
+  },
+  {
+    "q": "mal control previo hba1c 9 reduzco dosis al iniciar?",
+    "perfil": "residente",
+    "aceptables": ["poco o nada si el control era deficiente (HbA1c > 8 %)"]
+  },
+  {
+    "q": "780g horas en manual antes de smartguard",
+    "perfil": "residente",
+    "aceptables": ["SmartGuard requiere 48 h previas de administración de insulina en modo manual"]
+  },
+  {
+    "q": "autoaprendizaje 780g medianoche",
+    "perfil": "residente",
+    "aceptables": [
+      "Posee autoaprendizaje continuo que actualiza el valor basal automático cada medianoche",
+      "basándose en la dosis total diaria (DTD) de los últimos 2–6 días"
+    ]
+  },
+  {
+    "q": "tandem bolo extendido cuanto dura",
+    "perfil": "residente",
+    "aceptables": [
+      "Función: bolo extendido (hasta 2 h; Control-IQ+: de 15 min a 8 h)",
+      "En Control-IQ el bolo extendido es limitado en la versión clásica y dispone de mayor duración en Control-IQ+"
+    ]
+  },
+  {
+    "q": "camaps cada cuanto modula y a cuanto predice",
+    "perfil": "residente",
+    "aceptables": [
+      "Modula la administración de forma continua mediante bolos extendidos cada 8–12 min, basándose en una predicción a largo plazo de 2,5 a 4 h"
+    ]
+  },
+  {
+    "q": "omnipod 5 basal adaptativa maximo",
+    "perfil": "residente",
+    "aceptables": [
+      "incrementa la tasa basal adaptativa hasta un 400 %",
+      "calcula una «basal adaptativa» que se recalcula con cada cambio de pod"
+    ]
+  },
+  {
+    "q": "autocorreccion control iq umbral",
+    "perfil": "residente",
+    "aceptables": [
+      "máx. uno por hora si se predice > 180 mg/dl a 30 min",
+      "Administra el 60 % de la dosis para un objetivo de 110 mg/dl"
+    ]
+  },
+  {
+    "q": "control iq+ embarazo modo sueño todo el dia",
+    "perfil": "residente",
+    "aceptables": [
+      "Puede utilizarse el modo sueño de forma continuada para emplear el rango de tratamiento más bajo disponible, de 112,5–120 mg/dl"
+    ]
+  },
+  {
+    "q": "reiniciar bomba despues de glargina cuantas horas",
+    "perfil": "residente",
+    "aceptables": ["unas 22 h tras la última dosis de una basal de duración cercana a 24 h"]
+  },
+  {
+    "q": "boost en ejercicio anaerobico",
+    "perfil": "residente",
+    "aceptables": [
+      "En CamAPS FX, no usar Boost de rutina (riesgo de hipoglucemia diferida)",
+      "mantener el objetivo estándar para no favorecer la hiperglucemia reactiva"
+    ]
+  },
+  {
+    "q": "hipo nocturna con aid que mirar",
+    "perfil": "residente",
+    "aceptables": [
+      "Revisar primero ejercicio vespertino, alcohol, bolo tardío de cena, corrección manual, objetivo demasiado bajo o ratios agresivas"
+    ]
+  },
+  {
+    "q": "muchas autocorrecciones 780g es bueno?",
+    "perfil": "residente",
+    "aceptables": [
+      "un exceso de bolos automáticos de corrección puede indicar bolos omitidos o tardíos, ratios insuficientes, comidas no anunciadas o un objetivo poco intensivo",
+      "No es automáticamente un éxito del algoritmo"
+    ]
+  },
+  {
+    "q": "falsa hipo por compresion del sensor al dormir",
+    "perfil": "residente",
+    "aceptables": [
+      "Es sugestiva una caída brusca de la glucosa seguida de la recuperación rápida al cambiar de postura",
+      "puede producir una lectura falsamente baja que lleve al algoritmo a reducir o suspender la insulina injustificadamente"
+    ]
+  },
+  {
+    "q": "bolo olvidado se pone entero?",
+    "perfil": "residente",
+    "aceptables": [
+      "si el bolo se omite o retrasa durante la primera hora tras la ingesta, puede valorarse administrar solo una parte de la dosis prevista",
+      "transcurrido más tiempo, suele ser preferible utilizar el calculador de corrección en lugar de administrar el bolo prandial completo"
+    ]
+  },
+  {
+    "q": "objetivos mcg gestacion tirp tbrp",
+    "perfil": "residente",
+    "aceptables": [
+      "TIRp 63–140 mg/dl >70 %, TBRp <63 mg/dl <4 %, TBRp <54 mg/dl <1 % y TARp >140 mg/dl <25 %"
+    ]
+  },
+  {
+    "q": "hba1c objetivo durante el embarazo",
+    "perfil": "residente",
+    "aceptables": [
+      "el objetivo ideal es una HbA1c <6,0 % si puede alcanzarse con seguridad",
+      "pudiendo individualizarse hasta <7,0 % cuando sea necesario para evitar hipoglucemia significativa"
+    ]
+  },
+  {
+    "q": "objetivo camaps segundo trimestre",
+    "perfil": "residente",
+    "aceptables": [
+      "alrededor de 100 mg/dl en el primer trimestre y 80–90 mg/dl a partir del segundo",
+      "pudiendo individualizarse aproximadamente a 81 mg/dl durante la noche si el TBR lo permite"
+    ]
+  },
+  {
+    "q": "dosis glucagon nasal",
+    "perfil": "residente",
+    "aceptables": []
+  },
+  {
+    "q": "fiasp vs lyumjev diferencias",
+    "perfil": "residente",
+    "aceptables": []
+  },
+  {
+    "q": "medtrum nano esta en españa",
+    "perfil": "residente",
+    "aceptables": []
+  },
+  {
+    "q": "formula para calcular el gmi",
+    "perfil": "residente",
+    "aceptables": []
+  },
+  {
+    "q": "insulina semanal icodec se puede usar con bomba",
+    "perfil": "residente",
+    "aceptables": []
+  },
+  {
+    "q": "priorizar aid con pocos recursos criterios",
+    "perfil": "adjunto",
+    "aceptables": [
+      "la priorización debe basarse en la necesidad clínica y en el beneficio esperado, mediante criterios transparentes y adaptados al contexto asistencial"
+    ]
+  },
+  {
+    "q": "aid en paciente psiquiatrico no estable",
+    "perfil": "adjunto",
+    "aceptables": [
+      "Las situaciones de precaución —dificultad técnica sin apoyo, rechazo persistente al dispositivo, trastorno psicopatológico activo no estabilizado o barreras graves para el seguimiento— requieren soporte adicional y reevaluación."
+    ]
+  },
+  {
+    "q": "sensor nuevo en planta cuanto tiempo confirmar con capilar",
+    "perfil": "adjunto",
+    "aceptables": [
+      "Debe confirmarse con glucemia capilar durante las primeras 24 h tras la inserción de un nuevo sensor"
+    ]
+  },
+  {
+    "q": "decision compartida hay que documentarla",
+    "perfil": "adjunto",
+    "aceptables": [
+      "La indicación se concreta en una decisión compartida, estructurada y registrada en la historia clínica",
+      "esta decisión compartida se asocia con un mejor uso sostenido del sistema"
+    ]
+  },
+  {
+    "q": "cuando plantear retirar el asa cerrada",
+    "perfil": "adjunto",
+    "aceptables": [
+      "(a) uso insuficiente o discontinuo del sistema pese a intervenciones educativas y de apoyo",
+      "Estas circunstancias no son criterios automáticos de retirada"
+    ]
+  },
+  {
+    "q": "seguimiento primeras semanas tras inicio aid",
+    "perfil": "adjunto",
+    "aceptables": [
+      "un contacto remoto en las primeras 72 h y a la semana, una revisión presencial a las 2-4 semanas"
+    ]
+  },
+  {
+    "q": "paciente estable con aid cada cuanto revision",
+    "perfil": "adjunto",
+    "aceptables": [
+      "orientativamente a 3-6 meses el primer año, y más una vez consolidada la estabilidad"
+    ]
+  },
+  {
+    "q": "ghost carbs por que desaconsejarlos",
+    "perfil": "adjunto",
+    "aceptables": [
+      "puede aumentar el riesgo de hipoglucemia, favorecer la variabilidad glucémica y distorsionar el funcionamiento o la interpretación del sistema",
+      "evitar bolos correctores repetidos no justificados o hidratos fantasma"
+    ]
+  },
+  {
+    "q": "tras cambiar ajustes cuanto esperar para el siguiente",
+    "perfil": "adjunto",
+    "aceptables": [
+      "su impacto sobre el patrón glucémico debe evaluarse durante varios días antes de realizar nuevos ajustes"
+    ]
+  },
+  {
+    "q": "objetivos cgm paciente ingresado",
+    "perfil": "adjunto",
+    "aceptables": [
+      "objetivos orientativos de TIR 70–180 mg/dl >60 %, TAR >180 mg/dl <25 %, TAR >250 mg/dl <5 % y TBR <70 mg/dl 0 %",
+      "Introduce además el tiempo próximo a hipoglucemia (70–100 mg/dl), que debería mantenerse <15 %"
+    ]
+  },
+  {
+    "q": "gmi no cuadra con hba1c",
+    "perfil": "adjunto",
+    "aceptables": [
+      "una discordancia relevante no justifica por sí sola un cambio de tratamiento; conviene investigar su causa"
+    ]
+  },
+  {
+    "q": "cuantos cambios por visita y cuando reevaluar",
+    "perfil": "adjunto",
+    "aceptables": [
+      "pocos cambios documentados, reevaluables a las 2–4 semanas",
+      "Priorizar uno o dos cambios concretos y reevaluables"
+    ]
+  },
+  {
+    "q": "tbr alto antes de apretar objetivos",
+    "perfil": "adjunto",
+    "aceptables": [
+      "Es el dato que más debe frenar la intensificación",
+      "Antes de intensificar objetivos debe revisarse siempre la seguridad (TBR, hipoglucemia relevante, episodios nocturnos y capacidad de respuesta)."
+    ]
+  },
+  {
+    "q": "indicadores para evaluar un programa aid ademas de hba1c",
+    "perfil": "adjunto",
+    "aceptables": [
+      "la evaluación de los programas de automatización debería ir más allá de la HbA1c, el tiempo en rango o la hipoglucemia"
+    ]
+  },
+  {
+    "q": "isglt2 en dm1 cetoacidosis euglucemica",
+    "perfil": "adjunto",
+    "aceptables": [
+      "debe mantenerse una alta sospecha de cetoacidosis y medirse la cetonemia ante síntomas o situaciones de riesgo, con independencia del nivel de glucemia",
+      "en gestación, tratamiento con iSGLT2, vómitos o enfermedad intercurrente, medir cetonemia con independencia de la glucemia."
+    ]
+  },
+  {
+    "q": "lipohipertrofia cada cuanto explorar",
+    "perfil": "adjunto",
+    "aceptables": ["debe explorarse al menos una vez al año mediante inspección y palpación"]
+  },
+  {
+    "q": "780g en gestacion problema del objetivo minimo",
+    "perfil": "adjunto",
+    "aceptables": [
+      "su objetivo mínimo configurable, de 100 mg/dl, permanece por encima de los objetivos glucémicos específicos del embarazo"
+    ]
+  },
+  {
+    "q": "diabulimia como detectarla",
+    "perfil": "adjunto",
+    "aceptables": [
+      "descensos no explicados de la dosis total diaria, episodios repetidos de cetoacidosis sin causa técnica identificable"
+    ]
+  },
+  {
+    "q": "alcohol y asa cerrada hipo diferida",
+    "perfil": "adjunto",
+    "aceptables": [
+      "anticipar el riesgo de hipoglucemia diferida hasta 12-24 h tras la ingesta",
+      "valorar el uso de Ease-off (CamAPS FX) o un objetivo glucémico más conservador la noche del consumo y la mañana siguiente"
+    ]
+  },
+  {
+    "q": "informe transicion pediatria a adultos que incluir",
+    "perfil": "adjunto",
+    "aceptables": [
+      "sistema, parámetros vigentes, objetivos individualizados, historia de incidencias, plan de seguridad y contactos"
+    ]
+  },
+  {
+    "q": "anciano fragil objetivo hipoglucemia",
+    "perfil": "adjunto",
+    "aceptables": [
+      "priorizando evitar la hipoglucemia (tiempo con glucosa <70 mg/dl, <1% como objetivo primario)"
+    ]
+  },
+  {
+    "q": "aid en demencia hay evidencia",
+    "perfil": "adjunto",
+    "aceptables": [
+      "pero excluyó la demencia establecida, escenario en el que las decisiones se apoyan en evidencia indirecta y valoración individualizada"
+    ]
+  },
+  {
+    "q": "dialisis y aid",
+    "perfil": "adjunto",
+    "aceptables": [
+      "En hemodiálisis, el riesgo de hipoglucemia puede incrementarse durante y tras la sesión.",
+      "En diálisis peritoneal, la carga glucídica del líquido puede favorecer hiperglucemia sostenida."
+    ]
+  },
+  {
+    "q": "androidaps puedo prescribirlo en consulta",
+    "perfil": "adjunto",
+    "aceptables": [
+      "los sistemas DIY no deben presentarse ni ofrecerse desde la consulta como tecnologías comerciales autorizadas",
+      "su acompañamiento clínico no equivale a una prescripción ni a una validación regulatoria del sistema"
+    ]
+  },
+  {
+    "q": "degludec al pasar a bomba solapamiento",
+    "perfil": "adjunto",
+    "aceptables": [
+      "Posible riesgo de hipoglucemia en personas con buen control previo; vigilar estrechamente, sobre todo las primeras 48 h",
+      "Las basales ultralargas mantienen un efecto residual durante los primeros días; coordinar la última dosis y el inicio del sistema"
+    ]
+  },
+  {
+    "q": "cristal 780g resultados embarazo",
+    "perfil": "adjunto",
+    "aceptables": [
+      "CRISTAL evidenció con MiniMed 780G una mejoría principalmente nocturna y una reducción del tiempo por debajo del rango",
+      "sin diferencia significativa en el tiempo en rango global"
+    ]
+  },
+  {
+    "q": "precio mensual omnipod 5 euros",
+    "perfil": "adjunto",
+    "aceptables": []
+  },
+  {
+    "q": "semaglutida en dm1 con aid",
+    "perfil": "adjunto",
+    "aceptables": []
+  },
+  {
+    "q": "facturacion de la telemonitorizacion como acto medico",
+    "perfil": "adjunto",
+    "aceptables": []
+  },
+  {
+    "q": "insulina inhalada afrezza con bomba",
+    "perfil": "adjunto",
+    "aceptables": []
+  },
+  {
+    "q": "que material lleva el paciente por si falla",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "Recambios de set, cánula, reservorio o pods, sensores y baterías/cargadores.",
+      "Pauta de respaldo con insulina basal y rápida en pluma, con las dosis de conversión a inyecciones ya calculadas."
+    ]
+  },
+  {
+    "q": "parto con aid se mantiene la bomba",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "El sistema puede mantenerse durante el parto y el posparto inmediato en personas entrenadas y clínicamente estables",
+      "el aumento brusco de la sensibilidad a la insulina suele exigir una reducción importante de las necesidades de insulina"
+    ]
+  },
+  {
+    "q": "hipo leve cuantos gramos con aid",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "como orientación, 5-10 g ante glucemia 54-70 mg/dl con flecha estable o ascendente"
+    ]
+  },
+  {
+    "q": "cuando dar 15 g hidratos hipo asa cerrada",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "reservando cantidades en torno a 15 g para glucemia < 54 mg/dl, doble flecha descendente o insulina activa significativa"
+    ]
+  },
+  {
+    "q": "hc de la hipo se meten en camaps?",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "en CamAPS FX existe la opción de registrarlos como “tratamiento de hipoglucemia”",
+      "Los hidratos para tratar la hipoglucemia no deben anunciarse como comida"
+    ]
+  },
+  {
+    "q": "desconectar bomba hay que pausarla",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "debe suspenderse o pausarse la administración según las instrucciones del fabricante, para evitar que el sistema registre como administrada una insulina que no se ha infundido realmente"
+    ]
+  },
+  {
+    "q": "cuanto tiempo desconectado sin insulina es peligroso",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "a partir de aproximadamente 1 h sin administración de insulina debe actuarse",
+      "las superiores a 1 h pueden aumentar el riesgo de hiperglucemia y cetosis"
+    ]
+  },
+  {
+    "q": "desconexion 2 horas deporte bolo previo",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "orientativamente hasta 2-3 h, como en deporte, baño o algunas exploraciones",
+      "administrar antes de la desconexión un bolo de acción rápida o ultrarrápida para cubrir la insulina basal prevista durante ese período"
+    ]
+  },
+  {
+    "q": "basal de respaldo cual glargina",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "preferentemente glargina U-100 si se busca facilitar el retorno posterior al sistema"
+    ]
+  },
+  {
+    "q": "omnipod sin perfil basal pauta respaldo",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "una distribución inicial aproximada del 50 % basal y 50 % prandial puede utilizarse como punto de partida",
+      "Cuando el sistema no proporciona un perfil basal detallado —como puede ocurrir con Omnipod 5—, la pauta de respaldo puede estimarse a partir de la dosis total diaria"
+    ]
+  },
+  {
+    "q": "el pod se puede despegar y volver a pegar",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "el pod no se desconecta —si falla, se despega o debe retirarse, se sustituye por uno nuevo—"
+    ]
+  },
+  {
+    "q": "lecturas del sensor despues de resonancia",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "sus lecturas pueden alterarse transitoriamente y suelen normalizarse en aproximadamente 1 h",
+      "conviene confirmar la glucemia capilar antes de tomar decisiones terapéuticas o reanudar la automatización"
+    ]
+  },
+  {
+    "q": "fases programa educativo peet",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "puede organizarse en cuatro fases: valoración inicial, intervención educativa, seguimiento y evaluación/alta del programa"
+    ]
+  },
+  {
+    "q": "cetonas 0,7 cada cuanto repetir",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "Reevaluar glucemia y β-OHB en 1-2 h.",
+      "vigilancia estrecha, revisión del sistema y reevaluación de glucemia y cetonemia en 1–2 h"
+    ]
+  },
+  {
+    "q": "seguridad digital app bomba",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "Seguridad digital: proteger credenciales y dispositivos vinculados, revisar las funciones de administración remota disponibles"
+    ]
+  },
+  {
+    "q": "demasiadas alarmas que hago",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "individualizar los umbrales, reducir las alarmas que no requieren intervención sin comprometer las alertas de seguridad",
+      "La sobrecarga de alertas puede llevar a desactivar alarmas relevantes"
+    ]
+  },
+  {
+    "q": "irritacion piel parche sensor",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "pueden valorarse películas barrera —como copolímeros acrílicos—, adhesivos alternativos o hipoalergénicos y el cambio de zona",
+      "si las lesiones son extensas, recurrentes o de difícil control, debe considerarse valoración dermatológica"
+    ]
+  },
+  {
+    "q": "se pierde la señal del sensor que hacer",
+    "perfil": "enfermeria",
+    "aceptables": ["reiniciar Bluetooth, acercar dispositivos y verificar baterías"]
+  },
+  {
+    "q": "cirugia corta se deja la bomba puesta",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "Puede mantenerse la bomba o el AID, incluido el modo automático, si la situación clínica lo permite y existe protocolo institucional",
+      "situar el set de infusión fuera del campo quirúrgico —preferentemente renovado el día previo cuando proceda—"
+    ]
+  },
+  {
+    "q": "que apuntar si hiperglucemia con cetonas",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "anotar hora, glucemia, β-OHB, dosis de insulina administrada y acciones realizadas"
+    ]
+  },
+  {
+    "q": "tac con el sensor puesto",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "algunos pueden mantenerse fuera del área explorada (en ciertos modelos, con protección plomada); otros deben retirarse.",
+      "Retirar y mantener fuera de la sala."
+    ]
+  },
+  {
+    "q": "cuando hacer capilar si llevas sensor",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "debe confirmarse la glucemia capilar ante discordancia clínica, hipoglucemia de instauración rápida, hiperglucemia persistente o sospecha de fallo del sensor"
+    ]
+  },
+  {
+    "q": "omnipod funcion actividad cuanto dura",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "Función Actividad, objetivo 150 mg/dl; reduce la administración automática, con duración programable de 1–24 h"
+    ]
+  },
+  {
+    "q": "reducir bolo comida antes de ejercicio",
+    "perfil": "enfermeria",
+    "aceptables": ["se reduce además el bolo prandial en un 25-33 %"]
+  },
+  {
+    "q": "hc durante el ejercicio cuanto",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "tomar pequeñas cantidades de hidratos rápidos (orientativamente 10-20 g) si la glucosa baja de unos 126 mg/dl"
+    ]
+  },
+  {
+    "q": "glucosa para empezar a hacer deporte",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "se recomienda iniciar el ejercicio con una glucemia de 126–180 mg/dl",
+      "con cifras <90 mg/dl deben administrarse hidratos de carbono y retrasar el inicio"
+    ]
+  },
+  {
+    "q": "nadar con omnipod",
+    "perfil": "enfermeria",
+    "aceptables": [
+      "Omnipod 5, por su formato parche sin tubo, puede mantenerse durante la actividad acuática dentro de los límites de inmersión especificados por el fabricante"
+    ]
+  },
+  {
+    "q": "como calibrar el guardian 4",
+    "perfil": "enfermeria",
+    "aceptables": []
+  },
+  {
+    "q": "conservar insulina temperatura nevera",
+    "perfil": "enfermeria",
+    "aceptables": []
+  },
+  {
+    "q": "cuantos dias dura el dexcom g7",
+    "perfil": "enfermeria",
+    "aceptables": []
+  },
+  {
+    "q": "cetonas 1,2 con bomba",
+    "perfil": "guardia",
+    "aceptables": [
+      "β-OHB 1,0–2,9 mmol/l: cetosis significativa / probable fallo de infusión; administrar la corrección con pluma y recambiar el set/pod según el plan de seguridad.",
+      "Cambiar set/pod, reservorio (si aplica), insulina y zona de inserción."
+    ]
+  },
+  {
+    "q": "dosis pluma cetosis por peso",
+    "perfil": "guardia",
+    "aceptables": [
+      "La dosis de corrección con pluma puede calcularse mediante el factor de sensibilidad o, alternativamente, según el peso corporal",
+      "Dosis orientativas para personas adultas, basadas en las reglas de días de enfermedad"
+    ]
+  },
+  {
+    "q": "repetir dosis de pluma cuando",
+    "perfil": "guardia",
+    "aceptables": [
+      "valorar una nueva dosis según el plan o protocolo, nunca antes de 2 h desde la dosis anterior",
+      "Evitar nuevas correcciones antes de 2 h, salvo pauta individualizada."
+    ]
+  },
+  {
+    "q": "segunda dosis puesta y cetonas siguen en 1,5",
+    "perfil": "guardia",
+    "aceptables": [
+      "administrada persiste β-OHB ≥1,0 mmol/l o no hay mejoría: acudir a valoración hospitalaria, sin esperar a los signos de gravedad."
+    ]
+  },
+  {
+    "q": "cetonas 3,5 y vomitos",
+    "perfil": "guardia",
+    "aceptables": [
+      "posible cetoacidosis diabética; valoración hospitalaria urgente.",
+      "Acudir a urgencias si las cetonas en sangre son ≥3,0 mmol/l"
+    ]
+  },
+  {
+    "q": "cetosis con glucosa normal suspendo insulina?",
+    "perfil": "guardia",
+    "aceptables": [
+      "la insulina no debe suspenderse, ya que es necesaria para resolver la cetosis",
+      "Si la glucemia es baja o está en descenso: aportar hidratos de carbono (líquidos azucarados) para permitir la insulinización sin inducir hipoglucemia."
+    ]
+  },
+  {
+    "q": "sensor y capilar no coinciden en planta cual uso",
+    "perfil": "guardia",
+    "aceptables": [
+      "debe utilizarse el valor más bajo para orientar las decisiones clínicas y minimizar el riesgo de hipoglucemia"
+    ]
+  },
+  {
+    "q": "cuando no dejar el aid en un ingresado",
+    "perfil": "guardia",
+    "aceptables": [
+      "existe alteración del nivel de conciencia que impide el autocuidado —excluida la anestesia—, cetoacidosis diabética o estado hiperosmolar"
+    ]
+  },
+  {
+    "q": "paso de bomba a basal sc en ingreso cuando pinchar",
+    "perfil": "guardia",
+    "aceptables": [
+      "la insulina basal debe administrarse aproximadamente 2 h antes de suspender la bomba"
+    ]
+  },
+  {
+    "q": "reposicion de potasio en cetoacidosis",
+    "perfil": "guardia",
+    "aceptables": []
+  },
+  {
+    "q": "puedo hacer deporte con cetonas",
+    "perfil": "paciente",
+    "aceptables": [
+      "No realizar ejercicio si las cetonas en sangre son ≥1,5 mmol/l, independientemente de la glucosa.",
+      "el ejercicio debe evitarse con cetonemia ≥1,5 mmol/l, con independencia de la glucemia"
+    ]
+  },
+  {
+    "q": "me da una bajada cuanto azucar tomo si llevo la bomba",
+    "perfil": "paciente",
+    "aceptables": [
+      "como orientación, a menudo pueden bastar 5-10 g",
+      "Comprobar de nuevo la glucemia capilar a los 15 min y evitar el sobretratamiento."
+    ]
+  },
+  {
+    "q": "cuando tengo que ir a urgencias",
+    "perfil": "paciente",
+    "aceptables": [
+      "Acudir a urgencias si las cetonas en sangre son ≥3,0 mmol/l",
+      "si aparecen vómitos, dolor abdominal, respiración rápida o profunda, somnolencia, confusión, mal estado general o imposibilidad para beber líquidos"
+    ]
+  },
+  {
+    "q": "el pancreas artificial lo hace todo solo?",
+    "perfil": "paciente",
+    "aceptables": [
+      "la mayoría de los sistemas son híbridos: ayudan mucho, pero la persona debe anunciar las comidas"
+    ]
+  },
+  {
+    "q": "me puedo quitar el pod para ducharme",
+    "perfil": "paciente",
+    "aceptables": [
+      "Si se usa un pod o sistema tipo parche, no retirar salvo indicación del equipo o necesidad médica"
+    ]
+  },
+  {
+    "q": "quien puede llevar un sistema de asa cerrada",
+    "perfil": "paciente",
+    "aceptables": [
+      "Puede considerarse en personas con diabetes tipo 1 que puedan usarlo de forma segura, por sí mismas o con ayuda, y que deseen usarlo.",
+      "Los sistemas AID pueden considerarse una modalidad preferente de administración de insulina en personas con DM1 capaces de utilizarlos con seguridad"
+    ]
+  },
+  {
+    "q": "pasar el control del aeropuerto con la bomba",
+    "perfil": "paciente",
+    "aceptables": [
+      "conviene llevar la documentación de viaje y solicitar inspección alternativa cuando estén contraindicados determinados escáneres o equipos de rayos X",
+      "solicitar una inspección alternativa cuando esté indicado"
+    ]
+  },
+  {
+    "q": "cual es el mejor sistema",
+    "perfil": "paciente",
+    "aceptables": [
+      "No existe un «mejor sistema» único para todos: el adecuado es el que mejor se ajusta a cada persona."
+    ]
+  },
+  {
+    "q": "que dieta seguir con diabetes tipo 1",
+    "perfil": "paciente",
+    "aceptables": []
+  },
+  {
+    "q": "puedo donar sangre si tengo diabetes",
+    "perfil": "paciente",
+    "aceptables": []
+  }
+]
