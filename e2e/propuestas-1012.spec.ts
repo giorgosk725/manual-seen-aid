@@ -27,7 +27,7 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     const tabla = page.getByRole("table", { name: "Cómo funciona, comparado" });
     await expect(tabla).toBeVisible();
     await expect(tabla.getByRole("columnheader", { name: /Omnipod 5/ })).toHaveCount(1);
-    await expect(tabla.getByRole("rowheader", { name: /Cómo decide y aprende/ })).toBeVisible();
+    await expect(tabla.getByRole("rowheader", { name: /Cómo decide y se adapta/ })).toBeVisible();
   });
 
   test("Para el paciente ofrece el PDF oficial para descargar", async ({ page }) => {

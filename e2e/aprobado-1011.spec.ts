@@ -11,7 +11,7 @@ test.describe("Aprobado el 11-10 (0.37.0)", () => {
     await page.goto("/#/sistemas/ciq+op5/funciona");
     for (const a of [
       "Dónde está el algoritmo",
-      "Cómo decide y aprende",
+      "Cómo decide y se adapta",
       "Cómo administra la insulina",
       "Bolos automáticos de corrección",
     ])

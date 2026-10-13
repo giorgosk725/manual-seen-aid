@@ -1277,7 +1277,8 @@ function claveDeCelda(fila: number, c: number): ReactNode {
    (CamAPS FX) van debajo, con la modalidad a la que se refiere cada una. */
 const ASPECTOS_FUNCIONA: [string, number][] = [
   ["Dónde está el algoritmo", 2],
-  ["Cómo decide y aprende", 3],
+  // «se adapta», no «aprende»: lo que hacen los cuatro es adaptar parámetros (13-10-2026).
+  ["Cómo decide y se adapta", 3],
   ["Cómo administra la insulina", 4],
   // M61-02: hacia qué objetivo trabaja (fila 6 de la Tabla 1, celda entera).
   ["Hacia qué objetivo", 6],

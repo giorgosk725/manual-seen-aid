@@ -675,7 +675,7 @@ function Algoritmos() {
                 </span>
                 <span className="font-normal text-slate-800">{unidos(k.correccion.texto)}</span>
               </DatoAlgoritmo>
-              <DatoAlgoritmo icono={RefreshCw} etiqueta="Aprendizaje" hex={h.strong}>
+              <DatoAlgoritmo icono={RefreshCw} etiqueta="Cómo se adapta" hex={h.strong}>
                 {unidos(k.aprendizaje)}
               </DatoAlgoritmo>
               <DatoAlgoritmo icono={SlidersHorizontal} etiqueta="Parámetros" hex={h.strong}>
