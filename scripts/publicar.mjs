@@ -62,7 +62,7 @@ if (!indice) fallar("No encuentro dist/assets/index-*.js");
 const anterior = existsSync(REGISTRO)
   ? [
       ...readFileSync(REGISTRO, "utf8").matchAll(
-        new RegExp(`\\| ${canal} \\| ([^|]+) \\| ([0-9a-f]{12})`, "g"),
+        new RegExp(String.raw`\|\s*${canal}\s*\|\s*([^|]+?)\s*\|\s*([0-9a-f]{12})`, "g"),
       ),
     ].pop()
   : null;
