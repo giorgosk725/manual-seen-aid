@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — situaciones, tarjetas y búsqueda`,
+    titulo: `Complemento interactivo ${VERSION_APP} — qué cuenta en automático`,
+    detalle: [
+      "Tarjetas de los sistemas: los parámetros en dos grupos, como dice la nota de la Tabla 1: los de efecto directo en el modo automático y los que intervienen sobre todo en los bolos o en el modo manual.",
+      "«Cómo funciona» comparado: lo esencial de cada celda arriba y en negrita (tipo de algoritmo, aprendizaje, cada cuánto actúa y con qué predicción, si corrige solo) y la celda entera debajo; y una fila nueva con los parámetros que cuentan en automático.",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.59.0 — situaciones, tarjetas y búsqueda",
     detalle: [
       "Cada situación, con su icono y su nombre arriba una sola vez; lo común a los cuatro sistemas destacado, y la conducta de cada sistema en su tarjeta con foto.",
       "Los momentos de cada situación, como una línea de tiempo numerada; al final, «Para seguir» con la hoja para el paciente, el apartado y la tabla.",

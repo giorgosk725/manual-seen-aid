@@ -1072,7 +1072,7 @@ function EntradaSistemas() {
                     aria-hidden="true"
                   />
                 </span>
-                <span className="grid grid-cols-2 gap-x-3 gap-y-2 px-3 py-2.5">
+                <div className="grid grid-cols-2 gap-x-3 gap-y-2 px-3 py-2.5">
                   {datos.map(([I, t, v]) => (
                     <span key={t} className="flex min-w-0 gap-1.5">
                       <I
@@ -1110,12 +1110,17 @@ function EntradaSistemas() {
                       {k.correccion.si ? "Sí" : "No"}
                     </span>
                   </span>
-                </span>
+                  {/* Lo que cuenta en automático y lo que se ajusta sobre todo para los bolos. */}
+                  <div className="col-span-2 border-t pt-2" style={{ borderColor: "#eceff3" }}>
+                    <ParametrosAuto c={c} compacto />
+                  </div>
+                </div>
               </a>
             </li>
           );
         })}
       </ul>
+      <p className="text-xs text-slate-600">{NOTA_PARAMETROS}</p>
       <a
         href={href("sistemas", "elegir")}
         className="flex min-h-11 items-center gap-3 rounded-xl border bg-white px-3 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
@@ -1157,6 +1162,104 @@ function EntradaSistemas() {
   );
 }
 
+/* Los parámetros de la Tabla 1 en dos grupos, como dice su nota: los de efecto directo en el
+   modo automático (con asterisco) y el resto, que interviene sobre todo en los bolos o en el
+   modo manual (13-10-2026). */
+const FILA_PARAMETROS = 10;
+const NOTA_PARAMETROS = TABLAS.T1.notas[0];
+function parametrosDe(c: number) {
+  const xs = TABLAS.T1.filas[FILA_PARAMETROS].celdas[c]
+    .split("\n")
+    .map((x) => x.trim())
+    .filter(Boolean);
+  return {
+    directos: xs.filter((x) => x.endsWith("*")).map((x) => x.replace(/\*$/, "")),
+    resto: xs.filter((x) => !x.endsWith("*")),
+  };
+}
+function ParametrosAuto({ c, compacto = false }: { c: number; compacto?: boolean }) {
+  const h = SISTEMA_HEX[c];
+  const { directos, resto } = parametrosDe(c);
+  const grupo = (titulo: string, xs: string[], directo: boolean) =>
+    xs.length > 0 && (
+      <div>
+        <div
+          className="mb-1 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide"
+          style={{ color: directo ? h.ink : "#64748b" }}
+        >
+          {directo ? (
+            <Zap size={12} aria-hidden="true" />
+          ) : (
+            <SlidersHorizontal size={12} aria-hidden="true" />
+          )}
+          {titulo}
+        </div>
+        <ul className="flex flex-wrap gap-1">
+          {xs.map((x) => (
+            <li
+              key={x}
+              className={`rounded-md border px-1.5 py-0.5 text-xs leading-snug ${directo ? "font-bold" : "text-slate-700"}`}
+              style={
+                directo
+                  ? { borderColor: h.strong, background: h.soft, color: h.ink }
+                  : { borderColor: "#e2e8f0", background: "#f8fafc" }
+              }
+            >
+              {x}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  return (
+    <div className={compacto ? "space-y-1.5" : "space-y-2"}>
+      {grupo("Efecto directo en automático", directos, true)}
+      {grupo("Sobre todo en bolos o modo manual", resto, false)}
+    </div>
+  );
+}
+
+/* Lo esencial de cada celda de «Cómo funciona», arriba y en negrita (fragmentos literales de
+   CLAVE_ALGORITMO); la celda entera, debajo. */
+function claveDeCelda(fila: number, c: number): ReactNode {
+  const k = CLAVE_ALGORITMO[c];
+  const h = SISTEMA_HEX[c];
+  if (fila === 3) {
+    const tipo = algoritmoDelCapitulo(c).split(": algoritmo de tipo ")[1];
+    return (
+      <>
+        {tipo && (
+          <span
+            className="mr-1.5 inline-block rounded-full px-2 text-[11px] font-bold text-white"
+            style={{ background: h.ink }}
+          >
+            {tipo}
+          </span>
+        )}
+        {k.aprendizaje.join(" · ")}
+      </>
+    );
+  }
+  if (fila === 4) return [...k.actua, ...k.prediccion.map((x) => `predicción ${x}`)].join(" · ");
+  if (fila === 5)
+    return (
+      <>
+        <span
+          className="mr-1.5 inline-block rounded px-1.5 text-[11px] font-extrabold"
+          style={
+            k.correccion.si
+              ? { background: h.ink, color: "#fff" }
+              : { background: "#e2e8f0", color: "#334155" }
+          }
+        >
+          {k.correccion.si ? "Sí" : "No"}
+        </span>
+        {k.correccion.texto.join(" · ")}
+      </>
+    );
+  return null;
+}
+
 /* «Cómo funciona» comparado (aprobado el 11-10-2026): cuatro aspectos de la Tabla 1, celda a
    celda, con los sistemas elegidos (hasta los cuatro); en el móvil, un bloque por aspecto con las
    celdas una debajo de otra. Las condiciones de la modalidad híbrida (los cuatro) y de Liberty
@@ -1166,7 +1269,27 @@ const ASPECTOS_FUNCIONA: [string, number][] = [
   ["Cómo decide y aprende", 3],
   ["Cómo administra la insulina", 4],
   ["Bolos automáticos de corrección", 5],
+  ["Qué parámetros cuentan en automático", FILA_PARAMETROS],
 ];
+/* Una celda de «Cómo funciona»: la clave arriba (si la hay) y la celda entera debajo; la de los
+   parámetros, en sus dos grupos. */
+function CeldaFunciona({ fila, c }: { fila: number; c: number }) {
+  if (fila === FILA_PARAMETROS) return <ParametrosAuto c={c} compacto />;
+  const clave = claveDeCelda(fila, c);
+  const celda = TABLAS.T1.filas[fila].celdas[c];
+  return clave ? (
+    <>
+      <span className="block font-bold leading-snug text-slate-900">{clave}</span>
+      <span className="mt-1 block text-[13px] leading-snug text-slate-600">
+        <Lineas>{celda}</Lineas>
+      </span>
+    </>
+  ) : (
+    <span className="font-semibold text-slate-900">
+      <Lineas>{celda}</Lineas>
+    </span>
+  );
+}
 function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: string }) {
   const t = TABLAS.T1;
   const fuente = rutaEnCapitulo(t);
@@ -1221,7 +1344,7 @@ function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: strin
                     className="p-3 text-slate-800"
                     style={{ boxShadow: `inset 3px 0 0 0 ${SISTEMA_HEX[c].strong}` }}
                   >
-                    <Lineas>{t.filas[fila].celdas[c]}</Lineas>
+                    <CeldaFunciona fila={fila} c={c} />
                   </td>
                 ))}
               </tr>
@@ -1252,7 +1375,7 @@ function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: strin
                     {t.columnas[c]}
                   </div>
                   <div className="mt-0.5 text-sm text-slate-800">
-                    <Lineas>{t.filas[fila].celdas[c]}</Lineas>
+                    <CeldaFunciona fila={fila} c={c} />
                   </div>
                 </div>
               ))}
@@ -1260,6 +1383,7 @@ function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: strin
           </section>
         ))}
       </div>
+      <p className="text-xs text-slate-600">{NOTA_PARAMETROS}</p>
       <section
         aria-label="Condiciones por modalidad"
         className="rounded-xl border bg-white p-3"
