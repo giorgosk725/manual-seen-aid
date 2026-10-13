@@ -2,12 +2,21 @@
    reciben texto y la app no guarda búsquedas ni criterios. */
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { responder, preguntaFrecuente, frecuentesRelacionadas, respuestaPorId } from "./respuestas";
-import { FRECUENTES, FRECUENTES_TODAS, PROPUESTAS, huellaDe, revisionDe } from "./frecuentes";
+import {
+  EVENTOS,
+  FRECUENTES,
+  FRECUENTES_TODAS,
+  PROPUESTAS,
+  huellaDe,
+  revisionDe,
+} from "./frecuentes";
 import { indice, sugerir } from "./buscador";
 import { tramoDeConsulta } from "./busqueda";
-import { FIGURA3 } from "./contenido";
+import { APARTADOS, FIGURA3, idDeBloque } from "./contenido";
 import { CON_CASOS, CON_REPASO, EDICION, RETIRADOS, migrarPrivacidad } from "./edicion";
 import { MATERIALES, material, materialListo } from "./materiales";
+import { hojaExtraPorId } from "./hojas";
+import { imprimirRegion } from "./imprimir";
 import { pedirParecidos } from "./semantica";
 import { registrarSinRespuesta } from "./consultas";
 import { guardarReciente, guardarVisita } from "./prefs";
@@ -252,5 +261,109 @@ describe("V50-11 · casos y repaso, fuera de esta edición y del build", () => {
     expect(CON_CASOS).toBe(false);
     expect(CON_REPASO).toBe(false);
     expect([...RETIRADOS].sort()).toEqual(["ampliacion", "casos", "repaso"]);
+  });
+});
+
+describe("V54-05 · la revisión, ligada al texto efectivo y como historia de eventos", () => {
+  it("cambiar en memoria el texto de un pasaje citado deja la pregunta sin revisión vigente", () => {
+    const f = FRECUENTES_TODAS.find((x) => x.id === "f63")!;
+    expect(revisionDe(f).estado).toBe("aprobada");
+    const a = APARTADOS.find((x) => x.slug === "09-descarga")!;
+    const b = a.bloques.find((x, i) => idDeBloque(x, i) === "b2") as { texto: string };
+    const antes = b.texto;
+    try {
+      b.texto = antes + " (cambiado)";
+      expect(revisionDe(f).estado).toBe("borrador");
+      expect(revisionDe(f).registro).toMatch(/Cambió después de su revisión/);
+    } finally {
+      b.texto = antes;
+    }
+    expect(revisionDe(f).estado).toBe("aprobada");
+  });
+  it("cada pregunta tiene su historia: eventos con fecha, versión, evidencia y huella", () => {
+    for (const f of FRECUENTES_TODAS) {
+      const ev = EVENTOS[f.id];
+      expect(Array.isArray(ev) && ev.length > 0, f.id).toBe(true);
+      for (const e of ev) {
+        expect(e.fecha, f.id).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        expect(e.version, f.id).toMatch(/^\d+\.\d+\.\d+$/);
+        expect(e.evidencia.length, f.id).toBeGreaterThan(20);
+        expect(e.huella, f.id).toMatch(/^[0-9a-z]+$/);
+      }
+      // La vigente es la del último evento.
+      expect(f.revision.fecha).toBe(ev.at(-1)!.fecha);
+    }
+  });
+});
+
+describe("V54-05 · las hojas adaptadas, ligadas a su texto revisado", () => {
+  it("cambiar una palabra deja la hoja sin revisión; mover un bloque entero, no", () => {
+    const h = hojaExtraPorId("cetonas")!;
+    expect(materialListo("hoja-cetonas")).toBe(true);
+    const item = h.secciones[0].items!;
+    const antes = item[0];
+    try {
+      item[0] = antes + " (cambiado)";
+      expect(materialListo("hoja-cetonas")).toBe(false);
+    } finally {
+      item[0] = antes;
+    }
+    const orden = [...h.secciones];
+    try {
+      h.secciones.reverse();
+      expect(materialListo("hoja-cetonas")).toBe(true);
+    } finally {
+      h.secciones.splice(0, h.secciones.length, ...orden);
+    }
+    // V54-02: la alarma va la primera, marcada como urgente.
+    expect(h.secciones[0].urgente).toBe(true);
+    expect(h.secciones[0].titulo).toMatch(/^3,0 mmol\/l o más, o signos de alarma/);
+  });
+});
+
+describe("V54-09 · no se imprime en silencio una versión incompleta", () => {
+  afterEach(() => vi.useRealTimers());
+  const preparar = () => {
+    vi.useFakeTimers();
+    const region = document.createElement("div");
+    const hueco = document.createElement("div");
+    hueco.setAttribute("aria-busy", "true");
+    region.append(hueco);
+    document.body.append(region);
+    const print = vi.fn();
+    const win = Object.assign(Object.create(window), {
+      print,
+      document,
+      setTimeout: (f: () => void, ms: number) => setTimeout(f, ms),
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+      matchMedia: () => ({ matches: false, addEventListener() {}, removeEventListener() {} }),
+    }) as unknown as Window;
+    return { region, hueco, print, win };
+  };
+  it("con contenido cargándose a los 4 s: avisa, no imprime; «Cancelar» no imprime", () => {
+    const { region, print, win } = preparar();
+    imprimirRegion(() => region, win);
+    vi.advanceTimersByTime(4300);
+    const aviso = document.querySelector('[role="alertdialog"]')!;
+    expect(aviso).not.toBeNull();
+    expect(aviso.textContent).toMatch(/saldría incompleto/);
+    expect(print).not.toHaveBeenCalled();
+    (aviso.querySelectorAll("button")[1] as HTMLButtonElement).click();
+    expect(document.querySelector('[role="alertdialog"]')).toBeNull();
+    vi.advanceTimersByTime(5000);
+    expect(print).not.toHaveBeenCalled();
+    region.remove();
+  });
+  it("«Reintentar», ya cargado, imprime", () => {
+    const { region, hueco, print, win } = preparar();
+    imprimirRegion(() => region, win);
+    vi.advanceTimersByTime(4300);
+    hueco.removeAttribute("aria-busy");
+    (document.querySelector('[role="alertdialog"] button') as HTMLButtonElement).click();
+    vi.advanceTimersByTime(300);
+    expect(print).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('[role="alertdialog"]')).toBeNull();
+    region.remove();
   });
 });

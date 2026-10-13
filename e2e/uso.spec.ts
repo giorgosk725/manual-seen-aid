@@ -125,7 +125,7 @@ test.describe("Uso 0.10.0", () => {
       .getByRole("link", { name: "Índice del capítulo" })
       .click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Leer y comprender");
-    const aprender = page.getByRole("region", { name: "Comprender y practicar" });
+    const aprender = page.getByRole("navigation", { name: "Para comprender" });
     await expect(aprender.getByRole("link", { name: /Tarjetas de repaso/ })).toHaveCount(0);
     await expect(aprender.getByRole("link", { name: /Autoevaluación/ })).toBeVisible();
   });

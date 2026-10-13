@@ -3,59 +3,16 @@
    de una vez. */
 import { useRef } from "react";
 import { ArrowRight, BookOpen, ExternalLink, Printer } from "lucide-react";
-import { ICONO_APARTADO, destino } from "../nav";
+import { ICONO_APARTADO } from "../nav";
 import { BIBLIOGRAFIA, APARTADOS, CAPITULO, subapartados } from "../contenido";
 import { href } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Revelar } from "../ui";
 import { CATEGORIA_HEX, colorApartado } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
-import { HAY_CASOS } from "../casos-hay";
-import { retirado } from "../edicion";
 
 function IconoApartado({ slug }: { slug: string }) {
   const I = ICONO_APARTADO[slug] ?? BookOpen;
   return <I size={20} strokeWidth={1.5} />;
-}
-
-/* Comprender y practicar, después del índice (en el móvil, la primera pantalla es para
-   leer): cómo funcionan los cuatro sistemas comparados, los casos guiados, las tarjetas y el
-   test. Todo está también en el menú. */
-const PRACTICAR = [
-  { id: "funciona", t: "Cómo funciona cada sistema" },
-  { id: "casos", t: "Casos guiados" },
-  { id: "repaso", t: "Tarjetas de repaso" },
-  { id: "test", t: "Autoevaluación" },
-].filter((c) => (c.id !== "casos" || HAY_CASOS) && !retirado(c.id));
-
-function ComprenderYPracticar() {
-  return (
-    <section aria-labelledby="comprender" className="mt-6">
-      <h2
-        id="comprender"
-        className="mb-2 text-sm font-bold uppercase tracking-wide"
-        style={{ color: CATEGORIA_HEX.aprender.ink }}
-      >
-        Comprender y practicar
-      </h2>
-      <div className="flex flex-wrap gap-1.5">
-        {PRACTICAR.map((c) => {
-          const d = c.id === "funciona" ? destino("sistemas") : destino(c.id);
-          const I = d.icono;
-          return (
-            <a
-              key={c.id}
-              href={c.id === "funciona" ? href("sistemas", "todos", "funciona") : d.href}
-              className="inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 text-sm font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9"
-              style={{ borderColor: "#d4d4d4" }}
-            >
-              <I size={14} aria-hidden="true" style={{ color: CATEGORIA_HEX[d.cat].strong }} />
-              {c.t}
-            </a>
-          );
-        })}
-      </div>
-    </section>
-  );
 }
 
 export function IndiceCapitulo() {
@@ -71,7 +28,8 @@ export function IndiceCapitulo() {
           Capítulo {CAPITULO.numero} del Manual SEEN, publicado el {CAPITULO.fechaFuente}.
         </p>
       </CabeceraEditorial>
-      {/* Para comprender, a mano desde el principio (V50-05): el índice sigue siendo el eje. */}
+      {/* Para comprender, a mano desde el principio (V50-05) y una sola vez (V54-07: sin el
+          bloque repetido de abajo). Las preguntas frecuentes tienen aquí su hogar. */}
       <nav
         aria-label="Para comprender"
         className="no-imprimir mb-3 flex flex-wrap items-center gap-x-1 gap-y-0 text-sm text-slate-600"
@@ -81,6 +39,7 @@ export function IndiceCapitulo() {
           { t: "Cómo funciona cada sistema", r: href("sistemas", "todos", "funciona") },
           { t: "Figuras", r: href("visual", "figuras") },
           { t: "Diagramas", r: href("visual") },
+          { t: "Preguntas frecuentes", r: href("preguntas") },
           { t: "Autoevaluación", r: href("test") },
         ].map((x, i) => (
           <span key={x.t} className="inline-flex items-center">
@@ -146,7 +105,6 @@ export function IndiceCapitulo() {
           })}
         </ol>
       </section>
-      <ComprenderYPracticar />
       <div className="mt-6 flex flex-wrap gap-2">
         <a
           href={href("bibliografia")}
@@ -164,7 +122,7 @@ export function IndiceCapitulo() {
           href={href("capitulo", "resumen")}
           className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-400"
         >
-          Resumen del capítulo (una página) <ArrowRight size={14} aria-hidden="true" />
+          Resumen del capítulo <ArrowRight size={14} aria-hidden="true" />
         </a>
         <a
           href={CAPITULO.url}

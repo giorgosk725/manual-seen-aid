@@ -50,6 +50,47 @@ function SeguirLeyendo() {
   );
 }
 
+/* Leer y comprender (V54-07): región propia, hermana de Consultar y antes de ella, en una fila
+   breve; las dos formas de uso del mismo capítulo, sin volver a las tarjetas grandes. */
+const LECTURA = [
+  { t: "Índice del capítulo", r: href("capitulo") },
+  { t: "Tablas", r: href("consultar", "tablas") },
+  { t: "Figuras", r: href("visual", "figuras") },
+  { t: "Diagramas", r: href("visual") },
+];
+function LeerYComprender() {
+  const hex = CATEGORIA_HEX.leer;
+  return (
+    <section
+      aria-labelledby="portada-leer"
+      className="rounded-md border bg-white px-3 py-2"
+      style={{ borderColor: "#e6e6e6" }}
+    >
+      <h2
+        id="portada-leer"
+        className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"
+        style={{ color: hex.ink }}
+      >
+        <BookOpen size={14} aria-hidden="true" style={{ color: hex.strong }} />
+        Leer y comprender
+      </h2>
+      <ul className="mt-1 grid grid-cols-2 gap-x-3 sm:flex sm:flex-wrap sm:gap-x-5">
+        {LECTURA.map((x, i) => (
+          <li key={x.t}>
+            <a
+              href={x.r}
+              className={`inline-flex min-h-11 items-center gap-1 text-sm hover:underline sm:min-h-9 ${i === 0 ? "font-bold text-slate-900" : "font-semibold text-slate-700"}`}
+            >
+              {x.t}
+              {i === 0 && <ArrowRight size={13} aria-hidden="true" />}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export function Portada() {
   return (
     <div className="space-y-4 sm:space-y-7">
@@ -76,7 +117,7 @@ export function Portada() {
             </div>
             <h1
               id="titulo-capitulo"
-              className="titulo-manual titulo-portada mt-1.5 text-balance text-[1.05rem] leading-[1.15] sm:mt-3 sm:text-[2rem] lg:text-[2.3rem]"
+              className="titulo-manual titulo-portada mt-1.5 text-balance text-[1.05rem] leading-[1.15] sm:mt-3 sm:text-[2rem] md:text-[1.55rem] lg:text-[1.95rem] xl:text-[2.3rem]"
             >
               {CAPITULO.titulo}
             </h1>
@@ -93,6 +134,8 @@ export function Portada() {
       </section>
 
       <SeguirLeyendo />
+
+      <LeerYComprender />
 
       <MapaConsulta />
 

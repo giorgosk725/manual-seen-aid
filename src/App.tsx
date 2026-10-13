@@ -10,7 +10,7 @@ import { CapituloEntero, IndiceCapitulo } from "./pantallas/Capitulo";
 import { Apartado } from "./pantallas/Apartado";
 import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import type { SistemaId } from "./ampliacion/tipos";
-import { CON_CASOS, CON_REPASO } from "./edicion";
+import { CON_CASOS, CON_CONSULTAS_ADMIN, CON_REPASO } from "./edicion";
 
 /* Dirección de un módulo que no va en esta edición (src/edicion.ts). */
 function Retirado() {
@@ -52,8 +52,9 @@ const otras = () => import("./pantallas/Otras");
 const Bibliografia = lazy(() => otras().then((m) => ({ default: m.Bibliografia })));
 const Buscar = lazy(() => otras().then((m) => ({ default: m.Buscar })));
 const Sobre = lazy(() => otras().then((m) => ({ default: m.Sobre })));
-const ConsultasSinRespuesta = lazy(() =>
-  otras().then((m) => ({ default: m.ConsultasSinRespuesta })),
+/* Administración de las consultas sin respuesta: fuera de la edición pública (V54-12). */
+const ConsultasSinRespuesta = /* @__PURE__ */ lazy(() =>
+  import("./pantallas/ConsultasAdmin").then((m) => ({ default: m.ConsultasSinRespuesta })),
 );
 const Test = lazy(() => otras().then((m) => ({ default: m.Test })));
 const Preguntas = lazy(() => otras().then((m) => ({ default: m.Preguntas })));
@@ -265,7 +266,7 @@ export default function App() {
       titulo = "Sobre este complemento";
       break;
     case "sobre":
-      if (ruta.sub === "consultas") {
+      if (ruta.sub === "consultas" && CON_CONSULTAS_ADMIN) {
         pantalla = <ConsultasSinRespuesta />;
         titulo = "Consultas sin respuesta";
       } else {

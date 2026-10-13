@@ -108,3 +108,46 @@ test("móvil a 320 px: ninguna pantalla se desplaza de lado", async ({ page }) =
   }
   expect(anchas, anchas.join("\n")).toEqual([]);
 });
+
+/* V54-13: también en estados que no son la pantalla recién abierta: una búsqueda con texto,
+   todos los plegables abiertos y el menú Consultar abierto a 320 × 640. */
+test("móvil: búsqueda con texto, plegables abiertos y menú Consultar a 320 px", async ({
+  page,
+}) => {
+  test.setTimeout(180000);
+  const fallos: string[] = [];
+  const revisar = async (donde: string) => {
+    for (const m of await pequenos(page)) fallos.push(`${donde}: ${m}`);
+    const w = await page.evaluate(() => document.documentElement.scrollWidth);
+    const ancho = page.viewportSize()!.width;
+    if (w > ancho) fallos.push(`${donde}: ${w} px de ancho en ${ancho}`);
+    await page.addScriptTag({ path: AXE });
+    const v = await page.evaluate(
+      async () =>
+        // @ts-expect-error axe se inyecta en la página
+        (await window.axe.run(document, { rules: { region: { enabled: false } } })).violations.map(
+          (x: { id: string }) => x.id,
+        ) as string[],
+    );
+    for (const x of v) fallos.push(`${donde}: axe ${x}`);
+  };
+  await abrir(page, "#/buscar");
+  await page.getByLabel("Texto a buscar").fill("cuánto tiempo puedo estar desconectado");
+  await page.waitForTimeout(600);
+  await revisar("buscar con texto");
+  for (const ruta of ["#/capitulo/07-educacion", "#/sistemas/ciq", "#/sobre"]) {
+    await abrir(page, ruta);
+    await page.evaluate(() => document.querySelectorAll("details").forEach((d) => (d.open = true)));
+    await page.waitForTimeout(400);
+    await revisar(`${ruta} con plegables abiertos`);
+  }
+  await page.setViewportSize({ width: 320, height: 640 });
+  await abrir(page, "#/");
+  await page
+    .getByRole("navigation", { name: "Barra inferior" })
+    .getByRole("button", { name: "Consultar" })
+    .click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await revisar("menú Consultar a 320 px");
+  expect(fallos, fallos.join("\n")).toEqual([]);
+});

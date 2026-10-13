@@ -19,6 +19,7 @@ import {
 import { href } from "./rutas";
 import { plano } from "./marcado";
 import { CRITERIOS, FICHA_FILAS, SETS_INFUSION, SISTEMAS_AMPLIACION } from "./ampliacion";
+import { CATALOGO_SISTEMAS } from "./ampliacion/ids";
 import { INFORMACION_PACIENTES, RESUMEN_CAPITULO } from "./pacientes/textos";
 import { PREGUNTAS } from "./contenido/test";
 import {
@@ -64,7 +65,7 @@ import {
 } from "./respuestas";
 import { FRECUENTES, type Frecuente } from "./frecuentes";
 import { HOJAS_EXTRA } from "./hojas";
-import { CON_CASOS, retirado } from "./edicion";
+import { CON_AMPLIACION, CON_CASOS, retirado } from "./edicion";
 
 const sinMarcado = (s: string) => plano(s);
 
@@ -199,7 +200,7 @@ export function indice(): Entrada[] {
     });
   }
   // Fuera del capítulo (grupo aparte, rotulado). No en la edición editorial (A06).
-  for (const s of retirado("ampliacion") ? [] : SISTEMAS_AMPLIACION) {
+  for (const s of CON_AMPLIACION ? SISTEMAS_AMPLIACION : []) {
     const ruta = href("sistemas", s.id);
     for (const g of FICHA_FILAS)
       for (const r of g.rows) {
@@ -276,7 +277,7 @@ export function indice(): Entrada[] {
       pagina: st.pagina,
       ruta: href("consultar", "situacion", st.id),
     });
-  for (const s of SISTEMAS_AMPLIACION)
+  for (const s of CATALOGO_SISTEMAS)
     out.push({
       id: `atajo/sis/${s.id}`,
       tipo: "atajo",
@@ -367,7 +368,7 @@ export function indice(): Entrada[] {
     out.push({
       id: `resumen/${i}`,
       tipo: "resumen",
-      titulo: "Resumen del capítulo (una página)",
+      titulo: "Resumen del capítulo",
       texto: t,
       pagina: 0,
       ruta: href("capitulo", "resumen"),
@@ -496,7 +497,7 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   if (sis >= 0) {
     const sec = SECCION_PEDIDA.find(([re]) => re.test(normalizar(consulta)));
     if (sec) {
-      const s = SISTEMAS_AMPLIACION[sis];
+      const s = CATALOGO_SISTEMAS[sis];
       out.push({
         entrada: {
           id: `recurso/${s.id}/${sec[1]}`,
@@ -732,7 +733,7 @@ export function sugerir(consulta: string, max = 5): Sugerencia[] {
   for (const st of [...SITUACIONES, ...SITUACIONES_GUIA])
     if (empiezaPor(st.etiqueta, terminos))
       add({ texto: st.etiqueta, tipo: "situacion", ruta: href("consultar", "situacion", st.id) });
-  for (const s of SISTEMAS_AMPLIACION)
+  for (const s of CATALOGO_SISTEMAS)
     if (empiezaPor(`${s.name} ${s.short}`, terminos))
       add({ texto: s.name, tipo: "sistema", ruta: href("sistemas", s.id) });
   for (const h of HOJAS_EXTRA)

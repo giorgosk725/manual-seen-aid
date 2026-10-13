@@ -15,7 +15,20 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — «Sobre este complemento» nuevo`,
+    titulo: `Complemento interactivo ${VERSION_APP} — revisión de la edición 0.54`,
+    detalle: [
+      "Búsqueda: una pregunta frecuente solo se antepone si trata la misma cuestión que lo buscado; si no, va como relacionada.",
+      "Hoja de cetonas: los signos de alarma, lo primero; planes de seguridad con la urgencia en la primera cara.",
+      "El enlace a una rama de la Figura 3 lleva a ella también al abrirlo en una pestaña nueva.",
+      "Portada con «Leer y comprender» propio; índice sin accesos repetidos; tableta y escritorio más holgados.",
+      "«Sobre este complemento» con enlaces y «Fuentes y revisión»; nota sobre la edad de Liberty donde salen las dos frases.",
+      "No se imprime una versión incompleta mientras algo se carga; al actualizar, se confirma la versión.",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.54.0 — «Sobre este complemento» nuevo",
     detalle: [
       "«Sobre este complemento»: qué ofrece cada parte, qué es del capítulo y qué es complementario, privacidad y límites; con el enlace al capítulo en el Manual SEEN.",
     ],

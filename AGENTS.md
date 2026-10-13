@@ -298,6 +298,19 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
       `docs/BUSQUEDA_2026-10.md`. Never tune on ciego7. `.tap-44` now guarantees a ≥ 44 × 44 hit
       area; `e2e/objetivos44-movil.spec.ts` enforces axe-clean + 44 px + no 320 px overflow on 23
       screens. No header search on mobile (bottom bar has «Buscar»).
+    - **0.55.0 (13-10-2026, audit of 0.54, V54-01..13; local, no push until asked).** FAQ
+      promotion checks intent (`INTENCIONES`/`CONTEXTOS` in respuestas.ts; regressions in
+      respuestas.intencion.test.ts). FAQ approvals are EVENTS in `frecuentes.aprobadas.json`
+      (fecha, version, evidencia, huella); the fingerprint includes each cited passage's content
+      (`src/pasajes-fuente.ts`); `npm run aprobar:frecuentes -- --fecha --version --evidencia ids`
+      appends an event — never without a real review. Adapted sheets carry `huella` in
+      materiales.ts (`huellaDeHoja`: text only, order-insensitive). New blind bank
+      `src/bancos/ciego8.json` (frozen ce80781) — never tune on ciego7/ciego8; metrics via
+      `desglose`. Effective publishing: `npm run publicar` (gates + deploy + checks + entry in
+      docs/PUBLICACIONES.md); GitHub deploy is manual-only. `CON_AMPLIACION` and
+      `CON_CONSULTAS_ADMIN` keep retired data and the admin client out of the public build;
+      `CATALOGO_SISTEMAS` (ampliacion/ids.ts) for system identity. First screen of a session
+      counts as a new navigation (rutas.ts). Print: docs/IMPRESION_2026-10.md.
     - **Drafts.** New clinical, sheet or quiz wording goes to `borradores/` for the author;
       nothing is marked approved without a record. Details and pending items:
       `docs/EDICION_EDITORIAL.md`.

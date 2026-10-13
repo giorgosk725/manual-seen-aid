@@ -2,6 +2,7 @@
    SEEN, adaptado por este complemento o explicación complementaria), cuándo se revisó, en qué
    versión y con qué evidencia. Lo enseña «Sobre este complemento» y lo usan los pies de las hojas.
    Un material sin aprobación registrada dice «pendiente»; nada se da por aprobado sin registro. */
+import { hojaExtraPorId, huellaDeHoja } from "./hojas";
 export type TipoMaterial =
   "publicado" | "transcripcion" | "adaptado" | "plantilla" | "explicacion" | "preguntas";
 
@@ -16,6 +17,9 @@ export interface Material {
   version: string;
   evidencia: string;
   pendiente?: string;
+  /* Huella del texto revisado (V54-05). Si el archivo publicado cambia y ya no coincide, el
+     material deja de estar listo hasta una revisión nueva; hoy, las hojas adaptadas. */
+  huella?: string;
 }
 
 export const ROTULO_TIPO: Record<TipoMaterial, string> = {
@@ -73,6 +77,7 @@ export const MATERIALES: Material[] = [
     fecha: "2026-10-09",
     version: "0.20.0",
     evidencia: "Aprobación registrada (commit 24726c4)",
+    huella: "1omug978rq221",
     pendiente:
       "Orden reorganizado el 13-10-2026 (0.55.0): el bloque de alarma va el primero, con el mismo texto; revisar el orden nuevo (borradores/hoja-cetonas-orden_2026-10-13.md)",
   },
@@ -85,6 +90,7 @@ export const MATERIALES: Material[] = [
     version: "0.51.0",
     evidencia:
       "Aprobada el 9-10-2026 (commit 24726c4); sección de la insulina con el sistema quitado revisada el 13-10-2026 (delegada)",
+    huella: "1ap7n2uuff7ck",
   },
   {
     id: "planes",
@@ -95,6 +101,8 @@ export const MATERIALES: Material[] = [
     version: "0.51.0",
     evidencia:
       "Solo texto literal del capítulo (pp. 7-9, Figura 3 y Tabla 4); revisión clínica y visual del 13-10-2026 (delegada), a letra grande, tres caras",
+    pendiente:
+      "Composición cambiada el 13-10-2026 (0.55.0): título operativo arriba y el recuadro literal de urgencia y signos de gravedad de la Figura 3 en la primera cara; ramas con dosis juntas con su nota al imprimir; revisar (borradores/planes-primera-cara_2026-10-13.md)",
   },
   {
     id: "como-interpretar",
@@ -137,7 +145,16 @@ export const MATERIALES: Material[] = [
 
 export const material = (id: string) => MATERIALES.find((m) => m.id === id);
 /* ¿Se puede entregar e imprimir? Un material sin registro o pendiente, no. */
-export const materialListo = (id: string) => material(id)?.estado === "aprobado";
+export const materialListo = (id: string) => {
+  const m = material(id);
+  if (m?.estado !== "aprobado") return false;
+  // Una hoja adaptada, además, con el texto que se revisó (no otro bajo el mismo nombre).
+  if (m.huella && id.startsWith("hoja-")) {
+    const h = hojaExtraPorId(id.slice(5));
+    return !!h && huellaDeHoja(h) === m.huella;
+  }
+  return true;
+};
 
 export const fechaCorta = (iso: string) =>
   iso ? iso.split("-").reverse().join("-").replace(/^0/, "").replace(/-0/, "-") : "";

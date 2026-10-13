@@ -52,3 +52,47 @@ precisión del 68,1 %) al 48,3 % (con precisión del 84,5 %). Es el precio: meno
   edición porque envía la consulta a un servidor.
 - Con una cifra de cetonas, la rama no se elige sola (A01): cuenta como fallo en los bancos.
 - Los umbrales se fijaron con 770 preguntas; conviene revisarlos con consultas reales.
+
+## 0.55.0 · intención de las preguntas frecuentes y métricas con denominadores (V54-01, V54-06)
+
+**Definiciones** (`desglose` en `src/respuestas.bancos.ts`). «Directa» es lo que la pantalla
+presenta como respuesta: una pregunta frecuente que salta, o un primer pasaje que no va como
+«lo más cercano». Contestables y ajenas: preguntas con o sin fragmento aceptable. Las directas
+que no aciertan se separan en errores de recuperación, discrepancias deliberadas por la regla de
+cetonas (cifra de β-OHB: no se elige rama y la pantalla enseña la urgencia) y respuestas a
+preguntas ajenas. Abstención: «lo más cercano» en lugar de directa. Son medidas de
+recuperación documental, no tasas de error clínico.
+
+El contador histórico `equivocadas` solo cuenta contestables: en el banco 7 con la 0.54.0 da
+7/120 = 5,8 %; con las dos ajenas respondidas como directas, 9/120 = 7,5 %. Precisión de las
+directas: 49/58 = 84,5 %.
+
+**Cambio de la 0.55.0.** Una frecuente solo se antepone si trata la misma cuestión que la
+búsqueda (objetivo, descarga, hospital, material, retirar o reconsiderar, seguimiento); una de
+hospital no responde a una búsqueda que no lo nombra. «plantear» ya no casa con «planta».
+Las tres consultas de la auditoría y sus paráfrasis son regresiones conocidas
+(`respuestas.intencion.test.ts`).
+
+**Medida.** El banco 7 ya se había usado para medir la 0.53: sirve de regresión, no para afirmar
+mejoras. Para la afirmación se encargó el **banco 8** (120 preguntas, otro agente sin ver el
+motor, 15 ajenas, 125 fragmentos comprobados) con el motor ya cerrado; se congeló (ce80781) y se
+midió una vez la 0.54.0 publicada y la 0.55.0.
+
+| Banco 8 (n = 120; 105 contestables, 15 ajenas)              | 0.54.0      | 0.55.0      |
+| ----------------------------------------------------------- | ----------- | ----------- |
+| Primera (contestables acertadas + ajenas sin directa, /120) | 69,2 %      | 70,0 %      |
+| Entre las tres                                              | 82,5 %      | 82,5 %      |
+| Directas                                                    | 67          | 68          |
+| Directas que aciertan (precisión)                           | 51 (76,1 %) | 53 (77,9 %) |
+| Directas que no aciertan: recuperación                      | 12          | 11          |
+| Directas que no aciertan: regla de cetonas (deliberadas)    | 2           | 2           |
+| Directas en preguntas ajenas                                | 2           | 2           |
+| Abstención en contestables / ajenas                         | 40 / 13     | 39 / 13     |
+| Contador histórico `equivocadas`                            | 11,7 %      | 10,8 %      |
+
+Banco 7 (regresión): 0.54.0, directas 58, precisión 84,5 %, recuperación 5, cetonas 2, ajenas
+2; 0.55.0, directas 57, precisión 89,5 %, recuperación 2, cetonas 2, ajenas 2.
+
+**Lectura honesta.** La mejora es pequeña. En un banco nuevo la precisión de las directas es
+del 76–78 %, menor que la del banco 7: aquella cifra sobrestimaba. Lo que más falla son
+paráfrasis que un motor de palabras no ve.

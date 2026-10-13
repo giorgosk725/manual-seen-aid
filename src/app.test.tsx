@@ -135,7 +135,13 @@ describe("App", () => {
     await ir("#/pacientes/informacion");
     expect(screen.getByText("¿Qué es un sistema de asa cerrada?")).toBeInTheDocument();
     await ir("#/pacientes/plan/op5");
-    expect(screen.getByText(/Plantilla de plan de seguridad · Omnipod 5/)).toBeInTheDocument();
+    // V54-09: arriba, el rótulo del material y el título operativo con el sistema.
+    expect(
+      screen.getByText(/Material complementario · Plantilla de plan de seguridad/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Plan de seguridad · Omnipod 5" }),
+    ).toBeInTheDocument();
     // La hoja se rellena a mano: no hay ni un campo de texto.
     expect(document.querySelectorAll("main input, main textarea")).toHaveLength(0);
     expect(screen.getAllByText(/Función Actividad/).length).toBeGreaterThan(0);

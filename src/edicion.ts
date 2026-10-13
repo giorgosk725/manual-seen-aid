@@ -8,10 +8,14 @@
    entran en el paquete publicado (sus importaciones quedan como código muerto). */
 export const CON_CASOS: boolean = false;
 export const CON_REPASO: boolean = false;
+/* La ampliación técnica (V54-12): sin ella, sus datos clínicos tampoco entran en el paquete. */
+export const CON_AMPLIACION: boolean = false;
+/* La pantalla administrativa de consultas sin respuesta (V54-12), fuera del build público. */
+export const CON_CONSULTAS_ADMIN: boolean = false;
 export const RETIRADOS = new Set<string>([
   ...(CON_CASOS ? [] : ["casos"]),
   ...(CON_REPASO ? [] : ["repaso"]),
-  "ampliacion",
+  ...(CON_AMPLIACION ? [] : ["ampliacion"]),
 ]);
 export const retirado = (id: string) => RETIRADOS.has(id);
 

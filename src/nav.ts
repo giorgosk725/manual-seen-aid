@@ -351,14 +351,6 @@ export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[]; ancho?:
   // El PDF publicado, a un toque; y el resto del material para el paciente.
   // (0.53.0: sin «Para el paciente» dentro de «Para el paciente».)
   { id: "pacientes", titulo: "Para el paciente", ids: ["pdf-pacientes", "pac-hojas"] },
-  // La lectura también en el mapa, abajo y a todo lo ancho (la puerta «Leer y comprender» va
-  // antes, en la cabecera).
-  {
-    id: "leer",
-    titulo: "Leer y comprender",
-    ids: ["capitulo", "tablas", "figuras", "visual"],
-    ancho: true,
-  },
 ];
 
 /* Navegación global: cuatro áreas en la barra inferior (Inicio · Leer · Paciente · Buscar).
@@ -375,7 +367,8 @@ const AREA_DE_SECCION: Record<string, Area> = {
   test: "leer",
   casos: "leer",
   buscar: "buscar",
-  preguntas: "buscar",
+  // Hogar de las preguntas frecuentes: «Leer y comprender» (V54-07), como en el lateral.
+  preguntas: "leer",
   mas: "mas",
   pacientes: "pacientes",
   bibliografia: "leer",

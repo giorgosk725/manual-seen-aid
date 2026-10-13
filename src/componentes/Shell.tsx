@@ -251,12 +251,44 @@ function AvisoVersion() {
   const [update, setUpdate] = useState<null | (() => void)>(
     () => (window as unknown as { __mseenActualizar?: () => void }).__mseenActualizar ?? null,
   );
+  // Tras actualizar: qué versión ha quedado (V54-13).
+  const [desde, setDesde] = useState<string | null>(
+    () => (window as unknown as { __mseenActualizado?: string }).__mseenActualizado ?? null,
+  );
   useEffect(() => {
     const on = (e: Event) =>
       setUpdate(() => (e as CustomEvent<{ update: () => void }>).detail.update);
+    const hecho = (e: Event) => setDesde((e as CustomEvent<{ desde: string }>).detail.desde);
     window.addEventListener("mseen:sw-need-refresh", on);
-    return () => window.removeEventListener("mseen:sw-need-refresh", on);
+    window.addEventListener("mseen:sw-actualizado", hecho);
+    return () => {
+      window.removeEventListener("mseen:sw-need-refresh", on);
+      window.removeEventListener("mseen:sw-actualizado", hecho);
+    };
   }, []);
+  if (!update && desde)
+    return (
+      <div
+        role="status"
+        className="aviso-version fixed inset-x-3 bottom-32 z-40 mx-auto flex max-w-md items-center gap-3 rounded-xl border border-slate-300 bg-white p-3 shadow-xl md:bottom-4"
+      >
+        <p className="flex-1 text-sm text-slate-800">
+          {desde === VERSION_APP
+            ? `Sigues con la versión ${VERSION_APP}: comprobando si hay otra más nueva.`
+            : `Actualizado: ahora usas la versión ${VERSION_APP} (antes, la ${desde}).`}
+        </p>
+        <button
+          type="button"
+          onClick={() => {
+            setDesde(null);
+            delete (window as unknown as { __mseenActualizado?: string }).__mseenActualizado;
+          }}
+          className="min-h-11 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700"
+        >
+          Cerrar
+        </button>
+      </div>
+    );
   if (!update) return null;
   return (
     <div
@@ -298,12 +330,35 @@ export function Rotulo({
   breve?: boolean;
 }) {
   const fuera = `max-[359px]:hidden ${breve ? "hidden" : ""}`;
-  // Sin saltos de línea: en la barra lateral (escritorio) el rótulo entero cabe en su ancho.
-  const pequeno = `whitespace-nowrap ${compacto ? "text-[0.52rem] min-[400px]:text-[0.6rem]" : "text-[0.56rem]"}`;
+  // En la barra lateral (escritorio), en dos líneas y con letra legible: «Manual de
+  // Endocrinología y Nutrición» y, debajo, «Complemento interactivo». Sin desbordar su ancho
+  // ni esconder texto (V54-08).
+  if (!compacto)
+    return (
+      <span className="flex flex-col gap-1 leading-none" aria-hidden="true">
+        <span className="flex items-center gap-1.5">
+          <span
+            className="font-display text-[1.35rem] font-semibold uppercase tracking-tight"
+            style={{ color: SEEN.azulOsc }}
+          >
+            Manual
+          </span>
+          <span className="flex flex-col font-display text-[0.66rem] font-medium uppercase leading-[0.95]">
+            <span style={{ color: SEEN.burdeos }}>de Endocrinología</span>
+            <span style={{ color: SEEN.mostazaOsc }}>y Nutrición</span>
+          </span>
+        </span>
+        <span className="font-display text-[0.72rem] font-medium uppercase tracking-wide text-slate-600">
+          Complemento interactivo
+        </span>
+      </span>
+    );
+  // En la cabecera del móvil, en una fila (el alto es de 56 px).
+  const pequeno = "whitespace-nowrap text-[0.52rem] min-[400px]:text-[0.6rem]";
   return (
     <span className="flex items-center gap-1.5 leading-none" aria-hidden="true">
       <span
-        className={`font-display font-semibold uppercase tracking-tight ${compacto ? "text-[1.15rem] min-[400px]:text-[1.35rem]" : "text-[1.3rem]"}`}
+        className="font-display text-[1.15rem] font-semibold uppercase tracking-tight min-[400px]:text-[1.35rem]"
         style={{ color: SEEN.azulOsc }}
       >
         Manual
@@ -483,11 +538,9 @@ function Lateral({ ruta }: { ruta: Ruta }) {
         className="rounded-md px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
         <Rotulo />
-        <span className="mt-1.5 block text-[12px] font-semibold leading-snug text-slate-800">
-          {CAPITULO.tituloCorto}
-        </span>
-        <span className="block text-xs leading-snug text-slate-500">
-          Complemento interactivo del capítulo {CAPITULO.numero}
+        {/* El rótulo ya dice «Complemento interactivo»: aquí, de qué capítulo (V54-08). */}
+        <span className="mt-1.5 block text-xs font-semibold leading-snug text-slate-700">
+          Capítulo {CAPITULO.numero} · {CAPITULO.tituloCorto}
         </span>
       </a>
       <BuscadorLateral />

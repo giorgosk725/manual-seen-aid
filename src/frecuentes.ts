@@ -8,6 +8,8 @@
 
 import { CAPITULO } from "./contenido";
 import APROBADAS from "./frecuentes.aprobadas.json";
+import { contenidoDePasaje } from "./pasajes-fuente";
+import { huella } from "./huella";
 
 export interface Frecuente {
   id: string;
@@ -1035,44 +1037,6 @@ export interface Revision {
   fecha: string;
   registro: string;
 }
-const num = (id: string) => Number(id.slice(1));
-function registroDe(id: string): Revision {
-  const n = num(id);
-  // f11 cambió de pasajes el 13-10-2026, con la misma revisión delegada.
-  if (id === "f11")
-    return {
-      estado: "aprobada",
-      fecha: "2026-10-13",
-      registro:
-        "Pasajes revisados por delegación del autor el 13-10-2026 (versión 0.51.0); docs/FRECUENTES.md",
-    };
-  if (n >= 1 && n <= 50)
-    return {
-      estado: "aprobada",
-      fecha: "2026-10-08",
-      registro:
-        "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
-    };
-  if (n >= 51 && n <= 61)
-    return {
-      estado: "aprobada",
-      fecha: "2026-10-11",
-      registro: "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
-    };
-  if (n >= 62 && n <= 103)
-    return {
-      estado: "aprobada",
-      fecha: "2026-10-13",
-      registro:
-        "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
-    };
-  return {
-    estado: "borrador",
-    fecha: "",
-    registro: "Sin revisión registrada",
-  };
-}
-
 /* Propuestas de cambio sobre preguntas ya aprobadas: no se usan en la app (la edición sigue con
    los pasajes aprobados) hasta que el autor las revise. */
 export const PROPUESTAS: Record<string, { pasajes: string[]; nota: string; fecha: string }> = {
@@ -1084,30 +1048,42 @@ export const PROPUESTAS: Record<string, { pasajes: string[]; nota: string; fecha
   },
 };
 
-/* Huella de lo que se aprueba de una pregunta (y de la fuente con que se revisó). */
+/* Huella de lo que se revisa de una pregunta: la pregunta, sus variantes, los ids de sus
+   pasajes y EL CONTENIDO de cada uno (bloque, fila, figura o sigla, con su contexto: V54-05),
+   el sistema, la continuación y el PDF fuente. Cambiar cualquiera la deja sin revisión vigente. */
 export function huellaDe(f: Frecuente): string {
-  const txt = JSON.stringify([
-    f.pregunta,
-    f.variantes,
-    f.pasajes,
-    f.sistema ?? null,
-    f.siguiente ?? null,
-    CAPITULO.pdfSha256,
-  ]);
-  let h = 5381;
-  for (let i = 0; i < txt.length; i++) h = (Math.imul(h, 33) ^ txt.charCodeAt(i)) >>> 0;
-  return h.toString(36);
+  return huella(
+    JSON.stringify([
+      f.pregunta,
+      f.variantes,
+      f.pasajes,
+      f.pasajes.map(contenidoDePasaje),
+      f.sistema ?? null,
+      f.siguiente ?? null,
+      CAPITULO.pdfSha256,
+    ]),
+  );
 }
 
-/* El estado efectivo: aprobada solo si hay registro de aprobación y la huella coincide. */
+/* Cada revisión es un evento (fecha, versión, evidencia y huella de lo revisado); se añaden, no
+   se sustituyen (npm run aprobar:frecuentes). Vigente = el último evento con la huella actual. */
+export interface EventoRevision {
+  fecha: string;
+  version: string;
+  evidencia: string;
+  huella: string;
+}
+export const EVENTOS = APROBADAS as Record<string, EventoRevision[]>;
+
 export function revisionDe(f: Frecuente): Revision {
-  const r = registroDe(f.id);
-  if (r.estado !== "aprobada") return r;
-  if ((APROBADAS as Record<string, string>)[f.id] === huellaDe(f)) return r;
+  const ultimo = EVENTOS[f.id]?.at(-1);
+  if (!ultimo) return { estado: "borrador", fecha: "", registro: "Sin revisión registrada" };
+  if (ultimo.huella === huellaDe(f))
+    return { estado: "aprobada", fecha: ultimo.fecha, registro: ultimo.evidencia };
   return {
     estado: "borrador",
     fecha: "",
-    registro: `Cambió después de su aprobación del ${r.fecha}: necesita una revisión nueva`,
+    registro: `Cambió después de su revisión del ${ultimo.fecha}: necesita una revisión nueva`,
   };
 }
 

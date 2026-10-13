@@ -4,6 +4,8 @@
    solo entran en las copias de revisión (`src/hojas-borrador/`); aprobadas, pasan a
    `src/hojas/` (las dos primeras, aprobadas el 9-10-2026). Sin archivos, no hay hojas extra. */
 
+import { huella } from "./huella";
+
 export interface SeccionHoja {
   titulo: string;
   /* Bloque de alarma: va el primero y con marco de urgencia, en pantalla y en papel (V54-02). */
@@ -37,3 +39,22 @@ export const HOJAS_EXTRA: HojaExtra[] = Object.keys(modulos)
   .flatMap((k) => modulos[k]);
 
 export const hojaExtraPorId = (id?: string) => HOJAS_EXTRA.find((h) => h.id === id);
+
+/* Huella del TEXTO de una hoja (V54-05): título, fuente, introducción, cada sección con su
+   texto, huecos y nota. No cuenta el rótulo de formato ni el ORDEN de las secciones: mover un
+   bloque entero (la alarma al principio) no cambia lo revisado; cambiar una palabra, sí. */
+export function huellaDeHoja(h: HojaExtra): string {
+  const secciones = h.secciones.map((s) =>
+    JSON.stringify([s.titulo, s.items ?? [], s.parrafos ?? []]),
+  );
+  return huella(
+    JSON.stringify([
+      h.titulo,
+      h.fuente,
+      h.intro ?? "",
+      [...secciones].sort(),
+      h.huecos ?? [],
+      h.nota ?? "",
+    ]),
+  );
+}

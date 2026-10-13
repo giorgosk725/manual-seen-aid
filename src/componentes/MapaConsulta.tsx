@@ -1,6 +1,6 @@
 /* El mapa de consulta: cuatro bloques, cada uno con la pregunta que responde y sus entradas en
-   filas (solo el nombre: la fuente se ve al entrar), y «Leer el capítulo» abajo, a todo lo
-   ancho. Es la portada misma: no hay otra pantalla «Consultar». */
+   filas (solo el nombre: la fuente se ve al entrar). La lectura va aparte, antes, en su propia
+   región de la portada (V54-07). Es la portada misma: no hay otra pantalla «Consultar». */
 import { ArrowRight } from "lucide-react";
 import { DESTINOS, MAPA_CONSULTA } from "../nav";
 import { CATEGORIA_HEX } from "../tokens";
@@ -13,7 +13,8 @@ export function MapaConsulta() {
       <h2 id="mapa-consulta" tabIndex={-1} className="sr-only scroll-mt-24">
         Consultar
       </h2>
-      <div className="grid gap-2 md:grid-cols-2">
+      {/* Con la barra lateral (desde 768 px), una columna hasta que hay ancho para dos (V54-08). */}
+      <div className="grid gap-2 lg:grid-cols-2">
         {MAPA_CONSULTA.map((b) => (
           <section
             key={b.id}

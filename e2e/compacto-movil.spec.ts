@@ -46,17 +46,17 @@ test.describe("Móvil compacto (360 px)", () => {
     await expect(page.locator(".hoja-a4")).toBeInViewport();
   });
 
-  test("leer capítulo: el índice antes que «Comprender y practicar»", async ({ page }) => {
+  test("leer capítulo: «Para comprender» una sola vez, arriba, y el índice a la vista", async ({
+    page,
+  }) => {
     await page.goto("/#/capitulo");
-    const indice = page.getByRole("heading", { name: "Índice del capítulo" });
-    const comprender = page.getByRole("heading", { name: "Comprender y practicar" });
-    expect(await arriba(indice)).toBeLessThan(await arriba(comprender));
-    await expect(page.getByRole("link", { name: /3 Algoritmos de control/i })).toBeInViewport();
+    await expect(page.getByRole("heading", { name: "Comprender y practicar" })).toHaveCount(0);
+    const comprender = page.getByRole("navigation", { name: "Para comprender" });
     await expect(
-      page
-        .getByRole("region", { name: "Comprender y practicar" })
-        .getByRole("link", { name: "Cómo funciona cada sistema" }),
+      comprender.getByRole("link", { name: "Cómo funciona cada sistema" }),
     ).toHaveAttribute("href", "#/sistemas/todos/funciona");
+    await expect(comprender.getByRole("link", { name: "Preguntas frecuentes" })).toBeVisible();
+    await expect(page.getByRole("link", { name: /3 Algoritmos de control/i })).toBeInViewport();
   });
 
   /* Edición editorial (A09): Imprimir junto al título y tres enlaces debajo; «Ficha completa»

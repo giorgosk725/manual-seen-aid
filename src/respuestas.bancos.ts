@@ -1,8 +1,8 @@
 /* Bancos de preguntas de «Preguntas al capítulo» (respuestas.ts) y cómo se miden. Los usan
    respuestas.test.ts (umbrales) y scripts de medición. Cada banco es [pregunta, lo que debe
    contener la primera respuesta] (null = el capítulo no lo trata: «no consta»). */
-import { preguntaFrecuente, responder, type Respuesta } from "./respuestas";
-import { normalizar } from "./busqueda";
+import { preguntaFrecuente, responder, unificar, type Respuesta } from "./respuestas";
+import { normalizar, tramoDeConsulta } from "./busqueda";
 
 export const BANCO: [string, RegExp][] = [
   // Hiperglucemia, cetonemia y Figura 3 (pp. 8 y 15)
@@ -311,6 +311,63 @@ export function medirCiego(banco: PreguntaCiega[], { frecuentes = true } = {}) {
     entreTres: entreTres / banco.length,
     equivocadas: equivocadas / banco.length,
   };
+}
+
+/* Desglose con denominadores (V54-06). Definiciones:
+   - «directa»: lo que la pantalla presenta como respuesta: una pregunta frecuente que salta, o
+     un primer pasaje que no va como «lo más cercano».
+   - contestables / ajenas: preguntas con o sin fragmento aceptable del capítulo.
+   - recuperación: en las contestables, el primer resultado visible (o los pasajes de la
+     frecuente) contiene un aceptable; «entre tres», alguno de los tres.
+   - directas bien / mal: directas en contestables cuyo primer resultado sí / no contiene un
+     aceptable. Las «mal» se separan en: por la regla de cetonas (la consulta lleva una cifra de
+     β-OHB y, por seguridad, no se elige rama: la pantalla enseña la urgencia y la figura) y por
+     recuperación (el resto).
+   - directas en ajenas: el capítulo no lo trata y aun así se presenta una respuesta.
+   - abstención: contestables sin directa (van como «lo más cercano») y ajenas sin directa
+     (abstención correcta).
+   - precisión de las directas = directas bien / directas.
+   Son medidas de recuperación documental, no tasas de error clínico. */
+export function desglose(banco: PreguntaCiega[]) {
+  const d = {
+    n: banco.length,
+    contestables: 0,
+    ajenas: 0,
+    primera: 0,
+    entreTres: 0,
+    directas: 0,
+    directasBien: 0,
+    directasMalRecuperacion: 0,
+    directasMalCetonas: 0,
+    directasEnAjenas: 0,
+    abstencionContestables: 0,
+    abstencionAjenas: 0,
+    precisionDirectas: 0,
+  };
+  for (const p of banco) {
+    const rs = responder(p.q);
+    const f = preguntaFrecuente(p.q);
+    const ok = (r: Respuesta) => p.aceptables.some((a) => limpio(etiqueta(r)).includes(limpio(a)));
+    const visibles = f ? f.respuestas : rs.slice(0, 1);
+    const directa = !!f || (!!rs[0] && !rs[0].aproximada);
+    if (directa) d.directas++;
+    if (!p.aceptables.length) {
+      d.ajenas++;
+      if (directa) d.directasEnAjenas++;
+      else d.abstencionAjenas++;
+      continue;
+    }
+    d.contestables++;
+    const ok1 = visibles.some(ok);
+    if (ok1) d.primera++;
+    if (ok1 || rs.some(ok)) d.entreTres++;
+    if (!directa) d.abstencionContestables++;
+    else if (ok1) d.directasBien++;
+    else if (tramoDeConsulta(unificar(p.q))) d.directasMalCetonas++;
+    else d.directasMalRecuperacion++;
+  }
+  d.precisionDirectas = d.directas ? d.directasBien / d.directas : 0;
+  return d;
 }
 
 /* Acierto de la primera respuesta y de las tres que se enseñan, con los fallos. */

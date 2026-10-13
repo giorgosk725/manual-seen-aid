@@ -32,7 +32,7 @@ import {
 } from "../busqueda";
 import { useBuscador } from "../useBuscador";
 import { useParecidos } from "../semantica";
-import { URL_SIN_RESPUESTA, useRegistroSinRespuesta } from "../consultas";
+import { useRegistroSinRespuesta } from "../consultas";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
 import { RecursosPedidos } from "../componentes/RecursosPedidos";
@@ -396,7 +396,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
               <button
                 type="button"
                 onClick={() => setTope((t) => t + 48)}
-                className="mt-4 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                className="mt-4 min-h-11 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
                 Ver más resultados
               </button>
@@ -488,17 +488,25 @@ export function Sobre() {
             SEEN sobre automatización de la insulinoterapia.
           </p>
           <ul className="list-disc space-y-1 pl-5">
+            {/* Los tres usos, como enlaces a su sitio (V54-10). */}
             <li>
-              <strong>Leer y comprender:</strong> recorrer el capítulo, sus tablas, figuras y
-              explicaciones.
+              <a href={href("capitulo")} className="font-bold underline underline-offset-2">
+                Leer y comprender
+              </a>
+              : recorrer el capítulo, sus tablas, figuras y explicaciones.
             </li>
             <li>
-              <strong>Consultar:</strong> comparar sistemas y parámetros, revisar situaciones y
-              seguir los recorridos de inicio y descarga.
+              <a href={href("")} className="font-bold underline underline-offset-2">
+                Consultar
+              </a>
+              : comparar sistemas y parámetros, revisar situaciones y seguir los recorridos de
+              inicio y descarga.
             </li>
             <li>
-              <strong>Para el paciente:</strong> acceder al PDF publicado y a los materiales
-              complementarios.
+              <a href={href("pacientes")} className="font-bold underline underline-offset-2">
+                Para el paciente
+              </a>
+              : acceder al PDF publicado y a los materiales complementarios.
             </li>
           </ul>
           <p>
@@ -525,154 +533,44 @@ export function Sobre() {
               <ExternalLink size={14} aria-hidden="true" />
             </a>
           </p>
+          <p className="text-sm text-slate-600">Responsable del complemento: {CAPITULO.autor}.</p>
         </div>
+        {/* Fuentes y revisión, para el lector; las huellas completas, los commits y el registro
+            de publicación están en la documentación técnica (docs/PUBLICACIONES.md) (V54-10). */}
         <details className="mt-3 text-sm">
           <summary className="min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-8">
-            Datos de esta versión y revisión de cada material
+            Fuentes y revisión
           </summary>
           <dl className="mt-2 grid gap-x-4 gap-y-1 sm:grid-cols-[12rem_1fr]">
-            <dt className="font-semibold text-slate-700">Versión</dt>
-            <dd>{BUILD.version}</dd>
+            <dt className="font-semibold text-slate-700">Capítulo</dt>
+            <dd>
+              Publicado en el Manual SEEN el {BUILD.fuente.fecha} · ISBN {BUILD.fuente.isbn}
+            </dd>
+            <dt className="font-semibold text-slate-700">Información para pacientes</dt>
+            <dd>PDF publicado, fechado el {BUILD.pacientes.fecha}</dd>
             <dt className="font-semibold text-slate-700">Responsable</dt>
             <dd>{CAPITULO.autor}</dd>
-            <dt className="font-semibold text-slate-700">Código</dt>
-            <dd className="break-all font-mono text-xs">
-              {BUILD.sha} · construido el {BUILD.fecha || "—"}
-            </dd>
-            <dt className="font-semibold text-slate-700">Capítulo (PDF)</dt>
-            <dd>
-              {BUILD.fuente.fecha} · ISBN {BUILD.fuente.isbn} · SHA-256{" "}
-              <span className="break-all font-mono text-xs">{BUILD.fuente.sha256}</span>
-            </dd>
-            <dt className="font-semibold text-slate-700">Pacientes (PDF)</dt>
-            <dd>
-              {BUILD.pacientes.fecha} · SHA-256{" "}
-              <span className="break-all font-mono text-xs">{BUILD.pacientes.sha256}</span>
-            </dd>
           </dl>
           <ul className="mt-3 space-y-1.5">
             {MATERIALES.map((m) => (
               <li key={m.id}>
                 <span className="font-semibold text-slate-900">{m.nombre}</span> ·{" "}
                 {ROTULO_TIPO[m.tipo].toLowerCase()} ·{" "}
-                {m.fecha
-                  ? `${m.tipo === "publicado" ? "publicado" : "aprobado"} el ${fechaCorta(m.fecha)}`
-                  : "aprobación pendiente"}
-                . {m.evidencia}.{m.pendiente ? ` ${m.pendiente}.` : ""}
+                {!m.fecha
+                  ? "revisión pendiente"
+                  : m.tipo === "publicado"
+                    ? `publicado el ${fechaCorta(m.fecha)}`
+                    : `revisión registrada el ${fechaCorta(m.fecha)}`}
+                {m.pendiente ? " · con un cambio de composición pendiente de revisión" : ""}.
               </li>
             ))}
           </ul>
         </details>
+        <p className="mt-3 text-xs text-slate-500">
+          Versión {BUILD.version} · construida el {BUILD.fecha || "—"} · código{" "}
+          <span className="font-mono">{BUILD.sha.slice(0, 12)}</span>
+        </p>
       </div>
-    </div>
-  );
-}
-
-/* ---------- Consultas sin respuesta (#/sobre/consultas): la lista, con la clave ---------- */
-interface ConsultaRegistrada {
-  q: string;
-  n: number;
-  i: number;
-  m: string;
-}
-export function ConsultasSinRespuesta() {
-  const [clave, setClave] = useState(() => {
-    try {
-      return localStorage.getItem("mseen:clave") ?? "";
-    } catch {
-      return "";
-    }
-  });
-  const [estado, setEstado] = useState<"inicial" | "cargando" | "error" | "listo">("inicial");
-  const [filas, setFilas] = useState<ConsultaRegistrada[]>([]);
-  const cargar = async () => {
-    setEstado("cargando");
-    try {
-      localStorage.setItem("mseen:clave", clave);
-    } catch {
-      /* sin almacenamiento */
-    }
-    try {
-      const r = await fetch(URL_SIN_RESPUESTA, { headers: { "X-Clave": clave } });
-      if (!r.ok) throw new Error(String(r.status));
-      const d = (await r.json()) as { consultas?: unknown };
-      setFilas(Array.isArray(d.consultas) ? (d.consultas as ConsultaRegistrada[]) : []);
-      setEstado("listo");
-    } catch {
-      setEstado("error");
-    }
-  };
-  return (
-    <div className="space-y-4">
-      <CabeceraEditorial titulo="Consultas sin respuesta" hex={CATEGORIA_HEX.confiar} level={1}>
-        <p className="text-sm text-slate-600">
-          Lo que se ha buscado sin encontrar ningún pasaje ni pregunta frecuente: el texto y las
-          veces. Sirve para añadir equivalencias y preguntas frecuentes.
-        </p>
-      </CabeceraEditorial>
-      <form
-        className="flex flex-wrap items-end gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          void cargar();
-        }}
-      >
-        <label className="flex flex-col text-sm">
-          <span className="text-xs font-semibold text-slate-600">Clave de lectura</span>
-          <input
-            type="password"
-            value={clave}
-            onChange={(e) => setClave(e.target.value)}
-            autoComplete="off"
-            className="min-h-11 rounded-md border border-slate-300 px-3 text-base"
-          />
-        </label>
-        <button
-          type="submit"
-          disabled={clave.length < 16 || estado === "cargando"}
-          className="tap-44 rounded-md border border-slate-400 bg-white px-3 py-2 text-sm font-semibold text-slate-800 disabled:opacity-50"
-        >
-          {estado === "cargando" ? "Cargando…" : "Ver la lista"}
-        </button>
-      </form>
-      {estado === "error" && (
-        <p role="alert" className="text-sm text-slate-700">
-          No se pudo cargar: clave incorrecta o sin conexión.
-        </p>
-      )}
-      {estado === "listo" && filas.length === 0 && (
-        <p className="text-sm text-slate-700">Todavía no hay consultas registradas.</p>
-      )}
-      {filas.length > 0 && (
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-xs text-slate-600">
-              <th className="py-1 pr-2 font-semibold">Consulta</th>
-              <th className="py-1 pr-2 text-right font-semibold">Veces</th>
-              <th className="py-1 pr-2 text-right font-semibold">Con resultados</th>
-              <th className="py-1 font-semibold">Último mes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filas.map((f) => (
-              <tr key={f.q} className="border-t" style={{ borderColor: "#e6e6e6" }}>
-                <td className="py-1.5 pr-2">
-                  <a
-                    href={href("buscar")}
-                    onClick={() => ponerConsulta(f.q)}
-                    className="underline underline-offset-2"
-                  >
-                    {f.q}
-                  </a>
-                </td>
-                <td className="py-1.5 pr-2 text-right tabular-nums">{f.n}</td>
-                <td className="py-1.5 pr-2 text-right tabular-nums">{f.i}</td>
-                <td className="py-1.5 tabular-nums">{f.m}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
     </div>
   );
 }

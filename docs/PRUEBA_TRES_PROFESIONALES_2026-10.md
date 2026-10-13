@@ -1,6 +1,6 @@
-# Prueba con tres profesionales · complemento del capítulo 89 (versión 0.52)
+# Prueba con tres profesionales · complemento del capítulo 89 (versión 0.55)
 
-Prueba basada en tareas para la edición 0.52, con una residente o un residente de Endocrinología,
+Prueba basada en tareas para la edición 0.55, con una residente o un residente de Endocrinología,
 una adjunta o un adjunto y una enfermera o un enfermero educador en diabetes. Cada sesión dura unos
 25 minutos, en el móvil de la persona y con la copia que se vaya a evaluar. Sustituye al guion de
 `PRUEBA_USUARIOS_2026-10.md` para esta edición: cambia las tareas de casos y criterios, que ya no
@@ -22,8 +22,9 @@ errores aparecen y cuánta ayuda hace falta.
 
 ## Tareas
 
-Se vuelve a la portada entre tareas (Inicio). Las tareas 1-4 suelen resolverse desde «Consultar»;
-la 5 y la 6, desde «Leer y comprender»; la 7 y la 9 son de paciente y la 8, de búsqueda.
+Se vuelve a la portada entre tareas (Inicio). Ninguna tarea tiene un camino obligado: la 5, por
+ejemplo, puede resolverse desde los criterios de elección o desde la Tabla 1. Las tareas 7 y 9 son
+de paciente; la 8, de búsqueda.
 
 | #   | Tarea (se lee así)                                                                                      | Éxito                                                                                           | Camino posible                                                       |
 | --- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
@@ -36,6 +37,18 @@ la 5 y la 6, desde «Leer y comprender»; la 7 y la 9 son de paciente y la 8, de
 | 7   | «Dale a un paciente la información para pacientes del Manual SEEN, en PDF».                             | Abre el PDF publicado.                                                                          | Portada → Para el paciente → PDF publicado.                          |
 | 8   | «¿Cuánto tiempo puede estar desconectado el sistema sin hacer nada? Comprueba la frase en el capítulo». | Lee el pasaje de aproximadamente 1 h y abre su sitio en el capítulo.                            | Buscar en el capítulo → Pasajes relacionados → «Ver en el capítulo». |
 | 9   | «De lo que hay para el paciente, ¿qué es el documento publicado y qué es material complementario?»      | Distingue el PDF publicado de las hojas breves y las plantillas, por su rótulo.                 | Para el paciente → mira los rótulos de cada material.                |
+
+## Comprobaciones de quien modera (además de las tareas)
+
+Se hacen al final, con la misma persona, y se anota si sale sola, con ayuda o no sale:
+
+- **Primera visita a una rama.** Se le envía (o se escribe en una pestaña nueva) el enlace
+  `#/consultar/figura-3/naranja`: ¿ve la rama naranja y su aviso sin desplazarse?
+- **Pregunta frecuente ambigua.** Busca «uso mínimo del sensor para fiarse de la descarga»: ¿llega
+  al paso 1 de la Tabla 5 (uso del sensor y período analizado) y no a una pregunta sobre la
+  glucemia capilar?
+- **Alarma en la hoja del paciente.** Abre «Cetonas: qué hacer según el resultado»: ¿localiza los
+  signos de alarma antes que los tramos?
 
 ## Qué se anota en cada tarea
 
@@ -75,3 +88,8 @@ la 5 y la 6, desde «Leer y comprender»; la 7 y la 9 son de paciente y la 8, de
 | 6     |           |           |            |         |       |                |
 | 7     |           |           |            |         |       |                |
 | 8     |           |           |            |         |       |                |
+
+## Alcance de la prueba
+
+Tres sesiones sirven para encontrar problemas de uso, no para certificar seguridad clínica ni dar
+una puntuación global. Mientras no haya sesiones hechas y anotadas, esto es un plan, no evidencia.

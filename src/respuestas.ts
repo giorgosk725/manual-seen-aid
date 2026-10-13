@@ -130,7 +130,7 @@ const SIGLA_DE = new Map(DESARROLLOS);
 
 /* Formas fijas: β-OHB en cualquiera de sus escrituras es «bohb»; Control-IQ, una palabra.
    «DIA» en mayúsculas es la duración de la insulina activa (en minúsculas sería «día»). */
-const unificar = (s: string) =>
+export const unificar = (s: string) =>
   normalizar(s.replace(/\bDIA\b/g, " duración de la insulina activa "))
     .replace(RE_DESARROLLO, (m) => `${m} ${SIGLA_DE.get(m) ?? ""} `)
     .replace(/\b(?:diabetes(?: mellitus)?|dm) (?:de )?tipo ([12])\b/g, " dm$1 ")

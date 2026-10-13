@@ -1,105 +1,826 @@
 {
-  "f01": "74famg",
-  "f02": "1d3drty",
-  "f03": "1w5rq5t",
-  "f04": "af0t3t",
-  "f05": "1ymjm9u",
-  "f06": "1292zw6",
-  "f07": "me7h1e",
-  "f08": "iq7s6l",
-  "f09": "znvg7s",
-  "f10": "p9uphy",
-  "f11": "1rhxerz",
-  "f12": "18l3z0s",
-  "f13": "y5oj5e",
-  "f14": "1n3e0by",
-  "f15": "2gbngi",
-  "f16": "1h0eess",
-  "f17": "1iu70pw",
-  "f18": "13419bp",
-  "f19": "500gbj",
-  "f20": "mdne54",
-  "f21": "1mev8z1",
-  "f22": "5axyzb",
-  "f23": "17auxl8",
-  "f24": "1pg6r1n",
-  "f25": "128j6ir",
-  "f26": "hwokcj",
-  "f27": "s8ewia",
-  "f28": "1bakci8",
-  "f29": "1i3xvaz",
-  "f30": "azjsbe",
-  "f31": "1b72r6g",
-  "f32": "1gr0oel",
-  "f33": "13ul0et",
-  "f34": "1czuxuy",
-  "f35": "ybkshn",
-  "f36": "1nvwj4z",
-  "f37": "18cpab8",
-  "f38": "12lld8v",
-  "f39": "p9ce49",
-  "f40": "ki8n0i",
-  "f41": "n4kmzj",
-  "f42": "67qf45",
-  "f43": "z5iie9",
-  "f44": "ai1cdo",
-  "f45": "xkgj0k",
-  "f46": "1lacgu5",
-  "f47": "1s3dck4",
-  "f48": "ki3fev",
-  "f49": "6ejzhu",
-  "f50": "1p4xgnn",
-  "f51": "d9bo43",
-  "f52": "1ev76jq",
-  "f53": "1y9y0uq",
-  "f54": "56zti",
-  "f55": "ixzcu7",
-  "f56": "tql0mb",
-  "f57": "vt799a",
-  "f58": "iz2cpl",
-  "f59": "19vnirn",
-  "f60": "qkqxn7",
-  "f61": "19ho970",
-  "f62": "17luvij",
-  "f63": "1gz7q0x",
-  "f64": "902e8w",
-  "f65": "l44h02",
-  "f66": "9gblp",
-  "f67": "tj9n1l",
-  "f68": "1b5gqn4",
-  "f69": "1434gtt",
-  "f70": "vu8vyy",
-  "f71": "dd39am",
-  "f72": "1wmy61i",
-  "f73": "1dds3sb",
-  "f74": "15m0mbq",
-  "f75": "1dufr9c",
-  "f76": "rfa6ej",
-  "f77": "hfttye",
-  "f78": "4156aq",
-  "f79": "48h1yw",
-  "f80": "2pwjyy",
-  "f81": "m1rp9n",
-  "f82": "1h460d0",
-  "f83": "sx60dg",
-  "f84": "17nwrat",
-  "f85": "cww0nd",
-  "f86": "vj9fvj",
-  "f87": "17deb6a",
-  "f88": "cwhj8c",
-  "f89": "dv17d3",
-  "f90": "14z0pe8",
-  "f91": "886nvb",
-  "f92": "19vqn7j",
-  "f93": "1kyci4u",
-  "f94": "6jv5f5",
-  "f95": "1961m2j",
-  "f96": "1igg66x",
-  "f97": "165swiu",
-  "f98": "1wvz8ok",
-  "f99": "1ap9iss",
-  "f100": "it0rsu",
-  "f101": "wwqj70",
-  "f102": "jrck4c",
-  "f103": "ee6r51"
+  "f01": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1xeqjka1jvdezs"
+    }
+  ],
+  "f02": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1l6ickz73w0gh"
+    }
+  ],
+  "f03": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1xcsywn1ce66dx"
+    }
+  ],
+  "f04": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "6nnuuzcwwjh5"
+    }
+  ],
+  "f05": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1pvhyh0ybe67a"
+    }
+  ],
+  "f06": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "10xf4owr3uyi"
+    }
+  ],
+  "f07": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1s568rhs6kein"
+    }
+  ],
+  "f08": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "qjusi61spsh9o"
+    }
+  ],
+  "f09": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "aky8jepaf4qg"
+    }
+  ],
+  "f10": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1nw4lmhui5daz"
+    }
+  ],
+  "f11": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Pasajes revisados por delegación del autor el 13-10-2026 (versión 0.51.0); docs/FRECUENTES.md",
+      "huella": "12os5mudvrn2c"
+    }
+  ],
+  "f12": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1bwrv4n1w6sddh"
+    }
+  ],
+  "f13": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "3er3g114cda6r"
+    }
+  ],
+  "f14": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1kvk4e91wcnlsz"
+    }
+  ],
+  "f15": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "jnl1p81p1zfxa"
+    }
+  ],
+  "f16": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "txvun11v2g39b"
+    }
+  ],
+  "f17": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "vju3eu1bte0uc"
+    }
+  ],
+  "f18": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1023nxvstfmdt"
+    }
+  ],
+  "f19": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "tx47qldy3jdb"
+    }
+  ],
+  "f20": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "172rcocdbpxq"
+    }
+  ],
+  "f21": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1kjxazu1c1i5yg"
+    }
+  ],
+  "f22": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1ehi9oj1uwxbfl"
+    }
+  ],
+  "f23": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "12v88tr13h2si5"
+    }
+  ],
+  "f24": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "4ri1nx13if1lb"
+    }
+  ],
+  "f25": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "3my1mh11flmqj"
+    }
+  ],
+  "f26": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "uepwp1zwc38n"
+    }
+  ],
+  "f27": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "g2ka6v1nx5111"
+    }
+  ],
+  "f28": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1004kdyo0z05w"
+    }
+  ],
+  "f29": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "2yxejl17wpf9f"
+    }
+  ],
+  "f30": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1bbykf01twoh6m"
+    }
+  ],
+  "f31": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "uxaiqu1m290ys"
+    }
+  ],
+  "f32": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "286f4b1n7nhm1"
+    }
+  ],
+  "f33": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1e1zzoyuiopc"
+    }
+  ],
+  "f34": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "z071zj1lz43xp"
+    }
+  ],
+  "f35": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "8vbtzzqmnzel"
+    }
+  ],
+  "f36": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "r7ixxb1rlmc7x"
+    }
+  ],
+  "f37": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "18exf023xg4s0"
+    }
+  ],
+  "f38": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1r2gdftgux7or"
+    }
+  ],
+  "f39": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1niebjz143ib31"
+    }
+  ],
+  "f40": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "bzcm2s5pfyxy"
+    }
+  ],
+  "f41": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "12resoo3cp41m"
+    }
+  ],
+  "f42": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "132nxurg5xg75"
+    }
+  ],
+  "f43": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1e1d8ap1v67msj"
+    }
+  ],
+  "f44": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1ktm1zbq88gf9"
+    }
+  ],
+  "f45": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1yfbe1h1mf9z1z"
+    }
+  ],
+  "f46": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "haguwk8nxsom"
+    }
+  ],
+  "f47": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "1j8jy6q121ynqo"
+    }
+  ],
+  "f48": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "11uf6e9bes7gj"
+    }
+  ],
+  "f49": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "19cwz8ge9rddu"
+    }
+  ],
+  "f50": [
+    {
+      "fecha": "2026-10-08",
+      "version": "0.12.0",
+      "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
+      "huella": "z8yqi2nyejag"
+    }
+  ],
+  "f51": [
+    {
+      "fecha": "2026-10-11",
+      "version": "0.38.0",
+      "evidencia": "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
+      "huella": "mnyc2pceuqtf"
+    }
+  ],
+  "f52": [
+    {
+      "fecha": "2026-10-11",
+      "version": "0.38.0",
+      "evidencia": "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
+      "huella": "1phipke1jfn4ng"
+    }
+  ],
+  "f53": [
+    {
+      "fecha": "2026-10-11",
+      "version": "0.38.0",
+      "evidencia": "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
+      "huella": "17yi6hl1fbdnej"
+    }
+  ],
+  "f54": [
+    {
+      "fecha": "2026-10-11",
+      "version": "0.38.0",
+      "evidencia": "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
+      "huella": "1wseswhlef8qb"
+    }
+  ],
+  "f55": [
+    {
+      "fecha": "2026-10-11",
+      "version": "0.38.0",
+      "evidencia": "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
+      "huella": "1f0m01l1b1b95n"
+    }
+  ],
+  "f56": [
+    {
+      "fecha": "2026-10-11",
+      "version": "0.38.0",
+      "evidencia": "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
+      "huella": "1v60ekh1489uqr"
+    }
+  ],
+  "f57": [
+    {
+      "fecha": "2026-10-11",
+      "version": "0.38.0",
+      "evidencia": "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
+      "huella": "1yhvu171oqh0fd"
+    }
+  ],
+  "f58": [
+    {
+      "fecha": "2026-10-11",
+      "version": "0.38.0",
+      "evidencia": "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
+      "huella": "1502jhik9l5ms"
+    }
+  ],
+  "f59": [
+    {
+      "fecha": "2026-10-11",
+      "version": "0.38.0",
+      "evidencia": "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
+      "huella": "1djx75o15swhlq"
+    }
+  ],
+  "f60": [
+    {
+      "fecha": "2026-10-11",
+      "version": "0.38.0",
+      "evidencia": "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
+      "huella": "cyzkr3ugcy3x"
+    }
+  ],
+  "f61": [
+    {
+      "fecha": "2026-10-11",
+      "version": "0.38.0",
+      "evidencia": "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
+      "huella": "gl9sjx1ngz6gf"
+    }
+  ],
+  "f62": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "19jyz5m1d5dczc"
+    }
+  ],
+  "f63": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "eq4kp6459syw"
+    }
+  ],
+  "f64": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "4r4fc66yjpl0"
+    }
+  ],
+  "f65": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "14aloac1rgrj5i"
+    }
+  ],
+  "f66": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "1koc3mjr0d22h"
+    }
+  ],
+  "f67": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "1m6gxo2wpmek0"
+    }
+  ],
+  "f68": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "1c2oati149nw90"
+    }
+  ],
+  "f69": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "19204xu1ci62xs"
+    }
+  ],
+  "f70": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "10cqkn01tg4cm6"
+    }
+  ],
+  "f71": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "zztg7i1rthur0"
+    }
+  ],
+  "f72": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "rbdzfroeehmt"
+    }
+  ],
+  "f73": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "mhwctp1w7hk5r"
+    }
+  ],
+  "f74": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "18awmrk4s6gki"
+    }
+  ],
+  "f75": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "9hg29yxlmebo"
+    }
+  ],
+  "f76": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "1x5xne51z8v4f"
+    }
+  ],
+  "f77": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "687co1rsjz8a"
+    }
+  ],
+  "f78": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "nko50y1swpq1c"
+    }
+  ],
+  "f79": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "17a7luwk9lozu"
+    }
+  ],
+  "f80": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "cw9gighduid6"
+    }
+  ],
+  "f81": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "1319uhcp7gufm"
+    }
+  ],
+  "f82": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "wxu35plnepr3"
+    }
+  ],
+  "f83": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "lkjvu91uiow5v"
+    }
+  ],
+  "f84": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "hj78a3ufbcuh"
+    }
+  ],
+  "f85": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "16fucmu1oiqaqc"
+    }
+  ],
+  "f86": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "7uryfx1nl47cv"
+    }
+  ],
+  "f87": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "zkvx8f12vdtp9"
+    }
+  ],
+  "f88": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "1rmyuut1s8mj87"
+    }
+  ],
+  "f89": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "tict9w11m1gom"
+    }
+  ],
+  "f90": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "1fqyrpp3vejfz"
+    }
+  ],
+  "f91": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "o345mq1d4akw0"
+    }
+  ],
+  "f92": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "qdo853mymxxx"
+    }
+  ],
+  "f93": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "1dn2lbyypjgpo"
+    }
+  ],
+  "f94": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "1okn9gc16e7mzi"
+    }
+  ],
+  "f95": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "oi6v9u1glvv9s"
+    }
+  ],
+  "f96": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "1lmttc01rvgjm"
+    }
+  ],
+  "f97": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "tu8x149iacje"
+    }
+  ],
+  "f98": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "foweubqndgw1"
+    }
+  ],
+  "f99": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "77my271eyh3pp"
+    }
+  ],
+  "f100": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "90osns1pv3ize"
+    }
+  ],
+  "f101": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "1umh9t614flhns"
+    }
+  ],
+  "f102": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "exdvfjf3zdfh"
+    }
+  ],
+  "f103": [
+    {
+      "fecha": "2026-10-13",
+      "version": "0.51.0",
+      "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
+      "huella": "r5njoi1eye56o"
+    }
+  ]
 }

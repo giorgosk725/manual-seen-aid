@@ -66,7 +66,8 @@ import type { SistemaId } from "../ampliacion/tipos";
 import { TablaVista } from "../componentes/TablaVista";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { NivelTitulo } from "../nivel-contexto";
-import { retirado } from "../edicion";
+import { CON_AMPLIACION, retirado } from "../edicion";
+import { CATALOGO_SISTEMAS, sistemaDelCatalogo } from "../ampliacion/ids";
 import { Elegir } from "./Elegir";
 
 export { Elegir };
@@ -596,7 +597,7 @@ function TituloSeccion({
 }
 
 export function FichaSistema({ id, seccion }: { id?: string; seccion?: string }) {
-  const s = sistemaPorId(id);
+  const s = sistemaDelCatalogo(id);
   const ref = useRef<HTMLDivElement>(null);
   const parrafos = useMemo(() => (s ? parrafosDelSistema(s.id) : []), [s]);
   const completa = seccion === "completa";
@@ -814,7 +815,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         </Foldable>
       </section>
 
-      {!retirado("ampliacion") && ver("ampliacion") && <Ampliacion s={s} />}
+      {CON_AMPLIACION && ver("ampliacion") && <Ampliacion s={sistemaPorId(s.id)!} />}
       {/* La ficha entera (para leer o imprimir), al final: fuera de la cabecera en el móvil. */}
       <p className="no-imprimir mt-6 border-t pt-3" style={{ borderColor: "#e6e6e6" }}>
         <a
@@ -1012,7 +1013,7 @@ function EntradaSistemas() {
   return (
     <div className="space-y-4">
       <ul className="grid gap-2 sm:grid-cols-2">
-        {SISTEMAS_AMPLIACION.map((s, c) => {
+        {CATALOGO_SISTEMAS.map((s, c) => {
           const h = SISTEMA_HEX[c];
           return (
             <li key={s.id}>
@@ -1119,7 +1120,7 @@ function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: strin
                 >
                   <span className="flex items-center gap-2">
                     <img
-                      src={FOTO_SISTEMA[SISTEMAS_AMPLIACION[c].id]}
+                      src={FOTO_SISTEMA[CATALOGO_SISTEMAS[c].id]}
                       alt=""
                       className="h-10 w-10 shrink-0 rounded-lg border object-cover"
                       style={{ borderColor: "#e6e6e6" }}
@@ -1381,7 +1382,7 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
               </NivelTitulo.Provider>
             </>
           )}
-          {seccion === "ampliacion" && !retirado("ampliacion") && (
+          {seccion === "ampliacion" && CON_AMPLIACION && (
             <>
               <p className="mb-3 text-sm text-slate-600">
                 Ficha técnica de cada sistema con sus fuentes, fuera del capítulo; se consulta

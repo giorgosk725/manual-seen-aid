@@ -1,11 +1,12 @@
 /* «Para el paciente»: información para pacientes (V5 = la publicada el 8-10-2026) y
    resumen (maquetación de la editorial), literales; y la hoja «Plan de seguridad» de cada sistema, hecha SOLO con texto
    del capítulo (pp. 7-9, Figura 3 y Tabla 4) y huecos para rellenar a mano. Cada hoja se imprime
-   en una cara A4 (letra pequeña, dos columnas) o, a elegir, con letra grande (una columna,
-   12 pt, a doble cara: dos o tres caras). La app no guarda nada de lo que se escribe:
+   con letra grande (una columna, 12 pt, a doble cara: dos o tres caras según el material; ver
+   docs/IMPRESION_2026-10.md). La app no guarda nada de lo que se escribe:
    no hay campos, solo líneas en blanco para el papel. */
 import { useEffect, useRef, type ReactNode } from "react";
 import { ArrowRight, FileText, Printer, ShieldCheck, FileDown } from "lucide-react";
+import { UrgenciaF3 } from "../componentes/UrgenciaF3";
 import { CAPITULO, FIGURA3, TABLAS, apartadoPorSlug, idDeBloque } from "../contenido";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import type { SistemaId } from "../ampliacion/tipos";
@@ -68,9 +69,9 @@ function Acciones({
   );
 }
 
-/* ---------- Hoja A4 (en pantalla, una hoja; en papel, una cara a dos columnas) ---------- */
+/* ---------- Hoja A4 (en pantalla, una hoja; en papel, 12 pt a una columna) ---------- */
 /* Imprimir desde el navegador (Ctrl+P o su menú) una pantalla con hoja: se marca igual que
-   con el botón, para que salga solo la hoja en una cara A4. */
+   con el botón, para que salga solo la hoja. */
 function useImprimirConTeclado(ref: React.RefObject<HTMLDivElement>) {
   useEffect(() => {
     const html = document.documentElement;
@@ -479,7 +480,7 @@ function HojaExtraVista({
         // (V54-09): así la alarma queda en la primera pantalla y en la primera cara.
         pie={
           <>
-            Fuente: {hoja.fuente}. {TITULO_CAPITULO_PACIENTES} · {AUTOR_PACIENTES}.
+            Fuente: {hoja.fuente}. {TITULO_CAPITULO_PACIENTES} · {AUTOR_PACIENTES}
           </>
         }
         holgada
@@ -695,20 +696,26 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
       <Acciones hoja={ref} materialId="planes" />
       <Hoja
         hojaRef={ref}
-        rotulo={`Plantilla de plan de seguridad · ${nombre}`}
+        rotulo="Plantilla de plan de seguridad"
         complementaria
         materialId="planes"
-        titulo={CAPITULO.titulo}
+        // Arriba, el título operativo y el propósito; el título del capítulo, al pie (V54-09).
+        titulo={`Plan de seguridad · ${nombre}`}
         subtitulo={
           <>Hecha solo con el texto del capítulo. Para rellenar a mano; no se guarda nada.</>
         }
         pie={
           <>
             Fuente: plan de seguridad (p. {plan?.p ?? 7}), dos reglas operativas (pp. 8-9), Figura 3
-            (p. {FIGURA3.pagina}) y Tabla 4 (pp. 11-12); texto literal del capítulo.
+            (p. {FIGURA3.pagina}) y Tabla 4 (pp. 11-12); texto literal del capítulo «
+            {CAPITULO.titulo}».
           </>
         }
       >
+        {/* La urgencia y los signos de gravedad de la Figura 3, literales, en la primera cara;
+            sin dosis (la de la rama roja va con su nota, en la figura). La figura entera sigue en
+            su sitio (V54-09). */}
+        <UrgenciaF3 className="hoja-seccion hoja-urgente mb-3" donde="al principio del plan" />
         <div className="hoja-seccion mb-3 flex flex-wrap gap-x-4 gap-y-2">
           <Hueco etiqueta="Nombre:" ancho="min-w-[12rem] flex-[2]" />
           <Hueco etiqueta="Fecha:" ancho="min-w-[8rem] flex-1" />
@@ -766,37 +773,48 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
             <strong>{FIGURA3.sospechar.titulo}</strong> {FIGURA3.sospechar.items.join(" ")}
           </p>
           <p className="mt-1 text-sm font-semibold text-slate-900">{FIGURA3.confirmar}</p>
-          <ul className="mt-1.5 space-y-1.5">
-            {FIGURA3.tramos.map((t) => (
-              <li
-                key={t.clave}
-                className={`tramo-plan tramo-${t.clave} rounded-lg border p-2 text-sm`}
-              >
-                <strong>{t.rango}</strong> · {t.titulo}
-                <ul className="mt-0.5 space-y-0.5 text-[13px] text-slate-800">
-                  {t.pasos.map((p, k) => (
-                    <li key={k}>
-                      <Texto>{p.texto}</Texto>
-                      {p.detalle && (
-                        <>
-                          {" "}
-                          {p.detalle.map((d, j) => (
-                            <span key={j}>
-                              <Texto>{d}</Texto>{" "}
-                            </span>
-                          ))}
-                        </>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-          {/* La nota de las dosis con asterisco, justo debajo de las ramas que las dan (A12). */}
-          <p className="mt-1 text-xs text-slate-700">
-            <Texto>{FIGURA3.notaAsterisco}</Texto>
-          </p>
+          {/* En papel, la figura puede partirse entre caras, pero no una rama, y las ramas con
+              dosis con asterisco (naranja y roja) van juntas con su nota de población (V54-09). */}
+          {[
+            FIGURA3.tramos.filter((t) => !JSON.stringify(t.pasos).includes("*")),
+            FIGURA3.tramos.filter((t) => JSON.stringify(t.pasos).includes("*")),
+          ].map((grupo, g) => (
+            <div key={g} className={g === 1 ? "plan-f3-dosis mt-1.5" : "mt-1.5"}>
+              <ul className="space-y-1.5">
+                {grupo.map((t) => (
+                  <li
+                    key={t.clave}
+                    className={`tramo-plan tramo-${t.clave} rounded-lg border p-2 text-sm`}
+                  >
+                    <strong>{t.rango}</strong> · {t.titulo}
+                    <ul className="mt-0.5 space-y-0.5 text-[13px] text-slate-800">
+                      {t.pasos.map((p, k) => (
+                        <li key={k}>
+                          <Texto>{p.texto}</Texto>
+                          {p.detalle && (
+                            <>
+                              {" "}
+                              {p.detalle.map((d, j) => (
+                                <span key={j}>
+                                  <Texto>{d}</Texto>{" "}
+                                </span>
+                              ))}
+                            </>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
+              {/* La nota de las dosis con asterisco, justo debajo de las ramas que las dan (A12). */}
+              {g === 1 && (
+                <p className="mt-1 text-xs text-slate-700">
+                  <Texto>{FIGURA3.notaAsterisco}</Texto>
+                </p>
+              )}
+            </div>
+          ))}
           {FIGURA3.pie.map((p) => (
             <p key={p.titulo} className="mt-1.5 text-[13px] text-slate-800">
               <strong>{p.titulo}</strong> <Texto>{p.texto}</Texto>

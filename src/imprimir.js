@@ -30,22 +30,75 @@ export function abrirPlegables(region) {
  * @param {Window} win  ventana (inyectable en las pruebas)
  */
 /* Imprime cuando la región ya no tiene nada cargándose (figuras y diagramas perezosos, que
-   enseñan un hueco con aria-busy mientras llegan): como mucho espera 4 s (V50-03). */
+   enseñan un hueco con aria-busy mientras llegan; V50-03). Si a los 4 s sigue cargando, NO
+   imprime una versión incompleta: lo dice y deja reintentar o cancelar (V54-09). */
 export function imprimirRegion(getRegion, win = typeof window !== "undefined" ? window : null) {
   if (!win || typeof win.print !== "function") return () => {};
   const region = typeof getRegion === "function" ? getRegion() : getRegion;
   const ocupada = () => !!region?.querySelector?.('[aria-busy="true"]');
   if (!ocupada()) return imprimirYa(region, win);
   let cancelado = false;
-  const inicio = Date.now();
-  const esperar = () => {
-    if (cancelado) return;
-    if (ocupada() && Date.now() - inicio < 4000) win.setTimeout(esperar, 100);
-    else imprimirYa(region, win);
+  let aviso = null;
+  const quitarAviso = () => {
+    aviso?.remove();
+    aviso = null;
   };
-  win.setTimeout(esperar, 100);
+  const esperar = (inicio) => {
+    if (cancelado) return;
+    if (!ocupada()) {
+      quitarAviso();
+      imprimirYa(region, win);
+    } else if (Date.now() - inicio < 4000) win.setTimeout(() => esperar(inicio), 100);
+    else avisar();
+  };
+  const avisar = () => {
+    const doc = win.document;
+    quitarAviso();
+    aviso = doc.createElement("div");
+    aviso.setAttribute("role", "alertdialog");
+    aviso.setAttribute("aria-label", "Impresión pendiente");
+    aviso.className =
+      "aviso-impresion no-imprimir fixed inset-x-3 bottom-32 z-50 mx-auto max-w-md rounded-xl border border-amber-400 bg-white p-3 text-sm text-slate-800 shadow-xl md:bottom-4";
+    const p = doc.createElement("p");
+    p.textContent =
+      "Todavía se está cargando parte del contenido (figuras o diagramas). Si se imprime ahora, saldría incompleto.";
+    const fila = doc.createElement("div");
+    fila.className = "mt-2 flex gap-2";
+    const boton = (texto, accion, clase) => {
+      const b = doc.createElement("button");
+      b.type = "button";
+      b.textContent = texto;
+      b.className = clase;
+      b.addEventListener("click", accion);
+      return b;
+    };
+    const reintentar = boton(
+      "Reintentar",
+      () => {
+        quitarAviso();
+        esperar(Date.now());
+      },
+      "min-h-11 rounded-lg bg-slate-800 px-3 text-sm font-semibold text-white",
+    );
+    fila.append(
+      reintentar,
+      boton(
+        "Cancelar",
+        () => {
+          cancelado = true;
+          quitarAviso();
+        },
+        "min-h-11 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700",
+      ),
+    );
+    aviso.append(p, fila);
+    doc.body.append(aviso);
+    reintentar.focus();
+  };
+  win.setTimeout(() => esperar(Date.now()), 100);
   return () => {
     cancelado = true;
+    quitarAviso();
   };
 }
 

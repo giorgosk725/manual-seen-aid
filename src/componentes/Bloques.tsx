@@ -2,6 +2,7 @@
    cada uno con su página de origen y un id estable (ancla). Solo lo que hay en el capítulo
    publicado: la versión extendida no se muestra en la lectura (decisión del autor, 9-10-2026);
    sigue en las fichas de sistema y en las tablas, rotulada. */
+import { NOTAS_POR_BLOQUE } from "../notas-complementarias";
 import { Fragment, Suspense, lazy, memo, useEffect, useMemo } from "react";
 import { mantenerEnVista } from "../irAlCambiar";
 import { Link2 } from "lucide-react";
@@ -109,6 +110,12 @@ function BloqueVista({
               {b.texto}
             </TextoConRemisiones>
           </p>
+          {/* Nota complementaria registrada para este párrafo (V54-11): aparte del texto. */}
+          {NOTAS_POR_BLOQUE[`${slug}/${ancla}`] && (
+            <p className="no-imprimir mt-1 rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs text-slate-600">
+              {NOTAS_POR_BLOQUE[`${slug}/${ancla}`]}
+            </p>
+          )}
         </Marco>
       );
     case "h3":

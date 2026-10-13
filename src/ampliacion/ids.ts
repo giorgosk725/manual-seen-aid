@@ -31,3 +31,20 @@ export const WEB_SISTEMA: Record<SistemaId, string> = {
   camaps: "https://www.mylife-diabetescare.com/es-ES",
   op5: "https://www.omnipod.com/es-es",
 };
+
+/* Catálogo mínimo de los cuatro sistemas (V54-12): id, nombre publicado y nombre corto. Lo usan
+   Sistemas y el buscador para la identidad; los datos clínicos de la ampliación (retirada en
+   esta edición) no entran en el paquete por eso. */
+export interface SistemaCatalogo {
+  id: SistemaId;
+  name: string;
+  short: string;
+}
+export const CATALOGO_SISTEMAS: SistemaCatalogo[] = [
+  { id: "mm780", name: "MiniMed 780G", short: "780G" },
+  { id: "ciq", name: "Tandem Control-IQ", short: "Control-IQ" },
+  { id: "camaps", name: "myLoop CamAPS", short: "CamAPS" },
+  { id: "op5", name: "Omnipod 5", short: "Omnipod 5" },
+];
+export const sistemaDelCatalogo = (id: string | undefined) =>
+  CATALOGO_SISTEMAS.find((s) => s.id === id);

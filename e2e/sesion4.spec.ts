@@ -28,8 +28,15 @@ test.describe("Para el paciente: sin la versión compacta", () => {
       0,
     );
     await expect(page.locator(".hoja-a4")).toContainText(
-      "Material complementario · Plantilla de plan de seguridad · MiniMed 780G",
+      "Material complementario · Plantilla de plan de seguridad",
     );
+    await expect(page.locator(".hoja-a4 h1")).toHaveText("Plan de seguridad · MiniMed 780G");
+    // V54-09: la urgencia de la Figura 3, en la primera cara.
+    await expect(
+      page.getByRole("region", {
+        name: /Urgencia y signos de gravedad \(Figura 3\), al principio del plan/,
+      }),
+    ).toBeVisible();
     await expect(page.locator(".hoja-a4 .hoja-pie")).toContainText(
       "no es una publicación del Manual SEEN",
     );
@@ -42,7 +49,7 @@ test.describe("Para el paciente: sin la versión compacta", () => {
   });
 });
 
-/* Letra grande (decisión del autor, 3-10-2026): 12 pt en una columna, aunque ocupe tres caras;
+/* Letra grande (decisión del autor, 3-10-2026): 12 pt en una columna, aunque ocupe varias caras;
    el resumen, dos. Desde la 0.12.0 es el formato por defecto (auditoría externa del 6-10-2026);
    la compacta se elige en la propia hoja y se recuerda en el navegador. */
 test.describe("Para el paciente: letra grande", () => {
@@ -54,8 +61,14 @@ test.describe("Para el paciente: letra grande", () => {
   for (const [ruta, nombre, maximo] of [
     ["/#/pacientes/informacion", "Información para pacientes", 3],
     ["/#/pacientes/resumen", "Resumen", 2],
-    ["/#/pacientes/plan/mm780", "Plan de seguridad · MiniMed 780G", 3],
-    ["/#/pacientes/plan/op5", "Plan de seguridad · Omnipod 5", 3],
+    // V54-09 (0.55.0): los cuatro planes y las dos hojas adaptadas. Los planes, 4 caras: la
+    // urgencia va en la primera y la Figura 3 no parte ninguna rama (docs/IMPRESION_2026-10.md).
+    ["/#/pacientes/plan/mm780", "Plan de seguridad · MiniMed 780G", 4],
+    ["/#/pacientes/plan/ciq", "Plan de seguridad · Tandem Control-IQ", 4],
+    ["/#/pacientes/plan/camaps", "Plan de seguridad · myLoop CamAPS", 4],
+    ["/#/pacientes/plan/op5", "Plan de seguridad · Omnipod 5", 4],
+    ["/#/pacientes/hoja/cetonas", "Hoja de cetonas", 2],
+    ["/#/pacientes/hoja/pruebas-cirugia", "Hoja de pruebas y cirugía", 2],
   ] as const) {
     test(`${nombre}: 12 pt y como mucho ${maximo} caras`, async ({ page }) => {
       await page.addInitScript(() =>

@@ -1349,6 +1349,11 @@ html.night .tramo-plan {
     margin-bottom: 2.6mm !important;
     break-inside: avoid;
   }
+  /* La Figura 3 del plan ocupa casi una cara: puede empezar a mitad de página y partirse entre
+     ramas (nunca dentro de una ni separando las ramas con dosis de su nota) (V54-09). */
+  html.imprimiendo .hoja-a4.grande .hoja-seccion.plan-figura3 {
+    break-inside: auto;
+  }
   html.imprimiendo .hoja-a4.grande p,
   html.imprimiendo .hoja-a4.grande li,
   html.imprimiendo .hoja-a4.grande dd,
@@ -1628,7 +1633,10 @@ html.night *:focus-visible {
 /* Plan de seguridad impreso: la Figura 3 (ramas, dosis y su nota de población) no se parte entre
    páginas, para que la nota no quede separada de las dosis (V50-02). */
 @media print {
-  .plan-figura3 {
+  /* V54-09: la figura puede partirse, pero no una rama; y las ramas con dosis van juntas con su
+     nota de población. */
+  .plan-figura3 .tramo-plan,
+  .plan-f3-dosis {
     break-inside: avoid;
   }
 }

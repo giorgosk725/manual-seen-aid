@@ -1,4 +1,5 @@
 import React from "react";
+import { VERSION_APP } from "./version";
 import ReactDOM from "react-dom/client";
 import { registerSW } from "virtual:pwa-register";
 import { ErrorBoundary } from "./ui";
@@ -23,17 +24,47 @@ window.addEventListener("beforeinstallprompt", (e) => e.preventDefault());
    y es el lector quien decide recargar. Comprobación cada hora y al volver a primer plano:
    el contenido es clínico y una versión vieja no debe quedarse semanas en un dispositivo. */
 const UNA_HORA = 60 * 60 * 1000;
+/* Tras «Actualizar» (V54-13): se apunta desde qué versión se actualizó; al volver a cargar se
+   confirma la versión que ha quedado y se vuelve a comprobar en seguida, por si la que estaba
+   en espera también se había quedado antigua (entonces se ofrece otra vez). */
+const DESDE = "mseen:actualizado-desde";
+const sesion = () => {
+  try {
+    return window.sessionStorage;
+  } catch {
+    return null;
+  }
+};
+const actualizar = () => {
+  try {
+    sesion()?.setItem(DESDE, VERSION_APP);
+  } catch {
+    /* sin almacenamiento de sesión: se actualiza igual, sin confirmación */
+  }
+  return updateSW(true);
+};
 const updateSW = registerSW({
   onNeedRefresh() {
     // Se guarda también en la ventana: el aviso puede montarse después del evento.
-    (window as unknown as { __mseenActualizar?: () => void }).__mseenActualizar = () =>
-      updateSW(true);
+    (window as unknown as { __mseenActualizar?: () => void }).__mseenActualizar = actualizar;
     window.dispatchEvent(
-      new CustomEvent("mseen:sw-need-refresh", { detail: { update: () => updateSW(true) } }),
+      new CustomEvent("mseen:sw-need-refresh", { detail: { update: actualizar } }),
     );
   },
   onRegisteredSW(_url, r) {
     if (!r) return;
+    let desde: string | null = null;
+    try {
+      desde = sesion()?.getItem(DESDE) ?? null;
+      sesion()?.removeItem(DESDE);
+    } catch {
+      /* nada que confirmar */
+    }
+    if (desde) {
+      (window as unknown as { __mseenActualizado?: string }).__mseenActualizado = desde;
+      window.dispatchEvent(new CustomEvent("mseen:sw-actualizado", { detail: { desde } }));
+      r.update().catch(() => {});
+    }
     setInterval(() => r.update().catch(() => {}), UNA_HORA);
     let ultima = Date.now();
     document.addEventListener("visibilitychange", () => {
