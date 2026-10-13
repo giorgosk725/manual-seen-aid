@@ -8,6 +8,7 @@ import { MapaConsulta } from "../componentes/MapaConsulta";
 import { VERSION_APP } from "../version";
 import { href } from "../rutas";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
+import { DESTINOS } from "../nav";
 import { APARTADOS } from "../contenido";
 import { useUltimo } from "../prefs";
 
@@ -50,42 +51,48 @@ function SeguirLeyendo() {
   );
 }
 
-/* Leer y comprender (V54-07): región propia, hermana de Consultar y antes de ella, en una fila
-   breve; las dos formas de uso del mismo capítulo, sin volver a las tarjetas grandes. */
-const LECTURA = [
-  { t: "Índice del capítulo", r: href("capitulo") },
-  { t: "Tablas", r: href("consultar", "tablas") },
-  { t: "Figuras", r: href("visual", "figuras") },
-  { t: "Diagramas", r: href("visual") },
-];
+/* Leer y comprender (V54-07): región propia, antes del mapa y con su mismo formato (13-10-2026):
+   un bloque con filas de icono, nombre y flecha; en una fila de cuatro desde 640 px. */
+const LECTURA = ["capitulo", "tablas", "figuras", "visual"];
 function LeerYComprender() {
-  const hex = CATEGORIA_HEX.leer;
   return (
     <section
       aria-labelledby="portada-leer"
-      className="rounded-md border bg-white px-3 py-2"
+      className="rounded-md border bg-white"
       style={{ borderColor: "#e6e6e6" }}
     >
       <h2
         id="portada-leer"
-        className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"
-        style={{ color: hex.ink }}
+        className="px-3 pb-0.5 pt-2 text-xs font-bold uppercase tracking-wide"
+        style={{ color: CATEGORIA_HEX.consultar.ink }}
       >
-        <BookOpen size={14} aria-hidden="true" style={{ color: hex.strong }} />
         Leer y comprender
       </h2>
-      <ul className="mt-1 grid grid-cols-2 gap-x-3 sm:flex sm:flex-wrap sm:gap-x-5">
-        {LECTURA.map((x, i) => (
-          <li key={x.t}>
-            <a
-              href={x.r}
-              className={`inline-flex min-h-11 items-center gap-1 text-sm hover:underline sm:min-h-9 ${i === 0 ? "font-bold text-slate-900" : "font-semibold text-slate-700"}`}
-            >
-              {x.t}
-              {i === 0 && <ArrowRight size={13} aria-hidden="true" />}
-            </a>
-          </li>
-        ))}
+      <ul
+        className="divide-y sm:grid sm:grid-cols-4 sm:divide-x sm:divide-y-0"
+        style={{ borderColor: "#e6e6e6" }}
+      >
+        {LECTURA.map((id) => {
+          const d = DESTINOS.find((x) => x.id === id)!;
+          const I = d.icono;
+          return (
+            <li key={id}>
+              <a
+                href={d.href}
+                className="flex min-h-11 items-center gap-3 px-3 py-1.5 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+              >
+                <I
+                  size={16}
+                  className="shrink-0"
+                  style={{ color: CATEGORIA_HEX.leer.strong }}
+                  aria-hidden="true"
+                />
+                <span className="min-w-0 flex-1 font-semibold text-slate-900">{d.etiqueta}</span>
+                <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </section>
   );
@@ -135,9 +142,11 @@ export function Portada() {
 
       <SeguirLeyendo />
 
-      <LeerYComprender />
-
-      <MapaConsulta />
+      {/* La lectura y el mapa, un mismo conjunto: el mismo hueco entre bloques. */}
+      <div className="space-y-2">
+        <LeerYComprender />
+        <MapaConsulta />
+      </div>
 
       <footer
         className="flex flex-col gap-1 border-t pt-4 text-sm text-slate-600 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5"

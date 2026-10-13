@@ -9,10 +9,23 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
-import { ArrowDown, ArrowRight, BookOpen, Images } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowRight,
+  BookOpen,
+  Cpu,
+  Images,
+  RefreshCw,
+  SlidersHorizontal,
+  Syringe,
+  Target,
+  Timer,
+  TrendingUp,
+  Utensils,
+} from "lucide-react";
 import {
   DIAGRAMAS,
-  HORIZONTE_PREDICCION,
+  CLAVE_ALGORITMO,
   RECORDATORIO_HIBRIDO,
   EJERCICIO,
   ESCALA_CETONEMIA,
@@ -58,15 +71,17 @@ function Sub({
   children,
   className,
   style,
+  id,
 }: {
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
+  id?: string;
 }) {
   const nivel = useContext(NivelDiagrama);
   const H = nivel === 2 ? "h3" : nivel === 3 ? "h4" : "h5";
   return (
-    <H className={className} style={style}>
+    <H id={id} className={className} style={style}>
       {children}
     </H>
   );
@@ -532,121 +547,177 @@ function Seguimiento() {
 }
 
 /* ---------- 5. Los cuatro algoritmos ---------- */
-/* Las celdas enteras de la Tabla 1, con el nombre de su fila (no fragmentos); el horizonte, a
-   escala y como intervalo (CamAPS, de 2,5 a 4 h). */
+/* 13-10-2026 (0.57): una tarjeta por sistema con lo esencial de un vistazo (dónde está el
+   algoritmo, cómo y cada cuánto actúa, predicción, objetivo, corrección automática, aprendizaje y
+   parámetros), en fragmentos literales de la Tabla 1 (CLAVE_ALGORITMO) y con las mismas filas a la
+   misma altura en las cuatro (subgrid). Las celdas enteras, debajo, en cada tarjeta. */
 const FILAS_ALGORITMO = [
   "Localización del algoritmo",
   "Estrategia de automatización",
   "Bolos automáticos de corrección",
   "Lógica del algoritmo y aprendizaje",
+  "Objetivo glucémico en modo automático",
   "Parámetros configurables en modo automático",
 ];
+
+function DatoAlgoritmo({
+  icono: I,
+  etiqueta,
+  hex,
+  children,
+}: {
+  icono: typeof Cpu;
+  etiqueta: string;
+  hex: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex gap-2.5 border-t px-3 py-2" style={{ borderColor: "#eceff3" }}>
+      <I size={16} className="mt-0.5 shrink-0" style={{ color: hex }} aria-hidden="true" />
+      <div className="min-w-0">
+        <div className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+          {etiqueta}
+        </div>
+        <div className="text-sm font-semibold leading-snug text-slate-900">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+const unidos = (xs: string[]) => xs.join(" · ");
+
 function Algoritmos() {
   const fila = (etiqueta: string, c: number) =>
     TABLAS.T1.filas.find((f) => f.etiqueta === etiqueta)?.celdas[c] ?? "";
-  const pct = (v: number) => `${(v / 4) * 100}%`;
   return (
     <div>
       <p
-        className="mb-3 rounded-lg px-3 py-2 text-sm text-slate-800"
-        style={{ background: "#f1f5f9" }}
+        className="mb-3 flex items-start gap-2 rounded-lg border-l-4 px-3 py-2 text-sm text-slate-800"
+        style={{ borderColor: "#64748b", background: "#f1f5f9" }}
       >
-        {RECORDATORIO_HIBRIDO.texto}
+        <Utensils size={16} className="mt-0.5 shrink-0 text-slate-600" aria-hidden="true" />
+        <span>{RECORDATORIO_HIBRIDO.texto}</span>
       </p>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {ORDEN_SISTEMAS.map((id, c) => {
           const h = SISTEMA_HEX[c];
+          const k = CLAVE_ALGORITMO[c];
+          const [nombre, tipo] = algoritmoDelCapitulo(c).split(": algoritmo de tipo ");
+          const parametros = fila("Parámetros configurables en modo automático", c)
+            .split("\n")
+            .map((x) => x.trim())
+            .filter(Boolean);
           return (
             <article
               key={id}
-              className="rounded-xl border p-3"
-              style={{ borderColor: `${h.strong}40`, background: h.soft }}
+              aria-labelledby={`alg-${id}`}
+              className="row-span-9 grid grid-rows-subgrid gap-0 overflow-hidden rounded-xl border border-t-4 bg-white"
+              style={{ borderColor: "#e6e6e6", borderTopColor: h.strong }}
             >
-              <div className="mb-2 flex items-center gap-2">
+              <header
+                className="flex items-center gap-2.5 px-3 py-2.5"
+                style={{ background: h.soft }}
+              >
                 <img
                   src={FOTO_SISTEMA[id]}
                   alt=""
-                  className="h-10 w-10 rounded-lg bg-white object-cover"
+                  className="h-11 w-11 shrink-0 rounded-lg bg-white object-cover"
                 />
                 <div className="min-w-0">
-                  <div className="text-sm font-extrabold" style={{ color: h.ink }}>
+                  <Sub
+                    id={`alg-${id}`}
+                    className="text-base font-extrabold leading-tight"
+                    style={{ color: h.ink }}
+                  >
                     {TABLAS.T1.columnas[c]}
+                  </Sub>
+                  <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-slate-700">
+                    <span className="font-semibold">{nombre}</span>
+                    {tipo && (
+                      <span
+                        className="rounded-full px-2 py-0.5 text-[11px] font-bold text-white"
+                        style={{ background: h.ink }}
+                      >
+                        {tipo}
+                      </span>
+                    )}
                   </div>
-                  <div className="text-xs text-slate-600">{algoritmoDelCapitulo(c)}</div>
                 </div>
-              </div>
-              <dl className="space-y-1.5 text-xs">
-                {FILAS_ALGORITMO.map((e) => (
-                  <div key={e}>
-                    <dt className="font-bold text-slate-600">{e}</dt>
-                    <dd className="text-slate-900">
-                      <Lineas>{fila(e, c)}</Lineas>
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              </header>
+              <DatoAlgoritmo icono={Cpu} etiqueta="Dónde está el algoritmo" hex={h.strong}>
+                {unidos(k.donde)}
+              </DatoAlgoritmo>
+              <DatoAlgoritmo icono={Timer} etiqueta="Cómo actúa" hex={h.strong}>
+                {unidos(k.actua)}
+              </DatoAlgoritmo>
+              <DatoAlgoritmo icono={TrendingUp} etiqueta="Predicción" hex={h.strong}>
+                {k.prediccion.length ? (
+                  unidos(k.prediccion)
+                ) : (
+                  <span className="font-normal italic text-slate-600">
+                    No consta en el capítulo
+                  </span>
+                )}
+              </DatoAlgoritmo>
+              <DatoAlgoritmo icono={Target} etiqueta="Objetivo" hex={h.strong}>
+                <span className="tabular-nums">{unidos(k.objetivo)}</span>
+              </DatoAlgoritmo>
+              <DatoAlgoritmo icono={Syringe} etiqueta="Bolos de corrección" hex={h.strong}>
+                <span
+                  className="mr-1.5 inline-block rounded px-1.5 text-xs font-extrabold"
+                  style={
+                    k.correccion.si
+                      ? { background: h.ink, color: "#fff" }
+                      : { background: "#e2e8f0", color: "#334155" }
+                  }
+                >
+                  {k.correccion.si ? "Sí" : "No"}
+                </span>
+                <span className="font-normal text-slate-800">{unidos(k.correccion.texto)}</span>
+              </DatoAlgoritmo>
+              <DatoAlgoritmo icono={RefreshCw} etiqueta="Aprendizaje" hex={h.strong}>
+                {unidos(k.aprendizaje)}
+              </DatoAlgoritmo>
+              <DatoAlgoritmo icono={SlidersHorizontal} etiqueta="Parámetros" hex={h.strong}>
+                <ul className="mt-0.5 flex flex-wrap gap-1">
+                  {parametros.map((x) => {
+                    const directo = x.endsWith("*");
+                    return (
+                      <li
+                        key={x}
+                        className={`rounded-md border px-1.5 py-0.5 text-xs leading-snug ${directo ? "font-bold" : "font-normal text-slate-600"}`}
+                        style={
+                          directo
+                            ? { borderColor: h.strong, background: h.soft, color: h.ink }
+                            : { borderColor: "#e2e8f0", background: "#f8fafc" }
+                        }
+                      >
+                        {x}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </DatoAlgoritmo>
+              <details className="border-t px-3 py-2 text-xs" style={{ borderColor: "#eceff3" }}>
+                <summary className="tap-44 cursor-pointer font-semibold text-slate-700">
+                  Celdas completas (Tabla 1)
+                </summary>
+                <dl className="mt-2 space-y-1.5">
+                  {FILAS_ALGORITMO.map((e) => (
+                    <div key={e}>
+                      <dt className="font-bold text-slate-600">{e}</dt>
+                      <dd className="text-slate-900">
+                        <Lineas>{fila(e, c)}</Lineas>
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </details>
             </article>
           );
         })}
       </div>
       <p className="mt-2 text-xs text-slate-600">{TABLAS.T1.notas[0]}</p>
-      <div className="mt-4">
-        <Sub className="mb-2 text-sm font-bold text-slate-900">Horizonte de predicción</Sub>
-        <div className="space-y-2">
-          {ORDEN_SISTEMAS.map((id, c) => {
-            const hz = HORIZONTE_PREDICCION[c];
-            const h = SISTEMA_HEX[c];
-            const etiqueta = !hz
-              ? "No consta en el capítulo"
-              : hz[0] === hz[1]
-                ? `${hz[0] < 1 ? `${hz[0] * 60} min` : `${hz[0] * 60} min`}`
-                : `${String(hz[0]).replace(".", ",")} a ${hz[1]} h`;
-            return (
-              <div key={id} className="grid grid-cols-[6.5rem_1fr] items-center gap-2 text-xs">
-                <span className="font-semibold text-slate-800">
-                  {TABLAS.T1.columnas[c].replace("Tandem ", "").replace("myLoop ", "")}
-                </span>
-                <div className="relative h-6 rounded-md" style={{ background: "#f1f5f9" }}>
-                  {hz && (
-                    <span
-                      aria-hidden="true"
-                      className="absolute top-0 h-full rounded-md"
-                      style={{
-                        left: pct(hz[0] === hz[1] ? 0 : hz[0]),
-                        width: pct(hz[0] === hz[1] ? hz[1] : hz[1] - hz[0]),
-                        background: h.ink,
-                      }}
-                    />
-                  )}
-                  {/* La etiqueta, tras la barra; si la barra llega al final, dentro de ella. */}
-                  <span
-                    className={`absolute top-0 flex h-full items-center whitespace-nowrap px-1.5 text-[11px] font-bold ${!hz ? "italic text-slate-600" : hz[1] >= 3 ? "text-white" : "text-slate-900"}`}
-                    style={
-                      !hz
-                        ? { left: 0 }
-                        : hz[1] >= 3
-                          ? { left: pct(hz[0] === hz[1] ? 0 : hz[0]) }
-                          : { left: pct(hz[1]) }
-                    }
-                  >
-                    {etiqueta}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-          <div className="grid grid-cols-[6.5rem_1fr] text-[11px] text-slate-500">
-            <span />
-            <span className="flex justify-between tabular-nums">
-              <span>0</span>
-              <span>1 h</span>
-              <span>2 h</span>
-              <span>3 h</span>
-              <span>4 h</span>
-            </span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

@@ -488,17 +488,35 @@ describe("diagramas a partir del texto", () => {
     expect(ESCALA_CETONEMIA.tramos.map((t) => t.clave)).toEqual(FIGURA3.tramos.map((t) => t.clave));
     expect(ESCALA_CETONEMIA.tramos.map((t) => t.desde)).toEqual([0, 0.6, 1.0, 3.0]);
   });
-  it("el horizonte de predicción de los algoritmos está en la Tabla 1", async () => {
-    const { HORIZONTE_PREDICCION } = await import("./contenido/diagramas");
-    expect(HORIZONTE_PREDICCION).toHaveLength(4);
-    const t1 = JSON.stringify(TABLAS.T1);
-    for (const x of [
-      "predicción a 30 min",
-      "predicción a largo plazo de 2,5 a 4 h",
-      "predicción a 60 min",
-    ])
-      expect(t1, x).toContain(x);
-    expect(HORIZONTE_PREDICCION[0]).toBeNull();
+  it("lo esencial de cada algoritmo son fragmentos literales de su celda de la Tabla 1", async () => {
+    const { CLAVE_ALGORITMO } = await import("./contenido/diagramas");
+    expect(CLAVE_ALGORITMO).toHaveLength(4);
+    const celda = (etiqueta: string, c: number) => {
+      const f = TABLAS.T1.filas.find((x) => x.etiqueta === etiqueta);
+      expect(f, etiqueta).toBeTruthy();
+      return f!.celdas[c];
+    };
+    CLAVE_ALGORITMO.forEach((k, c) => {
+      const pares: [string, string[]][] = [
+        ["Localización del algoritmo", k.donde],
+        ["Estrategia de automatización", [...k.actua, ...k.prediccion]],
+        ["Objetivo glucémico en modo automático", k.objetivo],
+        ["Bolos automáticos de corrección", k.correccion.texto],
+        ["Lógica del algoritmo y aprendizaje", k.aprendizaje],
+      ];
+      for (const [e, xs] of pares)
+        for (const x of xs) expect(celda(e, c), `${c} ${x}`).toContain(x);
+      // El «Sí»/«No» es el comienzo de la celda.
+      expect(
+        celda("Bolos automáticos de corrección", c).startsWith(k.correccion.si ? "Sí" : "No"),
+      ).toBe(true);
+    });
+    // La predicción: 30 min, de 2,5 a 4 h y 60 min; la del primero no consta.
+    expect(CLAVE_ALGORITMO.map((k) => k.prediccion.length)).toEqual([0, 1, 1, 1]);
+    for (const k of CLAVE_ALGORITMO.slice(1))
+      expect(celda("Estrategia de automatización", CLAVE_ALGORITMO.indexOf(k))).toContain(
+        `predicción ${k.prediccion[0].startsWith("de") ? "a largo plazo " : ""}${k.prediccion[0]}`,
+      );
   });
 });
 

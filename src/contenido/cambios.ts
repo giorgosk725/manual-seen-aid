@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — diagramas revisados`,
+    titulo: `Complemento interactivo ${VERSION_APP} — los cuatro algoritmos, de un vistazo`,
+    detalle: [
+      "«Los cuatro algoritmos»: una tarjeta por sistema con lo esencial de la Tabla 1 (dónde está el algoritmo, cómo actúa, predicción, objetivo, bolos de corrección, aprendizaje y parámetros), alineado entre los cuatro; las celdas completas, en cada tarjeta.",
+      "Sin la barra del horizonte de predicción: la predicción es un dato más de cada tarjeta.",
+      "Portada: «Leer y comprender» con el mismo formato que los bloques del mapa; «Información para pacientes», sin más.",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.56.0 — diagramas revisados",
     detalle: [
       "Diagramas agrupados por temas, con apartado y páginas; la fuente, al pie de cada uno.",
       "Los doce, cotejados con el capítulo: vuelven las condiciones que se perdían al resumir, con texto literal.",

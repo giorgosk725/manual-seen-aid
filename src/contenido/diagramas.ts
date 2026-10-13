@@ -460,13 +460,54 @@ export const SEGUIMIENTO = {
 };
 
 /* ---------- Los cuatro algoritmos ---------- */
-/* Revisión del 13-10-2026: las celdas se leen enteras de la Tabla 1 (TABLAS.T1); aquí solo el
-   horizonte de predicción para la barra, en horas (null = el capítulo no lo indica). */
-export const HORIZONTE_PREDICCION: ([number, number] | null)[] = [
-  null,
-  [0.5, 0.5],
-  [2.5, 4],
-  [1, 1],
+/* 13-10-2026 (0.57): lo esencial de cada sistema de un vistazo. Cada valor es un fragmento
+   literal de su celda de la Tabla 1 (el test lo comprueba); las celdas enteras siguen debajo.
+   Sin la barra del horizonte de predicción: la predicción va como un dato más de la tarjeta.
+   Orden de ORDEN_SISTEMAS / columnas de la Tabla 1. Lista vacía = el capítulo no lo indica. */
+export type ClaveAlgoritmo = {
+  donde: string[]; // «Localización del algoritmo»
+  actua: string[]; // «Estrategia de automatización»
+  prediccion: string[]; // «Estrategia de automatización»
+  objetivo: string[]; // «Objetivo glucémico en modo automático»
+  correccion: { si: boolean; texto: string[] }; // «Bolos automáticos de corrección»
+  aprendizaje: string[]; // «Lógica del algoritmo y aprendizaje»
+};
+export const CLAVE_ALGORITMO: ClaveAlgoritmo[] = [
+  {
+    donde: ["En la bomba"],
+    actua: ["microbolos cada 5 min"],
+    prediccion: [],
+    objetivo: ["100, 110 o 120 mg/dl"],
+    correccion: { si: true, texto: ["hasta uno cada 5 min si se predice > 120 mg/dl"] },
+    aprendizaje: ["actualiza el valor basal automático cada medianoche"],
+  },
+  {
+    donde: ["En la bomba"],
+    actua: ["Modula (aumenta, reduce o suspende) la basal programada cada 5 min"],
+    prediccion: ["a 30 min"],
+    objetivo: ["112,5–160 mg/dl"],
+    correccion: {
+      si: true,
+      texto: ["máx. uno por hora si se predice > 180 mg/dl a 30 min", "no actúa en modo Sueño"],
+    },
+    aprendizaje: ["No incorpora autoaprendizaje"],
+  },
+  {
+    donde: ["En la app del smartphone"],
+    actua: ["bolos extendidos cada 8–12 min"],
+    prediccion: ["de 2,5 a 4 h"],
+    objetivo: ["80–198 mg/dl", "De fábrica: 104 mg/dl"],
+    correccion: { si: false, texto: ["sin bolos de corrección diferenciados"] },
+    aprendizaje: ["aprendizaje multinivel", "se actualiza cada 24 h"],
+  },
+  {
+    donde: ["En el pod"],
+    actua: ["microbolos cada 5 min"],
+    prediccion: ["a 60 min"],
+    objetivo: ["110, 120, 130, 140 o 150 mg/dl"],
+    correccion: { si: false, texto: ["incrementa la tasa basal adaptativa hasta un 400 %"] },
+    aprendizaje: ["se recalcula con cada cambio de pod"],
+  },
 ];
 export const RECORDATORIO_HIBRIDO = {
   texto:

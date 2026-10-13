@@ -1,6 +1,6 @@
 /* El mapa de consulta: cuatro bloques, cada uno con la pregunta que responde y sus entradas en
    filas (solo el nombre: la fuente se ve al entrar). La lectura va aparte, antes, en su propia
-   región de la portada (V54-07). Es la portada misma: no hay otra pantalla «Consultar». */
+   región de la portada y con este mismo formato (V54-07). Es la portada misma: no hay otra pantalla «Consultar». */
 import { ArrowRight } from "lucide-react";
 import { DESTINOS, MAPA_CONSULTA } from "../nav";
 import { CATEGORIA_HEX } from "../tokens";
@@ -8,7 +8,7 @@ import { CATEGORIA_HEX } from "../tokens";
 export function MapaConsulta() {
   const hex = CATEGORIA_HEX.consultar;
   return (
-    <section aria-labelledby="mapa-consulta" className="space-y-3">
+    <section aria-labelledby="mapa-consulta">
       {/* Cada bloque dice ya qué ofrece: el título del mapa, solo para lectores de pantalla. */}
       <h2 id="mapa-consulta" tabIndex={-1} className="sr-only scroll-mt-24">
         Consultar

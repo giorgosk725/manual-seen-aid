@@ -223,7 +223,7 @@ export const DESTINOS: Destino[] = [
   // El PDF publicado de «Información para pacientes» (en el precache: también sin conexión).
   {
     id: "pdf-pacientes",
-    etiqueta: "Información para pacientes (PDF publicado)",
+    etiqueta: "Información para pacientes",
     corto: "PDF",
     href: "pdf/manual-seen-aid-pacientes.pdf",
     icono: FileText,
