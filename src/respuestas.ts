@@ -252,6 +252,38 @@ const ALIAS_SISTEMA: Record<string, number> = {
 
 /* Equivalentes de la consulta diaria → palabras que usa el capítulo. */
 const LEXICO: Record<string, string[]> = {
+  // 0.53.0: nombres comerciales y palabras de la calle que el capítulo dice de otra manera.
+  jardiance: ["isglt2"],
+  empagliflozina: ["isglt2"],
+  dapagliflozina: ["isglt2"],
+  forxiga: ["isglt2"],
+  canagliflozina: ["isglt2"],
+  gliflozinas: ["isglt2"],
+  bisturi: ["electrocirugia", "diatermia"],
+  colonoscopia: ["endoscopia", "procedimiento"],
+  gastroscopia: ["endoscopia", "procedimiento"],
+  rugby: ["contacto", "ejercicio"],
+  judo: ["contacto", "ejercicio"],
+  karate: ["contacto", "ejercicio"],
+  boxeo: ["contacto", "ejercicio"],
+  caminar: ["ejercicio"],
+  andar: ["ejercicio"],
+  pasear: ["ejercicio"],
+  paseo: ["ejercicio"],
+  senderismo: ["ejercicio"],
+  spinning: ["ejercicio"],
+  crossfit: ["ejercicio"],
+  maraton: ["ejercicio", "prolongado"],
+  neumonia: ["enfermedad", "intercurrente", "ingreso"],
+  covid: ["enfermedad", "intercurrente"],
+  hernia: ["cirugia"],
+  apendicitis: ["cirugia"],
+  cable: ["tubo", "cateter"],
+  tubito: ["tubo", "cateter"],
+  chorritos: ["microbolos"],
+  chorrito: ["microbolos"],
+  hackear: ["remota", "credenciales"],
+  hacker: ["remota", "credenciales"],
   cetona: ["cetonemia", "cetosis", "bohb"],
   cetonas: ["cetonemia", "cetosis", "bohb"],
   cetonemia: ["bohb", "cetosis"],
@@ -1450,6 +1482,13 @@ export function coberturaDe(pregunta: string): { ajenas: string[] } {
   return { ajenas: ajenas.map((g) => g.escrita ?? g.palabras[0]) };
 }
 
+/* Solo para medir (pruebas): ve los candidatos puntuados de cada consulta. */
+type Cand = { a: Atomo; score: number; cob: number; tit: number; cas: number };
+let ESPIA: ((x: { cand: Cand[]; cercanas: Cand[]; sis?: number; utiles: number }) => void) | null =
+  null;
+export const espiar = (f: typeof ESPIA) => void (ESPIA = f);
+export const resolverParaMedir = (a: Atomo, sis?: number) => resolver(a, sis, 0);
+
 function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
   const ats = atomos();
   const grupos = gruposDe(pregunta);
@@ -1536,8 +1575,8 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
     return { score, casados, enTitulo, cobertura: cubierto / pesoTotal };
   };
 
-  const cand: { a: Atomo; score: number; cob: number; tit: number }[] = [];
-  const cercanas: { a: Atomo; score: number; cob: number; tit: number }[] = [];
+  const cand: Cand[] = [];
+  const cercanas: Cand[] = [];
   for (const a of ats) {
     // Con una cifra de β-OHB escrita, ninguna rama de la Figura 3 se elige sola (edición
     // editorial, A01): la cifra no ve los signos de gravedad ni el contexto. Responden la lista
@@ -1620,20 +1659,35 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
       score += 0.5;
     // Las frases muy cortas («Ejercicio físico») no son una respuesta.
     if (a.r.tipo === "texto" && !a.r.items && a.r.texto.length < 40) score -= 2;
-    (floja ? cercanas : cand).push({ a, score, cob: cobertura, tit: enTitulo });
+    (floja ? cercanas : cand).push({ a, score, cob: cobertura, tit: enTitulo, cas: casados });
   }
   // Nada responde de lleno: lo más cercano, marcado como tal (la pregunta es sobre todo del
   // capítulo; si las palabras ajenas eran mayoría, ya no consta).
   const lista = cand.length ? cand : cercanas;
   lista.sort((x, y) => y.score - x.score || x.a.r.id.localeCompare(y.a.r.id));
+  ESPIA?.({ cand, cercanas, sis, utiles: utiles.length });
   // Y si la primera cubre poco de la pregunta y apenas saca ventaja a la siguiente de otro
   // párrafo, tampoco se presenta como «la respuesta»: así acertaba menos de la mitad de las
   // veces en los bancos de prueba (docs/PREGUNTAS_2026-10-04.md).
   const bloque = (c: (typeof lista)[number]) => c.a.r.ruta.replace(/~\d+$/, "") + c.a.r.titulo;
   const rival = lista.find((c) => lista[0] && bloque(c) !== bloque(lista[0]));
-  const dudosa =
-    !!lista[0] && lista[0].cob < 0.75 && (rival ? lista[0].score - rival.score : 9) < 1;
-  const aproximada = !cand.length || dudosa;
+  // Calibración de la 0.53.0 (docs/BUSQUEDA_2026-10.md): solo es «la respuesta» si casa al
+  // menos dos tercios de las palabras útiles de la pregunta, puntúa al menos 4 y saca 1,5 a la
+  // siguiente de otro bloque. Con validación cruzada en los bancos 1-6, las directas
+  // equivocadas bajan a un tercio y la precisión de las directas pasa de ~59 % a ~75 %; el
+  // orden no cambia (lo demás va como «lo más cercano»).
+  const margen = lista[0] ? (rival ? lista[0].score - rival.score : 9) : 0;
+  const top = lista[0];
+  const segura =
+    !!top &&
+    ((top.cas / utiles.length >= 0.67 && top.score >= 4 && margen >= 1.5) ||
+      // Casa todo lo útil de la pregunta, en parte en el título, con puntuación alta.
+      (top.cas >= utiles.length && top.tit >= 1 && top.score >= 8 && margen >= 0.5) ||
+      // Con una cifra de β-OHB, la entrada de la Figura 3 es la respuesta por diseño (A01).
+      (!!tramo && top.a.r.id.startsWith("F3/")));
+  const aproximada = !cand.length || !segura;
+  const duda: "parcial" | "varias" =
+    !cand.length || !top || top.cas / utiles.length < 0.67 ? "parcial" : "varias";
 
   // Como mucho una respuesta por párrafo, fila o tramo.
   const vistos = new Set<string>();
@@ -1658,7 +1712,7 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
         contexto: x.contexto,
       };
     }
-    out.push(aproximada ? { ...r, aproximada } : r);
+    out.push(aproximada ? { ...r, aproximada, duda } : r);
     if (out.length >= max) break;
   }
   return out;

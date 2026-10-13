@@ -2,16 +2,22 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Uso 0.10.0 en el móvil", () => {
-  test("en la portada, el icono de la cabecera abre la paleta de búsqueda arriba", async ({
+  // 0.53.0: sin lupa en la cabecera del móvil; «Buscar» está en la barra de abajo.
+  test("en la portada, «Buscar» de la barra de abajo abre la búsqueda con la caja arriba", async ({
     page,
   }) => {
     await page.goto("/#/");
-    await page.getByRole("button", { name: "Buscar", exact: true }).tap();
-    const caja = page.getByRole("textbox", { name: "Buscar en el capítulo" });
-    await expect(caja).toBeFocused();
+    await expect(page.locator("header").getByRole("button", { name: "Buscar" })).toHaveCount(0);
+    await page
+      .getByRole("navigation", { name: "Barra inferior" })
+      .getByRole("link", { name: "Buscar" })
+      .tap();
+    await expect(page).toHaveURL(/#\/buscar$/);
+    const caja = page.getByLabel("Texto a buscar");
+    await expect(caja).toBeVisible();
     await expect
       .poll(async () => (await caja.boundingBox())?.y ?? 9999, { timeout: 3000 })
-      .toBeLessThan(200);
+      .toBeLessThan(300);
   });
 
   test("Situación y sistema: la casilla del sistema queda a la vista, sobre la barra inferior", async ({

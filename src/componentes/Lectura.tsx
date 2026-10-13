@@ -19,7 +19,7 @@ import { plano } from "../marcado";
 import { citaDeApartado } from "../compartir";
 
 const BOTON =
-  "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600";
+  "tap-44 inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600";
 
 /* ---------- Volver arriba (pantallas largas) ----------
    Aparece al desplazarse hacia arriba lejos del principio y se esconde al seguir leyendo

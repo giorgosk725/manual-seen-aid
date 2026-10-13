@@ -292,6 +292,12 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
       `CON_REPASO` in `src/edicion.ts`, `/* @__PURE__ */` lazies). `rutaDeFigura(id)` for exact
       figure anchors; `imprimirRegion` waits for `[aria-busy]` lazy content; build time in UTC.
       Liberty age: Table 1 («> 13 años») rules (author, 13-10).
+    - **0.53.0 (13-10-2026, search/mobile/navigation).** «Direct» answer calibration in
+      `responderBase` (`segura`, `duda: "parcial" | "varias"`), measured on frozen held-out
+      `src/bancos/ciego7.json` (committed before tuning): wrong-as-direct 21,7 → 5,8 %. Report:
+      `docs/BUSQUEDA_2026-10.md`. Never tune on ciego7. `.tap-44` now guarantees a ≥ 44 × 44 hit
+      area; `e2e/objetivos44-movil.spec.ts` enforces axe-clean + 44 px + no 320 px overflow on 23
+      screens. No header search on mobile (bottom bar has «Buscar»).
     - **Drafts.** New clinical, sheet or quiz wording goes to `borradores/` for the author;
       nothing is marked approved without a record. Details and pending items:
       `docs/EDICION_EDITORIAL.md`.

@@ -264,7 +264,7 @@ export function Figura3Lectura() {
       <div className="no-imprimir mt-3">
         <a
           href={href("consultar", "figura-3")}
-          className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
+          className="tap-44 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
           style={{ background: "linear-gradient(135deg, #3f6e9f, #2f5680)" }}
         >
           <Droplets size={15} aria-hidden="true" /> Recorrer paso a paso

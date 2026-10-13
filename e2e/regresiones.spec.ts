@@ -207,10 +207,10 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
   test("la caja de la barra lateral lleva a Buscar con la fila de la Tabla 6", async ({ page }) => {
     await page.goto("/#/");
     const caja = page.getByRole("searchbox", { name: "Buscar en el capítulo" });
-    await caja.fill("resonancia con 780G");
+    await caja.fill("resonancia magnética con 780G");
     await caja.press("Enter");
     await expect(page).toHaveURL(/#\/buscar$/);
-    await expect(page.getByLabel("Texto a buscar")).toHaveValue("resonancia con 780G");
+    await expect(page.getByLabel("Texto a buscar")).toHaveValue("resonancia magnética con 780G");
     const respuesta = page.getByRole("region", { name: "Pasajes relacionados" });
     await expect(respuesta).toContainText("Resonancia magnética (RM)");
     await expect(respuesta).toContainText("Retirar antes de entrar en la sala");

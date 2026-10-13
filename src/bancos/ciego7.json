@@ -46,30 +46,22 @@
   {
     "q": "liberty se puede usar en niños pequeños?",
     "perfil": "residente",
-    "aceptables": [
-      "Por el momento no se recomienda en menores de 13 años ni en gestación."
-    ]
+    "aceptables": ["Por el momento no se recomienda en menores de 13 años ni en gestación."]
   },
   {
     "q": "qué AID hay comercializados en España",
     "perfil": "residente",
-    "aceptables": [
-      "MiniMed 780G, Tandem Control-IQ/IQ+, myLoop powered by CamAPS y Omnipod 5"
-    ]
+    "aceptables": ["MiniMed 780G, Tandem Control-IQ/IQ+, myLoop powered by CamAPS y Omnipod 5"]
   },
   {
     "q": "cada cuanto se cambia el pod de omnipod 5",
     "perfil": "enfermeria",
-    "aceptables": [
-      "Pod desechable, sin tubo externo (reservorio ≤ 200 UI; 72 h continuas)"
-    ]
+    "aceptables": ["Pod desechable, sin tubo externo (reservorio ≤ 200 UI; 72 h continuas)"]
   },
   {
     "q": "omnipod 5 funciona con libre 2 plus?",
     "perfil": "enfermeria",
-    "aceptables": [
-      "Dexcom G7; FreeStyle Libre 2 Plus"
-    ]
+    "aceptables": ["Dexcom G7; FreeStyle Libre 2 Plus"]
   },
   {
     "q": "dónde va el algoritmo en el omnipod, en el móvil o en el pod",
@@ -109,9 +101,7 @@
   {
     "q": "780 autocorrecciones a partir de qué glucosa",
     "perfil": "residente",
-    "aceptables": [
-      "Sí; hasta uno cada 5 min si se predice > 120 mg/dl"
-    ]
+    "aceptables": ["Sí; hasta uno cada 5 min si se predice > 120 mg/dl"]
   },
   {
     "q": "bolo automático de corrección de Control-IQ cuánto pone y cada cuánto",
@@ -131,9 +121,7 @@
   {
     "q": "objetivos que se pueden poner en omnipod 5",
     "perfil": "enfermeria",
-    "aceptables": [
-      "110, 120, 130, 140 o 150 mg/dl (hasta 8 tramos/día)"
-    ]
+    "aceptables": ["110, 120, 130, 140 o 150 mg/dl (hasta 8 tramos/día)"]
   },
   {
     "q": "rango de objetivo camaps fx",
@@ -146,9 +134,7 @@
   {
     "q": "control iq peso maximo y DTD",
     "perfil": "residente",
-    "aceptables": [
-      "Control-IQ: ≥ 6 años, peso 25–140 kg, DTD 10–100 UI/día"
-    ]
+    "aceptables": ["Control-IQ: ≥ 6 años, peso 25–140 kg, DTD 10–100 UI/día"]
   },
   {
     "q": "en tandem qué parámetros tocan de verdad el algoritmo",
@@ -242,9 +228,7 @@
   {
     "q": "el plan de seguridad se da antes o despues de activar el automatico",
     "perfil": "enfermeria",
-    "aceptables": [
-      "El plan de seguridad debe entregarse antes de activar el modo automático."
-    ]
+    "aceptables": ["El plan de seguridad debe entregarse antes de activar el modo automático."]
   },
   {
     "q": "cuántos hidratos para una hipo leve con asa cerrada",
@@ -349,9 +333,7 @@
   {
     "q": "segunda dosis de pluma puesta y sigue con cetonas >1",
     "perfil": "guardia",
-    "aceptables": [
-      "acudir a valoración hospitalaria, sin esperar a los signos de gravedad."
-    ]
+    "aceptables": ["acudir a valoración hospitalaria, sin esperar a los signos de gravedad."]
   },
   {
     "q": "qué hay que apuntar cuando hay hiperglucemia con cetonas",
@@ -363,9 +345,7 @@
   {
     "q": "puesta corrección con pluma y no consigo reanudar el sistema",
     "perfil": "guardia",
-    "aceptables": [
-      "Si no se puede reanudar el sistema en 1 h, pasar a pauta alternativa."
-    ]
+    "aceptables": ["Si no se puede reanudar el sistema en 1 h, pasar a pauta alternativa."]
   },
   {
     "q": "iSGLT2 en DM1 con asa cerrada, cuándo medir cetonas",
@@ -391,9 +371,7 @@
   {
     "q": "bolo extendido tandem cuanto dura",
     "perfil": "enfermeria",
-    "aceptables": [
-      "Función: bolo extendido (hasta 2 h; Control-IQ+: de 15 min a 8 h)"
-    ]
+    "aceptables": ["Función: bolo extendido (hasta 2 h; Control-IQ+: de 15 min a 8 h)"]
   },
   {
     "q": "hiperglucemia al despertar causas",
@@ -413,9 +391,7 @@
   {
     "q": "uso minimo del sensor para fiarse de la descarga",
     "perfil": "adjunto",
-    "aceptables": [
-      "Uso de MCG ≥ 70 % en 14 días permite interpretar patrones"
-    ]
+    "aceptables": ["Uso de MCG ≥ 70 % en 14 días permite interpretar patrones"]
   },
   {
     "q": "GMI y HbA1c no cuadran",
@@ -465,9 +441,7 @@
   {
     "q": "lipohipertrofia cada cuanto revisar",
     "perfil": "enfermeria",
-    "aceptables": [
-      "debe explorarse al menos una vez al año mediante inspección y palpación"
-    ]
+    "aceptables": ["debe explorarse al menos una vez al año mediante inspección y palpación"]
   },
   {
     "q": "fatiga de alarmas en adolescente que hacer",
@@ -487,9 +461,7 @@
   {
     "q": "regla del 450 ratio",
     "perfil": "residente",
-    "aceptables": [
-      "Regla del 450: g de HC por unidad = 450/DTD"
-    ]
+    "aceptables": ["Regla del 450: g de HC por unidad = 450/DTD"]
   },
   {
     "q": "factor de sensibilidad inicial 1700 o 1800?",
@@ -502,9 +474,7 @@
   {
     "q": "780g cuántas horas en manual antes de poder activar smartguard",
     "perfil": "residente",
-    "aceptables": [
-      "SmartGuard requiere 48 h previas de administración de insulina en modo manual"
-    ]
+    "aceptables": ["SmartGuard requiere 48 h previas de administración de insulina en modo manual"]
   },
   {
     "q": "basal inicial al empezar con la bomba si no hay pauta previa",
@@ -619,9 +589,7 @@
   {
     "q": "dosis basal de respaldo si no se cuánta basal le pone el sistema",
     "perfil": "residente",
-    "aceptables": [
-      "puede orientarse en torno al 40-50 % de la DTD reciente"
-    ]
+    "aceptables": ["puede orientarse en torno al 40-50 % de la DTD reciente"]
   },
   {
     "q": "AID en embarazo cual tiene mas evidencia",
@@ -669,9 +637,7 @@
   {
     "q": "objetivos en anciano frágil con AID",
     "perfil": "adjunto",
-    "aceptables": [
-      "tiempo con glucosa <70 mg/dl, <1% como objetivo primario"
-    ]
+    "aceptables": ["tiempo con glucosa <70 mg/dl, <1% como objetivo primario"]
   },
   {
     "q": "dexametasona a dosis altas con asa cerrada",
@@ -719,9 +685,7 @@
   {
     "q": "cuándo puedo volver a poner la bomba si le di glargina",
     "perfil": "residente",
-    "aceptables": [
-      "unas 22 h tras la última dosis de una basal de duración cercana a 24 h"
-    ]
+    "aceptables": ["unas 22 h tras la última dosis de una basal de duración cercana a 24 h"]
   },
   {
     "q": "resonancia con bomba de insulina",
@@ -754,9 +718,7 @@
   {
     "q": "control del aeropuerto con la bomba",
     "perfil": "enfermeria",
-    "aceptables": [
-      "conviene llevar la documentación de viaje y solicitar inspección alternativa"
-    ]
+    "aceptables": ["conviene llevar la documentación de viaje y solicitar inspección alternativa"]
   },
   {
     "q": "viene a consulta con AndroidAPS, qué hago",

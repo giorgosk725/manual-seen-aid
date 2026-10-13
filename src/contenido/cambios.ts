@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — revisión de la edición`,
+    titulo: `Complemento interactivo ${VERSION_APP} — búsqueda más fiable y móvil`,
+    detalle: [
+      "Búsqueda: solo se presenta como respuesta lo que casa de verdad con la pregunta; lo demás, como «lo más cercano», diciendo por qué.",
+      "Más palabras de la calle y nombres comerciales reconocidos (Jardiance, bisturí, rugby…).",
+      "Móvil: todo lo que se toca mide al menos 44 px; sin lupa repetida en la cabecera.",
+      "Ficha de cada sistema con sus tres accesos en una fila; «Hojas y planes para entregar» en la portada.",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.52.0 — revisión de la edición",
     detalle: [
       "Liberty: la edad, la de la Tabla 1 («> 13 años»).",
       "Cada pregunta frecuente queda ligada a lo que se aprobó: si cambia, sale hasta revisarla de nuevo.",

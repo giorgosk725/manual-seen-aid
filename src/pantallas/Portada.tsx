@@ -1,7 +1,7 @@
 /* Portada: el título del capítulo tal cual, en negrita, y debajo qué es esta versión;
    «Seguir leyendo»; el mapa de consulta (componentes/MapaConsulta) y el capítulo publicado
    (decisiones del autor del 13-10-2026: sin las dos puertas). El buscador vive en la barra lateral
-   (escritorio) y en la cabecera (móvil): la portada no lo repite. */
+   (escritorio) y en la barra de abajo (móvil): la portada no lo repite. */
 import { ArrowRight, BookOpen, ExternalLink } from "lucide-react";
 import { CAPITULO } from "../contenido";
 import { MapaConsulta } from "../componentes/MapaConsulta";

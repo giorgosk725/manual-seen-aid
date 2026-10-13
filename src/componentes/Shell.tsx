@@ -137,7 +137,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
             Esc
           </kbd>
         </div>
-        <p id="paleta-ayuda" className="mt-1 text-[11px] text-slate-600">
+        <p id="paleta-ayuda" className="mt-1 text-xs text-slate-600">
           {AVISO_BUSQUEDA}
           <span className="hidden sm:inline">
             {" "}
@@ -486,13 +486,13 @@ function Lateral({ ruta }: { ruta: Ruta }) {
         <span className="mt-1.5 block text-[12px] font-semibold leading-snug text-slate-800">
           {CAPITULO.tituloCorto}
         </span>
-        <span className="block text-[11px] leading-snug text-slate-500">
+        <span className="block text-xs leading-snug text-slate-500">
           Complemento interactivo del capítulo {CAPITULO.numero}
         </span>
       </a>
       <BuscadorLateral />
       <MenuNavegacion ruta={ruta} etiqueta="Navegación principal" />
-      <div className="mt-auto px-3 pt-6 text-[11px] leading-relaxed text-slate-500">
+      <div className="mt-auto px-3 pt-6 text-xs leading-relaxed text-slate-500">
         No sustituye la ficha técnica de cada sistema ni el juicio clínico.
       </div>
     </aside>
@@ -529,7 +529,7 @@ function BuscadorLateral() {
           className="w-full min-w-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none"
         />
       </div>
-      <p id="lateral-aviso" className="mt-1 px-1 text-[11px] leading-snug text-slate-500">
+      <p id="lateral-aviso" className="mt-1 px-1 text-xs leading-snug text-slate-500">
         {AVISO_BUSQUEDA}
       </p>
     </form>
@@ -608,7 +608,7 @@ function Inferior({ ruta }: { ruta: Ruta }) {
   const actual = areaDe(ruta.seccion);
   const [hoja, setHoja] = useState(false);
   const clase = (on: boolean) =>
-    `flex min-h-14 w-full flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`;
+    `flex min-h-14 w-full flex-col items-center justify-center gap-0.5 py-1.5 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`;
   return (
     <nav
       aria-label="Barra inferior"
@@ -636,6 +636,7 @@ function Inferior({ ruta }: { ruta: Ruta }) {
                   type="button"
                   onClick={() => setHoja(true)}
                   aria-haspopup="dialog"
+                  aria-expanded={hoja}
                   aria-current={on ? "page" : undefined}
                   className={clase(on)}
                   style={on ? { color: SEEN.burdeos } : undefined}
@@ -692,7 +693,6 @@ export function Shell({
   const [paleta, setPaleta] = useState(false);
   const [cajon, setCajon] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
-  const abrirPaleta = useCallback(() => setPaleta(true), []);
   const cerrarPaleta = useCallback(() => setPaleta(false), []);
   const cerrarCajon = useCallback(() => setCajon(false), []);
 
@@ -884,14 +884,7 @@ export function Shell({
               </button>
             </div>
           )}
-          <button
-            type="button"
-            onClick={abrirPaleta}
-            aria-label="Buscar"
-            className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
-          >
-            <Search size={18} />
-          </button>
+          {/* Sin lupa en la cabecera del móvil (0.53.0): «Buscar» ya está en la barra de abajo. */}
           <button
             type="button"
             onClick={toggleNight}

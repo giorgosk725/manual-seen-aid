@@ -162,7 +162,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
       .map((parte) => {
         const rs = motor.responder(parte).filter((r) => r.tipo !== "sigla");
         const mejor = rs[0];
-        if (!mejor || mejor.aproximada || vistos.has(mejor.id)) return { parte, respuestas: [] };
+        if (!mejor || mejor.duda === "parcial" || vistos.has(mejor.id))
+          return { parte, respuestas: [] };
         return { parte, respuestas: rs.filter((r) => !vistos.has(r.id)).slice(0, 2) };
       })
       .filter((x) => x.respuestas.length > 0);

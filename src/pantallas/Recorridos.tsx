@@ -735,7 +735,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
             aria-label="Cambiar paso"
             value={n}
             onChange={(e) => ir(Number(e.target.value))}
-            className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:max-w-md"
+            className="min-h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-800 sm:min-h-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:max-w-md"
           >
             {t.filas.map((f, i) => (
               <option key={i} value={i + 1}>
@@ -824,7 +824,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                   <Texto>{p.b.texto}</Texto>
                   <a
                     href={href("capitulo", "09-descarga", p.ancla)}
-                    className="ml-1 inline-flex items-center gap-0.5 text-xs font-semibold text-slate-600 hover:underline"
+                    className="tap-44 ml-1 inline-flex items-center gap-0.5 text-xs font-semibold text-slate-600 hover:underline"
                   >
                     p. {p.b.p} <ArrowRight size={11} aria-hidden="true" />
                   </a>

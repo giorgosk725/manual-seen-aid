@@ -66,7 +66,7 @@ export function CabeceraTabla({
         {enlaceConsultar && (
           <Enlace
             href={href("consultar", "tablas", tabla.id)}
-            className="no-imprimir inline-flex items-center gap-1 rounded-full border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            className="no-imprimir tap-44 inline-flex items-center gap-1 rounded-full border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             <ExternalLink size={12} aria-hidden="true" />
             {tabla.porSistema ? "Ver por sistema" : "Abrir la tabla"}

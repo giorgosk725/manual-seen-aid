@@ -661,31 +661,32 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           </div>
           <p className="mt-1 text-sm text-slate-600">{algoritmoDelCapitulo(c)}</p>
         </div>
-        <div className="no-imprimir col-span-2 mt-2 flex flex-wrap gap-x-3 gap-y-1 sm:col-span-1 sm:col-start-2">
+        {/* En el móvil, tres botones iguales en una fila; en pantalla ancha, enlaces (0.53.0). */}
+        <div className="no-imprimir col-span-2 mt-2 grid grid-cols-3 gap-2 sm:col-span-1 sm:col-start-2 sm:flex sm:flex-wrap sm:gap-x-3 sm:gap-y-1">
           <a
             href={href("consultar", "inicio", `inicio:${slug}:arranque`)}
-            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
+            className="flex min-h-11 items-center justify-center gap-1 rounded-lg border border-slate-300 bg-white px-1.5 text-center text-sm font-semibold leading-tight hover:underline sm:inline-flex sm:min-h-8 sm:justify-start sm:border-0 sm:bg-transparent sm:px-0 sm:text-left"
             style={{ color: h.ink }}
           >
             <span className="sm:hidden">Iniciar paso a paso</span>
             <span className="hidden sm:inline">Iniciar este sistema paso a paso</span>
-            <ArrowRight size={13} aria-hidden="true" />
+            <ArrowRight size={13} aria-hidden="true" className="hidden sm:block" />
           </a>
           <a
             href={href("pacientes", "plan", s.id)}
-            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
+            className="flex min-h-11 items-center justify-center gap-1 rounded-lg border border-slate-300 bg-white px-1.5 text-center text-sm font-semibold leading-tight hover:underline sm:inline-flex sm:min-h-8 sm:justify-start sm:border-0 sm:bg-transparent sm:px-0 sm:text-left"
             style={{ color: h.ink }}
           >
             <span className="sm:hidden">Plan de seguridad</span>
             <span className="hidden sm:inline">Plan de seguridad para entregar</span>
-            <ArrowRight size={13} aria-hidden="true" />
+            <ArrowRight size={13} aria-hidden="true" className="hidden sm:block" />
           </a>
           <a
             href={href("consultar", "situacion", `:${slug}`)}
-            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
+            className="flex min-h-11 items-center justify-center gap-1 rounded-lg border border-slate-300 bg-white px-1.5 text-center text-sm font-semibold leading-tight hover:underline sm:inline-flex sm:min-h-8 sm:justify-start sm:border-0 sm:bg-transparent sm:px-0 sm:text-left"
             style={{ color: h.ink }}
           >
-            Situaciones <ArrowRight size={13} aria-hidden="true" />
+            Situaciones <ArrowRight size={13} aria-hidden="true" className="hidden sm:block" />
           </a>
         </div>
       </header>
@@ -994,7 +995,7 @@ function BarraSistemas({
             key={x.id}
             href={href("sistemas", selStr, x.id)}
             aria-current={sec === x.id ? "location" : undefined}
-            className={`inline-flex min-h-10 shrink-0 items-center border-b-2 px-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${sec === x.id ? "font-bold" : "border-transparent font-semibold text-slate-600 hover:text-slate-900"}`}
+            className={`inline-flex min-h-11 shrink-0 items-center border-b-2 px-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${sec === x.id ? "font-bold" : "border-transparent font-semibold text-slate-600 hover:text-slate-900"}`}
             style={sec === x.id ? { borderColor: SEEN.burdeos, color: SEEN.burdeos } : undefined}
           >
             {x.t}

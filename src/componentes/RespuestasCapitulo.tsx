@@ -524,7 +524,7 @@ function BloqueFrecuente({
           </a>
         </p>
       )}
-      <p className="mt-2 text-[11px] text-slate-500">
+      <p className="mt-2 text-xs text-slate-500">
         Pasajes del capítulo relacionados con esta pregunta.
       </p>
     </section>
@@ -635,7 +635,12 @@ export function RespuestasCapitulo({
   const [r, ...otras] = resto;
   const cercana = !!r.aproximada;
   // Recuperación libre (A09): pasajes relacionados con lo buscado, no una respuesta validada.
-  const titulo = cercana ? "Coincidencia parcial en el capítulo" : "Pasajes relacionados";
+  const varias = cercana && r.duda === "varias";
+  const titulo = !cercana
+    ? "Pasajes relacionados"
+    : varias
+      ? "Pasajes posibles en el capítulo"
+      : "Coincidencia parcial en el capítulo";
   return (
     <>
       <section
@@ -652,7 +657,9 @@ export function RespuestasCapitulo({
         </H>
         {cercana && !frecuente && (
           <p className="mb-2 text-xs text-slate-600">
-            Coincide solo con parte de la búsqueda: revisa su contexto antes de usarlo.
+            {varias
+              ? "Varios pasajes responden casi igual de bien: comprueba cuál es el tuyo."
+              : "Coincide solo con parte de la búsqueda: revisa su contexto antes de usarlo."}
           </p>
         )}
         <Tarjeta
@@ -696,7 +703,7 @@ export function RespuestasCapitulo({
         ) : (
           masPasajes(otras)
         )}
-        <p className="mt-2 text-[11px] text-slate-500">
+        <p className="mt-2 text-xs text-slate-500">
           Elegido por coincidencia de palabras: comprueba que responde a lo que buscas.
         </p>
       </section>

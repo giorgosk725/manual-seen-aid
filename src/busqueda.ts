@@ -67,13 +67,16 @@ export interface Respuesta {
   score: number;
   /* Nada responde de lleno: es de lo más parecido que tiene el capítulo («lo más cercano»). */
   aproximada?: boolean;
+  /* Por qué no es «la respuesta»: cubre solo parte de la búsqueda, o hay varios pasajes casi
+     igual de buenos (0.53.0). */
+  duda?: "parcial" | "varias";
 }
 
 /* Preguntas de ejemplo (todas con respuesta: lo comprueba respuestas.test.ts). */
 export const EJEMPLOS_PREGUNTA = [
   "cetonas 1,2",
   "modo ejercicio en Control-IQ",
-  "resonancia con 780G",
+  "resonancia magnética con 780G",
   "cuánto tiempo puedo estar desconectado",
   "hipoglucemia leve cuántos hidratos",
   "qué es el TBR",

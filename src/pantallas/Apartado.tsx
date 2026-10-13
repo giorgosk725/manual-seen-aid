@@ -145,7 +145,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         <div className="no-imprimir mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:mb-3">
           <a
             href={href("capitulo")}
-            className="inline-flex min-h-11 items-center font-semibold text-slate-600 hover:underline"
+            className="inline-flex min-h-11 min-w-11 items-center font-semibold text-slate-600 hover:underline"
           >
             Índice
           </a>
@@ -208,16 +208,19 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                 aria-hidden="true"
                 className="shrink-0 -rotate-90 transition group-open:rotate-0"
               />
-              En este apartado
-              <span className="font-normal normal-case tracking-normal">
-                {" "}
-                ·{" "}
-                {[
-                  subs.length && `${subs.length} subapartados`,
-                  recursos.length && `${recursos.length} tablas, figuras o diagramas`,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
+              {/* Un solo bloque de texto: en el móvil se parte como una frase, no en columnas. */}
+              <span className="min-w-0">
+                En este apartado
+                <span className="font-normal normal-case tracking-normal">
+                  {" "}
+                  ·{" "}
+                  {[
+                    subs.length && `${subs.length} subapartados`,
+                    recursos.length && `${recursos.length} tablas, figuras o diagramas`,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </span>
               </span>
             </summary>
             <div className="mt-2 space-y-2">
@@ -227,7 +230,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                     <a
                       key={s.id}
                       href={href("capitulo", apartado.slug, s.id)}
-                      className="inline-flex min-h-9 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                      className="tap-44 inline-flex min-h-9 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
                     >
                       {s.texto}
                     </a>
@@ -243,7 +246,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                         <li key={r.ancla}>
                           <a
                             href={href("capitulo", apartado.slug, r.ancla)}
-                            className="inline-flex min-h-9 items-center gap-1.5 rounded-full border bg-white px-2.5 text-xs font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                            className="tap-44 inline-flex min-h-9 items-center gap-1.5 rounded-full border bg-white px-2.5 text-xs font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
                             style={{ borderColor: "#e6e6e6" }}
                           >
                             <I size={14} aria-hidden="true" style={{ color: SEEN.azulOsc }} />
@@ -378,7 +381,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                   href={href("capitulo", a.slug)}
                   title={`${a.n}. ${a.titulo}`}
                   aria-label={`Apartado ${a.n}: ${a.corto}`}
-                  className="flex items-center justify-center rounded-full border-2 bg-white text-sm font-semibold tabular-nums transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  className="tap-44 flex items-center justify-center rounded-full border-2 bg-white text-sm font-semibold tabular-nums transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
                   style={{ borderColor: "#a9c3df", color: SEEN.azulOsc }}
                 >
                   {a.n}

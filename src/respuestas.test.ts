@@ -22,6 +22,7 @@ import ciego3 from "./bancos/ciego3.json";
 import ciego4 from "./bancos/ciego4.json";
 import ciego5 from "./bancos/ciego5.json";
 import ciego6 from "./bancos/ciego6.json";
+import ciego7 from "./bancos/ciego7.json";
 
 const informe = (nombre: string, m: ReturnType<typeof medir>) =>
   console.log(
@@ -49,25 +50,31 @@ describe("Preguntas al capítulo", () => {
   it("bancos ciegos del agente: acierto y respuestas equivocadas presentadas como directas", () => {
     for (const [nombre, banco, primera, entreTres, equivocadas] of [
       // Desde la 0.13.0 cuentan también las preguntas frecuentes (lo que ve el usuario).
-      ["Ciego 1", ciego1 as PreguntaCiega[], 0.72, 0.86, 0.23],
-      ["Ciego 2", ciego2 as PreguntaCiega[], 0.48, 0.53, 0.25],
+      // 0.53.0: calibración de «directa» (docs/BUSQUEDA_2026-10.md): las directas equivocadas
+      // bajan en todos los bancos; el orden apenas cambia.
+      ["Ciego 1", ciego1 as PreguntaCiega[], 0.74, 0.88, 0.09],
+      ["Ciego 2", ciego2 as PreguntaCiega[], 0.52, 0.58, 0.1],
       // Medido a ciegas con el motor ya cerrado (la cifra honesta de la 0.10.0).
       // Edición editorial (A01): una cifra de cetonas ya no elige rama de la Figura 3; «0,6 de
       // cetonas… sigo normal?» responde la entrada de la figura y cuenta como directa equivocada
       // (18,3 → 19,2 %). Regresión aceptada por diseño, no una mejora del motor.
-      ["Ciego 3", ciego3 as PreguntaCiega[], 0.4, 0.5, 0.2],
+      ["Ciego 3", ciego3 as PreguntaCiega[], 0.48, 0.6, 0.04],
       // 80 preguntas de residentes, adjuntos y enfermería (auditoría externa del 6-10-2026),
       // medidas una vez con el motor de la 0.12.0 ya cerrado: 60 %, 73,8 % y 17,5 %.
       // Edición editorial: 58,8/73,8/18,8 → 56,3/72,5/21,3 (cetonas con cifra sin rama, A01, y
       // solo frecuentes aprobadas, A04). Regresión aceptada; docs/EDICION_EDITORIAL.md.
-      ["Ciego 4", ciego4 as PreguntaCiega[], 0.56, 0.72, 0.22],
+      ["Ciego 4", ciego4 as PreguntaCiega[], 0.62, 0.77, 0.05],
       // 80 preguntas nuevas, medidas una vez con el motor de la 0.13.0 ya cerrado: sin preguntas
       // frecuentes 55 %, 66,3 % y 18,8 %; con ellas, 57,5 %, 67,5 % y 17,5 %.
-      ["Ciego 5", ciego5 as PreguntaCiega[], 0.56, 0.66, 0.19],
+      ["Ciego 5", ciego5 as PreguntaCiega[], 0.62, 0.71, 0.1],
       // 100 preguntas nuevas, medidas una vez con la 0.14.0 ya cerrada. Aquí, solo por palabras
       // (66 %, 77 %, 18 %); con la búsqueda por el sentido, 70 %, 83 % y 15 % (docs/SEMANTICA.md).
       // Edición editorial: 67/77/17 → 63/75/18 (A01 y A04). Regresión aceptada.
-      ["Ciego 6", ciego6 as PreguntaCiega[], 0.62, 0.74, 0.18],
+      ["Ciego 6", ciego6 as PreguntaCiega[], 0.64, 0.75, 0.06],
+      // 120 preguntas nuevas de otro agente sin ver el motor (13-10-2026), congeladas antes de
+      // afinar (commit 52c0a95) y medidas una vez al final: con la 0.52.0, 67,5/77,5/21,7 %;
+      // con la 0.53.0, 68,3/78,3/5,8 % (directas: 75,8 % con precisión 68,1 % → 48,3 % con 84,5 %).
+      ["Ciego 7", ciego7 as PreguntaCiega[], 0.68, 0.78, 0.06],
     ] as const) {
       const m = medirCiego(banco);
       console.log(

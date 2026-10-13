@@ -110,7 +110,7 @@ export function MarcoDiagrama({
           {!enApartado && donde && (
             <a
               href={href("capitulo", donde.apartado.slug, donde.ancla)}
-              className="inline-flex items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
+              className="tap-44 inline-flex items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
             >
               <BookOpen size={12} aria-hidden="true" /> Leer en el capítulo: {donde.apartado.n}.{" "}
               {donde.apartado.corto}
@@ -119,7 +119,7 @@ export function MarcoDiagrama({
           {enApartado && (
             <a
               href={href("visual", id)}
-              className="inline-flex items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
+              className="tap-44 inline-flex items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
             >
               <Images size={12} aria-hidden="true" /> Abrir a pantalla completa
             </a>
@@ -243,7 +243,7 @@ function EscalaCetonemia() {
             <a
               key={t.clave}
               href={href("consultar", "figura-3", t.clave)}
-              className="block h-full transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              className="tap-44 block h-full transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
               style={{ width: pct(t.hasta - t.desde), background: TRAMO_HEX[t.clave].ink }}
               aria-label={`Tramo ${t.etiqueta}: ver la rama en la Figura 3`}
             />

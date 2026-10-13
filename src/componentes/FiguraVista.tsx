@@ -27,7 +27,7 @@ export function ImagenFigura({ figura, abierta = false }: { figura: Figura; abie
         type="button"
         onClick={() => setVer((v) => !v)}
         aria-expanded={ver}
-        className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        className="tap-44 inline-flex items-center gap-1.5 rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
         <ImageIcon size={14} aria-hidden="true" />
         {ver ? "Ocultar la figura original" : "Ver la figura original"}
@@ -40,7 +40,7 @@ export function ImagenFigura({ figura, abierta = false }: { figura: Figura; abie
           nota: `p. ${figura.pagina}`,
         }}
         etiqueta={`Pantalla completa con zoom: ${figura.titulo}`}
-        className="ml-2 inline-flex items-center gap-1.5 rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        className="ml-2 tap-44 inline-flex items-center gap-1.5 rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
         <Maximize2 size={14} aria-hidden="true" /> Pantalla completa con zoom
       </AbrirEnVisor>

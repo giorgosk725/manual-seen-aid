@@ -253,12 +253,13 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "pac-hojas",
-    etiqueta: "Todas las hojas para entregar",
+    etiqueta: "Hojas y planes para entregar",
     corto: "Hojas",
     href: href("pacientes"),
     icono: Files,
     cat: "pacientes",
-    descripcion: "Hojas breves (cetonas, pruebas y cirugía…) y el resto de materiales.",
+    descripcion:
+      "Hojas breves (cetonas, pruebas y cirugía…), plantillas del plan de seguridad y la versión en pantalla.",
     fuente: "Hojas para imprimir",
   },
   {
@@ -348,7 +349,8 @@ export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[]; ancho?:
   },
   { id: "en-consulta", titulo: "En la consulta", ids: ["inicio", "descarga"] },
   // El PDF publicado, a un toque; y el resto del material para el paciente.
-  { id: "pacientes", titulo: "Para el paciente", ids: ["pdf-pacientes", "pacientes"] },
+  // (0.53.0: sin «Para el paciente» dentro de «Para el paciente».)
+  { id: "pacientes", titulo: "Para el paciente", ids: ["pdf-pacientes", "pac-hojas"] },
   // La lectura también en el mapa, abajo y a todo lo ancho (la puerta «Leer y comprender» va
   // antes, en la cabecera).
   {
