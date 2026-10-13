@@ -1,11 +1,12 @@
 name: Deploy (Cloudflare Pages)
 
-# Publica https://manual-seen-aid.pages.dev con cada push a main, solo si pasan las mismas
-# puertas que la CI, e2e incluidas. Necesita el secreto CLOUDFLARE_API_TOKEN (permiso «Cloudflare Pages: Edit»).
+# Publicación desde GitHub, SOLO a mano (V54-04): el circuito efectivo hoy es el local
+# (`npm run publicar`, tras la orden «publica»; docs/EDICION_EDITORIAL.md). Este flujo queda
+# preparado para cuando se configure el secreto CLOUDFLARE_API_TOKEN (permiso «Cloudflare
+# Pages: Edit»); sin él, avisa y no publica. Publica el commit exacto lanzado, solo si pasan
+# en este mismo trabajo las puertas de la CI, e2e incluidas.
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -55,4 +56,4 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: 48acd6a4debc742bccd81b84be547379
           wranglerVersion: "4.86.0"
-          command: pages deploy dist --project-name=manual-seen-aid --branch=main --commit-dirty=true
+          command: pages deploy dist --project-name=manual-seen-aid --branch=main --commit-hash=${{ github.sha }} --commit-dirty=false

@@ -19,6 +19,7 @@
     "format:check": "prettier --check .",
     "aprobar:frecuentes": "vite-node scripts/aprobar-frecuentes.mjs",
     "presupuesto": "node scripts/presupuesto.mjs",
+    "publicar": "node scripts/publicar.mjs",
     "capturas": "node scripts/capturas.mjs"
   },
   "dependencies": {

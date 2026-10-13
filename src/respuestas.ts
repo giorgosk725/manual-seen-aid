@@ -93,7 +93,11 @@ const raizSuave = (w: string) => {
 /* Raíz: Snowball para español (raiz.ts) reúne las formas de una palabra («desconectado»,
    «desconectar», «desconectarse»); si deja menos de 5 letras, choca con otras («nadar» y
    «nada» → «nad»), y entonces vale la raíz suave. */
+/* Formas que Snowball junta con otra palabra que no tiene nada que ver: «plantear» y «planta»
+   (de hospital) dan las dos «plant» (V54-01). */
+const RAIZ_PROPIA: [RegExp, string][] = [[/^plante/, "plantea"]];
 const raiz = (w: string) => {
+  for (const [re, r] of RAIZ_PROPIA) if (re.test(w)) return r;
   const s = raizEs(w);
   return s.length >= 5 ? s : raizSuave(w);
 };
@@ -283,6 +287,9 @@ const LEXICO: Record<string, string[]> = {
   chorritos: ["microbolos"],
   chorrito: ["microbolos"],
   hackear: ["remota", "credenciales"],
+  fiarse: ["representatividad", "representativos"],
+  fiable: ["representatividad", "representativos"],
+  fiables: ["representatividad", "representativos"],
   hacker: ["remota", "credenciales"],
   cetona: ["cetonemia", "cetosis", "bohb"],
   cetonas: ["cetonemia", "cetosis", "bohb"],
@@ -1818,6 +1825,19 @@ export interface RespuestaFrecuente {
 let CANDIDATAS:
   | { f: Frecuente; formas: { grupos: Grupo[]; negadas: Grupo[]; nombraSistema: boolean }[] }[]
   | null = null;
+/* Cuestiones que la búsqueda puede pedir y que la frecuente tiene que tratar (V54-01). */
+const INTENCIONES: [string, RegExp][] = [
+  ["objetivo", /\b(objetivos?|metas?)\b/],
+  ["descarga", /\b(descargas?|informes?|plataformas?)\b/],
+  ["hospital", /\b(ingres\w*|hospital\w*|planta|quirofano)\b/],
+  ["material", /\b(material(es)?|repuestos?|recambios?)\b/],
+  ["retirar", /\b(retir\w*|suspend\w*|reconsider\w*|abandon\w*)\b/],
+  ["seguimiento", /\b(seguimiento|revisiones|cada cuanto)\b/],
+];
+/* Contextos de una frecuente que la búsqueda tiene que nombrar para que sea su respuesta. */
+const CONTEXTOS: [string, RegExp][] = [
+  ["hospital", /\b(ingres\w*|hospital\w*|planta|quirofano)\b/],
+];
 const UMBRAL_BUSQUEDA = 0.7;
 const UMBRAL_PREGUNTA = 0.6;
 
@@ -1848,7 +1868,7 @@ function negadasDe(texto: string, gs: Grupo[]): Grupo[] {
 /* La frecuente que más se parece, con las dos coberturas, sin umbral (para medir y afinar). */
 export function mejorFrecuente(
   pregunta: string,
-): (RespuestaFrecuente & { deBusqueda: number; dePregunta: number }) | null {
+): (RespuestaFrecuente & { deBusqueda: number; dePregunta: number; parcial: boolean }) | null {
   const ats = atomos();
   if (tramoDeConsulta(unificar(pregunta))) return null;
   const grupos = gruposDe(pregunta);
@@ -1874,7 +1894,13 @@ export function mejorFrecuente(
   // La búsqueda tiene que estar casi entera en la pregunta y al revés: manda la menor de las dos
   // coberturas; desempata la suma.
   const valor = (a: number, b: number) => Math.min(a, b) + 0.5 * (a + b);
-  let mejor: { f: Frecuente; deBusqueda: number; dePregunta: number; ajuste: number } | null = null;
+  let mejor: {
+    f: Frecuente;
+    deBusqueda: number;
+    dePregunta: number;
+    ajuste: number;
+    c: Grupo[];
+  } | null = null;
   for (const { f, formas } of CANDIDATAS) {
     // Una pregunta de otro sistema no responde a la de este.
     if (sis !== undefined && f.sistema !== undefined && f.sistema !== sis) continue;
@@ -1905,10 +1931,25 @@ export function mejorFrecuente(
         valor(deBusqueda, dePregunta) + ajuste >
           valor(mejor.deBusqueda, mejor.dePregunta) + mejor.ajuste
       )
-        mejor = { f, deBusqueda, dePregunta, ajuste };
+        mejor = { f, deBusqueda, dePregunta, ajuste, c };
     }
   }
   if (!mejor) return null;
+  // ¿Trata la frecuente la misma cuestión? Si la búsqueda pide un objetivo, la descarga, el
+  // hospital, material, retirar o reconsiderar el sistema, o el seguimiento, la frecuente (su
+  // pregunta, variantes o pasajes) tiene que hablar de eso; y una frecuente sobre el hospital no
+  // responde a una búsqueda que no lo nombra. Si no, va como relacionada, no como respuesta, y
+  // la búsqueda libre se enseña con su grado de duda (V54-01).
+  const citados = mejor.f.pasajes.map((id) => porId.get(id)).filter((a): a is Atomo => !!a);
+  const textoFaq = normalizar(
+    [mejor.f.pregunta, ...mejor.f.variantes, ...citados.map((a) => a.todo)].join(" "),
+  );
+  const qn = normalizar(pregunta);
+  const intencion = INTENCIONES.find(([, re]) => re.test(qn) && !re.test(textoFaq));
+  const contexto = CONTEXTOS.find(
+    ([, re]) => re.test(normalizar(mejor!.f.pregunta)) && !re.test(qn),
+  );
+  const parcial = !!intencion || !!contexto;
   const puntos = mejor.deBusqueda + mejor.dePregunta;
   const respuestas = mejor.f.pasajes
     .map((id) => porId.get(id))
@@ -1923,12 +1964,14 @@ export function mejorFrecuente(
     sistema: mejor.f.sistema,
     deBusqueda: mejor.deBusqueda,
     dePregunta: mejor.dePregunta,
+    parcial,
   };
 }
 
 export function preguntaFrecuente(pregunta: string): RespuestaFrecuente | null {
   const m = mejorFrecuente(pregunta);
-  if (!m || m.deBusqueda < UMBRAL_BUSQUEDA || m.dePregunta < UMBRAL_PREGUNTA) return null;
+  if (!m || m.deBusqueda < UMBRAL_BUSQUEDA || m.dePregunta < UMBRAL_PREGUNTA || m.parcial)
+    return null;
   return {
     id: m.id,
     pregunta: m.pregunta,

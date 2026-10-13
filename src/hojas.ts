@@ -6,6 +6,8 @@
 
 export interface SeccionHoja {
   titulo: string;
+  /* Bloque de alarma: va el primero y con marco de urgencia, en pantalla y en papel (V54-02). */
+  urgente?: boolean;
   items?: string[];
   parrafos?: string[];
 }
@@ -14,7 +16,7 @@ export interface HojaExtra {
   id: string;
   estado: "borrador" | "aprobada";
   titulo: string;
-  /* Rótulo de la hoja («Tarjeta de bolsillo», «Hoja para el paciente»). */
+  /* Rótulo de la hoja según su formato real («Hoja de actuación», «Hoja para el paciente»). */
   rotulo: string;
   /* De dónde sale (figura, tabla y páginas del capítulo). */
   fuente: string;

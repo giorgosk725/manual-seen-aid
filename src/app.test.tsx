@@ -1,6 +1,6 @@
 /* Pantallas: la portada, un apartado con tabla, el recorrido de la Figura 3, el filtro por
    sistema, la paleta de búsqueda y el test. Más una auditoría axe (sin contraste: jsdom). */
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen, within, act, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
@@ -64,8 +64,12 @@ describe("App", () => {
     render(<App />);
     await ir("#/consultar/figura-3");
     expect(screen.getByText(/Elige un tramo de β-OHB/)).toBeInTheDocument();
+    const desplazar = vi.spyOn(Element.prototype, "scrollIntoView");
     await userEvent.click(screen.getByRole("button", { name: /^β-OHB 1,0-2,9 mmol\/l/ }));
     expect(screen.getByText(/0,1 UI\/kg/)).toBeInTheDocument();
+    // Al elegir, va a la rama (en el siguiente fotograma): se espera, no queda suelto (V54-04).
+    await waitFor(() => expect(desplazar).toHaveBeenCalledWith({ block: "start" }));
+    desplazar.mockRestore();
     // La rama roja no se abre, pero su urgencia y sus signos de gravedad van junto a la rama
     // abierta (A01); una sola vez, no también encima del selector (V50-06).
     expect(screen.queryByText("Hidratación según glucemia, si la tolera.")).not.toBeInTheDocument();

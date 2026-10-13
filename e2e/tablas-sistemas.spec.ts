@@ -75,7 +75,17 @@ test.describe("Tablas y sistemas", () => {
       "aria-current",
       "location",
     );
+    // V54-04: antes del segundo clic, la barra ya refleja el primero (en CI, más lenta, el clic
+    // podía llegar mientras se volvía a pintar y necesitar un reintento).
+    await expect(grupo.getByRole("button", { name: /CamAPS/ })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
     await grupo.getByRole("button", { name: /Omnipod 5/ }).click();
+    await expect(grupo.getByRole("button", { name: /Omnipod 5/ })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
     await expect(page).toHaveURL(/#\/sistemas\/camaps\/parametros$/);
     await expect(
       page.getByRole("heading", { level: 2, name: /^Parámetros · myLoop CamAPS/ }),

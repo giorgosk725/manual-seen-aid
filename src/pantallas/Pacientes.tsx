@@ -475,8 +475,13 @@ function HojaExtraVista({
         hojaRef={hojaRef}
         rotulo={hoja.estado === "borrador" ? `${hoja.rotulo} · borrador` : hoja.rotulo}
         titulo={hoja.titulo}
-        subtitulo={`${TITULO_CAPITULO_PACIENTES} · ${AUTOR_PACIENTES}`}
-        pie={<>Fuente: {hoja.fuente}.</>}
+        // Arriba, título y propósito; el título completo del capítulo y la autoría, al pie
+        // (V54-09): así la alarma queda en la primera pantalla y en la primera cara.
+        pie={
+          <>
+            Fuente: {hoja.fuente}. {TITULO_CAPITULO_PACIENTES} · {AUTOR_PACIENTES}.
+          </>
+        }
         holgada
         complementaria
         materialId={`hoja-${hoja.id}`}
@@ -485,8 +490,16 @@ function HojaExtraVista({
           <p className="mb-3 text-[15px] leading-relaxed text-slate-800">{hoja.intro}</p>
         )}
         {hoja.secciones.map((sec) => (
-          <section key={sec.titulo} className="hoja-seccion mb-3">
-            <h2 className="text-base font-extrabold" style={{ color: hex.ink }}>
+          <section
+            key={sec.titulo}
+            aria-label={sec.urgente ? `Urgente: ${sec.titulo}` : undefined}
+            className={`hoja-seccion mb-3 ${sec.urgente ? "hoja-urgente rounded-lg border-2 px-3 py-2" : ""}`}
+            style={sec.urgente ? { borderColor: "#b91c1c", background: "#fef2f2" } : undefined}
+          >
+            <h2
+              className="text-base font-extrabold"
+              style={{ color: sec.urgente ? "#991b1b" : hex.ink }}
+            >
               {sec.titulo}
             </h2>
             {sec.parrafos?.map((par, i) => (

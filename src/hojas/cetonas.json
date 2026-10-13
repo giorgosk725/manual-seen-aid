@@ -3,10 +3,18 @@
     "id": "cetonas",
     "estado": "aprobada",
     "titulo": "Cetonas: qué hacer según el resultado",
-    "rotulo": "Tarjeta de bolsillo",
+    "rotulo": "Hoja de actuación",
     "fuente": "Figura 3 (p. 8) y plan de seguridad (p. 7) del capítulo, en lenguaje para el paciente",
-    "intro": "Esta tarjeta resume qué hacer según las cetonas en sangre (β-hidroxibutirato). Las dosis concretas las fija su equipo en su plan de seguridad: esta tarjeta no las sustituye.",
+    "intro": "Esta hoja resume qué hacer según las cetonas en sangre (β-hidroxibutirato). Las dosis concretas las fija su equipo en su plan de seguridad: esta hoja no las sustituye.",
     "secciones": [
+      {
+        "titulo": "3,0 mmol/l o más, o signos de alarma",
+        "items": [
+          "Signos de alarma: vómitos que no ceden, dolor de tripa, respiración rápida o profunda, somnolencia, confusión, deshidratación, no poder beber o mal estado general.",
+          "Acuda a urgencias de inmediato."
+        ],
+        "urgente": true
+      },
       {
         "titulo": "Cuándo medir cetonas en sangre",
         "items": [
@@ -50,13 +58,6 @@
           "Líquidos: sin azúcar si la glucosa está alta; con azúcar, en pequeñas cantidades, si la glucosa está baja o bajando.",
           "Vuelva a medir glucosa y cetonas en 1–2 horas. No repita la corrección antes de 2 horas, salvo que su plan lo indique.",
           "Si después de una segunda dosis bien puesta las cetonas siguen en 1,0 o más, o no mejora: acuda a valoración hospitalaria sin esperar a encontrarse peor."
-        ]
-      },
-      {
-        "titulo": "3,0 mmol/l o más, o signos de alarma",
-        "items": [
-          "Signos de alarma: vómitos que no ceden, dolor de tripa, respiración rápida o profunda, somnolencia, confusión, deshidratación, no poder beber o mal estado general.",
-          "Acuda a urgencias de inmediato."
         ]
       },
       {

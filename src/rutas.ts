@@ -42,8 +42,16 @@ export const marcarNavegacionNueva = () => {
   navegacionNueva = true;
 };
 let ultimaNueva = true;
+/* La primera pantalla de la sesión (pestaña nueva, enlace compartido, recarga) también es una
+   llegada nueva: no hay posición que restaurar y un enlace profundo debe llevar a su destino
+   (V54-03). Solo Atrás/Adelante quedan sin marca. */
+let primeraPantalla = true;
+// Deja de serlo con el primer cambio de dirección (no al leerla: React puede ejecutar dos veces
+// el efecto que la consume).
+if (typeof window !== "undefined")
+  window.addEventListener("hashchange", () => (primeraPantalla = false), { once: true });
 export const consumirNavegacionNueva = () => {
-  const v = navegacionNueva;
+  const v = navegacionNueva || primeraPantalla;
   navegacionNueva = false;
   ultimaNueva = v;
   return v;

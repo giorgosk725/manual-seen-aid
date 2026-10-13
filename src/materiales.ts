@@ -73,6 +73,8 @@ export const MATERIALES: Material[] = [
     fecha: "2026-10-09",
     version: "0.20.0",
     evidencia: "Aprobación registrada (commit 24726c4)",
+    pendiente:
+      "Orden reorganizado el 13-10-2026 (0.55.0): el bloque de alarma va el primero, con el mismo texto; revisar el orden nuevo (borradores/hoja-cetonas-orden_2026-10-13.md)",
   },
   {
     id: "hoja-pruebas-cirugia",

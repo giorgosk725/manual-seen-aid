@@ -107,7 +107,8 @@
     flex-shrink: 0;
   }
   /* Área táctil de al menos 44 × 44 px para controles pequeños (chips, «Quitar») sin crecer el
-     dibujo: un ::after invisible, centrado, de 5 px más por lado o 44 px si es mayor (0.53.0). */
+     dibujo: un ::after invisible, centrado, que solo crece lo que falte hasta 44 px; un control
+     que ya los mide no se extiende y no pisa al vecino (V54-08). */
   .tap-44 {
     position: relative;
   }
@@ -116,8 +117,8 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: max(calc(100% + 10px), 44px);
-    height: max(calc(100% + 10px), 44px);
+    width: max(100%, 44px);
+    height: max(100%, 44px);
     transform: translate(-50%, -50%);
   }
 }
@@ -1628,6 +1629,15 @@ html.night *:focus-visible {
    páginas, para que la nota no quede separada de las dosis (V50-02). */
 @media print {
   .plan-figura3 {
+    break-inside: avoid;
+  }
+}
+
+/* Bloque de alarma de una hoja para el paciente (V54-02): el marco rojo se imprime (aunque el
+   navegador no imprima fondos) y el bloque no se parte entre caras. */
+@media print {
+  .hoja-urgente {
+    border: 2pt solid #b91c1c !important;
     break-inside: avoid;
   }
 }

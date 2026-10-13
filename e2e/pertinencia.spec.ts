@@ -40,7 +40,7 @@ test.describe("Pertinencia y continuación (0.42.0)", () => {
   test("Para el paciente: cada hoja dice para qué sirve", async ({ page }) => {
     await page.goto("/#/pacientes");
     await expect(
-      page.getByText(/Tarjeta de bolsillo para entregar · Esta tarjeta resume/),
+      page.getByText(/Hoja de actuación para entregar · Esta hoja resume/),
     ).toBeVisible();
   });
 });

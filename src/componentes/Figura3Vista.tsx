@@ -23,6 +23,7 @@ import { Texto } from "../texto";
 import { PaginaBadge } from "../ui";
 import { TRAMO_HEX } from "../tokens";
 import { elegirRuta, href, fueNavegacionNueva } from "../rutas";
+import { mantenerEnVista } from "../irAlCambiar";
 import { ImagenFigura } from "./FiguraVista";
 import { INFO_F3 } from "./figura3-imagen";
 import { TituloBloque } from "../nivel";
@@ -285,15 +286,26 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
   };
   const actual = tramo ? FIGURA3.tramos.find((t) => t.clave === tramo)! : null;
   const actuar = useRef<HTMLLIElement>(null);
-  // Entrar con un tramo ya elegido (enlace profundo, atajo de búsqueda): directo a su rama.
+  // A la rama («Rama de la figura»), con su aviso y la nota de población antes de las dosis; y
+  // se mantiene arriba mientras termina de cargar lo de encima (la página crece y la empujaría).
+  const irARama = () => {
+    const el = actuar.current;
+    if (!el) return;
+    el.scrollIntoView({ block: "start" });
+    mantenerEnVista(el);
+  };
+  // Entrar con un tramo ya elegido (pestaña nueva, enlace compartido o de la app, atajo de
+  // búsqueda): directo a su rama, ya pintada. Al volver con Atrás, la Shell restaura (V54-03).
   useEffect(() => {
-    if (valido && fueNavegacionNueva()) actuar.current?.scrollIntoView({ block: "start" });
+    if (!valido || !fueNavegacionNueva()) return;
+    const id = requestAnimationFrame(irARama);
+    return () => cancelAnimationFrame(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  /* Atajo: con la cetonemia ya medida, ir directo a su rama («Rama de la figura»). */
+  /* Atajo: con la cetonemia ya medida, ir directo a su rama. */
   const irATramo = (t: Tramo) => {
     elegir(t);
-    requestAnimationFrame(() => actuar.current?.scrollIntoView({ block: "start" }));
+    requestAnimationFrame(irARama);
   };
   return (
     <section aria-label="Figura 3, recorrido paso a paso">
