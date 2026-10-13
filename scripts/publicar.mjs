@@ -97,6 +97,8 @@ appendFileSync(
   REGISTRO,
   `| ${fecha} | ${canal} | ${version} | ${sha.slice(0, 12)} | ${indice} | ${anterior ? `${anterior[1].trim()} (${anterior[2]})` : "—"} |\n`,
 );
+// La tabla, alineada como la deja Prettier: si no, la siguiente publicación no pasa format:check.
+sh(`npx prettier --write ${REGISTRO}`);
 console.log(`✓ ${version} publicada en ${URL_CANAL} (${sha.slice(0, 12)}, ${indice}).`);
 console.log(
   `  Anota el registro: git add ${REGISTRO} && git commit -m "Registro: ${version} en ${canal}" && git push`,
