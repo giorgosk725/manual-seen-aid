@@ -6,3 +6,5 @@ capturas
 functions/_datos
 scripts/semantica/cache
 dist-revision
+# Generado por src/expansiones.test.ts (GENERAR=1)
+src/expansiones.json

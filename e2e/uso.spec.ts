@@ -52,7 +52,8 @@ test.describe("Uso 0.10.0", () => {
   });
 
   test("sin respuesta directa: «Coincidencia parcial en el capítulo»", async ({ page }) => {
-    await page.goto("/#/buscar/coste-efectividad%20AID");
+    // 0.65.0: «coste-efectividad AID» ya da el pasaje como respuesta; sin «AID», sigue parcial.
+    await page.goto("/#/buscar/coste-efectividad");
     await expect(
       page.getByRole("region", { name: "Coincidencia parcial en el capítulo" }),
     ).toContainText("no depende únicamente del coste del dispositivo");

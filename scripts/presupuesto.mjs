@@ -13,6 +13,9 @@ const LIMITES = {
   entradaCss: 16 * 1024,
   // 26 KB desde la 0.59.0: el buscador (se carga al buscar, no al entrar) creció con el léxico.
   trozoPerezoso: 26 * 1024,
+  // 40 KB desde la 0.65.0, solo el buscador: lleva las raíces de las consultas del índice
+  // (expansiones.json, ~11 KB) que suben el acierto en los bancos ciegos. Se carga al buscar.
+  buscador: 40 * 1024,
   // 2,0 MB desde la edición editorial (A10): el PDF de pacientes (83 KB) entra en el precache.
   precache: 2.0 * 1024 * 1024,
 };
@@ -56,7 +59,7 @@ for (const f of readdirSync(join(DIST, "assets")).filter((f) => f.endsWith(".js"
     comprobar(
       `perezoso ${f.replace(/-[\w-]{8}\.js$/, "")}`,
       gz(`assets/${f}`),
-      LIMITES.trozoPerezoso,
+      f.startsWith("buscador-") ? LIMITES.buscador : LIMITES.trozoPerezoso,
     );
 }
 

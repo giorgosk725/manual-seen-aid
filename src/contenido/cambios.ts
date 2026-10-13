@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — «Sobre», portada y textos`,
+    titulo: `Complemento interactivo ${VERSION_APP} — búsqueda`,
+    detalle: [
+      "La búsqueda reconoce más formas de preguntar: cada pasaje lleva unas consultas escritas para el índice (cómo lo preguntaría un clínico o un paciente), que solo sirven para encontrarlo; lo que se enseña sigue siendo el texto literal del capítulo.",
+      "Un segundo ordenador (BM25) reordena «lo más cercano» cuando no hay una respuesta segura.",
+      "Las consultas del índice ordenan, pero no convierten un pasaje en «la respuesta»: eso lo sigue decidiendo el texto del capítulo.",
+      "En un banco nuevo de 150 preguntas, congelado antes del cambio: la primera respuesta acierta en el 61 % (antes 49 %) y alguna de las tres en el 77 % (antes 62 %), con la misma precisión de las respuestas directas (75 %).",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.64.0 — «Sobre», portada y textos",
     detalle: [
       "«Sobre este complemento»: qué se puede hacer, con un enlace a cada tarea (en la consulta, para leer y comprender, para el paciente), y cómo está hecho en cuatro frases; el responsable, con su afiliación, en «Fuentes y revisión».",
       "Sin el aviso bajo los campos de búsqueda: la privacidad de la búsqueda se explica en «Sobre».",

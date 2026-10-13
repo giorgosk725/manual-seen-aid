@@ -1,0 +1,3084 @@
+{
+  "F1/0": [
+    "componentes asa cerrada sensor algoritmo bomba",
+    "circuito aid piezas",
+    "¿Qué componentes tiene un sistema de asa cerrada?",
+    "¿Cuáles son las partes del circuito de administración automatizada de insulina?",
+    "de qué se compone el páncreas artificial"
+  ],
+  "F1/1": [
+    "retroalimentacion sensor algoritmo bomba",
+    "como funciona asa cerrada",
+    "¿Cómo funciona el circuito de retroalimentación de un sistema AID?",
+    "¿Cómo ajusta la insulina un sistema de asa cerrada de forma dinámica?",
+    "cómo sabe la bomba cuánta insulina poner"
+  ],
+  "F1/2": [
+    "plataforma datos telemedicina",
+    "descarga seguimiento optimizacion",
+    "¿Para qué sirve la plataforma de datos en un sistema AID?",
+    "¿Se puede hacer seguimiento por telemedicina con los sistemas de asa cerrada?",
+    "para qué sirve subir los datos de la bomba"
+  ],
+  "F1/3": [
+    "educacion seguridad asa cerrada",
+    "papel del paciente aid",
+    "¿Sigue siendo necesaria la educación del paciente con un sistema automático?",
+    "¿Qué papel tiene la persona en la seguridad del sistema de asa cerrada?",
+    "si es automático tengo que hacer algo yo"
+  ],
+  "F1/4": [
+    "equipo sanitario descargas telemedicina",
+    "funcion equipo seguimiento aid",
+    "¿Qué hace el equipo sanitario en el seguimiento de un sistema AID?",
+    "¿Quién interpreta las descargas y optimiza el tratamiento?",
+    "qué hace el endocrino con mis datos"
+  ],
+  "F2/0": [
+    "perfil paciente eleccion sistema",
+    "factores individuales elegir aid",
+    "¿Qué factores del paciente influyen en la elección del sistema de asa cerrada?",
+    "¿Cómo influyen la edad, el ejercicio o la gestación al elegir sistema AID?",
+    "qué bomba me conviene según mi vida"
+  ],
+  "F2/1": [
+    "decision compartida aid",
+    "elegir sistema con el paciente",
+    "¿Cómo se decide qué sistema de asa cerrada usar?",
+    "¿Qué es la decisión compartida en la elección del sistema AID?",
+    "quién elige mi bomba yo o el médico"
+  ],
+  "F2/2": [
+    "caracteristicas sistema elegir bomba",
+    "criterios tecnicos aid sensor app",
+    "¿Qué características técnicas hay que valorar al elegir un sistema AID?",
+    "¿Cómo influyen el sensor compatible y los requisitos del móvil en la elección?",
+    "en qué me fijo para elegir entre 780g, tandem, camaps u omnipod"
+  ],
+  "F2/3": [
+    "contexto asistencial disponibilidad",
+    "experiencia equipo eleccion aid",
+    "¿Influye la experiencia del equipo en el sistema AID que se elige?",
+    "¿Qué papel tiene la disponibilidad local en la elección de la bomba?",
+    "por qué en mi hospital solo dan una bomba"
+  ],
+  "F2/4": [
+    "mejor sistema asa cerrada",
+    "780g vs control iq vs camaps cual es mejor",
+    "¿Hay un sistema de asa cerrada superior a los demás?",
+    "¿De qué depende el éxito terapéutico con un sistema AID?",
+    "cuál es la mejor bomba"
+  ],
+  "F2/5": [
+    "revaluar eleccion sistema",
+    "cambiar de bomba nuevas opciones",
+    "¿Hay que revaluar con el tiempo la elección del sistema de asa cerrada?",
+    "¿Cuándo se plantea cambiar de sistema AID?",
+    "puedo cambiarme de bomba más adelante"
+  ],
+  "F3/amarillo": [
+    "cetonemia 0,6 0,9 leve",
+    "cetonas leves bomba pluma",
+    "¿Qué hacer con un β-OHB entre 0,6 y 0,9 mmol/l llevando bomba?",
+    "¿Cada cuánto se repite la cetonemia si es leve y cuándo pasar a la rama naranja?",
+    "tengo 0,8 de cetonas es grave"
+  ],
+  "F3/inicio": [
+    "sospecha fallo infusion 250 2 h",
+    "cuando medir cetonas bomba",
+    "¿Cuándo sospechar fallo de infusión o cetosis en un sistema AID?",
+    "¿Qué hay que comprobar del set y del pod si la glucosa no baja tras corregir?",
+    "llevo dos horas por encima de 250 y no baja"
+  ],
+  "F3/naranja": [
+    "cetonas 1,5 dosis 0,15 ui/kg",
+    "cetonemia 1-2,9 pluma rescate",
+    "¿Qué dosis de insulina con pluma se pone si el β-OHB está entre 1,0 y 2,9 mmol/l?",
+    "¿Cuándo hay que ir al hospital si persisten cetonas tras una segunda dosis?",
+    "tengo 1,2 de cetonas y la bomba no baja qué me pongo"
+  ],
+  "F3/nota": [
+    "dosis orientativas 0,1 ui/kg adultos",
+    "dias de enfermedad pediatria gestacion dosis",
+    "¿Las dosis de rescate de la Figura 3 sirven para niños y embarazadas?",
+    "¿En qué se basan las dosis orientativas de insulina en la cetosis?",
+    "esas dosis valen para mi hijo"
+  ],
+  "F3/pie/0": [
+    "pluma insulina activa apilamiento",
+    "correccion con boli bomba no cuenta",
+    "¿El sistema AID contabiliza la insulina puesta con pluma como insulina activa?",
+    "¿Cuánto esperar para otra corrección tras poner insulina con pluma?",
+    "me he pinchado con el boli y la bomba no lo sabe"
+  ],
+  "F3/pie/1": [
+    "cetonas embarazo isglt2",
+    "medir cetonemia vomitos aunque glucosa normal",
+    "¿En qué situaciones hay que medir cetonas aunque la glucemia sea normal?",
+    "¿Hay que medir cetonemia con iSGLT2 o en gestación llevando sistema AID?",
+    "tomo dapagliflozina y llevo bomba miro cetonas"
+  ],
+  "F3/pie/2": [
+    "registrar hora glucemia cetonas dosis",
+    "anotar actuacion hiperglucemia",
+    "¿Qué hay que anotar durante una hiperglucemia con cetonas?",
+    "¿Qué datos registrar tras corregir con pluma y cambiar el set?",
+    "qué apunto cuando tengo cetonas"
+  ],
+  "F3/regla": [
+    "regla de oro hiperglucemia",
+    "cambiar set cetonas sin causa",
+    "¿Cuál es la regla de oro ante una hiperglucemia persistente con bomba?",
+    "¿Qué hacer primero si la glucosa sigue alta sin explicación en un sistema AID?",
+    "estoy alto y no sé por qué qué hago primero"
+  ],
+  "F3/rojo": [
+    "cetonas mayor 3 cetoacidosis",
+    "signos gravedad cad urgencias bomba",
+    "¿Qué hacer con cetonemia ≥ 3 mmol/l o vómitos con la bomba?",
+    "¿Cuáles son los signos de gravedad que obligan a ir a urgencias por posible cetoacidosis?",
+    "vomito y tengo cetonas altas voy a urgencias"
+  ],
+  "F3/verde": [
+    "cetonas menor 0,6 hiperglucemia",
+    "beta ohb normal glucosa alta",
+    "¿Qué hacer con glucosa alta y cetonemia por debajo de 0,6 mmol/l?",
+    "¿Hay que cambiar el set si no hay cetosis pero la corrección no funciona?",
+    "estoy alto pero sin cetonas qué hago"
+  ],
+  "INFO/0": [
+    "beneficios asa cerrada",
+    "ventajas aid tir hba1c",
+    "¿Qué beneficios tiene un sistema de asa cerrada?",
+    "¿Mejora el sueño y la calidad de vida con la administración automatizada de insulina?",
+    "para qué me sirve ponerme el páncreas artificial"
+  ],
+  "INFO/1": [
+    "que es asa cerrada",
+    "pancreas artificial hibrido bolo comidas",
+    "¿Qué es un sistema de asa cerrada y cómo funciona?",
+    "¿Hay que seguir anunciando comidas con un sistema híbrido?",
+    "explicación sencilla del sistema automático de insulina"
+  ],
+  "INFO/2": [
+    "indicacion aid dm1 para quien",
+    "grupos prioritarios asa cerrada",
+    "¿A quién está indicado un sistema de asa cerrada?",
+    "¿Qué pacientes tienen prioridad para un sistema AID?",
+    "me pueden poner a mí una bomba automática"
+  ],
+  "INFO/3": [
+    "implementacion aid pasos",
+    "seleccionar educar iniciar analizar optimizar",
+    "¿Cuáles son los pasos para implantar un sistema de asa cerrada?",
+    "¿Cómo es el proceso de seguimiento tras iniciar un sistema AID?",
+    "cómo va lo de empezar con la bomba"
+  ],
+  "INFO/4": [
+    "plan seguridad respaldo paciente",
+    "fallo infusion pluma cetonas paciente",
+    "¿Qué plan de respaldo debe tener una persona con sistema de asa cerrada?",
+    "¿Qué hacer si la glucosa sigue alta con la bomba?",
+    "qué hago si falla la bomba"
+  ],
+  "INFO/5": [
+    "mensajes clave aid",
+    "no olvides asa cerrada resumen",
+    "¿Cuáles son las ideas clave para usar bien un sistema de asa cerrada?",
+    "¿Cómo se evalúa el beneficio integral de la tecnología en diabetes?",
+    "resumen de lo importante de la bomba automática"
+  ],
+  "T1/0": [
+    "capacidad reservorio 780g",
+    "omnipod sin tubo duracion pod",
+    "¿Cuántas unidades caben en el depósito de la t:slim X2 y de la Mobi?",
+    "¿Cada cuántos días se cambia el set de infusión de la MiniMed 780G?",
+    "qué bomba lleva catéter y cuál es parche sin tubo"
+  ],
+  "T1/1": [
+    "sensor compatible camaps",
+    "omnipod 5 libre 2 plus dexcom",
+    "¿Qué sensores de glucosa se pueden usar con Control-IQ?",
+    "¿La 780G funciona con Simplera o solo con Guardian 4?",
+    "qué sensor me vale para mi bomba de asa cerrada"
+  ],
+  "T1/10": [
+    "parametros configurables automatico 780g",
+    "que se puede tocar en control iq",
+    "¿Qué ajustes se pueden cambiar en modo automático en CamAPS FX?",
+    "¿Qué parámetros configura el profesional en Omnipod 5: objetivo, sensibilidad, insulina activa, ratios?",
+    "qué puedo cambiar de la bomba cuando va en automático"
+  ],
+  "T1/2": [
+    "donde esta el algoritmo camaps movil",
+    "algoritmo en la bomba 780g tandem",
+    "¿El algoritmo de Omnipod 5 va en el pod o en el móvil?",
+    "¿Qué sistema de asa cerrada calcula la insulina desde la app del smartphone?",
+    "si pierdo el móvil sigue funcionando el automático"
+  ],
+  "T1/3": [
+    "autoaprendizaje 780g medianoche dtd",
+    "control iq no aprende mpc",
+    "¿Qué tipo de algoritmo usa cada sistema AID: PID, lógica difusa o predictivo?",
+    "¿Cómo calcula Omnipod 5 la basal adaptativa en cada cambio de pod?",
+    "el sistema va aprendiendo solo de mis dosis o hay que ajustarlo"
+  ],
+  "T1/4": [
+    "microbolos cada 5 min 780g",
+    "camaps bolos extendidos prediccion 4 h",
+    "¿Control-IQ modula la basal programada o pone microbolos?",
+    "¿Cada cuánto administra insulina Omnipod 5 en automático y con qué horizonte de predicción?",
+    "cómo va metiendo la insulina la bomba cuando está en automático"
+  ],
+  "T1/5": [
+    "autocorreccion 780g 120 mg/dl",
+    "tandem bolo automatico 180 cada hora",
+    "¿CamAPS FX pone bolos de corrección automáticos?",
+    "¿Omnipod 5 hace autocorrecciones o sube la basal adaptativa hasta qué porcentaje?",
+    "la bomba me corrige sola cuando estoy alto"
+  ],
+  "T1/6": [
+    "objetivo glucosa 780g 100 110 120",
+    "target camaps de fabrica",
+    "¿Qué objetivos de glucosa se pueden poner en Omnipod 5 en modo automático?",
+    "¿Cuál es el rango objetivo de Control-IQ en modo sueño y en modo ejercicio?",
+    "a cuánto intenta dejarme el azúcar cada sistema"
+  ],
+  "T1/7": [
+    "edad minima camaps peso dtd",
+    "control iq+ diabetes tipo 2 indicacion",
+    "¿Desde qué edad y con qué dosis total diaria está indicado el MiniMed 780G?",
+    "¿Qué peso mínimo y máximo admite Control-IQ frente a Control-IQ+?",
+    "a partir de cuántos años se puede poner omnipod 5 a un niño"
+  ],
+  "T1/8": [
+    "embarazo camaps aidapt",
+    "gestacion 780g cristal autorizado",
+    "¿Qué sistema de asa cerrada está autorizado en el embarazo?",
+    "¿Se puede usar Control-IQ+ u Omnipod 5 en gestantes con diabetes tipo 1?",
+    "estoy embarazada puedo seguir con mi bomba en automático"
+  ],
+  "T1/9": [
+    "descarga 780g carelink",
+    "plataforma omnipod discover glooko",
+    "¿Con qué programa se descargan los datos de Tandem Control-IQ?",
+    "¿Dónde se ven las descargas de CamAPS FX en consulta?",
+    "qué web uso para bajar los datos de la bomba"
+  ],
+  "T1/nota/0/0": [
+    "parametro efecto directo algoritmo asterisco",
+    "ajustes que solo afectan bolos manuales",
+    "¿Qué parámetros influyen directamente en el algoritmo en modo automático y cuáles solo en los bolos?",
+    "¿Qué significa el asterisco en los parámetros de la tabla de sistemas AID?",
+    "qué ajustes cambian de verdad lo que hace el automático"
+  ],
+  "T1/nota/1/0": [
+    "abreviaturas tabla 1 aid",
+    "que significa mpc pid",
+    "¿Qué quiere decir MPC y PID en los algoritmos de asa cerrada?",
+    "¿Qué significan las siglas I/HC, MCG y CE?",
+    "qué es eso de control predictivo basado en modelo"
+  ],
+  "T2/0": [
+    "plan respaldo inicio aid",
+    "plan b antes de empezar bomba",
+    "¿Qué plan de respaldo hay que tener antes de iniciar un sistema de asa cerrada?",
+    "¿Qué debe llevar preparado el paciente por si falla la bomba al empezar?",
+    "qué hago si me falla la bomba recién puesta"
+  ],
+  "T2/1": [
+    "inicializacion modo automatico 780g",
+    "arranque automatico camaps omnipod tandem",
+    "¿Cómo se inicia el modo automático en cada sistema AID?",
+    "¿Cuándo entra en automático la 780G tras el inicio?",
+    "cuánto tarda la bomba en ponerse en automático"
+  ],
+  "T2/2": [
+    "reduccion dtd paso de mdi",
+    "bajar dosis total al pasar de plumas a bomba",
+    "¿Cuánto hay que reducir la dosis total diaria al pasar de múltiples dosis a un sistema AID?",
+    "¿Se reduce la DTD al cambiar de MDI a asa cerrada?",
+    "al pasar de pinchazos a bomba me ponen menos insulina"
+  ],
+  "T2/3": [
+    "reparto basal bolo inicial bomba",
+    "porcentaje basal inicio aid",
+    "¿Cómo se reparte la dosis total entre basal y bolos al iniciar la bomba?",
+    "¿Qué distribución basal/bolo se usa de partida en un sistema de asa cerrada?",
+    "cuánta insulina va de basal y cuánta de comidas al empezar"
+  ],
+  "T2/4": [
+    "calculo ratio i/hc inicial",
+    "regla ratio insulina hidratos inicio",
+    "¿Cómo se calcula el ratio insulina/hidratos inicial en gramos por unidad?",
+    "¿Qué fórmula se usa para el ratio de hidratos al iniciar el sistema AID?",
+    "cuántos gramos de hidratos cubre una unidad al empezar"
+  ],
+  "T2/5": [
+    "calculo fsi inicial",
+    "factor sensibilidad regla inicio bomba",
+    "¿Cómo se calcula el factor de sensibilidad a la insulina inicial?",
+    "¿Qué regla se usa para el FSI de partida en un sistema de asa cerrada?",
+    "cuánto me baja una unidad de insulina al empezar"
+  ],
+  "T2/6": [
+    "objetivo calculador bolos manual",
+    "target bolus wizard inicio",
+    "¿Qué objetivo de glucosa se pone en el calculador de bolos al iniciar?",
+    "¿Qué glucemia objetivo usa el asistente de bolo manual?",
+    "a qué cifra apunta la calculadora de bolos"
+  ],
+  "T2/7": [
+    "objetivo algoritmo inicio aid",
+    "target inicial 780g camaps omnipod",
+    "¿Qué objetivo glucémico se programa en el algoritmo automático al iniciar?",
+    "¿Con qué objetivo conviene arrancar el modo automático en cada sistema?",
+    "qué objetivo me ponen el primer día de bomba"
+  ],
+  "T2/8": [
+    "solapamiento glargina u300 degludec bomba",
+    "¿Cómo se maneja el solapamiento con glargina U-300 o degludec al iniciar la bomba?",
+    "¿Hay que retrasar el inicio del modo automático si venía con basal de acción ultralarga?"
+  ],
+  "T2/nota/0/0": [
+    "abreviaturas tabla 2 inicio",
+    "que es dtd mdi",
+    "¿Qué significan DTD y MDI en el inicio de la bomba?",
+    "¿Qué quieren decir HbA1c, I/HC y MCG?",
+    "qué es la dosis total diaria"
+  ],
+  "T2/nota/1/0": [
+    "parametros iniciales solo punto de partida",
+    "ajuste fino tras descarga",
+    "¿Los parámetros iniciales del sistema AID son definitivos o los modula el algoritmo?",
+    "¿Cuándo se hace el ajuste fino de los parámetros tras iniciar la bomba?",
+    "los ajustes del primer día se quedan así para siempre"
+  ],
+  "T3/0": [
+    "objetivo temporal 780g 150",
+    "boost ease-off camaps",
+    "¿Se puede cambiar el objetivo glucémico en Control-IQ o es fijo?",
+    "¿Qué hace la función Actividad de Omnipod 5 con el objetivo?",
+    "cómo subo el objetivo un rato con mi bomba"
+  ],
+  "T3/1": [
+    "basal programada 780g automatico",
+    "control iq basal temporal 250",
+    "¿Influye la tasa basal programada en el modo automático de Omnipod 5?",
+    "¿En qué sistemas AID hay que ajustar bien la basal programada?",
+    "sirve de algo la basal que tengo puesta si va en automático"
+  ],
+  "T3/2": [
+    "ratio i/hc aid bolo prandial",
+    "ajustar ratio posprandial camaps omnipod",
+    "¿Para qué sirve el ratio insulina/hidratos en los sistemas de asa cerrada?",
+    "¿Cuándo hay que ajustar el ratio de hidratos en la 780G o en Control-IQ?",
+    "subo mucho después de comer qué toco"
+  ],
+  "T3/3": [
+    "fsi 780g smartguard no interviene",
+    "factor sensibilidad control iq automatico",
+    "¿El factor de sensibilidad influye en las correcciones automáticas de CamAPS FX?",
+    "¿En qué sistema AID el factor de sensibilidad modifica la modulación basal?",
+    "si cambio la sensibilidad cambia lo que hace el automático"
+  ],
+  "T3/4": [
+    "insulina activa 780g acortar autocorrecciones",
+    "duracion insulina activa control iq omnipod",
+    "¿Se puede modificar la duración de la insulina activa en Control-IQ en modo automático?",
+    "¿Qué efecto tiene acortar el tiempo de insulina activa en la 780G?",
+    "para qué sirve el tiempo de insulina activa en mi bomba"
+  ],
+  "T3/nota/0/0": [
+    "abreviaturas tabla 3",
+    "que es tbr",
+    "¿Qué significa TBR en la tabla de parámetros?",
+    "¿Qué es el tiempo por debajo del rango?",
+    "qué es eso de tiempo por debajo del rango"
+  ],
+  "T4/0": [
+    "ejercicio aerobico 780g objetivo temporal",
+    "modo ejercicio control iq ease-off camaps",
+    "¿Cuánto antes del ejercicio hay que activar el modo temporal en un sistema AID?",
+    "¿Cómo se usa la función Actividad de Omnipod 5 para salir a correr?",
+    "voy a montar en bici qué pongo en la bomba"
+  ],
+  "T4/1": [
+    "ejercicio anaerobico aid",
+    "pesas alta intensidad boost camaps",
+    "¿Hay que usar modo ejercicio en el ejercicio de alta intensidad o anaeróbico?",
+    "¿Por qué no se recomienda usar Boost de rutina en CamAPS FX con el ejercicio intenso?",
+    "hago crossfit y subo, pongo modo deporte"
+  ],
+  "T4/2": [
+    "modo sueño control iq",
+    "noche 780g camaps omnipod modo nocturno",
+    "¿Qué sistema de asa cerrada tiene un modo específico para dormir?",
+    "¿Qué objetivo usa el modo sueño de Tandem y hace autocorrecciones?",
+    "qué pongo en la bomba por la noche"
+  ],
+  "T4/3": [
+    "enfermedad leve menstruacion estres aid",
+    "regla resfriado mas insulina camaps boost",
+    "¿Qué hacer con la bomba cuando hay más necesidad de insulina por regla o estrés?",
+    "¿Hay que salir del automático en una enfermedad leve con la 780G o Control-IQ?",
+    "estoy con la regla y voy alta todo el día qué hago"
+  ],
+  "T4/4": [
+    "hiperglucemia puntual bolo corrector 780g",
+    "glucosa alta aislada control iq omnipod",
+    "¿Qué hacer ante una hiperglucemia puntual sin sospecha de fallo del set?",
+    "¿Cuándo usar Boost o un bolo corrector en CamAPS FX ante un pico?",
+    "me he subido una vez sin motivo pongo corrección"
+  ],
+  "T4/5": [
+    "comida grasa bolo extendido tandem",
+    "pizza absorcion lenta camaps",
+    "¿Cómo se maneja una comida rica en grasa o proteína con Control-IQ?",
+    "¿Tiene la 780G u Omnipod 5 bolo extendido en modo automático?",
+    "cuando como pizza subo a las horas qué hago"
+  ],
+  "T4/6": [
+    "hiperglucemia persistente fallo infusion",
+    "cambiar set pod pluma cetonas",
+    "¿Qué hacer ante una hiperglucemia persistente o sin explicación con la bomba?",
+    "¿Cuándo sospechar fallo de infusión y corregir con pluma?",
+    "llevo horas alto y no baja con la bomba"
+  ],
+  "T4/nota/0/0": [
+    "abreviaturas tabla 4",
+    "que es beta ohb",
+    "¿Qué significa β-OHB?",
+    "¿Qué es el β-hidroxibutirato y el TBR?",
+    "qué es la beta hidroxibutirato"
+  ],
+  "T5/0": [
+    "paso 1 descarga uso sensor",
+    "tiempo uso automatico datos representativos",
+    "¿Qué se revisa primero en la descarga de un sistema AID?",
+    "¿Cómo saber si los datos de la descarga son representativos y el sistema funciona bien?",
+    "por dónde empiezo a mirar la descarga de la bomba"
+  ],
+  "T5/1": [
+    "paso 2 tbr hipoglucemias descarga",
+    "seguridad alertas hipo aid",
+    "¿Cómo se valora el tiempo por debajo del rango en la descarga de la bomba?",
+    "¿Qué revisar sobre las alertas de hipoglucemia en consulta de asa cerrada?",
+    "cómo miro si tiene muchas hipos en la descarga"
+  ],
+  "T5/2": [
+    "paso 3 tir gmi control global",
+    "exposicion glucemica descarga aid",
+    "¿Cómo se analiza el control global en la descarga de un sistema de asa cerrada?",
+    "¿Qué métricas de control global se miran en el tercer paso: TIR, TAR, GMI?",
+    "cómo saber si va bien controlado en general"
+  ],
+  "T5/3": [
+    "paso 4 bolos comidas descarga",
+    "bolos omitidos interaccion sistema",
+    "¿Cómo revisar los bolos y las comidas en la descarga de la bomba?",
+    "¿Qué se mira de la interacción del paciente con el sistema AID?",
+    "se olvida de ponerse el bolo cómo lo veo"
+  ],
+  "T5/4": [
+    "paso 5 patrones horarios funciones temporales",
+    "uso modo ejercicio sueño descarga",
+    "¿Cómo identificar patrones por franja horaria en la descarga de un sistema AID?",
+    "¿Cómo se revisa el uso de los modos temporales en consulta?",
+    "se sube siempre a la misma hora qué miro"
+  ],
+  "T5/5": [
+    "paso 6 patron posprandial",
+    "subida despues de comer descarga aid",
+    "¿Cómo se analiza el patrón posprandial en la descarga de la bomba?",
+    "¿Qué revisar si hay hiperglucemia después de una comida concreta?",
+    "se dispara después de cenar en la descarga"
+  ],
+  "T5/6": [
+    "paso 7 dtd respuesta automatica",
+    "revisar plan de respaldo descarga",
+    "¿Cómo se valora la respuesta automática y la DTD en la descarga?",
+    "¿Cuándo hay que actualizar el plan de respaldo con la dosis total diaria?",
+    "ha cambiado mucho la insulina total qué significa"
+  ],
+  "T5/7": [
+    "paso 8 bandera roja fallo infusion",
+    "hiperglucemia persistente descarga aid",
+    "¿Qué hallazgo de la descarga obliga a actuar ya por posible fallo del set?",
+    "¿Cómo detectar en la descarga una hiperglucemia persistente por fallo de infusión?",
+    "señales de alarma en la descarga de la bomba"
+  ],
+  "T5/nota/0/0": [
+    "abreviaturas tabla 5 descarga",
+    "que es titr gmi tar",
+    "¿Qué significan TIR, TITR, TAR y TBR?",
+    "¿Qué es el GMI o indicador de gestión de la glucosa?",
+    "qué es tiempo en rango estrecho"
+  ],
+  "T5/nota/1/0": [
+    "esquema revision descarga consulta",
+    "orden analisis descarga aid",
+    "¿En qué orden se revisa sistemáticamente la descarga en consulta?",
+    "¿Cómo se organiza la lectura estructurada de la descarga de un sistema AID?",
+    "hay un método para leer la descarga paso a paso"
+  ],
+  "T5/nota/1/1": [
+    "comparar descarga previa",
+    "cambios ultima visita descarga",
+    "¿Hay que comparar la descarga con la anterior?",
+    "¿Se deben revisar los cambios acordados en la última visita al mirar la descarga?",
+    "miro también la descarga de la vez pasada"
+  ],
+  "T5/nota/1/2": [
+    "pocos cambios reevaluar 2-4 semanas",
+    "cuantos cambios por visita aid",
+    "¿Cuántos cambios conviene hacer en cada revisión del sistema de asa cerrada?",
+    "¿Cada cuánto se reevalúan los cambios de ajustes de la bomba?",
+    "cambio muchas cosas a la vez o mejor pocas"
+  ],
+  "T5/nota/1/3": [
+    "asa cerrada completa sin bolo",
+    "interpretar comidas sin bolo prandial",
+    "¿Cómo interpretar las comidas en sistemas de asa cerrada completa sin bolo prandial?",
+    "¿Cambia la lectura de bolos en la descarga si el sistema no requiere anunciar comidas?",
+    "y si no se pone bolo de comida cómo miro la descarga"
+  ],
+  "T5/nota/1/4": [
+    "figura 3 algoritmo hiperglucemia",
+    "donde esta actuacion fallo infusion",
+    "¿Dónde está el algoritmo de actuación ante hiperglucemia persistente?",
+    "¿Qué figura recoge cómo actuar ante sospecha de fallo de infusión?",
+    "dónde viene qué hacer si falla el set"
+  ],
+  "T6/0": [
+    "resonancia magnetica bomba sensor",
+    "rm 780g omnipod retirar",
+    "¿Hay que quitarse la bomba y el sensor para una resonancia magnética?",
+    "¿Cómo se maneja un sistema AID en una RM?",
+    "me hacen una resonancia qué hago con la bomba"
+  ],
+  "T6/1": [
+    "tac bomba insulina",
+    "tc sensor retirar aid",
+    "¿Se puede hacer un TAC llevando puesta la bomba de insulina?",
+    "¿Qué hacer con el sensor y el pod en una tomografía computarizada?",
+    "me van a hacer un escáner llevo la bomba"
+  ],
+  "T6/2": [
+    "radiografia bomba sensor",
+    "dexa densitometria aid",
+    "¿Hay que retirar la bomba para hacerse una radiografía?",
+    "¿Cómo se actúa con un sistema de asa cerrada en una densitometría DEXA?",
+    "me hacen una placa me quito el sensor"
+  ],
+  "T6/3": [
+    "pet medicina nuclear bomba",
+    "radioterapia sensor aid",
+    "¿Qué hacer con la bomba y el sensor en un PET o gammagrafía?",
+    "¿Hay que quitar el sistema AID durante la radioterapia?",
+    "tengo radioterapia y llevo bomba"
+  ],
+  "T6/4": [
+    "diatermia electrocirugia bomba",
+    "bisturi electrico sensor aid",
+    "¿Qué hacer con la bomba de insulina si se usa electrocirugía?",
+    "¿Hay que retirar el sistema de asa cerrada en procedimientos con diatermia?",
+    "en quirófano con bisturí eléctrico qué pasa con la bomba"
+  ],
+  "T6/5": [
+    "ecografia ecg endoscopia bomba",
+    "endoscopia sin electrocirugia aid",
+    "¿Hace falta quitarse la bomba para una ecografía o un electrocardiograma?",
+    "¿Qué hacer con el sistema AID en una endoscopia sin electrocirugía?",
+    "me hacen una eco tengo que quitarme el sensor"
+  ],
+  "T6/6": [
+    "cirugia corta bomba",
+    "cirugia menor aid automatico",
+    "¿Se puede mantener el sistema de asa cerrada en una cirugía corta con una sola comida omitida?",
+    "¿Qué hacer con la bomba en una intervención breve en paciente estable?",
+    "me operan de algo pequeño sigo con la bomba"
+  ],
+  "T6/7": [
+    "cirugia larga bomba insulina iv",
+    "inestabilidad clinica retirar aid",
+    "¿Qué hacer con el sistema AID en una cirugía prolongada o compleja?",
+    "¿Cuándo pasar de la bomba a insulina intravenosa en un paciente inestable?",
+    "operación grande qué pasa con mi bomba"
+  ],
+  "T6/nota/0/0": [
+    "instrucciones de uso fabricante pruebas",
+    "contrastar ficha tecnica bomba rm",
+    "¿Hay que comprobar las instrucciones del fabricante antes de una prueba de imagen con la bomba?",
+    "¿Las recomendaciones para pruebas valen igual para todos los mercados?",
+    "dónde miro si mi bomba aguanta la prueba"
+  ],
+  "T6/nota/0/1": [
+    "retirada bomba mas de 1 hora",
+    "desconectar pod cuanto tiempo",
+    "¿Qué hacer si hay que retirar la bomba o el pod más de una hora?",
+    "¿Las desconexiones cortas de la bomba requieren insulina de rescate?",
+    "cuánto tiempo puedo estar sin la bomba"
+  ],
+  "T6/nota/0/2": [
+    "volver de insulina iv a bomba",
+    "transicion perfusion a aid solapamiento",
+    "¿Cómo se vuelve al sistema de asa cerrada desde la perfusión de insulina intravenosa?",
+    "¿Cuánto tiempo se solapan la bomba y la insulina IV antes de retirar la perfusión?",
+    "cuándo me quitan el gotero de insulina y vuelvo a la bomba"
+  ],
+  "T6/nota/1/0": [
+    "abreviaturas tabla 6",
+    "que es dexa pet",
+    "¿Qué significa DEXA?",
+    "¿Qué quieren decir PET, RM y TC?",
+    "qué es la absorciometría de doble energía"
+  ],
+  "l/07-educacion/b3": [
+    "contenidos minimos educacion aid",
+    "temario formacion asa cerrada",
+    "¿Qué temas mínimos hay que enseñar a un paciente que empieza con asa cerrada?",
+    "¿Qué debe incluir la formación sobre recambio de set, modos temporales, alarmas y cetonas en AID?",
+    "que me tienen que explicar si o si antes de empezar con el 780g o el omnipod"
+  ],
+  "l/07-educacion/b3/0": [
+    "componentes sistema aid",
+    "bases isci mcg educacion",
+    "¿Hay que explicar las bases de la bomba y del sensor continuo en la formación de asa cerrada?",
+    "¿Qué conocimientos básicos sobre infusión subcutánea y monitorización se enseñan al inicio?",
+    "que partes tiene el sistema bomba sensor y movil"
+  ],
+  "l/07-educacion/b3/1": [
+    "activar modo automatico",
+    "salir de automatico educacion",
+    "¿Se enseña al paciente a entrar y salir del modo automático?",
+    "¿Qué debe saber el paciente sobre la activación del modo auto en su sistema?",
+    "como pongo y quito el automatico de la bomba"
+  ],
+  "l/07-educacion/b3/2": [
+    "cambio set reservorio pod sensor",
+    "recambio cateter educacion",
+    "¿Forma parte de la educación aprender a cambiar el set, el reservorio, el pod y el sensor?",
+    "¿Qué recambios del sistema debe saber hacer el paciente con AID?",
+    "me tienen que enseñar a cambiar el pod y el sensor"
+  ],
+  "l/07-educacion/b3/3": [
+    "bolo antes de comer minutos",
+    "prebolo 10 15 min",
+    "¿Cuántos minutos antes de comer hay que poner el bolo en asa cerrada?",
+    "¿Cuándo no conviene adelantar el bolo prandial, por ejemplo con hipoglucemia o glucosa bajando?",
+    "cuanto tiempo antes de comer me pincho el bolo con la bomba"
+  ],
+  "l/07-educacion/b3/4": [
+    "modos temporales ejercicio enfermedad",
+    "modo temporal viajes exploraciones",
+    "¿En qué situaciones se enseña a usar los modos temporales del sistema AID?",
+    "¿Hay que formar en el uso de modos temporales para deporte, enfermedad o viajes?",
+    "que modo pongo cuando me voy de viaje o estoy malo"
+  ],
+  "l/07-educacion/b3/5": [
+    "alarmas descarga datos educacion",
+    "gestion alarmas aid",
+    "¿Debe enseñarse al paciente a gestionar alarmas y descargar los datos de la bomba?",
+    "¿Forma parte de la formación básica subir los datos del sistema de asa cerrada?",
+    "como subo los datos de la bomba y que hago con las alarmas"
+  ],
+  "l/07-educacion/b3/6": [
+    "seguridad digital bomba",
+    "credenciales administracion remota aid",
+    "¿Qué recomendaciones de ciberseguridad hay para los sistemas de asa cerrada?",
+    "¿Hay que revisar las funciones de bolo remoto o control desde otro dispositivo?",
+    "pueden hackearme la bomba desde el movil"
+  ],
+  "l/07-educacion/b3/7": [
+    "actuacion hipo hiper cetonas fallo infusion",
+    "educacion fallo de infusion",
+    "¿Qué situaciones de urgencia debe saber manejar un paciente con asa cerrada?",
+    "¿Se enseña qué hacer ante hiperglucemia persistente, cetonemia o fallo del catéter?",
+    "que hago si me sube mucho y tengo cetonas con la bomba"
+  ],
+  "l/07-educacion/b4": [
+    "plan de seguridad aid contenido",
+    "kit seguridad antes modo automatico",
+    "¿Qué debe incluir el plan de seguridad de un paciente con asa cerrada?",
+    "¿Cuándo hay que entregar el plan de seguridad, antes de activar el modo automático?",
+    "que tengo que llevar siempre encima por si falla la bomba"
+  ],
+  "l/07-educacion/b4/0": [
+    "pauta respaldo plumas",
+    "conversion bomba a multiples dosis",
+    "¿Debe el paciente tener calculada la pauta de insulina en pluma por si falla la bomba?",
+    "¿Qué pauta de respaldo con basal y rápida se incluye en el plan de seguridad?",
+    "cuanta insulina me pongo con boli si se rompe la bomba"
+  ],
+  "l/07-educacion/b4/1": [
+    "glucometro tiras cetonas",
+    "tiras beta hidroxibutirato plan seguridad",
+    "¿Necesita el paciente con AID glucómetro y tiras de cetonemia?",
+    "¿Qué material de medición capilar debe incluir el plan de seguridad?",
+    "tengo que tener medidor de cetonas en sangre en casa"
+  ],
+  "l/07-educacion/b4/2": [
+    "recambios set canula pods sensores",
+    "baterias cargador repuesto",
+    "¿Qué repuestos de material debe llevar siempre la persona con asa cerrada?",
+    "¿Hay que tener sets, reservorios, pods y sensores de reserva?",
+    "cuantos pods y sensores de repuesto llevo"
+  ],
+  "l/07-educacion/b4/3": [
+    "glucagon plan seguridad",
+    "glucagon asa cerrada",
+    "¿Debe incluirse el glucagón en el plan de seguridad del sistema AID?",
+    "¿Tiene que tener glucagón disponible un paciente con páncreas artificial?",
+    "hace falta glucagon aunque lleve bomba automatica"
+  ],
+  "l/07-educacion/b4/4": [
+    "telefono soporte tecnico bomba",
+    "contacto equipo diabetes",
+    "¿El plan de seguridad debe incluir los teléfonos del equipo y del servicio técnico?",
+    "¿A quién debe poder contactar el paciente si falla su sistema de asa cerrada?",
+    "a quien llamo si se me estropea la bomba"
+  ],
+  "l/07-educacion/b4/5": [
+    "algoritmo hiperglucemia persistente figura 3",
+    "fallo infusion algoritmo plan seguridad",
+    "¿Incluye el plan de seguridad un algoritmo ante hiperglucemia persistente?",
+    "¿Qué hacer ante sospecha de fallo de infusión según el plan de seguridad?",
+    "el esquema de que hacer si el azucar no baja"
+  ],
+  "l/09-descarga/b17": [
+    "tramos cetonemia",
+    "beta hidroxibutirato actuacion",
+    "¿Qué hacer según el valor de cetonemia capilar en un paciente con bomba?",
+    "¿Cuáles son los cuatro tramos de β-hidroxibutirato y su actuación en asa cerrada?",
+    "tengo cetonas en sangre que hago segun el numero"
+  ],
+  "l/09-descarga/b17/0": [
+    "cetonas menos de 0,6",
+    "cetonemia normal hiperglucemia",
+    "¿Qué hacer si las cetonas están por debajo de 0,6 mmol/l pero la glucosa sigue alta?",
+    "¿Con cetonemia negativa hay que seguir sospechando fallo de infusión?",
+    "cetonas a 0,3 pero sigo alto"
+  ],
+  "l/09-descarga/b17/1": [
+    "cetonas 0,6 0,9",
+    "cetonemia leve aid",
+    "¿Qué hacer con una cetonemia leve de 0,6 a 0,9 mmol/l?",
+    "¿Cada cuánto repetir glucemia y cetonas si la cetonemia es leve?",
+    "me sale 0,8 de cetonas es grave"
+  ],
+  "l/09-descarga/b17/2": [
+    "cetonas 1 2,9",
+    "cetosis significativa fallo infusion",
+    "¿Qué hacer si la cetonemia está entre 1 y 2,9 mmol/l con bomba?",
+    "¿Indica una cetonemia mayor de 1 un probable fallo del set?",
+    "tengo 1,5 de cetonas con la bomba"
+  ],
+  "l/09-descarga/b17/3": [
+    "cetonas mayor 3 urgencias",
+    "cetoacidosis signos gravedad",
+    "¿Cuándo hay que acudir al hospital por cetonas en un paciente con asa cerrada?",
+    "¿Qué signos de gravedad junto a la cetonemia sugieren cetoacidosis diabética?",
+    "tengo vomitos y cetonas altas voy a urgencias"
+  ],
+  "l/09-descarga/b28": [
+    "errores frecuentes descarga",
+    "errores evitar asa cerrada",
+    "¿Qué errores recurrentes conviene evitar al manejar y revisar sistemas de asa cerrada?",
+    "¿Cuáles son los fallos típicos al interpretar la descarga y ajustar la terapia?",
+    "que cosas se hacen mal con la bomba automatica"
+  ],
+  "l/09-descarga/b28/0": [
+    "insulina activa bolos manuales",
+    "perseguir glucosa hipo tardia",
+    "¿Qué riesgo hay al poner bolos manuales seguidos sin mirar la insulina activa?",
+    "¿Cómo manejar la ansiedad por hiperglucemia que lleva a corregir en exceso?",
+    "me pongo correcciones una tras otra y luego me da hipo"
+  ],
+  "l/09-descarga/b28/1": [
+    "descarga sin decisiones",
+    "recomendacion concreta consulta",
+    "¿En qué debe terminar siempre la revisión de una descarga?",
+    "¿Sirve de algo descargar los datos si no se hace ningún cambio?",
+    "miran los datos y no me dicen nada que cambiar"
+  ],
+  "l/09-descarga/b28/2": [
+    "dimension emocional aid",
+    "miedo hipoglucemia fatiga tecnologica",
+    "¿Pueden factores emocionales explicar un mal control con asa cerrada?",
+    "¿Qué papel tienen el miedo a la hipo o la presión de los cuidadores en los resultados?",
+    "estoy quemado de la bomba y por eso voy peor"
+  ],
+  "t/01-introduccion/b1/0": [
+    "dm1 autoinmune celulas beta",
+    "definicion diabetes tipo 1",
+    "¿Qué caracteriza fisiopatológicamente a la diabetes tipo 1?",
+    "¿Por qué en la diabetes tipo 1 falta la insulina por completo?",
+    "por que mi pancreas no fabrica insulina si tengo tipo 1"
+  ],
+  "t/01-introduccion/b1/1": [
+    "mdi vs isci decisiones paciente",
+    "multidosis bomba sin automatizar ajustes",
+    "¿Qué tienen en común las múltiples dosis y la bomba de insulina con sensor?",
+    "¿Quién decide los ajustes de insulina cuando no hay asa cerrada?",
+    "con boli o con bomba normal tengo que decidir yo todo el dia"
+  ],
+  "t/01-introduccion/b1/2": [
+    "que es aid asa cerrada",
+    "pancreas artificial bomba sensor algoritmo",
+    "¿Qué es un sistema automatizado de administración de insulina?",
+    "¿Cómo ajusta la bomba de asa cerrada la insulina según la glucosa del sensor?",
+    "que es eso del pancreas artificial que pone insulina solo"
+  ],
+  "t/01-introduccion/b1/3": [
+    "evidencia aid tir hipo",
+    "asa cerrada vs multidosis beneficios",
+    "¿Qué beneficios demuestra el asa cerrada frente a MDI o bomba con sensor?",
+    "¿En qué poblaciones se ha visto beneficio de los sistemas AID: embarazo, niños, mayores?",
+    "merece la pena pasarse al pancreas artificial, se controla mejor"
+  ],
+  "t/01-introduccion/b1/4": [
+    "aid modalidad preferente dm1",
+    "a quien poner asa cerrada",
+    "¿Son los sistemas AID el tratamiento de elección en la diabetes tipo 1?",
+    "¿Qué condición debe cumplir la persona con DM1 para preferir un AID?",
+    "deberia llevar todo el mundo con tipo 1 un sistema automatico"
+  ],
+  "t/01-introduccion/b2/0": [
+    "guia sed asa cerrada 2026",
+    "capitulo manual seen multidosis dm1",
+    "¿Dónde encuentro el detalle técnico de cada sistema de asa cerrada?",
+    "¿Con qué capítulo del Manual SEEN enlaza este de automatización de insulina?",
+    "donde miro la info tecnica de cada bomba"
+  ],
+  "t/02-componentes/b1/0": [
+    "componentes asa cerrada",
+    "bomba sensor algoritmo elementos",
+    "¿De qué partes se compone un sistema de asa cerrada?",
+    "¿Cuáles son los tres elementos esenciales de un AID?",
+    "que piezas lleva el sistema automatico de insulina"
+  ],
+  "t/02-componentes/b1/1": [
+    "plataforma descarga datos telemedicina",
+    "cuarto elemento aid software",
+    "¿Por qué la plataforma de descarga se considera parte del sistema de asa cerrada?",
+    "¿Qué papel tiene el software de descarga en el seguimiento y la telemedicina?",
+    "hace falta la app o web para ver los datos de la bomba"
+  ],
+  "t/02-componentes/b3/0": [
+    "insulina bomba rapida ultrarrapida",
+    "¿Qué tipo de insulina se usa en la bomba de un sistema AID?",
+    "¿Se puede usar insulina ultrarrápida en las bombas de asa cerrada?",
+    "que insulina se mete en el deposito de la bomba"
+  ],
+  "t/02-componentes/b3/1": [
+    "modo manual vs automatico basal",
+    "basal programada modo auto",
+    "¿Qué diferencia hay entre el modo manual y el modo automático de la bomba?",
+    "¿La basal programada se sigue usando en modo automático?",
+    "cuando la bomba sale de auto que insulina pone"
+  ],
+  "t/02-componentes/b4/0": [
+    "glucosa intersticial vs capilar retraso",
+    "sensor lag cambios rapidos",
+    "¿Por qué el sensor no coincide con la glucemia capilar cuando la glucosa cambia rápido?",
+    "¿Qué mide exactamente el sensor de monitorización continua?",
+    "por que el sensor marca distinto que el pinchazo en el dedo"
+  ],
+  "t/02-componentes/b4/1": [
+    "cuando hacer capilar con sensor",
+    "confirmar glucemia dedo discordancia",
+    "¿En qué situaciones hay que confirmar con glucemia capilar llevando MCG?",
+    "¿Debo comprobar en el dedo si sospecho que el sensor falla o hay hiperglucemia persistente?",
+    "cuando me tengo que pinchar el dedo aunque lleve sensor"
+  ],
+  "t/02-componentes/b4/2": [
+    "sensor perdida señal sale de auto",
+    "precision sensor seguridad algoritmo",
+    "¿Qué pasa con el modo automático si el sensor pierde señal?",
+    "¿Por qué un sensor inestable puede hacer que el algoritmo decida mal?",
+    "la bomba se sale de automatico cuando falla el sensor"
+  ],
+  "t/02-componentes/b5/0": [
+    "algoritmo diferencia entre sistemas",
+    "que distingue 780g tandem camaps omnipod",
+    "¿Qué componente diferencia más a unos sistemas AID de otros?",
+    "¿Por qué los sistemas de asa cerrada actuales se llaman híbridos?",
+    "en que se diferencian de verdad las bombas automaticas"
+  ],
+  "t/02-componentes/b5/1": [
+    "parametros que cambian modo auto",
+    "que ajustar en cada sistema aid",
+    "¿Qué parámetros modifican realmente el comportamiento automático de cada sistema?",
+    "¿Qué necesita saber el clínico para ajustar un asa cerrada?",
+    "que se puede tocar en la bomba para que haga caso"
+  ],
+  "t/02-componentes/b6/0": [
+    "descarga metricas tir tbr tar cv",
+    "carelink glooko informe que mirar",
+    "¿Qué datos aparecen en la plataforma de descarga de un sistema AID?",
+    "¿Se ven en la descarga el tiempo en modo automático, las autocorrecciones y las alarmas?",
+    "que sale en el informe de la bomba cuando lo descargas"
+  ],
+  "t/02-componentes/b6/1": [
+    "plataforma prioriza patrones",
+    "filtrar datos descarga donde actuar",
+    "¿Qué hace más útil a una plataforma de descarga de datos de glucosa?",
+    "¿Hay plataformas que resalten patrones y prioricen qué revisar?",
+    "algun programa que te diga directamente donde esta el problema"
+  ],
+  "t/02-componentes/b6/2": [
+    "tendencia plataformas toma decisiones",
+    "herramientas dato a informacion util",
+    "¿Hacia dónde evolucionan las herramientas de análisis de datos de los AID?",
+    "¿Cómo ayudan las plataformas a convertir los datos en decisiones clínicas?",
+    "las apps van a interpretar los datos por nosotros"
+  ],
+  "t/03-algoritmos/b1/0": [
+    "pid mpc logica difusa",
+    "tipos algoritmo control insulina",
+    "¿Qué tipos de algoritmo de control usan los sistemas de asa cerrada?",
+    "¿Cada cuánto recalcula la infusión el algoritmo y con qué datos?",
+    "como piensa el algoritmo de la bomba"
+  ],
+  "t/03-algoritmos/b2/0": [
+    "hibrido anunciar comidas bolo",
+    "bolo prandial asa cerrada hibrida",
+    "¿Hay que seguir poniendo bolo de comida con un sistema híbrido?",
+    "¿Por qué es necesario anunciar las comidas en los sistemas AID híbridos?",
+    "con la bomba automatica tengo que meter los hidratos igual"
+  ],
+  "t/03-algoritmos/b2/1": [
+    "retraso sensor tras comer minutos",
+    "glucosa intersticial postprandial retraso",
+    "¿Cuántos minutos tarda el sensor en detectar la subida de glucosa tras comer?",
+    "¿Por qué el sensor va por detrás de la glucosa plasmática después de la ingesta?",
+    "el sensor tarda en ver que he comido"
+  ],
+  "t/03-algoritmos/b2/2": [
+    "insulina rapida inicio efecto min",
+    "pico insulina subcutanea posprandial",
+    "¿Cuándo empieza a actuar la insulina rápida subcutánea?",
+    "¿Por qué la insulina rápida llega tarde al pico de glucosa tras comer?",
+    "cuanto tarda en hacer efecto la insulina rapida"
+  ],
+  "t/03-algoritmos/b2/3": [
+    "comida ejercicio perturbacion algoritmo",
+    "limitaciones asa cerrada insulina lenta",
+    "¿Por qué le cuesta al algoritmo compensar comidas y ejercicio?",
+    "¿Qué limitaciones tienen la insulina subcutánea y el sensor para el control automático?",
+    "por que la bomba no puede con las comidas ni con el deporte"
+  ],
+  "t/03-algoritmos/b3/0": [
+    "asa cerrada completa fully closed loop",
+    "sin bolos sistema completo",
+    "¿Qué es la modalidad de asa cerrada completa?",
+    "¿Existen ya sistemas de insulina totalmente automáticos sin bolos?",
+    "hay bombas que lo hacen todo solas"
+  ],
+  "t/03-algoritmos/b3/1": [
+    "camaps liberty",
+    "liberty sin bolo comidas camaps fx",
+    "¿Qué es CamAPS Liberty y cómo funciona?",
+    "¿Con Liberty de CamAPS FX hace falta ponerse bolo en las comidas?",
+    "con el liberty del camaps ya no tengo que pincharme bolos"
+  ],
+  "t/03-algoritmos/b3/2": [
+    "liberty menores 13 años embarazo",
+    "camaps liberty contraindicacion edad",
+    "¿Desde qué edad se puede usar CamAPS Liberty?",
+    "¿Se recomienda Liberty en embarazadas?",
+    "mi hijo de 10 años puede usar el liberty"
+  ],
+  "t/04-sistemas/b1/0": [
+    "aid disponibles españa",
+    "780g tandem camaps omnipod españa",
+    "¿Qué sistemas de asa cerrada están comercializados en España?",
+    "¿Qué bombas automáticas se pueden poner en España?",
+    "que bombas con algoritmo hay aqui"
+  ],
+  "t/04-sistemas/b1/1": [
+    "tabla comparativa sistemas aid",
+    "comparar 780g tandem omnipod camaps",
+    "¿Dónde se comparan las características de los sistemas AID?",
+    "¿Qué diferencias principales tienen MiniMed 780G, Tandem, myLoop y Omnipod 5?",
+    "tabla para comparar las bombas"
+  ],
+  "t/04-sistemas/b1/2": [
+    "financiacion aid comunidad autonoma",
+    "ficha tecnica vigente prescripcion bomba",
+    "¿Está financiado igual el asa cerrada en todas las comunidades autónomas?",
+    "¿Qué hay que confirmar antes de prescribir un sistema AID?",
+    "me lo cubre la seguridad social en mi comunidad"
+  ],
+  "t/04-sistemas/b4/0": [
+    "guia sed uso asa cerrada",
+    "evidencia por sistema aid guia",
+    "¿Dónde se desarrolla la evidencia de cada sistema de asa cerrada?",
+    "¿Qué guía de la Sociedad Española de Diabetes trata cada sistema en detalle?",
+    "donde leo mas sobre cada bomba"
+  ],
+  "t/04-sistemas/b4/1": [
+    "780g smartguard vs tandem vs omnipod",
+    "omnipod 5 smartadjust pod sin tubo",
+    "¿Qué diferencias prácticas hay entre MiniMed 780G, Tandem Control-IQ, CamAPS FX y Omnipod 5?",
+    "¿Qué sistema tiene el algoritmo en el pod y cuál en la app del móvil?",
+    "cual es la que no lleva tubo y cual va con el movil"
+  ],
+  "t/04-sistemas/b5/0": [
+    "como elegir sistema aid",
+    "criterios eleccion bomba asa cerrada",
+    "¿Qué factores hay que tener en cuenta para elegir entre sistemas AID?",
+    "¿Cómo se decide qué sistema de asa cerrada poner a cada paciente?",
+    "cual de las bombas me conviene a mi"
+  ],
+  "t/05-resultados/b1/0": [
+    "evaluacion hba1c metricas mcg",
+    "como valorar control aid",
+    "¿Cómo se evalúa el control con un sistema de asa cerrada?",
+    "¿Basta la HbA1c para valorar los resultados de un AID?",
+    "como se mira si voy bien con la bomba"
+  ],
+  "t/05-resultados/b1/1": [
+    "hba1c limitaciones hipoglucemia variabilidad",
+    "metricas seguimiento gmi tiempo auto",
+    "¿Qué no informa la HbA1c y qué métricas se usan en el seguimiento?",
+    "¿Qué indicadores revisar en la descarga además de la HbA1c?",
+    "por que la hemoglobina no basta para ver si voy bien"
+  ],
+  "t/05-resultados/b2/0": [
+    "tir objetivo 70 %",
+    "tiempo en rango 70-180 objetivo",
+    "¿Cuál es el objetivo de tiempo en rango en adultos?",
+    "¿Qué rango de glucosa define el TIR?",
+    "cuanto tiempo en rango tengo que tener"
+  ],
+  "t/05-resultados/b2/1": [
+    "tbr objetivo 4 % 1 %",
+    "tiempo hipoglucemia menor 54 objetivo",
+    "¿Cuál es el objetivo de tiempo por debajo de 70 y de 54 mg/dl?",
+    "¿Qué métrica es prioritaria para la seguridad en la descarga?",
+    "cuanto tiempo en hipo es aceptable"
+  ],
+  "t/05-resultados/b2/2": [
+    "tar nivel 2 250 objetivo",
+    "tiempo por encima 250 fallo infusion",
+    "¿Cuál es el objetivo de tiempo por encima de 250 mg/dl?",
+    "¿Qué indica un TAR de nivel 2 elevado, por ejemplo un fallo del set?",
+    "cuanto tiempo puedo estar por encima de 250"
+  ],
+  "t/05-resultados/b2/3": [
+    "cv objetivo 36",
+    "coeficiente variacion variabilidad hipo",
+    "¿Cuál es el objetivo del coeficiente de variación de la glucosa?",
+    "¿Qué relación tiene la variabilidad glucémica con el riesgo de hipoglucemia?",
+    "que significa el cv del informe del sensor"
+  ],
+  "t/05-resultados/b4/0": [
+    "titr 70-140",
+    "tiempo en rango estrecho",
+    "¿Qué es el TITR o tiempo en rango estrecho?",
+    "¿Cuándo aporta información el tiempo entre 70 y 140 mg/dl?",
+    "que es eso del rango estrecho 70 140"
+  ],
+  "t/05-resultados/b4/1": [
+    "titr evidencia complicaciones",
+    "rango estrecho alcanzable automatizacion",
+    "¿Hay evidencia de que el TITR se relacione con las complicaciones?",
+    "¿La automatización facilita alcanzar el tiempo en rango estrecho?",
+    "sirve de algo estar en 70-140 para las complicaciones"
+  ],
+  "t/05-resultados/b4/2": [
+    "titr malestar emocional carga",
+    "rango estrecho distres diabetes",
+    "¿Puede un objetivo de TITR alto aumentar el malestar emocional con la diabetes?",
+    "¿Qué dicen los estudios sobre la carga de autocuidado al perseguir el rango estrecho?",
+    "obsesionarme con el 70 140 me agobia"
+  ],
+  "t/05-resultados/b4/3": [
+    "titr metrica complementaria",
+    "titr no objetivo primario",
+    "¿Se debe usar el TITR como objetivo principal del control?",
+    "¿Cómo debe utilizarse el tiempo en rango estrecho en la consulta?",
+    "tengo que llegar a un porcentaje de rango estrecho si o si"
+  ],
+  "t/05-resultados/b5/0": [
+    "resultados aid ensayos vida real",
+    "aid aumento tir baja hba1c seguridad",
+    "¿Qué resultados muestran los ensayos y los estudios de vida real con AID?",
+    "¿Son frecuentes los eventos graves de seguridad con asa cerrada?",
+    "cuanto se mejora de verdad con la bomba automatica"
+  ],
+  "t/05-resultados/b5/1": [
+    "beneficio aid frente mdi vs isci",
+    "mejora mayor control previo malo",
+    "¿En quién es mayor el beneficio del asa cerrada?",
+    "¿Mejora tanto el AID a quien ya lleva bomba con sensor optimizada?",
+    "si ya llevo bomba con sensor voy a notar mucho cambio"
+  ],
+  "t/05-resultados/b5/2": [
+    "cual es mejor sistema aid comparacion",
+    "comparar dispositivos asa cerrada evidencia",
+    "¿Se puede saber qué sistema AID es más eficaz que otro?",
+    "¿Por qué no hay comparaciones directas fiables entre sistemas de asa cerrada?",
+    "cual es la mejor bomba automatica"
+  ],
+  "t/05-resultados/b5/3": [
+    "aid embarazo niños mayores beneficio",
+    "asa cerrada poblaciones especiales",
+    "¿Se ha documentado beneficio del AID en el embarazo y en personas mayores?",
+    "¿Funciona el asa cerrada en población pediátrica?",
+    "sirve la bomba automatica para niños o abuelos"
+  ],
+  "t/05-resultados/b6/0": [
+    "calidad vida aid sueño miedo hipo",
+    "satisfaccion asa cerrada cuidadores",
+    "¿Mejora el asa cerrada la calidad del sueño y el miedo a la hipoglucemia?",
+    "¿Qué beneficios perciben los pacientes y cuidadores con AID?",
+    "se duerme mejor con la bomba automatica"
+  ],
+  "t/05-resultados/b7/0": [
+    "cad aid prevencion cetonas pluma",
+    "cetoacidosis bomba fallo set",
+    "¿Puede haber cetoacidosis con un sistema de asa cerrada?",
+    "¿Qué medidas previenen la cetoacidosis en usuarios de bomba?",
+    "con la bomba automatica puedo tener cetonas"
+  ],
+  "t/05-resultados/b7/1": [
+    "seguridad antes intensificar objetivos",
+    "revisar tbr hipo nocturna antes ajustar",
+    "¿Qué hay que revisar antes de intensificar los objetivos en un AID?",
+    "¿Por qué la hipoglucemia nocturna se valora antes de apretar el control?",
+    "antes de bajar el objetivo que miro"
+  ],
+  "t/05-resultados/b8/0": [
+    "buen control previo beneficio aid",
+    "hba1c buena merece asa cerrada",
+    "¿Qué aporta el AID si el control de partida ya es bueno?",
+    "¿Hay beneficio nocturno y en hipoglucemias aunque el TIR ya sea alto?",
+    "si ya estoy bien controlado para que quiero la bomba"
+  ],
+  "t/05-resultados/b8/1": [
+    "hba1c alta bolos omitidos aid",
+    "mal control asa cerrada educacion",
+    "¿Cuánto puede mejorar el TIR una persona con HbA1c alta o que olvida bolos?",
+    "¿Qué acompañamiento necesita quien empieza AID con mal control previo?",
+    "me olvido los bolos me vendria bien la automatica"
+  ],
+  "t/06-indicaciones/b1/0": [
+    "umbral indicacion aid",
+    "cambio indicacion asa cerrada",
+    "¿Ha cambiado el umbral de indicación de los sistemas AID?",
+    "¿Por qué ahora se indica el asa cerrada a más pacientes?",
+    "ahora se la dan a mas gente"
+  ],
+  "t/06-indicaciones/b1/1": [
+    "indicacion amplia aid",
+    "modelo restrictivo hba1c hipo inadvertida",
+    "¿Hace falta tener HbA1c alta o hipoglucemias para que indiquen un AID?",
+    "¿Qué significa pasar de una indicación restrictiva a una amplia?",
+    "me pueden poner la bomba aunque no tenga hipos"
+  ],
+  "t/06-indicaciones/b1/2": [
+    "disponibilidad limitada priorizacion aid",
+    "lista espera asa cerrada",
+    "¿Cómo se compagina la indicación amplia con pocos dispositivos disponibles?",
+    "¿Priorizar por falta de recursos significa que el beneficio es menor?",
+    "no hay bombas para todos que se hace"
+  ],
+  "t/06-indicaciones/b2/0": [
+    "criterios priorizacion aid recursos",
+    "escalonar implantacion asa cerrada",
+    "¿En qué se debe basar la priorización si no hay recursos para todos?",
+    "¿Cómo escalonar la implantación de los sistemas AID?",
+    "quien va primero para la bomba"
+  ],
+  "t/06-indicaciones/b2/1": [
+    "prioridad aid niños embarazo hipo grave",
+    "quien tiene prioridad asa cerrada",
+    "¿Qué pacientes tienen prioridad para recibir un sistema AID?",
+    "¿Se prioriza el asa cerrada en el embarazo o la hipoglucemia inadvertida?",
+    "mi hija es pequeña tiene preferencia para la bomba"
+  ],
+  "t/06-indicaciones/b2/2": [
+    "variabilidad carga mental aid prioridad",
+    "calidad de vida criterio asa cerrada",
+    "¿Cuentan la carga mental y la calidad de vida para priorizar un AID?",
+    "¿La elevada variabilidad glucémica es motivo de prioridad?",
+    "estoy quemado con la diabetes me la pueden dar"
+  ],
+  "t/06-indicaciones/b2/3": [
+    "hba1c 7 tir 70 tbr 4 indicacion",
+    "umbrales elegibilidad aid",
+    "¿Qué cifras de HbA1c, TIR o TBR indican necesidad clínica no cubierta?",
+    "¿Son los valores de HbA1c > 7 % umbrales obligatorios para el AID?",
+    "con que hemoglobina me dan la bomba"
+  ],
+  "t/06-indicaciones/b3/0": [
+    "requisitos previos aid",
+    "experiencia mcg isci necesaria",
+    "¿Qué requisitos debe cumplir el paciente antes de iniciar un AID?",
+    "¿Hace falta experiencia previa con bomba o sensor para el asa cerrada?",
+    "tengo que saber usar bomba antes"
+  ],
+  "t/06-indicaciones/b3/1": [
+    "contraindicacion falta experiencia aid",
+    "sin requisitos plan educativo",
+    "¿Contraindica el AID no tener aún la formación necesaria?",
+    "¿Qué se hace si al principio no se cumplen los requisitos?",
+    "no se nada de bombas me la pueden poner igual"
+  ],
+  "t/06-indicaciones/b3/2": [
+    "precaucion aid trastorno psiquiatrico",
+    "rechazo dispositivo barreras seguimiento",
+    "¿En qué situaciones hay que tener precaución con el asa cerrada?",
+    "¿Qué hacer si hay rechazo persistente al dispositivo o un trastorno psicopatológico activo?",
+    "cuando no conviene poner la bomba automatica"
+  ],
+  "t/06-indicaciones/b4/0": [
+    "aid otras diabetes",
+    "asa cerrada fuera dm1",
+    "¿Se usa la automatización de insulina en tipos de diabetes distintos de la DM1?",
+    "¿Se está extendiendo el AID a otras situaciones de insulinoterapia intensiva?",
+    "la bomba automatica solo es para tipo 1"
+  ],
+  "t/06-indicaciones/b4/1": [
+    "aid dm2 780g omnipod control-iq+",
+    "asa cerrada tipo 2 insulinizada",
+    "¿Qué sistemas AID están autorizados en diabetes tipo 2?",
+    "¿Se puede usar Omnipod 5 o MiniMed 780G en un paciente con DM2 con insulina?",
+    "mi padre es tipo 2 con insulina puede llevar tandem"
+  ],
+  "t/06-indicaciones/b4/2": [
+    "aid fibrosis quistica",
+    "asa cerrada diabetes pancreatica 3c postrasplante",
+    "¿Hay evidencia de AID en diabetes relacionada con fibrosis quística?",
+    "¿Se puede usar asa cerrada en diabetes tras trasplante o pancreatectomía?",
+    "con diabetes por el pancreas operado vale la bomba"
+  ],
+  "t/06-indicaciones/b4/3": [
+    "indicacion aid autorizacion financiacion",
+    "aid fuera de ficha tecnica",
+    "¿De qué depende la indicación de un AID en otros tipos de diabetes?",
+    "¿Influye la financiación y la autorización vigente en poder indicar un AID?",
+    "depende de que este aprobado y pagado"
+  ],
+  "t/06-indicaciones/b5/0": [
+    "eleccion sistema peso dtd edad",
+    "elegir bomba destreza vision movil",
+    "¿Qué factores clínicos y personales influyen en la elección del sistema AID?",
+    "¿Influyen la agudeza visual o la destreza manual en qué bomba elegir?",
+    "que bomba para alguien mayor que ve mal"
+  ],
+  "t/06-indicaciones/b5/1": [
+    "jerarquia tecnologica aid",
+    "elegir bomba no solo eficacia",
+    "¿Se debe elegir el sistema AID según el que tenga mejores resultados en ensayos?",
+    "¿Existe un sistema de asa cerrada superior para todos?",
+    "hay una bomba que sea la mejor para todos"
+  ],
+  "t/06-indicaciones/b5/2": [
+    "decision compartida aid historia clinica",
+    "explicar opciones bombas paciente",
+    "¿Cómo se hace la decisión compartida para elegir un sistema AID?",
+    "¿Qué compromisos de cada sistema hay que explicar al paciente antes de elegir?",
+    "como me explican las opciones para elegir bomba"
+  ],
+  "t/06-indicaciones/b5/3": [
+    "decision compartida uso sostenido",
+    "requisito etico eleccion aid",
+    "¿Por qué es importante la decisión compartida en la elección del AID?",
+    "¿Mejora la adherencia al sistema si el paciente participa en la elección?",
+    "si elijo yo la bomba la uso mas"
+  ],
+  "t/07-educacion/b1/0": [
+    "educacion terapeutica asa cerrada",
+    "formacion paciente aid",
+    "¿Es imprescindible la educación diabetológica para usar un sistema de asa cerrada?",
+    "¿Qué importancia tiene formar al paciente antes de ponerle un páncreas artificial?",
+    "hace falta que me enseñen antes de usar la bomba automatica"
+  ],
+  "t/07-educacion/b1/1": [
+    "aid resultados sin educacion",
+    "seguridad asa cerrada programa educativo",
+    "¿Basta con tener acceso a un sistema AID para conseguir buen control?",
+    "¿De qué depende que un paciente siga usando el asa cerrada de forma segura?",
+    "por que no vale solo con ponerme la bomba que se ajusta sola"
+  ],
+  "t/07-educacion/b1/2": [
+    "peet plan de seguridad niveles",
+    "programa estructurado educacion aid",
+    "¿En qué dos niveles se organiza la educación en sistemas de asa cerrada?",
+    "¿Cuándo debe hacerse el programa educativo estructurado y el plan de seguridad personalizado?",
+    "que me tienen que dar de formacion antes y durante la bomba automatica"
+  ],
+  "t/07-educacion/b11/0": [
+    "interrupcion sistema sin basal",
+    "desconexion bomba sin insulina lenta",
+    "¿Por qué es peligroso interrumpir la bomba si solo lleva insulina rápida?",
+    "¿Qué hay que valorar ante cualquier retirada o fallo del sistema de asa cerrada?",
+    "si me quito la bomba me quedo sin nada de insulina"
+  ],
+  "t/07-educacion/b11/1": [
+    "desconexion breve bomba",
+    "pod no se desconecta",
+    "¿Hace falta hacer algo en desconexiones muy cortas de la bomba?",
+    "¿Se puede desconectar el Omnipod o hay que cambiarlo por otro nuevo?",
+    "me puedo quitar el pod un rato para ducharme"
+  ],
+  "t/07-educacion/b11/2": [
+    "suspender bomba al desconectar",
+    "pausar insulina desconexion",
+    "¿Hay que suspender la bomba cuando se desconecta el catéter del cuerpo?",
+    "¿Qué pasa si desconecto la bomba sin pausarla, registra insulina que no ha entrado?",
+    "tengo que parar la bomba cuando me la quito"
+  ],
+  "t/07-educacion/b11/3": [
+    "reconexion bomba reanudar",
+    "reanudar automatico tras desconexion",
+    "¿Qué hay que hacer al volver a conectar la bomba tras una desconexión breve?",
+    "¿Cuándo vuelve el sistema a ajustar la infusión sin más medidas tras reconectar?",
+    "cuando me vuelvo a poner la bomba que hago"
+  ],
+  "t/07-educacion/b11/4": [
+    "1 hora sin insulina bomba",
+    "umbral desconexion cetosis",
+    "¿A partir de cuánto tiempo sin insulina de la bomba hay que actuar?",
+    "¿Qué hacer tras más de una hora sin administración de insulina en asa cerrada?",
+    "llevo una hora sin la bomba que hago"
+  ],
+  "t/07-educacion/b12/0": [
+    "reposicion insulina duracion desconexion",
+    "forma reposicion interrupcion",
+    "¿De qué depende cómo reponer la insulina durante una interrupción de la bomba?",
+    "¿Cómo influye la duración prevista de la desconexión en la pauta de reposición?",
+    "segun cuanto tiempo me quite la bomba que hago"
+  ],
+  "t/07-educacion/b12/1": [
+    "bolo antes de desconectar",
+    "desconexion 2 3 horas deporte",
+    "¿Se puede poner un bolo antes de quitarse la bomba unas horas para cubrir la basal?",
+    "¿Qué hacer con la insulina en desconexiones programadas para deporte, baño o pruebas?",
+    "me voy a la playa y me quito la bomba unas horas"
+  ],
+  "t/07-educacion/b12/2": [
+    "calcular basal desconexion",
+    "estimar insulina basal reciente",
+    "¿En qué se basa el cálculo del bolo para cubrir la basal durante la desconexión?",
+    "¿Se usa la basal automática reciente o la pauta de respaldo para estimar la reposición?",
+    "como se cuanta basal me pierdo al quitar la bomba"
+  ],
+  "t/07-educacion/b12/3": [
+    "desconexion ejercicio reducir",
+    "deporte sin bomba insulina activa",
+    "¿Hay que reducir el bolo de reposición si la desconexión es para hacer ejercicio?",
+    "¿Qué factores ajustan la reposición de insulina en una desconexión por deporte?",
+    "si me quito la bomba para jugar al futbol me pongo menos"
+  ],
+  "t/07-educacion/b13/0": [
+    "pasar a plumas fallo bomba",
+    "glargina u100 respaldo",
+    "¿Qué pauta de inyecciones se usa si la bomba falla de forma definitiva?",
+    "¿Qué insulina basal se prefiere en la pauta alternativa para volver luego al sistema?",
+    "se me rompio la bomba y tengo que volver a los bolis"
+  ],
+  "t/07-educacion/b13/1": [
+    "dosis basal respaldo dtd",
+    "40 50 % dtd glargina",
+    "¿Cómo calcular la dosis de basal en pluma al suspender la bomba?",
+    "¿Qué porcentaje de la dosis total diaria se usa como basal si no hay estimación fiable?",
+    "cuanta lenta me pongo si dejo la bomba"
+  ],
+  "t/07-educacion/b14/0": [
+    "glargina 2 horas antes retirada",
+    "cirugia ingreso retirar bomba",
+    "¿Cuándo administrar la glargina si se va a retirar la bomba para una cirugía o ingreso?",
+    "¿Con cuánta antelación se pone la basal antes de quitar el dispositivo para evitar quedarse sin insulina?",
+    "me operan y me quitan la bomba cuando me pongo la lenta"
+  ],
+  "t/07-educacion/b14/1": [
+    "reiniciar bomba tras glargina",
+    "solapamiento basal ultralarga",
+    "¿Qué hay que tener en cuenta al volver a la bomba después de haber puesto basal en pluma?",
+    "¿Por qué es preferible la glargina U-100 frente a las basales ultralargas al reiniciar el sistema?",
+    "vuelvo a la bomba y aun tengo la lenta puesta"
+  ],
+  "t/07-educacion/b14/2": [
+    "confirmar glucemia capilar",
+    "sensor discordante capilar",
+    "¿Cuándo hay que confirmar con glucemia capilar durante una interrupción de la bomba?",
+    "¿Qué hacer si el sensor no cuadra con los síntomas o hay hiperglucemia persistente?",
+    "el sensor marca raro me pincho el dedo"
+  ],
+  "t/07-educacion/b14/3": [
+    "cetonemia algoritmo figura 3",
+    "sospecha fallo infusion actuacion",
+    "¿Qué algoritmo seguir si hay cetonemia durante una interrupción del sistema?",
+    "¿Cuándo aplicar el algoritmo de hiperglucemia persistente y fallo de infusión?",
+    "tengo cetonas y la bomba quitada que hago"
+  ],
+  "t/07-educacion/b14/4": [
+    "pauta alternativa por escrito paciente",
+    "resumen pauta respaldo historia clinica",
+    "¿Hay que entregar al paciente la pauta alternativa por escrito?",
+    "¿Dónde debe quedar registrada la pauta de respaldo para el paciente con AID?",
+    "me dan un papel con lo que hacer si quito la bomba"
+  ],
+  "t/07-educacion/b15/0": [
+    "pautas orientativas farmacocinetica",
+    "evidencia interrupcion asa cerrada",
+    "¿Están basadas en ensayos las pautas de interrupción del sistema de asa cerrada?",
+    "¿Por qué hay que individualizar las recomendaciones de desconexión y reposición?",
+    "esto de quitarse la bomba esta probado o es aproximado"
+  ],
+  "t/07-educacion/b16/0": [
+    "cuando llamar soporte tecnico",
+    "incidencias resolver paciente equipo",
+    "¿Cuándo debe el paciente llamar al servicio técnico y cuándo al equipo sanitario?",
+    "¿Cómo enseñar a distinguir problemas técnicos, de seguridad y dudas de ajuste?",
+    "a quien llamo si la bomba pita, al medico o a la casa"
+  ],
+  "t/07-educacion/b16/1": [
+    "descarga no sustituye entrevista",
+    "patrones turnos alcohol estres",
+    "¿Basta con revisar la descarga de la bomba sin hablar con el paciente?",
+    "¿Qué factores de la vida diaria explican patrones que no se ven en el informe?",
+    "el medico solo mira los graficos y no me pregunta"
+  ],
+  "t/07-educacion/b17/0": [
+    "peet simplificado",
+    "baja alfabetizacion digital aid",
+    "¿Cómo adaptar la educación en asa cerrada a pacientes con riesgo de abandono o barrera idiomática?",
+    "¿Qué objetivos priorizar en personas con poca habilidad digital o sin cuidador entrenado?",
+    "mi madre no se maneja con el movil puede llevar bomba automatica"
+  ],
+  "t/07-educacion/b17/1": [
+    "posponer optimizacion parametros",
+    "competencias basicas primero",
+    "¿Cuándo se debe hacer el ajuste fino de parámetros en pacientes con formación básica?",
+    "¿Se puede retrasar la optimización hasta consolidar las competencias de seguridad?",
+    "primero aprender lo basico y luego ajustar la bomba"
+  ],
+  "t/07-educacion/b19/0": [
+    "formacion equipo asistencial aid",
+    "capacitacion profesionales asa cerrada",
+    "¿Qué competencias necesita el equipo sanitario para implantar sistemas de asa cerrada?",
+    "¿Por qué la formación del personal es clave para la seguridad de los sistemas AID?",
+    "los medicos y enfermeras tambien tienen que saber de las bombas"
+  ],
+  "t/07-educacion/b19/1": [
+    "programas formativos escalonados",
+    "circuitos asistenciales variabilidad",
+    "¿Cómo reducir la variabilidad en el acceso y la calidad de los sistemas de asa cerrada?",
+    "¿Cuándo es más decisiva la capacitación del equipo con un sistema concreto?",
+    "en unos hospitales saben mas de bombas que en otros"
+  ],
+  "t/07-educacion/b2/0": [
+    "peet adaptar sistema",
+    "programa educativo individualizar experiencia previa",
+    "¿El programa educativo debe ser igual para todos los sistemas de asa cerrada?",
+    "¿Según qué factores se adapta el PEET en pacientes con AID?",
+    "la formacion depende de la bomba que lleve o de si ya tenia bomba antes"
+  ],
+  "t/07-educacion/b2/1": [
+    "fases peet",
+    "valoracion inicial seguimiento alta programa educativo",
+    "¿En cuántas fases se organiza el programa educativo de asa cerrada?",
+    "¿Cuáles son las etapas del PEET desde la valoración hasta el alta?",
+    "como se estructuran las sesiones de formacion de la bomba"
+  ],
+  "t/07-educacion/b2/2": [
+    "caracteristicas peet",
+    "programa educativo por escrito interdisciplinar",
+    "¿Qué requisitos debe cumplir un programa de educación terapéutica en tecnología?",
+    "¿Qué formación necesitan los profesionales que imparten el programa educativo de AID?",
+    "como tiene que ser el curso que nos dan para la bomba"
+  ],
+  "t/07-educacion/b6/0": [
+    "reglas plan seguridad",
+    "dos reglas operativas aid",
+    "¿Cuáles son las reglas operativas clave del plan de seguridad en asa cerrada?",
+    "¿Qué dos normas básicas destaca el capítulo dentro del plan de seguridad?",
+    "las dos cosas importantes que tengo que saber con la bomba"
+  ],
+  "t/07-educacion/b6/1": [
+    "hipo asa cerrada menos hidratos",
+    "tratar hipoglucemia aid",
+    "¿Por qué en asa cerrada se necesitan menos hidratos para remontar una hipoglucemia?",
+    "¿Cómo cambia el tratamiento de la hipoglucemia con AID frente a MDI o bomba convencional?",
+    "con la bomba automatica tomo menos azucar para la hipo"
+  ],
+  "t/07-educacion/b7/0": [
+    "hipo leve 5 10 g",
+    "regla 15 g asa cerrada",
+    "¿Cuántos gramos de hidratos dar en una hipoglucemia leve con flecha estable en AID?",
+    "¿Cuándo hay que dar 15 g en lugar de 5-10 g, por ejemplo con glucosa < 54 o doble flecha abajo?",
+    "si estoy en 60 con la bomba cuanto zumo me tomo"
+  ],
+  "t/07-educacion/b7/1": [
+    "reevaluar hipo 15 min",
+    "sobretratamiento hipoglucemia aid",
+    "¿Cuándo hay que volver a medir la glucosa tras tratar una hipoglucemia con asa cerrada?",
+    "¿Hay evidencia específica sobre el tratamiento de la hipoglucemia en sistemas AID?",
+    "despues de comer algo por la hipo cuando vuelvo a mirar"
+  ],
+  "t/07-educacion/b7/2": [
+    "camaps tratamiento hipoglucemia registrar",
+    "hidratos hipo no anunciar comida",
+    "¿Hay que introducir en la bomba los hidratos tomados para tratar una hipoglucemia?",
+    "¿Cómo se registran los hidratos de una hipo en CamAPS FX sin que cuenten como comida?",
+    "meto en la app los azucares de la hipo o no"
+  ],
+  "t/07-educacion/b9/0": [
+    "hiperglucemia persistente fallo infusion",
+    "hiper sin causa set",
+    "¿Qué hay que sospechar ante una hiperglucemia mantenida sin explicación en un paciente con bomba?",
+    "¿Toda hiperglucemia persistente debe considerarse fallo de infusión hasta que se demuestre lo contrario?",
+    "llevo horas alto y no se por que sera el cateter"
+  ],
+  "t/07-educacion/b9/1": [
+    "enseñar regla fallo infusion",
+    "peet casos practicos hiperglucemia",
+    "¿Cómo debe enseñarse la regla de sospecha de fallo de infusión en el programa educativo?",
+    "¿Debe quedar por escrito la actuación ante hiperglucemia persistente?",
+    "me explicaron con ejemplos lo de que si sube es el set"
+  ],
+  "t/08-iniciacion/b1/0": [
+    "fases inicio seguimiento aid",
+    "iniciacion asa cerrada 4 fases",
+    "¿Cuáles son las fases de la iniciación y seguimiento de un sistema AID?",
+    "¿Cuánto dura el seguimiento estrecho tras empezar un asa cerrada?",
+    "como va el proceso de empezar con la bomba"
+  ],
+  "t/08-iniciacion/b1/1": [
+    "tabla transicion mdi parametros",
+    "tablas inicio aid descarga",
+    "¿Dónde están los parámetros iniciales y el solapamiento basal al pasar de MDI?",
+    "¿Qué tabla resume la conducta ante situaciones clínicas y el análisis de la descarga?",
+    "donde viene como pasar de boli a bomba"
+  ],
+  "t/08-iniciacion/b11/0": [
+    "cada cuanto revision aid estable",
+    "espaciar visitas 3-6 meses",
+    "¿Con qué frecuencia se revisa a un paciente estable con AID?",
+    "¿Se pueden espaciar las visitas si hay buen control y uso sostenido?",
+    "cada cuanto tengo que ir a consulta con la bomba"
+  ],
+  "t/08-iniciacion/b11/1": [
+    "plataforma alertas poblacional",
+    "identificar pacientes contactar descargas",
+    "¿Cómo ayudan las plataformas a decidir a qué paciente contactar?",
+    "¿Sirven las alertas de la plataforma para optimizar el tiempo asistencial?",
+    "el hospital ve mis datos y me llama si voy mal"
+  ],
+  "t/08-iniciacion/b11/2": [
+    "visita seguimiento aid cribado complicaciones",
+    "revision analitica retinopatia aid",
+    "¿Qué debe incluir cada visita de seguimiento de un AID?",
+    "¿Se mantiene el cribado de complicaciones crónicas en pacientes con asa cerrada?",
+    "con la bomba me siguen mirando ojos y riñon"
+  ],
+  "t/08-iniciacion/b11/3": [
+    "reevaluacion anual aid",
+    "idoneidad sistema satisfaccion anual",
+    "¿Qué se añade en la revisión anual de un paciente con AID?",
+    "¿Cada cuánto se valora si el sistema sigue siendo el adecuado?",
+    "una vez al año me preguntan si estoy contento"
+  ],
+  "t/08-iniciacion/b12/0": [
+    "no alcanza objetivos aid",
+    "reevaluacion asa cerrada mal control",
+    "¿Qué hacer si no se alcanzan los objetivos con el AID pese a optimizarlo?",
+    "¿Cuándo se plantea reevaluar el tratamiento con asa cerrada?",
+    "llevo la bomba y sigo mal que hacen"
+  ],
+  "t/08-iniciacion/b12/1": [
+    "peet refuerzo cambio sistema",
+    "cambiar de bomba aid opciones",
+    "¿Qué opciones hay si el sistema AID no funciona bien en un paciente?",
+    "¿Se puede cambiar a otro sistema de asa cerrada o a otra modalidad?",
+    "me pueden cambiar a otra bomba"
+  ],
+  "t/08-iniciacion/b12/2": [
+    "retirar aid criterios",
+    "uso insuficiente cad asa cerrada retirada",
+    "¿En qué situaciones se puede reconsiderar el tratamiento con asa cerrada?",
+    "¿Es motivo de retirada del AID el uso discontinuo o las descompensaciones con riesgo de cetoacidosis?",
+    "me pueden quitar la bomba si no la uso bien"
+  ],
+  "t/08-iniciacion/b12/3": [
+    "retirada aid decision compartida",
+    "no retirar bomba automaticamente",
+    "¿Son criterios automáticos de retirada el mal uso o no alcanzar objetivos?",
+    "¿Cómo se decide si retirar un sistema AID?",
+    "me la quitan sin preguntarme"
+  ],
+  "t/08-iniciacion/b6/0": [
+    "configuracion inicial aid ratio fsi basal",
+    "programar bomba antes de auto",
+    "¿Qué hay que configurar antes de activar el modo automático?",
+    "¿Qué parámetros comunes a todos los sistemas se programan al inicio: ratio, sensibilidad, basal?",
+    "que hay que meter en la bomba el primer dia"
+  ],
+  "t/08-iniciacion/b6/1": [
+    "regla 450 1700 dtd",
+    "calcular ratio fsi inicio bomba",
+    "¿Cómo se calculan la ratio y el factor de sensibilidad iniciales si no hay pauta previa?",
+    "¿Se usa la pauta previa del paciente para configurar el sistema AID?",
+    "como saco la ratio si no tengo ninguna"
+  ],
+  "t/08-iniciacion/b6/2": [
+    "ajustar ratio franja horaria",
+    "personalizar parametros tras descarga",
+    "¿Los parámetros iniciales calculados son definitivos?",
+    "¿Cómo se personalizan después los ajustes por horario y tipo de comida?",
+    "las ratios del principio luego se cambian"
+  ],
+  "t/08-iniciacion/b7/0": [
+    "reduccion dtd paso mdi aid",
+    "dtd inicial bomba desde multidosis",
+    "¿Cuánto hay que reducir la dosis total diaria al pasar de MDI a un AID?",
+    "¿De qué depende la reducción de la DTD inicial en la transición a bomba?",
+    "cuanta insulina menos al pasar del boli a la bomba"
+  ],
+  "t/08-iniciacion/b7/1": [
+    "solapamiento basal degludec bomba",
+    "basal previa transicion aid",
+    "¿Por qué importa qué insulina basal usaba antes de iniciar la bomba?",
+    "¿Qué riesgo hay de solapamiento con la basal previa los primeros días?"
+  ],
+  "t/08-iniciacion/b8/0": [
+    "perfil basal inicial aid",
+    "basal programada influencia modo auto",
+    "¿Hace falta programar un perfil basal en un sistema de asa cerrada?",
+    "¿Influye igual la basal programada en todos los sistemas AID?",
+    "hay que poner basal aunque sea automatica"
+  ],
+  "t/08-iniciacion/b8/1": [
+    "basal plana 40-50 % dtd",
+    "calcular basal inicio bomba fenomeno alba",
+    "¿Qué basal inicial se programa si no hay patrón previo?",
+    "¿Se puede trasladar tal cual la programación de una ISCI previa al AID?",
+    "cuanta basal le pongo al empezar"
+  ],
+  "t/08-iniciacion/b8/2": [
+    "basal control-iq modo auto",
+    "basal 780g camaps omnipod adaptativa",
+    "¿En qué sistema la basal programada interviene directamente en modo automático?",
+    "¿Qué papel tiene la basal en MiniMed 780G, CamAPS FX y Omnipod 5?",
+    "en el tandem sirve la basal que programo"
+  ],
+  "t/08-iniciacion/b8/3": [
+    "revisar ajustes modo manual",
+    "basal respaldo fallo sensor asa abierta",
+    "¿Por qué hay que actualizar la basal manual en cada visita aunque se use el modo automático?",
+    "¿Qué ajustes rigen si el sistema vuelve a asa abierta por fallo del sensor?",
+    "si se cae el sensor que basal pone la bomba"
+  ],
+  "t/08-iniciacion/b9/0": [
+    "seguimiento primeros 3 meses aid",
+    "visitas 72 h semana 2-4 semanas",
+    "¿Cuándo son las revisiones tras iniciar un sistema de asa cerrada?",
+    "¿Qué calendario de contactos se recomienda los primeros 3 meses?",
+    "cuando me vuelven a ver despues de ponerme la bomba"
+  ],
+  "t/08-iniciacion/b9/1": [
+    "contacto remoto inicial aid",
+    "llamada 72 h alarmas modo manual",
+    "¿Qué se revisa en el primer contacto telefónico tras iniciar el AID?",
+    "¿Para qué sirve el contacto remoto en las primeras 72 horas?",
+    "la llamada de los primeros dias de que va"
+  ],
+  "t/08-iniciacion/b9/2": [
+    "revision 2-4 semanas ajustes finos",
+    "modos temporales bolos tardios revision",
+    "¿Qué se ajusta en la revisión presencial a las 2-4 semanas del inicio?",
+    "¿Cuándo se incorporan los modos temporales y se revisan los bolos omitidos?",
+    "en la cita del mes que me van a cambiar"
+  ],
+  "t/08-iniciacion/b9/3": [
+    "visita 3 meses hba1c descarga",
+    "revision tres meses aid",
+    "¿Qué incluye la visita a los 3 meses del inicio del AID?",
+    "¿Cuándo se pide la primera HbA1c tras empezar el asa cerrada?",
+    "a los 3 meses que me miran"
+  ],
+  "t/09-descarga/b1/0": [
+    "analisis descarga tres ejes",
+    "interpretar descarga bomba conductas",
+    "¿Cómo se estructura el análisis de la descarga de un sistema de asa cerrada?",
+    "¿Qué conductas buscar en la descarga, como bolos omitidos, hidratos fantasma o sobretratamiento?",
+    "como se leen los informes de la bomba en consulta"
+  ],
+  "t/09-descarga/b1/1": [
+    "patrones conductas modificables",
+    "intervencion educativa descarga",
+    "¿Los patrones persistentes en la descarga son siempre un problema de parámetros?",
+    "¿Es tan importante la educación como el ajuste técnico al revisar la descarga?",
+    "no siempre hay que tocar la bomba a veces es lo que hago yo"
+  ],
+  "t/09-descarga/b1/2": [
+    "tabla 5 ocho pasos descarga",
+    "revision sistematica descarga consulta",
+    "¿Cuáles son los pasos para revisar de forma sistemática la descarga en consulta?",
+    "¿Hay una guía en ocho pasos para interpretar los datos del sistema AID?",
+    "por donde empiezo a mirar la descarga del paciente"
+  ],
+  "t/09-descarga/b10/0": [
+    "tbr elevado",
+    "tiempo bajo rango alto intensificar",
+    "¿Qué hacer si el tiempo por debajo de rango está elevado en un sistema AID?",
+    "¿Qué revisar ante un TBR alto antes de intensificar el tratamiento?",
+    "paso mucho tiempo en hipo con la bomba"
+  ],
+  "t/09-descarga/b10/1": [
+    "tbr aceptable titr",
+    "objetivos mas estrictos aid",
+    "¿Cuándo se puede buscar más tiempo en rango estricto (TITR)?",
+    "¿Qué condición debe cumplirse antes de bajar los objetivos glucémicos?",
+    "cuando puedo apretar mas el control sin riesgo de hipos"
+  ],
+  "t/09-descarga/b11/0": [
+    "exceso autocorrecciones 780g",
+    "bolos automaticos correccion control-iq",
+    "¿Qué significa un exceso de autocorrecciones en MiniMed 780G o Tandem Control-IQ?",
+    "¿Qué parámetros revisar si hay muchos bolos automáticos de corrección, sensibilidad o duración de insulina activa?",
+    "la bomba me mete correcciones todo el rato"
+  ],
+  "t/09-descarga/b11/1": [
+    "autocorrecciones no es exito",
+    "hipo tardia bolos manuales",
+    "¿Es buena señal que el algoritmo haga muchas autocorrecciones?",
+    "¿Qué riesgo hay si se añaden bolos manuales a las autocorrecciones?",
+    "si la bomba corrige mucho es que va bien no"
+  ],
+  "t/09-descarga/b12/0": [
+    "tiempo fuera modo automatico",
+    "salidas automatico manual",
+    "¿Por qué es importante el tiempo fuera del modo automático en la descarga?",
+    "¿Qué hacer antes de ajustar parámetros si el paciente pasa muchas horas en manual?",
+    "la bomba se me sale del automatico muchas veces"
+  ],
+  "t/09-descarga/b12/1": [
+    "causas salida automatico",
+    "resolucion incidencias auto",
+    "¿Dónde se explican las causas de las salidas repetidas del modo automático?",
+    "¿Qué hacer de inmediato cuando el sistema sale del automático una y otra vez?",
+    "por que se me quita el modo auto"
+  ],
+  "t/09-descarga/b13/0": [
+    "interpretar informe con paciente",
+    "patrones descarga causas",
+    "¿Por qué hay que interpretar la descarga junto con la persona con diabetes?",
+    "¿Pueden las mismas métricas tener causas técnicas o de conducta distintas?",
+    "el informe sin hablar conmigo no sirve de nada"
+  ],
+  "t/09-descarga/b15/0": [
+    "resolucion incidencias aid",
+    "actuacion inmediata problemas bomba",
+    "¿Qué diferencia hay entre interpretar patrones y resolver incidencias concretas?",
+    "¿Dónde se trata la actuación inmediata ante problemas del sistema de asa cerrada?",
+    "que hago cuando falla algo de la bomba en el momento"
+  ],
+  "t/09-descarga/b15/1": [
+    "figura 3 tabla 5",
+    "algoritmo fallo infusion descarga",
+    "¿Dónde está el algoritmo de hiperglucemia persistente y sospecha de fallo de infusión?",
+    "¿Qué tabla resume el análisis estructurado de la descarga?",
+    "el esquema de cuando no baja la glucosa"
+  ],
+  "t/09-descarga/b16/0": [
+    "250 mg/dl 2 horas set",
+    "sospecha fallo set hiperglucemia",
+    "¿A partir de qué glucemia y cuánto tiempo se sospecha fallo del set?",
+    "¿Qué hacer si la hiperglucemia no responde a la corrección en un paciente con bomba?",
+    "llevo 2 horas por encima de 250 y no baja"
+  ],
+  "t/09-descarga/b16/1": [
+    "isglt2 dm1 cetoacidosis euglucemica",
+    "cetonas con glucosa normal",
+    "¿Hay que medir cetonas en pacientes con DM1 que toman iSGLT2 aunque la glucosa sea normal?",
+    "¿Puede haber cetoacidosis con glucemia normal en DM1 tratados con dapagliflozina o empagliflozina?",
+    "tomo pastilla para el riñon y tengo cetonas con el azucar bien"
+  ],
+  "t/09-descarga/b16/2": [
+    "signos fallo set",
+    "ardor insercion adhesivo despegado",
+    "¿Qué signos sugieren que el set de infusión está fallando?",
+    "¿Puede el sensor cerca del set dar lecturas erráticas en un fallo de infusión?",
+    "me escuece donde tengo el cateter y no me baja"
+  ],
+  "t/09-descarga/b16/3": [
+    "cambio set cetonemia pluma",
+    "actuacion fallo infusion",
+    "¿Qué hacer ante sospecha de fallo del set de infusión?",
+    "¿Se corrige con pluma y se miden cetonas cuando falla el catéter?",
+    "que hago si creo que el set no va"
+  ],
+  "t/09-descarga/b16/4": [
+    "ante la duda cambia el set",
+    "regla cambio set",
+    "¿Cuál es la regla práctica si se duda de que el set esté funcionando?",
+    "¿Conviene cambiar el set siempre que haya dudas de fallo de infusión?",
+    "lo cambio por si acaso"
+  ],
+  "t/09-descarga/b19/0": [
+    "dosis correccion pluma",
+    "correccion por peso factor sensibilidad",
+    "¿Cómo se calcula la dosis de corrección con pluma ante un fallo de la bomba?",
+    "¿Se puede calcular la corrección según el peso corporal en lugar del factor de sensibilidad?",
+    "cuanta rapida me pongo con el boli si falla la bomba"
+  ],
+  "t/09-descarga/b19/1": [
+    "umbrales pediatria cetonas",
+    "niños protocolo local fallo infusion",
+    "¿Son los mismos umbrales de cetonemia y corrección en niños con asa cerrada?",
+    "¿Qué protocolo seguir en pediatría ante fallo de infusión?",
+    "en mi hijo los numeros de cetonas son iguales"
+  ],
+  "t/09-descarga/b19/2": [
+    "apilamiento insulina pluma",
+    "correccion pluma insulina activa",
+    "¿Cuenta el sistema la insulina puesta con pluma como insulina activa?",
+    "¿Qué riesgo hay de apilamiento tras corregir con pluma y reanudar el automático?",
+    "me pinche con boli y la bomba no lo sabe"
+  ],
+  "t/09-descarga/b2/0": [
+    "modificar basal ratio 10 20 %",
+    "ajuste factor sensibilidad porcentaje",
+    "¿En qué porcentaje se cambian la basal, la ratio y el factor de sensibilidad?",
+    "¿Cuánto se puede modificar el objetivo glucémico en cada sistema de asa cerrada?",
+    "cuanto le subo o bajo a la ratio de golpe"
+  ],
+  "t/09-descarga/b2/1": [
+    "evaluar cambios varios dias",
+    "esperar dias ajuste parametros",
+    "¿Cuánto tiempo hay que esperar para valorar un cambio de parámetros en la bomba?",
+    "¿Se pueden hacer ajustes seguidos o hay que dejar varios días entre cambios?",
+    "cambie la ratio ayer y no veo nada ya la vuelvo a cambiar"
+  ],
+  "t/09-descarga/b2/2": [
+    "objetivo temporal antes ejercicio",
+    "subir objetivo 1 2 h deporte",
+    "¿Con cuánta antelación se sube el objetivo antes de hacer ejercicio?",
+    "¿Cuándo se usan los objetivos y modos temporales en asa cerrada?",
+    "cuanto antes de ir al gimnasio pongo el modo ejercicio"
+  ],
+  "t/09-descarga/b2/3": [
+    "cumplimiento bolos resultados",
+    "bolo prandial hibrido",
+    "¿Mejora el control poner todos los bolos de comida en un sistema híbrido?",
+    "¿Qué efecto tiene omitir o retrasar los bolos prandiales en asa cerrada?",
+    "si me salto bolos la bomba ya lo corrige sola o no"
+  ],
+  "t/09-descarga/b20/0": [
+    "bolo omitido hiperglucemia",
+    "olvido bolo causa hiper",
+    "¿Es el olvido del bolo una causa frecuente de hiperglucemia tras las comidas?",
+    "¿Qué causa más a menudo la hiperglucemia posprandial persistente en asa cerrada?",
+    "siempre que se me olvida el bolo me subo"
+  ],
+  "t/09-descarga/b20/1": [
+    "bolo olvidado completo",
+    "bolo tardio insulina activa",
+    "¿Hay que poner el bolo completo si se olvidó al comer?",
+    "¿Qué tener en cuenta antes de administrar un bolo retrasado en un sistema AID?",
+    "se me olvido el bolo me lo pongo entero"
+  ],
+  "t/09-descarga/b20/2": [
+    "bolo olvidado primera hora parte",
+    "calculador correccion bolo tardio",
+    "¿Qué hacer si el bolo se olvidó hace menos de una hora tras comer?",
+    "¿Cuándo usar el calculador de corrección en vez del bolo de comida completo?",
+    "comi hace dos horas y no me puse nada"
+  ],
+  "t/09-descarga/b20/3": [
+    "bolo omitido individualizar",
+    "plan educativo bolo olvidado",
+    "¿Hay una pauta única para el bolo olvidado en todos los sistemas?",
+    "¿Debe individualizarse la actuación ante bolo omitido según el sistema?",
+    "en cada bomba se hace distinto lo del bolo olvidado"
+  ],
+  "t/09-descarga/b21/0": [
+    "ghost carbs",
+    "hidratos fantasma",
+    "¿Qué son los hidratos fantasma o falsos en un sistema de asa cerrada?",
+    "¿Por qué algunos pacientes introducen hidratos que no comen para forzar un bolo?",
+    "meter carbohidratos de mentira para que la bomba ponga mas"
+  ],
+  "t/09-descarga/b21/1": [
+    "hidratos falsos riesgo hipo",
+    "ghost carbs desaconsejado",
+    "¿Es seguro introducir hidratos ficticios en la bomba?",
+    "¿Qué riesgos tiene anunciar hidratos que no se van a comer en AID?",
+    "es malo engañar a la bomba con hidratos"
+  ],
+  "t/09-descarga/b21/2": [
+    "ghost carbs intervencion educativa",
+    "hidratos fantasma causa",
+    "¿Qué hacer si en la descarga se detectan hidratos fantasma?",
+    "¿Qué causas subyacentes explorar en un paciente que introduce hidratos falsos?",
+    "pillaron que metia hidratos de mas y que hago"
+  ],
+  "t/09-descarga/b22/0": [
+    "perdida señal bluetooth",
+    "salidas automatico causas",
+    "¿Por qué se pierde la señal entre la bomba, el sensor y el móvil?",
+    "¿Son frecuentes las pérdidas de señal y salidas del modo automático?",
+    "se me desconecta el sensor de la bomba"
+  ],
+  "t/09-descarga/b22/1": [
+    "reiniciar bluetooth acercar",
+    "señal perdida actuacion",
+    "¿Qué hacer de inmediato si se pierde la señal del sistema de asa cerrada?",
+    "¿Hay que revisar las salidas reiteradas del modo automático en la descarga?",
+    "se ha perdido la conexion que hago"
+  ],
+  "t/09-descarga/b23/0": [
+    "compresion sensor",
+    "falsa hipo dormir sobre sensor",
+    "¿Puede dormir sobre el sensor dar lecturas falsamente bajas?",
+    "¿Por qué la compresión del sensor causa hiperglucemia de rebote en asa cerrada?",
+    "por la noche marca hipo pero estoy bien"
+  ],
+  "t/09-descarga/b23/1": [
+    "caida brusca sensor postura",
+    "compression low capilar",
+    "¿Cómo reconocer una hipoglucemia falsa por compresión del sensor?",
+    "¿Hay que tratar una lectura baja si se sospecha compresión del sensor?",
+    "baja de golpe y al darme la vuelta sube"
+  ],
+  "t/09-descarga/b24/0": [
+    "problemas piel sensor",
+    "dermatitis lipohipertrofia",
+    "¿Qué problemas de piel produce el uso prolongado de sensores y sets?",
+    "¿Pueden aparecer irritación, dermatitis o lipohipertrofia con bomba y sensor?",
+    "me salen ronchas con el parche del sensor"
+  ],
+  "t/09-descarga/b24/1": [
+    "rotacion zonas insercion",
+    "prevencion problemas cutaneos",
+    "¿Cuál es la principal medida para prevenir problemas de piel con el sensor y la bomba?",
+    "¿Hay que rotar las zonas de inserción del set y del sensor?",
+    "tengo que ir cambiando el sitio del cateter"
+  ],
+  "t/09-descarga/b24/2": [
+    "pelicula barrera adhesivo",
+    "irritacion persistente dermatologo",
+    "¿Qué hacer ante irritación persistente por el adhesivo del sensor?",
+    "¿Cuándo derivar al dermatólogo por lesiones con dispositivos de diabetes?",
+    "que me pongo para que no me irrite el pegamento del sensor"
+  ],
+  "t/09-descarga/b24/3": [
+    "lipohipertrofia hipos variabilidad",
+    "explorar lipos anual",
+    "¿Puede la lipohipertrofia causar hipoglucemias y variabilidad sin explicación?",
+    "¿Cada cuánto hay que explorar las zonas de inserción buscando lipohipertrofia?",
+    "tengo bultos donde pongo el cateter"
+  ],
+  "t/09-descarga/b24/4": [
+    "evitar zonas lipo",
+    "rotacion mejora control",
+    "¿Mejora el control evitar las zonas con lipohipertrofia sin cambiar parámetros?",
+    "¿Qué hacer con las zonas de inserción afectadas por lipohipertrofia?",
+    "si dejo de pincharme en los bultos ira mejor la bomba"
+  ],
+  "t/09-descarga/b25/0": [
+    "fallos repetidos infusion",
+    "revisar zona tipo set",
+    "¿Qué revisar ante fallos de infusión que se repiten?",
+    "¿Puede el tipo de set o la zona de inserción explicar fallos repetidos de la bomba?",
+    "se me estropea el cateter cada dos por tres"
+  ],
+  "t/09-descarga/b25/1": [
+    "canula metalica",
+    "acodamiento canula blanda",
+    "¿Cuándo usar cánulas metálicas en lugar de teflón en la bomba?",
+    "¿Qué alternativa hay si la cánula blanda se acoda repetidamente?",
+    "se me dobla la canula siempre"
+  ],
+  "t/09-descarga/b26/0": [
+    "fatiga alarmas",
+    "desactivar alarmas abandono",
+    "¿Qué consecuencias tiene el exceso de alarmas en los sistemas de asa cerrada?",
+    "¿Puede la sobrecarga de alertas llevar a abandonar el sistema?",
+    "estoy harto de que pite la bomba"
+  ],
+  "t/09-descarga/b26/1": [
+    "fatiga alarmas adolescentes",
+    "ajustar umbrales alertas",
+    "¿Cómo reducir la fatiga por alarmas sin comprometer la seguridad?",
+    "¿Qué alarmas conviene revisar o quitar en adolescentes con AID?",
+    "como quito alarmas que no sirven del sensor"
+  ],
+  "t/09-descarga/b27/0": [
+    "rechazo dispositivo",
+    "imagen corporal bomba",
+    "¿Por qué algunos pacientes rechazan llevar la bomba o el sensor?",
+    "¿Qué dificultades de aceptación tienen los dispositivos de asa cerrada?",
+    "no quiero que se me vea la bomba"
+  ],
+  "t/09-descarga/b27/1": [
+    "rechazo bomba estrategias",
+    "descanso bomba temporal parche",
+    "¿Qué estrategias hay ante el rechazo del dispositivo de diabetes?",
+    "¿Se puede dejar temporalmente la bomba y volver a plumas sin abandonar el tratamiento?",
+    "quiero un descanso de la bomba unas semanas"
+  ],
+  "t/09-descarga/b29/0": [
+    "por donde empezar ajuste",
+    "hiper posprandial basal nocturna hipo revisar",
+    "¿Qué revisar primero según sea hiperglucemia tras comer, nocturna o hipoglucemia?",
+    "¿Por dónde empezar a ajustar un sistema de asa cerrada según el problema?",
+    "guia rapida de que tocar en la bomba"
+  ],
+  "t/09-descarga/b5/0": [
+    "hiper posprandial precoz",
+    "sube despues de comer 60 90 min",
+    "¿Por qué sube la glucosa en la primera hora y media tras comer con asa cerrada?",
+    "¿Qué causas tiene la hiperglucemia posprandial temprana, bolo tardío o comida de alto índice glucémico?",
+    "nada mas comer se me dispara el azucar"
+  ],
+  "t/09-descarga/b5/1": [
+    "adelantar bolo revisar ratio",
+    "hiperglucemia posprandial ajuste",
+    "¿Qué ajustes hacer ante picos de glucosa justo después de las comidas?",
+    "¿Hay que revisar la ratio y el recuento de hidratos si sube tras comer?",
+    "que hago para que no me suba tanto al comer"
+  ],
+  "t/09-descarga/b6/0": [
+    "hiper tardia grasas proteinas",
+    "sube 3 5 h despues comer",
+    "¿Por qué sube la glucosa varias horas después de una comida grasa o con mucha proteína?",
+    "¿Qué causas tiene la hiperglucemia tardía de 3-5 horas tras la ingesta?",
+    "con la pizza me sube a las tantas horas"
+  ],
+  "t/09-descarga/b6/1": [
+    "bolo extendido control-iq+",
+    "camaps absorcion lenta",
+    "¿Se puede usar bolo extendido en Tandem Control-IQ y Control-IQ+ para comidas grasas?",
+    "¿Qué función tiene CamAPS FX para comidas de absorción lenta?",
+    "con la tandem puedo poner bolo cuadrado para la pizza"
+  ],
+  "t/09-descarga/b6/2": [
+    "780g omnipod comida grasa",
+    "estrategia prandial individualizar",
+    "¿Qué hacer con comidas grasas en sistemas sin bolo extendido como MiniMed 780G u Omnipod 5?",
+    "¿Cómo individualizar la estrategia prandial según las herramientas del sistema?",
+    "con el omnipod que hago con las cenas copiosas"
+  ],
+  "t/09-descarga/b7/0": [
+    "hipo nocturna causas",
+    "hipoglucemia noche aid revisar",
+    "¿Qué revisar primero ante hipoglucemias nocturnas con asa cerrada?",
+    "¿Pueden el ejercicio de tarde, el alcohol o un bolo tardío de cena causar hipos por la noche?",
+    "me da bajadas por la noche con la bomba automatica"
+  ],
+  "t/09-descarga/b7/1": [
+    "modo sueño tandem",
+    "ease-off camaps actividad omnipod 150",
+    "¿Qué hacer en Tandem, MiniMed 780G, CamAPS FX u Omnipod 5 ante hipoglucemias nocturnas?",
+    "¿El modo sueño de Control-IQ hace autocorrecciones por la noche?",
+    "que modo pongo en el omnipod para no bajar de noche"
+  ],
+  "t/09-descarga/b8/0": [
+    "hiper matutina causas",
+    "fenomeno del alba asa cerrada",
+    "¿Por qué amanece alta la glucosa en un paciente con sistema de asa cerrada?",
+    "¿Puede deberse la hiperglucemia por la mañana a la cena, al set o al sensor?",
+    "me levanto siempre en 200 con la bomba"
+  ],
+  "t/09-descarga/b8/1": [
+    "hiper estable madrugada vs despertar",
+    "ascenso brusco al despertar",
+    "¿Cómo diferenciar la hiperglucemia mantenida de madrugada del pico al despertar?",
+    "¿Qué ajustar según el patrón de la hiperglucemia matutina?",
+    "me sube justo al levantarme y no por la noche"
+  ],
+  "t/09-descarga/b9/0": [
+    "variabilidad alta tir bueno",
+    "coeficiente de variacion cv",
+    "¿Qué revisar si el tiempo en rango es aceptable pero la variabilidad es alta?",
+    "¿Es suficiente el TIR para valorar el control en asa cerrada?",
+    "tengo buen tiempo en rango pero voy como una montaña rusa"
+  ],
+  "t/09-descarga/b9/1": [
+    "objetivo reducir variabilidad",
+    "meta no bajar hba1c",
+    "¿Cuál es el objetivo si hay mucha variabilidad con buen tiempo en rango?",
+    "¿Siempre hay que intentar bajar la hemoglobina glicosilada en estos casos?",
+    "no hace falta bajar la glicada si oscilo mucho"
+  ],
+  "t/10-situaciones/b1/0": [
+    "situaciones especiales asa cerrada",
+    "aid embarazo ejercicio hospital renal corticoides",
+    "¿En qué situaciones clínicas hay que ajustar de forma especial un sistema de asa cerrada?",
+    "¿Qué casos particulares requieren un manejo diferente del páncreas artificial?",
+    "cuando hay que tener cuidado especial con la bomba que se ajusta sola"
+  ],
+  "t/10-situaciones/b10/0": [
+    "cetoacidosis embarazo aid",
+    "cad gestacion glucemia menos alta feto",
+    "¿La cetoacidosis puede aparecer con glucemias más bajas en la embarazada?",
+    "¿Por qué hay que vigilar más la cetoacidosis diabética durante la gestación?",
+    "puedo hacer una cetoacidosis en el embarazo sin tener el azucar muy alto"
+  ],
+  "t/10-situaciones/b10/1": [
+    "cetonemia embarazo vomitos",
+    "gestacion cetonas pluma recambio",
+    "¿Cuándo debe medir la cetonemia una embarazada con sistema de asa cerrada?",
+    "¿Qué material de reserva debe llevar siempre una gestante con bomba?",
+    "estoy embarazada con vomitos me miro las cetonas en sangre"
+  ],
+  "t/10-situaciones/b11/0": [
+    "aid parto mantener",
+    "asa cerrada posparto inmediato",
+    "¿Se puede mantener el sistema de asa cerrada durante el parto?",
+    "¿Qué condiciones tiene que cumplir la gestante para seguir con el AID en el parto?",
+    "me puedo dejar la bomba puesta en el paritorio"
+  ],
+  "t/10-situaciones/b11/1": [
+    "posparto bajar insulina aid",
+    "despues parto sensibilidad insulina ajustes",
+    "¿Cuánto bajan las necesidades de insulina después del parto?",
+    "¿Qué ajustes hay que hacer en el sistema AID tras el parto?",
+    "despues de dar a luz necesito mucha menos insulina"
+  ],
+  "t/10-situaciones/b13/0": [
+    "adolescentes aid dificultades",
+    "transicion pediatria adultos alarmas bolos",
+    "¿Qué problemas son típicos en adolescentes con sistema de asa cerrada?",
+    "¿Por qué la transición de pediatría a adultos es una etapa vulnerable en DM1?",
+    "mi hijo adolescente se salta los bolos y no aguanta las alarmas"
+  ],
+  "t/10-situaciones/b13/1": [
+    "omision bolos adolescente",
+    "bolos olvidados abandono sistema",
+    "¿Qué importancia tiene la omisión de bolos en el abandono del sistema de asa cerrada?",
+    "¿Cómo se debe abordar que un paciente se salte los bolos en las descargas?",
+    "que pasa si no me pongo los bolos de las comidas con la bomba automatica"
+  ],
+  "t/10-situaciones/b13/2": [
+    "tir adolescentes asa cerrada",
+    "aid adolescencia beneficio mal control",
+    "¿Cuánto mejora el tiempo en rango con asa cerrada en adolescentes?",
+    "¿Merece la pena mantener el AID en adolescentes con mala adherencia?",
+    "vale la pena la bomba automatica en un adolescente que no se cuida"
+  ],
+  "t/10-situaciones/b14/0": [
+    "diabulimia",
+    "trastorno conducta alimentaria dm1 adolescente",
+    "¿Qué señales de alarma de trastorno alimentario hay en adolescentes con diabetes tipo 1?",
+    "¿Qué es la diabulimia y a quién afecta con más frecuencia?",
+    "dejar de ponerse insulina para adelgazar"
+  ],
+  "t/10-situaciones/b14/1": [
+    "detectar diabulimia signos",
+    "bajada dtd cetoacidosis repetida sin causa",
+    "¿Qué datos hacen sospechar manipulación de la insulina para perder peso?",
+    "¿Cuándo hay que derivar a una unidad especializada por sospecha de trastorno alimentario en DM1?",
+    "cetoacidosis repetidas sin fallo de la bomba que puede ser"
+  ],
+  "t/10-situaciones/b14/2": [
+    "alcohol aid hipo diferida",
+    "alcohol ease-off camaps noche",
+    "¿Cuánto tiempo después de beber alcohol hay riesgo de hipoglucemia con asa cerrada?",
+    "¿Qué ajustes hacer en el sistema AID la noche que se consume alcohol?",
+    "salgo de fiesta y bebo, que hago con la bomba"
+  ],
+  "t/10-situaciones/b15/0": [
+    "seguimiento remoto padres adolescente",
+    "compartir datos sensor progenitores",
+    "¿Deben los padres seguir en remoto la glucosa de su hijo adolescente?",
+    "¿Qué riesgos tiene mantener el seguimiento compartido sin acuerdo del adolescente?",
+    "mis padres ven mi glucosa en el movil y no quiero"
+  ],
+  "t/10-situaciones/b15/1": [
+    "pactar seguimiento compartido",
+    "monitorizacion remota reducir autonomia",
+    "¿Cómo pactar con el adolescente el seguimiento remoto de su glucosa?",
+    "¿Se debe ir reduciendo el seguimiento a distancia de los padres con la edad?",
+    "cuando dejo de mirar la glucosa de mi hijo en el movil"
+  ],
+  "t/10-situaciones/b15/2": [
+    "informe transicion pediatria adultos",
+    "traspaso paciente aid parametros",
+    "¿Qué debe incluir el informe de traspaso de pediatría a adultos en un paciente con AID?",
+    "¿Qué información hay que pasar a la unidad de adultos en la transición?",
+    "que papeles necesito al pasar de pediatria a adultos con la bomba"
+  ],
+  "t/10-situaciones/b15/3": [
+    "visita conjunta transicion",
+    "solapamiento pediatria adultos soporte",
+    "¿Se recomienda una visita conjunta en la transición de pediatría a adultos?",
+    "¿Qué apoyos hay que mantener los primeros meses tras pasar a adultos?",
+    "me quedo sin ayuda al pasar a la consulta de mayores"
+  ],
+  "t/10-situaciones/b15/4": [
+    "fatiga alarmas adolescente",
+    "tono no culpabilizador revisar bolos",
+    "¿Cómo reducir la fatiga por alarmas en adolescentes con asa cerrada?",
+    "¿Qué enfoque de consulta se recomienda en adolescentes con DM1 y AID?",
+    "como hablar con un adolescente que no hace caso a la bomba"
+  ],
+  "t/10-situaciones/b17/0": [
+    "aid ancianos hipoglucemia",
+    "mayores asa cerrada hipo nocturna desapercibida",
+    "¿Reduce el sistema de asa cerrada las hipoglucemias en personas mayores?",
+    "¿Qué beneficio tiene el AID sobre la hipoglucemia nocturna en ancianos?",
+    "la bomba automatica le quita las bajadas a mi padre mayor"
+  ],
+  "t/10-situaciones/b17/1": [
+    "aide t1d deterioro cognitivo",
+    "aid demencia evidencia",
+    "¿Funciona el sistema de asa cerrada en mayores con deterioro cognitivo leve?",
+    "¿Hay evidencia del uso de AID en pacientes con demencia?",
+    "mi madre tiene principio de demencia puede llevar la bomba automatica"
+  ],
+  "t/10-situaciones/b17/2": [
+    "objetivos glucemicos ancianos fragiles",
+    "mayores tbr <1 % objetivo",
+    "¿Qué objetivos glucémicos se plantean en mayores frágiles con DM1?",
+    "¿Hay que relajar los objetivos de glucosa en personas mayores con asa cerrada?",
+    "en un anciano fragil que objetivo de azucar buscamos"
+  ],
+  "t/10-situaciones/b17/3": [
+    "elegir sistema aid mayores",
+    "destreza vision anciano bomba",
+    "¿Qué hay que valorar para elegir un sistema de asa cerrada en una persona mayor?",
+    "¿Son preferibles los sistemas más sencillos en ancianos?",
+    "que bomba es mas facil para una persona mayor"
+  ],
+  "t/10-situaciones/b17/4": [
+    "deterioro cognitivo progresivo aid",
+    "reevaluar cuidador alarmas mayor",
+    "¿Cada cuánto hay que reevaluar el AID en un paciente con deterioro cognitivo progresivo?",
+    "¿Quién debe participar en la revisión del sistema en mayores con demencia que avanza?",
+    "mi abuelo cada vez se entera menos de las alarmas de la bomba"
+  ],
+  "t/10-situaciones/b19/0": [
+    "ejercicio aid consenso easd ispad",
+    "posicionamiento deporte asa cerrada",
+    "¿En qué documento se basan las recomendaciones de ejercicio con sistemas de asa cerrada?",
+    "¿Qué sociedades han publicado un consenso sobre actividad física con AID?",
+    "hay alguna guia oficial de deporte con bomba automatica"
+  ],
+  "t/10-situaciones/b19/1": [
+    "aerobico anaerobico glucosa",
+    "ejercicio fuerza sube glucosa",
+    "¿Por qué el ejercicio de fuerza puede subir la glucosa y el aeróbico bajarla?",
+    "¿Qué efecto tiene el ejercicio mixto sobre la glucemia?",
+    "por que me sube el azucar en el gimnasio y me baja corriendo"
+  ],
+  "t/10-situaciones/b20/0": [
+    "antes ejercicio insulina activa tendencia",
+    "flecha bajando bolo reciente deporte",
+    "¿Qué hay que comprobar antes de empezar a hacer ejercicio con asa cerrada?",
+    "¿Aumenta el riesgo de hipoglucemia hacer deporte con un bolo reciente?",
+    "voy a entrenar y la flecha va para abajo"
+  ],
+  "t/10-situaciones/b20/1": [
+    "glucemia inicio ejercicio 126-180",
+    "glucosa minima para hacer deporte 90",
+    "¿Con qué glucemia se recomienda empezar el ejercicio con un sistema AID?",
+    "¿Qué hacer si la glucosa está por debajo de 90 mg/dl antes de hacer deporte?",
+    "con cuanto azucar puedo salir a correr"
+  ],
+  "t/10-situaciones/b20/2": [
+    "ejercicio glucemia 270 cetonas",
+    "deporte hiperglucemia fallo infusion",
+    "¿Qué hacer si la glucemia supera 270 mg/dl antes del ejercicio?",
+    "¿Hay que medir cetonas antes de hacer deporte con glucosa alta?",
+    "tengo 300 de azucar puedo ir al gimnasio"
+  ],
+  "t/10-situaciones/b20/3": [
+    "ejercicio cetonemia 1,5 contraindicado",
+    "beta hidroxibutirato 1,0 deporte figura 3",
+    "¿Con qué nivel de cetonemia hay que evitar el ejercicio?",
+    "¿Qué hacer si la β-hidroxibutirato es ≥1,0 mmol/l antes de hacer deporte?",
+    "tengo cetonas en sangre puedo hacer ejercicio"
+  ],
+  "t/10-situaciones/b22/0": [
+    "objetivo temporal antes ejercicio",
+    "ejercicio planificado subir objetivo 1-2 h",
+    "¿Con cuánta antelación se activa el objetivo temporal antes del ejercicio programado?",
+    "¿Cuál es la primera medida con AID ante un ejercicio planificado que baja la glucosa?",
+    "cuando pongo el modo ejercicio antes de ir a entrenar"
+  ],
+  "t/10-situaciones/b22/1": [
+    "reducir bolo antes ejercicio 25-33",
+    "bolo comida previa deporte reduccion",
+    "¿Cuánto hay que reducir el bolo de la comida si se hace ejercicio después?",
+    "¿Se reduce el bolo prandial si el ejercicio es en las 2 horas siguientes a comer?",
+    "como antes de hacer deporte cuanta insulina me quito"
+  ],
+  "t/10-situaciones/b22/2": [
+    "hidratos durante ejercicio aid 10-20 g",
+    "anunciar hidratos ejercicio sistema",
+    "¿Cuántos hidratos rápidos tomar durante el ejercicio si baja la glucosa con asa cerrada?",
+    "¿Hay que introducir en la bomba los hidratos que se toman durante el deporte?",
+    "mientras corro me baja el azucar cuanto azucar tomo"
+  ],
+  "t/10-situaciones/b22/3": [
+    "hidratos ejercicio prevencion no hipo",
+    "tratamiento hipoglucemia establecida ejercicio",
+    "¿Las cantidades de hidratos durante el ejercicio sirven para tratar una hipoglucemia?",
+    "¿Es lo mismo prevenir la bajada en el deporte que tratar una hipo ya instaurada?",
+    "si ya tengo una hipo en el deporte tomo solo 10 gramos"
+  ],
+  "t/10-situaciones/b22/4": [
+    "ejercicio comprobar sensor 20-30 min",
+    "repetir hidratos deporte",
+    "¿Cuándo hay que volver a mirar el sensor tras tomar hidratos durante el ejercicio?",
+    "¿Cuánto tiempo esperar para repetir la toma de hidratos en el deporte?",
+    "cuanto espero para ver si me ha subido el azucar"
+  ],
+  "t/10-situaciones/b23/0": [
+    "ejercicio no planificado aid",
+    "deporte imprevisto subir objetivo",
+    "¿Qué hacer con el sistema de asa cerrada si se hace ejercicio sin haberlo planificado?",
+    "¿Cuándo hay que subir el objetivo en una actividad física no prevista?",
+    "me he puesto a jugar un partido sin avisar a la bomba que hago"
+  ],
+  "t/10-situaciones/b23/1": [
+    "ejercicio anaerobico hiperglucemia reactiva",
+    "alta intensidad no corregir subida aid",
+    "¿Hay que corregir la subida de glucosa tras un esfuerzo intenso o anaeróbico?",
+    "¿Se debe cambiar el objetivo del AID en un ejercicio breve de alta intensidad?",
+    "despues de pesas me sube el azucar me pongo bolo"
+  ],
+  "t/10-situaciones/b24/0": [
+    "deportes contacto bomba catéter",
+    "retirar bomba piscina",
+    "¿Hay que quitarse la bomba de insulina para deportes de contacto o natación?",
+    "¿Cuándo se recomienda desconectar temporalmente la bomba con catéter en el deporte?",
+    "juego al rugby tengo que quitarme la bomba"
+  ],
+  "t/10-situaciones/b24/1": [
+    "omnipod nadar",
+    "pod piscina resistencia agua",
+    "¿Se puede nadar con el Omnipod 5 puesto?",
+    "¿Que una bomba sea resistente al agua significa que se puede nadar con ella?",
+    "puedo bañarme en la piscina con el pod"
+  ],
+  "t/10-situaciones/b24/2": [
+    "inmersion sensor señal aid",
+    "agua perdida comunicacion sensor bomba",
+    "¿Puede el agua interrumpir la comunicación entre el sensor y la bomba?",
+    "¿Afecta la inmersión al funcionamiento del sistema de asa cerrada?",
+    "al nadar se pierde la señal del sensor"
+  ],
+  "t/10-situaciones/b24/3": [
+    "desconexion bomba mas 1 h cetosis",
+    "desconectar bomba ejercicio reconexion",
+    "¿Cuánto tiempo se puede estar desconectado de la bomba sin riesgo de cetosis?",
+    "¿Qué hacer al desconectar la bomba de insulina durante una actividad?",
+    "cuanto rato puedo estar sin la bomba"
+  ],
+  "t/10-situaciones/b25/0": [
+    "hipo diferida ejercicio noche",
+    "hipoglucemia tardia despues deporte",
+    "¿Cuánto dura el riesgo de hipoglucemia después del ejercicio?",
+    "¿Por qué hay más riesgo de hipoglucemia nocturna tras hacer deporte?",
+    "por la noche despues de entrenar me da bajones"
+  ],
+  "t/10-situaciones/b25/1": [
+    "mantener modo ejercicio despues",
+    "objetivo temporal tras deporte desactivar",
+    "¿Cuánto tiempo mantener el objetivo alto o el modo ejercicio después de la actividad?",
+    "¿Qué pasa si se deja el objetivo elevado demasiado tiempo tras el ejercicio?",
+    "cuando quito el modo ejercicio despues de entrenar"
+  ],
+  "t/10-situaciones/b25/2": [
+    "tabla 4 ejercicio sistemas",
+    "omnipod actividad 150 ease-off modo ejercicio tandem",
+    "¿Qué función de ejercicio tiene cada sistema de asa cerrada?",
+    "¿Cuál es el objetivo de la Función Actividad de Omnipod 5?",
+    "como se llama el modo deporte en la 780g tandem camaps y omnipod"
+  ],
+  "t/10-situaciones/b27/0": [
+    "enfermedad intercurrente insulina",
+    "infeccion cetosis aid",
+    "¿Aumentan las necesidades de insulina cuando se está enfermo con diabetes tipo 1?",
+    "¿Por qué una enfermedad aguda aumenta el riesgo de cetosis?",
+    "tengo gripe y el azucar no baja"
+  ],
+  "t/10-situaciones/b27/1": [
+    "dias enfermedad plan seguridad",
+    "enfermo aid cetonemia hidratacion urgencias",
+    "¿Qué hacer con el sistema de asa cerrada durante una enfermedad intercurrente?",
+    "¿Cuándo hay que ir a urgencias si estoy enfermo con diabetes tipo 1?",
+    "estoy malo con fiebre que hago con la diabetes"
+  ],
+  "t/10-situaciones/b27/2": [
+    "cetosis glucosa normal no suspender insulina",
+    "cetonas con glucosa baja vomitos liquidos azucarados",
+    "¿Hay que retirar la insulina si hay cetosis con glucemia normal o baja?",
+    "¿Qué hacer si hay cetonas por vómitos y la glucosa no está alta?",
+    "tengo cetonas pero el azucar bajo dejo de ponerme insulina"
+  ],
+  "t/10-situaciones/b27/3": [
+    "hiperglucemia persistente cetosis figura 3",
+    "hiperglucemia inexplicada algoritmo cetonas",
+    "¿Qué algoritmo se sigue ante hiperglucemia persistente con sospecha de cetosis?",
+    "¿Qué hacer si la glucosa sigue alta sin explicación con la bomba?",
+    "llevo horas con el azucar alto y no se por que"
+  ],
+  "t/10-situaciones/b29/0": [
+    "corticoides aid",
+    "glucocorticoides hiperglucemia algoritmo",
+    "¿Cómo afectan los corticoides a la insulina en un sistema de asa cerrada?",
+    "¿Anticipan bien los algoritmos AID el aumento de insulina por glucocorticoides?",
+    "me han mandado cortisona y se me dispara el azucar con la bomba"
+  ],
+  "t/10-situaciones/b29/1": [
+    "corticoides dosis altas modo manual",
+    "glucocorticoides perfil alternativo insulina adicional",
+    "¿Se puede mantener el modo automático durante un tratamiento con corticoides?",
+    "¿Qué opciones hay si la dosis de glucocorticoides es alta o cambia rápido?",
+    "con dosis altas de corticoides cambio de perfil en la bomba"
+  ],
+  "t/10-situaciones/b29/2": [
+    "boost corticoides fallo infusion",
+    "funciones intensificadoras glucocorticoides",
+    "¿Cuándo se pueden usar funciones como Boost con glucocorticoides?",
+    "¿Qué hay que descartar antes de intensificar el AID por hiperglucemia con corticoides?",
+    "puedo darle al boost si tomo cortisona"
+  ],
+  "t/10-situaciones/b3/0": [
+    "aid gestacion evidencia",
+    "asa cerrada embarazo dm1 recomendado",
+    "¿Se puede usar un sistema de asa cerrada durante el embarazo en diabetes tipo 1?",
+    "¿Hay ensayos aleatorizados que avalen el páncreas artificial en la gestación?",
+    "estoy embarazada y tengo diabetes tipo 1, puedo seguir con mi bomba automatica"
+  ],
+  "t/10-situaciones/b3/1": [
+    "elegir sistema aid embarazo",
+    "que bomba elegir gestacion dm1",
+    "¿Qué criterios hay que valorar al elegir un sistema de asa cerrada para una embarazada?",
+    "¿Influye la experiencia del equipo en la elección del sistema AID en la gestación?",
+    "que bomba me conviene si me quedo embarazada"
+  ],
+  "t/10-situaciones/b3/2": [
+    "camaps embarazo marcado ce",
+    "camaps fx gestacion aidapt liberty",
+    "¿Está autorizado CamAPS FX para su uso en el embarazo?",
+    "¿Se puede usar la modalidad Liberty de CamAPS durante la gestación?",
+    "puedo usar camaps liberty estando embarazada"
+  ],
+  "t/10-situaciones/b3/3": [
+    "780g embarazo cristal",
+    "omnipod 5 gestacion autorizado control-iq+ circuit",
+    "¿Qué sistemas de asa cerrada tienen autorización para usarse en el embarazo además de CamAPS?",
+    "¿Está aprobado Omnipod 5 o Control-IQ+ para la gestación?",
+    "puedo seguir con el omnipod 5 o la tandem si me quedo embarazada"
+  ],
+  "t/10-situaciones/b31/0": [
+    "erc avanzada insulina",
+    "insuficiencia renal hipoglucemia aid",
+    "¿Cómo influye la enfermedad renal avanzada en la insulina y en las hipoglucemias?",
+    "¿Qué cambia en la acción de la insulina con insuficiencia renal crónica grave?",
+    "tengo el riñon mal y me dan mas hipos"
+  ],
+  "t/10-situaciones/b31/1": [
+    "aid dialisis mantener",
+    "erc asa cerrada nefrologia",
+    "¿Se puede seguir con el sistema de asa cerrada en enfermedad renal avanzada?",
+    "¿En qué pacientes renales se puede mantener el AID?",
+    "estoy en dialisis puedo seguir con la bomba automatica"
+  ],
+  "t/10-situaciones/b31/2": [
+    "hemodialisis hipoglucemia",
+    "sesion dialisis hipo aid",
+    "¿Aumenta la hemodiálisis el riesgo de hipoglucemia?",
+    "¿Cuándo hay más riesgo de hipoglucemia en un paciente en hemodiálisis con AID?",
+    "me baja el azucar despues de la dialisis"
+  ],
+  "t/10-situaciones/b31/3": [
+    "dialisis peritoneal hiperglucemia",
+    "liquido peritoneal glucosa aid",
+    "¿Por qué la diálisis peritoneal puede subir la glucosa?",
+    "¿Qué efecto tiene el líquido de diálisis peritoneal sobre la glucemia?",
+    "con la dialisis en casa tengo el azucar alto"
+  ],
+  "t/10-situaciones/b31/4": [
+    "evidencia aid dialisis",
+    "estudios asa cerrada erc",
+    "¿Hay mucha evidencia sobre el uso de AID en diálisis?",
+    "¿Existen estudios de sistemas de asa cerrada en enfermedad renal avanzada?",
+    "hay estudios de bomba automatica en pacientes de dialisis"
+  ],
+  "t/10-situaciones/b31/5": [
+    "erc objetivos menos intensivos aid",
+    "ajuste parametros renal plan respaldo",
+    "¿Qué objetivos glucémicos usar con AID en enfermedad renal avanzada?",
+    "¿Cómo ajustar con seguridad el sistema de asa cerrada en un paciente renal?",
+    "que objetivo pongo en la bomba si estoy en dialisis"
+  ],
+  "t/10-situaciones/b33/0": [
+    "consenso hospital aid 2026",
+    "easd ada jbds hospital bomba mcg",
+    "¿Qué documento regula el uso de bombas y sistemas AID en el hospital?",
+    "¿Qué sociedades avalan el posicionamiento internacional de 2026 sobre AID hospitalario?",
+    "hay guia para usar la bomba ingresado en el hospital"
+  ],
+  "t/10-situaciones/b33/1": [
+    "hospital aid adultos no criticos",
+    "recomendaciones ingreso pediatria aid",
+    "¿Las recomendaciones hospitalarias de AID se aplican a niños?",
+    "¿A qué pacientes ingresados se refieren las recomendaciones del consenso de 2026?",
+    "mi hijo esta ingresado valen las mismas normas de la bomba"
+  ],
+  "t/10-situaciones/b34/0": [
+    "mantener bomba ingreso",
+    "mcg aid hospitalizado seguro",
+    "¿Se puede mantener la bomba y el sensor durante el ingreso hospitalario?",
+    "¿Qué condiciones debe tener el centro para continuar con el AID en planta?",
+    "me ingresan me dejan llevar la bomba"
+  ],
+  "t/10-situaciones/b34/1": [
+    "autocuidado ingreso reevaluar",
+    "capacidad manejo bomba hospital",
+    "¿Cada cuánto hay que reevaluar la capacidad de autocuidado del paciente con AID ingresado?",
+    "¿Puede cambiar durante el ingreso la capacidad de manejar la bomba?",
+    "y si me pongo peor en el hospital quien lleva la bomba"
+  ],
+  "t/10-situaciones/b34/2": [
+    "protocolo hospital responsabilidades bomba",
+    "registro datos dispositivo ingreso",
+    "¿Qué procedimientos debe tener el hospital para pacientes con bomba?",
+    "¿Quién es responsable del manejo del dispositivo durante el ingreso?",
+    "en planta quien se encarga de mi bomba yo o enfermeria"
+  ],
+  "t/10-situaciones/b34/3": [
+    "modo automatico ingreso ayunas",
+    "hospital objetivo temporal ayuno aid",
+    "¿Se puede mantener el modo automático del AID durante la hospitalización?",
+    "¿Qué hacer con el objetivo del sistema si el paciente ingresado está en ayunas?",
+    "estoy en ayunas en el hospital dejo la bomba en automatico"
+  ],
+  "t/10-situaciones/b35/0": [
+    "tir hospital >60",
+    "objetivos mcg ingreso tar tbr",
+    "¿Qué objetivos de tiempo en rango se recomiendan en pacientes hospitalizados con MCG?",
+    "¿Cuál es el TBR aceptable en un paciente ingresado con sensor?",
+    "que tiempo en rango piden en el hospital"
+  ],
+  "t/10-situaciones/b35/1": [
+    "tiempo 70-100 hospital",
+    "tiempo proximo hipoglucemia <15",
+    "¿Qué es el tiempo próximo a hipoglucemia y qué objetivo tiene en el hospital?",
+    "¿Qué porcentaje del tiempo entre 70 y 100 mg/dl se acepta en ingresados?",
+    "en el hospital cuanto tiempo puedo estar entre 70 y 100"
+  ],
+  "t/10-situaciones/b36/0": [
+    "contraindicaciones aid ingreso",
+    "retirar bomba hospital cad hiperosmolar",
+    "¿Cuándo no se debe mantener el sistema de asa cerrada en el hospital?",
+    "¿Hay que retirar la bomba en una cetoacidosis o con alteración del nivel de conciencia?",
+    "cuando me tienen que quitar la bomba en el hospital"
+  ],
+  "t/10-situaciones/b36/1": [
+    "pauta alternativa retirar bomba",
+    "cobertura insulina sin interrupcion",
+    "¿Qué hacer con la insulina si hay que retirar el AID en el hospital?",
+    "¿Puede quedarse el paciente sin insulina al quitar la bomba?",
+    "si me quitan la bomba que insulina me ponen"
+  ],
+  "t/10-situaciones/b36/2": [
+    "basal 2 h antes quitar bomba",
+    "paso bomba a bolo basal subcutanea",
+    "¿Cuánto tiempo antes de quitar la bomba hay que poner la insulina basal?",
+    "¿Cómo pasar de bomba o AID a pauta subcutánea de forma programada?",
+    "cuando me pincho la lenta antes de quitarme la bomba"
+  ],
+  "t/10-situaciones/b36/3": [
+    "omnipod pauta respaldo dtd",
+    "50 % basal 50 % prandial hospital",
+    "¿Cómo calcular la pauta de respaldo si el sistema no muestra un perfil basal como Omnipod 5?",
+    "¿Qué reparto de basal y bolo usar al pasar a plumas desde la dosis total diaria?",
+    "con el omnipod no se mi basal cuanta lenta me pongo"
+  ],
+  "t/10-situaciones/b36/4": [
+    "reanudar bomba tras basal 22 h",
+    "volver a bomba despues glargina",
+    "¿Cuándo se puede volver a conectar la bomba tras haber puesto insulina basal?",
+    "¿Cuántas horas esperar tras la última dosis de basal para reanudar el AID?",
+    "cuando vuelvo a ponerme la bomba si me pinché lenta ayer"
+  ],
+  "t/10-situaciones/b37/0": [
+    "dosis suplementarias por bomba",
+    "insulina extra hospital bomba pluma",
+    "¿Las dosis extra de insulina en el hospital se ponen con la bomba o con pluma?",
+    "¿Cómo administrar insulina suplementaria a un paciente ingresado con AID?",
+    "en el hospital la correccion me la pongo con la bomba"
+  ],
+  "t/10-situaciones/b37/1": [
+    "glucemia capilar hospital mcg",
+    "compartir datos sensor equipo ingreso",
+    "¿Hace falta glucemia capilar si el paciente ingresado lleva sensor?",
+    "¿Qué datos debe compartir el paciente con AID con el personal sanitario?",
+    "en el hospital me siguen pinchando el dedo aunque lleve sensor"
+  ],
+  "t/10-situaciones/b38/0": [
+    "precision mcg hospital",
+    "interferencias sensor ingreso",
+    "¿Es fiable el sensor de glucosa en pacientes hospitalizados?",
+    "¿Qué hay que tener en cuenta al interpretar la MCG en el hospital?",
+    "el sensor marca bien estando ingresado"
+  ],
+  "t/10-situaciones/b38/1": [
+    "sensor lecturas falsas perfusion anemia",
+    "compresion sensor acidosis interferencias",
+    "¿Qué situaciones causan lecturas inexactas del sensor de glucosa?",
+    "¿Afectan la anemia, la acidosis o la mala perfusión a la precisión de la MCG?",
+    "por que el sensor marca bajo si duermo encima"
+  ],
+  "t/10-situaciones/b38/2": [
+    "sensor nuevo 24 h capilar",
+    "confirmar mcg glucemia capilar cuando",
+    "¿Cuándo hay que confirmar con glucemia capilar las lecturas del sensor en el hospital?",
+    "¿Es fiable un sensor recién puesto durante las primeras 24 horas?",
+    "me acaban de poner sensor nuevo me fio"
+  ],
+  "t/10-situaciones/b38/3": [
+    "discrepancia sensor capilar valor mas bajo",
+    "mcg no coincide glucemia dedo",
+    "¿Qué valor usar si el sensor y la glucemia capilar no coinciden?",
+    "¿Cuándo hay que cambiar o retirar el sensor por discrepancias con la capilar?",
+    "el sensor dice una cosa y el glucometro otra a cual hago caso"
+  ],
+  "t/10-situaciones/b39/0": [
+    "perioperatorio objetivos glucemicos",
+    "cirugia glucemia objetivo hospital",
+    "¿Qué objetivos glucémicos seguir en el periodo perioperatorio con AID?",
+    "¿En cirugía se mantienen los objetivos glucémicos ambulatorios?",
+    "que glucosa quieren en la operacion"
+  ],
+  "t/10-situaciones/b39/1": [
+    "cirugia corta mantener bomba",
+    "intervencion breve aid modo auto",
+    "¿Se puede mantener el sistema de asa cerrada en una cirugía corta?",
+    "¿Qué se considera procedimiento quirúrgico corto para conservar la bomba?",
+    "me operan de algo pequeño puedo ir con la bomba"
+  ],
+  "t/10-situaciones/b39/2": [
+    "cirugia larga perfusion insulina iv",
+    "cirugia compleja retirar aid",
+    "¿Cuándo hay que pasar a insulina intravenosa en una cirugía en un paciente con AID?",
+    "¿Qué hacer con la bomba en una intervención larga o compleja?",
+    "me operan varias horas que hacen con mi bomba"
+  ],
+  "t/10-situaciones/b39/3": [
+    "set fuera campo quirurgico",
+    "anestesista acceso bomba cirugia",
+    "¿Dónde colocar el set de infusión antes de una cirugía con la bomba puesta?",
+    "¿Qué hay que comprobar si se mantiene el AID en quirófano?",
+    "cambio el cateter el dia antes de operarme"
+  ],
+  "t/10-situaciones/b39/4": [
+    "plan contingencia retirada aid",
+    "reintroducir bomba antes alta",
+    "¿Qué plan hay que tener si se retira el sistema de forma inesperada en el ingreso?",
+    "¿Cuándo se debe volver a poner el AID antes del alta?",
+    "me quitaron la bomba en el hospital cuando me la vuelven a poner"
+  ],
+  "t/10-situaciones/b4/0": [
+    "objetivos glucemicos embarazo",
+    "control glucosa gestacion mas estricto",
+    "¿Los objetivos de glucosa en el embarazo son diferentes a los habituales?",
+    "¿Por qué hay que ser más exigente con el control glucémico en la gestación?",
+    "en el embarazo tengo que tener el azucar mas bajo que normalmente"
+  ],
+  "t/10-situaciones/b4/1": [
+    "hba1c preconcepcional objetivo",
+    "hemoglobina glicada antes del embarazo 6,5",
+    "¿Qué HbA1c se recomienda antes de buscar el embarazo en diabetes tipo 1?",
+    "¿Cuál es el objetivo de hemoglobina glicosilada en la planificación de la gestación?",
+    "que glicada tengo que tener para quedarme embarazada"
+  ],
+  "t/10-situaciones/b4/2": [
+    "hba1c objetivo gestacion",
+    "glicada embarazo 6 o 7",
+    "¿Qué HbA1c hay que conseguir durante el embarazo con diabetes tipo 1?",
+    "¿Se puede aceptar una HbA1c más alta en la gestación para evitar hipoglucemias?",
+    "cuanto tiene que estar la glicada mientras estoy embarazada"
+  ],
+  "t/10-situaciones/b4/3": [
+    "tir embarazo 63-140",
+    "tbr tar gestacion objetivos mcg",
+    "¿Cuáles son los objetivos de tiempo en rango del sensor en la embarazada?",
+    "¿Qué porcentaje de tiempo por debajo de 63 mg/dl se admite en la gestación?",
+    "cuanto tiempo en rango tengo que tener en el embarazo con el sensor"
+  ],
+  "t/10-situaciones/b4/4": [
+    "coeficiente variacion embarazo",
+    "cv 36 gestacion variabilidad",
+    "¿Qué coeficiente de variación de glucosa se recomienda en el embarazo?",
+    "¿Qué objetivo de variabilidad glucémica hay que mantener en la gestación?",
+    "cuanta variabilidad de glucosa se permite estando embarazada"
+  ],
+  "t/10-situaciones/b41/0": [
+    "exploracion bomba sensor por separado",
+    "compatibilidad componentes aid prueba",
+    "¿Hay que valorar por separado la bomba y el sensor antes de una prueba de imagen?",
+    "¿Si el sensor es compatible con una exploración lo es también la bomba?",
+    "el sensor vale para la prueba pero y la bomba"
+  ],
+  "t/10-situaciones/b41/1": [
+    "retirar toda tecnologia exploracion",
+    "pruebas imagen quitar bomba sensor siempre",
+    "¿Hay que quitarse siempre la bomba y el sensor para cualquier exploración?",
+    "¿Es necesario retirar todos los dispositivos antes de una prueba diagnóstica?",
+    "me tengo que quitar todo para una prueba"
+  ],
+  "t/10-situaciones/b41/2": [
+    "resonancia bomba retirar",
+    "tac pod radiografia pet radioterapia",
+    "¿Hay que quitarse la bomba o el pod para una resonancia o un TAC?",
+    "¿Qué hacer con la bomba de insulina en una radiografía, PET o radioterapia?",
+    "me hacen una resonancia me quito el omnipod"
+  ],
+  "t/10-situaciones/b41/3": [
+    "sensor rm tac mantener tabla 6",
+    "transmisor exploracion modelos",
+    "¿Se puede dejar puesto el sensor de glucosa durante una exploración?",
+    "¿Qué modelos de sensor pueden mantenerse en pruebas de imagen?",
+    "puedo hacerme el tac con el sensor puesto"
+  ],
+  "t/10-situaciones/b42/0": [
+    "sensor despues resonancia lecturas",
+    "diatermia sensor alterado 1 h",
+    "¿Se alteran las lecturas del sensor después de una resonancia magnética?",
+    "¿Cuánto tarda en normalizarse el sensor tras una RM o diatermia?",
+    "despues de la resonancia el sensor marca raro"
+  ],
+  "t/10-situaciones/b42/1": [
+    "capilar antes reanudar automatico",
+    "tras rm glucemia capilar decisiones",
+    "¿Hay que comprobar la glucemia capilar antes de reactivar el modo automático tras una prueba?",
+    "¿Cuándo fiarse de nuevo del sensor tras una exploración?",
+    "vuelvo a poner el automatico nada mas salir de la resonancia"
+  ],
+  "t/10-situaciones/b42/2": [
+    "pet fdg diabetes",
+    "pet tac ayuno insulina medicina nuclear",
+    "¿Qué hay que hacer con la insulina antes de una PET con FDG?",
+    "¿Quién da las instrucciones de ayuno y glucemia para la PET en diabetes tipo 1?",
+    "me van a hacer un pet que hago con la insulina"
+  ],
+  "t/10-situaciones/b43/0": [
+    "aeropuerto bomba escaner",
+    "control seguridad sensor rayos x viaje",
+    "¿Se puede pasar el control del aeropuerto con la bomba de insulina?",
+    "¿Qué documentación llevar al viajar en avión con un sistema de asa cerrada?",
+    "paso por el arco del aeropuerto con el sensor puesto"
+  ],
+  "t/10-situaciones/b5/0": [
+    "aidapt camaps resultados",
+    "ensayo aidapt embarazo tir ganancia peso",
+    "¿Qué demostró el ensayo AiDAPT con CamAPS FX en embarazadas?",
+    "¿Mejora CamAPS FX el tiempo en rango en la gestación y reduce el aumento de peso materno?",
+    "que beneficios tuvo camaps en el estudio de embarazadas"
+  ],
+  "t/10-situaciones/b5/1": [
+    "ensayo cristal 780g",
+    "cristal embarazo tbr nocturno",
+    "¿Qué resultados obtuvo el ensayo CRISTAL con MiniMed 780G en la gestación?",
+    "¿Mejora la 780G el tiempo en rango global en embarazadas?",
+    "que paso en el estudio de la 780g en embarazadas"
+  ],
+  "t/10-situaciones/b5/2": [
+    "ensayo circuit control-iq",
+    "circuit tandem embarazo tir",
+    "¿Qué mostró el ensayo CIRCUIT con Control-IQ en el embarazo?",
+    "¿Reduce Control-IQ el tiempo por encima y por debajo del rango en la gestación?",
+    "funciona bien la tandem en embarazadas segun los estudios"
+  ],
+  "t/10-situaciones/b5/3": [
+    "comparar aidapt cristal circuit",
+    "ensayos embarazo aid desenlaces neonatales",
+    "¿Se pueden comparar directamente los resultados de AiDAPT, CRISTAL y CIRCUIT?",
+    "¿Demostraron los ensayos de asa cerrada en el embarazo beneficios en desenlaces obstétricos o neonatales?",
+    "cual de los tres estudios de embarazo es mejor"
+  ],
+  "t/10-situaciones/b6/0": [
+    "embarazo no planificado aid",
+    "gestacion no programada iniciar asa cerrada",
+    "¿Qué hacer si una paciente con DM1 se queda embarazada sin haberlo planificado?",
+    "¿Cuándo hay que empezar un sistema con evidencia en gestación tras confirmar el embarazo?",
+    "me he quedado embarazada sin buscarlo y tengo diabetes tipo 1 que hago con la bomba"
+  ],
+  "t/10-situaciones/b6/1": [
+    "bolo anticipado embarazo minutos",
+    "ajuste ratio isf gestacion seguimiento",
+    "¿Con cuánta antelación hay que poner el bolo de la comida en el embarazo?",
+    "¿Cómo se ajustan la ratio y el factor de sensibilidad a lo largo de la gestación?",
+    "cuanto antes de comer me pongo la insulina estando embarazada"
+  ],
+  "t/10-situaciones/b6/2": [
+    "camaps objetivo embarazo trimestre",
+    "camaps target 80 90 gestacion noche",
+    "¿Qué objetivo glucémico se programa en CamAPS FX en cada trimestre del embarazo?",
+    "¿Se puede bajar el objetivo de CamAPS durante la noche en la gestación?",
+    "que objetivo pongo en camaps estando embarazada"
+  ],
+  "t/10-situaciones/b6/3": [
+    "objetivo despues del parto",
+    "posparto subir objetivo aid",
+    "¿Qué hay que hacer con el objetivo del sistema de asa cerrada después del parto?",
+    "¿Hay que volver a subir el objetivo glucémico tras dar a luz?",
+    "despues de dar a luz cambio el objetivo de la bomba"
+  ],
+  "t/10-situaciones/b6/4": [
+    "objetivos embarazo valores minimos",
+    "supervision estrecha aid gestacion",
+    "¿Hay que usar el objetivo más bajo configurable del sistema durante el embarazo?",
+    "¿Qué grado de supervisión requieren los objetivos glucémicos de la gestación con AID?",
+    "tengo que poner el objetivo mas bajo de la bomba en el embarazo"
+  ],
+  "t/10-situaciones/b7/0": [
+    "camaps isf insulina activa calculador",
+    "camaps parametros modo auto embarazo",
+    "¿En CamAPS FX el factor de sensibilidad influye en la insulina automática?",
+    "¿Qué parámetros de CamAPS importan más en modo automático durante la gestación?",
+    "en camaps que ajustes cuentan de verdad cuando funciona solo"
+  ],
+  "t/10-situaciones/b7/1": [
+    "boost ease-off camaps embarazo",
+    "boost corticoides antenatales posparto ease off",
+    "¿Cuándo usar Boost y cuándo Ease-off en CamAPS FX durante el embarazo?",
+    "¿Sirve Boost de CamAPS para la hiperglucemia por maduración pulmonar con corticoides?",
+    "cuando le doy al boost o al ease off en camaps si estoy embarazada"
+  ],
+  "t/10-situaciones/b8/0": [
+    "780g objetivo minimo 100 embarazo",
+    "minimed objetivo gestacion limitacion",
+    "¿Cuál es la limitación de la MiniMed 780G en el embarazo respecto al objetivo glucémico?",
+    "¿Se puede programar en la 780G un objetivo inferior a 100 mg/dl para la gestación?",
+    "la 780g no deja poner el objetivo tan bajo como piden en el embarazo"
+  ],
+  "t/10-situaciones/b8/1": [
+    "hidratos fantasma 780g embarazo",
+    "carbohidratos falsos forzar insulina",
+    "¿Se recomienda introducir hidratos fantasma en la 780G durante el embarazo?",
+    "¿Cómo optimizar la MiniMed 780G en la gestación sin usar estrategias no estandarizadas?",
+    "puedo meter carbohidratos de mentira en la bomba para que me ponga mas insulina"
+  ],
+  "t/10-situaciones/b9/0": [
+    "control-iq+ embarazo marcado ce",
+    "tandem gestacion junio 2026 circuit",
+    "¿Desde cuándo tiene Control-IQ+ marcado CE para el embarazo?",
+    "¿Está autorizada la Tandem con Control-IQ+ en gestantes con DM1?",
+    "puedo usar la tandem control iq estando embarazada"
+  ],
+  "t/10-situaciones/b9/1": [
+    "control-iq objetivo gestacional",
+    "tandem embarazo ajustar basal ratio isf",
+    "¿Control-IQ+ permite configurar un objetivo específico para el embarazo?",
+    "¿Cómo se intensifica el tratamiento con Control-IQ durante la gestación?",
+    "la tandem tiene un modo embarazo"
+  ],
+  "t/10-situaciones/b9/2": [
+    "modo sueño continuo embarazo tandem",
+    "control-iq rango 112,5-120 gestacion",
+    "¿Se puede dejar el modo sueño de Control-IQ activado todo el día en el embarazo?",
+    "¿Cuál es el rango de tratamiento más bajo de la Tandem para gestantes?",
+    "dejo la tandem en modo dormir todo el dia si estoy embarazada"
+  ],
+  "t/10-situaciones/b9/3": [
+    "circuit modo sueño tandem recomendaciones",
+    "tandem guia embarazo modo sleep",
+    "¿La estrategia del modo sueño continuo en el embarazo está respaldada por el ensayo CIRCUIT?",
+    "¿Recomienda Tandem usar el modo sueño de forma continuada en la gestación?",
+    "lo del modo sueño todo el dia en el embarazo lo dice tandem"
+  ],
+  "t/10-situaciones/b9/4": [
+    "modo sueño sin bolos correccion",
+    "control-iq sleep autocorreccion embarazo",
+    "¿En el modo sueño de Control-IQ se administran bolos automáticos de corrección?",
+    "¿Qué precauciones hay que tener al usar el modo sueño de Tandem en el embarazo?",
+    "en modo dormir la tandem me corrige sola los picos"
+  ],
+  "t/11-diy/b1/0": [
+    "diy asa cerrada codigo abierto",
+    "wearenotwaiting loop",
+    "¿Qué son los sistemas de asa cerrada caseros o DIY?",
+    "¿Quién desarrolla los sistemas de código abierto de páncreas artificial?",
+    "lo del pancreas artificial que se monta uno mismo"
+  ],
+  "t/11-diy/b1/1": [
+    "tidepool loop fda",
+    "loop autorizado no es diy",
+    "¿Es Tidepool Loop un sistema DIY?",
+    "¿Qué autorización tiene Tidepool Loop?",
+    "el loop de tidepool es legal"
+  ],
+  "t/11-diy/b1/2": [
+    "androidaps trio openaps",
+    "diy android iphone asa cerrada",
+    "¿Qué sistemas DIY se usan en nuestro entorno para Android e iOS?",
+    "¿Qué es AndroidAPS y en qué se basa?",
+    "hay algun loop casero para iphone"
+  ],
+  "t/11-diy/b2/0": [
+    "evidencia diy asa cerrada",
+    "estudios loop casero",
+    "¿De qué tipo de estudios procede la evidencia de los sistemas DIY?",
+    "¿Hay ensayos aleatorizados con sistemas de asa cerrada DIY?",
+    "hay pruebas de que funcione el loop casero"
+  ],
+  "t/11-diy/b2/1": [
+    "ensayo create androidaps",
+    "create diy resultados tir",
+    "¿Qué demostró el ensayo CREATE con un sistema DIY?",
+    "¿Hubo hipoglucemias graves o cetoacidosis en el ensayo CREATE?",
+    "el estudio del androidaps salio bien"
+  ],
+  "t/11-diy/b2/2": [
+    "diy equivalente comercial",
+    "diy seguridad vs aid comercial",
+    "¿Son los sistemas DIY tan eficaces y seguros como los AID comerciales?",
+    "¿En quién pueden aportar beneficio los sistemas de código abierto?",
+    "el casero es igual de bueno que el de la farmacia"
+  ],
+  "t/11-diy/b3/0": [
+    "diy prescripcion consulta",
+    "ofrecer loop casero paciente",
+    "¿Puede el endocrino ofrecer o prescribir un sistema DIY?",
+    "¿El seguimiento de un DIY en consulta supone validarlo?",
+    "me puede recetar el medico el androidaps"
+  ],
+  "t/11-diy/b3/1": [
+    "paciente diy atencion consulta",
+    "revisar parametros androidaps loop",
+    "¿Qué atención clínica debe recibir un paciente que ya usa un sistema DIY?",
+    "¿Puede el profesional revisar y orientar ajustes en un paciente con asa cerrada casera?",
+    "llevo loop casero me atienden igual en el hospital"
+  ],
+  "t/11-diy/b3/2": [
+    "soporte tecnico diy quien",
+    "actualizar software androidaps",
+    "¿Quién se encarga de instalar y actualizar un sistema DIY?",
+    "¿Da el hospital soporte técnico a los sistemas de código abierto?",
+    "si falla el loop casero a quien llamo"
+  ],
+  "t/11-diy/b3/3": [
+    "documentar diy historia clinica",
+    "registro sistema diy plan seguridad",
+    "¿Qué hay que registrar en la historia clínica de un paciente con DIY?",
+    "¿Cómo se documenta la información regulatoria dada al usuario de un DIY?",
+    "que apunta el medico si llevo un sistema casero"
+  ],
+  "t/11-diy/b4/0": [
+    "datos diy no integran hospital",
+    "¿Se pueden ver los datos de un sistema DIY en las plataformas oficiales del centro?",
+    "¿Qué hacer cuando los datos del DIY no se integran con la plataforma del hospital?",
+    "mis datos del loop no salen en la web del hospital"
+  ],
+  "t/11-diy/b4/1": [
+    "obligar cambiar diy a comercial",
+    "diy no recomendar estandar",
+    "¿Hay que obligar a cambiar de un sistema DIY a uno comercial?",
+    "¿Deben recomendarse los sistemas DIY como estándar asistencial?",
+    "me van a obligar a quitar el loop casero"
+  ],
+  "t/11-diy/b4/2": [
+    "diy niños pediatria",
+    "loop casero menor cuidador",
+    "¿Qué valorar si unos padres usan un sistema DIY en su hijo?",
+    "¿Es aceptable un asa cerrada de código abierto en pediatría?",
+    "le pongo a mi hijo el androidaps"
+  ],
+  "t/12-horizonte/b1/0": [
+    "reto implementacion aid",
+    "aid modalidad preferente implantacion",
+    "¿Cuál es ahora el principal reto de los sistemas AID?",
+    "¿Por qué la implementación clínica importa más que demostrar eficacia?",
+    "ya se sabe que funcionan, ahora que falta"
+  ],
+  "t/12-horizonte/b1/1": [
+    "aid proceso asistencial no solo dispositivo",
+    "programa asa cerrada formacion revision",
+    "¿Qué incluye un programa de automatización además de prescribir el dispositivo?",
+    "¿Por qué el AID debe entenderse como un proceso asistencial?",
+    "no basta con dar la bomba"
+  ],
+  "t/12-horizonte/b1/2": [
+    "beneficio aid organizacion equipo",
+    "equipo acompañamiento asa cerrada",
+    "¿De qué depende el beneficio real de un sistema AID en la práctica?",
+    "¿Influye la organización del equipo en los resultados del asa cerrada?",
+    "que funcione depende tambien del hospital"
+  ],
+  "t/12-horizonte/b2/0": [
+    "barreras inicio aid financiacion",
+    "educacion terapeutica acceso continuidad",
+    "¿Qué factores condicionan el inicio y la continuidad del tratamiento con AID?",
+    "¿Influye el acceso a educación terapéutica en mantener el asa cerrada?",
+    "por que no todo el mundo tiene la bomba"
+  ],
+  "t/12-horizonte/b2/1": [
+    "alfabetizacion digital aid",
+    "barreras idioma asa cerrada",
+    "¿Afectan la brecha digital o las barreras lingüísticas al uso de un AID?",
+    "¿Qué barreras funcionales pueden dificultar el uso del asa cerrada?",
+    "mi abuela no sabe de moviles puede llevarla"
+  ],
+  "t/12-horizonte/b2/2": [
+    "inercia clinica aid",
+    "heterogeneidad acceso asa cerrada",
+    "¿Qué retos tiene el sistema sanitario para implantar los AID?",
+    "¿Por qué varía tanto el acceso al asa cerrada entre centros?",
+    "en cada hospital lo hacen distinto"
+  ],
+  "t/12-horizonte/b2/3": [
+    "evaluar programa aid resultados persona",
+    "indicadores programa asa cerrada",
+    "¿Cómo debería evaluarse un programa de automatización de insulina?",
+    "¿Qué resultados relevantes para la persona deben medirse además de la HbA1c?",
+    "como se mide si el programa de bombas va bien"
+  ],
+  "t/12-horizonte/b3/0": [
+    "coste efectividad aid",
+    "valoracion economica asa cerrada",
+    "¿De qué depende la valoración económica de los sistemas AID?",
+    "¿Es el coste del dispositivo lo único que cuenta en la evaluación económica?",
+    "sale caro el pancreas artificial"
+  ],
+  "t/12-horizonte/b3/1": [
+    "implantacion equitativa aid",
+    "acceso transparente sostenible asa cerrada",
+    "¿Cómo debe acompañarse una indicación amplia de los AID?",
+    "¿Qué hace falta para que el acceso al asa cerrada sea equitativo y sostenible?",
+    "que sea igual para todos"
+  ],
+  "t/12-horizonte/b4/0": [
+    "futuro aid",
+    "sistemas mas sencillos menos decisiones",
+    "¿Hacia dónde evolucionan los sistemas de asa cerrada?",
+    "¿Serán los AID más fáciles de usar en el futuro?",
+    "que viene despues de estas bombas"
+  ],
+  "t/12-horizonte/b4/1": [
+    "futuro sin bolo prandial",
+    "ampliacion indicaciones aid poblaciones",
+    "¿Dejarán de ser necesarios los bolos de comida con el asa cerrada completa?",
+    "¿Se está ampliando el uso de los AID a nuevas poblaciones?",
+    "algun dia no habra que contar hidratos"
+  ],
+  "t/12-horizonte/b4/2": [
+    "bihormonal glucagon aid",
+    "interoperabilidad bombas sensores",
+    "¿Qué se sabe de los sistemas bihormonales de asa cerrada?",
+    "¿Qué tienen que demostrar la interoperabilidad y los sistemas con glucagón?",
+    "habra bombas que pongan tambien glucagon"
+  ],
+  "t/12-horizonte/b4/3": [
+    "progreso aid carga resultados",
+    "automatizacion equidad seguridad",
+    "¿Cómo se medirá el verdadero progreso de la automatización de la insulina?",
+    "¿Sigue haciendo falta educación y criterio clínico con los sistemas automáticos?",
+    "la bomba automatica no sustituye al medico"
+  ]
+}

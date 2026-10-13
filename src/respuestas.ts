@@ -31,6 +31,10 @@ import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import { frases } from "./frases";
 import { raizEs } from "./raiz";
 import { FRECUENTES, type Frecuente } from "./frecuentes";
+/* Cómo se pregunta por cada pasaje (0.65.0, doc2query): las raíces de consultas escritas para el
+   índice (expansiones.consultas.json), que solo sirven para encontrar el pasaje; nunca se enseñan. Lo que se enseña sigue siendo el texto
+   literal del capítulo. Se generaron sin ver los bancos de prueba (docs/BUSQUEDA_2026-10.md). */
+import EXPANSIONES from "./expansiones.json";
 
 export { frases };
 
@@ -937,6 +941,8 @@ interface Atomo {
   claves: string[];
   cuerpo: string[];
   parrafo: string[];
+  /* Raíces de las consultas del índice (EXPANSIONES) que el pasaje no tiene ya. */
+  exp: string[];
   /* Filas por sistema: raíces de cada casilla. */
   porSis?: string[][];
   tramo?: string;
@@ -980,6 +986,8 @@ const NOMBRE_SIS = (i: number) => LISTA_TABLAS[0].columnas[i];
 
 let ATOMOS: Atomo[] | null = null;
 let PESO: Map<string, number> | null = null;
+/* Las palabras que solo salen en las consultas del índice (no en el capítulo). */
+const SOLO_EXP = new Set<string>();
 /* Palabras del capítulo (y del léxico) por cómo suenan, y todas tal como se escriben. */
 let SONIDO: Map<string, string> | null = null;
 let SUPERFICIE: Map<string, string> | null = null;
@@ -1016,6 +1024,7 @@ export function atomos(): Atomo[] {
       claves: raices(zonas.claves ?? ""),
       cuerpo: raices(zonas.cuerpo),
       parrafo: raices(zonas.parrafo ?? ""),
+      exp: [],
       nombra: nombrados(zonas.cuerpo),
       nombraParrafo: nombrados(zonas.parrafo || zonas.cuerpo),
       seq: secuencia(zonas.cuerpo),
@@ -1305,6 +1314,22 @@ export function atomos(): Atomo[] {
     if (!SONIDO.has(f)) SONIDO.set(f, w);
     if (!SUPERFICIE.has(w)) SUPERFICIE.set(w, raiz(w));
   }
+  // Las consultas del índice: solo las raíces que el pasaje no tiene ya, y un peso propio para
+  // las que no salen en el capítulo (así una palabra solo de las consultas cuenta como conocida).
+  const exp = EXPANSIONES as Record<string, string[]>;
+  const dfExp = new Map<string, number>();
+  for (const a of out) {
+    const ws = exp[a.r.id];
+    if (!ws || a.tramo) continue;
+    const ya = new Set([...a.titulo, ...a.claves, ...a.cuerpo]);
+    a.exp = ws.filter((w) => !ya.has(w));
+    for (const w of a.exp) dfExp.set(w, (dfExp.get(w) ?? 0) + 1);
+  }
+  for (const [w, d] of dfExp)
+    if (!PESO.has(w)) {
+      PESO.set(w, Math.min(1.5, Math.max(0.5, idf(d) / medio)));
+      SOLO_EXP.add(w);
+    }
   ATOMOS = out;
   return out;
 }
@@ -1453,6 +1478,9 @@ function puntuarPalabra(a: Atomo, t: string, cuerpo: string[], prefijo: boolean,
   if ((w = a.titulo.find(c))) return { s: pt * peso(w), casa: true, titulo: true, propio: true };
   if ((w = a.claves.find(c))) return { s: 1.5 * peso(w), casa: true, titulo: false, propio: true };
   if ((w = cuerpo.find(c))) return { s: pc * peso(w), casa: true, titulo: false, propio: true };
+  // Una consulta del índice para este pasaje: casa, con menos peso que el texto.
+  if ((w = a.exp.find(c)))
+    return { s: 0.8 * peso(w), casa: true, titulo: false, propio: true, exp: true };
   // Casa en otra frase del párrafo: cubre, pero no es «propio» de esta frase (0.61.0).
   if ((w = a.parrafo.find(c)))
     return { s: 0.4 * peso(w), casa: true, titulo: false, propio: false };
@@ -1461,7 +1489,13 @@ function puntuarPalabra(a: Atomo, t: string, cuerpo: string[], prefijo: boolean,
     return { s: 0.8 * peso(w), casa: true, titulo: true, propio: true };
   if (t.length >= 5 && (w = cuerpo.find((x) => casiIgual(t, x))))
     return { s: 0.4 * peso(w), casa: false, titulo: false, propio: false };
-  return { s: 0, casa: false, titulo: false, propio: false };
+  return { s: 0, casa: false, titulo: false, propio: false } as {
+    s: number;
+    casa: boolean;
+    titulo: boolean;
+    propio: boolean;
+    exp?: boolean;
+  };
 }
 
 /* Sistemas y bombas que el capítulo no trata: la consulta que los nombra no tiene respuesta
@@ -1524,8 +1558,81 @@ export function numeroDePaso(pregunta: string): number | null {
 }
 
 /* «Paso 7 de la descarga»: ese paso de la Tabla 5 es la respuesta, delante de lo demás. */
+/* ---------- Segundo ordenador: BM25 por pasaje (0.65.0) ----------
+   El motor de arriba decide bien cuándo una respuesta es segura; cuando no lo es, el orden de lo
+   «más cercano» mejora con un ordenador distinto: BM25 (frecuencia de cada raíz en el pasaje,
+   saturada, por su rareza y normalizada por la longitud), con el título de más peso que el cuerpo
+   y el resto del párrafo de poco. Ordena lo que va detrás de la primera respuesta (fundirBM25). */
+type DocBM25 = { a: Atomo; tf: Map<string, number>; len: number };
+let BM25: { docs: DocBM25[]; idf: Map<string, number>; medio: number } | null = null;
+function indiceBM25() {
+  if (BM25) return BM25;
+  const docs: DocBM25[] = atomos().map((a) => {
+    const tf = new Map<string, number>();
+    const add = (ws: string[], w: number) => ws.forEach((x) => tf.set(x, (tf.get(x) ?? 0) + w));
+    add(a.titulo, 2);
+    add(a.claves, 0.7);
+    add(a.cuerpo, 1);
+    add(a.parrafo, 0.25);
+    add(a.exp, 0.5);
+    let len = 0;
+    tf.forEach((v) => (len += v));
+    return { a, tf, len };
+  });
+  const df = new Map<string, number>();
+  for (const d of docs) for (const w of d.tf.keys()) df.set(w, (df.get(w) ?? 0) + 1);
+  const n = docs.length;
+  const idf = new Map(
+    [...df].map(([w, k]) => [w, Math.log(1 + (n - k + 0.5) / (k + 0.5))] as const),
+  );
+  const medio = docs.reduce((x, d) => x + d.len, 0) / n;
+  BM25 = { docs, idf, medio };
+  return BM25;
+}
+export function ordenBM25(pregunta: string, max = 10): { a: Atomo; s: number }[] {
+  const { docs, idf, medio } = indiceBM25();
+  const gs = gruposDe(pregunta);
+  const sis = gs.find((g) => g.sistema !== undefined)?.sistema;
+  const grupos = gs.filter((g) => g.sistema === undefined);
+  if (!grupos.length) return [];
+  const k1 = 1.2;
+  const b = 0.6;
+  const out: { a: Atomo; s: number }[] = [];
+  for (const d of docs) {
+    // Las ramas de la Figura 3 solo responden si se las nombra (A01): BM25 no las propone.
+    if (d.a.tramo) continue;
+    let s = 0;
+    for (const g of grupos) {
+      let mejor = 0;
+      g.palabras.forEach((t, k) => {
+        let f = d.tf.get(t) ?? 0;
+        let w = t;
+        if (!f && k === 0 && g.prefijo)
+          for (const [x, v] of d.tf)
+            if (x.startsWith(t)) {
+              f = v;
+              w = x;
+              break;
+            }
+        if (!f) return;
+        const v = ((idf.get(w) ?? 0) * f * (k1 + 1)) / (f + k1 * (1 - b + (b * d.len) / medio));
+        const peso = (k > 0 ? 0.85 : 1) * (g.bonus ? 0.5 : 1) * (g.generica ? 0.5 : 1);
+        mejor = Math.max(mejor, v * peso);
+      });
+      s += mejor;
+    }
+    if (s <= 0) continue;
+    if (sis !== undefined) {
+      if (d.a.porSis || d.a.nombra.includes(sis)) s *= 1.3;
+      else if (d.a.nombra.length) s *= 0.6;
+    }
+    out.push({ a: d.a, s });
+  }
+  return out.sort((x, y) => y.s - x.s).slice(0, max);
+}
+
 export function responder(pregunta: string, opciones: { max?: number } = {}): Respuesta[] {
-  const base = responderBase(pregunta, opciones);
+  const base = fundirBM25(pregunta, responderBase(pregunta, { max: 10 }), opciones.max ?? 3);
   const q = normalizar(pregunta);
   const paso = numeroDePaso(pregunta);
   if (!paso || !/descarga|tabla 5/.test(q)) return base;
@@ -1533,6 +1640,49 @@ export function responder(pregunta: string, opciones: { max?: number } = {}): Re
   if (!a) return base;
   const r = resolver(a, undefined, 9);
   return [r, ...base.filter((x) => x.id !== r.id)].slice(0, opciones.max ?? 3);
+}
+
+/* La fusión (medida con los bancos 1-10 como desarrollo): el primero del motor se queda primero
+   —BM25 lo empeoraba cuando se le dejaba decidirlo—; detrás, los órdenes del motor y de BM25 se
+   funden por rango recíproco. Lo que solo aporta BM25 va como «lo más cercano». Una respuesta por
+   párrafo, fila o tramo. Si el motor no da nada, no consta. */
+const RRF_BM25 = 20;
+function fundirBM25(pregunta: string, base: Respuesta[], max: number): Respuesta[] {
+  if (!base.length || tramoDeConsulta(unificar(pregunta))) return base.slice(0, max);
+  const sis = gruposDe(pregunta).find((g) => g.sistema !== undefined)?.sistema;
+  const clave = (r: { ruta: string; tipo: string; titulo: string }) =>
+    r.ruta.replace(/~\d+$/, "") + (r.tipo === "texto" ? "" : r.titulo);
+  const puntos = new Map<string, { r: Respuesta; s: number }>();
+  base.forEach((r, k) => puntos.set(clave(r), { r, s: 1 / (RRF_BM25 + k) }));
+  ordenBM25(pregunta, 10).forEach(({ a }, k) => {
+    const c = clave(a.r);
+    const ya = puntos.get(c);
+    if (ya) ya.s += 1 / (RRF_BM25 + k);
+    else
+      puntos.set(c, {
+        r: { ...resolver(a, sis, 0), aproximada: true, duda: "parcial" },
+        s: 1 / (RRF_BM25 + k),
+      });
+  });
+  // El primero del motor se queda primero (variante A): BM25 solo reordena lo que va detrás.
+  const primero = puntos.get(clave(base[0]))!;
+  const resto = [...puntos.values()].filter((x) => x !== primero).sort((x, y) => y.s - x.s);
+  return [primero, ...resto].slice(0, max).map((x) => x.r);
+}
+
+/* Las raíces de las consultas del índice (expansiones.consultas.json, que no va en la app) que
+   cada pasaje no tiene ya: lo que se guarda en expansiones.json. Lo comprueba
+   expansiones.test.ts; con GENERAR=1 lo reescribe. */
+export function raicesDeConsultas(consultas: Record<string, string[]>): Record<string, string[]> {
+  const out: Record<string, string[]> = {};
+  for (const a of atomos()) {
+    const qs = consultas[a.r.id];
+    if (!qs || a.tramo) continue;
+    const ya = new Set([...a.titulo, ...a.claves, ...a.cuerpo]);
+    const ws = [...new Set(raices(qs.join(" ")))].filter((w) => !ya.has(w) && w.length > 2);
+    if (ws.length) out[a.r.id] = ws;
+  }
+  return out;
 }
 
 /* Lo que el capítulo no trata de una consulta: las palabras con contenido que ninguna raíz del
@@ -1561,7 +1711,16 @@ export function coberturaDe(pregunta: string): { ajenas: string[] } {
 }
 
 /* Solo para medir (pruebas): ve los candidatos puntuados de cada consulta. */
-type Cand = { a: Atomo; score: number; cob: number; tit: number; cas: number; prop: number[] };
+type Cand = {
+  a: Atomo;
+  score: number;
+  cob: number;
+  tit: number;
+  cas: number;
+  /* Grupos casados por el texto mismo (sin las consultas del índice). */
+  casT: number;
+  prop: number[];
+};
 let ESPIA: ((x: { cand: Cand[]; cercanas: Cand[]; sis?: number; utiles: number }) => void) | null =
   null;
 export const espiar = (f: typeof ESPIA) => void (ESPIA = f);
@@ -1627,12 +1786,18 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
   const cubrir = (a: Atomo, cuerpo: string[]) => {
     let score = 0;
     let casados = 0;
+    let casadosTexto = 0;
     let cubierto = 0;
     let enTitulo = 0;
     // Las palabras específicas que casa esta frase misma (no otra de su párrafo).
     const propios: number[] = [];
     conPuntos.forEach((g, gi) => {
-      let mejor = { s: 0, casa: false, titulo: false, propio: false };
+      let mejor: ReturnType<typeof puntuarPalabra> = {
+        s: 0,
+        casa: false,
+        titulo: false,
+        propio: false,
+      };
       let segunda = 0;
       const techo = PESO!.get(g.palabras[0]) ?? 1;
       g.palabras.forEach((t, k) => {
@@ -1648,12 +1813,20 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
       if (g.bonus) return;
       if (mejor.casa) {
         casados++;
+        if (!mejor.exp) casadosTexto++;
         if (conocidas.includes(g)) cubierto += pesoDe(g);
       }
       if (mejor.propio && !g.generica) propios.push(gi);
       if (mejor.titulo) enTitulo++;
     });
-    return { score, casados, enTitulo, cobertura: cubierto / pesoTotal, propios };
+    return {
+      score,
+      casados,
+      enTitulo,
+      cobertura: cubierto / pesoTotal,
+      casadosTexto,
+      propios,
+    };
   };
 
   const cand: Cand[] = [];
@@ -1676,7 +1849,7 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
         });
     }
     let { score } = r;
-    const { casados, enTitulo, cobertura, propios } = r;
+    const { casados, casadosTexto, enTitulo, cobertura, propios } = r;
     if (!casados || score <= 0) continue;
     // Responde si cubre la pregunta: la mitad (por peso) con el título a favor, o casi toda sin
     // él. Si cubre al menos un tercio, vale solo como «lo más cercano», cuando nada responde.
@@ -1746,6 +1919,7 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
       cob: cobertura,
       tit: enTitulo,
       cas: casados,
+      casT: casadosTexto,
       prop: propios,
     });
   }
@@ -1768,14 +1942,15 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
   const top = lista[0];
   const segura =
     !!top &&
-    ((top.cas / utiles.length >= 0.67 && top.score >= 4 && margen >= 1.5) ||
+    // Lo que casan las consultas del índice ordena, pero no hace «la respuesta» (0.65.0).
+    ((top.casT / utiles.length >= 0.67 && top.score >= 4 && margen >= 1.5) ||
       // Casa todo lo útil de la pregunta, en parte en el título, con puntuación alta.
-      (top.cas >= utiles.length && top.tit >= 1 && top.score >= 8 && margen >= 0.5) ||
+      (top.casT >= utiles.length && top.tit >= 1 && top.score >= 8 && margen >= 0.5) ||
       // Con una cifra de β-OHB, la entrada de la Figura 3 es la respuesta por diseño (A01).
       (!!tramo && top.a.r.id.startsWith("F3/")));
   const aproximada = !cand.length || !segura;
   const duda: "parcial" | "varias" =
-    !cand.length || !top || top.cas / utiles.length < 0.67 ? "parcial" : "varias";
+    !cand.length || !top || top.casT / utiles.length < 0.67 ? "parcial" : "varias";
 
   // Como mucho una respuesta por párrafo, fila o tramo.
   const vistos = new Set<string>();
@@ -1932,7 +2107,9 @@ const UMBRAL_PREGUNTA = 0.6;
 
 const contenido = (gs: Grupo[]) => gs.filter((g) => g.sistema === undefined && !g.bonus);
 const pesoGrupo = (g: Grupo) =>
-  g.generica ? 0.3 : Math.max(...g.palabras.map((t) => PESO!.get(t) ?? 3));
+  g.generica
+    ? 0.3
+    : Math.max(...g.palabras.map((t) => (SOLO_EXP.has(t) ? 3 : (PESO!.get(t) ?? 3))));
 const casanGrupos = (a: Grupo, b: Grupo) =>
   a.palabras.some((t) => b.palabras.some((u) => casa(t, u) || casa(u, t)));
 /* Parte (por peso) de `a` que tiene equivalente en `b`. */

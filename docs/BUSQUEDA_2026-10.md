@@ -140,3 +140,65 @@ En desarrollo (bancos 1-9) sube algo (p. ej., banco 1 de 76,3 a 77,1 %; banco 7 
 77,5 %) y en el banco nuevo no cambia: se queda porque no empeora nada y enseña el detalle junto a
 la frase principal. Lo que falla en los bancos nuevos es sobre todo encontrar el párrafo, no la
 frase dentro de él.
+
+## 0.65.0 · consultas del índice (doc2query) y BM25 (13-10-2026)
+
+**Banco de prueba.** Otro agente escribió el **banco 11** sin ver el motor: 150 preguntas (20
+ajenas, 179 fragmentos aceptables), siempre parafraseadas, sin copiar palabras del capítulo. Se
+congeló (220a203) antes de tocar el motor. Los bancos 1-10 pasan a ser de desarrollo.
+
+**1. BM25 por pasaje.** Un segundo ordenador (BM25, k1 = 1,2, b = 0,6; título ×2, claves ×0,7,
+cuerpo ×1, resto del párrafo ×0,25), fundido por rango recíproco con el motor solo cuando no hay
+respuesta segura; la primera del motor se mantiene y nunca entra un tramo de la Figura 3 (A01).
+Sobre el banco 11, con el motor de la 0.64.0, no cambió nada (48,7 / 62,0 / 6,7). Se queda
+porque, con las consultas del índice, sube «entre las tres» en desarrollo (83,1 → 85,8 %).
+
+**2. Consultas del índice (doc2query).** Cuatro agentes escribieron, sin ver ningún banco, 5
+consultas por pasaje (441 pasajes, 2.200 consultas: cómo lo preguntaría un clínico, un residente
+o un paciente), con el texto literal delante. Se quitaron las que nombran marcas o fármacos que el
+capítulo no trata (5; lista en `src/expansiones.test.ts`, que lo comprueba). Las consultas están
+en `src/expansiones.consultas.json` y **no van en la app**: la app lleva solo sus raíces que el
+pasaje no tiene ya (`src/expansiones.json`, 40 KB, ~11 KB comprimido), que regenera
+`GENERAR=1 npx vitest run src/expansiones.test.ts`. Nunca se enseñan: lo que sale es el texto del
+capítulo.
+
+Reglas, decididas solo con los bancos de desarrollo:
+
+- Casan con menos peso que el texto (0,8 frente a 1,8-2,2); probadas 0,5 / 0,8 / 1,1 / 1,5.
+- No en los tramos de la Figura 3 (A01).
+- No cambian el peso de las palabras con que se eligen las preguntas frecuentes.
+- **Ordenan, pero no hacen «la respuesta»**: para presentar un pasaje como respuesta directa
+  solo cuenta lo que casa el texto del capítulo. Sin esta regla, las directas equivocadas
+  subían en desarrollo de 6,8 a 7,7 %; con ella, 5,8 %.
+- Tampoco cuentan para el rótulo «Pasajes posibles» frente a «Coincidencia parcial»: si la
+  pregunta solo la cubren las consultas, el capítulo la trata en parte.
+- Probadas y descartadas: menos cobertura por lo que casan las consultas (0,5 y 0), excluir
+  también las palabras del resto del párrafo, y decidir «lo más cercano» sin ellas.
+
+| Banco 11 (n = 150, prueba) | 0.64.0 | 0.65.0 |
+| -------------------------- | ------ | ------ |
+| Primera                    | 48,7 % | 61,3 % |
+| Entre las tres             | 62,0 % | 76,7 % |
+| Directas equivocadas       | 6,7 %  | 7,3 %  |
+| Directas (n)               | 41     | 44     |
+| Precisión de las directas  | 75,6 % | 75,0 % |
+
+| Bancos 1-10 (desarrollo) | 0.64.0 | 0.65.0 |
+| ------------------------ | ------ | ------ |
+| Primera                  | 68,3 % | 72,7 % |
+| Entre las tres           | 81,9 % | 85,8 % |
+| Directas equivocadas     | 6,8 %  | 5,8 %  |
+
+**Honestidad de la medida.** El banco 11 se midió una vez con las consultas del índice
+(62,0 / 76,0 / 7,3, peso 0,8). Después, ya decidido en desarrollo, se añadieron las tres reglas
+de arriba (frecuentes, tramos y «no hacen la respuesta»), y se midió una segunda vez para
+informar de la cifra final (61,3 / 76,7 / 7,3). No se ajustó nada mirando el banco 11. Las
+directas equivocadas suben una (10 → 11 de 150) y las directas, tres; la precisión de las
+directas queda igual.
+
+**Coste.** El banco principal baja de 91 a 89 % a la primera (dos preguntas pasan a la segunda
+posición): umbral 90 → 88 %. Los bancos 3 y 4 suben una directa equivocada cada uno (umbrales
+0,04 → 0,05 y 0,05 → 0,07); el resto de umbrales se endurece. El trozo del buscador pasa de ~26 a 36 KB
+comprimido (se carga al buscar, no al entrar): presupuesto propio de 40 KB.
+
+**Siguiente.** Para afirmar mejoras posteriores hace falta un banco 12 nuevo.
