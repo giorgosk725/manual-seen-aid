@@ -196,12 +196,12 @@ const EJERCICIO_COMUN: Momento[] = [
 ];
 const EJERCICIO_FINAL: Momento[] = [
   {
-    rotulo: "Hipoglucemia: hidratos y tratamiento con asa cerrada",
+    rotulo: "Hipoglucemia: hidratos de carbono y conducta en asa cerrada",
     apartado: E,
     bloque: "b6",
     mas: [{ apartado: E, bloque: "b7" }],
   },
-  { rotulo: "Deportes de contacto, agua y desconexión", apartado: S, bloque: "b24" },
+  { rotulo: "Deportes de contacto, acuáticos y desconexión", apartado: S, bloque: "b24" },
   { rotulo: "Después del ejercicio: hipoglucemia diferida y noche", apartado: S, bloque: "b25" },
 ];
 const EXPLORACION: Momento[] = [
@@ -287,7 +287,7 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
       "Qué sistemas tienen autorización y evidencia, los objetivos de la gestación y cómo se ajusta cada sistema.",
     fuente: "pp. 17-18",
     pagina: 17,
-    rotuloGuion: "Por necesidades: qué sistema, objetivos, ajustes, vigilancia, parto",
+    rotuloGuion: "Por temas",
     guion: [
       { rotulo: "Qué sistema: autorización y evidencia", apartado: S, bloque: "b3" },
       { rotulo: "Objetivos de HbA1c y de MCG", apartado: S, bloque: "b4" },
@@ -301,7 +301,10 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
     ],
     enlaces: [
       { texto: "Objetivos de la gestación (figura)", ruta: "#/visual/objetivos-mcg/gestacion" },
-      { texto: "Objetivo del calculador en gestación (Tabla 2)", ruta: "#/consultar/tablas/T2" },
+      {
+        texto: "Objetivo del calculador de bolos en la gestación (Tabla 2)",
+        ruta: "#/consultar/tablas/T2",
+      },
       { texto: "Explorar criterios de elección", ruta: "#/sistemas/elegir" },
     ],
   },
@@ -351,7 +354,7 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
     rotuloGuion: "Por momentos",
     guion: [
       { rotulo: "Qué cambian", apartado: S, bloque: "b29", k: [0] },
-      { rotulo: "Mantener el sistema, o no", apartado: S, bloque: "b29", k: [1] },
+      { rotulo: "Cuándo mantener el sistema", apartado: S, bloque: "b29", k: [1] },
       {
         rotulo: "Funciones que intensifican la administración",
         apartado: S,
@@ -429,7 +432,7 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
       },
       { rotulo: "Alcohol", apartado: S, bloque: "b14", k: [2] },
       {
-        rotulo: "Seguimiento compartido con los progenitores",
+        rotulo: "Seguimiento compartido con la familia",
         apartado: S,
         bloque: "b15",
         k: [0, 1],

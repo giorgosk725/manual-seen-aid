@@ -64,9 +64,9 @@ const hex = CATEGORIA_HEX.consultar;
 const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
 /* La pauta previa, por origen: lo que se traslada y lo que se calcula (apartado 8, p. 12). */
 const PREVIA: Record<Origen, string> = {
-  mdi: "su pauta",
-  isci: "la bomba actual",
-  aid: "el sistema actual",
+  mdi: "de su pauta",
+  isci: "de la bomba actual",
+  aid: "del sistema actual",
 };
 const PARTIDA_MDI =
   "La fuente de partida es la pauta previa del paciente, trasladada al esquema del sistema elegido";
@@ -346,7 +346,7 @@ export function CalculadoraInicio({
   const valorDe = (k: Clave, c: number): ReactNode => {
     const traslado = (
       <span className="font-normal italic text-slate-600">
-        {k === "basal" ? "la de" : "el de"} {previa}
+        {k === "basal" ? "la" : "el"} {previa}
       </span>
     );
     const sinPropuesta = <span className="font-normal text-slate-500">—</span>;
@@ -407,10 +407,7 @@ export function CalculadoraInicio({
         >
           El resto del inicio
         </div>
-        <ul
-          className="divide-y sm:grid sm:grid-cols-4 sm:divide-y-0"
-          style={{ borderColor: "#eeeeee" }}
-        >
+        <ul className="grid grid-cols-2 sm:grid-cols-4" style={{ borderColor: "#eeeeee" }}>
           {[
             { t: "Preparación", r: ruta("preparacion"), I: Check },
             { t: "Plan de respaldo", r: ruta("inicio", "respaldo"), I: ShieldCheck },
@@ -530,7 +527,7 @@ export function CalculadoraInicio({
               <Campo
                 id="calc-rapida"
                 etiqueta="Insulina rápida"
-                ayuda="De un día; escribe 0 si no lleva"
+                ayuda="Total diario; escribe 0 si no usa"
                 unidad="UI/día"
                 valor={d.rapida}
                 onChange={(v) => set({ rapida: v })}
@@ -541,7 +538,7 @@ export function CalculadoraInicio({
                 etiqueta="Peso"
                 ayuda={
                   pidePesoYDtd(sis)
-                    ? `${CORTOS[sis!]} lo pide para arrancar`
+                    ? `${CORTOS[sis!]} lo pide para iniciar el automático`
                     : "Para comprobar la indicación"
                 }
                 unidad="kg"
@@ -554,7 +551,7 @@ export function CalculadoraInicio({
               etiqueta="Ratio y factor de sensibilidad"
               opciones={[
                 { v: "no", t: "Sin referencia: reglas del 450 y del 1700" },
-                { v: "si", t: "Tiene unos propios que funcionan" },
+                { v: "si", t: "Tiene los suyos y funcionan" },
               ]}
               valor={d.referencia ? "si" : "no"}
               onChange={(v) => set({ referencia: v === "si" })}
@@ -619,7 +616,7 @@ export function CalculadoraInicio({
                 {d.control === "bueno" &&
                   d.ultralarga &&
                   !d.tocado.reduccion &&
-                  " Con glargina U–300 o degludec y buen control previo parte del 20 %, por el riesgo de hipoglucemia de los primeros días."}
+                  " Con glargina U-300 o degludec y buen control previo, se parte del 20 %, por el riesgo de hipoglucemia de los primeros días."}
               </p>
             </div>
             <label className="flex min-h-11 items-center gap-2 text-sm text-slate-800">
@@ -636,13 +633,13 @@ export function CalculadoraInicio({
                 }
                 className="h-6 w-6 shrink-0 accent-slate-700"
               />
-              La basal previa es glargina U–300 o degludec
+              La basal previa es glargina U-300 o degludec
             </label>
           </div>
         ) : (
           <div className="space-y-4">
             <Opciones
-              etiqueta={`¿La programación de ${previa} funcionaba?`}
+              etiqueta={`¿Funcionaba la programación ${previa}?`}
               opciones={[
                 { v: "si", t: "Sí: se traslada" },
                 { v: "no", t: "No, o no hay referencia" },
@@ -660,7 +657,7 @@ export function CalculadoraInicio({
             </p>
             {d.origen === "aid" && (
               <p className="text-xs text-slate-600">
-                Al cambiar de sistema, lo que cuenta en automático no es lo mismo en todos:{" "}
+                Al cambiar de sistema, los parámetros que cuentan en automático no son los mismos:{" "}
                 <a
                   href={href("sistemas", "todos", "parametros")}
                   className="font-semibold underline"
@@ -678,7 +675,7 @@ export function CalculadoraInicio({
                   !d.referencia
                     ? "Para las reglas del 450 y del 1700"
                     : pidePesoYDtd(sis)
-                      ? `${CORTOS[sis!]} la pide para arrancar`
+                      ? `${CORTOS[sis!]} la pide para iniciar el automático`
                       : "Para comprobar la indicación"
                 }
                 unidad="UI/día"
@@ -691,7 +688,7 @@ export function CalculadoraInicio({
                 etiqueta="Peso"
                 ayuda={
                   pidePesoYDtd(sis)
-                    ? `${CORTOS[sis!]} lo pide para arrancar`
+                    ? `${CORTOS[sis!]} lo pide para iniciar el automático`
                     : "Para comprobar la indicación"
                 }
                 unidad="kg"
@@ -758,7 +755,7 @@ export function CalculadoraInicio({
                   ? `${coma(redondea(ev.dtdPrevia!, 1))} UI − ${d.reduccion} %`
                   : `${coma(redondea(ev.dtdPrevia!, 1))} UI (sin reducción)`
               }
-              regla={mdi ? "Reducción respecto a MDI" : `DTD de ${previa}`}
+              regla={mdi ? "Reducción respecto a MDI" : `DTD ${previa}`}
               color={color}
             />
             {ev.calcula.basal && (
@@ -798,7 +795,7 @@ export function CalculadoraInicio({
             className="rounded-lg px-3 py-2 text-sm text-slate-800"
             style={{ background: "#f1f5f9" }}
           >
-            Se traslada la programación de {previa}: no hay nada que calcular.
+            Se traslada la programación {previa}: no hay nada que calcular.
           </p>
         )}
         {ev.lista && ev.calcula.ratioFactor && (
@@ -854,12 +851,12 @@ export function CalculadoraInicio({
                 {ev.indicacion.fuera.length
                   ? "Sin propuesta: hay un dato fuera de la indicación (paso 4)."
                   : "Sin cifras hasta completar los datos del paso 3."}{" "}
-                Lo que hace cada parámetro sigue debajo.
+                Debajo, qué hace cada parámetro.
               </p>
             )}
             <Lista
-              titulo="Cuentan en el modo automático"
-              nota="Efecto directo sobre el algoritmo, o lo que necesita para arrancar"
+              titulo="Efecto directo en el modo automático"
+              nota="Efecto directo sobre el algoritmo, o lo que necesita para iniciar el modo automático"
               claves={gruposDeProgramar(sis).automatico}
               sis={sis}
               valorDe={valorDe}
@@ -896,7 +893,7 @@ export function CalculadoraInicio({
               </ul>
             </div>
             <Lista
-              titulo="Sobre todo para los bolos, el modo manual y el respaldo"
+              titulo="Sobre todo en los bolos y el modo manual"
               claves={gruposDeProgramar(sis).manual}
               sis={sis}
               valorDe={valorDe}
@@ -964,7 +961,7 @@ export function CalculadoraInicio({
       <div className="space-y-1 text-xs text-slate-600">
         <p>{REGLAS.partida}</p>
         <p>
-          Ayuda de cálculo orientativo: aplica las reglas del capítulo y unos puntos de partida
+          Ayuda de cálculo orientativa: aplica las reglas del capítulo y unos puntos de partida
           decididos por el responsable del complemento a lo que se escribe; la pauta la decide el
           profesional. Nada de lo escrito se guarda ni se envía.
         </p>

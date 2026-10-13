@@ -928,10 +928,10 @@ function BarraSistemas({
     );
   const pista =
     ids.length === 0
-      ? "A la vista los cuatro: marca uno para su ficha, o varios para compararlos"
+      ? "Se ven los cuatro: marca uno para ver su ficha o varios para compararlos"
       : ids.length === 1
         ? "Marca otro para compararlos"
-        : "Quita uno para dejar su ficha";
+        : "Desmarca uno para volver a una sola ficha";
   // Al desplazarse, la barra se pliega a una línea («Control-IQ + Omnipod 5 · Cambiar») y las
   // pestañas; «Cambiar» vuelve a abrir el selector hasta el siguiente desplazamiento.
   const [plegada, setPlegada] = useState(false);
@@ -1218,8 +1218,8 @@ function ParametrosAuto({ c, compacto = false }: { c: number; compacto?: boolean
     );
   return (
     <div className={compacto ? "space-y-1.5" : "space-y-2"}>
-      {grupo("Efecto directo en automático", directos, true)}
-      {grupo("Sobre todo en bolos o modo manual", resto, false)}
+      {grupo("Efecto directo en el modo automático", directos, true)}
+      {grupo("Sobre todo en los bolos y el modo manual", resto, false)}
       {/* M61-04: el papel de la basal programada en cada sistema (Tabla 3, celda entera): en
           Omnipod 5, por ejemplo, cuenta para el primer pod y luego no. */}
       <p className="text-xs leading-snug text-slate-600">

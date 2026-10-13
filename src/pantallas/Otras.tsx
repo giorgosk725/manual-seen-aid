@@ -217,7 +217,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
     <div>
       <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1}>
         <p className="text-sm text-slate-600">
-          Escribe términos o una duda: arriba, los pasajes relacionados del capítulo, con su página.
+          Escribe unos términos o una pregunta: primero salen los pasajes del capítulo que la
+          responden, con su página.
         </p>
       </CabeceraEditorial>
       <label className="sr-only" htmlFor="buscar-q">
@@ -266,7 +267,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
             <p className="font-semibold">El capítulo no trata {noCubierto}.</p>
             <p className="mt-1 text-slate-700">
               No hay información específica de ese sistema. Lo que sigue es lo general del capítulo
-              que puede servir; no lo tomes como propio de {noCubierto}.
+              que puede servir; no lo apliques como específico de {noCubierto}.
             </p>
           </div>
         )}
@@ -448,7 +449,9 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
                   >
                     <span className="min-w-0 break-all">{r.url.replace(/^https?:\/\//, "")}</span>{" "}
                     <ExternalLink size={12} aria-hidden="true" />
-                    <span className="font-normal text-slate-500">(enlace añadido)</span>
+                    <span className="font-normal text-slate-500">
+                      (enlace añadido por el complemento)
+                    </span>
                   </a>
                 ) : (
                   <span className="mt-1 block text-xs text-slate-500">Sin DOI ni enlace.</span>
@@ -582,19 +585,19 @@ export function Sobre() {
             {MATERIALES.map((m) => (
               <li key={m.id}>
                 <span className="font-semibold text-slate-900">{m.nombre}</span> ·{" "}
-                {ROTULO_TIPO[m.tipo].toLowerCase()} ·{" "}
+                {ROTULO_TIPO[m.tipo]} ·{" "}
                 {!m.fecha
                   ? "revisión pendiente"
                   : m.tipo === "publicado"
-                    ? `publicado el ${fechaCorta(m.fecha)}`
+                    ? `del ${fechaCorta(m.fecha)}`
                     : `revisión registrada el ${fechaCorta(m.fecha)}`}
-                {m.pendiente ? " · con un cambio de composición pendiente de revisión" : ""}.
+                {m.pendiente ? " · con cambios pendientes de revisión" : ""}.
               </li>
             ))}
           </ul>
         </details>
         <p className="mt-3 text-xs text-slate-500">
-          Versión {BUILD.version} · construida el {BUILD.fecha || "—"} · código{" "}
+          Versión {BUILD.version} · {BUILD.fecha || "—"} · id.{" "}
           <span className="font-mono">{BUILD.sha.slice(0, 12)}</span>
         </p>
       </div>
@@ -720,7 +723,7 @@ export function Test() {
         level={1}
       >
         <p className="text-sm text-slate-600">
-          {PREGUNTAS.length} preguntas de repaso. Las explicaciones son de la capa docente; las
+          {PREGUNTAS.length} preguntas de repaso. Las explicaciones son de este complemento; las
           frases citadas, literales del capítulo con su página.
         </p>
       </CabeceraEditorial>

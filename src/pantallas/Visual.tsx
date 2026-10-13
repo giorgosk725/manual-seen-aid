@@ -106,7 +106,7 @@ function GaleriaDiagramas() {
                       </span>
                       <span className="mt-1.5 block text-xs text-slate-500">
                         {ap ? `Apartado ${ap.n} · ` : ""}
-                        {d.paginas.length === 1 ? "p." : "pp."} {d.paginas.join(", ")}
+                        {d.paginas.length === 1 ? "p." : "pp."} {intervalos(d.paginas)}
                       </span>
                     </span>
                   </a>
@@ -119,6 +119,19 @@ function GaleriaDiagramas() {
     </div>
   );
 }
+
+/* Páginas seguidas, como intervalo: [3, 4] → «3-4»; [4, 5, 15, 17, 19, 20] → «4-5, 15, 17, 19-20». */
+const intervalos = (ps: number[]) => {
+  const xs = [...new Set(ps)].sort((a, b) => a - b);
+  const out: string[] = [];
+  for (let k = 0; k < xs.length; k++) {
+    let j = k;
+    while (j + 1 < xs.length && xs[j + 1] === xs[j] + 1) j++;
+    out.push(j > k ? `${xs[k]}-${xs[j]}` : String(xs[k]));
+    k = j;
+  }
+  return out.join(", ");
+};
 
 export function Visual({ vista = "diagramas" }: { vista?: "diagramas" | "figuras" }) {
   const ver = (f: "diagramas" | "figuras") => vista === f;
@@ -133,7 +146,7 @@ export function Visual({ vista = "diagramas" }: { vista?: "diagramas" | "figuras
       ) : (
         <CabeceraEditorial titulo="Diagramas" hex={hex} level={1}>
           <p className="text-sm text-slate-600">
-            {DIAGRAMAS.length} diagramas que ordenan en forma visual el texto del capítulo. Cada
+            {DIAGRAMAS.length} diagramas que presentan de forma visual el texto del capítulo. Cada
             dato lleva su página.
           </p>
         </CabeceraEditorial>
@@ -184,7 +197,7 @@ export function Visual({ vista = "diagramas" }: { vista?: "diagramas" | "figuras
                           href={rutaDeFigura(fig.id) ?? href("capitulo", ap.slug)}
                           className="inline-flex min-h-11 items-center rounded-full border border-slate-300 px-2 py-0.5 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-6"
                         >
-                          Transcripción en {ap.n}. {ap.corto}
+                          Texto en el apartado {ap.n}
                         </a>
                       )}
                       {extra && (

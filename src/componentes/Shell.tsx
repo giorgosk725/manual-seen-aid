@@ -270,7 +270,7 @@ function AvisoVersion() {
       >
         <p className="flex-1 text-sm text-slate-800">
           {desde === VERSION_APP
-            ? `Sigues con la versión ${VERSION_APP}: comprobando si hay otra más nueva.`
+            ? `Versión ${VERSION_APP}. Comprobando si hay una más reciente…`
             : `Actualizado: ahora usas la versión ${VERSION_APP} (antes, la ${desde}).`}
         </p>
         <button
@@ -934,8 +934,8 @@ export function Shell({
             type="button"
             onClick={toggleNight}
             aria-pressed={night}
-            aria-label={night ? "Modo día" : "Modo nocturno"}
-            title={night ? "Modo día" : "Modo nocturno"}
+            aria-label={night ? "Modo diurno" : "Modo nocturno"}
+            title={night ? "Modo diurno" : "Modo nocturno"}
             className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             {night ? <Sun size={18} /> : <Moon size={18} />}

@@ -15,11 +15,13 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — «Sobre», más operativo`,
+    titulo: `Complemento interactivo ${VERSION_APP} — «Sobre», portada y textos`,
     detalle: [
       "«Sobre este complemento»: qué se puede hacer, con un enlace a cada tarea (en la consulta, para leer y comprender, para el paciente), y cómo está hecho en cuatro frases; el responsable, con su afiliación, en «Fuentes y revisión».",
       "Sin el aviso bajo los campos de búsqueda: la privacidad de la búsqueda se explica en «Sobre».",
       "«Cómo se adapta» y «Cómo decide y se adapta» en vez de «aprendizaje» en los rótulos de la app (el texto de la Tabla 1 no cambia).",
+      "Portada: los cuatro bloques como la pregunta que responden y la hipoglucemia en asa cerrada entre las situaciones. Diagramas: resúmenes más directos y páginas seguidas como intervalo.",
+      "Textos de la interfaz revisados: «del sistema actual» en la calculadora, rótulos más claros en Sistemas, Situaciones, Interrupción e Iniciar, y los dos grupos de parámetros con el mismo nombre en toda la app. Fuera un aviso que no se cumplía en esta edición («Esta consulta se anota»).",
     ],
   },
   {

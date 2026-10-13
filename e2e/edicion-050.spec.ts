@@ -62,7 +62,7 @@ test.describe("Portada y navegación (0.50)", () => {
   test("el PDF publicado para pacientes, a un toque desde la portada", async ({ page }) => {
     await page.goto("/#/");
     const pdf = page
-      .getByRole("region", { name: "Para el paciente" })
+      .getByRole("region", { name: "¿Qué le doy al paciente?" })
       .getByRole("link", { name: "Información para pacientes", exact: true });
     await expect(pdf).toHaveAttribute("href", "pdf/manual-seen-aid-pacientes.pdf");
   });

@@ -15,7 +15,7 @@ test.describe("Navegación y portada (393 px)", () => {
     // Pacientes en el mapa: el PDF publicado y el resto del material; las dos puertas, en la
     // primera pantalla.
     await expect(
-      page.getByRole("region", { name: "Para el paciente" }).getByRole("link"),
+      page.getByRole("region", { name: "¿Qué le doy al paciente?" }).getByRole("link"),
     ).toHaveCount(2);
     // «Consultar» en la barra inferior, a mano en cualquier pantalla (13-10-2026).
     await expect(

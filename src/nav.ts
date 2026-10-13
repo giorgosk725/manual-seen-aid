@@ -1,6 +1,7 @@
 /* Destinos de la navegación: cada concepto tiene un único hogar y una única etiqueta. */
 import {
   Activity,
+  TrendingDown,
   Baby,
   BookOpen,
   CalendarClock,
@@ -154,6 +155,16 @@ export const DESTINOS: Destino[] = [
     cat: "consultar",
     descripcion: "La Tabla 5 en ocho pasos, con el patrón del capítulo que corresponde a cada uno.",
     fuente: "Tabla 5",
+  },
+  {
+    id: "hipoglucemia",
+    etiqueta: "Hipoglucemia en asa cerrada",
+    corto: "Hipoglucemia",
+    href: href("visual", "hipoglucemia"),
+    icono: TrendingDown,
+    cat: "consultar",
+    descripcion: "Cómo se trata la hipoglucemia leve en asa cerrada según el plan de seguridad.",
+    fuente: "Apartado 7",
   },
   {
     id: "interrupcion",
@@ -345,12 +356,13 @@ export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[]; ancho?:
   {
     id: "situaciones",
     titulo: "¿Qué hago en esta situación?",
-    ids: ["situacion", "figura-3", "interrupcion"],
+    ids: ["situacion", "figura-3", "hipoglucemia", "interrupcion"],
   },
-  { id: "en-consulta", titulo: "En la consulta", ids: ["inicio", "descarga"] },
+  // Los cuatro bloques, como la pregunta que responden (13-10-2026).
+  { id: "en-consulta", titulo: "¿Cómo lo inicio y lo reviso?", ids: ["inicio", "descarga"] },
   // El PDF publicado, a un toque; y el resto del material para el paciente.
   // (0.53.0: sin «Para el paciente» dentro de «Para el paciente».)
-  { id: "pacientes", titulo: "Para el paciente", ids: ["pdf-pacientes", "pac-hojas"] },
+  { id: "pacientes", titulo: "¿Qué le doy al paciente?", ids: ["pdf-pacientes", "pac-hojas"] },
 ];
 
 /* Navegación global: cuatro áreas en la barra inferior (Inicio · Leer · Paciente · Buscar).

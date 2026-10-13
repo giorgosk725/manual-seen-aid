@@ -28,7 +28,7 @@ export const ROTULO_TIPO: Record<TipoMaterial, string> = {
   adaptado: "Hoja adaptada por este complemento",
   plantilla: "Plantilla con texto literal del capítulo",
   explicacion: "Explicación complementaria",
-  preguntas: "Capa docente",
+  preguntas: "Material docente del complemento",
   ayuda: "Ayuda de cálculo del complemento",
 };
 
@@ -135,7 +135,7 @@ export const MATERIALES: Material[] = [
   {
     id: "frecuentes",
     estado: "aprobado",
-    nombre: "Preguntas frecuentes f01–f103",
+    nombre: "Preguntas frecuentes (103)",
     tipo: "preguntas",
     fecha: "2026-10-13",
     version: "0.51.0",

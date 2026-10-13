@@ -43,7 +43,7 @@ export const PASOS_GUIA: PasoGuia[] = [
   {
     id: "transicion",
     titulo: titulo("transicion"),
-    intro: "Elige de qué pauta viene para ver solo lo que le corresponde.",
+    intro: "Elige la pauta previa para ver solo lo que le corresponde.",
     preguntas: [
       {
         id: "pauta",
@@ -73,7 +73,7 @@ export const PASOS_GUIA: PasoGuia[] = [
       },
       {
         id: "basal",
-        rotulo: "La basal que lleva",
+        rotulo: "Basal previa",
         si: { pregunta: "pauta", opcion: "mdi" },
         opciones: [
           {

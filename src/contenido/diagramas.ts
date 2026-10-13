@@ -43,7 +43,8 @@ export const DIAGRAMAS: DiagramaMeta[] = [
   {
     id: "cetonemia",
     titulo: "Escala de cetonemia (β-OHB)",
-    resumen: "Los cuatro tramos operativos a escala, con los umbrales de ejercicio y de rescate.",
+    resumen:
+      "Los cuatro tramos de β-OHB a escala, con los signos de gravedad y los umbrales de ejercicio y de rescate.",
     paginas: [8, 15, 19],
     apartado: "09-descarga",
   },
@@ -66,7 +67,7 @@ export const DIAGRAMAS: DiagramaMeta[] = [
     id: "algoritmos",
     titulo: "Los cuatro algoritmos de un vistazo",
     resumen:
-      "Los cuatro sistemas comercializados: dónde se aloja el algoritmo, cómo actúa, si corrige solo y qué parámetros cuentan.",
+      "Dónde está el algoritmo de cada sistema, cómo actúa, si corrige solo, hacia qué objetivo y qué parámetros cuentan.",
     paginas: [3, 4],
     apartado: "04-sistemas",
   },
@@ -74,7 +75,7 @@ export const DIAGRAMAS: DiagramaMeta[] = [
     id: "hipoglucemia",
     titulo: "Hipoglucemia en asa cerrada",
     resumen:
-      "Cómo trata el plan de seguridad la hipoglucemia leve en asa cerrada, como orientación, y cómo reevaluar.",
+      "La hipoglucemia leve en asa cerrada según el plan de seguridad: cuántos hidratos de carbono (orientativo) y cuándo reevaluar.",
     paginas: [8, 9, 16],
     apartado: "07-educacion",
   },
@@ -90,7 +91,7 @@ export const DIAGRAMAS: DiagramaMeta[] = [
     id: "gestacion-sistemas",
     titulo: "Gestación, sistema a sistema",
     resumen:
-      "Autorización, ensayo, objetivo configurable y estrategia de intensificación de cada sistema.",
+      "Autorización, ensayo, objetivo configurable y cómo se intensifica cada sistema en la gestación.",
     paginas: [4, 17, 18],
     apartado: "10-situaciones",
     ancla: "gestacion",
@@ -99,7 +100,7 @@ export const DIAGRAMAS: DiagramaMeta[] = [
     id: "hospital",
     titulo: "Hospital: cuándo no continuar el sistema",
     resumen:
-      "Adultos no críticos: cuándo mantenerlo, cuándo no es apropiado, la pauta alternativa, la perfusión intravenosa y la vuelta al sistema.",
+      "Adultos no críticos: cuándo mantener el sistema y cuándo no, la pauta alternativa, la perfusión intravenosa y la vuelta al sistema.",
     paginas: [20, 21, 22],
     apartado: "10-situaciones",
     ancla: "b36",
@@ -108,7 +109,7 @@ export const DIAGRAMAS: DiagramaMeta[] = [
     id: "exploraciones",
     titulo: "Exploraciones, procedimientos y cirugía",
     resumen:
-      "La Tabla 6 como mapa, bomba o pod y sensor por separado: qué se retira, qué depende del modelo y qué puede mantenerse, con sus condiciones.",
+      "La Tabla 6 como mapa: bomba o pod y sensor por separado, qué se retira, qué depende del modelo y qué puede mantenerse.",
     paginas: [21, 22],
     apartado: "10-situaciones",
     ancla: "T6",
@@ -126,7 +127,7 @@ export const DIAGRAMAS: DiagramaMeta[] = [
     id: "interrupcion",
     titulo: "Interrupción del sistema, según su duración",
     resumen:
-      "Programada o no, breve o prolongada: qué hacer según la duración, con la reposición de insulina y la vuelta al sistema.",
+      "Programada o no, breve o prolongada: cómo reponer la insulina y cómo volver al sistema.",
     paginas: [9],
     apartado: "07-educacion",
     ancla: "b15",

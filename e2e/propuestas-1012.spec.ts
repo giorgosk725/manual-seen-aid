@@ -50,12 +50,12 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     await page.goto("/#/consultar/situacion/gestacion");
     await expect(
       page
-        .getByRole("region", { name: /Por necesidades/ })
+        .getByRole("region", { name: /Por temas/ })
         .getByRole("heading", { name: /Parto y posparto/ }),
     ).toBeVisible();
     await page.goto("/#/consultar/situacion/ejercicio-aerobico");
     await expect(
-      page.getByRole("heading", { name: /Hipoglucemia: hidratos y tratamiento/ }),
+      page.getByRole("heading", { name: /Hipoglucemia: hidratos de carbono y conducta/ }),
     ).toBeVisible();
   });
 
@@ -78,12 +78,12 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     page,
   }) => {
     await page.goto("/#/consultar/inicio/inicio:omnipod-5:transicion");
-    await expect(page.getByRole("group", { name: "La basal que lleva" })).toHaveCount(0);
+    await expect(page.getByRole("group", { name: "Basal previa" })).toHaveCount(0);
     await page.getByRole("button", { name: "Múltiples dosis (plumas)" }).click();
     await page.getByRole("button", { name: "Glargina U-300 o degludec" }).click();
     await expect(page.getByText(/Solapamiento con glargina/).first()).toBeVisible();
     await page.getByRole("button", { name: "Bomba sin automatización" }).click();
-    await expect(page.getByRole("group", { name: "La basal que lleva" })).toHaveCount(0);
+    await expect(page.getByRole("group", { name: "Basal previa" })).toHaveCount(0);
     await expect(page.getByText(/Solapamiento con glargina/)).toHaveCount(0);
     await expect(page.getByRole("link", { name: /Transición desde MDI/ })).toHaveCount(0);
     // Abrir una fuente y volver conserva lo elegido.
@@ -186,7 +186,7 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
       .first();
     await casilla.check();
     await page.getByRole("button", { name: "Hoja de comprobación" }).click();
-    await expect(page.getByText(/Resume lo marcado en el inicio paso a paso/)).toBeVisible();
+    await expect(page.getByText(/Recoge lo que has marcado en el inicio paso a paso/)).toBeVisible();
     await expect(page.locator(".hoja-inicio").getByRole("checkbox", { checked: true })).toHaveCount(
       1,
     );

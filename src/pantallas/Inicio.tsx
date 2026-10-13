@@ -122,9 +122,9 @@ function Hoja({ sis }: { sis?: number }) {
         <span className="text-xs text-slate-600">
           Una cara A4.{" "}
           {hechos.size > 0
-            ? "Resume lo marcado en el inicio paso a paso de esta consulta (no se guarda). "
+            ? "Recoge lo que has marcado en el inicio paso a paso (no se guarda). "
             : "Lo que marques en el inicio paso a paso sale marcado aquí. "}
-          {sistema ? "" : "Elige el sistema para que salga solo su línea de inicio."}
+          {sistema ? "" : "Elige el sistema para que la hoja muestre solo su línea de inicio."}
         </span>
         {hechos.size > 0 && (
           <button
@@ -514,8 +514,8 @@ function PasosInicio({
         </button>
       </div>
       <p className="mt-2 text-xs text-slate-500">
-        Lo elegido y lo marcado sigue al abrir una fuente y volver, y sale en la hoja de
-        comprobación; «Nuevo inicio», arriba, lo vacía todo, también la calculadora.
+        Lo que eliges y marcas se conserva al abrir una fuente y volver, y aparece en la hoja de
+        comprobación. «Nuevo inicio» lo borra todo, calculadora incluida.
       </p>
     </div>
   );
@@ -600,8 +600,8 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
       )}
       <CabeceraEditorial titulo="Iniciar un sistema" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Los parámetros de partida con las reglas del capítulo, y la preparación, la puesta en
-          marcha y el seguimiento, por sistema.
+          Calcula los parámetros de partida y sigue la preparación, la puesta en marcha y el
+          seguimiento de cada sistema.
         </p>
       </CabeceraEditorial>
 
@@ -717,7 +717,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                   }}
                   className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
                 >
-                  {completa ? "Plegar las tareas" : "Fase completa"}
+                  {completa ? "Plegar las tareas" : "Ver la fase entera"}
                 </button>
               )}
             </div>

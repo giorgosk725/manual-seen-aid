@@ -1,3 +1,4 @@
+import { EDICION } from "../edicion";
 /* Cuando no hay nada con esas palabras (portada, paleta y Buscar): en vez de un callejón sin
    salida, las consultas más frecuentes. */
 import { href } from "../rutas";
@@ -57,7 +58,7 @@ export function SinResultados({
       >
         Explorar las preguntas frecuentes por temas →
       </a>
-      {q && (
+      {q && EDICION.registroConsultas && (
         <p className="mt-1 text-xs text-slate-500">
           Esta consulta se anota (solo su texto, sin datos de quién la hace) para mejorar el
           buscador.

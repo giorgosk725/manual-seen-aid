@@ -172,7 +172,7 @@ function Hoja({
       >
         {pie}{" "}
         {complementaria
-          ? `Hoja complementaria del complemento interactivo del capítulo 89 (versión ${VERSION_APP}), hecha con texto del capítulo publicado el ${CAPITULO.fechaFuente}; no es una publicación del Manual SEEN.`
+          ? `Hoja del complemento interactivo del capítulo 89 (versión ${VERSION_APP}), hecha con texto del capítulo publicado el ${CAPITULO.fechaFuente}; no es una publicación del Manual SEEN.`
           : `Versión en pantalla del complemento ${VERSION_APP}; capítulo publicado el ${CAPITULO.fechaFuente}.`}
         {materialId && <RevisionMaterial id={materialId} />}
       </footer>
@@ -281,7 +281,7 @@ export function HubPacientes() {
       <CabeceraEditorial titulo="Para el paciente" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
           El recurso principal es la Información para pacientes publicada por el Manual SEEN.
-          Debajo, material complementario de este complemento, para imprimir con letra grande.
+          Debajo, material adicional de este complemento, para imprimir con letra grande.
         </p>
       </CabeceraEditorial>
       <h2 className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
@@ -314,7 +314,7 @@ export function HubPacientes() {
           Hojas breves por situación
         </h3>
         <p className="mt-1 text-sm text-slate-600">
-          Según lo que haga falta ese día: cetonas, pruebas y cirugía, y tres extractos de la
+          Para entregar según la situación: cetonas, pruebas y cirugía, y tres extractos de la
           Información para pacientes.
         </p>
         <ul className="mt-3 divide-y rounded-xl border bg-white" style={{ borderColor: "#e6e6e6" }}>

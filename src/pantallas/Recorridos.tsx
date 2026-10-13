@@ -687,7 +687,7 @@ export function SituacionSistema({
     <div>
       <CabeceraEditorial titulo="Situaciones" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Elige la situación y, si la conducta depende del sistema, el sistema.
+          Elige la situación; si la conducta cambia según el sistema, elige también el sistema.
         </p>
       </CabeceraEditorial>
       <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">
@@ -821,7 +821,7 @@ export function SituacionSistema({
                 {porSistema && (
                   <div>
                     <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-                      {sisIdx >= 0 ? "Sistema" : "En cada sistema · elige uno para verlo solo"}
+                      {sisIdx >= 0 ? "Sistema" : "Por sistema · elige uno para ver solo el suyo"}
                     </div>
                     <CasillasSistema
                       seleccion={sisIdx >= 0 ? [sisIdx] : []}
@@ -906,8 +906,8 @@ export function SituacionSistema({
                       })}
                     </dl>
                     <p className="text-xs text-slate-600">
-                      Conducta común a los cuatro sistemas: el capítulo no distingue sistema. Lo
-                      propio de cada uno está en su ficha de{" "}
+                      Conducta común a los cuatro sistemas: el capítulo no distingue entre sistemas.
+                      Lo propio de cada uno está en su ficha de{" "}
                       <a href={href("sistemas")} className="font-semibold underline">
                         Sistemas
                       </a>
@@ -1202,14 +1202,14 @@ const TRAMOS_INTERRUPCION = [
   },
   {
     id: "una-hora",
-    titulo: "≈ 1 h sin insulina",
-    sub: "umbral operativo: actuar",
+    titulo: "Alrededor de 1 h",
+    sub: "hay que actuar",
     parrafo: 0,
     clave: [4],
   },
   {
     id: "pocas-horas",
-    titulo: "Hasta 2-3 h, programada",
+    titulo: "Programada, hasta 2-3 h",
     sub: "deporte, baño, exploraciones",
     parrafo: 1,
     clave: [1],
@@ -1217,13 +1217,13 @@ const TRAMOS_INTERRUPCION = [
   {
     id: "prolongada",
     titulo: "Prolongada o fallo definitivo",
-    sub: "múltiples dosis con pluma",
+    sub: "pasar a plumas",
     parrafo: 2,
     clave: [0],
   },
   {
     id: "programada",
-    titulo: "Cirugía, ingreso, exploración larga",
+    titulo: "Cirugía, ingreso o exploración larga",
     sub: "glargina programada y reinicio",
     parrafo: 3,
     clave: [0, 1],
