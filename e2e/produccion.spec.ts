@@ -75,8 +75,7 @@ test.describe("Primera visita a un enlace profundo", () => {
     // «#/repaso/siglas» vuelve cuando las tarjetas de repaso vuelvan a la edición.
     ["#/consultar/inicio/inicio:omnipod-5", "Inicio"],
   ] as const;
-  const PANTALLAS =
-    /\/assets\/(Consultar|Recorridos|Otras|Sistemas|Visual|Pacientes|Repaso|Inicio)-/;
+  const PANTALLAS = /\/assets\/(Consultar|Recorridos|Otras|Sistemas|Visual|Pacientes|Inicio)-/;
   for (const [ruta, pantalla] of CASOS) {
     test(`${ruta} → ${pantalla}`, async ({ browser }) => {
       // Contexto nuevo y sin service worker: de verdad la primera visita.
@@ -128,7 +127,7 @@ test.describe("Primera visita a un enlace profundo", () => {
           }, PANTALLAS.source),
         { timeout: 15000 },
       )
-      .toBe(8);
+      .toBe(7); // Repaso, retirado, ya no está en el build (V50-11)
     await ctx.close();
   });
   test("la portada y los apartados no precargan nada", async ({ browser }) => {

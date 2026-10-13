@@ -22,15 +22,31 @@ import { HOJAS_EXTRA, hojaExtraPorId } from "../hojas";
 import { Texto } from "../texto";
 import { abrirPlegables, imprimirRegion } from "../imprimir";
 import { VERSION_APP } from "../version";
-import { fechaCorta, material } from "../materiales";
+import { fechaCorta, material, materialListo } from "../materiales";
 
 const hex = CATEGORIA_HEX.pacientes;
 
 /* ---------- Barra de acciones de una hoja: formato e imprimir ---------- */
 /* Edición editorial (A12): las hojas se imprimen solo con letra grande, 12 pt, una columna. La
    opción compacta de 7 pt (una cara, dos columnas) queda fuera de esta edición. */
-function Acciones({ hoja }: { hoja: React.RefObject<HTMLElement | null> }) {
+function Acciones({
+  hoja,
+  materialId,
+}: {
+  hoja: React.RefObject<HTMLElement | null>;
+  /* Material del registro: si no está aprobado, no se imprime para entregar (V50-02). */
+  materialId?: string;
+}) {
   const imprimir = "Imprimir con letra grande";
+  if (materialId && !materialListo(materialId))
+    return (
+      <p
+        role="status"
+        className="no-imprimir mb-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900"
+      >
+        Material en revisión: todavía no está listo para entregar ni imprimir.
+      </p>
+    );
   return (
     <div className="no-imprimir mb-3 space-y-1.5">
       <div className="flex flex-wrap items-center gap-2">
@@ -114,6 +130,11 @@ function Hoja({
       className={`hoja-a4 imprimible rounded-2xl border bg-white p-4 shadow-soft sm:p-6 ${holgada ? "holgada" : ""} ${grande ? "grande" : ""}`}
       style={{ borderColor: "#e6e6e6" }}
     >
+      {materialId && !materialListo(materialId) && (
+        <p className="mb-3 rounded-md border-2 border-amber-400 px-3 py-2 text-sm font-bold text-amber-900">
+          Borrador en revisión: no entregar.
+        </p>
+      )}
       <header className="hoja-cabecera mb-3 border-b pb-3" style={{ borderColor: "#e6e6e6" }}>
         <div className="text-xs font-bold uppercase tracking-wider" style={{ color: hex.ink }}>
           {complementaria ? `Material complementario · ${rotulo}` : rotulo}
@@ -269,7 +290,7 @@ export function HubPacientes() {
                 href={href("pacientes", "hoja", h.id)}
                 titulo={h.titulo}
                 detalle={`${h.rotulo.replace(/ para el paciente$/i, "")} para entregar · ${primeraFrase(h.intro) || h.fuente}`}
-                borrador={h.estado === "borrador"}
+                borrador={h.estado === "borrador" || !materialListo(`hoja-${h.id}`)}
               />
             </li>
           ))}
@@ -293,6 +314,11 @@ export function HubPacientes() {
           Lo que el capítulo pide que contenga el plan, qué hacer según las cetonas y las
           herramientas de ese sistema en cada situación, con huecos para rellenar a mano.
         </p>
+        {!materialListo("planes") && (
+          <p className="mt-2 rounded-md bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
+            En revisión: todavía no están listas para entregar.
+          </p>
+        )}
         <ul className="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-4">
           {ORDEN_SISTEMAS.map((id, c) => (
             <li key={id}>
@@ -392,7 +418,7 @@ export function HojaPacientes({ id }: { id?: string }) {
   return (
     <div>
       <Volver actual={h.titulo} />
-      <Acciones hoja={ref} />
+      <Acciones hoja={ref} materialId="extractos" />
       <Hoja
         hojaRef={ref}
         rotulo={`${INFORMACION_PACIENTES.rotulo} · extracto`}
@@ -444,7 +470,7 @@ function HojaExtraVista({
           </p>
         </ToneCard>
       )}
-      <Acciones hoja={hojaRef} />
+      <Acciones hoja={hojaRef} materialId={`hoja-${hoja.id}`} />
       <Hoja
         hojaRef={hojaRef}
         rotulo={hoja.estado === "borrador" ? `${hoja.rotulo} · borrador` : hoja.rotulo}
@@ -653,7 +679,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
           </button>
         ))}
       </div>
-      <Acciones hoja={ref} />
+      <Acciones hoja={ref} materialId="planes" />
       <Hoja
         hojaRef={ref}
         rotulo={`Plantilla de plan de seguridad · ${nombre}`}
@@ -719,7 +745,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
             ))}
           </ul>
         </section>
-        <section className="hoja-seccion mb-3">
+        <section className="hoja-seccion plan-figura3 mb-3">
           <h2 className="text-base font-extrabold" style={{ color: hex.ink }}>
             {FIGURA3.cabecera}
           </h2>
@@ -794,9 +820,9 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
         <a href={href("consultar", "situacion")} className="font-semibold underline">
           Situación y sistema
         </a>
-        . Fuera del capítulo hay más detalle en la ficha de{" "}
+        ; y lo que dice el capítulo de este sistema, en su{" "}
         <a href={href("sistemas", s.id)} className="font-semibold underline">
-          {s.name}
+          ficha
         </a>
         .
       </p>

@@ -2,11 +2,12 @@
    reciben texto y la app no guarda búsquedas ni criterios. */
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { responder, preguntaFrecuente, frecuentesRelacionadas, respuestaPorId } from "./respuestas";
-import { FRECUENTES, FRECUENTES_TODAS, PROPUESTAS } from "./frecuentes";
+import { FRECUENTES, FRECUENTES_TODAS, PROPUESTAS, huellaDe, revisionDe } from "./frecuentes";
 import { indice, sugerir } from "./buscador";
 import { tramoDeConsulta } from "./busqueda";
 import { FIGURA3 } from "./contenido";
-import { EDICION, migrarPrivacidad } from "./edicion";
+import { CON_CASOS, CON_REPASO, EDICION, RETIRADOS, migrarPrivacidad } from "./edicion";
+import { MATERIALES, material, materialListo } from "./materiales";
 import { pedirParecidos } from "./semantica";
 import { registrarSinRespuesta } from "./consultas";
 import { guardarReciente, guardarVisita } from "./prefs";
@@ -171,5 +172,85 @@ describe("A04 · circuito de aprobación de las preguntas frecuentes", () => {
       "t/07-educacion/b7/0",
       "t/07-educacion/b7/1",
     ]);
+  });
+});
+
+describe("V50-01 · la migración no impide arrancar", () => {
+  const falso = (sobre: Partial<Storage>): Storage =>
+    ({
+      getItem: () => null,
+      setItem: () => undefined,
+      removeItem: () => undefined,
+      clear: () => undefined,
+      key: () => null,
+      length: 0,
+      ...sobre,
+    }) as Storage;
+  it("con getItem/removeItem que lanzan, con favoritos ilegibles y sin sessionStorage", () => {
+    const lanza = () => {
+      throw new DOMException("bloqueado", "SecurityError");
+    };
+    expect(() =>
+      migrarPrivacidad(falso({ getItem: lanza, removeItem: lanza }), undefined),
+    ).not.toThrow();
+    const borradas: string[] = [];
+    const almacen = falso({
+      getItem: (k) => (k === "mseen:favoritos" ? "{no es json" : null),
+      removeItem: (k) => void borradas.push(k),
+    });
+    const sesionBorradas: string[] = [];
+    migrarPrivacidad(almacen, falso({ removeItem: (k) => void sesionBorradas.push(k) }));
+    expect(borradas).toEqual(
+      expect.arrayContaining(["mseen:recientes", "mseen:visitas", "mseen:favoritos"]),
+    );
+    expect(sesionBorradas).toEqual(["mseen:sin-respuesta"]);
+  });
+  it("si el acceso a localStorage lanza, no lanza", () => {
+    const d = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
+    Object.defineProperty(globalThis, "localStorage", {
+      configurable: true,
+      get() {
+        throw new DOMException("bloqueado", "SecurityError");
+      },
+    });
+    try {
+      expect(() => migrarPrivacidad()).not.toThrow();
+    } finally {
+      if (d) Object.defineProperty(globalThis, "localStorage", d);
+    }
+  });
+});
+
+describe("V50-04 · la aprobación está ligada al contenido aprobado", () => {
+  it("cambiar un pasaje, una variante o la pregunta deja la pregunta en borrador", () => {
+    const f = FRECUENTES.find((x) => x.id === "f12")!;
+    expect(revisionDe(f).estado).toBe("aprobada");
+    for (const cambiada of [
+      { ...f, pasajes: [...f.pasajes, "t/01-introduccion/b1/0"] },
+      { ...f, variantes: [...f.variantes, "otra forma"] },
+      { ...f, pregunta: f.pregunta + " " },
+    ]) {
+      expect(huellaDe(cambiada)).not.toBe(huellaDe(f));
+      expect(revisionDe(cambiada).estado).toBe("borrador");
+    }
+    // Restaurar lo aprobado restablece el estado (sin inventar una aprobación nueva).
+    expect(revisionDe({ ...f }).estado).toBe("aprobada");
+  });
+});
+
+describe("V50-02 · solo se imprime un material aprobado", () => {
+  it("cada material tiene estado; sin registro o pendiente, no está listo", () => {
+    for (const m of MATERIALES) expect(["aprobado", "pendiente"]).toContain(m.estado);
+    expect(materialListo("no-existe")).toBe(false);
+    for (const m of MATERIALES) expect(materialListo(m.id)).toBe(m.estado === "aprobado");
+    expect(material("planes")?.estado).toBe("aprobado");
+  });
+});
+
+describe("V50-11 · casos y repaso, fuera de esta edición y del build", () => {
+  it("las constantes del build y la lista de retirados coinciden", () => {
+    expect(CON_CASOS).toBe(false);
+    expect(CON_REPASO).toBe(false);
+    expect([...RETIRADOS].sort()).toEqual(["ampliacion", "casos", "repaso"]);
   });
 });

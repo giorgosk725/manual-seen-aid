@@ -264,8 +264,8 @@ function AvisoVersion() {
       className="aviso-version fixed inset-x-3 bottom-32 z-40 mx-auto max-w-md rounded-xl border border-slate-300 bg-white p-3 shadow-xl md:bottom-4"
     >
       <p className="text-sm text-slate-800">
-        Hay una versión nueva del complemento. Ahora usas la {VERSION_APP}; se actualiza solo si
-        pulsas «Actualizar».
+        Hay una versión nueva del complemento (ahora usas la {VERSION_APP}). Se carga al pulsar
+        «Actualizar»; con «Más tarde» sigues con esta.
       </p>
       <div className="mt-2 flex gap-2">
         <button

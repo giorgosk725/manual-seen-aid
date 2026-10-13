@@ -58,7 +58,8 @@ const modulos = import.meta.glob<Caso[]>(["./casos/*.json", "./casos-borrador/*.
   import: "default",
 });
 
-export const CASOS: Caso[] = Object.keys(modulos)
+// Sin efectos: si nadie usa los casos (edición sin ellos), el build los descarta.
+export const CASOS: Caso[] = /* @__PURE__ */ Object.keys(modulos)
   .sort()
   .flatMap((k) => modulos[k]);
 

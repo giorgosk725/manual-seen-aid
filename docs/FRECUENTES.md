@@ -21,7 +21,12 @@ conserva las demás.
 | -------- | -------- | ---------- | ------------------------------------------------------------------------------ |
 | f01–f50  | aprobada | 2026-10-08 | Revisión una a una del autor en la página de revisión (colección «frecuentes») |
 | f51–f61  | aprobada | 2026-10-11 | Visto bueno editorial del autor, revisión de la 0.38 (abajo)                   |
-| f62–f103 | borrador | 2026-10-12 | Añadidas en la 0.48.0; pendientes de la revisión del autor                     |
+| f62–f103 | aprobada | 2026-10-13 | Revisión pregunta por pregunta delegada por el autor (abajo)                   |
+
+**Aprobación ligada al contenido (0.52.0).** Cada aprobación guarda la huella de lo aprobado en
+`src/frecuentes.aprobadas.json`: pregunta, variantes, pasajes, sistema, continuación y SHA-256 del
+PDF fuente. Si cambia cualquiera, la pregunta vuelve a borrador y sale de la edición hasta una
+aprobación nueva: `npm run aprobar:frecuentes -- f12 f37` (o `--todas`), solo tras la revisión.
 
 f11 y f37 vuelven a sus pasajes aprobados del 8-10. Los añadidos del 12-10 (T1/8 en f11 y
 t/07-educacion/b6/1 en f37) quedan como borrador para el autor. En la edición salen 61 preguntas.
@@ -36,8 +41,9 @@ Resultado: las 42 aprobadas. Cambios: f63 limitada a los sistemas híbridos; f69
 aproximadamente 1 h y la pauta individual; f87 añade t/10-situaciones/b9/3 (la estrategia del modo
 sueño en CIRCUIT y las recomendaciones de Tandem). Observación sin cambio: f83 y f94 juntan dos
 situaciones en una pregunta; las casillas responden a las dos. f11 aplica su propuesta (CamAPS FX y
-Liberty primero; filas de indicación y gestación de la Tabla 1). Queda para el autor el matiz de edad de
-Liberty: el apartado 3 dice «no se recomienda en menores de 13 años» y la Tabla 1, «Liberty: > 13 años».
+Liberty primero; filas de indicación y gestación de la Tabla 1). Edad de Liberty: decidida por el autor el
+13-10-2026, manda la Tabla 1 («Liberty: > 13 años»); f11 deja fuera la frase del apartado 3 («no se
+recomienda en menores de 13 años») y queda con `t/03-algoritmos/b3/1`, `T1/7` y `T1/8`.
 
 ### Decisiones del autor del 13-10-2026
 
@@ -45,8 +51,7 @@ Liberty: el apartado 3 dice «no se recomienda en menores de 13 años» y la Tab
   descarta poner delante «suele requerir menos hidratos» (t/07-educacion/b6/1): no es una regla universal.
 - **f11:** propuesta para revisión en `PROPUESTAS` (src/frecuentes.ts): primero los pasajes de CamAPS
   FX/Liberty y las filas de indicación y gestación de la Tabla 1, con los otros sistemas plegados. Para
-  revisar el matiz de edad: el apartado 3 dice «no se recomienda en menores de 13 años» y la Tabla 1,
-  «Liberty: > 13 años». La edición sigue con los pasajes aprobados.
+  la edad: manda la Tabla 1 («Liberty: > 13 años»), decisión del autor del 13-10-2026. Aplicada en la 0.52.0.
 - **f63** (pendiente): la pregunta se limita a los sistemas híbridos y añade t/09-descarga/b2/3 y la nota
   de la Tabla 5 sobre asa cerrada completa.
 - **f69** (pendiente): añade el umbral de aproximadamente 1 h sin administración (b11/4), las
@@ -92,7 +97,7 @@ las palabras.
 | f08 | Sistemas y parámetros         | ¿Qué objetivo de glucosa se puede programar en cada sistema?                 | `T1/6` (p. 3); `T3/0` (p. 11)                                                                        |
 | f09 | Sistemas y parámetros         | ¿Qué sistemas hacen autocorrecciones?                                        | `T1/5` (p. 3)                                                                                        |
 | f10 | Sistemas y parámetros         | ¿Por qué hay que seguir anunciando las comidas en un sistema híbrido?        | `t/03-algoritmos/b2/0` (p. 3); `t/03-algoritmos/b2/1` (p. 3); `t/03-algoritmos/b2/2` (p. 3)          |
-| f11 | Sistemas y parámetros         | ¿Qué es Liberty y quién puede usarlo?                                        | `t/03-algoritmos/b3/1` (p. 3); `t/03-algoritmos/b3/2` (p. 3)                                         |
+| f11 | Sistemas y parámetros         | ¿Qué es Liberty y quién puede usarlo?                                        | `t/03-algoritmos/b3/1` (p. 3); `T1/7`, `T1/8` (Tabla 1)                                              |
 | f12 | Sistemas y parámetros         | ¿Qué sistemas están autorizados en la gestación?                             | `T1/8` (p. 3); `t/10-situaciones/b3/2` (p. 17); `t/10-situaciones/b3/3` (p. 17)                      |
 | f13 | Inicio del sistema            | ¿Qué hay que tener listo antes de iniciar el sistema?                        | `T2/0` (p. 10); `l/07-educacion/b4` (p. 7)                                                           |
 | f14 | Inicio del sistema            | ¿Cuánto reducir la dosis al pasar de MDI a un sistema AID?                   | `T2/2` (p. 10); `t/08-iniciacion/b7/0` (p. 12)                                                       |

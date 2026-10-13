@@ -4,7 +4,15 @@
    src/repaso.ts, src/pantallas/Repaso.tsx) para una edición siguiente: basta con quitarlos de
    aquí. Mientras estén retirados no salen en el menú, el buscador ni los enlaces, y sus
    direcciones antiguas enseñan un aviso. */
-export const RETIRADOS = new Set<string>(["casos", "repaso", "ampliacion"]);
+/* Constantes del build (V50-11): con `false`, las pantallas y los datos de casos y repaso no
+   entran en el paquete publicado (sus importaciones quedan como código muerto). */
+export const CON_CASOS: boolean = false;
+export const CON_REPASO: boolean = false;
+export const RETIRADOS = new Set<string>([
+  ...(CON_CASOS ? [] : ["casos"]),
+  ...(CON_REPASO ? [] : ["repaso"]),
+  "ampliacion",
+]);
 export const retirado = (id: string) => RETIRADOS.has(id);
 
 /* Edición editorial (A03): lo que esta edición transmite y guarda. Sin búsqueda por el sentido
@@ -24,21 +32,50 @@ export const EDICION = {
 const CON_CONSULTAS = ["mseen:recientes", "mseen:visitas"];
 const RUTA_CON_VALORES = /^#\/(buscar|sistemas\/elegir)\/./;
 
-export function migrarPrivacidad(almacen: Storage | undefined = globalThis.localStorage) {
-  if (!almacen) return;
+/* El almacenamiento del navegador, si se puede tocar: en algunos contextos el simple acceso a
+   `localStorage` o `sessionStorage` lanza (SecurityError); entonces no hay nada que limpiar. */
+const almacenSeguro = (cual: "localStorage" | "sessionStorage"): Storage | undefined => {
   try {
-    for (const k of CON_CONSULTAS) almacen.removeItem(k);
-    const fav = almacen.getItem("mseen:favoritos");
-    if (fav) {
-      const lista = JSON.parse(fav) as { ruta?: string }[];
-      if (Array.isArray(lista)) {
-        const limpia = lista.filter((m) => !RUTA_CON_VALORES.test(m?.ruta ?? ""));
-        if (limpia.length !== lista.length)
-          almacen.setItem("mseen:favoritos", JSON.stringify(limpia));
-      }
-    }
-    sessionStorage.removeItem("mseen:sin-respuesta");
+    return globalThis[cual];
   } catch {
-    /* sin almacenamiento: nada que borrar */
+    return undefined;
   }
+};
+
+/* Cada operación por separado: una clave ilegible o un almacenamiento bloqueado no impiden
+   limpiar las demás ni, sobre todo, arrancar la app (se llama antes de montar React). */
+const intentar = (fn: () => void) => {
+  try {
+    fn();
+  } catch {
+    /* esa clave no se ha podido limpiar: se sigue con las demás */
+  }
+};
+
+export function migrarPrivacidad(
+  almacen: Storage | undefined = almacenSeguro("localStorage"),
+  sesion: Storage | undefined = almacenSeguro("sessionStorage"),
+) {
+  if (almacen) {
+    for (const k of CON_CONSULTAS) intentar(() => almacen.removeItem(k));
+    intentar(() => {
+      const fav = almacen.getItem("mseen:favoritos");
+      if (!fav) return;
+      let lista: unknown;
+      try {
+        lista = JSON.parse(fav);
+      } catch {
+        // Ilegible: no se sabe qué guarda, así que se quita (son atajos de la app, nada más).
+        almacen.removeItem("mseen:favoritos");
+        return;
+      }
+      if (!Array.isArray(lista)) return;
+      const limpia = lista.filter(
+        (m) => !RUTA_CON_VALORES.test((m as { ruta?: string } | null)?.ruta ?? ""),
+      );
+      if (limpia.length !== lista.length)
+        almacen.setItem("mseen:favoritos", JSON.stringify(limpia));
+    });
+  }
+  if (sesion) intentar(() => sesion.removeItem("mseen:sin-respuesta"));
 }

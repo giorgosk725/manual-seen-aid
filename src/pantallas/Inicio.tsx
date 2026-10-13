@@ -453,7 +453,16 @@ function PasosInicio({
           ))}
         </ul>
       )}
-      <LineaFuente fuentes={fuentesDePiezas(piezas)} />
+      <LineaFuente
+        fuentes={[
+          ...fuentesDePiezas(piezas),
+          ...(p.comprobar === "antes"
+            ? hoja.fuentesAntes
+            : p.comprobar === "citas"
+              ? hoja.fuentesCitas
+              : []),
+        ]}
+      />
       {enlace && (
         <p className="mt-2">
           <a

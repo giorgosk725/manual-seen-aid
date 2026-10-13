@@ -31,7 +31,7 @@ import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { FuentePie } from "../componentes/FuentePie";
 import { paginasDe } from "../paginas";
 import { fuentesDePiezas } from "../fuentesPiezas";
-import { retirado } from "../edicion";
+import { CON_CASOS } from "../edicion";
 
 const hex = CATEGORIA_HEX.consultar;
 
@@ -195,13 +195,16 @@ function GuionVista({
                   else marcarEnRuta(i);
                   window.setTimeout(
                     () =>
-                      document
-                        .getElementById(`momento-${i}`)
-                        ?.scrollIntoView({ block: "start", behavior: "smooth" }),
+                      document.getElementById(`momento-${i}`)?.scrollIntoView({
+                        block: "start",
+                        behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+                          ? "auto"
+                          : "smooth",
+                      }),
                     0,
                   );
                 }}
-                className="inline-flex min-h-8 items-center font-semibold hover:underline"
+                className="inline-flex min-h-11 items-center font-semibold hover:underline sm:min-h-8"
               >
                 {i + 1}. {m.rotulo}
               </button>
@@ -251,7 +254,7 @@ function GuionVista({
                       <a
                         href={f.ruta}
                         onClick={() => marcarEnRuta(i)}
-                        className="inline-flex min-h-6 items-center font-semibold text-slate-600 hover:underline"
+                        className="inline-flex min-h-11 items-center font-semibold text-slate-600 hover:underline sm:min-h-6"
                       >
                         {f.texto}
                       </a>
@@ -787,7 +790,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
         </dl>
         <ComoInterpretar tabla="T5" fila={n - 1} />
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-          {!retirado("casos") && casoPorId("ejemplo-descarga") && (
+          {CON_CASOS && casoPorId("ejemplo-descarga") && (
             <a
               href={href("casos", "ejemplo-descarga", String(n))}
               className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 hover:border-slate-500"
@@ -960,7 +963,7 @@ export function Interrupcion({ tramo }: { tramo?: string }) {
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <a
             href={href("capitulo", "07-educacion", "interrupcion")}
-            className="inline-flex min-h-6 items-center gap-1 text-xs font-semibold text-slate-600 hover:underline"
+            className="inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-slate-600 hover:underline sm:min-h-6"
           >
             {p ? `Fuente: Apartado 7, p. ${p.b.p} · ` : ""}Leer el subapartado completo{" "}
             <ArrowRight size={11} aria-hidden="true" />

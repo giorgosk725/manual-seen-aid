@@ -131,7 +131,8 @@ test.describe("Móvil compacto, segunda tanda (360 px)", () => {
   test("cetonemia: los cuatro tramos en 2 × 2", async ({ page }) => {
     await page.goto("/#/consultar/figura-3");
     const t = page
-      .getByRole("navigation", { name: "Ir directamente al tramo" })
+      // El único selector de tramo (V50-06: sin el atajo repetido de arriba).
+      .getByRole("group", { name: "Tramo de cetonemia" })
       .getByRole("button");
     await expect(t).toHaveCount(4);
     await mismaFila(t.nth(0), t.nth(1));

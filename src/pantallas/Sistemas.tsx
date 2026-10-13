@@ -364,7 +364,7 @@ function Ampliacion({ s }: { s: Sistema }) {
                       href={f.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex min-h-7 items-center gap-0.5 font-semibold text-sky-800 hover:underline"
+                      className="inline-flex min-h-11 items-center gap-0.5 font-semibold text-sky-800 hover:underline sm:min-h-7"
                     >
                       enlace <ExternalLink size={10} aria-hidden="true" />
                     </a>
@@ -802,7 +802,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
                 </p>
                 <a
                   href={href("capitulo", p.slug, p.ancla)}
-                  className="mt-1 inline-flex min-h-6 items-center gap-1 text-xs font-semibold text-slate-600 hover:underline"
+                  className="mt-1 inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-slate-600 hover:underline sm:min-h-6"
                 >
                   {p.titulo} · <PaginaBadge p={p.b.p} p2={p.b.p2} />{" "}
                   <ArrowRight size={11} aria-hidden="true" />

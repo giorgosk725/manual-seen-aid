@@ -7,6 +7,11 @@
 import { tituloDeTarea, type Pieza } from "./inicio";
 import { href } from "./rutas";
 import { ORDEN_SISTEMAS } from "./ampliacion/ids";
+import { materialListo } from "./materiales";
+/* Solo «para entregar» si las plantillas del plan están aprobadas (V50-02). */
+const TEXTO_PLAN = materialListo("planes")
+  ? "Plan de seguridad para entregar"
+  : "Plantilla del plan de seguridad (en revisión)";
 
 export interface OpcionGuia {
   id: string;
@@ -132,7 +137,7 @@ export const PASOS_GUIA: PasoGuia[] = [
     enlace: (sis) =>
       sis !== undefined
         ? {
-            texto: "Plan de seguridad para entregar",
+            texto: TEXTO_PLAN,
             ruta: href("pacientes", "plan", ORDEN_SISTEMAS[sis]),
           }
         : { texto: "Planes de seguridad para entregar", ruta: href("pacientes") },

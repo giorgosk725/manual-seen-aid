@@ -9,7 +9,8 @@ import { VitePWA } from "vite-plugin-pwa";
 
 /* Pantalla perezosa de cada sección de la ruta (como en App.tsx). «Situación y sistema»,
    «Revisar la descarga» e «Interrupción» están en Recorridos. Una prueba e2e de producción
-   comprueba que el trozo precargado es el que la pantalla usa de verdad. */
+   comprueba que el trozo precargado es el que la pantalla usa de verdad. Casos y repaso,
+   retirados (src/edicion.ts), no entran en el build. */
 const PANTALLA_DE_SECCION: Record<string, string> = {
   consultar: "Consultar",
   visual: "Visual",
@@ -21,7 +22,6 @@ const PANTALLA_DE_SECCION: Record<string, string> = {
   sobre: "Otras",
   test: "Otras",
   mas: "Otras",
-  repaso: "Repaso",
 };
 
 /* Trozos que necesita cada pantalla perezosa y que no trae ya la entrada. */
@@ -99,7 +99,8 @@ function arranqueEnLinea(): Plugin {
    desde cualquier subruta (si la SEEN la aloja junto al capítulo). El service worker se
    registra en modo «prompt»: la versión nueva no recarga sola; se avisa y el lector decide. */
 /* Identificación del build (A10): SHA del código (con «+cambios» si el árbol no está limpio) y
-   fecha de construcción. Se ven en «Sobre este complemento» y en el aviso de versión. */
+   fecha y hora de construcción en UTC (V50-12: sin ambigüedad de zona). Se ven en «Sobre
+   este complemento». */
 function infoDelBuild() {
   const git = (cmd: string) => {
     try {
@@ -112,7 +113,10 @@ function infoDelBuild() {
   };
   const sha = git("git rev-parse --short=12 HEAD") || "sin-git";
   const sucio = git("git status --porcelain --untracked-files=no") !== "";
-  return { sha: sucio ? `${sha}+cambios` : sha, fecha: new Date().toISOString().slice(0, 10) };
+  return {
+    sha: sucio ? `${sha}+cambios` : sha,
+    fecha: `${new Date().toISOString().slice(0, 16).replace("T", " ")} UTC`,
+  };
 }
 
 export default defineConfig({

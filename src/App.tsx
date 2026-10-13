@@ -10,7 +10,7 @@ import { CapituloEntero, IndiceCapitulo } from "./pantallas/Capitulo";
 import { Apartado } from "./pantallas/Apartado";
 import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import type { SistemaId } from "./ampliacion/tipos";
-import { retirado } from "./edicion";
+import { CON_CASOS, CON_REPASO } from "./edicion";
 
 /* Dirección de un módulo que no va en esta edición (src/edicion.ts). */
 function Retirado() {
@@ -23,7 +23,7 @@ function Retirado() {
         Esta sección no está en esta edición
       </h1>
       <p className="mt-1">
-        Las preguntas frecuentes y la autoevaluación siguen en el menú, en «Aprender».
+        Las preguntas frecuentes y la autoevaluación siguen en el menú, en «Leer y comprender».
       </p>
       <a
         href="#/preguntas"
@@ -58,11 +58,13 @@ const ConsultasSinRespuesta = lazy(() =>
 const Test = lazy(() => otras().then((m) => ({ default: m.Test })));
 const Preguntas = lazy(() => otras().then((m) => ({ default: m.Preguntas })));
 
-const casos = () => import("./pantallas/Casos");
-const Casos = lazy(() => casos().then((m) => ({ default: m.Casos })));
-
-const repaso = () => import("./pantallas/Repaso");
-const Repaso = lazy(() => repaso().then((m) => ({ default: m.Repaso })));
+/* Retirados en esta edición (src/edicion.ts): sin uso, el build los descarta. */
+const Casos = /* @__PURE__ */ lazy(() =>
+  import("./pantallas/Casos").then((m) => ({ default: m.Casos })),
+);
+const Repaso = /* @__PURE__ */ lazy(() =>
+  import("./pantallas/Repaso").then((m) => ({ default: m.Repaso })),
+);
 
 const sistemas = () => import("./pantallas/Sistemas");
 const Sistemas = lazy(() => sistemas().then((m) => ({ default: m.Sistemas })));
@@ -88,7 +90,7 @@ const precargarPantallas = () => {
     ?.saveData;
   if (ahorro) return;
   const cargar = () => {
-    for (const f of [consultar, recorridos, inicio, sistemas, visual, pacientes, otras, repaso])
+    for (const f of [consultar, recorridos, inicio, sistemas, visual, pacientes, otras])
       f().catch(() => {});
   };
   const w = window as Window & {
@@ -276,7 +278,7 @@ export default function App() {
       titulo = "Autoevaluación complementaria";
       break;
     case "repaso":
-      pantalla = retirado("repaso") ? <Retirado /> : <Repaso filtro={ruta.sub} />;
+      pantalla = CON_REPASO ? <Repaso filtro={ruta.sub} /> : <Retirado />;
       titulo = "Tarjetas de repaso";
       break;
     case "pacientes":
@@ -302,7 +304,7 @@ export default function App() {
       titulo = "Sobre este complemento";
       break;
     case "casos":
-      pantalla = retirado("casos") ? <Retirado /> : <Casos id={ruta.sub} paso={ruta.detalle} />;
+      pantalla = CON_CASOS ? <Casos id={ruta.sub} paso={ruta.detalle} /> : <Retirado />;
       titulo = "Casos guiados";
       break;
     case "preguntas":

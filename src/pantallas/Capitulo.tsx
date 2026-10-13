@@ -4,7 +4,7 @@
 import { useRef } from "react";
 import { ArrowRight, BookOpen, ExternalLink, Printer } from "lucide-react";
 import { ICONO_APARTADO, destino } from "../nav";
-import { APARTADOS, CAPITULO, subapartados } from "../contenido";
+import { BIBLIOGRAFIA, APARTADOS, CAPITULO, subapartados } from "../contenido";
 import { href } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Revelar } from "../ui";
 import { CATEGORIA_HEX, colorApartado } from "../tokens";
@@ -71,6 +71,33 @@ export function IndiceCapitulo() {
           Capítulo {CAPITULO.numero} del Manual SEEN, publicado el {CAPITULO.fechaFuente}.
         </p>
       </CabeceraEditorial>
+      {/* Para comprender, a mano desde el principio (V50-05): el índice sigue siendo el eje. */}
+      <nav
+        aria-label="Para comprender"
+        className="no-imprimir mb-3 flex flex-wrap items-center gap-x-1 gap-y-0 text-sm text-slate-600"
+      >
+        <span className="mr-1 font-semibold">Para comprender:</span>
+        {[
+          { t: "Cómo funciona cada sistema", r: href("sistemas", "todos", "funciona") },
+          { t: "Figuras", r: href("visual", "figuras") },
+          { t: "Diagramas", r: href("visual") },
+          { t: "Autoevaluación", r: href("test") },
+        ].map((x, i) => (
+          <span key={x.t} className="inline-flex items-center">
+            {i > 0 && (
+              <span aria-hidden="true" className="px-1 text-slate-400">
+                ·
+              </span>
+            )}
+            <a
+              href={x.r}
+              className="inline-flex min-h-11 items-center font-semibold text-slate-800 underline-offset-2 hover:underline sm:min-h-8"
+            >
+              {x.t}
+            </a>
+          </span>
+        ))}
+      </nav>
       <section aria-labelledby="indice-apartados">
         <h2
           id="indice-apartados"
@@ -160,7 +187,7 @@ export function CapituloEntero() {
         <div>
           <h1 className="text-xl font-extrabold text-slate-900">Capítulo entero</h1>
           <p className="text-sm text-slate-600">
-            Los 13 apartados seguidos, para imprimir de una vez.
+            Los 13 apartados seguidos y la bibliografía, para imprimir de una vez.
           </p>
         </div>
         <BotonImprimir objetivo={ref}>Imprimir el capítulo</BotonImprimir>
@@ -187,6 +214,22 @@ export function CapituloEntero() {
             </div>
           </article>
         ))}
+        {/* La bibliografía publicada (pp. 24-25), al final, como en el PDF (V50-03). Sin la
+            autoevaluación: es complementaria, no del texto publicado. */}
+        <article id="todo-bibliografia" className="bloque-papel">
+          <h2 className="mb-4 text-2xl font-black tracking-tight text-slate-900">Bibliografía</h2>
+          <ol className="space-y-2 text-sm text-slate-800">
+            {BIBLIOGRAFIA.map((r) => (
+              <li key={r.n} className="flex gap-2">
+                <span className="w-6 shrink-0 text-right font-bold tabular-nums">{r.n}.</span>
+                <span className="min-w-0 flex-1">
+                  {r.cita}
+                  {r.doi ? ` doi: ${r.doi}` : r.url ? ` ${r.url}` : ""}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </article>
       </div>
     </div>
   );

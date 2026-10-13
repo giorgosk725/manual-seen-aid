@@ -29,7 +29,27 @@ export function abrirPlegables(region) {
  * @param {() => Element | null} getRegion  la región marcada con `.imprimible`
  * @param {Window} win  ventana (inyectable en las pruebas)
  */
+/* Imprime cuando la región ya no tiene nada cargándose (figuras y diagramas perezosos, que
+   enseñan un hueco con aria-busy mientras llegan): como mucho espera 4 s (V50-03). */
 export function imprimirRegion(getRegion, win = typeof window !== "undefined" ? window : null) {
+  if (!win || typeof win.print !== "function") return () => {};
+  const region = typeof getRegion === "function" ? getRegion() : getRegion;
+  const ocupada = () => !!region?.querySelector?.('[aria-busy="true"]');
+  if (!ocupada()) return imprimirYa(region, win);
+  let cancelado = false;
+  const inicio = Date.now();
+  const esperar = () => {
+    if (cancelado) return;
+    if (ocupada() && Date.now() - inicio < 4000) win.setTimeout(esperar, 100);
+    else imprimirYa(region, win);
+  };
+  win.setTimeout(esperar, 100);
+  return () => {
+    cancelado = true;
+  };
+}
+
+function imprimirYa(getRegion, win) {
   if (!win || typeof win.print !== "function") return () => {};
   const doc = win.document;
   const region = typeof getRegion === "function" ? getRegion() : getRegion;

@@ -4,7 +4,7 @@
 import { ArrowLeft, ArrowRight, Images, Maximize2 } from "lucide-react";
 import { ICONO_DIAGRAMA } from "../nav";
 import { DIAGRAMAS } from "../contenido/diagramas";
-import { F1, F2, INFO, apartadoDeFigura } from "../contenido";
+import { F1, F2, INFO, apartadoDeFigura, rutaDeFigura } from "../contenido";
 import { INFO_F3 } from "../componentes/figura3-imagen";
 import { DiagramaVista } from "../componentes/Diagramas";
 import { AbrirEnVisor } from "../componentes/Visor";
@@ -118,8 +118,8 @@ export function Visual({ vista = "diagramas" }: { vista?: "diagramas" | "figuras
                       <span className="pagina-badge">p. {fig.pagina}</span>
                       {ap && (
                         <a
-                          href={href("capitulo", ap.slug)}
-                          className="inline-flex min-h-6 items-center rounded-full border border-slate-300 px-2 py-0.5 text-xs font-semibold text-slate-700 hover:border-slate-400"
+                          href={rutaDeFigura(fig.id) ?? href("capitulo", ap.slug)}
+                          className="inline-flex min-h-11 items-center rounded-full border border-slate-300 px-2 py-0.5 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-6"
                         >
                           Transcripción en {ap.n}. {ap.corto}
                         </a>
@@ -127,7 +127,7 @@ export function Visual({ vista = "diagramas" }: { vista?: "diagramas" | "figuras
                       {extra && (
                         <a
                           href={extra.href}
-                          className="inline-flex min-h-6 items-center rounded-full px-2 py-0.5 text-xs font-semibold text-white"
+                          className="inline-flex min-h-11 items-center rounded-full px-2 py-0.5 text-xs font-semibold text-white sm:min-h-6"
                           style={{ background: hex.strong }}
                         >
                           {extra.texto}

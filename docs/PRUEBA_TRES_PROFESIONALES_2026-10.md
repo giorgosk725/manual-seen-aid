@@ -1,6 +1,6 @@
-# Prueba con tres profesionales · complemento del capítulo 89 (versión 0.50)
+# Prueba con tres profesionales · complemento del capítulo 89 (versión 0.52)
 
-Prueba basada en tareas para la edición 0.50, con una residente o un residente de Endocrinología,
+Prueba basada en tareas para la edición 0.52, con una residente o un residente de Endocrinología,
 una adjunta o un adjunto y una enfermera o un enfermero educador en diabetes. Cada sesión dura unos
 25 minutos, en el móvil de la persona y con la copia que se vaya a evaluar. Sustituye al guion de
 `PRUEBA_USUARIOS_2026-10.md` para esta edición: cambia las tareas de casos y criterios, que ya no
@@ -14,25 +14,28 @@ errores aparecen y cuánta ayuda hace falta.
 - La persona no ha usado la app. Si ya la tenía abierta, pulsa «Actualizar» cuando salga el aviso.
 - Quien modera lee la tarea tal cual, cronometra y anota. No explica la app. Si alguien está más de
   un minuto atascado, se le da una pista y se anota el tipo de ayuda.
+- El «camino posible» de cada tarea es solo una referencia para quien modera: no se impone ni se
+  corrige. Cualquier camino que llegue a lo pedido cuenta como éxito; se anota cuál fue.
 - Se pide pensar en voz alta: qué busca y qué espera que pase al tocar.
 - Se dice al empezar: «Probamos la app, no a ti. Si algo no se encuentra, el fallo es de la app».
 - No se introducen datos de pacientes: las tareas usan casos ficticios.
 
 ## Tareas
 
-Se vuelve a la portada entre tareas (Inicio). Las tareas 1-4 entran por «Consultar»; la 5 y la 6,
-por «Leer y comprender»; la 7 y la 8 son de paciente y de búsqueda.
+Se vuelve a la portada entre tareas (Inicio). Las tareas 1-4 suelen resolverse desde «Consultar»;
+la 5 y la 6, desde «Leer y comprender»; la 7 y la 9 son de paciente y la 8, de búsqueda.
 
-| #   | Tarea (se lee así)                                                                                      | Éxito                                                                                           | Camino previsto                                                      |
+| #   | Tarea (se lee así)                                                                                      | Éxito                                                                                           | Camino posible                                                       |
 | --- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| 1   | «Mira qué parámetros de Omnipod 5 influyen en el modo automático y compáralos con Control-IQ».          | Ve los parámetros de los dos sistemas, en columnas.                                             | Consultar → Comparar los parámetros → Omnipod 5 y Control-IQ.        |
+| 1   | «Mira qué parámetros de Omnipod 5 influyen en el modo automático y compáralos con Control-IQ».          | Dice en qué se diferencian los parámetros de los dos sistemas (no importa cómo los ve).         | Consultar → Comparar los parámetros → Omnipod 5 y Control-IQ.        |
 | 2   | «Un paciente con CamAPS va a hacer ejercicio aeróbico. ¿Qué dice el capítulo? Y para Omnipod 5».        | Ve la casilla de CamAPS y luego la de Omnipod 5 sin volver a elegir la situación.               | Consultar → Situaciones → Ejercicio aeróbico → cambia de sistema.    |
 | 3   | «Busca: cetonas 0,4, vómitos persistentes y confusión. ¿Qué indica la Figura 3?»                        | Lee la indicación de urgencia y los signos de gravedad; no aplica la conducta de la rama verde. | Buscar en el capítulo → aviso de urgencia → Figura 3 completa.       |
 | 4   | «En la revisión de una descarga, ve al paso sobre la respuesta automática y el plan de respaldo».       | Abre el paso 7 sin recorrer los anteriores.                                                     | Consultar → Revisar la descarga → «Cambiar paso» → 7.                |
 | 5   | «¿Qué criterios de la Tabla 1 tiene en cuenta el capítulo para la gestación? ¿Qué dice de CamAPS?»      | Encuentra la fila de gestación y lee la celda de CamAPS con sus variantes.                      | Consultar → Explorar criterios de elección (o Tablas → Tabla 1).     |
-| 6   | «Abre el apartado de educación terapéutica, lee algo, vuelve a la portada y retoma donde estabas».      | Usa «Seguir leyendo» o vuelve al apartado sin buscarlo de nuevo.                                | Leer y comprender → apartado 7 → Inicio → Seguir leyendo.            |
+| 6   | «Abre el apartado de educación terapéutica, lee algo, vuelve a la portada y retoma donde estabas».      | Vuelve al apartado sin buscarlo de nuevo («Seguir leyendo» lleva al principio del apartado).    | Leer y comprender → apartado 7 → Inicio → Seguir leyendo.            |
 | 7   | «Dale a un paciente la información para pacientes del Manual SEEN, en PDF».                             | Abre el PDF publicado.                                                                          | Portada → Para el paciente → PDF publicado.                          |
 | 8   | «¿Cuánto tiempo puede estar desconectado el sistema sin hacer nada? Comprueba la frase en el capítulo». | Lee el pasaje de aproximadamente 1 h y abre su sitio en el capítulo.                            | Buscar en el capítulo → Pasajes relacionados → «Ver en el capítulo». |
+| 9   | «De lo que hay para el paciente, ¿qué es el documento publicado y qué es material complementario?»      | Distingue el PDF publicado de las hojas breves y las plantillas, por su rótulo.                 | Para el paciente → mira los rótulos de cada material.                |
 
 ## Qué se anota en cada tarea
 

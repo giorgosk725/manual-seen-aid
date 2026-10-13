@@ -284,6 +284,14 @@ It is **not** the `asistente-aid` console and does not compete with it. No calcu
       paragraph plus a folded block with build data and the materials register.
     - **Version number lives in `src/version.ts`** (not in `contenido/cambios.ts`): the 80 KB
       changelog stays out of the entry chunk (entry 165 → 141 KB in 0.51.0). Bump it there.
+    - **0.52.0 (13-10-2026, audit of 0.50, V50-01..13).** FAQ approval is bound to a
+      fingerprint (`huellaDe`, `src/frecuentes.aprobadas.json`): editing a question, its variants,
+      passages, system, continuation or the source PDF hash drops it to draft until
+      `npm run aprobar:frecuentes` is run after the author's review. Materials carry `estado`;
+      `materialListo(id)` gates printing. Casos and repaso are out of the build (`CON_CASOS`,
+      `CON_REPASO` in `src/edicion.ts`, `/* @__PURE__ */` lazies). `rutaDeFigura(id)` for exact
+      figure anchors; `imprimirRegion` waits for `[aria-busy]` lazy content; build time in UTC.
+      Liberty age: Table 1 («> 13 años») rules (author, 13-10).
     - **Drafts.** New clinical, sheet or quiz wording goes to `borradores/` for the author;
       nothing is marked approved without a record. Details and pending items:
       `docs/EDICION_EDITORIAL.md`.

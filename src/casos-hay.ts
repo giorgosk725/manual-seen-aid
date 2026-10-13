@@ -1,5 +1,9 @@
 /* ¿Hay casos guiados en esta edición? Solo mira si existe el archivo, sin cargarlo (los datos
    van en el trozo perezoso de la pantalla, no en la entrada de la app). Lo usa «Leer y
-   comprender» para ofrecerlos o no. */
+   comprender» para ofrecerlos o no. Con los casos retirados (CON_CASOS, src/edicion.ts) ni se
+   mira: así el build no genera sus trozos. */
+import { CON_CASOS } from "./edicion";
+
 export const HAY_CASOS =
+  CON_CASOS &&
   Object.keys(import.meta.glob(["./casos/*.json", "./casos-borrador/*.json"])).length > 0;

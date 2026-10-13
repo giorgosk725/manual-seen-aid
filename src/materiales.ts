@@ -7,6 +7,8 @@ export type TipoMaterial =
 
 export interface Material {
   id: string;
+  /* Gobierna la edición: solo un material «aprobado» se ofrece para entregar e imprimir. */
+  estado: "aprobado" | "pendiente";
   nombre: string;
   tipo: TipoMaterial;
   /* Fecha de publicación o de la última aprobación; vacía si está pendiente. */
@@ -28,6 +30,7 @@ export const ROTULO_TIPO: Record<TipoMaterial, string> = {
 export const MATERIALES: Material[] = [
   {
     id: "capitulo",
+    estado: "aprobado",
     nombre: "Capítulo 89 (PDF)",
     tipo: "publicado",
     fecha: "2026-10-08",
@@ -37,6 +40,7 @@ export const MATERIALES: Material[] = [
   },
   {
     id: "pdf-pacientes",
+    estado: "aprobado",
     nombre: "Información para pacientes (PDF)",
     tipo: "publicado",
     fecha: "2026-10-09",
@@ -45,6 +49,7 @@ export const MATERIALES: Material[] = [
   },
   {
     id: "informacion",
+    estado: "aprobado",
     nombre: "Información para pacientes, en pantalla",
     tipo: "transcripcion",
     fecha: "2026-10-09",
@@ -53,6 +58,7 @@ export const MATERIALES: Material[] = [
   },
   {
     id: "extractos",
+    estado: "aprobado",
     nombre: "Hojas breves: extractos de la Información para pacientes",
     tipo: "transcripcion",
     fecha: "2026-10-09",
@@ -61,6 +67,7 @@ export const MATERIALES: Material[] = [
   },
   {
     id: "hoja-cetonas",
+    estado: "aprobado",
     nombre: "Hoja «Cetonas: qué hacer según el resultado»",
     tipo: "adaptado",
     fecha: "2026-10-09",
@@ -69,6 +76,7 @@ export const MATERIALES: Material[] = [
   },
   {
     id: "hoja-pruebas-cirugia",
+    estado: "aprobado",
     nombre: "Hoja «Pruebas y cirugía»",
     tipo: "adaptado",
     fecha: "2026-10-13",
@@ -78,6 +86,7 @@ export const MATERIALES: Material[] = [
   },
   {
     id: "planes",
+    estado: "aprobado",
     nombre: "Plantillas del plan de seguridad (cuatro sistemas)",
     tipo: "plantilla",
     fecha: "2026-10-13",
@@ -87,6 +96,7 @@ export const MATERIALES: Material[] = [
   },
   {
     id: "como-interpretar",
+    estado: "aprobado",
     nombre: "«Cómo leer esta tabla» y «Cómo interpretar este hallazgo»",
     tipo: "explicacion",
     fecha: "2026-10-11",
@@ -95,6 +105,7 @@ export const MATERIALES: Material[] = [
   },
   {
     id: "como-funciona",
+    estado: "aprobado",
     nombre: "«Cómo funciona», comparado por aspectos",
     tipo: "explicacion",
     fecha: "2026-10-11",
@@ -103,16 +114,17 @@ export const MATERIALES: Material[] = [
   },
   {
     id: "frecuentes",
+    estado: "aprobado",
     nombre: "Preguntas frecuentes f01–f103",
     tipo: "preguntas",
     fecha: "2026-10-13",
     version: "0.51.0",
     evidencia:
       "f01–f50 aprobadas el 8-10-2026, f51–f61 el 11-10-2026 y f62–f103 el 13-10-2026 (revisión delegada), docs/FRECUENTES.md",
-    pendiente: "f11: matiz de edad de Liberty entre el apartado 3 y la Tabla 1, para el autor",
   },
   {
     id: "autoevaluacion",
+    estado: "aprobado",
     nombre: "Autoevaluación complementaria (10 preguntas)",
     tipo: "preguntas",
     fecha: "2026-10-13",
@@ -122,6 +134,8 @@ export const MATERIALES: Material[] = [
 ];
 
 export const material = (id: string) => MATERIALES.find((m) => m.id === id);
+/* ¿Se puede entregar e imprimir? Un material sin registro o pendiente, no. */
+export const materialListo = (id: string) => material(id)?.estado === "aprobado";
 
 export const fechaCorta = (iso: string) =>
   iso ? iso.split("-").reverse().join("-").replace(/^0/, "").replace(/-0/, "-") : "";

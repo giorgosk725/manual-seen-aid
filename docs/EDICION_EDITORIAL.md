@@ -1,4 +1,34 @@
-# Edición editorial 0.49.0 (12-10-2026)
+# Edición editorial · estado actual (13-10-2026)
+
+> **Lee esto primero.** Lo de debajo de «Historia» es el registro de la 0.49.0 y no describe
+> la edición vigente.
+
+| Qué                        | Estado                                                                                                                                                                                                                                                                                                                                     |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Versión                    | 0.52.0 (en prueba). Producción: la última publicada con «publica» (`#/sobre`, «Datos de esta versión», con SHA y hora UTC del build).                                                                                                                                                                                                      |
+| Preguntas frecuentes       | f01–f103 aprobadas, cada una ligada a la huella de lo aprobado (`src/frecuentes.aprobadas.json`). Si cambian la pregunta, las variantes, los pasajes, el sistema, la continuación o el PDF fuente, vuelve a borrador y sale de la edición hasta `npm run aprobar:frecuentes`. f11: la edad de Liberty se toma de la Tabla 1 («> 13 años»). |
+| Autoevaluación             | 10 preguntas (q02 y q03 confirmadas el 13-10).                                                                                                                                                                                                                                                                                             |
+| Materiales                 | Registro en `src/materiales.ts` (estado, fecha, versión, evidencia). Solo un material «aprobado» se ofrece para entregar e imprimir (`materialListo`).                                                                                                                                                                                     |
+| Retirados                  | Casos guiados y tarjetas de repaso: fuera del build (`CON_CASOS`, `CON_REPASO` en `src/edicion.ts`); datos en el repositorio. Ampliación técnica: no se muestra; sus datos siguen en el paquete porque el explorador de criterios comparte módulo.                                                                                         |
+| Privacidad                 | Sin envíos: `/api/pasajes` y `/api/sin-respuesta` responden 410. Sin recientes ni visitas.                                                                                                                                                                                                                                                 |
+| Pendiente fuera del código | Permiso de la SEEN, prueba con tres profesionales (`docs/PRUEBA_TRES_PROFESIONALES_2026-10.md`).                                                                                                                                                                                                                                           |
+
+## Circuito de publicación
+
+1. Cambios en `main`, con las puertas: `format:check`, `lint`, `typecheck`, `vitest`, `build`,
+   `presupuesto` y e2e (`CI=1 npx playwright test`).
+2. Copia de prueba: `npx wrangler pages deploy dist --project-name=manual-seen-aid
+--branch=prueba` → https://prueba.manual-seen-aid.pages.dev.
+3. Producción solo con la orden explícita «publica», desde un `dist` limpio (árbol sin cambios,
+   para que el SHA no lleve «+cambios»): mismo comando con `--branch=main`. Se comprueba el
+   `index-*.js` servido, la versión y que los dos POST respondan 410.
+4. El flujo `.github/workflows/deploy-cloudflare.yml` no publica hoy: falta el secreto
+   `CLOUDFLARE_API_TOKEN` en el repositorio y falla a propósito con ese aviso. La publicación es
+   la manual del punto 3.
+
+## Historia
+
+### Edición editorial 0.49.0 (12-10-2026)
 
 Propuesta revisable del complemento del capítulo 89, preparada desde la auditoría de la 0.48.2
 (`Auditoria_SEEN_AID_v0.48.2.md`) y su brief. Rama local `edicion-editorial`, desde `e02caf9`.

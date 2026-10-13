@@ -443,7 +443,7 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
                     href={`https://doi.org/${r.doi}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-1 inline-flex min-h-7 items-center gap-1 text-xs font-semibold text-sky-800 hover:underline"
+                    className="mt-1 inline-flex min-h-11 sm:min-h-7 items-center gap-1 text-xs font-semibold text-sky-800 hover:underline"
                   >
                     doi.org/{r.doi} <ExternalLink size={12} aria-hidden="true" />
                   </a>
@@ -452,7 +452,7 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
                     href={r.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-1 inline-flex min-h-7 max-w-full items-center gap-1 text-xs font-semibold text-sky-800 hover:underline"
+                    className="mt-1 inline-flex min-h-11 sm:min-h-7 max-w-full items-center gap-1 text-xs font-semibold text-sky-800 hover:underline"
                   >
                     <span className="min-w-0 break-all">{r.url.replace(/^https?:\/\//, "")}</span>{" "}
                     <ExternalLink size={12} aria-hidden="true" />

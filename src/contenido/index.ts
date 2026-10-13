@@ -126,5 +126,12 @@ export const rutaDeTabla = (id: TablaId): string | undefined => {
   return ap && i >= 0 ? `#/capitulo/${ap.slug}/${idDeBloque(ap.bloques[i], i)}` : undefined;
 };
 
+/* La figura en su sitio del capítulo (V50-09): el bloque exacto, no el principio del apartado. */
+export const rutaDeFigura = (id: FiguraId): string | undefined => {
+  const ap = apartadoDeFigura(id);
+  const i = ap ? ap.bloques.findIndex((b) => b.t === "figura" && b.id === id) : -1;
+  return ap && i >= 0 ? `#/capitulo/${ap.slug}/${idDeBloque(ap.bloques[i], i)}` : undefined;
+};
+
 /* Página «Autoevaluación» del capítulo (índice de la p. 1; en el PDF el hueco está vacío). */
 export const AUTOEVALUACION = { titulo: "Autoevaluación", pagina: 24 } as const;

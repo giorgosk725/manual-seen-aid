@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   AlertTriangle,
   Ambulance,
-  ArrowDown,
   Check,
   Clock3,
   Droplets,
@@ -148,15 +147,18 @@ function NotasDelPie() {
 /* Con una rama abierta (también por enlace directo), lo que la figura dice para todas las ramas
    va pegado a ella: la insulina con pluma, las situaciones especiales, el registro y a quién se
    refieren las dosis con asterisco. */
-function NotasComunes() {
+function NotasComunes({ conAsterisco = true }: { conAsterisco?: boolean }) {
   return (
     <section aria-label="Notas comunes de la Figura 3" className="mt-3 space-y-2">
       <div className="text-xs font-bold uppercase tracking-wide text-slate-500">
         Notas de la figura para todas las ramas
       </div>
-      <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
-        {FIGURA3.notaAsterisco}
-      </p>
+      {/* Si la rama ya lleva la nota de las dosis con asterisco, no se repite aquí. */}
+      {conAsterisco && (
+        <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
+          {FIGURA3.notaAsterisco}
+        </p>
+      )}
       <NotasDelPie />
     </section>
   );
@@ -296,35 +298,9 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
   return (
     <section aria-label="Figura 3, recorrido paso a paso">
       <Cabecera herramienta />
-      {/* Antes de elegir rama: la urgencia y los signos de gravedad, tal cual en la figura. */}
-      <UrgenciaF3 className="mb-3" />
-      <nav
-        aria-label="Ir directamente al tramo"
-        className="no-imprimir mb-4 rounded-xl border bg-slate-50 p-2.5"
-        style={{ borderColor: "#e6e6e6" }}
-      >
-        <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-slate-700">
-          <ArrowDown size={13} aria-hidden="true" /> Ir a una rama de la figura:
-        </div>
-        {/* En el móvil, los cuatro tramos en 2 × 2 (antes, una fila cada uno). */}
-        <div className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-wrap">
-          {FIGURA3.tramos.map((t) => {
-            const hex = TRAMO_HEX[t.clave];
-            return (
-              <button
-                key={t.clave}
-                type="button"
-                onClick={() => irATramo(t.clave)}
-                aria-label={`Ir a la rama: ${t.rango}`}
-                className="inline-flex min-h-9 items-center justify-center rounded-lg border bg-white px-2 py-1 text-center text-xs font-bold leading-tight transition hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:rounded-full sm:px-3 sm:py-0"
-                style={{ borderColor: hex.border, color: hex.ink }}
-              >
-                {t.rango}
-              </button>
-            );
-          })}
-        </div>
-      </nav>
+      {/* Sin rama elegida: la urgencia y los signos de gravedad, tal cual en la figura, antes del
+          selector. Con una rama abierta van pegados a ella (o son la rama roja): no se repiten. */}
+      {!actual && <UrgenciaF3 className="mb-3" />}
       <ol className="space-y-4">
         <li>
           <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-500">
@@ -359,7 +335,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
                   key={t.clave}
                   type="button"
                   aria-pressed={on}
-                  onClick={() => elegir(on ? null : t.clave)}
+                  onClick={() => (on ? elegir(null) : irATramo(t.clave))}
                   className={`hover-lift ease-brand rounded-2xl border p-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 focus-visible:ring-offset-2 ${on ? "text-white" : ""}`}
                   style={
                     on
@@ -395,7 +371,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
           {actual ? (
             <div key={actual.clave} className="pantalla-in">
               <Rama tramo={actual} aviso />
-              <NotasComunes />
+              <NotasComunes conAsterisco={!JSON.stringify(actual.pasos).includes("*")} />
             </div>
           ) : (
             <div

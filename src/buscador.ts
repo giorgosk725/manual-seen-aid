@@ -64,7 +64,7 @@ import {
 } from "./respuestas";
 import { FRECUENTES, type Frecuente } from "./frecuentes";
 import { HOJAS_EXTRA } from "./hojas";
-import { retirado } from "./edicion";
+import { CON_CASOS, retirado } from "./edicion";
 
 const sinMarcado = (s: string) => plano(s);
 
@@ -343,7 +343,7 @@ export function indice(): Entrada[] {
       out.push({ id: `atajo/${ruta}`, tipo: "atajo", titulo, texto, pagina, ruta });
   // Casos guiados y ejemplos comentados de la app: para que «ejemplo de descarga» o «practicar
   // con un caso» lleven al caso, no a un pasaje que contiene «por ejemplo».
-  for (const c of retirado("casos") ? [] : CASOS_INDICE)
+  for (const c of CON_CASOS ? CASOS_INDICE : [])
     out.push({
       id: `caso/${c.id}`,
       tipo: "caso",

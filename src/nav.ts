@@ -313,7 +313,8 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "test",
-    etiqueta: "Autoevaluación complementaria",
+    // En el menú, corto; el título de la pantalla dice «complementaria basada en el capítulo».
+    etiqueta: "Autoevaluación",
     corto: "Test",
     href: href("test"),
     icono: GraduationCap,

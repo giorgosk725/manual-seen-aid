@@ -1619,3 +1619,11 @@ html.night *:focus-visible {
   outline: 2px solid #93c5fd !important;
   outline-offset: 2px;
 }
+
+/* Plan de seguridad impreso: la Figura 3 (ramas, dosis y su nota de población) no se parte entre
+   páginas, para que la nota no quede separada de las dosis (V50-02). */
+@media print {
+  .plan-figura3 {
+    break-inside: avoid;
+  }
+}

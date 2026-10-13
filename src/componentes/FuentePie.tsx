@@ -29,7 +29,7 @@ export function FuentePie({
           {f.ruta ? (
             <a
               href={f.ruta}
-              className="inline-flex min-h-6 items-center font-semibold text-slate-600 hover:underline"
+              className="inline-flex min-h-11 items-center font-semibold text-slate-600 hover:underline sm:min-h-6"
             >
               {f.texto}
             </a>

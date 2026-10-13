@@ -6,6 +6,9 @@
    pregunta y sus «variantes» (otras formas de preguntarlo) son texto de la app; los pasajes, texto
    literal del capítulo. Para cambiar una, se edita aquí y se vuelve a pasar la revisión. */
 
+import { CAPITULO } from "./contenido";
+import APROBADAS from "./frecuentes.aprobadas.json";
+
 export interface Frecuente {
   id: string;
   tema: string;
@@ -18,7 +21,7 @@ export interface Frecuente {
   siguiente?: { texto: string; ruta: string };
 }
 
-const TODAS: Frecuente[] = [
+export const TODAS: Frecuente[] = [
   {
     id: "f01",
     tema: "Selección e indicación",
@@ -139,11 +142,11 @@ const TODAS: Frecuente[] = [
       "sistema sin bolos para las comidas",
       "CamAPS Liberty",
     ],
-    // 13-10-2026: primero los pasajes propios de CamAPS FX/Liberty; en las filas de la Tabla 1
+    // 13-10-2026: primero el pasaje propio de CamAPS FX/Liberty; en las filas de la Tabla 1
     // (indicación y gestación), la casilla de myLoop CamAPS a la vista y los otros sistemas
-    // plegados. Matiz de edad pendiente del autor: el apartado 3 dice «no se recomienda en menores
-    // de 13 años» y la Tabla 1, «Liberty: > 13 años».
-    pasajes: ["t/03-algoritmos/b3/1", "t/03-algoritmos/b3/2", "T1/7", "T1/8"],
+    // plegados. Edad: manda la Tabla 1 («Liberty: > 13 años»), decisión del autor del
+    // 13-10-2026; por eso no va la frase del apartado 3 («no se recomienda en menores de 13 años»).
+    pasajes: ["t/03-algoritmos/b3/1", "T1/7", "T1/8"],
   },
   {
     id: "f12",
@@ -1022,8 +1025,10 @@ const TODAS: Frecuente[] = [
 ];
 
 /* Registro de revisión. Aprobación = visto bueno del autor a la correspondencia pregunta–pasajes
-   (docs/FRECUENTES.md, «Estado de revisión»). Un cambio posterior de pregunta o pasajes vuelve a
-   «borrador» hasta una nueva revisión registrada aquí. */
+   (docs/FRECUENTES.md, «Estado de revisión»), ligada a la huella de lo aprobado
+   (frecuentes.aprobadas.json: pregunta, variantes, pasajes, sistema, continuación y PDF fuente).
+   Si cambia cualquiera de esas cosas, la huella deja de coincidir y la pregunta vuelve a
+   «borrador» y sale de la edición hasta una nueva aprobación (npm run aprobar:frecuentes). */
 export type EstadoFrecuente = "aprobada" | "borrador";
 export interface Revision {
   estado: EstadoFrecuente;
@@ -1031,7 +1036,7 @@ export interface Revision {
   registro: string;
 }
 const num = (id: string) => Number(id.slice(1));
-export function revisionDe(id: string): Revision {
+function registroDe(id: string): Revision {
   const n = num(id);
   // f11 cambió de pasajes el 13-10-2026, con la misma revisión delegada.
   if (id === "f11")
@@ -1073,16 +1078,43 @@ export function revisionDe(id: string): Revision {
 export const PROPUESTAS: Record<string, { pasajes: string[]; nota: string; fecha: string }> = {
   /* f11 (13-10-2026), ya aplicada arriba; se conserva aquí como registro. */
   f11: {
-    pasajes: ["t/03-algoritmos/b3/1", "t/03-algoritmos/b3/2", "T1/7", "T1/8"],
-    nota: "Primero los pasajes propios de CamAPS FX/Liberty; en las filas de la Tabla 1, la casilla de myLoop CamAPS a la vista y los otros sistemas plegados. Para revisar: el apartado 3 dice «no se recomienda en menores de 13 años» (admite 13) y la Tabla 1 dice «Liberty: > 13 años» (no los admite).",
+    pasajes: ["t/03-algoritmos/b3/1", "T1/7", "T1/8"],
+    nota: "Primero el pasaje propio de CamAPS FX/Liberty; en las filas de la Tabla 1, la casilla de myLoop CamAPS a la vista y los otros sistemas plegados. Edad: manda la Tabla 1 («Liberty: > 13 años»), decisión del autor del 13-10-2026.",
     fecha: "2026-10-13",
   },
 };
 
+/* Huella de lo que se aprueba de una pregunta (y de la fuente con que se revisó). */
+export function huellaDe(f: Frecuente): string {
+  const txt = JSON.stringify([
+    f.pregunta,
+    f.variantes,
+    f.pasajes,
+    f.sistema ?? null,
+    f.siguiente ?? null,
+    CAPITULO.pdfSha256,
+  ]);
+  let h = 5381;
+  for (let i = 0; i < txt.length; i++) h = (Math.imul(h, 33) ^ txt.charCodeAt(i)) >>> 0;
+  return h.toString(36);
+}
+
+/* El estado efectivo: aprobada solo si hay registro de aprobación y la huella coincide. */
+export function revisionDe(f: Frecuente): Revision {
+  const r = registroDe(f.id);
+  if (r.estado !== "aprobada") return r;
+  if ((APROBADAS as Record<string, string>)[f.id] === huellaDe(f)) return r;
+  return {
+    estado: "borrador",
+    fecha: "",
+    registro: `Cambió después de su aprobación del ${r.fecha}: necesita una revisión nueva`,
+  };
+}
+
 export type FrecuenteRevisada = Frecuente & { revision: Revision };
 export const FRECUENTES_TODAS: FrecuenteRevisada[] = TODAS.map((f) => ({
   ...f,
-  revision: revisionDe(f.id),
+  revision: revisionDe(f),
 }));
 /* Las que salen en esta edición: solo las aprobadas. */
 export const FRECUENTES: FrecuenteRevisada[] = FRECUENTES_TODAS.filter(

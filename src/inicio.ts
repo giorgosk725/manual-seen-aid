@@ -3,11 +3,16 @@
    (y a sus frases), a una lista, a una fila de tabla o a la casilla de un sistema, y se pinta
    tal cual con su página. Los nombres de las fases son los del propio capítulo (p. 10).
    Lo único de la app: los rótulos cortos de la navegación y de los hitos del seguimiento. */
-import { APARTADOS, TABLAS, idDeBloque, type Bloque, type TablaId } from "./contenido";
+import { APARTADOS, TABLAS, idDeBloque, rutaDeTabla, type Bloque, type TablaId } from "./contenido";
 import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import { plano } from "./marcado";
 import { frases } from "./frases";
 import { href } from "./rutas";
+import { materialListo } from "./materiales";
+/* Solo «para entregar» si las plantillas del plan están aprobadas (V50-02). */
+const TEXTO_PLAN = materialListo("planes")
+  ? "Plan de seguridad para entregar"
+  : "Plantilla del plan de seguridad (en revisión)";
 
 export type Pieza =
   /* Frases `k` (en orden) de un párrafo. */
@@ -199,6 +204,16 @@ export function hojaDeComprobacion(sis?: number) {
       { texto: plano(TABLAS.T2.filas[8].celdas[0]), pagina: 10 },
     ],
     planIntro: plan.intro,
+    // De dónde sale cada elemento de la lista (V50-08): al pie del bloque, sin página por línea.
+    fuentesAntes: [
+      { texto: `Apartado 7, p. ${plan.pagina}`, ruta: plan.ruta },
+      { texto: `Apartado 8, p. ${nucleo.pagina}`, ruta: nucleo.ruta },
+      {
+        texto: `Tabla 2, ${TABLAS.T2.paginas[0] === TABLAS.T2.paginas[1] ? `p. ${TABLAS.T2.paginas[0]}` : `pp. ${TABLAS.T2.paginas[0]}-${TABLAS.T2.paginas[1]}`}`,
+        ruta: rutaDeTabla("T2") ?? href("capitulo", "08-iniciacion"),
+      },
+    ],
+    fuentesCitas: [{ texto: `Apartado 8, p. ${seguimiento.pagina}`, ruta: seguimiento.ruta }],
     seguimiento: { texto: seguimiento.frases[0], pagina: seguimiento.pagina },
     // Con sistema: lo que se programa ese día según la Tabla 1 (pp. 3-4), con su nota.
     sistema:
@@ -238,10 +253,10 @@ export interface Tarea {
 const planDeSeguridad = (sis?: number) =>
   sis !== undefined
     ? {
-        texto: "Plan de seguridad para entregar",
+        texto: TEXTO_PLAN,
         ruta: href("pacientes", "plan", ORDEN_SISTEMAS[sis]),
       }
-    : { texto: "Plan de seguridad para entregar", ruta: href("pacientes", "plan") };
+    : { texto: TEXTO_PLAN, ruta: href("pacientes", "plan") };
 export const TAREAS: Record<string, Tarea[]> = {
   preparacion: [
     {

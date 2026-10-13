@@ -5,6 +5,7 @@ import { render, screen, within, act, fireEvent, waitFor } from "@testing-librar
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
 import App from "./App";
+import { BIBLIOGRAFIA } from "./contenido";
 
 /* Navega y espera a que la pantalla (perezosa, React.lazy) haya llegado. */
 const ir = async (hash: string) => {
@@ -65,13 +66,13 @@ describe("App", () => {
     expect(screen.getByText(/Elige un tramo de β-OHB/)).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: /^β-OHB 1,0-2,9 mmol\/l/ }));
     expect(screen.getByText(/0,1 UI\/kg/)).toBeInTheDocument();
-    // La rama roja no se abre, pero su urgencia y sus signos de gravedad se citan antes del
-    // selector y junto a la rama abierta (A01).
+    // La rama roja no se abre, pero su urgencia y sus signos de gravedad van junto a la rama
+    // abierta (A01); una sola vez, no también encima del selector (V50-06).
     expect(screen.queryByText("Hidratación según glucemia, si la tolera.")).not.toBeInTheDocument();
     const urgencias = screen.getAllByRole("region", {
       name: /^Urgencia y signos de gravedad \(Figura 3\)/,
     });
-    expect(urgencias.length).toBe(2);
+    expect(urgencias.length).toBe(1);
     for (const u of urgencias) {
       expect(
         within(u).getByText(/URGENCIAS \/ VALORACIÓN HOSPITALARIA INMEDIATA/),
@@ -261,5 +262,16 @@ describe("App", () => {
     expect(await axe(container, AXE)).toHaveNoViolations();
     await ir("#/capitulo/07-educacion");
     expect(await axe(container, AXE)).toHaveNoViolations();
+  }, 30000);
+
+  it("«Capítulo entero» lleva también la bibliografía (V50-03)", async () => {
+    render(<App />);
+    await ir("#/capitulo/todo");
+    const bib = await waitFor(() => {
+      const a = document.getElementById("todo-bibliografia");
+      expect(a).not.toBeNull();
+      return a!;
+    });
+    expect(within(bib).getAllByRole("listitem")).toHaveLength(BIBLIOGRAFIA.length);
   }, 30000);
 });

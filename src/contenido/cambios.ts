@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — Consultar en la barra inferior`,
+    titulo: `Complemento interactivo ${VERSION_APP} — revisión de la edición`,
+    detalle: [
+      "Liberty: la edad, la de la Tabla 1 («> 13 años»).",
+      "Cada pregunta frecuente queda ligada a lo que se aprobó: si cambia, sale hasta revisarla de nuevo.",
+      "Un material en revisión no se ofrece para imprimir; la nota de las dosis no se separa de ellas al imprimir.",
+      "«Capítulo entero» con la bibliografía; Figura 3 sin la urgencia repetida; enlaces y fuentes más fáciles de tocar en el móvil.",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.51.0 — Consultar en la barra inferior",
     detalle: [
       "Móvil: «Consultar» en la barra inferior, con las tareas de consulta a dos toques.",
       "Portada sin las dos puertas, título en negrita; cabecera del Manual de Endocrinología y Nutrición.",
