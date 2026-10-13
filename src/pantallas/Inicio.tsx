@@ -3,7 +3,17 @@
    con el sistema elegido o los cuatro, y la hoja de comprobación como herramienta del recorrido.
    El contenido sale de inicio.ts (referencias al texto literal); aquí solo se pinta. */
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Check, ChevronDown, ChevronLeft, ChevronRight, Printer } from "lucide-react";
+import {
+  ArrowRight,
+  Calculator,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ListOrdered,
+  Printer,
+} from "lucide-react";
+import { CalculadoraInicio } from "../componentes/CalculadoraInicio";
 import {
   PASOS_GUIA,
   limpiarRespuestas,
@@ -45,6 +55,8 @@ const NOMBRES = TABLAS.T1.columnas;
 const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
 const HOJA = "hoja";
 const GUIA = "guia";
+/* La calculadora de parámetros iniciales: lo primero al entrar (13-10-2026). */
+const CALC = "calculadora";
 
 const fuentesDeTarea = (fase: Fase, t: Tarea) =>
   fuentesDePiezas(t.piezas.map((i) => fase.piezas[i]));
@@ -519,7 +531,8 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
       ? "inicio"
       : faseId === HOJA
         ? faseId
-        : FASES[0].id;
+        : CALC;
+  const enFases = FASES.some((f) => f.id === actual);
   // En la fase Inicio, el paso: por id, por número o por el aspecto antiguo («a3»).
   const pasoInicio =
     tareaId && /^a\d+$/.test(tareaId)
@@ -575,76 +588,100 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
     <div>
       <CabeceraEditorial titulo="Iniciar un sistema" hex={hex} level={1}>
         <p className="text-sm text-slate-600">
-          Preparación, puesta en marcha y seguimiento, por sistema.
+          Los parámetros de partida con las reglas del capítulo, y la preparación, la puesta en
+          marcha y el seguimiento, por sistema.
         </p>
       </CabeceraEditorial>
 
-      <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-        Sistema<span className="hidden sm:inline"> (sus indicaciones y los criterios comunes)</span>
-      </div>
-      <div className="mb-4">
-        <CasillasSistema
-          seleccion={sis !== undefined ? [sis] : []}
-          onToggle={(c) =>
-            ir(
-              actual,
-              sis === c ? undefined : c,
-              actual === "inicio" ? PASOS_GUIA[pasoInicio].id : pedida,
-            )
-          }
-          nombres={CORTOS}
-        />
-      </div>
-
-      {/* Las cuatro fases en su fila; la hoja de comprobación, aparte (en el móvil, debajo). */}
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start">
-        <ol className="grid w-full grid-cols-2 gap-1.5 sm:flex-1 sm:grid-cols-4" aria-label="Fases">
-          {FASES.map((f, i) => {
-            const on = f.id === actual;
-            return (
-              <li key={f.id} className="min-w-0">
-                <button
-                  type="button"
-                  aria-current={on ? "step" : undefined}
-                  onClick={() => ir(f.id)}
-                  className={`flex min-h-11 w-full items-center gap-2 rounded-lg border px-2.5 py-1.5 text-left text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
-                  style={
-                    on
-                      ? { background: hex.strong, borderColor: hex.strong }
-                      : { borderColor: "#e6e6e6" }
-                  }
-                >
-                  <span
-                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${on ? "bg-white/20" : "bg-slate-100 text-slate-600"}`}
-                  >
-                    {i + 1}
-                  </span>
-                  <span className="min-w-0">{f.corto}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ol>
-        {/* La hoja es una herramienta del recorrido, no una fase. */}
-        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+      {/* Tres herramientas: la calculadora, el recorrido por fases y la hoja. */}
+      <div role="group" aria-label="Herramienta" className="mb-4 grid grid-cols-3 gap-1.5">
+        {(
+          [
+            { id: CALC, t: "Calculadora", I: Calculator, on: actual === CALC },
+            { id: FASES[0].id, t: "Fases", I: ListOrdered, on: enFases },
+            { id: HOJA, t: "Hoja de comprobación", I: Check, on: actual === HOJA },
+          ] as const
+        ).map((x) => (
           <button
+            key={x.id}
             type="button"
-            aria-current={actual === HOJA ? "page" : undefined}
-            onClick={() => ir(HOJA)}
-            className={`inline-flex min-h-11 items-center gap-1 rounded-lg border px-2 text-[13px] font-semibold transition sm:gap-1.5 sm:px-3 sm:text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${actual === HOJA ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
+            aria-pressed={x.on}
+            onClick={() => (x.id === FASES[0].id && enFases ? undefined : ir(x.id))}
+            className={`flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 text-center text-[13px] font-bold leading-tight transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:flex-row sm:gap-2 sm:text-sm ${x.on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
             style={
-              actual === HOJA
-                ? { background: "#334155", borderColor: "#334155" }
-                : { borderColor: "#e6e6e6" }
+              x.on
+                ? { background: hex.strong, borderColor: hex.strong }
+                : { borderColor: "#e2e8f0" }
             }
           >
-            <Check size={14} aria-hidden="true" /> Hoja de comprobación
+            <x.I size={18} aria-hidden="true" />
+            {x.t}
           </button>
-        </div>
+        ))}
       </div>
 
+      {actual !== CALC && (
+        <>
+          <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
+            Sistema
+            <span className="hidden sm:inline"> (sus indicaciones y los criterios comunes)</span>
+          </div>
+          <div className="mb-4">
+            <CasillasSistema
+              seleccion={sis !== undefined ? [sis] : []}
+              onToggle={(c) =>
+                ir(
+                  actual,
+                  sis === c ? undefined : c,
+                  actual === "inicio" ? PASOS_GUIA[pasoInicio].id : pedida,
+                )
+              }
+              nombres={CORTOS}
+            />
+          </div>
+        </>
+      )}
+
+      {/* Las cuatro fases en su fila (la hoja y la calculadora van arriba, como herramientas). */}
+      {enFases && (
+        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start">
+          <ol
+            className="grid w-full grid-cols-2 gap-1.5 sm:flex-1 sm:grid-cols-4"
+            aria-label="Fases"
+          >
+            {FASES.map((f, i) => {
+              const on = f.id === actual;
+              return (
+                <li key={f.id} className="min-w-0">
+                  <button
+                    type="button"
+                    aria-current={on ? "step" : undefined}
+                    onClick={() => ir(f.id)}
+                    className={`flex min-h-11 w-full items-center gap-2 rounded-lg border px-2.5 py-1.5 text-left text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
+                    style={
+                      on
+                        ? { background: hex.strong, borderColor: hex.strong }
+                        : { borderColor: "#e6e6e6" }
+                    }
+                  >
+                    <span
+                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${on ? "bg-white/20" : "bg-slate-100 text-slate-600"}`}
+                    >
+                      {i + 1}
+                    </span>
+                    <span className="min-w-0">{f.corto}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      )}
+
       <div id="paso-inicio" tabIndex={-1} className="scroll-mt-24 focus:outline-none">
-        {fase ? (
+        {actual === CALC ? (
+          <CalculadoraInicio sis={sis} onSistema={(c) => ir(CALC, sis === c ? undefined : c)} />
+        ) : fase ? (
           <section
             key={actual}
             className="pantalla-in rounded-2xl border bg-white px-4 pb-3 pt-4"

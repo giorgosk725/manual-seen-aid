@@ -30,6 +30,7 @@ import {
   Zap,
   type LucideIcon,
 } from "lucide-react";
+import { CLAVE_ALGORITMO } from "../contenido/diagramas";
 import {
   APARTADOS,
   TABLAS,
@@ -1012,30 +1013,104 @@ function BarraSistemas({
 function EntradaSistemas() {
   return (
     <div className="space-y-4">
-      <ul className="grid gap-2 sm:grid-cols-2">
+      {/* 13-10-2026: cada tarjeta con lo esencial de la Tabla 1 (fragmentos literales,
+          CLAVE_ALGORITMO) para distinguirlos antes de entrar. */}
+      <ul className="grid gap-3 sm:grid-cols-2">
         {CATALOGO_SISTEMAS.map((s, c) => {
           const h = SISTEMA_HEX[c];
+          const k = CLAVE_ALGORITMO[c];
+          const [nombreAlg, tipo] = algoritmoDelCapitulo(c).split(": algoritmo de tipo ");
+          const sensores = TABLAS.T1.filas.find((f) => f.etiqueta === "Sensores compatibles")!
+            .celdas[c];
+          const datos: [typeof Cpu, string, string][] = [
+            [Cpu, "Algoritmo", k.donde.join(" · ")],
+            [Timer, "Actúa", k.actua.join(" · ")],
+            [Target, "Objetivo", k.objetivo.join(" · ")],
+            [Radio, "Sensores", sensores],
+          ];
           return (
             <li key={s.id}>
               <a
                 href={href("sistemas", s.id)}
-                className="hover-lift ease-brand flex items-center gap-3 rounded-xl border bg-white p-2.5 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{ borderColor: "#e6e6e6", boxShadow: `inset 0 3px 0 0 ${h.strong}` }}
+                className="hover-lift ease-brand block h-full overflow-hidden rounded-xl border border-t-4 bg-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                style={{ borderColor: "#e6e6e6", borderTopColor: h.strong }}
               >
-                <img
-                  src={FOTO_SISTEMA[s.id]}
-                  alt=""
-                  className="h-14 w-14 shrink-0 rounded-lg border object-cover"
-                  style={{ borderColor: "#e6e6e6" }}
-                  loading="lazy"
-                />
-                <span className="min-w-0 flex-1">
-                  <span className="block text-base font-extrabold" style={{ color: h.ink }}>
-                    {s.name}
+                <span
+                  className="flex items-center gap-3 px-3 py-2.5"
+                  style={{ background: h.soft }}
+                >
+                  <img
+                    src={FOTO_SISTEMA[s.id]}
+                    alt=""
+                    className="h-14 w-14 shrink-0 rounded-lg border bg-white object-cover"
+                    style={{ borderColor: "#e6e6e6" }}
+                    loading="lazy"
+                  />
+                  <span className="min-w-0 flex-1">
+                    <span
+                      className="block text-lg font-extrabold leading-tight"
+                      style={{ color: h.ink }}
+                    >
+                      {s.name}
+                    </span>
+                    <span className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-slate-700">
+                      <span className="font-semibold">{nombreAlg}</span>
+                      {tipo && (
+                        <span
+                          className="rounded-full px-2 py-0.5 text-[11px] font-bold text-white"
+                          style={{ background: h.ink }}
+                        >
+                          {tipo}
+                        </span>
+                      )}
+                    </span>
                   </span>
-                  <span className="block text-xs text-slate-600">{algoritmoDelCapitulo(c)}</span>
+                  <ArrowRight
+                    size={16}
+                    className="shrink-0"
+                    style={{ color: h.ink }}
+                    aria-hidden="true"
+                  />
                 </span>
-                <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+                <span className="grid grid-cols-2 gap-x-3 gap-y-2 px-3 py-2.5">
+                  {datos.map(([I, t, v]) => (
+                    <span key={t} className="flex min-w-0 gap-1.5">
+                      <I
+                        size={14}
+                        className="mt-0.5 shrink-0"
+                        style={{ color: h.strong }}
+                        aria-hidden="true"
+                      />
+                      <span className="min-w-0">
+                        <span className="block text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                          {t}
+                        </span>
+                        <span className="block text-xs font-semibold leading-snug text-slate-900">
+                          {v}
+                        </span>
+                      </span>
+                    </span>
+                  ))}
+                  <span className="col-span-2 flex items-center gap-1.5 text-xs text-slate-700">
+                    <Syringe
+                      size={14}
+                      className="shrink-0"
+                      style={{ color: h.strong }}
+                      aria-hidden="true"
+                    />
+                    <span className="font-semibold">Bolos automáticos de corrección:</span>
+                    <span
+                      className="rounded px-1.5 text-[11px] font-extrabold"
+                      style={
+                        k.correccion.si
+                          ? { background: h.ink, color: "#fff" }
+                          : { background: "#e2e8f0", color: "#334155" }
+                      }
+                    >
+                      {k.correccion.si ? "Sí" : "No"}
+                    </span>
+                  </span>
+                </span>
               </a>
             </li>
           );

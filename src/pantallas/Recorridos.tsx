@@ -5,7 +5,36 @@
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
 import { useEffect, useState } from "react";
-import { ArrowRight, Check, ChevronLeft, ChevronRight, HeartHandshake, Siren } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  ArrowRight,
+  Baby,
+  BedDouble,
+  Bike,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Droplet,
+  Dumbbell,
+  HeartHandshake,
+  Hospital,
+  Magnet,
+  Moon,
+  Pill,
+  Radiation,
+  Scan,
+  ScanLine,
+  Scissors,
+  Siren,
+  Thermometer,
+  TrendingUp,
+  Unplug,
+  Users,
+  UtensilsCrossed,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, rutaDeTabla } from "../contenido";
 import {
   GUION,
@@ -88,6 +117,50 @@ const TEMAS_SITUACION: { t: string; ids: string[]; subs: RegExp; extras?: Extra[
   },
   { t: "Poblaciones y situaciones especiales", ids: ["gestacion"], subs: /./ },
 ];
+
+/* Un icono por tema y por situación (13-10-2026): la lista se recorre de un vistazo. */
+const ICONO_TEMA: Record<string, LucideIcon> = {
+  "Ejercicio y comidas": Dumbbell,
+  "Noche, enfermedad e hiperglucemia": Moon,
+  "Exploraciones, cirugía e ingreso": Hospital,
+  "Interrupción del sistema": Unplug,
+  "Poblaciones y situaciones especiales": Users,
+};
+const ICONO_SITUACION: Record<string, LucideIcon> = {
+  "ejercicio-aerobico": Bike,
+  "ejercicio-anaerobico": Dumbbell,
+  "comida-grasa": UtensilsCrossed,
+  sueno: Moon,
+  "necesidad-transitoria": Thermometer,
+  "hiperglucemia-puntual": TrendingUp,
+  "hiperglucemia-persistente": AlertTriangle,
+  rm: Magnet,
+  tc: ScanLine,
+  rx: Scan,
+  pet: Radiation,
+  diatermia: Zap,
+  eco: Activity,
+  "cirugia-corta": Scissors,
+  "cirugia-larga": Scissors,
+  "ingreso-hospitalario": BedDouble,
+  gestacion: Baby,
+};
+const iconoDeTexto = (t: string): LucideIcon =>
+  /cetonemia/i.test(t)
+    ? Droplet
+    : /enfermedad intercurrente/i.test(t)
+      ? Thermometer
+      : /glucocorticoide/i.test(t)
+        ? Pill
+        : /diálisis/i.test(t)
+          ? Activity
+          : /interrupción/i.test(t)
+            ? Unplug
+            : /adolescencia/i.test(t)
+              ? Users
+              : /mayor/i.test(t)
+                ? Users
+                : ArrowRight;
 
 type SituacionLista = Situacion | SituacionGuia;
 const TODAS: SituacionLista[] = [...SITUACIONES, ...SITUACIONES_GUIA];
@@ -289,10 +362,46 @@ function ListaSituaciones({
       !["ejercicio", "exploraciones", "ingreso", "gestacion"].includes(b.id) &&
       pasa(b.texto),
   );
-  const enlace =
-    "flex min-h-11 w-full items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500";
+  const fila =
+    "flex min-h-12 w-full items-center gap-3 px-3 py-2 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500";
+  const Fila = ({
+    I,
+    texto,
+    chip,
+    on,
+  }: {
+    I: LucideIcon;
+    texto: string;
+    chip?: boolean;
+    on?: boolean;
+  }) => (
+    <>
+      <span
+        aria-hidden="true"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+        style={on ? { background: "rgba(255,255,255,.18)" } : { background: hex.soft }}
+      >
+        <I size={16} style={{ color: on ? "#fff" : hex.strong }} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block font-semibold leading-snug">{texto}</span>
+        {chip && (
+          <span
+            className={`mt-0.5 inline-block rounded-full px-1.5 text-[11px] font-bold ${on ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"}`}
+          >
+            Cambia según el sistema
+          </span>
+        )}
+      </span>
+      {on ? (
+        <Check size={15} className="shrink-0" aria-hidden="true" />
+      ) : (
+        <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+      )}
+    </>
+  );
   return (
-    <div id="lista-situaciones" className="scroll-mt-20 space-y-4">
+    <div id="lista-situaciones" className="scroll-mt-20 space-y-2">
       {TEMAS_SITUACION.map((tema) => {
         const mios = subs.filter((b) => tema.subs.test(b.texto));
         subs = subs.filter((b) => !mios.includes(b));
@@ -301,14 +410,28 @@ function ListaSituaciones({
           .filter((x): x is SituacionLista => !!x && pasa(x.etiqueta));
         const extras = (tema.extras ?? []).filter((x) => pasa(x.t));
         if (!sits.length && !mios.length && !extras.length) return null;
+        const IT = ICONO_TEMA[tema.t] ?? ArrowRight;
         return (
-          <section key={tema.t} aria-label={tema.t}>
-            <h2 className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
+          <section
+            key={tema.t}
+            aria-label={tema.t}
+            className="overflow-hidden rounded-md border bg-white"
+            style={{ borderColor: "#e6e6e6" }}
+          >
+            <h2
+              className="flex items-center gap-1.5 px-3 pb-1 pt-2 text-xs font-bold uppercase tracking-wide"
+              style={{ color: hex.ink }}
+            >
+              <IT size={14} aria-hidden="true" />
               {tema.t}
             </h2>
-            <ul className="space-y-1" role="list">
+            <ul className="divide-y" style={{ borderColor: "#eeeeee" }} role="list">
               {sits.map((s) => {
                 const on = sit?.id === s.id;
+                const porSis =
+                  "tabla" in s &&
+                  TABLAS[s.tabla].porSistema &&
+                  !TABLAS[s.tabla].filas[s.fila]?.unida;
                 return (
                   <li key={s.id}>
                     <button
@@ -321,27 +444,23 @@ function ListaSituaciones({
                           on ? undefined : s.id + (sistema ? ":" + sistema : ""),
                         )
                       }
-                      className={`${enlace} ${on ? "text-white" : "bg-white text-slate-800 hover:border-slate-400"}`}
-                      style={
-                        on
-                          ? { background: hex.strong, borderColor: hex.strong }
-                          : { borderColor: "#e6e6e6" }
-                      }
+                      className={`${fila} ${on ? "text-white" : "text-slate-900 hover:bg-slate-50"}`}
+                      style={on ? { background: hex.strong } : undefined}
                     >
-                      {on && <Check size={14} aria-hidden="true" />}
-                      <span className="flex-1">{s.etiqueta}</span>
+                      <Fila
+                        I={ICONO_SITUACION[s.id] ?? ArrowRight}
+                        texto={s.etiqueta}
+                        chip={porSis}
+                        on={on}
+                      />
                     </button>
                   </li>
                 );
               })}
               {extras.map((x) => (
                 <li key={x.ruta}>
-                  <a
-                    href={x.ruta}
-                    className={`${enlace} bg-white text-slate-800 hover:border-slate-400`}
-                    style={{ borderColor: "#e6e6e6" }}
-                  >
-                    <span className="flex-1">{x.t}</span>
+                  <a href={x.ruta} className={`${fila} text-slate-900 hover:bg-slate-50`}>
+                    <Fila I={iconoDeTexto(x.t)} texto={x.t} />
                   </a>
                 </li>
               ))}
@@ -349,10 +468,9 @@ function ListaSituaciones({
                 <li key={b.id}>
                   <a
                     href={href("capitulo", a.slug, b.id)}
-                    className={`${enlace} bg-white text-slate-800 hover:border-slate-400`}
-                    style={{ borderColor: "#e6e6e6" }}
+                    className={`${fila} text-slate-900 hover:bg-slate-50`}
                   >
-                    <span className="flex-1">{b.texto}</span>
+                    <Fila I={iconoDeTexto(b.texto)} texto={b.texto} />
                   </a>
                 </li>
               ))}
@@ -420,7 +538,7 @@ export function SituacionSistema({
         <div aria-live="polite" className={sit || guia ? "order-first lg:order-none" : undefined}>
           {!sit && !guia && (
             <div
-              className="rounded-xl border border-dashed px-4 py-8 text-center text-sm text-slate-600"
+              className="hidden rounded-xl border lg:block border-dashed px-4 py-8 text-center text-sm text-slate-600"
               style={{ borderColor: "#d4d4d4", background: "#f8fafc" }}
             >
               Elige una situación de la lista.

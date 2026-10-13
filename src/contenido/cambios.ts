@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — los cuatro algoritmos, de un vistazo`,
+    titulo: `Complemento interactivo ${VERSION_APP} — calculadora de inicio`,
+    detalle: [
+      "«Iniciar un sistema» empieza por una calculadora: de qué tratamiento viene (MDI o bomba), qué sistema y las dosis; salen la DTD de inicio, la tasa basal, la ratio I/HC y el factor de sensibilidad con las reglas de la Tabla 2, y qué programar en ese sistema.",
+      "Avisa si la DTD o el peso quedan fuera de la indicación de la Tabla 1 y, con glargina U–300 o degludec, del solapamiento. Nada de lo escrito se guarda ni se envía.",
+      "Las fases y la hoja de comprobación siguen a un toque, arriba.",
+      "Situaciones por temas con icono, y la marca «Cambia según el sistema» donde la conducta depende de él.",
+      "Las tarjetas de los cuatro sistemas, con lo esencial de la Tabla 1: dónde está el algoritmo, cómo actúa, objetivo, sensores y bolos automáticos de corrección.",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.57.0 — los cuatro algoritmos, de un vistazo",
     detalle: [
       "«Los cuatro algoritmos»: una tarjeta por sistema con lo esencial de la Tabla 1 (dónde está el algoritmo, cómo actúa, predicción, objetivo, bolos de corrección, aprendizaje y parámetros), alineado entre los cuatro; las celdas completas, en cada tarjeta.",
       "Sin la barra del horizonte de predicción: la predicción es un dato más de cada tarjeta.",
