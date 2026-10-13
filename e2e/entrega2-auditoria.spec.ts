@@ -34,6 +34,7 @@ test.describe("Entrega 2 (0.33.0)", () => {
     await expect(page.getByText(/Regla del 450/)).toBeVisible();
     await page.goto("/#/consultar/inicio/primeros-meses:omnipod-5");
     await page.getByRole("button", { name: "Fase completa" }).click();
-    await expect.poll(() => page.locator("h3 button[aria-expanded='true']").count()).toBe(2);
+    // Tres tareas desde la 0.62.0 (calendario, ajustes y qué vigilar).
+    await expect.poll(() => page.locator("h3 button[aria-expanded='true']").count()).toBe(3);
   });
 });
