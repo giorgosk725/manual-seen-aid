@@ -186,7 +186,9 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
       .first();
     await casilla.check();
     await page.getByRole("button", { name: "Hoja de comprobación" }).click();
-    await expect(page.getByText(/Recoge lo que has marcado en el inicio paso a paso/)).toBeVisible();
+    await expect(
+      page.getByText(/Recoge lo que has marcado en el inicio paso a paso/),
+    ).toBeVisible();
     await expect(page.locator(".hoja-inicio").getByRole("checkbox", { checked: true })).toHaveCount(
       1,
     );
