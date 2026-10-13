@@ -426,6 +426,29 @@ describe("diagramas a partir del texto", () => {
       ].join(" "),
     );
     const frases = [
+      // Revisión de diagramas del 13-10-2026: también los de antes de la sesión 4.
+      ...D.OBJETIVOS_MCG.flatMap((pob) => pob.extras.map((e) => e.texto)).filter(
+        (t) => !/^Coeficiente de variación/.test(t),
+      ),
+      D.ESCALA_CETONEMIA.gravedad.texto,
+      D.ESCALA_CETONEMIA.pediatria.texto,
+      D.ESCALA_CETONEMIA.ejercicio.texto,
+      D.ESCALA_CETONEMIA.apilamiento.texto,
+      ...D.ESCALA_CETONEMIA.tramos.map((t) => t.accion),
+      ...D.EJERCICIO.zonas.map((z) => z.texto),
+      D.EJERCICIO.marca.texto,
+      D.EJERCICIO.cetonemia,
+      ...D.EJERCICIO.fases.flatMap((f) => f.items),
+      ...D.EJERCICIO.tipo,
+      D.EJERCICIO.herramientas,
+      ...D.SEGUIMIENTO.fases.flatMap((f) => f.hitos.map((h) => h.que)),
+      ...D.SEGUIMIENTO.notas.map((n) => n.texto),
+      D.HIPOGLUCEMIA.regla,
+      D.HIPOGLUCEMIA.porque,
+      D.HIPOGLUCEMIA.orientacion,
+      ...D.HIPOGLUCEMIA.despues.map((x) => x.texto),
+      D.TRANSICION.partida,
+      D.RECORDATORIO_HIBRIDO.texto,
       ...D.GESTACION_SISTEMAS.flat().map((x) => x.texto),
       ...D.GESTACION_COMUN.map((x) => x.texto),
       D.HOSPITAL.mantener.texto,
@@ -435,15 +458,29 @@ describe("diagramas a partir del texto", () => {
       ...D.HOSPITAL.pasos.map((x) => x.texto),
       D.HOSPITAL.mientras.texto,
       D.HOSPITAL.desdeIV.texto,
-      ...D.INTERRUPCION_LINEA.tramos.map((x) => x.texto),
+      ...D.INTERRUPCION_LINEA.tramos.flatMap((x) => [x.texto, x.condicion ?? ""]).filter(Boolean),
+      D.INTERRUPCION_LINEA.premisa,
+      ...D.INTERRUPCION_LINEA.programadas.flatMap((x) => [x.texto, ...x.mas]),
+      D.INTERRUPCION_LINEA.formatos.pausa,
+      D.HOSPITAL.ambito.texto,
+      ...D.HOSPITAL.condiciones.map((x) => x.texto),
+      ...D.HOSPITAL.mcg.map((x) => x.texto),
+      D.HOSPITAL.haciaIV.texto,
+      D.HOSPITAL.contingencia.texto,
+      D.GESTACION_ENSAYOS.texto,
+      D.EXPLORACIONES_TEXTO.porSeparado,
+      ...D.EXPLORACIONES_TEXTO.notas,
+      D.ELECCION_TEXTO.factores,
+      D.ELECCION_TEXTO.noJerarquia,
       ...D.INTERRUPCION_LINEA.detalles.map((x) => x.texto),
       D.INTERRUPCION_LINEA.formatos.pod,
       D.INTERRUPCION_LINEA.formatos.bomba,
       D.INTERRUPCION_LINEA.nota,
     ].filter((f) => f !== "—");
-    for (const f of frases)
-      for (const trozo of f.split(/(?<=\.) (?=[A-ZÁÉÍÓÚ])/))
-        expect(corpus, trozo).toContain(normalizarEspacios(trozo.replace(/\.$/, "")));
+    const fuera = frases
+      .flatMap((f) => f.split(/(?<=\.) (?=[A-ZÁÉÍÓÚ])/))
+      .filter((trozo) => !corpus.includes(normalizarEspacios(trozo.replace(/\.$/, ""))));
+    expect(fuera).toEqual([]);
     expect(D.EXPLORACIONES_ESTADO).toHaveLength(TABLAS.T6.filas.length);
   });
   it("la escala de cetonemia coincide con los tramos de la Figura 3", async () => {
@@ -451,14 +488,17 @@ describe("diagramas a partir del texto", () => {
     expect(ESCALA_CETONEMIA.tramos.map((t) => t.clave)).toEqual(FIGURA3.tramos.map((t) => t.clave));
     expect(ESCALA_CETONEMIA.tramos.map((t) => t.desde)).toEqual([0, 0.6, 1.0, 3.0]);
   });
-  it("los algoritmos siguen el orden de columnas de la Tabla 1 y citan sus fragmentos", async () => {
-    const { ALGORITMOS } = await import("./contenido/diagramas");
-    expect(ALGORITMOS).toHaveLength(4);
+  it("el horizonte de predicción de los algoritmos está en la Tabla 1", async () => {
+    const { HORIZONTE_PREDICCION } = await import("./contenido/diagramas");
+    expect(HORIZONTE_PREDICCION).toHaveLength(4);
     const t1 = JSON.stringify(TABLAS.T1);
-    for (const a of ALGORITMOS) {
-      expect(t1, a.autocorreccion).toContain(a.autocorreccion);
-      if (a.prediccionH) expect(t1, a.prediccion).toContain(a.prediccion);
-    }
+    for (const x of [
+      "predicción a 30 min",
+      "predicción a largo plazo de 2,5 a 4 h",
+      "predicción a 60 min",
+    ])
+      expect(t1, x).toContain(x);
+    expect(HORIZONTE_PREDICCION[0]).toBeNull();
   });
 });
 

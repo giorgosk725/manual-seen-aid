@@ -3,14 +3,14 @@
    sistemas tienen su propia entrada (Tablas, Sistemas AID): aquí no se repiten. */
 import { ArrowLeft, ArrowRight, Images, Maximize2 } from "lucide-react";
 import { ICONO_DIAGRAMA } from "../nav";
-import { DIAGRAMAS } from "../contenido/diagramas";
-import { F1, F2, INFO, apartadoDeFigura, rutaDeFigura } from "../contenido";
+import { DIAGRAMAS, type DiagramaId } from "../contenido/diagramas";
+import { F1, F2, INFO, apartadoDeFigura, apartadoPorSlug, rutaDeFigura } from "../contenido";
 import { INFO_F3 } from "../componentes/figura3-imagen";
 import { DiagramaVista } from "../componentes/Diagramas";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { href } from "../rutas";
-import { CabeceraEditorial, Revelar } from "../ui";
-import { CATEGORIA_HEX } from "../tokens";
+import { CabeceraEditorial } from "../ui";
+import { CATEGORIA_HEX, SEEN } from "../tokens";
 
 const hex = CATEGORIA_HEX.consultar;
 
@@ -20,6 +20,105 @@ const FIGURAS_GALERIA = [
   { fig: INFO_F3, extra: { href: href("consultar", "figura-3"), texto: "Recorrido paso a paso" } },
   { fig: INFO, extra: { href: href("consultar", "infografia"), texto: "Infografía como mapa" } },
 ];
+
+/* La galería de diagramas por temas (13-10-2026): cuatro grupos, cada uno con el color de la
+   paleta del Manual; en cada tarjeta, el apartado y las páginas de donde sale. */
+const GRUPOS: { id: string; titulo: string; color: string; tinte: string; ids: DiagramaId[] }[] = [
+  {
+    id: "sistemas",
+    titulo: "Sistemas y elección",
+    color: SEEN.azulOsc,
+    tinte: "#eef3f9",
+    ids: ["algoritmos", "eleccion"],
+  },
+  {
+    id: "inicio",
+    titulo: "Inicio y seguimiento",
+    color: SEEN.mostazaOsc,
+    tinte: "#fbf4e6",
+    ids: ["transicion", "seguimiento", "objetivos-mcg"],
+  },
+  {
+    id: "seguridad",
+    titulo: "Seguridad en el día a día",
+    color: SEEN.burdeos,
+    tinte: "#f7eff3",
+    ids: ["cetonemia", "hipoglucemia", "interrupcion"],
+  },
+  {
+    id: "situaciones",
+    titulo: "Situaciones especiales",
+    color: CATEGORIA_HEX.confiar.ink,
+    tinte: CATEGORIA_HEX.confiar.soft,
+    ids: ["ejercicio", "gestacion-sistemas", "hospital", "exploraciones"],
+  },
+];
+
+function GaleriaDiagramas() {
+  return (
+    <div className="space-y-6">
+      {GRUPOS.map((g) => (
+        <section key={g.id} aria-labelledby={`diag-${g.id}`}>
+          <h2
+            id={`diag-${g.id}`}
+            className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide"
+            style={{ color: g.color }}
+          >
+            <span
+              aria-hidden="true"
+              className="h-2.5 w-2.5 rounded-sm"
+              style={{ background: g.color }}
+            />
+            {g.titulo}
+          </h2>
+          <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {g.ids.map((id) => {
+              const d = DIAGRAMAS.find((x) => x.id === id)!;
+              const I = ICONO_DIAGRAMA[d.id];
+              const ap = apartadoPorSlug(d.apartado);
+              return (
+                <li key={d.id}>
+                  <a
+                    href={href("visual", d.id)}
+                    className="group flex h-full gap-3 rounded-lg border bg-white p-3 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                    style={{ borderColor: "#e6e6e6", borderLeft: `4px solid ${g.color}` }}
+                  >
+                    <span
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
+                      style={{ background: g.tinte, color: g.color }}
+                      aria-hidden="true"
+                    >
+                      <I size={20} />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="flex items-start justify-between gap-2">
+                        <span className="text-[15px] font-bold leading-snug text-slate-900">
+                          {d.titulo}
+                        </span>
+                        <ArrowRight
+                          size={15}
+                          className="mt-0.5 shrink-0 text-slate-400 transition group-hover:translate-x-0.5"
+                          aria-hidden="true"
+                        />
+                      </span>
+                      <span className="mt-0.5 block text-sm leading-snug text-slate-600">
+                        {d.resumen}
+                      </span>
+                      <span className="mt-1.5 block text-xs text-slate-500">
+                        {ap ? `Apartado ${ap.n} · ` : ""}
+                        {d.paginas.length === 1 ? "p." : "pp."} {d.paginas.join(", ")}
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
+    </div>
+  );
+}
 
 export function Visual({ vista = "diagramas" }: { vista?: "diagramas" | "figuras" }) {
   const ver = (f: "diagramas" | "figuras") => vista === f;
@@ -34,49 +133,13 @@ export function Visual({ vista = "diagramas" }: { vista?: "diagramas" | "figuras
       ) : (
         <CabeceraEditorial titulo="Diagramas" hex={hex} level={1}>
           <p className="text-sm text-slate-600">
-            Diagramas hechos con el texto del capítulo, cada uno con su página.
+            {DIAGRAMAS.length} diagramas que ordenan en forma visual el texto del capítulo. Cada
+            dato lleva su página.
           </p>
         </CabeceraEditorial>
       )}
 
-      {ver("diagramas") && (
-        <section aria-label="Diagramas">
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {DIAGRAMAS.map((d) => {
-              const I = ICONO_DIAGRAMA[d.id];
-              return (
-                <Revelar as="li" key={d.id}>
-                  <a
-                    href={href("visual", d.id)}
-                    className="hover-lift ease-brand flex h-full gap-3 rounded-2xl border bg-white p-4 shadow-soft transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                    style={{
-                      borderColor: "#e6e6e6",
-                      background: `linear-gradient(160deg, ${hex.soft}, #ffffff 60%)`,
-                    }}
-                  >
-                    <span
-                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white shadow-sm"
-                      style={{
-                        background: hex.strong,
-                      }}
-                      aria-hidden="true"
-                    >
-                      <I size={20} />
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block text-base font-bold text-slate-900">{d.titulo}</span>
-                      <span className="mt-0.5 block text-sm text-slate-600">{d.resumen}</span>
-                      <span className="pagina-badge mt-1 block">
-                        {d.paginas.length === 1 ? "p." : "pp."} {d.paginas.join(", ")}
-                      </span>
-                    </span>
-                  </a>
-                </Revelar>
-              );
-            })}
-          </ul>
-        </section>
-      )}
+      {ver("diagramas") && <GaleriaDiagramas />}
 
       {ver("figuras") && (
         <section aria-label="Figuras del capítulo">

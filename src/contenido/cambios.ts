@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — revisión de la edición 0.54`,
+    titulo: `Complemento interactivo ${VERSION_APP} — diagramas revisados`,
+    detalle: [
+      "Diagramas agrupados por temas, con apartado y páginas; la fuente, al pie de cada uno.",
+      "Los doce, cotejados con el capítulo: vuelven las condiciones que se perdían al resumir, con texto literal.",
+      "Escala de cetonemia con los signos de gravedad arriba; hipoglucemia y transición sin aspecto de protocolo.",
+      "Exploraciones con el estado escrito en cada celda; interrupción, programada o no.",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.55.0 — revisión de la edición 0.54",
     detalle: [
       "Búsqueda: una pregunta frecuente solo se antepone si trata la misma cuestión que lo buscado; si no, va como relacionada.",
       "Hoja de cetonas: los signos de alarma, lo primero; planes de seguridad con la urgencia en la primera cara.",

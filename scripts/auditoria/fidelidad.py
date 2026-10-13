@@ -153,7 +153,7 @@ VACIAS = {"no", "se", "indica", "en", "la", "tabla", "1", "p"}  # «no se indica
 for d in app.get("diagramas", []):
     pags = (
         [3, 4] if d["id"].startswith("algoritmos")
-        else [4, 5] if d["id"].startswith("objetivos general")
+        else [4, 5] if d["id"].startswith("objetivos general") and d["p"] in (4, 5)
         else list(range(d["p"], d["p2"] + 1)) if d.get("p2")
         else [d["p"]]
     )

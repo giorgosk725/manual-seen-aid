@@ -1,5 +1,6 @@
 /* Diagramas a partir del texto del capítulo (datos en src/contenido/diagramas.ts). HTML y CSS,
    no SVG: el texto es real (se lee a 360 px, se busca, se imprime y lo lee un lector de pantalla). */
+import { FuentePie } from "./FuentePie";
 import {
   createContext,
   useContext,
@@ -10,8 +11,9 @@ import {
 } from "react";
 import { ArrowDown, ArrowRight, BookOpen, Images } from "lucide-react";
 import {
-  ALGORITMOS,
   DIAGRAMAS,
+  HORIZONTE_PREDICCION,
+  RECORDATORIO_HIBRIDO,
   EJERCICIO,
   ESCALA_CETONEMIA,
   HIPOGLUCEMIA,
@@ -23,6 +25,10 @@ import {
   HOSPITAL,
   EXPLORACIONES_ESTADO,
   INTERRUPCION_LINEA,
+  EXPLORACIONES_TEXTO,
+  ELECCION_TEXTO,
+  GESTACION_ENSAYOS,
+  GESTACION_ROTULO_TANDEM,
   type DiagramaId,
   type EstadoExploracion,
   type TonoFranja,
@@ -97,12 +103,20 @@ export function MarcoDiagrama({
             <Titulo id={`diag-${id}`} className="text-base font-extrabold text-slate-900">
               {meta.titulo}
             </Titulo>
+            {/* Qué enseña, en una línea (13-10-2026); la fuente, al pie del diagrama. */}
+            <p className="mt-0.5 text-sm text-slate-600">{meta.resumen}</p>
           </div>
-          <span className="pagina-badge">
-            {meta.paginas.length === 1 ? "p." : "pp."} {meta.paginas.join(", ")}
-          </span>
         </div>
         {children}
+        <FuentePie
+          className="mt-3"
+          fuentes={[
+            {
+              texto: `${donde ? `Apartado ${donde.apartado.n}, ` : ""}${meta.paginas.length === 1 ? "p." : "pp."} ${meta.paginas.join(", ")}`,
+              ruta: donde ? href("capitulo", donde.apartado.slug, donde.ancla) : undefined,
+            },
+          ]}
+        />
         <div
           className="no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3"
           style={{ borderColor: "#e6e6e6" }}
@@ -143,39 +157,44 @@ function Escalera({ i }: { i: number }) {
         <PaginaBadge p={p.pagina} />
       </div>
       <ol className="space-y-1">
-        {/* Solo los objetivos del capítulo: el TAR > 180 de adultos (consenso de 2019) no va
-            en la edición editorial (A07). */}
-        {p.franjas
-          .filter((f) => !f.complementario)
-          .map((f, j) => {
-            const t = TONO[f.tono];
-            return (
-              <li
-                key={j}
-                className="flex items-stretch overflow-hidden rounded-lg border"
-                style={{ borderColor: "#e6e6e6" }}
+        {/* Solo los objetivos del capítulo: el TAR > 180 de adultos va sin cifra (A07). */}
+        {p.franjas.map((f, j) => {
+          const t = TONO[f.tono];
+          return (
+            <li
+              key={j}
+              className="flex items-stretch overflow-hidden rounded-lg border"
+              style={{ borderColor: "#e6e6e6" }}
+            >
+              <span
+                className="flex w-28 shrink-0 items-center px-2 py-2 text-xs font-bold"
+                style={{ background: t.bg, color: t.fg }}
               >
-                <span
-                  className="flex w-28 shrink-0 items-center px-2 py-2 text-xs font-bold"
-                  style={{ background: t.bg, color: t.fg }}
-                >
-                  {f.franja}
+                {f.franja}
+              </span>
+              <span className="flex min-w-0 flex-1 items-center gap-2 bg-white px-2 py-1.5">
+                <span className="w-16 shrink-0 whitespace-nowrap text-base font-extrabold tabular-nums text-slate-900">
+                  {f.objetivo}
                 </span>
-                <span className="flex min-w-0 flex-1 items-center gap-2 bg-white px-2 py-1.5">
-                  <span className="w-16 shrink-0 whitespace-nowrap text-base font-extrabold tabular-nums text-slate-900">
-                    {f.objetivo}
-                  </span>
-                  {f.nota && <span className="text-xs leading-snug text-slate-600">{f.nota}</span>}
-                </span>
-              </li>
-            );
-          })}
+                {f.nota && <span className="text-xs leading-snug text-slate-600">{f.nota}</span>}
+              </span>
+            </li>
+          );
+        })}
       </ol>
       <ul className="mt-2 space-y-1 text-xs text-slate-700">
         {p.extras.map((e) => (
-          <li key={e} className="flex gap-1.5">
+          <li key={e.texto} className="flex gap-1.5">
             <span aria-hidden="true">·</span>
-            {e}
+            <span>
+              {e.texto}
+              {e.p && e.p !== p.pagina && (
+                <>
+                  {" "}
+                  <PaginaBadge p={e.p} />
+                </>
+              )}
+            </span>
           </li>
         ))}
         {p.aviso && <li className="font-semibold text-slate-800">{p.aviso}</li>}
@@ -217,26 +236,30 @@ function ObjetivosMCG({ opcion }: { opcion?: string }) {
 
 /* ---------- 2. Escala de cetonemia ---------- */
 function EscalaCetonemia() {
-  const { tramos, marcas, tope } = ESCALA_CETONEMIA;
+  const { tramos, tope, gravedad, pediatria, ejercicio, apilamiento } = ESCALA_CETONEMIA;
   const pct = (v: number) => `${(v / tope) * 100}%`;
-  const marcasUnicas = [...new Set(marcas.map((m) => m.valor))];
+  const naranja = FIGURA3.tramos.find((t) => t.clave === "naranja")!;
+  const amarillo = FIGURA3.tramos.find((t) => t.clave === "amarillo")!;
+  const plumas = naranja.pasos.filter((p) => p.icono === "pluma");
+  const subeAmarillo = amarillo.pasos.find((p) => p.icono === "aviso")!;
   return (
     <div>
-      <div className="relative pb-6 pt-7">
-        {/* Marcas sobre la barra */}
-        {marcasUnicas.map((v, k) => (
-          <span
-            key={v}
-            className="absolute top-0 -translate-x-1/2 rounded-full bg-slate-800 px-1.5 text-[11px] font-bold text-white"
-            style={{ left: pct(v) }}
-            aria-hidden="true"
-          >
-            {k + 1}
-          </span>
-        ))}
+      {/* Los signos de gravedad mandan sobre la cifra: arriba, para todos los tramos. */}
+      <p
+        role="note"
+        className="mb-3 rounded-lg border-2 px-3 py-2 text-sm font-semibold"
+        style={{
+          borderColor: TRAMO_HEX.rojo.border,
+          background: TRAMO_HEX.rojo.soft,
+          color: TRAMO_HEX.rojo.ink,
+        }}
+      >
+        <Texto>{gravedad.texto}</Texto>
+      </p>
+      <div className="relative pb-6 pt-1">
         <div
           className="flex h-10 overflow-hidden rounded-lg"
-          aria-label="Escala de β-OHB de 0 a 4 mmol/l: cada tramo abre su rama de la Figura 3"
+          aria-label="Escala de β-OHB de 0 a 4 mmol/l: cada tramo enlaza con su rama de la Figura 3"
           role="group"
         >
           {tramos.map((t) => (
@@ -249,16 +272,8 @@ function EscalaCetonemia() {
             />
           ))}
         </div>
-        {marcasUnicas.map((v) => (
-          <span
-            key={v}
-            aria-hidden="true"
-            className="absolute top-6 h-12 w-0.5 bg-slate-800"
-            style={{ left: pct(v) }}
-          />
-        ))}
-        {/* Ticks */}
-        {[0, 0.6, 1.0, 3.0].map((v) => (
+        {/* Ticks, con el 1,5 del ejercicio y de la dosis de rescate. */}
+        {[0, 0.6, 1.0, 1.5, 3.0].map((v) => (
           <span
             key={v}
             className="absolute bottom-0 -translate-x-1/2 text-[11px] font-semibold tabular-nums text-slate-600"
@@ -283,27 +298,59 @@ function EscalaCetonemia() {
               <span className="block text-sm font-bold" style={{ color: TRAMO_HEX[t.clave].ink }}>
                 {t.etiqueta}
               </span>
-              <span className="mt-0.5 block text-xs text-slate-700">{t.accion}</span>
-              <span className="pagina-badge mt-1 block">p. {t.p} · ver la rama →</span>
+              {/* El texto empieza en minúscula en el capítulo (sigue a «;»): mayúscula solo al pintar. */}
+              <span className="mt-0.5 block text-xs text-slate-700 first-letter:uppercase">
+                {t.accion}
+              </span>
+              {/* Lo que la Figura 3 añade para subir de rama: no solo la cifra. */}
+              {t.clave === "amarillo" && (
+                <span className="mt-1 block text-xs text-slate-700">
+                  Figura 3: <Texto>{subeAmarillo.texto}</Texto>
+                </span>
+              )}
+              <span className="mt-1 block text-xs font-semibold text-slate-600">
+                Ver la rama en la Figura 3 →
+              </span>
             </a>
           </li>
         ))}
       </ul>
-      <ol className="mt-3 space-y-1 text-xs text-slate-700">
-        {marcas.map((m, k) => (
-          <li key={k} className="flex gap-2">
-            <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-slate-800 text-[10px] font-bold text-white">
-              {marcasUnicas.indexOf(m.valor) + 1}
-            </span>
-            <span>
-              {m.texto} <span className="pagina-badge">p. {m.p}</span>
-            </span>
-          </li>
-        ))}
-      </ol>
-      <p className="mt-2 text-xs text-slate-500">
-        {FIGURA3.notaAsterisco} <span className="pagina-badge">Figura 3, p. 8</span>
+      <p className="mt-2 text-xs text-slate-700">
+        <Texto>{pediatria.texto}</Texto>
       </p>
+      <section className="mt-3 space-y-2 text-xs text-slate-700">
+        <div>
+          <Sub className="text-xs font-bold uppercase tracking-wide text-slate-500">
+            Ejercicio y cetonemia
+          </Sub>
+          <p className="mt-0.5">
+            <Texto>{ejercicio.texto}</Texto>
+          </p>
+        </div>
+        <div>
+          <Sub className="text-xs font-bold uppercase tracking-wide text-slate-500">
+            Insulina con pluma en la rama naranja (Figura 3)
+          </Sub>
+          <p className="mt-0.5">
+            {plumas.map((p) => (
+              <span key={p.texto}>
+                <Texto>{p.texto}</Texto>{" "}
+                {(p.detalle ?? []).map((d) => (
+                  <span key={d}>
+                    <Texto>{d}</Texto>{" "}
+                  </span>
+                ))}
+              </span>
+            ))}
+          </p>
+          <p className="mt-1">
+            <Texto>{FIGURA3.notaAsterisco}</Texto>
+          </p>
+          <p className="mt-1">
+            <Texto>{apilamiento.texto}</Texto>
+          </p>
+        </div>
+      </section>
     </div>
   );
 }
@@ -378,6 +425,17 @@ function Ejercicio() {
         />
         {EJERCICIO.marca.texto}
       </p>
+      {/* La cetonemia manda sobre la glucemia para empezar (p. 19): junto a la escala. */}
+      <p
+        className="mt-2 rounded-lg border px-3 py-2 text-xs font-semibold"
+        style={{
+          borderColor: TRAMO_HEX.naranja.border,
+          background: TRAMO_HEX.naranja.soft,
+          color: TRAMO_HEX.naranja.ink,
+        }}
+      >
+        {EJERCICIO.cetonemia}
+      </p>
       <div className="mt-4 grid gap-3 md:grid-cols-3">
         {EJERCICIO.fases.map((f) => (
           <div key={f.titulo} className="rounded-xl p-3" style={{ background: "#f1f5f9" }}>
@@ -393,48 +451,111 @@ function Ejercicio() {
           </div>
         ))}
       </div>
+      <div
+        className="mt-3 rounded-xl border p-3 text-xs text-slate-700"
+        style={{ borderColor: "#e6e6e6" }}
+      >
+        <Sub className="mb-1 text-sm font-extrabold text-slate-900">Según el tipo de ejercicio</Sub>
+        <ul className="space-y-1.5">
+          {EJERCICIO.tipo.map((t) => (
+            <li key={t} className="flex gap-1.5">
+              <span aria-hidden="true">·</span>
+              {t}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-2">
+          {EJERCICIO.herramientas}{" "}
+          <a
+            href={href("consultar", "tablas", "T4")}
+            className="no-imprimir inline-flex min-h-11 items-center gap-1 font-semibold text-slate-800 underline sm:min-h-0"
+          >
+            Ver la Tabla 4 <ArrowRight size={12} aria-hidden="true" />
+          </a>
+        </p>
+      </div>
     </div>
   );
 }
 
 /* ---------- 4. Calendario de seguimiento ---------- */
+/* Las dos fases del capítulo, rotuladas; el espaciado de visitas, con borde discontinuo: es una
+   opción con condiciones, no una cita fija. */
 function Seguimiento() {
+  const colores = [
+    { punto: "#4340a6", tinta: "#343093", fondo: "#eef2ff" },
+    { punto: "#0f766e", tinta: "#0b5540", fondo: "#ecfdf5" },
+  ];
   return (
-    <div>
-      <ol
-        className="relative space-y-3 border-l-2 pl-5 lg:grid lg:grid-cols-6 lg:gap-3 lg:space-y-0 lg:border-l-0 lg:border-t-2 lg:pl-0 lg:pt-5"
-        style={{ borderColor: "#c7d2fe" }}
-      >
-        {SEGUIMIENTO.hitos.map((h, i) => (
-          <li key={h.cuando} className="relative">
-            <span
-              aria-hidden="true"
-              className="absolute -left-[27px] top-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white lg:-top-[29px] lg:left-0"
-              style={{ background: i < 4 ? "#4340a6" : "#0f766e" }}
-            />
-            <div className="text-sm font-extrabold text-slate-900">{h.cuando}</div>
-            <div className="text-xs font-semibold" style={{ color: i < 4 ? "#343093" : "#0b5540" }}>
-              {h.tipo}
-            </div>
-            <p className="mt-1 text-xs leading-snug text-slate-700">{h.que}</p>
+    <div className="space-y-4">
+      {SEGUIMIENTO.fases.map((f, k) => {
+        const c = colores[k];
+        return (
+          <section key={f.titulo}>
+            <Sub className="mb-2 text-sm font-extrabold" style={{ color: c.tinta }}>
+              {f.titulo}
+            </Sub>
+            <ol className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {f.hitos.map((h) => (
+                <li
+                  key={h.cuando}
+                  className={`rounded-xl p-2.5 ${"condicional" in h && h.condicional ? "border-2 border-dashed" : "border"}`}
+                  style={{ borderColor: `${c.punto}55`, background: c.fondo }}
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      aria-hidden="true"
+                      className="h-3 w-3 shrink-0 rounded-full"
+                      style={{ background: c.punto }}
+                    />
+                    <span className="text-sm font-extrabold text-slate-900">{h.cuando}</span>
+                  </div>
+                  <div className="mt-0.5 text-xs font-semibold" style={{ color: c.tinta }}>
+                    {h.tipo}
+                  </div>
+                  <p className="mt-1 text-xs leading-snug text-slate-700">{h.que}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        );
+      })}
+      <ul className="space-y-1 text-xs text-slate-600">
+        {SEGUIMIENTO.notas.map((n) => (
+          <li key={n.texto}>
+            {n.texto} <PaginaBadge p={n.p} />
           </li>
         ))}
-      </ol>
-      <p className="mt-3 text-xs text-slate-600">{SEGUIMIENTO.nota}</p>
+      </ul>
     </div>
   );
 }
 
 /* ---------- 5. Los cuatro algoritmos ---------- */
+/* Las celdas enteras de la Tabla 1, con el nombre de su fila (no fragmentos); el horizonte, a
+   escala y como intervalo (CamAPS, de 2,5 a 4 h). */
+const FILAS_ALGORITMO = [
+  "Localización del algoritmo",
+  "Estrategia de automatización",
+  "Bolos automáticos de corrección",
+  "Lógica del algoritmo y aprendizaje",
+  "Parámetros configurables en modo automático",
+];
 function Algoritmos() {
   const fila = (etiqueta: string, c: number) =>
     TABLAS.T1.filas.find((f) => f.etiqueta === etiqueta)?.celdas[c] ?? "";
+  const pct = (v: number) => `${(v / 4) * 100}%`;
   return (
     <div>
+      <p
+        className="mb-3 rounded-lg px-3 py-2 text-sm text-slate-800"
+        style={{ background: "#f1f5f9" }}
+      >
+        {RECORDATORIO_HIBRIDO.texto}
+      </p>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {ORDEN_SISTEMAS.map((id, c) => {
           const h = SISTEMA_HEX[c];
-          const a = ALGORITMOS[c];
           return (
             <article
               key={id}
@@ -451,65 +572,65 @@ function Algoritmos() {
                   <div className="text-sm font-extrabold" style={{ color: h.ink }}>
                     {TABLAS.T1.columnas[c]}
                   </div>
-                  <div className="text-[11px] text-slate-600">{algoritmoDelCapitulo(c)}</div>
+                  <div className="text-xs text-slate-600">{algoritmoDelCapitulo(c)}</div>
                 </div>
               </div>
               <dl className="space-y-1.5 text-xs">
-                <div>
-                  <dt className="font-bold text-slate-600">Dónde se aloja</dt>
-                  <dd className="text-slate-900">
-                    <Lineas>{fila("Localización del algoritmo", c)}</Lineas>
-                  </dd>
-                </div>
-                <div>
-                  <dt className="font-bold text-slate-600">Cada cuánto actúa</dt>
-                  <dd className="text-slate-900">{a.cadencia}</dd>
-                </div>
-                <div>
-                  <dt className="font-bold text-slate-600">Autocorrecciones</dt>
-                  <dd className="text-slate-900">{a.autocorreccion}</dd>
-                </div>
-                <div>
-                  <dt className="font-bold text-slate-600">Aprendizaje</dt>
-                  <dd className="text-slate-900">{a.aprendizaje}</dd>
-                </div>
+                {FILAS_ALGORITMO.map((e) => (
+                  <div key={e}>
+                    <dt className="font-bold text-slate-600">{e}</dt>
+                    <dd className="text-slate-900">
+                      <Lineas>{fila(e, c)}</Lineas>
+                    </dd>
+                  </div>
+                ))}
               </dl>
             </article>
           );
         })}
       </div>
+      <p className="mt-2 text-xs text-slate-600">{TABLAS.T1.notas[0]}</p>
       <div className="mt-4">
         <Sub className="mb-2 text-sm font-bold text-slate-900">Horizonte de predicción</Sub>
         <div className="space-y-2">
           {ORDEN_SISTEMAS.map((id, c) => {
-            const a = ALGORITMOS[c];
+            const hz = HORIZONTE_PREDICCION[c];
             const h = SISTEMA_HEX[c];
-            const pct = (v: number) => `${(v / 4) * 100}%`;
+            const etiqueta = !hz
+              ? "No consta en el capítulo"
+              : hz[0] === hz[1]
+                ? `${hz[0] < 1 ? `${hz[0] * 60} min` : `${hz[0] * 60} min`}`
+                : `${String(hz[0]).replace(".", ",")} a ${hz[1]} h`;
             return (
               <div key={id} className="grid grid-cols-[6.5rem_1fr] items-center gap-2 text-xs">
                 <span className="font-semibold text-slate-800">
                   {TABLAS.T1.columnas[c].replace("Tandem ", "").replace("myLoop ", "")}
                 </span>
                 <div className="relative h-6 rounded-md" style={{ background: "#f1f5f9" }}>
-                  {a.prediccionH ? (
+                  {hz && (
                     <span
-                      className="absolute top-0 flex h-full items-center rounded-md px-1.5 text-[11px] font-bold text-white"
+                      aria-hidden="true"
+                      className="absolute top-0 h-full rounded-md"
                       style={{
-                        left: 0,
-                        width: pct(a.prediccionH[1]),
-                        minWidth: "3.5rem",
+                        left: pct(hz[0] === hz[1] ? 0 : hz[0]),
+                        width: pct(hz[0] === hz[1] ? hz[1] : hz[1] - hz[0]),
                         background: h.ink,
                       }}
-                    >
-                      {a.prediccion
-                        .replace("predicción a largo plazo de ", "")
-                        .replace("predicción a ", "")}
-                    </span>
-                  ) : (
-                    <span className="absolute inset-0 flex items-center px-2 text-[11px] italic text-slate-600">
-                      {a.prediccion}
-                    </span>
+                    />
                   )}
+                  {/* La etiqueta, tras la barra; si la barra llega al final, dentro de ella. */}
+                  <span
+                    className={`absolute top-0 flex h-full items-center whitespace-nowrap px-1.5 text-[11px] font-bold ${!hz ? "italic text-slate-600" : hz[1] >= 3 ? "text-white" : "text-slate-900"}`}
+                    style={
+                      !hz
+                        ? { left: 0 }
+                        : hz[1] >= 3
+                          ? { left: pct(hz[0] === hz[1] ? 0 : hz[0]) }
+                          : { left: pct(hz[1]) }
+                    }
+                  >
+                    {etiqueta}
+                  </span>
                 </div>
               </div>
             );
@@ -531,79 +652,100 @@ function Algoritmos() {
 }
 
 /* ---------- 6. Hipoglucemia en asa cerrada ---------- */
+/* La frase entera de la p. 8, con sus condiciones, arriba y con el mismo peso que las cifras;
+   las dos cantidades como orientación, sin flechas de árbol (no cubre todos los casos). */
 function Hipoglucemia() {
   return (
     <div>
-      <p className="text-sm text-slate-700">{HIPOGLUCEMIA.porque}</p>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+      <p className="text-sm text-slate-700">
+        {HIPOGLUCEMIA.regla} {HIPOGLUCEMIA.porque}
+      </p>
+      <p
+        className="mt-2 rounded-lg border-l-4 px-3 py-2 text-sm font-semibold text-slate-900"
+        style={{ borderColor: "#dc2626", background: "#fef2f2" }}
+      >
+        {HIPOGLUCEMIA.orientacion}
+      </p>
+      <div className="mt-3 grid gap-2 sm:grid-cols-2">
         {HIPOGLUCEMIA.ramas.map((r) => (
-          <div
+          <p
             key={r.cantidad}
-            className="overflow-hidden rounded-xl border"
-            style={{ borderColor: "#e6e6e6" }}
+            className="rounded-xl border border-l-4 bg-white px-3 py-2 text-sm text-slate-800"
+            style={{ borderColor: "#e6e6e6", borderLeftColor: TONO[r.tono].bg }}
           >
-            <div
-              className="px-3 py-2 text-xs font-bold"
-              style={{ background: TONO[r.tono].bg, color: TONO[r.tono].fg }}
-            >
-              {r.condicion}
-            </div>
-            <div className="flex items-center gap-2 bg-white px-3 py-3">
-              <ArrowRight size={16} className="text-slate-500" aria-hidden="true" />
-              <span className="text-2xl font-black tabular-nums text-slate-900">{r.cantidad}</span>
-              <span className="text-xs text-slate-600">de hidratos</span>
-            </div>
-          </div>
+            <span className="block text-lg font-extrabold tabular-nums text-slate-900">
+              {r.cantidad}
+            </span>
+            {r.condicion}
+          </p>
         ))}
       </div>
-      <div className="my-2 flex justify-center text-slate-400" aria-hidden="true">
-        <ArrowDown size={18} />
-      </div>
       <ul
-        className="space-y-1.5 rounded-xl p-3 text-sm text-slate-800"
+        className="mt-3 space-y-1.5 rounded-xl p-3 text-sm text-slate-800"
         style={{ background: "#f1f5f9" }}
       >
         {HIPOGLUCEMIA.despues.map((d) => (
-          <li key={d} className="flex gap-2">
+          <li key={d.texto} className="flex gap-2">
             <span aria-hidden="true">·</span>
-            {d}
+            <span>
+              {"tema" in d && d.tema && <strong>{d.tema}: </strong>}
+              {d.texto}
+              {d.p !== HIPOGLUCEMIA.pagina && (
+                <>
+                  {" "}
+                  <PaginaBadge p={d.p} />
+                </>
+              )}
+            </span>
           </li>
         ))}
       </ul>
-      <p className="mt-2 text-xs text-slate-500">{HIPOGLUCEMIA.aviso}</p>
     </div>
   );
 }
 
 /* ---------- 7. Transición desde MDI ---------- */
+/* La Tabla 2 entera, fila a fila, con su recomendación orientativa y su nota; sin numerar. */
 function Transicion() {
+  const t = TABLAS.T2;
   return (
     <div>
-      <ol className="space-y-2">
-        {TRANSICION.pasos.map((p, i) => (
-          <li key={p.titulo} className="flex gap-3">
-            <span
-              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
-              style={{ background: "#4340a6" }}
-            >
-              {i + 1}
-            </span>
-            <div
-              className="min-w-0 flex-1 rounded-xl border p-2.5"
-              style={{ borderColor: "#e6e6e6" }}
-            >
-              <div className="text-sm font-bold text-slate-900">{p.titulo}</div>
-              <p className="text-xs text-slate-700">{p.texto}</p>
+      <p className="mb-3 text-sm text-slate-700">
+        {TRANSICION.partida} <PaginaBadge p={TRANSICION.partidaP} />
+      </p>
+      <ul className="space-y-2">
+        {t.filas.map((f) => (
+          <li
+            key={f.etiqueta}
+            className="rounded-xl border p-2.5"
+            style={{ borderColor: "#e6e6e6" }}
+          >
+            <div className="text-sm font-bold text-slate-900">{f.etiqueta}</div>
+            <div className="mt-1 grid gap-1 text-xs sm:grid-cols-[1fr_1fr] sm:gap-3">
+              <div>
+                <span className="font-semibold text-slate-500">{t.columnas[0]}: </span>
+                <span className="text-slate-800">
+                  <Lineas>{f.celdas[0]}</Lineas>
+                </span>
+              </div>
+              {f.celdas[1] && (
+                <div>
+                  <span className="font-semibold text-slate-500">{t.columnas[1]}: </span>
+                  <span className="text-slate-700">
+                    <Lineas>{f.celdas[1]}</Lineas>
+                  </span>
+                </div>
+              )}
             </div>
           </li>
         ))}
-      </ol>
-      <p className="mt-3 text-xs text-slate-600">{TRANSICION.nota}</p>
+      </ul>
+      <p className="mt-3 text-xs text-slate-600">{t.notas[1]}</p>
       <a
         href={href("consultar", "tablas", "T2")}
         className="no-imprimir mt-2 inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-slate-700 hover:underline sm:min-h-8"
       >
-        Tabla 2 completa <ArrowRight size={12} aria-hidden="true" />
+        Tabla 2 en el capítulo <ArrowRight size={12} aria-hidden="true" />
       </a>
     </div>
   );
@@ -622,7 +764,7 @@ function TarjetaGestacion({ c }: { c: number }) {
       <div className="mb-2 flex items-center gap-2">
         <img src={FOTO_SISTEMA[id]} alt="" className="h-10 w-10 rounded-lg bg-white object-cover" />
         <div className="text-sm font-extrabold" style={{ color: h.ink }}>
-          {TABLAS.T1.columnas[c]}
+          {c === 1 ? GESTACION_ROTULO_TANDEM : TABLAS.T1.columnas[c]}
         </div>
       </div>
       {autorizacion && (
@@ -663,10 +805,19 @@ function GestacionSistemas({ opcion }: { opcion?: string }) {
           onChange={setSel}
           options={ORDEN_SISTEMAS.map((id, k) => ({
             id,
-            label: TABLAS.T1.columnas[k].replace("Tandem ", "").replace("myLoop ", ""),
+            label: (k === 1 ? GESTACION_ROTULO_TANDEM : TABLAS.T1.columnas[k])
+              .replace("Tandem ", "")
+              .replace("myLoop ", ""),
           }))}
         />
       </div>
+      {/* Antes de leer los ensayos lado a lado, lo que dice el capítulo de compararlos. */}
+      <p
+        className="mb-3 rounded-lg border-l-4 px-3 py-2 text-xs text-slate-800"
+        style={{ borderColor: "#94a3b8", background: "#f8fafc" }}
+      >
+        {GESTACION_ENSAYOS.texto} <PaginaBadge p={GESTACION_ENSAYOS.p} />
+      </p>
       <div className="lg:hidden">
         <TarjetaGestacion c={c} />
       </div>
@@ -699,8 +850,15 @@ function GestacionSistemas({ opcion }: { opcion?: string }) {
 /* ---------- 9. Hospital: cuándo no continuar el sistema ---------- */
 function Hospital() {
   const H = HOSPITAL;
+  const ivTabla6 = TABLAS.T6.filas.find((f) => f.etiqueta.startsWith("Cirugía prolongada"));
   return (
     <div className="space-y-3">
+      <p
+        className="rounded-lg border-l-4 px-3 py-2 text-sm font-semibold text-slate-900"
+        style={{ borderColor: "#475569", background: "#f1f5f9" }}
+      >
+        {H.ambito.texto}
+      </p>
       <div className="grid gap-3 md:grid-cols-2">
         <div
           className="rounded-xl border p-3"
@@ -713,6 +871,14 @@ function Hospital() {
             <PaginaBadge p={H.mantener.p} />
           </div>
           <p className="text-sm text-slate-800">{H.mantener.texto}</p>
+          <ul className="mt-1.5 space-y-1 text-xs text-slate-700">
+            {H.condiciones.map((x) => (
+              <li key={x.texto} className="flex gap-1.5">
+                <span aria-hidden="true">·</span>
+                {x.texto}
+              </li>
+            ))}
+          </ul>
         </div>
         <div
           className="rounded-xl border p-3"
@@ -737,36 +903,75 @@ function Hospital() {
       <p className="rounded-xl bg-slate-800 px-3 py-2 text-center text-sm font-semibold text-white">
         {H.entonces.texto}
       </p>
-      <ol className="grid gap-2 md:grid-cols-3">
-        {H.pasos.map((x, k) => (
+      <ul className="grid gap-2 md:grid-cols-3">
+        {H.pasos.map((x) => (
           <li
             key={x.cuando}
             className="rounded-xl border bg-white p-3"
             style={{ borderColor: "#e6e6e6" }}
           >
             <div className="mb-1 flex items-center justify-between gap-2">
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-900">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-800 text-[11px] text-white">
-                  {k + 1}
-                </span>
-                {x.cuando}
-              </span>
+              <span className="text-xs font-bold text-slate-900">{x.cuando}</span>
               <PaginaBadge p={x.p} p2={"p2" in x ? x.p2 : undefined} />
             </div>
             <p className="text-xs leading-snug text-slate-800">{x.texto}</p>
           </li>
         ))}
-      </ol>
+      </ul>
+      {/* La perfusión intravenosa: cuándo se va a ella (p. 21 y Tabla 6) y cómo se vuelve. */}
       <div className="grid gap-2 md:grid-cols-2">
-        {[H.mientras, H.desdeIV].map((x) => (
-          <p
-            key={x.texto}
-            className="rounded-xl p-3 text-xs leading-snug text-slate-800"
-            style={{ background: "#f1f5f9" }}
-          >
-            {x.texto} <PaginaBadge p={x.p} />
+        <div
+          className="rounded-xl border p-3 text-xs leading-snug text-slate-800"
+          style={{ borderColor: "#fed7aa", background: "#fff7ed" }}
+        >
+          <Sub className="mb-1 text-sm font-bold text-slate-900">
+            Hacia la perfusión intravenosa
+          </Sub>
+          <p>
+            {H.haciaIV.texto} <PaginaBadge p={H.haciaIV.p} />
           </p>
-        ))}
+          {ivTabla6 && (
+            <p className="mt-1">
+              Tabla 6 · {ivTabla6.etiqueta}: {ivTabla6.celdas[0]} <PaginaBadge p={22} />
+            </p>
+          )}
+        </div>
+        <div
+          className="rounded-xl p-3 text-xs leading-snug text-slate-800"
+          style={{ background: "#f1f5f9" }}
+        >
+          <Sub className="mb-1 text-sm font-bold text-slate-900">Vuelta desde la perfusión</Sub>
+          <p>
+            Nota de la Tabla 6: {H.desdeIV.texto} <PaginaBadge p={H.desdeIV.p} />
+          </p>
+        </div>
+      </div>
+      <div className="grid gap-2 md:grid-cols-2">
+        <div
+          className="rounded-xl p-3 text-xs leading-snug text-slate-800"
+          style={{ background: "#f1f5f9" }}
+        >
+          <Sub className="mb-1 text-sm font-bold text-slate-900">Mientras se mantiene</Sub>
+          <p>
+            {H.mientras.texto} <PaginaBadge p={H.mientras.p} />
+          </p>
+          <p className="mt-1">
+            {H.contingencia.texto} <PaginaBadge p={H.contingencia.p} />
+          </p>
+        </div>
+        <div
+          className="rounded-xl p-3 text-xs leading-snug text-slate-800"
+          style={{ background: "#f1f5f9" }}
+        >
+          <Sub className="mb-1 text-sm font-bold text-slate-900">
+            Precisión de la MCG en el ingreso
+          </Sub>
+          {H.mcg.map((x) => (
+            <p key={x.texto} className="mt-1 first:mt-0">
+              {x.texto} <PaginaBadge p={x.p} />
+            </p>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -775,22 +980,45 @@ function Hospital() {
 /* ---------- 10. Exploraciones: la Tabla 6 como mapa ---------- */
 const ESTADO_EXPLORACION: Record<
   EstadoExploracion,
-  { etiqueta: string; bg: string; borde: string; punto: string }
+  { etiqueta: string; corta: string; tinta: string; bg: string; borde: string; punto: string }
 > = {
-  retirar: { etiqueta: "Retirar o suspender", bg: "#fef2f2", borde: "#fecaca", punto: "#dc2626" },
+  retirar: {
+    etiqueta: "Retirar o suspender",
+    corta: "Retirar o suspender",
+    tinta: "text-red-800",
+    bg: "#fef2f2",
+    borde: "#fecaca",
+    punto: "#dc2626",
+  },
   depende: {
     etiqueta: "Depende del dispositivo, del modelo o del contexto",
+    corta: "Depende",
+    tinta: "text-amber-900",
     bg: "#fffbeb",
     borde: "#fde68a",
     punto: "#ca8a04",
   },
-  mantener: { etiqueta: "Mantener", bg: "#ecfdf5", borde: "#a7f3d0", punto: "#15803d" },
+  // Casi todas las celdas «mantener» llevan condiciones: se dicen en la propia celda.
+  mantener: {
+    etiqueta: "Puede mantenerse, con las condiciones de la celda",
+    corta: "Puede mantenerse",
+    tinta: "text-emerald-800",
+    bg: "#ecfdf5",
+    borde: "#a7f3d0",
+    punto: "#15803d",
+  },
 };
 
 function Exploraciones() {
   const T6 = TABLAS.T6;
   return (
     <div>
+      <p
+        className="mb-3 rounded-lg border-l-4 px-3 py-2 text-sm text-slate-900"
+        style={{ borderColor: "#475569", background: "#f1f5f9" }}
+      >
+        {EXPLORACIONES_TEXTO.porSeparado}
+      </p>
       <ul className="mb-3 flex flex-wrap gap-2 text-xs" aria-label="Leyenda">
         {(Object.keys(ESTADO_EXPLORACION) as EstadoExploracion[]).map((k) => (
           <li
@@ -830,9 +1058,7 @@ function Exploraciones() {
                   className="flex gap-2 rounded-lg border px-2 py-1.5 text-xs leading-snug text-slate-800"
                   style={{ background: e.bg, borderColor: e.borde }}
                 >
-                  <span className="sr-only">
-                    {T6.columnas[j]}: {e.etiqueta}.{" "}
-                  </span>
+                  <span className="sr-only">{T6.columnas[j]}: </span>
                   <span
                     aria-hidden="true"
                     className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full"
@@ -845,6 +1071,8 @@ function Exploraciones() {
                     >
                       {T6.columnas[j]}
                     </span>
+                    {/* El estado, también escrito (no solo color). */}
+                    <span className={`block text-[11px] font-bold ${e.tinta}`}>{e.corta}</span>
                     <Lineas>{celda}</Lineas>
                   </span>
                 </span>
@@ -854,8 +1082,16 @@ function Exploraciones() {
         ))}
       </ol>
       <p className="mt-3 text-xs text-slate-600">{T6.notas[0]}</p>
+      <ul className="mt-2 space-y-1 text-xs text-slate-700">
+        {EXPLORACIONES_TEXTO.notas.map((n) => (
+          <li key={n} className="flex gap-1.5">
+            <span aria-hidden="true">·</span>
+            {n}
+          </li>
+        ))}
+      </ul>
       <p className="mt-1 text-xs text-slate-500">
-        El color resume cada celda; manda el texto de la Tabla 6 (apartado 10, p. 22).
+        El color resume cada celda; manda el texto de la Tabla 6 (apartado 10, pp. 21-22).
       </p>
     </div>
   );
@@ -886,30 +1122,64 @@ function CajaEleccion({ i, tono = "azul" }: { i: number; tono?: "azul" | "centro
 }
 
 function Eleccion() {
+  const decision = F2.cajas[1];
+  const resultado = decision.items[decision.items.length - 1];
   return (
     <div className="space-y-3">
-      <div className="grid items-stretch gap-2 lg:grid-cols-[1fr_auto_0.8fr_auto_1fr]">
+      {/* Como en la figura: perfil y características llevan a la decisión compartida; de ella
+          sale el sistema más adecuado; el contexto asistencial en el centro, entre las notas. */}
+      <div className="grid items-stretch gap-2 lg:grid-cols-[1fr_auto_0.9fr_auto_1fr]">
         <CajaEleccion i={0} />
         <div className="flex items-center justify-center" aria-hidden="true">
           <ArrowRight size={18} className="hidden text-slate-400 lg:block" />
           <ArrowDown size={18} className="text-slate-400 lg:hidden" />
         </div>
-        <CajaEleccion i={1} tono="centro" />
+        <div className="flex h-full flex-col gap-2">
+          <div className="flex-1 rounded-xl border border-indigo-200 bg-indigo-50 p-3">
+            <Sub className="mb-1.5 text-sm font-extrabold" style={{ color: "#3730a3" }}>
+              {decision.titulo}
+            </Sub>
+            <ul className="space-y-1 text-xs leading-snug text-slate-800">
+              {decision.items.slice(0, -1).map((x) => (
+                <li key={x}>
+                  <Texto>{x}</Texto>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="flex justify-center" aria-hidden="true">
+            <ArrowDown size={18} className="text-slate-400" />
+          </div>
+          <p className="rounded-xl bg-indigo-900 px-3 py-2 text-center text-sm text-white">
+            <Texto>{resultado}</Texto>
+          </p>
+        </div>
         <div className="flex items-center justify-center" aria-hidden="true">
           <ArrowRight size={18} className="hidden rotate-180 text-slate-400 lg:block" />
-          <ArrowDown size={18} className="rotate-180 text-slate-400 lg:hidden" />
+          <ArrowDown size={18} className="text-slate-400 lg:hidden" />
         </div>
         <CajaEleccion i={2} />
       </div>
-      <div className="grid gap-2 md:grid-cols-2">
-        <CajaEleccion i={3} />
-        <CajaEleccion i={4} />
+      <div className="grid gap-2 md:grid-cols-[1fr_0.9fr_1fr]">
+        <p
+          className="rounded-xl border p-3 text-xs leading-snug text-slate-700"
+          style={{ borderColor: "#e6e6e6" }}
+        >
+          <Texto>{F2.cajas[4].items[0]}</Texto>
+        </p>
+        <CajaEleccion i={3} tono="centro" />
+        <p
+          className="rounded-xl border p-3 text-xs leading-snug text-slate-700"
+          style={{ borderColor: "#e6e6e6" }}
+        >
+          <Texto>{F2.cajas[4].items.slice(1).join(" ")}</Texto>
+        </p>
       </div>
       <div
         className="rounded-xl border p-3"
-        style={{ borderColor: "#fde68a", background: "#fffbeb" }}
+        style={{ borderColor: "#bfdbfe", background: "#eff6ff" }}
       >
-        <p className="text-sm font-semibold text-amber-900">{F2.cajas[5].titulo}</p>
+        <p className="text-sm font-semibold text-slate-900">{F2.cajas[5].titulo}</p>
         <ul className="mt-1.5 flex flex-wrap gap-1.5 text-xs">
           {F2.cajas[5].items.map((x) => (
             <li key={x} className="rounded-full bg-white px-2 py-0.5 text-slate-800">
@@ -918,38 +1188,81 @@ function Eleccion() {
           ))}
         </ul>
       </div>
+      <div
+        className="rounded-xl p-3 text-xs leading-snug text-slate-800"
+        style={{ background: "#f1f5f9" }}
+      >
+        <Sub className="mb-1 text-sm font-bold text-slate-900">En el texto del apartado 6</Sub>
+        <p>{ELECCION_TEXTO.factores}</p>
+        <p className="mt-1">{ELECCION_TEXTO.noJerarquia}</p>
+      </div>
       <p className="text-xs text-slate-500">
-        Dibujo hecho con el texto de la Figura 2 (p. 6), caja a caja. La imagen original está en el
-        apartado 6.
+        Dibujo hecho con el texto de la Figura 2 (p. 6), caja a caja.
       </p>
     </div>
   );
 }
 
 /* ---------- 12. Interrupción del sistema según su duración ---------- */
-const TONO_INTERRUPCION = ["#15803d", "#a16207", "#c2410c", "#b91c1c"];
 
 function InterrupcionLinea() {
   const L = INTERRUPCION_LINEA;
+  const Tramo = ({
+    cuando,
+    color,
+    children,
+  }: {
+    cuando: string;
+    color: string;
+    children: ReactNode;
+  }) => (
+    <li
+      className="flex flex-col overflow-hidden rounded-xl border bg-white"
+      style={{ borderColor: "#e6e6e6" }}
+    >
+      <span className="px-3 py-1.5 text-xs font-bold text-white" style={{ background: color }}>
+        {cuando}
+      </span>
+      <span className="space-y-1 px-3 py-2 text-xs leading-snug text-slate-800">{children}</span>
+    </li>
+  );
   return (
     <div className="space-y-3">
-      <ol className="grid gap-2 md:grid-cols-4">
-        {L.tramos.map((t, k) => (
-          <li
-            key={t.cuando}
-            className="flex flex-col overflow-hidden rounded-xl border bg-white"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            <span
-              className="px-3 py-1.5 text-xs font-bold text-white"
-              style={{ background: TONO_INTERRUPCION[k] }}
-            >
-              {t.cuando}
-            </span>
-            <span className="px-3 py-2 text-xs leading-snug text-slate-800">{t.texto}</span>
-          </li>
-        ))}
-      </ol>
+      <p className="text-sm text-slate-700">{L.premisa}</p>
+      {/* Dos caminos que no son una sola línea de tiempo: lo programado se decide antes de
+          desconectar; lo no programado se actúa a partir de aproximadamente 1 h sin insulina. */}
+      <section>
+        <Sub className="mb-1.5 text-sm font-extrabold text-slate-900">Si no estaba programada</Sub>
+        <ol className="grid gap-2 md:grid-cols-3">
+          <Tramo cuando={L.tramos[0].cuando} color="#15803d">
+            <span className="block">{L.tramos[0].texto}.</span>
+            <span className="block font-semibold">{L.tramos[0].condicion}</span>
+          </Tramo>
+          <Tramo cuando={L.tramos[1].cuando} color="#a16207">
+            <span className="block">{L.tramos[1].texto}.</span>
+          </Tramo>
+          <Tramo cuando={L.tramos[2].cuando} color="#b91c1c">
+            <span className="block">{L.tramos[2].texto}</span>
+          </Tramo>
+        </ol>
+      </section>
+      <section>
+        <Sub className="mb-1.5 text-sm font-extrabold text-slate-900">
+          Si está programada: se decide antes de desconectar
+        </Sub>
+        <ul className="grid gap-2 md:grid-cols-2">
+          {L.programadas.map((x) => (
+            <Tramo key={x.cuando} cuando={x.cuando} color="#475569">
+              <span className="block">{x.texto}</span>
+              {x.mas.map((m) => (
+                <span key={m} className="block">
+                  {m}
+                </span>
+              ))}
+            </Tramo>
+          ))}
+        </ul>
+      </section>
       <div className="grid gap-2 md:grid-cols-2">
         <p
           className="rounded-xl p-3 text-xs leading-snug text-slate-800"
@@ -963,7 +1276,7 @@ function InterrupcionLinea() {
           style={{ background: "#f1f5f9" }}
         >
           <span className="block font-bold text-slate-900">Bomba con catéter</span>
-          {L.formatos.bomba}
+          {L.formatos.bomba}. {L.formatos.pausa}
         </p>
       </div>
       <ul className="space-y-1 text-xs text-slate-800">
@@ -976,6 +1289,17 @@ function InterrupcionLinea() {
             <span>
               <span className="font-bold text-slate-900">{d.cuando}: </span>
               {d.texto}
+              {d.cuando.startsWith("Cetonemia") && (
+                <>
+                  {" "}
+                  <a
+                    href={href("consultar", "figura-3")}
+                    className="no-imprimir font-semibold underline"
+                  >
+                    Ver la Figura 3
+                  </a>
+                </>
+              )}
             </span>
           </li>
         ))}

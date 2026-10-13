@@ -97,30 +97,43 @@ out.diagramas = [];
 const dg = (id, p, texto, p2) => out.diagramas.push({ id, p, texto, ...(p2 ? { p2 } : {}) });
 for (const pob of D.OBJETIVOS_MCG) {
   for (const f of pob.franjas) dg(`objetivos ${pob.id}`, pob.pagina, `${f.franja} ${f.objetivo}`);
-  for (const e of pob.extras) dg(`objetivos ${pob.id} extra`, pob.pagina, e);
+  for (const e of pob.extras) dg(`objetivos ${pob.id} extra`, e.p ?? pob.pagina, e.texto);
 }
 for (const t of D.ESCALA_CETONEMIA.tramos) dg(`cetonemia ${t.clave}`, t.p, t.accion);
-for (const m of D.ESCALA_CETONEMIA.marcas) dg("cetonemia marca", m.p, m.texto);
+for (const k of ["gravedad", "pediatria", "ejercicio", "apilamiento"])
+  dg(`cetonemia ${k}`, D.ESCALA_CETONEMIA[k].p, D.ESCALA_CETONEMIA[k].texto);
 for (const z of D.EJERCICIO.zonas)
   dg("ejercicio zona", D.EJERCICIO.pagina, `${z.etiqueta} ${z.texto}`);
 dg("ejercicio marca", D.EJERCICIO.pagina, D.EJERCICIO.marca.texto);
 for (const f of D.EJERCICIO.fases)
   for (const it of f.items) dg(`ejercicio ${f.titulo}`, D.EJERCICIO.pagina, it);
-for (const h of D.SEGUIMIENTO.hitos)
-  dg("seguimiento", D.SEGUIMIENTO.pagina, `${h.cuando} ${h.que}`);
-for (const r of D.HIPOGLUCEMIA.ramas)
-  dg("hipoglucemia", D.HIPOGLUCEMIA.pagina, `${r.condicion} ${r.cantidad}`);
-for (const x of D.HIPOGLUCEMIA.despues) dg("hipoglucemia después", D.HIPOGLUCEMIA.pagina, x);
-for (const p of D.TRANSICION.pasos) dg("transición", D.TRANSICION.pagina, p.texto);
-for (const a of D.ALGORITMOS)
-  for (const k of ["cadencia", "prediccion", "autocorreccion", "aprendizaje"])
-    dg(`algoritmos ${k}`, 3, a[k]);
+dg("ejercicio cetonemia", D.EJERCICIO.pagina, D.EJERCICIO.cetonemia);
+for (const it of D.EJERCICIO.tipo) dg("ejercicio tipo", D.EJERCICIO.pagina, it);
+dg("ejercicio herramientas", D.EJERCICIO.pagina, D.EJERCICIO.herramientas);
+for (const f of D.SEGUIMIENTO.fases) {
+  dg("seguimiento fase", D.SEGUIMIENTO.fasesP, f.titulo);
+  for (const h of f.hitos) dg("seguimiento", D.SEGUIMIENTO.pagina, h.que);
+}
+for (const n of D.SEGUIMIENTO.notas) dg("seguimiento nota", n.p, n.texto);
+for (const k of ["regla", "porque", "orientacion"])
+  dg(`hipoglucemia ${k}`, D.HIPOGLUCEMIA.pagina, D.HIPOGLUCEMIA[k]);
+for (const x of D.HIPOGLUCEMIA.despues) dg("hipoglucemia después", x.p, x.texto, x.p2);
+dg("transición partida", D.TRANSICION.partidaP, D.TRANSICION.partida);
+dg("algoritmos híbrido", D.RECORDATORIO_HIBRIDO.p, D.RECORDATORIO_HIBRIDO.texto);
 // Diagramas de la sesión 4 (frases literales con su página).
 for (let c = 0; c < D.GESTACION_SISTEMAS.length; c++)
   for (const x of D.GESTACION_SISTEMAS[c])
-    if (x.texto !== "—") dg(`gestación ${c} ${x.tema}`, x.p, x.texto);
+    if (x.texto !== "—") dg(`gestación ${c} ${x.tema}`, x.p, x.texto, x.p2);
 for (const x of D.GESTACION_COMUN) dg("gestación común", x.p, x.texto);
 const H = D.HOSPITAL;
+dg("hospital ámbito", H.ambito.p, H.ambito.texto);
+for (const x of [...H.condiciones, ...H.mcg, H.haciaIV, H.contingencia])
+  dg("hospital", x.p, x.texto);
+dg("gestación ensayos", D.GESTACION_ENSAYOS.p, D.GESTACION_ENSAYOS.texto);
+dg("exploraciones", D.EXPLORACIONES_TEXTO.p, D.EXPLORACIONES_TEXTO.porSeparado);
+for (const n of D.EXPLORACIONES_TEXTO.notas) dg("exploraciones nota", D.EXPLORACIONES_TEXTO.p, n);
+dg("elección factores", D.ELECCION_TEXTO.p, D.ELECCION_TEXTO.factores);
+dg("elección jerarquía", D.ELECCION_TEXTO.p, D.ELECCION_TEXTO.noJerarquia);
 dg("hospital mantener", H.mantener.p, H.mantener.texto);
 for (const it of H.noApropiada.items) dg("hospital no apropiada", H.noApropiada.p, it);
 dg("hospital entonces", H.entonces.p, H.entonces.texto);
@@ -128,7 +141,14 @@ for (const x of H.pasos) dg(`hospital ${x.cuando}`, x.p, x.texto, x.p2);
 dg("hospital mientras", H.mientras.p, H.mientras.texto);
 dg("hospital desde IV", H.desdeIV.p, H.desdeIV.texto);
 const L = D.INTERRUPCION_LINEA;
-for (const x of L.tramos) dg(`interrupción ${x.cuando}`, L.pagina, x.texto);
+dg("interrupción premisa", L.pagina, L.premisa);
+for (const x of L.tramos) {
+  dg(`interrupción ${x.cuando}`, L.pagina, x.texto);
+  if (x.condicion) dg(`interrupción ${x.cuando} condición`, L.pagina, x.condicion);
+}
+for (const x of L.programadas)
+  for (const t of [x.texto, ...x.mas]) dg(`interrupción ${x.cuando}`, L.pagina, t);
+dg("interrupción pausa", L.pagina, L.formatos.pausa);
 for (const x of L.detalles) dg(`interrupción ${x.cuando}`, L.pagina, x.texto);
 dg("interrupción pod", L.pagina, L.formatos.pod);
 dg("interrupción bomba", L.pagina, L.formatos.bomba);
