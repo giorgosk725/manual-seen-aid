@@ -25,6 +25,3 @@ export function alCambiarConsulta(fn: () => void) {
   window.addEventListener(EVENTO, fn);
   return () => window.removeEventListener(EVENTO, fn);
 }
-
-/* Junto a cada campo de búsqueda. */
-export const AVISO_BUSQUEDA = "Busca términos del capítulo; no introduzcas datos de pacientes.";

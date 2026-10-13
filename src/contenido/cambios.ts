@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — revisión de Sistemas, Situaciones e Iniciar`,
+    titulo: `Complemento interactivo ${VERSION_APP} — «Sobre», más operativo`,
+    detalle: [
+      "«Sobre este complemento»: qué se puede hacer, con un enlace a cada tarea (en la consulta, para leer y comprender, para el paciente), y cómo está hecho en cuatro frases; el responsable, con su afiliación, en «Fuentes y revisión».",
+      "Sin el aviso bajo los campos de búsqueda: la privacidad de la búsqueda se explica en «Sobre».",
+      "«Cómo se adapta» y «Cómo decide y se adapta» en vez de «aprendizaje» en los rótulos de la app (el texto de la Tabla 1 no cambia).",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.63.0 — revisión de Sistemas, Situaciones e Iniciar",
     detalle: [
       "Calculadora: sin datos completos y válidos no hay cifras; un vacío o un error no se leen como cero; fuera de la indicación de la Tabla 1 no hay propuesta, y dentro de una sola variante queda pendiente confirmarla.",
       "Desde bomba u otro sistema: se pide la DTD y el peso cuando el sistema arranca con ellos, aunque se traslade la programación. En MDI, ratio y factor propios o las reglas del 450 y del 1700.",

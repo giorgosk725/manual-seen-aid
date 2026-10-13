@@ -14,9 +14,6 @@ test.describe("Privacidad de la búsqueda", () => {
     });
     await page.goto("/#/buscar");
     const caja = page.getByLabel("Texto a buscar");
-    await expect(
-      page.getByText("Busca términos del capítulo; no introduzcas datos de pacientes."),
-    ).toBeVisible();
     for (const q of CONSULTAS) {
       await caja.fill(q);
       await page.waitForTimeout(2600);

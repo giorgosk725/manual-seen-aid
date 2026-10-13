@@ -50,7 +50,7 @@ import { guardarReciente } from "../prefs";
 import { SugerenciasBusqueda } from "./SugerenciasBusqueda";
 import { SinResultados } from "./SinResultados";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
-import { AVISO_BUSQUEDA, irABuscar, ponerConsulta } from "../consultaBuscar";
+import { irABuscar, ponerConsulta } from "../consultaBuscar";
 import { VERSION_APP } from "../version";
 
 /* ---------- Espera mientras llega una pantalla perezosa ---------- */
@@ -137,12 +137,8 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
             Esc
           </kbd>
         </div>
-        <p id="paleta-ayuda" className="mt-1 text-xs text-slate-600">
-          {AVISO_BUSQUEDA}
-          <span className="hidden sm:inline">
-            {" "}
-            Intro abre todos los resultados · ↓ ↑ eligen uno · Esc cierra
-          </span>
+        <p id="paleta-ayuda" className="mt-1 hidden text-xs text-slate-600 sm:block">
+          Intro abre todos los resultados · ↓ ↑ eligen uno · Esc cierra
         </p>
         <div ref={zona} onKeyDown={alMoverse}>
           {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
@@ -577,14 +573,10 @@ function BuscadorLateral() {
           onChange={(e) => setQ(e.target.value)}
           onFocus={() => void precargarBuscador()}
           placeholder="Buscar en el capítulo"
-          aria-describedby="lateral-aviso"
           autoComplete="off"
           className="w-full min-w-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none"
         />
       </div>
-      <p id="lateral-aviso" className="mt-1 px-1 text-xs leading-snug text-slate-500">
-        {AVISO_BUSQUEDA}
-      </p>
     </form>
   );
 }

@@ -14,12 +14,7 @@ import { BUILD } from "../build";
 import { MATERIALES, ROTULO_TIPO, fechaCorta } from "../materiales";
 import { PREGUNTAS } from "../contenido/test";
 import { elegirRuta, href } from "../rutas";
-import {
-  AVISO_BUSQUEDA,
-  alCambiarConsulta,
-  consultaBuscar,
-  ponerConsulta,
-} from "../consultaBuscar";
+import { alCambiarConsulta, consultaBuscar, ponerConsulta } from "../consultaBuscar";
 import { Badge, CabeceraEditorial, Revelar, Segmented, ToneCard } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
 import {
@@ -230,7 +225,6 @@ export function Buscar({ inicial }: { inicial?: string }) {
       </label>
       <input
         id="buscar-q"
-        aria-describedby="buscar-aviso"
         autoFocus
         value={q}
         onChange={(e) => setQ(e.target.value)}
@@ -238,9 +232,6 @@ export function Buscar({ inicial }: { inicial?: string }) {
         className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-soft placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
         autoComplete="off"
       />
-      <p id="buscar-aviso" className="mt-1.5 text-xs text-slate-600">
-        {AVISO_BUSQUEDA}
-      </p>
       {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
       {!frecuente && <Autocompletar items={sugerencias} onElegir={setQ} />}
       {qEf !== q && (
@@ -471,6 +462,38 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
   );
 }
 
+/* Lo que se puede hacer, con un enlace a cada tarea (Sobre). */
+const ACCESOS_SOBRE: { t: string; enlaces: { t: string; r: string }[] }[] = [
+  {
+    t: "En la consulta",
+    enlaces: [
+      { t: "Sistemas y parámetros", r: href("sistemas") },
+      { t: "Situaciones", r: href("consultar", "situacion") },
+      { t: "Hiperglucemia y cetonemia", r: href("consultar", "figura-3") },
+      { t: "Interrupción del sistema", r: href("consultar", "interrupcion") },
+      { t: "Iniciar un sistema", r: href("consultar", "inicio") },
+      { t: "Revisar la descarga", r: href("consultar", "descarga", "1") },
+    ],
+  },
+  {
+    t: "Para leer y comprender",
+    enlaces: [
+      { t: "Índice del capítulo", r: href("capitulo") },
+      { t: "Tablas", r: href("consultar", "tablas") },
+      { t: "Figuras", r: href("visual", "figuras") },
+      { t: "Diagramas", r: href("visual") },
+      { t: "Preguntas frecuentes", r: href("preguntas") },
+    ],
+  },
+  {
+    t: "Para el paciente",
+    enlaces: [
+      { t: "Información para pacientes (PDF)", r: "pdf/manual-seen-aid-pacientes.pdf" },
+      { t: "Hojas y planes de seguridad", r: href("pacientes") },
+    ],
+  },
+];
+
 /* ---------- Sobre este complemento: un párrafo (decisión del autor, 13-10-2026) y, plegados, los
    datos de esta versión y de cada material (trazabilidad) ---------- */
 export function Sobre() {
@@ -481,51 +504,50 @@ export function Sobre() {
         className="prosa rounded-2xl border bg-white p-4 shadow-soft"
         style={{ borderColor: "#e6e6e6" }}
       >
-        {/* Texto decidido el 13-10-2026 (0.54.0). */}
+        {/* 13-10-2026 (0.64.0): más operativo, a petición del responsable: qué se puede hacer,
+            con un enlace a cada tarea, y cómo está hecho en cuatro frases. El responsable, con su
+            afiliación, en «Fuentes y revisión» (en la portada ya van su nombre y su afiliación). */}
         <div className="space-y-3 text-[15px] leading-relaxed">
           <p>
-            Facilita la lectura, comprensión y consulta del capítulo {CAPITULO.numero} del Manual
-            SEEN sobre automatización de la insulinoterapia.
+            Complemento interactivo del capítulo {CAPITULO.numero} del Manual SEEN sobre
+            automatización de la insulinoterapia, para tenerlo a mano en la consulta.
           </p>
-          <ul className="list-disc space-y-1 pl-5">
-            {/* Los tres usos, como enlaces a su sitio (V54-10). */}
+          <ul className="space-y-2">
+            {ACCESOS_SOBRE.map((g) => (
+              <li key={g.t}>
+                <span className="font-bold text-slate-900">{g.t}: </span>
+                {g.enlaces.map((e, k) => (
+                  <span key={e.t}>
+                    {k > 0 && <span aria-hidden="true"> · </span>}
+                    <a href={e.r} className="font-semibold underline underline-offset-2">
+                      {e.t}
+                    </a>
+                  </span>
+                ))}
+              </li>
+            ))}
+          </ul>
+          <ul className="list-disc space-y-1 pl-5 text-sm text-slate-700">
             <li>
-              <a href={href("capitulo")} className="font-bold underline underline-offset-2">
-                Leer y comprender
-              </a>
-              : recorrer el capítulo, sus tablas, figuras y explicaciones.
+              El contenido clínico es el texto del capítulo, con su página. Las preguntas
+              frecuentes, la autoevaluación y las hojas adaptadas son materiales complementarios
+              basados en él.
             </li>
             <li>
-              <a href={href("")} className="font-bold underline underline-offset-2">
-                Consultar
-              </a>
-              : comparar sistemas y parámetros, revisar situaciones y seguir los recorridos de
-              inicio y descarga.
+              La búsqueda funciona en el propio dispositivo: no se envía ni se guarda nada. Se puede
+              consultar sin conexión una vez cargado.
             </li>
             <li>
-              <a href={href("pacientes")} className="font-bold underline underline-offset-2">
-                Para el paciente
-              </a>
-              : acceder al PDF publicado y a los materiales complementarios.
+              La ayuda de cálculo de «Iniciar un sistema» aplica las reglas de la Tabla 2 y del
+              apartado 8 y unos puntos de partida del responsable de este complemento (no del Manual
+              SEEN). Da un punto de partida para revisión profesional, no una pauta, y no guarda ni
+              envía las cifras. No escribas datos que identifiquen a una persona.
+            </li>
+            <li>
+              No sustituye las instrucciones de cada sistema, los protocolos del centro ni el juicio
+              clínico.
             </li>
           </ul>
-          <p>
-            El texto del capítulo conserva sus referencias y páginas de origen. Las preguntas
-            frecuentes, la autoevaluación y las hojas adaptadas son materiales complementarios
-            basados en él.
-          </p>
-          <p>
-            La búsqueda funciona en el propio dispositivo: las consultas no se envían ni se guardan.
-            Los contenidos pueden consultarse sin conexión una vez cargados.
-          </p>
-          <p>
-            «Iniciar un sistema» incluye una ayuda de cálculo orientativo: aplica a las cifras que
-            se escriben las reglas de la Tabla 2 y del apartado 8 y unos puntos de partida decididos
-            por el responsable de este complemento (no por el Manual SEEN), sin guardarlas ni
-            enviarlas. Su resultado es un punto de partida para revisión profesional, no una pauta.
-            No introduzcas datos que identifiquen a una persona. No sustituye las instrucciones de
-            cada sistema, los protocolos del centro ni el juicio clínico.
-          </p>
           <p>
             <a
               href={CAPITULO.url}
@@ -537,7 +559,6 @@ export function Sobre() {
               <ExternalLink size={14} aria-hidden="true" />
             </a>
           </p>
-          <p className="text-sm text-slate-600">Responsable del complemento: {CAPITULO.autor}.</p>
         </div>
         {/* Fuentes y revisión, para el lector; las huellas completas, los commits y el registro
             de publicación están en la documentación técnica (docs/PUBLICACIONES.md) (V54-10). */}
@@ -552,8 +573,10 @@ export function Sobre() {
             </dd>
             <dt className="font-semibold text-slate-700">Información para pacientes</dt>
             <dd>PDF publicado, fechado el {BUILD.pacientes.fecha}</dd>
-            <dt className="font-semibold text-slate-700">Responsable</dt>
-            <dd>{CAPITULO.autor}</dd>
+            <dt className="font-semibold text-slate-700">Responsable del complemento</dt>
+            <dd>
+              {CAPITULO.autor} · {CAPITULO.filiacion}
+            </dd>
           </dl>
           <ul className="mt-3 space-y-1.5">
             {MATERIALES.map((m) => (
