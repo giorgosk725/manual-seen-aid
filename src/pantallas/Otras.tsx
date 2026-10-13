@@ -481,31 +481,60 @@ export function Sobre() {
         className="prosa rounded-2xl border bg-white p-4 shadow-soft"
         style={{ borderColor: "#e6e6e6" }}
       >
-        <p className="text-[15px] leading-relaxed">
-          Complemento interactivo del capítulo {CAPITULO.numero} del {CAPITULO.obra} («
-          {CAPITULO.titulo}», publicado el {CAPITULO.fechaFuente}), que ordena su texto para leerlo
-          y consultarlo: lo clínico es texto literal del capítulo, con su página, y las preguntas
-          frecuentes, la autoevaluación y las hojas para el paciente son material complementario
-          revisado, no una publicación del Manual SEEN; la autorización y el alojamiento definitivo
-          están pendientes. No calcula dosis ni pide datos de pacientes; la búsqueda se hace en el
-          propio dispositivo, no se envía ni se guarda, y todo funciona sin conexión. Responsable:{" "}
-          {CAPITULO.autor}. Versión {BUILD.version}. No sustituye la ficha técnica de cada sistema,
-          los protocolos del centro ni el juicio clínico.{" "}
-          <a
-            href={CAPITULO.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold text-slate-800 underline underline-offset-2"
-          >
-            Ver el capítulo en el Manual SEEN
-          </a>
-          .
-        </p>
+        {/* Texto decidido el 13-10-2026 (0.54.0). */}
+        <div className="space-y-3 text-[15px] leading-relaxed">
+          <p>
+            Facilita la lectura, comprensión y consulta del capítulo {CAPITULO.numero} del Manual
+            SEEN sobre automatización de la insulinoterapia.
+          </p>
+          <ul className="list-disc space-y-1 pl-5">
+            <li>
+              <strong>Leer y comprender:</strong> recorrer el capítulo, sus tablas, figuras y
+              explicaciones.
+            </li>
+            <li>
+              <strong>Consultar:</strong> comparar sistemas y parámetros, revisar situaciones y
+              seguir los recorridos de inicio y descarga.
+            </li>
+            <li>
+              <strong>Para el paciente:</strong> acceder al PDF publicado y a los materiales
+              complementarios.
+            </li>
+          </ul>
+          <p>
+            El texto del capítulo conserva sus referencias y páginas de origen. Las preguntas
+            frecuentes, la autoevaluación y las hojas adaptadas son materiales complementarios
+            basados en él.
+          </p>
+          <p>
+            La búsqueda funciona en el propio dispositivo: las consultas no se envían ni se guardan.
+            Los contenidos pueden consultarse sin conexión una vez cargados.
+          </p>
+          <p>
+            No calcula dosis. No introduzcas datos de pacientes en el buscador. No sustituye las
+            instrucciones de cada sistema, los protocolos del centro ni el juicio clínico.
+          </p>
+          <p>
+            <a
+              href={CAPITULO.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center gap-1 font-semibold text-slate-800 underline underline-offset-2 sm:min-h-8"
+            >
+              Ver el capítulo en el Manual SEEN
+              <ExternalLink size={14} aria-hidden="true" />
+            </a>
+          </p>
+        </div>
         <details className="mt-3 text-sm">
           <summary className="min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-8">
             Datos de esta versión y revisión de cada material
           </summary>
           <dl className="mt-2 grid gap-x-4 gap-y-1 sm:grid-cols-[12rem_1fr]">
+            <dt className="font-semibold text-slate-700">Versión</dt>
+            <dd>{BUILD.version}</dd>
+            <dt className="font-semibold text-slate-700">Responsable</dt>
+            <dd>{CAPITULO.autor}</dd>
             <dt className="font-semibold text-slate-700">Código</dt>
             <dd className="break-all font-mono text-xs">
               {BUILD.sha} · construido el {BUILD.fecha || "—"}

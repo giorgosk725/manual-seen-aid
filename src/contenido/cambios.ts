@@ -15,7 +15,15 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — búsqueda más fiable y móvil`,
+    titulo: `Complemento interactivo ${VERSION_APP} — «Sobre este complemento» nuevo`,
+    detalle: [
+      "«Sobre este complemento»: qué ofrece cada parte, qué es del capítulo y qué es complementario, privacidad y límites; con el enlace al capítulo en el Manual SEEN.",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.53.0 — búsqueda más fiable y móvil",
     detalle: [
       "Búsqueda: solo se presenta como respuesta lo que casa de verdad con la pregunta; lo demás, como «lo más cercano», diciendo por qué.",
       "Más palabras de la calle y nombres comerciales reconocidos (Jardiance, bisturí, rugby…).",
