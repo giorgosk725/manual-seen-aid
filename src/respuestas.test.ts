@@ -24,6 +24,7 @@ import ciego5 from "./bancos/ciego5.json";
 import ciego6 from "./bancos/ciego6.json";
 import ciego7 from "./bancos/ciego7.json";
 import ciego8 from "./bancos/ciego8.json";
+import ciego9 from "./bancos/ciego9.json";
 
 const informe = (nombre: string, m: ReturnType<typeof medir>) =>
   console.log(
@@ -75,11 +76,17 @@ describe("Preguntas al capítulo", () => {
       // 120 preguntas nuevas de otro agente sin ver el motor (13-10-2026), congeladas antes de
       // afinar (commit 52c0a95) y medidas una vez al final: con la 0.52.0, 67,5/77,5/21,7 %;
       // con la 0.53.0, 68,3/78,3/5,8 % (directas: 75,8 % con precisión 68,1 % → 48,3 % con 84,5 %).
-      ["Ciego 7", ciego7 as PreguntaCiega[], 0.68, 0.78, 0.06],
+      ["Ciego 7", ciego7 as PreguntaCiega[], 0.76, 0.84, 0.03],
       // 120 preguntas de otro agente (13-10-2026), encargadas con el motor ya cerrado tras la
       // entrega 1 de la auditoría de la 0.54 y congeladas (ce80781): 0.54.0, 69,2/82,5/11,7 %;
       // 0.55.0, 70,0/82,5/10,8 % (precisión de las directas 76,1 → 77,9 %).
-      ["Ciego 8", ciego8 as PreguntaCiega[], 0.69, 0.82, 0.11],
+      // Desde la 0.59.0, los bancos 7 y 8 son de desarrollo (con ellos se afinó el léxico):
+      // 7 → 76,7/84,2/1,7 %; 8 → 72,5/87,5/10,0 %.
+      ["Ciego 8", ciego8 as PreguntaCiega[], 0.71, 0.86, 0.11],
+      // 120 preguntas de otro agente sin ver el motor (13-10-2026), congeladas antes de afinar
+      // (570d7a5) y medidas una vez al final: 0.58.0, 72,5/79,2/9,2 %; 0.59.0, 72,5/80,0/8,3 %
+      // (precisión de las directas 82,8 → 84,6 %). Lo afinado en 7 y 8 apenas generaliza.
+      ["Ciego 9", ciego9 as PreguntaCiega[], 0.72, 0.8, 0.09],
     ] as const) {
       const m = medirCiego(banco);
       console.log(

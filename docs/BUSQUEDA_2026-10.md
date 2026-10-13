@@ -96,3 +96,25 @@ Banco 7 (regresión): 0.54.0, directas 58, precisión 84,5 %, recuperación 5, c
 **Lectura honesta.** La mejora es pequeña. En un banco nuevo la precisión de las directas es
 del 76–78 %, menor que la del banco 7: aquella cifra sobrestimaba. Lo que más falla son
 paráfrasis que un motor de palabras no ve.
+
+## 0.59.0 · léxico de consulta (13-10-2026)
+
+**Método.** Antes de tocar el motor, otro agente escribió el **banco 9** (120 preguntas, 15
+ajenas, 162 fragmentos literales comprobados) sin ver el motor ni los bancos; se congeló en un
+commit propio (570d7a5) y se midió la 0.58.0. Los bancos 7 y 8 pasaron a ser de **desarrollo**:
+con sus fallos se añadieron formas de preguntar que el capítulo dice de otra manera (compresión
+«al darse la vuelta», priorización «a quién se lo damos», localización del algoritmo, «cada
+cuánto», ingreso en planta, carácter híbrido y bolo de las comidas, «niños» → menores…). El banco 9
+se midió una sola vez al final.
+
+| Banco 9 (n = 120)         | 0.58.0 | 0.59.0 |
+| ------------------------- | ------ | ------ |
+| Primera                   | 72,5 % | 72,5 % |
+| Entre las tres            | 79,2 % | 80,0 % |
+| Directas equivocadas      | 9,2 %  | 8,3 %  |
+| Precisión de las directas | 82,8 % | 84,6 % |
+
+En desarrollo, el banco 7 pasó de 70,8 a 76,7 % a la primera y el 8 de 70,0 a 72,5 %; en el banco
+nuevo la mejora apenas se nota: los cambios de léxico arreglan las preguntas vistas, no las
+nuevas. Para subir de verdad hace falta otra cosa (búsqueda por el sentido sin conexión, o
+elegir la frase dentro del párrafo), y medirla con un banco 10 nuevo.

@@ -12,6 +12,8 @@ import {
   Baby,
   BedDouble,
   Bike,
+  BookOpen,
+  Box,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -23,10 +25,12 @@ import {
   Moon,
   Pill,
   Radiation,
+  Radio,
   Scan,
   ScanLine,
   Scissors,
   Siren,
+  Table2,
   Thermometer,
   TrendingUp,
   Unplug,
@@ -46,6 +50,7 @@ import {
   type SituacionGuia,
 } from "../situaciones";
 import { PiezaVista } from "../componentes/Piezas";
+import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { kDe, type Pieza } from "../inicio";
 
 import { elegirRuta, fueNavegacionNueva, href } from "../rutas";
@@ -257,42 +262,33 @@ function GuionVista({
           {estado.todos ? "Plegar" : "Abrir todos"}
         </button>
       </div>
-      <nav aria-label="Índice de la situación" className="mt-1">
-        <ol className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-slate-600">
-          {momentos.map((m, i) => (
-            <li key={i}>
-              <button
-                type="button"
-                onClick={() => {
-                  if (!abierto(i)) alternar(i);
-                  else marcarEnRuta(i);
-                  window.setTimeout(
-                    () =>
-                      document.getElementById(`momento-${i}`)?.scrollIntoView({
-                        block: "start",
-                        behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
-                          ? "auto"
-                          : "smooth",
-                      }),
-                    0,
-                  );
-                }}
-                className="inline-flex min-h-11 items-center font-semibold hover:underline sm:min-h-8"
-              >
-                {i + 1}. {m.rotulo}
-              </button>
-            </li>
-          ))}
-        </ol>
-      </nav>
-      <ol className="mt-1">
+      {/* Los momentos en orden, como una línea de tiempo: el número en su círculo y una raya
+          que los une; el título abre el párrafo literal (13-10-2026: sin el índice repetido). */}
+      <ol className="mt-2" aria-label="Momentos">
         {momentos.map((m, i) => (
           <li
             key={`${m.bloque}-${i}`}
             id={`momento-${i}`}
-            className="scroll-mt-24 border-t py-1.5 first:border-t-0"
-            style={{ borderColor: "#eeeeee" }}
+            className="relative scroll-mt-24 pb-1 pl-10"
           >
+            {i < momentos.length - 1 && (
+              <span
+                aria-hidden="true"
+                className="absolute bottom-0 left-[13px] top-8 w-0.5"
+                style={{ background: "#e6dfe3" }}
+              />
+            )}
+            <span
+              aria-hidden="true"
+              className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold tabular-nums"
+              style={
+                abierto(i)
+                  ? { background: hex.strong, color: "#fff" }
+                  : { background: hex.soft, color: hex.ink }
+              }
+            >
+              {i + 1}
+            </span>
             <h3>
               <button
                 type="button"
@@ -301,9 +297,7 @@ function GuionVista({
                 className="flex min-h-11 w-full items-center justify-between gap-3 py-1 text-left text-sm font-bold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
                 <span>
-                  <span className="mr-1.5 tabular-nums" style={{ color: hex.strong }}>
-                    {i + 1}.
-                  </span>
+                  <span className="sr-only">{i + 1}. </span>
                   {m.rotulo}
                 </span>
                 <ChevronRight
@@ -339,6 +333,92 @@ function GuionVista({
           </li>
         ))}
       </ol>
+    </section>
+  );
+}
+
+/* La situación elegida, arriba y una sola vez: su icono, su nombre y «Cambiar» (en el móvil). */
+function CabeceraSituacion({
+  id,
+  rotulo,
+  etiqueta,
+  onCambiar,
+}: {
+  id: string;
+  rotulo: string;
+  etiqueta: string;
+  onCambiar: () => void;
+}) {
+  const I = ICONO_SITUACION[id] ?? iconoDeTexto(etiqueta);
+  return (
+    <div
+      className="flex items-start gap-3 rounded-2xl border bg-white p-3"
+      style={{ borderColor: "#e6e6e6", boxShadow: `inset 4px 0 0 0 ${hex.strong}` }}
+    >
+      <span
+        aria-hidden="true"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+        style={{ background: hex.soft }}
+      >
+        <I size={22} style={{ color: hex.strong }} />
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="text-[11px] font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
+          {rotulo}
+        </div>
+        <h2 className="text-base font-extrabold leading-snug text-slate-900 sm:text-lg">
+          {etiqueta}
+        </h2>
+      </div>
+      <button
+        type="button"
+        onClick={onCambiar}
+        className="min-h-11 shrink-0 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-500 lg:hidden"
+      >
+        Cambiar
+      </button>
+    </div>
+  );
+}
+
+/* «Para seguir»: la hoja para el paciente, los apartados y la tabla entera, en filas como las
+   del mapa de la portada. */
+function ParaSeguir({
+  filas,
+}: {
+  filas: { href: string; t: string; I: LucideIcon; color?: string }[];
+}) {
+  return (
+    <section
+      aria-label="Para seguir"
+      className="overflow-hidden rounded-md border bg-white"
+      style={{ borderColor: "#e6e6e6" }}
+    >
+      <h2
+        className="px-3 pb-0.5 pt-2 text-xs font-bold uppercase tracking-wide"
+        style={{ color: hex.ink }}
+      >
+        Para seguir
+      </h2>
+      <ul className="divide-y" style={{ borderColor: "#eeeeee" }}>
+        {filas.map((f) => (
+          <li key={f.href}>
+            <a
+              href={f.href}
+              className="flex min-h-11 items-center gap-3 px-3 py-1.5 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
+            >
+              <f.I
+                size={16}
+                className="shrink-0"
+                style={{ color: f.color ?? hex.strong }}
+                aria-hidden="true"
+              />
+              <span className="min-w-0 flex-1 font-semibold text-slate-900">{f.t}</span>
+              <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+            </a>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
@@ -546,35 +626,18 @@ export function SituacionSistema({
           )}
           {guia && (
             <div key={guia.id} className="pantalla-in space-y-4">
-              <div
-                className="flex items-center gap-2 rounded-lg border bg-white px-3 py-2 lg:hidden"
-                style={{ borderColor: "#e6e6e6" }}
-              >
-                <span className="min-w-0 flex-1 text-sm">
-                  <span className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-                    Situación
-                  </span>
-                  <span className="block font-semibold text-slate-900">{guia.etiqueta}</span>
-                </span>
-                <button
-                  type="button"
-                  onClick={cambiar}
-                  className="min-h-11 shrink-0 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-500"
-                >
-                  Cambiar
-                </button>
-              </div>
-              <section
+              <CabeceraSituacion
+                id={guia.id}
+                rotulo="Situación"
+                etiqueta={guia.etiqueta}
+                onCambiar={cambiar}
+              />
+              <p
                 id="conducta-situacion"
-                className="scroll-mb-28 scroll-mt-24 rounded-2xl border bg-white p-4 shadow-soft"
-                style={{ borderColor: "#e6e6e6" }}
-                aria-label="Situación"
+                className="scroll-mb-28 scroll-mt-24 px-1 text-sm text-slate-700"
               >
-                <div className="flex flex-wrap items-start justify-between gap-2">
-                  <h2 className="text-base font-bold text-slate-900">{guia.etiqueta}</h2>
-                </div>
-                <p className="mt-1 text-sm text-slate-700">{guia.intro}</p>
-              </section>
+                {guia.intro}
+              </p>
               <GuionVista
                 momentos={guia.guion}
                 rotulo={guia.rotuloGuion}
@@ -603,130 +666,141 @@ export function SituacionSistema({
           )}
           {sit && tabla && fila && (
             <div key={sit.id} className="pantalla-in space-y-4">
-              {/* En el móvil, la situación elegida a la vista y cómo cambiarla sin bajar. */}
-              <div
-                className="flex items-center gap-2 rounded-lg border bg-white px-3 py-2 lg:hidden"
-                style={{ borderColor: "#e6e6e6" }}
-              >
-                <span className="min-w-0 flex-1 text-sm">
-                  <span className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-                    Situación
-                  </span>
-                  <span className="block font-semibold text-slate-900">{sit.etiqueta}</span>
-                </span>
-                <button
-                  type="button"
-                  onClick={cambiar}
-                  className="min-h-11 shrink-0 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-500"
-                >
-                  Cambiar
-                </button>
-              </div>
-              {!porSistema && (
-                <p className="rounded-md bg-slate-100 px-3 py-2 text-xs text-slate-700">
-                  Esta situación tiene una conducta común a los cuatro sistemas (el capítulo no
-                  distingue sistema). Lo propio de cada uno está en su ficha de{" "}
-                  <a href={href("sistemas")} className="font-semibold underline">
-                    Sistemas
-                  </a>
-                  .
-                </p>
-              )}
-              {porSistema && (
-                <div>
-                  <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-                    2 · Sistema
-                  </div>
-                  <CasillasSistema
-                    seleccion={sisIdx >= 0 ? [sisIdx] : []}
-                    onToggle={(c) => {
-                      aLaCasilla();
-                      elegirRuta(
-                        "consultar",
-                        "situacion",
-                        sit.id + (sisIdx === c ? "" : ":" + SIS_IDS[c]),
-                      );
-                    }}
-                  />
-                </div>
-              )}
+              <CabeceraSituacion
+                id={sit.id}
+                rotulo={tabla.cabeceraEtiqueta}
+                etiqueta={sit.etiqueta}
+                onCambiar={cambiar}
+              />
               <section
                 id="conducta-situacion"
-                className="scroll-mb-28 scroll-mt-24 rounded-2xl border bg-white p-4 shadow-soft"
+                className="scroll-mb-28 scroll-mt-24 space-y-3 rounded-2xl border bg-white p-4 shadow-soft"
                 style={{ borderColor: "#e6e6e6" }}
                 aria-label="Conducta recomendada"
               >
-                <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
-                  <div>
-                    <div
-                      className="text-xs font-bold uppercase tracking-wide"
-                      style={{ color: hex.ink }}
-                    >
-                      {tabla.cabeceraEtiqueta}
-                    </div>
-                    <h2 className="text-base font-bold text-slate-900">
-                      <Lineas>{fila.etiqueta}</Lineas>
-                    </h2>
-                  </div>
-                </div>
-                {fila.unida ? (
-                  <p
-                    className="rounded-xl p-3 text-base text-slate-800"
-                    style={{ background: "#f1f5f9" }}
-                  >
-                    <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-600">
-                      Todos los sistemas
-                    </span>
-                    <Lineas>{fila.celdas[0]}</Lineas>
-                  </p>
-                ) : porSistema ? (
-                  sisIdx >= 0 ? (
-                    <div
-                      className="rounded-xl p-3 text-base text-slate-800"
-                      style={{ background: SISTEMA_HEX[sisIdx].soft }}
-                    >
-                      <span
-                        className="mb-1 block text-xs font-bold uppercase tracking-wide"
-                        style={{ color: SISTEMA_HEX[sisIdx].ink }}
-                      >
-                        {tabla.columnas[sisIdx]}
-                      </span>
-                      <Lineas>{fila.celdas[sisIdx]}</Lineas>
-                    </div>
-                  ) : (
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {tabla.columnas.map((nombre, c) => (
+                {/* El rótulo de la fila ya está en la cabecera; aquí, lo común a los cuatro si lo trae. */}
+                {(() => {
+                  const comun = fila.etiqueta.split("\n").slice(1);
+                  return (
+                    <>
+                      {(comun.length > 0 || fila.unida) && (
                         <div
-                          key={c}
-                          className="border-l-[3px] py-0.5 pl-3 text-[15px] text-slate-800"
-                          style={{ borderColor: SISTEMA_HEX[c].strong }}
+                          className="rounded-xl border-l-4 px-3 py-2.5"
+                          style={{ borderColor: hex.strong, background: hex.soft }}
                         >
                           <span
-                            className="mb-1 block text-xs font-bold uppercase tracking-wide"
-                            style={{ color: SISTEMA_HEX[c].ink }}
+                            className="mb-0.5 block text-[11px] font-bold uppercase tracking-wide"
+                            style={{ color: hex.ink }}
                           >
-                            {nombre}
+                            Todos los sistemas
                           </span>
-                          <Lineas>{fila.celdas[c]}</Lineas>
+                          <span className="block text-[15px] font-semibold leading-snug text-slate-900">
+                            <Lineas>{fila.unida ? fila.celdas[0] : comun.join("\n")}</Lineas>
+                          </span>
                         </div>
-                      ))}
+                      )}
+                    </>
+                  );
+                })()}
+                {porSistema && (
+                  <div>
+                    <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
+                      {sisIdx >= 0 ? "Sistema" : "En cada sistema · elige uno para verlo solo"}
                     </div>
-                  )
-                ) : (
-                  <dl className="grid gap-2 sm:grid-cols-2">
-                    {tabla.columnas.map((nombre, c) => (
-                      <div key={c} className="rounded-xl p-3" style={{ background: "#f1f5f9" }}>
-                        <dt className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-600">
-                          {nombre}
-                        </dt>
-                        <dd className="text-base text-slate-800">
-                          <Lineas>{fila.celdas[c]}</Lineas>
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
+                    <CasillasSistema
+                      seleccion={sisIdx >= 0 ? [sisIdx] : []}
+                      onToggle={(c) => {
+                        aLaCasilla();
+                        elegirRuta(
+                          "consultar",
+                          "situacion",
+                          sit.id + (sisIdx === c ? "" : ":" + SIS_IDS[c]),
+                        );
+                      }}
+                    />
+                  </div>
+                )}
+                {porSistema && (
+                  <div className={sisIdx >= 0 ? "" : "grid gap-2 sm:grid-cols-2"}>
+                    {tabla.columnas.map((nombre, c) =>
+                      sisIdx >= 0 && c !== sisIdx ? null : (
+                        <div
+                          key={c}
+                          className="overflow-hidden rounded-xl border border-t-4 bg-white"
+                          style={{ borderColor: "#e6e6e6", borderTopColor: SISTEMA_HEX[c].strong }}
+                        >
+                          <div
+                            className="flex items-center gap-2 px-3 py-1.5"
+                            style={{ background: SISTEMA_HEX[c].soft }}
+                          >
+                            <img
+                              src={FOTO_SISTEMA[ORDEN_SISTEMAS[c]]}
+                              alt=""
+                              className="h-7 w-7 shrink-0 rounded-md bg-white object-cover"
+                            />
+                            <span
+                              className="text-sm font-extrabold"
+                              style={{ color: SISTEMA_HEX[c].ink }}
+                            >
+                              {nombre}
+                            </span>
+                          </div>
+                          <p
+                            className={`px-3 py-2 text-slate-800 ${sisIdx >= 0 ? "text-base" : "text-[15px]"}`}
+                          >
+                            <Lineas>{fila.celdas[c]}</Lineas>
+                          </p>
+                        </div>
+                      ),
+                    )}
+                  </div>
+                )}
+                {porSistema && sisIdx >= 0 && (
+                  <button
+                    type="button"
+                    onClick={() => elegirRuta("consultar", "situacion", sit.id)}
+                    className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
+                  >
+                    Ver los cuatro sistemas
+                  </button>
+                )}
+                {!porSistema && !fila.unida && (
+                  <>
+                    <dl className="grid gap-2 sm:grid-cols-2">
+                      {tabla.columnas.map((nombre, c) => {
+                        const I = c === 0 ? Box : Radio;
+                        return (
+                          <div
+                            key={c}
+                            className="rounded-xl border bg-white p-3"
+                            style={{ borderColor: "#e6e6e6" }}
+                          >
+                            <dt
+                              className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"
+                              style={{ color: hex.ink }}
+                            >
+                              <I size={15} aria-hidden="true" style={{ color: hex.strong }} />
+                              {nombre}
+                            </dt>
+                            <dd className="text-base text-slate-800">
+                              <Lineas>{fila.celdas[c]}</Lineas>
+                            </dd>
+                          </div>
+                        );
+                      })}
+                    </dl>
+                    <p className="text-xs text-slate-600">
+                      Conducta común a los cuatro sistemas: el capítulo no distingue sistema. Lo
+                      propio de cada uno está en su ficha de{" "}
+                      <a href={href("sistemas")} className="font-semibold underline">
+                        Sistemas
+                      </a>
+                      .
+                    </p>
+                  </>
                 )}
                 <FuentePie
+                  className="mt-0"
                   fuentes={[
                     {
                       texto: `Tabla ${tabla.numero}, ${paginasDe(tabla.paginas[0], tabla.paginas[1])}`,
@@ -743,53 +817,35 @@ export function SituacionSistema({
                   momento={momento}
                 />
               )}
-              {(sit.tabla === "T6" || sit.id.startsWith("hiperglucemia")) && (
-                <a
-                  href={href(
-                    "pacientes",
-                    "hoja",
-                    sit.tabla === "T6" ? "pruebas-cirugia" : "cetonas",
-                  )}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-lg border bg-white px-3 text-sm font-semibold text-slate-800 transition hover:border-slate-500"
-                  style={{ borderColor: "#e6e6e6" }}
-                >
-                  <HeartHandshake
-                    size={15}
-                    aria-hidden="true"
-                    style={{ color: CATEGORIA_HEX.pacientes.strong }}
-                  />
-                  Hoja para entregar al paciente:{" "}
-                  {sit.tabla === "T6" ? "pruebas y cirugía" : "cetonas"}{" "}
-                  <ArrowRight size={13} aria-hidden="true" />
-                </a>
-              )}
-              <div>
-                <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-                  Leer en el capítulo
-                </div>
-                <ul className="flex flex-wrap gap-1.5">
-                  {sit.leer.map((l) => (
-                    <li key={l.slug + l.ancla}>
-                      <a
-                        href={href("capitulo", l.slug, l.ancla)}
-                        className="inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-8"
-                        style={{ borderColor: "#d4d4d4" }}
-                      >
-                        {l.titulo} <ArrowRight size={12} aria-hidden="true" />
-                      </a>
-                    </li>
-                  ))}
-                  <li>
-                    <a
-                      href={href("consultar", "tablas", sit.tabla)}
-                      className="inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-8"
-                      style={{ borderColor: "#d4d4d4" }}
-                    >
-                      Tabla {tabla.numero} completa <ArrowRight size={12} aria-hidden="true" />
-                    </a>
-                  </li>
-                </ul>
-              </div>
+              <ParaSeguir
+                filas={[
+                  ...(sit.tabla === "T6" || sit.id.startsWith("hiperglucemia")
+                    ? [
+                        {
+                          href: href(
+                            "pacientes",
+                            "hoja",
+                            sit.tabla === "T6" ? "pruebas-cirugia" : "cetonas",
+                          ),
+                          t: `Hoja para entregar al paciente: ${sit.tabla === "T6" ? "pruebas y cirugía" : "cetonas"}`,
+                          I: HeartHandshake,
+                          color: CATEGORIA_HEX.pacientes.strong,
+                        },
+                      ]
+                    : []),
+                  ...sit.leer.map((l) => ({
+                    href: href("capitulo", l.slug, l.ancla),
+                    t: `En el capítulo: ${l.titulo}`,
+                    I: BookOpen,
+                    color: CATEGORIA_HEX.leer.strong,
+                  })),
+                  {
+                    href: href("consultar", "tablas", sit.tabla),
+                    t: `Tabla ${tabla.numero} completa`,
+                    I: Table2,
+                  },
+                ]}
+              />
             </div>
           )}
         </div>

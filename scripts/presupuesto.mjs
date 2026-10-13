@@ -11,7 +11,8 @@ import { join } from "node:path";
 const LIMITES = {
   entradaJs: 165 * 1024,
   entradaCss: 16 * 1024,
-  trozoPerezoso: 25 * 1024,
+  // 26 KB desde la 0.59.0: el buscador (se carga al buscar, no al entrar) creció con el léxico.
+  trozoPerezoso: 26 * 1024,
   // 2,0 MB desde la edición editorial (A10): el PDF de pacientes (83 KB) entra en el precache.
   precache: 2.0 * 1024 * 1024,
 };

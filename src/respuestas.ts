@@ -256,6 +256,13 @@ const ALIAS_SISTEMA: Record<string, number> = {
 
 /* Equivalentes de la consulta diaria → palabras que usa el capítulo. */
 const LEXICO: Record<string, string[]> = {
+  // 0.59.0 (bancos 7 y 8 como desarrollo).
+  diabulimia: ["conducta", "alimentaria", "manipulacion"],
+  planta: ["ingreso", "hospitalario"],
+  ingresa: ["ingreso", "hospitalizacion", "hospitalario"],
+  ingresar: ["ingreso", "hospitalizacion", "hospitalario"],
+  pequenos: ["menores", "pediatria"],
+  pequeno: ["menores", "pediatria"],
   // 0.53.0: nombres comerciales y palabras de la calle que el capítulo dice de otra manera.
   jardiance: ["isglt2"],
   empagliflozina: ["isglt2"],
@@ -345,8 +352,8 @@ const LEXICO: Record<string, string[]> = {
   retirar: ["retirada", "retirarse"],
   despega: ["despegado", "adhesivo"],
   despegado: ["adhesivo"],
-  nino: ["pediatria", "pediatrica"],
-  ninos: ["pediatria", "pediatrica"],
+  nino: ["pediatria", "pediatrica", "menores"],
+  ninos: ["pediatria", "pediatrica", "menores"],
   infantil: ["pediatria", "pediatrica"],
   mayores: ["ancianidad", "mayor", "fragilidad"],
   fragil: ["fragilidad", "ancianidad"],
@@ -426,7 +433,7 @@ const LEXICO: Record<string, string[]> = {
   reconectar: ["reconexion", "reanudarse"],
   modificar: ["modificarse", "ajustar", "cambiar"],
   cambiar: ["modificarse", "recambio"],
-  revisar: ["revision", "seguimiento", "contacto"],
+  revisar: ["revision", "seguimiento", "contacto", "explorarse"],
   revision: ["seguimiento", "contacto", "visita"],
   bolo: ["bolos"],
   parto: ["parto", "posparto"],
@@ -603,6 +610,68 @@ const fonetica = (w: string) =>
    sustituye, cada palabra se exige; «a|b» es una sola palabra exigida que puede ser a o b. */
 type Modo = "sustituye" | "suma";
 const FRASES: [RegExp, string, Modo][] = [
+  // 0.59.0: formas de preguntar que el capítulo dice de otra manera (análisis de los bancos 7
+  // y 8 como desarrollo; el banco 9, congelado antes, mide). Todas «suma»: añaden, no quitan.
+  // «al darse la vuelta», «al cambiar de postura»: la compresión del sensor.
+  [
+    /(da(r|rse|rme|rle)?|doy) la vuelta|cambi\w* de (postura|lado|posicion)|al (gir|mov)\w*|(dorm|duerm|tumbad|apoyad)\w* (encima|sobre)/,
+    "compresion|postura",
+    "sustituye",
+  ],
+  // «a quién se lo damos primero», «no hay sistemas para todos»: la priorización.
+  [
+    /a quien(es)? (dar|damos|doy|poner|elegir)|(no hay|pocos|pocas|limitad\w*) (sistemas|bombas|aid)|(sistemas|bombas|aid) para todos|prioriz\w*/,
+    "priorizacion",
+    "sustituye",
+  ],
+  // «nunca ha llevado bomba ni sensor», «sin experiencia previa»: los requisitos y su ausencia.
+  [
+    /(sin|nunca|no tiene|no ha (llevado|usado|tenido)) (experiencia|bomba|sensor|mcg|isci)|experiencia previa/,
+    "requisitos ausencia experiencia",
+    "suma",
+  ],
+  // «por qué seguir con el bolo de las comidas si es automático»: el carácter híbrido.
+  [
+    /(por que|porque|para que|hace falta|hay que|tengo que|sigue|seguir|siguen).*(bolo|bolos|anunciar|anuncio).*(comida|comidas|comer|ingesta)|(bolo|bolos) (de|en|con|para) (las |la )?(comida|comidas)/,
+    "hibridas anuncio comidas prandial",
+    "suma",
+  ],
+  // «dónde va el algoritmo», «dónde se aloja»: la localización del algoritmo.
+  [
+    /donde (va|esta|se aloja|vive|corre|funciona|se ejecuta|calcula|lleva)\w* (el )?algoritmo|algoritmo (en|dentro de) (el |la )?(movil|telefono|app|pod|bomba)/,
+    "localizacion algoritmo",
+    "sustituye",
+  ],
+  // «cada cuánto se cambia el pod», «cuánto dura un pod»: el formato y sus 72 h.
+  [
+    /(cada cuanto|cuanto dura|cuantos dias|cuando (se )?cambia)\w*.*\b(pod|parche)\b|\b(pod|parche)\b.*(cada cuanto|cuanto dura)/,
+    "formato desechable continuas",
+    "suma",
+  ],
+  // «con qué glucosa empiezo el deporte», «antes de hacer ejercicio cuánto»: el inicio del ejercicio.
+  [
+    /(empezar|iniciar|comenzar|antes de|para) (a )?(hacer |el |la |un )?(deporte|ejercicio|actividad|entreno|entrenamiento|correr|partido)/,
+    "iniciar ejercicio",
+    "suma",
+  ],
+  // «cada cuánto», «con qué frecuencia»: la respuesta suele ser un plazo (al año, semanas, meses).
+  [
+    /cada cuanto|con que frecuencia|cuantas veces (al|por|cada)|periodicidad/,
+    "ano anual semanas meses",
+    "suma",
+  ],
+  // «cuántos cambios hago por visita»: pocos cambios documentados.
+  [
+    /cuantos (cambios|ajustes)|(cambios|ajustes) (por|en cada) (visita|revision|consulta)/,
+    "pocos cambios documentados",
+    "suma",
+  ],
+  // «ingresa en planta, ¿le dejo el sistema?», «cuándo no mantener la bomba ingresado»: ingreso.
+  [
+    /(ingres|planta|hospital)\w*.*((dej|manten|quit|retir|suspend)\w*|seguir|sigue)|(dej|manten|quit|retir|suspend)\w*.*(ingres|planta|hospital)/,
+    "ingreso mantenerse automatico",
+    "suma",
+  ],
   // «cetonas con glucosa normal»: la cetonemia con glucemia normal (iSGLT2, Figura 3).
   [
     /(glucosa|glucemia|azucar)\s+(normal(es)?|buena|bien|en rango|no (muy |tan )?alta)|sin hiperglucemia|euglucemi\w*/,

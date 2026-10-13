@@ -5,7 +5,27 @@
    docs/IMPRESION_2026-10.md). La app no guarda nada de lo que se escribe:
    no hay campos, solo líneas en blanco para el papel. */
 import { useEffect, useRef, type ReactNode } from "react";
-import { ArrowRight, FileText, Printer, ShieldCheck, FileDown } from "lucide-react";
+import {
+  ArrowRight,
+  Backpack,
+  Droplet,
+  FileDown,
+  FileText,
+  Plane,
+  Printer,
+  ScanLine,
+  ShieldCheck,
+  TrendingUp,
+  type LucideIcon,
+} from "lucide-react";
+/* Un icono por hoja, para encontrarla de un vistazo. */
+const ICONO_HOJA: Record<string, LucideIcon> = {
+  cetonas: Droplet,
+  "pruebas-cirugia": ScanLine,
+  glucosa: TrendingUp,
+  "ejercicio-viajes": Plane,
+  material: Backpack,
+};
 import { UrgenciaF3 } from "../componentes/UrgenciaF3";
 import { CAPITULO, FIGURA3, TABLAS, apartadoPorSlug, idDeBloque } from "../contenido";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
@@ -199,11 +219,14 @@ function FilaHoja({
   detalle,
   borrador = false,
   descarga = false,
+  icono: I,
 }: {
   href: string;
   titulo: string;
   detalle: string;
   borrador?: boolean;
+  /* El icono de la fila (si no, el de descarga en el PDF). */
+  icono?: LucideIcon;
   /* Un archivo que se descarga (PDF), no una pantalla. */
   descarga?: boolean;
 }) {
@@ -213,8 +236,18 @@ function FilaHoja({
       download={descarga ? "" : undefined}
       className="flex min-h-11 items-center gap-3 px-3 py-2 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
     >
-      {descarga && (
-        <FileDown size={18} className="shrink-0" style={{ color: hex.strong }} aria-hidden="true" />
+      {(descarga || I) && (
+        <span
+          aria-hidden="true"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+          style={{ background: hex.soft }}
+        >
+          {I ? (
+            <I size={18} style={{ color: hex.strong }} />
+          ) : (
+            <FileDown size={18} style={{ color: hex.strong }} />
+          )}
+        </span>
       )}
       <span className="min-w-0 flex-1">
         <span className="block font-semibold text-slate-900">{titulo}</span>
@@ -265,7 +298,7 @@ export function HubPacientes() {
         </li>
         {tarjetas.map((c) => (
           <li key={c.t}>
-            <FilaHoja href={c.href} titulo={c.t} detalle={c.s} />
+            <FilaHoja href={c.href} titulo={c.t} detalle={c.s} icono={c.icono} />
           </li>
         ))}
       </ul>
@@ -292,6 +325,7 @@ export function HubPacientes() {
                 titulo={h.titulo}
                 detalle={`${h.rotulo.replace(/ para el paciente$/i, "")} para entregar · ${primeraFrase(h.intro) || h.fuente}`}
                 borrador={h.estado === "borrador" || !materialListo(`hoja-${h.id}`)}
+                icono={ICONO_HOJA[h.id] ?? FileText}
               />
             </li>
           ))}
@@ -301,6 +335,7 @@ export function HubPacientes() {
                 href={href("pacientes", "hoja", h.id)}
                 titulo={h.titulo}
                 detalle={h.preguntas.map((q) => q.replace(/^¿|\?$/g, "")).join(" · ")}
+                icono={ICONO_HOJA[h.id] ?? FileText}
               />
             </li>
           ))}

@@ -112,7 +112,7 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
   }) => {
     await page.goto("/#/consultar/situacion/ejercicio-aerobico");
     const guion = page.getByRole("region", { name: "Lo que dice el capítulo, por momentos" });
-    await expect(guion.getByRole("navigation", { name: "Índice de la situación" })).toBeVisible();
+    await expect(guion.getByRole("list", { name: "Momentos" })).toBeVisible();
     const hipo = guion.locator("h3 button", { hasText: /Hipoglucemia: hidratos/ });
     await expect(hipo).toHaveAttribute("aria-expanded", "false");
     await hipo.click();

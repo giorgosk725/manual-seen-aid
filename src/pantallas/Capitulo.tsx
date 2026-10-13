@@ -2,7 +2,17 @@
    empezar; debajo, lo que ayuda a comprender y repasar. Y el «capítulo entero» para imprimir
    de una vez. */
 import { useRef } from "react";
-import { ArrowRight, BookOpen, ExternalLink, Printer } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  ClipboardCheck,
+  Cpu,
+  ExternalLink,
+  Images,
+  MessageCircleQuestion,
+  Printer,
+  Workflow,
+} from "lucide-react";
 import { ICONO_APARTADO } from "../nav";
 import { BIBLIOGRAFIA, APARTADOS, CAPITULO, subapartados } from "../contenido";
 import { href } from "../rutas";
@@ -32,30 +42,43 @@ export function IndiceCapitulo() {
           bloque repetido de abajo). Las preguntas frecuentes tienen aquí su hogar. */}
       <nav
         aria-label="Para comprender"
-        className="no-imprimir mb-3 flex flex-wrap items-center gap-x-1 gap-y-0 text-sm text-slate-600"
+        className="no-imprimir mb-4 overflow-hidden rounded-md border bg-white"
+        style={{ borderColor: "#e6e6e6" }}
       >
-        <span className="mr-1 font-semibold">Para comprender:</span>
-        {[
-          { t: "Cómo funciona cada sistema", r: href("sistemas", "todos", "funciona") },
-          { t: "Figuras", r: href("visual", "figuras") },
-          { t: "Diagramas", r: href("visual") },
-          { t: "Preguntas frecuentes", r: href("preguntas") },
-          { t: "Autoevaluación", r: href("test") },
-        ].map((x, i) => (
-          <span key={x.t} className="inline-flex items-center">
-            {i > 0 && (
-              <span aria-hidden="true" className="px-1 text-slate-400">
-                ·
-              </span>
-            )}
-            <a
-              href={x.r}
-              className="inline-flex min-h-11 items-center font-semibold text-slate-800 underline-offset-2 hover:underline sm:min-h-8"
-            >
-              {x.t}
-            </a>
-          </span>
-        ))}
+        <div
+          className="px-3 pb-0.5 pt-2 text-xs font-bold uppercase tracking-wide"
+          style={{ color: hex.ink }}
+        >
+          Para comprender
+        </div>
+        <ul
+          className="divide-y sm:grid sm:grid-cols-3 sm:divide-y-0 lg:grid-cols-5"
+          style={{ borderColor: "#eeeeee" }}
+        >
+          {[
+            { t: "Cómo funciona cada sistema", r: href("sistemas", "todos", "funciona"), I: Cpu },
+            { t: "Figuras", r: href("visual", "figuras"), I: Images },
+            { t: "Diagramas", r: href("visual"), I: Workflow },
+            { t: "Preguntas frecuentes", r: href("preguntas"), I: MessageCircleQuestion },
+            { t: "Autoevaluación", r: href("test"), I: ClipboardCheck },
+          ].map((x) => (
+            <li key={x.t}>
+              <a
+                href={x.r}
+                className="flex min-h-11 items-center gap-3 px-3 py-1.5 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
+              >
+                <x.I
+                  size={16}
+                  className="shrink-0"
+                  style={{ color: hex.strong }}
+                  aria-hidden="true"
+                />
+                <span className="min-w-0 flex-1 font-semibold text-slate-900">{x.t}</span>
+                <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
       </nav>
       <section aria-labelledby="indice-apartados">
         <h2

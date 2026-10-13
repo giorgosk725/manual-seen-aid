@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-13",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — calculadora de inicio`,
+    titulo: `Complemento interactivo ${VERSION_APP} — situaciones, tarjetas y búsqueda`,
+    detalle: [
+      "Cada situación, con su icono y su nombre arriba una sola vez; lo común a los cuatro sistemas destacado, y la conducta de cada sistema en su tarjeta con foto.",
+      "Los momentos de cada situación, como una línea de tiempo numerada; al final, «Para seguir» con la hoja para el paciente, el apartado y la tabla.",
+      "Tablas del capítulo con la pregunta que responde cada una delante; «Para comprender» y las hojas para el paciente, con iconos.",
+      "Búsqueda: más formas de preguntar que el capítulo dice de otra manera (darse la vuelta, a quién priorizar, dónde va el algoritmo, cada cuánto, ingreso en planta, niños…).",
+    ],
+  },
+  {
+    fecha: "2026-10-13",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.58.0 — calculadora de inicio",
     detalle: [
       "«Iniciar un sistema» empieza por una calculadora: de qué tratamiento viene (MDI o bomba), qué sistema y las dosis; salen la DTD de inicio, la tasa basal, la ratio I/HC y el factor de sensibilidad con las reglas de la Tabla 2, y qué programar en ese sistema.",
       "Avisa si la DTD o el peso quedan fuera de la indicación de la Tabla 1 y, con glargina U–300 o degludec, del solapamiento. Nada de lo escrito se guarda ni se envía.",

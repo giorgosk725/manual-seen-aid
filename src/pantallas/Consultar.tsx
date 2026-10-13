@@ -1,6 +1,16 @@
 /* Consultar: tablas (filtrables), Figura 3 (recorrido) e infografía (mapa). El hub es la portada; «Comparar» y «Parámetros» viven en Sistemas. */
 import { useRef } from "react";
-import { ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowRightLeft,
+  ClipboardList,
+  LayoutGrid,
+  ScanLine,
+  SlidersHorizontal,
+  Table2,
+  Wrench,
+  type LucideIcon,
+} from "lucide-react";
 import {
   INFO,
   LISTA_TABLAS,
@@ -20,6 +30,14 @@ import { Texto } from "../texto";
 import { NivelTitulo } from "../nivel-contexto";
 
 const hex = CATEGORIA_HEX.consultar;
+const ICONO_TABLA: Record<string, LucideIcon> = {
+  T1: LayoutGrid,
+  T2: ArrowRightLeft,
+  T3: SlidersHorizontal,
+  T4: Wrench,
+  T5: ClipboardList,
+  T6: ScanLine,
+};
 
 /* Las seis tablas como filas: número, título y la pregunta que responde cada una. */
 function IndiceTablas() {
@@ -31,28 +49,47 @@ function IndiceTablas() {
           sistema.
         </p>
       </CabeceraEditorial>
-      <ul className="divide-y rounded-xl border bg-white" style={{ borderColor: "#e6e6e6" }}>
-        {LISTA_TABLAS.map((t) => (
-          <li key={t.id}>
-            <a
-              href={href("consultar", "tablas", t.id)}
-              className="flex min-h-11 items-center gap-3 px-3 py-2 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-            >
-              <span
-                className="w-16 shrink-0 text-xs font-bold uppercase tracking-wide"
-                style={{ color: hex.ink }}
+      {/* 13-10-2026: la pregunta que responde cada tabla, delante y en negrita; el título del
+          capítulo debajo, como referencia. Un icono por tabla. */}
+      <ul className="grid gap-2 sm:grid-cols-2">
+        {LISTA_TABLAS.map((t) => {
+          const I = ICONO_TABLA[t.id] ?? Table2;
+          return (
+            <li key={t.id}>
+              <a
+                href={href("consultar", "tablas", t.id)}
+                className="hover-lift ease-brand flex h-full gap-3 rounded-xl border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                style={{ borderColor: "#e6e6e6" }}
               >
-                Tabla {t.numero}
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block font-semibold text-slate-900">{t.titulo}</span>
-                <span className="block text-xs text-slate-600">{PREGUNTA_TABLA[t.id]}</span>
-              </span>
-              <PaginaBadge p={t.paginas[0]} p2={t.paginas[1]} />
-              <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
-            </a>
-          </li>
-        ))}
+                <span
+                  aria-hidden="true"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
+                  style={{ background: hex.soft }}
+                >
+                  <I size={20} style={{ color: hex.strong }} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center justify-between gap-2">
+                    <span
+                      className="text-[11px] font-bold uppercase tracking-wide"
+                      style={{ color: hex.ink }}
+                    >
+                      Tabla {t.numero}
+                    </span>
+                    <PaginaBadge p={t.paginas[0]} p2={t.paginas[1]} />
+                  </span>
+                  <span className="mt-0.5 block text-[15px] font-bold leading-snug text-slate-900">
+                    {PREGUNTA_TABLA[t.id]}
+                  </span>
+                  <span className="mt-0.5 block text-xs leading-snug text-slate-600">
+                    {t.titulo}
+                  </span>
+                </span>
+                <ArrowRight size={14} className="mt-1 shrink-0 text-slate-400" aria-hidden="true" />
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
