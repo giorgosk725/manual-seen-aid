@@ -48,7 +48,11 @@ import {
 } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, rutaDeTabla } from "../contenido";
 import { INTERRUPCION_LINEA } from "../contenido/diagramas";
-import { InterrupcionPantalla, ObjetivosDePoblacion } from "../componentes/Diagramas";
+import {
+  GestacionPorSistema,
+  InterrupcionPantalla,
+  ObjetivosDePoblacion,
+} from "../componentes/Diagramas";
 import {
   GUION,
   SIS_IDS,
@@ -833,6 +837,15 @@ export function SituacionSistema({
                     <ObjetivosDePoblacion id={pob} />
                   </section>
                 ))}
+              {guia.id === "gestacion" && (
+                <section
+                  aria-label="Gestación, sistema a sistema"
+                  className="rounded-2xl border bg-white p-4 shadow-soft"
+                  style={{ borderColor: "#e6e6e6" }}
+                >
+                  <GestacionPorSistema />
+                </section>
+              )}
               <GuionVista
                 momentos={guia.guion}
                 rotulo={guia.rotuloGuion}

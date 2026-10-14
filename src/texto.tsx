@@ -20,7 +20,9 @@ export function ConCifras({ children }: { children: React.ReactNode }) {
   return <CifrasCtx.Provider value={true}>{children}</CifrasCtx.Provider>;
 }
 const RE_CIFRA =
-  /(?:[≥≤<>]\s?)?\d+(?:[.,]\d+)?(?:\s?[-–]\s?\d+(?:[.,]\d+)?)?\s?(?:mmol\/l|mg\/dl|UI\/kg\/día|UI\/kg\/h|UI\/kg|UI\/día|UI\/h|UI|%|horas?|h|minutos|min|g|días?|semanas|años|kg)(?![\p{L}\d])/giu;
+  /(?:[≥≤<>]\s?)?\d+(?:[.,]\d+)?(?:\s?[-–]\s?\d+(?:[.,]\d+)?)?\s?(?:mmol\/l|mg\/dl|UI\/kg\/día|UI\/kg\/h|UI\/kg|UI\/día|UI\/h|UI|%|horas?|h|minutos|min|g|días?|semanas|años|kg)(?![\p{L}\d])/gu;
+// Sin «i»: «780G» no es una cifra en gramos (0.72.0). El capítulo escribe las unidades en
+// minúscula («mmol/l», «mg/dl»).
 function partirCifras(t: string): { t: string; cifra: boolean }[] {
   const out: { t: string; cifra: boolean }[] = [];
   let i = 0;

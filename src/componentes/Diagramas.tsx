@@ -890,6 +890,39 @@ function TarjetaGestacion({ c }: { c: number }) {
   );
 }
 
+/* Las tarjetas por sistema de «Gestación, sistema a sistema», sueltas (0.72.0: arriba de la
+   situación de gestación, para que el objetivo de cada sistema no quede plegado al final). */
+export function GestacionPorSistema() {
+  const [sel, setSel] = useState<string>(ORDEN_SISTEMAS[0]);
+  const c = ORDEN_SISTEMAS.indexOf(sel as (typeof ORDEN_SISTEMAS)[number]);
+  return (
+    <NivelDiagrama.Provider value={1}>
+      <div className="no-imprimir mb-3 lg:hidden">
+        <Segmented
+          label="Sistema"
+          wrap
+          value={sel}
+          onChange={setSel}
+          options={ORDEN_SISTEMAS.map((id, k) => ({
+            id,
+            label: (k === 1 ? GESTACION_ROTULO_TANDEM : TABLAS.T1.columnas[k])
+              .replace("Tandem ", "")
+              .replace("myLoop ", ""),
+          }))}
+        />
+      </div>
+      <div className="lg:hidden">
+        <TarjetaGestacion c={c} />
+      </div>
+      <div className="hidden gap-3 lg:grid lg:grid-cols-2">
+        {ORDEN_SISTEMAS.map((id, k) => (
+          <TarjetaGestacion key={id} c={k} />
+        ))}
+      </div>
+    </NivelDiagrama.Provider>
+  );
+}
+
 function GestacionSistemas({ opcion }: { opcion?: string }) {
   const [sel, setSel] = useState<string>(
     ORDEN_SISTEMAS.find((x) => x === opcion) ?? ORDEN_SISTEMAS[0],
