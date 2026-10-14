@@ -23,7 +23,7 @@
         ]
       },
       {
-        "titulo": "TAC (tomografía computarizada)",
+        "titulo": "TC (tomografía computarizada, escáner)",
         "items": [
           "Bomba o pod: retirar y dejar fuera de la sala.",
           "Sensor: según el modelo, algunos pueden quedarse fuera de la zona explorada (en algunos casos con protección) y otros deben retirarse."
@@ -48,7 +48,7 @@
         ]
       },
       {
-        "titulo": "Si la bomba o el pod van a estar quitados",
+        "titulo": "Si hay que quitarse la bomba o el pod",
         "items": [
           "Un rato breve, con reconexión o cambio de pod enseguida: no suele hacer falta nada más. Al volver a conectar, el sistema sigue funcionando si la glucosa no está alta y no hay cetonas.",
           "A partir de más o menos 1 hora sin insulina hay que actuar: mida la glucosa en el dedo, mire las cetonas si su equipo se lo ha indicado para su situación y reponga la insulina que no se ha puesto, según su plan.",

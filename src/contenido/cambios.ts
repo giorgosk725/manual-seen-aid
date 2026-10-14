@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-14",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — títulos de tres preguntas frecuentes`,
+    titulo: `Complemento interactivo ${VERSION_APP} — hojas para el paciente`,
+    detalle: [
+      "Hoja «Pruebas y cirugía»: «Si hay que quitarse la bomba o el pod» y «TC (tomografía computarizada, escáner)», como en el resto de la app.",
+      "Plan de seguridad: lo de registrar los hidratos como «tratamiento de hipoglucemia» va solo en el de CamAPS FX; en los otros tres, que no deben anunciarse como comida.",
+    ],
+  },
+  {
+    fecha: "2026-10-14",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.65.2 — títulos de tres preguntas frecuentes",
     detalle: [
       "«MiniMed 780G: ¿cómo decide y cómo se adapta?» y «CamAPS FX: ¿dónde está el algoritmo y cómo se adapta?», en vez de «qué aprende».",
       "«Tras una resonancia con el sensor puesto, ¿son fiables las lecturas?». Los pasajes de las tres no cambian; aprobadas de nuevo el 14-10-2026.",

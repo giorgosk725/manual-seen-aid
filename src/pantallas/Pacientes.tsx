@@ -691,7 +691,11 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
     fraseCon(textoDe("07-educacion", "b6"), "La primera es"),
     fraseCon(textoDe("07-educacion", "b7"), "como orientación"),
     fraseCon(textoDe("07-educacion", "b7"), "Debe reevaluarse con glucosa capilar"),
-    fraseCon(textoDe("07-educacion", "b7"), "Los hidratos para tratar la hipoglucemia"),
+    // 14-10-2026 (decisión del responsable): lo de registrarlos en CamAPS FX, solo en su plan; en
+    // los otros tres, la primera parte de la frase («…no deben anunciarse como comida»).
+    c === 2
+      ? fraseCon(textoDe("07-educacion", "b7"), "Los hidratos para tratar la hipoglucemia")
+      : `${fraseCon(textoDe("07-educacion", "b7"), "Los hidratos para tratar la hipoglucemia").split(";")[0]}…`,
     fraseCon(textoDe("07-educacion", "b9"), "La segunda regla"),
   ];
   const t4 = TABLAS.T4;

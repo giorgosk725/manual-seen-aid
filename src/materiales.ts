@@ -86,21 +86,21 @@ export const MATERIALES: Material[] = [
     estado: "aprobado",
     nombre: "Hoja «Pruebas y cirugía»",
     tipo: "adaptado",
-    fecha: "2026-10-13",
-    version: "0.51.0",
+    fecha: "2026-10-14",
+    version: "0.65.3",
     evidencia:
-      "Aprobada el 9-10-2026 (commit 24726c4); sección de la insulina con el sistema quitado revisada el 13-10-2026 (delegada)",
-    huella: "1ap7n2uuff7ck",
+      "Aprobada el 9-10-2026 (commit 24726c4); sección de la insulina con el sistema quitado revisada el 13-10-2026 (delegada); el 14-10-2026 el responsable aprobó «Si hay que quitarse la bomba o el pod» y «TC (tomografía computarizada, escáner)»",
+    huella: "ojqcaa19yt9g0",
   },
   {
     id: "planes",
     estado: "aprobado",
     nombre: "Plantillas del plan de seguridad (cuatro sistemas)",
     tipo: "plantilla",
-    fecha: "2026-10-13",
-    version: "0.61.0",
+    fecha: "2026-10-14",
+    version: "0.65.3",
     evidencia:
-      "Solo texto literal del capítulo (pp. 7-9, Figura 3 y Tabla 4); revisión clínica y visual del 13-10-2026 (delegada), a letra grande; el 13-10-2026 el responsable aprobó el título operativo y el recuadro de urgencia en la primera cara",
+      "Solo texto literal del capítulo (pp. 7-9, Figura 3 y Tabla 4); revisión clínica y visual del 13-10-2026 (delegada), a letra grande; el 13-10-2026 el responsable aprobó el título operativo y el recuadro de urgencia en la primera cara; el 14-10-2026, que el registro de los hidratos en CamAPS FX vaya solo en su plan",
   },
   {
     id: "calculadora",
