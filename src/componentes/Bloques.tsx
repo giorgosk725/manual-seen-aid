@@ -2,10 +2,11 @@
    cada uno con su página de origen y un id estable (ancla). Solo lo que hay en el capítulo
    publicado: la versión extendida no se muestra en la lectura (decisión del autor, 9-10-2026);
    sigue en las fichas de sistema y en las tablas, rotulada. */
+import { diagramaEnEdicion } from "../diagramasRetirados";
 import { NOTAS_POR_BLOQUE } from "../notas-complementarias";
 import { Fragment, Suspense, lazy, memo, useEffect, useMemo } from "react";
 import { mantenerEnVista } from "../irAlCambiar";
-import { Link2 } from "lucide-react";
+import { ArrowRight, Link2, Workflow } from "lucide-react";
 import {
   FIGURAS,
   TABLAS,
@@ -14,24 +15,34 @@ import {
   type Apartado,
   type Bloque,
   type DiagramaId,
+  DIAGRAMAS,
 } from "../contenido";
 import { TextoConRemisiones } from "./Remisiones";
 import { PaginaBadge } from "../ui";
 import { TablaVista } from "./TablaVista";
 import { FiguraVista } from "./FiguraVista";
-import { Figura1Animada } from "./Figura1Animada";
-/* Los diagramas (SVG grandes) se cargan al pedirlos: fuera del trozo de arranque. */
-const DiagramaVista = lazy(() => import("./Diagramas").then((m) => ({ default: m.DiagramaVista })));
 // La Figura 3 de lectura, también perezosa: solo la pide el apartado 7 (y deja sitio en la
 // entrada para lo nuevo de la edición editorial).
 const Figura3Lectura = lazy(() =>
   import("./Figura3Vista").then((m) => ({ default: m.Figura3Lectura })),
 );
-const Diagrama = (props: { id: DiagramaId; enApartado?: boolean }) => (
-  <Suspense fallback={<div className="min-h-40" aria-busy="true" />}>
-    <DiagramaVista {...props} />
-  </Suspense>
-);
+/* En la lectura, el diagrama es un enlace de una línea (0.70.0): repetía el párrafo de encima. */
+const Diagrama = ({ id }: { id: DiagramaId; enApartado?: boolean }) => {
+  if (!diagramaEnEdicion(id)) return null;
+  const d = DIAGRAMAS.find((x) => x.id === id);
+  if (!d) return null;
+  return (
+    <a
+      href={href("visual", id)}
+      className="no-imprimir inline-flex min-h-11 items-center gap-1.5 rounded-lg border bg-white px-3 text-sm font-semibold text-slate-800 transition hover:border-slate-500"
+      style={{ borderColor: "#e6e6e6" }}
+    >
+      <Workflow size={15} aria-hidden="true" style={{ color: "#3f6e9f" }} />
+      Ver diagrama: {d.titulo} <ArrowRight size={14} aria-hidden="true" />
+    </a>
+  );
+};
+
 import { href } from "../rutas";
 import { NivelTitulo, type Nivel } from "../nivel-contexto";
 import { partirDestacado, resaltarFrase, textoCitado } from "../fraseCitada";
@@ -162,11 +173,6 @@ function BloqueVista({
     case "figura":
       return (
         <div id={id} className="scroll-mt-24 lg:-mr-16">
-          {b.id === "F1" && (
-            <div className="mb-4">
-              <Figura1Animada />
-            </div>
-          )}
           {b.id === "F3" ? (
             <Suspense fallback={<div className="min-h-40" aria-busy="true" />}>
               <Figura3Lectura />

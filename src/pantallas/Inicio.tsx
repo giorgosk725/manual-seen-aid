@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   Calculator,
-  Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -513,10 +512,6 @@ function PasosInicio({
           <ChevronRight size={14} aria-hidden="true" />
         </button>
       </div>
-      <p className="mt-2 text-xs text-slate-500">
-        Lo que eliges y marcas se conserva al abrir una fuente y volver, y aparece en la hoja de
-        comprobación. «Nuevo inicio» lo borra todo, calculadora incluida.
-      </p>
     </div>
   );
 }
@@ -598,20 +593,14 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
           </button>
         </div>
       )}
-      <CabeceraEditorial titulo="Iniciar un sistema" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          Calcula los parámetros de partida y sigue la preparación, la puesta en marcha y el
-          seguimiento de cada sistema.
-        </p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo="Iniciar un sistema" hex={hex} level={1} />
 
-      {/* Tres herramientas: la calculadora, el recorrido por fases y la hoja. */}
-      <div role="group" aria-label="Herramienta" className="mb-4 grid grid-cols-3 gap-1.5">
+      {/* Dos herramientas, la calculadora y el recorrido por fases; la hoja, para imprimir. */}
+      <div role="group" aria-label="Herramienta" className="mb-2 grid grid-cols-2 gap-1.5">
         {(
           [
-            { id: CALC, t: "Calculadora", I: Calculator, on: actual === CALC },
+            { id: CALC, t: "Calcular", I: Calculator, on: actual === CALC },
             { id: FASES[0].id, t: "Fases", I: ListOrdered, on: enFases },
-            { id: HOJA, t: "Hoja de comprobación", I: Check, on: actual === HOJA },
           ] as const
         ).map((x) => (
           <button
@@ -632,11 +621,21 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
         ))}
       </div>
 
+      <p className="mb-4 text-right">
+        <button
+          type="button"
+          onClick={() => ir(HOJA)}
+          aria-pressed={actual === HOJA}
+          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-slate-700 underline-offset-2 hover:underline sm:min-h-8"
+        >
+          <Printer size={14} aria-hidden="true" /> Hoja de comprobación para imprimir
+        </button>
+      </p>
+
       {actual !== CALC && (
         <>
           <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
             Sistema
-            <span className="hidden sm:inline"> (sus indicaciones y los criterios comunes)</span>
           </div>
           <div className="mb-4">
             <CasillasSistema

@@ -10,24 +10,12 @@ import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
 
-/* Lo que contiene cada bloque, en una línea (texto de la app). */
-const BLOQUE: Record<string, { icono: LucideIcon; resumen: string }> = {
-  sistemas: {
-    icono: SlidersHorizontal,
-    resumen: "Ficha de cada sistema, criterios de elección y comparación de los cuatro.",
-  },
-  situaciones: {
-    icono: LifeBuoy,
-    resumen: "Conducta por situación: hiperglucemia y cetonas, hipoglucemia y desconexión.",
-  },
-  "en-consulta": {
-    icono: PlayCircle,
-    resumen: "Parámetros de partida, fases del inicio y revisión de la descarga.",
-  },
-  pacientes: {
-    icono: HeartHandshake,
-    resumen: "Información publicada para pacientes, hojas y planes de seguridad.",
-  },
+/* El icono de cada bloque (0.70.0: sin la línea de resumen). */
+const BLOQUE: Record<string, { icono: LucideIcon }> = {
+  sistemas: { icono: SlidersHorizontal },
+  situaciones: { icono: LifeBuoy },
+  "en-consulta": { icono: PlayCircle },
+  pacientes: { icono: HeartHandshake },
 };
 
 /* Tarjeta de la portada: cabecera con icono, título y resumen; debajo, sus filas. */
@@ -67,7 +55,7 @@ export function TarjetaPortada({
           <Titulo id={id} className="text-base font-extrabold leading-snug text-slate-900">
             {titulo}
           </Titulo>
-          <p className="mt-0.5 hidden text-sm leading-snug text-slate-600 sm:block">{resumen}</p>
+          {resumen && <p className="mt-0.5 text-sm leading-snug text-slate-600">{resumen}</p>}
         </div>
       </header>
       <div className="mt-auto border-t" style={{ borderColor: "#eef0f2" }}>
@@ -78,7 +66,7 @@ export function TarjetaPortada({
 }
 
 /* Una fila de entrada: icono, nombre y flecha. */
-export function FilaDestino({ id }: { id: string }) {
+export function FilaDestino({ id, etiqueta }: { id: string; etiqueta?: string }) {
   const d = DESTINOS.find((x) => x.id === id)!;
   const I = d.icono;
   return (
@@ -92,7 +80,7 @@ export function FilaDestino({ id }: { id: string }) {
         style={{ color: CATEGORIA_HEX[d.cat].strong }}
         aria-hidden="true"
       />
-      <span className="min-w-0 flex-1 font-semibold text-slate-900">{d.etiqueta}</span>
+      <span className="min-w-0 flex-1 font-semibold text-slate-900">{etiqueta ?? d.etiqueta}</span>
       <ArrowRight
         size={14}
         className="shrink-0 text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-slate-600"
@@ -154,7 +142,7 @@ export function MapaConsulta() {
             key={b.id}
             id={`mapa-${b.id}`}
             titulo={b.titulo}
-            resumen={BLOQUE[b.id]?.resumen ?? ""}
+            resumen=""
             icono={BLOQUE[b.id]?.icono ?? SlidersHorizontal}
             hex={b.id === "pacientes" ? CATEGORIA_HEX.pacientes : CATEGORIA_HEX.consultar}
           >
@@ -162,7 +150,7 @@ export function MapaConsulta() {
             <ul className="divide-y" style={{ borderColor: "#eef0f2" }}>
               {b.ids.map((id) => (
                 <li key={id}>
-                  <FilaDestino id={id} />
+                  <FilaDestino id={id} etiqueta={b.etiquetas?.[id]} />
                 </li>
               ))}
             </ul>

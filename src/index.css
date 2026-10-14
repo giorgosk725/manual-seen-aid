@@ -1292,6 +1292,11 @@ html.night .tramo-plan {
     width: 15mm;
     height: 15mm;
   }
+  /* El plan de seguridad: la hoja de cetonas, en la segunda cara (0.70.0). */
+  html.imprimiendo .hoja-a4 .cara-2 {
+    break-before: page;
+    border-top: 0;
+  }
   html.imprimiendo .hoja-a4 .tramo-plan {
     break-inside: avoid;
     padding: 0.8mm 1.2mm !important;
@@ -1648,4 +1653,11 @@ html.night *:focus-visible {
     border: 2pt solid #b91c1c !important;
     break-inside: avoid;
   }
+}
+
+/* Interrupción del sistema (0.70.0): el esquema del apartado 7 como pantalla de consulta, con la
+   letra de lectura (en la galería de diagramas sigue compacto). */
+.interrupcion-grande .text-xs {
+  font-size: 0.875rem;
+  line-height: 1.35rem;
 }

@@ -117,18 +117,17 @@ test.describe("Uso 0.10.0", () => {
     await expect(page.locator("main")).toBeFocused();
   });
 
-  test("la portada lleva a Leer y comprender; el test, en Leer (sin repaso)", async ({ page }) => {
+  test("la portada lleva al índice; el test, en el menú de Leer (sin repaso)", async ({ page }) => {
     await page.goto("/#/");
-    // Sin las dos puertas (13-10-2026): la lectura, desde el mapa.
     await expect(page.getByRole("navigation", { name: "Dos formas de uso" })).toHaveCount(0);
     await page
       .getByRole("region", { name: "Leer y comprender" })
-      .getByRole("link", { name: "Índice del capítulo" })
+      .getByRole("link", { name: /Índice del capítulo/ })
       .click();
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Leer y comprender");
-    const aprender = page.getByRole("navigation", { name: "Para comprender" });
-    await expect(aprender.getByRole("link", { name: /Tarjetas de repaso/ })).toHaveCount(0);
-    await expect(aprender.getByRole("link", { name: /Autoevaluación/ })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Índice del capítulo");
+    const menu = page.getByRole("navigation", { name: "Navegación principal" });
+    await expect(menu.getByRole("link", { name: /Tarjetas de repaso/ })).toHaveCount(0);
+    await expect(menu.getByRole("link", { name: /Autoevaluación/ })).toBeVisible();
   });
 
   test("test: al terminar, resultado y «Volver a empezar»", async ({ page }) => {
@@ -142,12 +141,6 @@ test.describe("Uso 0.10.0", () => {
     ).toBeVisible();
     await page.getByRole("button", { name: "Volver a empezar" }).click();
     await expect(page.getByText(`Respondidas 0 de ${n}`)).toBeVisible();
-  });
-
-  test("las cifras del apartado llevan a su frase", async ({ page }) => {
-    await page.goto("/#/capitulo/08-iniciacion");
-    await page.getByRole("link", { name: /48 h/ }).first().click();
-    await expect(page).toHaveURL(/08-iniciacion\/b\d+$/);
   });
 });
 

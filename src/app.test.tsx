@@ -63,7 +63,8 @@ describe("App", () => {
   it("la Figura 3 como recorrido muestra solo la rama elegida", async () => {
     render(<App />);
     await ir("#/consultar/figura-3");
-    expect(screen.getByText(/Elige un tramo de β-OHB/)).toBeInTheDocument();
+    // 0.70.0: sin rama elegida no hay recuadro vacío; sí los cuatro tramos.
+    expect(screen.getByRole("group", { name: "Tramo de cetonemia" })).toBeInTheDocument();
     const desplazar = vi.spyOn(Element.prototype, "scrollIntoView");
     await userEvent.click(screen.getByRole("button", { name: /^β-OHB 1,0-2,9 mmol\/l/ }));
     expect(screen.getByText(/0,1 UI\/kg/)).toBeInTheDocument();
@@ -130,39 +131,34 @@ describe("App", () => {
     );
   });
 
-  it("para el paciente: información V5, resumen y plan de seguridad sin campos", async () => {
+  it("para el paciente: el PDF, el plan de seguridad sin campos y la hoja de pruebas", async () => {
     render(<App />);
+    // 0.70.0: sin la información en pantalla (el PDF la tiene); la ruta antigua lleva a la pantalla.
     await ir("#/pacientes/informacion");
-    expect(screen.getByText("¿Qué es un sistema de asa cerrada?")).toBeInTheDocument();
+    expect(screen.queryByText("¿Qué es un sistema de asa cerrada?")).toBeNull();
+    expect(screen.getByRole("link", { name: /Información para pacientes/ })).toHaveAttribute(
+      "href",
+      expect.stringMatching(/pdf\/manual-seen-aid-pacientes\.pdf$/),
+    );
     await ir("#/pacientes/plan/op5");
-    // V54-09: arriba, el rótulo del material y el título operativo con el sistema.
-    expect(
-      screen.getByText(/Material complementario · Plantilla de plan de seguridad/),
-    ).toBeInTheDocument();
+    // Que no es una publicación del Manual SEEN, en el pie.
+    expect(screen.getByText(/no es una publicación del Manual/)).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { level: 1, name: "Plan de seguridad · Omnipod 5" }),
     ).toBeInTheDocument();
     // La hoja se rellena a mano: no hay ni un campo de texto.
     expect(document.querySelectorAll("main input, main textarea")).toHaveLength(0);
     expect(screen.getAllByText(/Función Actividad/).length).toBeGreaterThan(0);
+    // La segunda cara: la hoja de cetonas.
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Cetonas: qué hacer según el resultado" }),
+    ).toBeInTheDocument();
   });
 
-  it("las hojas breves para el paciente son extractos literales de la Información", async () => {
+  it("las hojas breves (extractos del PDF) ya no están: la ruta lleva a la pantalla", async () => {
     render(<App />);
     await ir("#/pacientes/hoja/glucosa");
-    expect(
-      screen.getByRole("heading", { level: 1, name: "Si la glucosa baja, o sube y no baja" }),
-    ).toBeInTheDocument();
-    for (const q of [
-      "¿Qué hacer si se tiene hipoglucemia?",
-      "¿Qué hacer si la glucosa está alta y no baja?",
-      "¿Cuándo se debe acudir a urgencias?",
-    ])
-      expect(screen.getByRole("heading", { level: 2, name: q })).toBeInTheDocument();
-    expect(
-      screen.getAllByText(/sospechar fallo de infusión hasta demostrar lo contrario/).length,
-    ).toBeGreaterThan(0);
-    expect(screen.queryByText("¿Qué es un sistema de asa cerrada?")).toBeNull();
+    expect(screen.getByRole("heading", { level: 1, name: "Para el paciente" })).toBeInTheDocument();
   });
 
   it("la versión extendida no se muestra (ni en la lectura ni en las fichas)", async () => {
@@ -186,7 +182,9 @@ describe("App", () => {
     render(<App />);
     await ir("#/sistemas/op5/completa");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Omnipod 5");
-    expect(screen.getByRole("heading", { name: /^Lo esencial · Omnipod 5/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /^Indicación y material · Omnipod 5/ }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /^Parámetros · Omnipod 5/ })).toBeInTheDocument();
     expect(screen.queryByText(/Ampliación técnica · fuera del capítulo/)).toBeNull();
     expect(screen.queryByText(/Insulinas rápidas compatibles/)).toBeNull();
@@ -212,23 +210,21 @@ describe("App", () => {
     );
   });
 
-  it("Diagramas y Figuras van por separado, sin tablas ni sistemas", async () => {
+  it("Figuras y diagramas, en una pantalla, sin tablas ni sistemas ni los tres retirados", async () => {
     render(<App />);
     await ir("#/visual");
-    expect(screen.getByRole("heading", { level: 1, name: "Diagramas" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Figuras y diagramas" }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /^Ampliar/ }).length).toBe(4);
     expect(screen.getByRole("link", { name: /Escala de cetonemia/ })).toHaveAttribute(
       "href",
       "#/visual/cetonemia",
     );
+    for (const fuera of [/Elección compartida/, /Transición desde MDI/, /Exploraciones/])
+      expect(screen.queryByRole("link", { name: fuera })).toBeNull();
     expect(screen.queryByRole("region", { name: "Tablas" })).toBeNull();
     expect(screen.queryByRole("region", { name: "Sistemas" })).toBeNull();
-    expect(screen.queryByRole("button", { name: /^Ampliar/ })).toBeNull();
-    await ir("#/visual/figuras");
-    expect(
-      screen.getByRole("heading", { level: 1, name: "Figuras del capítulo" }),
-    ).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: /^Ampliar/ }).length).toBe(4);
-    expect(screen.queryByRole("link", { name: /Escala de cetonemia/ })).toBeNull();
     expect(screen.queryByText(/Fotos oficiales de producto/)).toBeNull();
   });
 
@@ -250,13 +246,7 @@ describe("App", () => {
     render(<App />);
     await ir("#/capitulo/08-iniciacion");
     const nav = screen.getByRole("navigation", { name: "Recursos visuales del apartado" });
-    for (const t of [
-      "Tabla 2",
-      "Transición desde MDI",
-      "Tabla 3",
-      "Tabla 4",
-      "Calendario de seguimiento",
-    ])
+    for (const t of ["Tabla 2", "Tabla 3", "Tabla 4", "Calendario de seguimiento"])
       expect(within(nav).getByText(t)).toBeInTheDocument();
   });
 

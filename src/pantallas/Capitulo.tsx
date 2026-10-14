@@ -2,17 +2,7 @@
    empezar; debajo, lo que ayuda a comprender y repasar. Y el «capítulo entero» para imprimir
    de una vez. */
 import { useRef } from "react";
-import {
-  ArrowRight,
-  BookOpen,
-  ClipboardCheck,
-  Cpu,
-  ExternalLink,
-  Images,
-  MessageCircleQuestion,
-  Printer,
-  Workflow,
-} from "lucide-react";
+import { ArrowRight, BookOpen, ExternalLink } from "lucide-react";
 import { ICONO_APARTADO } from "../nav";
 import { BIBLIOGRAFIA, APARTADOS, CAPITULO, subapartados } from "../contenido";
 import { href } from "../rutas";
@@ -29,64 +19,11 @@ export function IndiceCapitulo() {
   const hex = CATEGORIA_HEX.leer;
   return (
     <div>
-      <CabeceraEditorial titulo="Leer y comprender" hex={hex} level={1}>
-        {/* En el móvil, una línea: el título y la firma ya están en la portada. */}
-        <p className="text-sm text-slate-600">
-          <span className="hidden sm:inline">
-            {CAPITULO.titulo}. {CAPITULO.autor}.{" "}
-          </span>
-          Capítulo {CAPITULO.numero} del Manual SEEN, publicado el {CAPITULO.fechaFuente}.
-        </p>
-      </CabeceraEditorial>
-      {/* Para comprender, a mano desde el principio (V50-05) y una sola vez (V54-07: sin el
-          bloque repetido de abajo). Las preguntas frecuentes tienen aquí su hogar. */}
-      <nav
-        aria-label="Para comprender"
-        className="no-imprimir mb-4 overflow-hidden rounded-md border bg-white"
-        style={{ borderColor: "#e6e6e6" }}
-      >
-        <div
-          className="px-3 pb-0.5 pt-2 text-xs font-bold uppercase tracking-wide"
-          style={{ color: hex.ink }}
-        >
-          Para comprender
-        </div>
-        <ul
-          className="divide-y sm:grid sm:grid-cols-3 sm:divide-y-0 lg:grid-cols-5"
-          style={{ borderColor: "#eeeeee" }}
-        >
-          {[
-            { t: "Cómo funciona cada sistema", r: href("sistemas", "todos", "funciona"), I: Cpu },
-            { t: "Figuras", r: href("visual", "figuras"), I: Images },
-            { t: "Diagramas", r: href("visual"), I: Workflow },
-            { t: "Preguntas frecuentes", r: href("preguntas"), I: MessageCircleQuestion },
-            { t: "Autoevaluación", r: href("test"), I: ClipboardCheck },
-          ].map((x) => (
-            <li key={x.t}>
-              <a
-                href={x.r}
-                className="flex min-h-11 items-center gap-3 px-3 py-1.5 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
-              >
-                <x.I
-                  size={16}
-                  className="shrink-0"
-                  style={{ color: hex.strong }}
-                  aria-hidden="true"
-                />
-                <span className="min-w-0 flex-1 font-semibold text-slate-900">{x.t}</span>
-                <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      {/* 0.70.0: el índice y nada más arriba (las demás lecturas están en el menú). */}
+      <CabeceraEditorial titulo="Índice del capítulo" hex={hex} level={1} />
       <section aria-labelledby="indice-apartados">
-        <h2
-          id="indice-apartados"
-          className="mb-2 flex flex-wrap items-baseline justify-between gap-x-3 text-sm font-bold uppercase tracking-wide"
-          style={{ color: hex.ink }}
-        >
-          Índice del capítulo
+        <h2 id="indice-apartados" className="sr-only">
+          Apartados
         </h2>
         <ol className="space-y-2">
           {APARTADOS.map((a) => {
@@ -134,12 +71,6 @@ export function IndiceCapitulo() {
           className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-400"
         >
           Bibliografía (pp. 24–25) <ArrowRight size={14} aria-hidden="true" />
-        </a>
-        <a
-          href={href("capitulo", "todo")}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-400"
-        >
-          <Printer size={14} aria-hidden="true" /> Capítulo entero (para imprimir)
         </a>
         <a
           href={href("capitulo", "resumen")}

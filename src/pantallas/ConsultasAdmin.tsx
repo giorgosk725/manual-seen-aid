@@ -45,12 +45,7 @@ export function ConsultasSinRespuesta() {
   };
   return (
     <div className="space-y-4">
-      <CabeceraEditorial titulo="Consultas sin respuesta" hex={CATEGORIA_HEX.confiar} level={1}>
-        <p className="text-sm text-slate-600">
-          Lo que se ha buscado sin encontrar ningún pasaje ni pregunta frecuente: el texto y las
-          veces. Sirve para añadir equivalencias y preguntas frecuentes.
-        </p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo="Consultas sin respuesta" hex={CATEGORIA_HEX.confiar} level={1} />
       <form
         className="flex flex-wrap items-end gap-2"
         onSubmit={(e) => {

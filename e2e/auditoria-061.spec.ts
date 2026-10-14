@@ -85,19 +85,17 @@ test.describe("Situaciones (S61-01/02/06)", () => {
     expect((await antes.boundingBox())!.y).toBeLessThan((await conducta.boundingBox())!.y);
   });
 
-  test("TC: un toque a la interrupción y al plan; la Figura 3 desde cualquier duración", async ({
+  test("TC: un toque a la hoja para el paciente; la Figura 3 desde la interrupción", async ({
     page,
   }) => {
     await page.goto("/#/consultar/situacion/tc");
     await expect(
       page
         .getByRole("region", { name: "Para seguir" })
-        .getByRole("link", { name: /Interrupción del sistema/ }),
+        .getByRole("link", { name: /antes de una prueba o una cirugía/ }),
     ).toBeVisible();
-    await page.goto("/#/consultar/interrupcion/breve");
-    await expect(
-      page.getByRole("link", { name: /se seguirá el algoritmo de la figura 3/ }),
-    ).toBeVisible();
+    await page.goto("/#/consultar/interrupcion");
+    await expect(page.getByRole("link", { name: "Ver la Figura 3" })).toBeVisible();
   });
 });
 
@@ -106,8 +104,10 @@ test.describe("Sistemas (M61-01/02/03)", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/#/sistemas/todos/funciona");
-    await expect(page.getByRole("rowheader", { name: "Hacia qué objetivo" })).toBeVisible();
+    await page.goto("/#/sistemas/ciq/funciona");
+    await expect(page.getByRole("list", { name: "Recorrido de la decisión" })).toContainText(
+      "Hacia el objetivo",
+    );
     await page.goto("/#/sistemas");
     await expect(page.getByText(/no actúa en modo Sueño/).first()).toBeVisible();
     await page.goto("/#/sistemas/camaps/funciona");

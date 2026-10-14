@@ -1,11 +1,11 @@
-/* «Diagramas» (#/visual) y «Figuras» (#/visual/figuras), por separado (13-10-2026): los
-   diagramas hechos con el texto y las figuras originales con visor y zoom. Las tablas y los
-   sistemas tienen su propia entrada (Tablas, Sistemas AID): aquí no se repiten. */
-import { paginasPorApartado } from "../paginasApartado";
-import { ArrowLeft, ArrowRight, Images, Maximize2 } from "lucide-react";
+/* «Figuras y diagramas» (#/visual, 0.70.0): una sola pantalla, las figuras originales con visor y
+   zoom arriba y los diagramas hechos con el texto del capítulo debajo, por temas. Sin los tres que
+   redibujaban una tabla o una figura (diagramasRetirados.ts). */
+import { ArrowRight, Images, Maximize2 } from "lucide-react";
+import { diagramaEnEdicion } from "../diagramasRetirados";
 import { ICONO_DIAGRAMA } from "../nav";
 import { DIAGRAMAS, type DiagramaId } from "../contenido/diagramas";
-import { F1, F2, INFO, apartadoDeFigura, apartadoPorSlug, rutaDeFigura } from "../contenido";
+import { F1, F2, INFO, apartadoDeFigura, rutaDeFigura } from "../contenido";
 import { INFO_F3 } from "../componentes/figura3-imagen";
 import { DiagramaVista } from "../componentes/Diagramas";
 import { AbrirEnVisor } from "../componentes/Visor";
@@ -19,25 +19,18 @@ const FIGURAS_GALERIA = [
   { fig: F1, extra: null as null | { href: string; texto: string } },
   { fig: F2, extra: null },
   { fig: INFO_F3, extra: { href: href("consultar", "figura-3"), texto: "Recorrido paso a paso" } },
-  { fig: INFO, extra: { href: href("consultar", "infografia"), texto: "Infografía como mapa" } },
+  { fig: INFO, extra: null },
 ];
 
 /* La galería de diagramas por temas (13-10-2026): cuatro grupos, cada uno con el color de la
    paleta del Manual; en cada tarjeta, el apartado y las páginas de donde sale. */
 const GRUPOS: { id: string; titulo: string; color: string; tinte: string; ids: DiagramaId[] }[] = [
   {
-    id: "sistemas",
-    titulo: "Sistemas y elección",
+    id: "inicio",
+    titulo: "Sistemas, inicio y seguimiento",
     color: SEEN.azulOsc,
     tinte: "#eef3f9",
-    ids: ["algoritmos", "eleccion"],
-  },
-  {
-    id: "inicio",
-    titulo: "Inicio y seguimiento",
-    color: SEEN.mostazaOsc,
-    tinte: "#fbf4e6",
-    ids: ["transicion", "seguimiento", "objetivos-mcg"],
+    ids: ["algoritmos", "seguimiento", "objetivos-mcg"],
   },
   {
     id: "seguridad",
@@ -51,7 +44,7 @@ const GRUPOS: { id: string; titulo: string; color: string; tinte: string; ids: D
     titulo: "Situaciones especiales",
     color: CATEGORIA_HEX.confiar.ink,
     tinte: CATEGORIA_HEX.confiar.soft,
-    ids: ["ejercicio", "gestacion-sistemas", "hospital", "exploraciones"],
+    ids: ["ejercicio", "gestacion-sistemas", "hospital"],
   },
 ];
 
@@ -73,10 +66,9 @@ function GaleriaDiagramas() {
             {g.titulo}
           </h2>
           <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {g.ids.map((id) => {
+            {g.ids.filter(diagramaEnEdicion).map((id) => {
               const d = DIAGRAMAS.find((x) => x.id === id)!;
               const I = ICONO_DIAGRAMA[d.id];
-              const ap = apartadoPorSlug(d.apartado);
               return (
                 <li key={d.id}>
                   <a
@@ -105,9 +97,6 @@ function GaleriaDiagramas() {
                       <span className="mt-0.5 block text-sm leading-snug text-slate-600">
                         {d.resumen}
                       </span>
-                      <span className="mt-1.5 block text-xs text-slate-500">
-                        {paginasPorApartado(d.paginas, ap?.n)}
-                      </span>
                     </span>
                   </a>
                 </li>
@@ -120,102 +109,84 @@ function GaleriaDiagramas() {
   );
 }
 
-export function Visual({ vista = "diagramas" }: { vista?: "diagramas" | "figuras" }) {
-  const ver = (f: "diagramas" | "figuras") => vista === f;
+export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
   return (
     <div>
-      {vista === "figuras" ? (
-        <CabeceraEditorial titulo="Figuras del capítulo" hex={hex} level={1}>
-          <p className="text-sm text-slate-600">
-            Las figuras originales y la infografía del capítulo, con zoom.
-          </p>
-        </CabeceraEditorial>
-      ) : (
-        <CabeceraEditorial titulo="Diagramas" hex={hex} level={1}>
-          <p className="text-sm text-slate-600">
-            {DIAGRAMAS.length} diagramas que presentan de forma visual el texto del capítulo. Cada
-            dato lleva su página.
-          </p>
-        </CabeceraEditorial>
-      )}
-
-      {ver("diagramas") && <GaleriaDiagramas />}
-
-      {ver("figuras") && (
-        <section aria-label="Figuras del capítulo">
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {FIGURAS_GALERIA.map(({ fig, extra }) => {
-              const ap = apartadoDeFigura(fig.id);
-              const img = fig.imagen!;
-              return (
-                <li
-                  key={fig.id}
-                  className="overflow-hidden rounded-2xl border bg-white shadow-soft"
-                  style={{ borderColor: "#e6e6e6" }}
+      <CabeceraEditorial titulo="Figuras y diagramas" hex={hex} level={1} />
+      <section aria-labelledby="figuras" className="mb-8">
+        <h2
+          id="figuras"
+          className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-600"
+        >
+          <Images size={14} aria-hidden="true" /> Figuras del capítulo
+        </h2>
+        <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {FIGURAS_GALERIA.map(({ fig, extra }) => {
+            const ap = apartadoDeFigura(fig.id);
+            const img = fig.imagen!;
+            return (
+              <li
+                key={fig.id}
+                className="overflow-hidden rounded-2xl border bg-white shadow-soft"
+                style={{ borderColor: "#e6e6e6" }}
+              >
+                <AbrirEnVisor
+                  imagen={{
+                    src: img.src,
+                    alt: img.alt,
+                    titulo: fig.titulo,
+                    nota: `p. ${fig.pagina}`,
+                  }}
+                  className="group relative block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  etiqueta={`Ampliar ${fig.titulo}`}
                 >
-                  <AbrirEnVisor
-                    imagen={{
-                      src: img.src,
-                      alt: img.alt,
-                      titulo: fig.titulo,
-                      nota: `p. ${fig.pagina}`,
-                    }}
-                    className="group relative block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                    etiqueta={`Ampliar ${fig.titulo}`}
-                  >
-                    <img
-                      src={img.src}
-                      alt={img.alt}
-                      loading="lazy"
-                      className="block aspect-[4/3] w-full bg-white object-contain p-2"
-                    />
-                    <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-slate-900/80 px-2 py-1 text-xs font-semibold text-white">
-                      <Maximize2 size={12} aria-hidden="true" /> Ampliar
-                    </span>
-                  </AbrirEnVisor>
-                  <div className="border-t p-3" style={{ borderColor: "#e6e6e6" }}>
-                    <div className="text-sm font-bold text-slate-900">
-                      {fig.titulo.replace(/\.$/, "")}
-                    </div>
-                    <div className="mt-1.5 flex flex-wrap gap-1.5">
-                      <span className="pagina-badge">p. {fig.pagina}</span>
-                      {ap && (
-                        <a
-                          href={rutaDeFigura(fig.id) ?? href("capitulo", ap.slug)}
-                          className="inline-flex min-h-11 items-center rounded-full border border-slate-300 px-2 py-0.5 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-6"
-                        >
-                          Texto en el apartado {ap.n}
-                        </a>
-                      )}
-                      {extra && (
-                        <a
-                          href={extra.href}
-                          className="inline-flex min-h-11 items-center rounded-full px-2 py-0.5 text-xs font-semibold text-white sm:min-h-6"
-                          style={{ background: hex.strong }}
-                        >
-                          {extra.texto}
-                        </a>
-                      )}
-                    </div>
+                  <img
+                    src={img.src}
+                    alt={img.alt}
+                    loading="lazy"
+                    className="block aspect-[4/3] w-full bg-white object-contain p-2"
+                  />
+                  <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-slate-900/80 px-2 py-1 text-xs font-semibold text-white">
+                    <Maximize2 size={12} aria-hidden="true" /> Ampliar
+                  </span>
+                </AbrirEnVisor>
+                <div className="border-t p-3" style={{ borderColor: "#e6e6e6" }}>
+                  <div className="text-sm font-bold leading-snug text-slate-900">
+                    {fig.titulo.replace(/\.$/, "")}
                   </div>
-                </li>
-              );
-            })}
-          </ul>
-          <p className="mt-2 text-xs text-slate-500">
-            Imágenes del capítulo publicado en el Manual SEEN (8-10-2026).
-          </p>
-        </section>
-      )}
+                  <div className="mt-1.5 flex flex-wrap gap-1.5">
+                    {ap && (
+                      <a
+                        href={rutaDeFigura(fig.id) ?? href("capitulo", ap.slug)}
+                        className="inline-flex min-h-11 items-center rounded-full border border-slate-300 px-2 py-0.5 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-6"
+                      >
+                        Apartado {ap.n}, p. {fig.pagina}
+                      </a>
+                    )}
+                    {extra && (
+                      <a
+                        href={extra.href}
+                        className="inline-flex min-h-11 items-center rounded-full px-2 py-0.5 text-xs font-semibold text-white sm:min-h-6"
+                        style={{ background: hex.strong }}
+                      >
+                        {extra.texto}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+      <GaleriaDiagramas />
     </div>
   );
 }
 
 export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }) {
-  const i = DIAGRAMAS.findIndex((d) => d.id === id);
-  if (i < 0) return <Visual />;
-  const prev = DIAGRAMAS[i - 1];
-  const next = DIAGRAMAS[i + 1];
+  const d = DIAGRAMAS.find((x) => x.id === id);
+  if (!d || !diagramaEnEdicion(d.id)) return <Visual />;
   return (
     <div>
       <div className="no-imprimir mb-3 flex items-center gap-2 text-xs text-slate-500">
@@ -223,46 +194,11 @@ export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }
           href={href("visual")}
           className="inline-flex min-h-11 items-center gap-1 font-semibold hover:underline"
         >
-          <Images size={12} aria-hidden="true" /> Diagramas
+          <Images size={12} aria-hidden="true" /> Figuras y diagramas
         </a>
-        <span aria-hidden="true">›</span>
-        <span>
-          Diagrama {i + 1} de {DIAGRAMAS.length}
-        </span>
       </div>
-      <h1 className="sr-only">{DIAGRAMAS[i].titulo}</h1>
-      <DiagramaVista id={DIAGRAMAS[i].id} opcion={opcion} />
-      <nav
-        aria-label="Diagrama anterior y siguiente"
-        className="no-imprimir mt-4 grid gap-2 sm:grid-cols-2"
-      >
-        {prev ? (
-          <a
-            href={href("visual", prev.id)}
-            className="flex min-w-0 items-center gap-2 overflow-hidden rounded-xl border bg-white p-3 shadow-soft"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            <ArrowLeft size={16} className="shrink-0 text-slate-500" aria-hidden="true" />
-            <span className="min-w-0 truncate text-sm font-semibold text-slate-900">
-              {prev.titulo}
-            </span>
-          </a>
-        ) : (
-          <span />
-        )}
-        {next && (
-          <a
-            href={href("visual", next.id)}
-            className="flex min-w-0 items-center justify-end gap-2 overflow-hidden rounded-xl border bg-white p-3 text-right shadow-soft"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            <span className="min-w-0 truncate text-sm font-semibold text-slate-900">
-              {next.titulo}
-            </span>
-            <ArrowRight size={16} className="shrink-0 text-slate-500" aria-hidden="true" />
-          </a>
-        )}
-      </nav>
+      <h1 className="sr-only">{d.titulo}</h1>
+      <DiagramaVista id={d.id} opcion={opcion} />
     </div>
   );
 }

@@ -11,21 +11,12 @@ import { ArrowRight } from "lucide-react";
 import { APARTADOS, F2, TABLAS, rutaDeTabla } from "../contenido";
 import { elegirRuta, href } from "../rutas";
 import { CabeceraEditorial } from "../ui";
-import { Lineas, Texto } from "../texto";
-import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
+import { Texto } from "../texto";
+import { CATEGORIA_HEX } from "../tokens";
 import { FuentePie } from "../componentes/FuentePie";
 import { paginasDe } from "../paginas";
 
 const hex = CATEGORIA_HEX.consultar;
-
-/* Filas de la Tabla 1 que tratan los factores de elección, en este orden. */
-const FILAS_ELECCION = [
-  "Indicación",
-  "Gestación: autorización y evidencia",
-  "Formato",
-  "Sensores compatibles",
-  "Localización del algoritmo",
-] as const;
 
 const enlace =
   "inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8";
@@ -52,14 +43,9 @@ export function Elegir({ antigua = false }: { antigua?: boolean }) {
           Sistemas AID
         </a>
         <span aria-hidden="true">›</span>
-        <span>Explorar criterios de elección</span>
+        <span>Cómo elegir un sistema</span>
       </div>
-      <CabeceraEditorial titulo="Explorar criterios de elección" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          Los factores de la elección según el capítulo y lo que la Tabla 1 dice de cada sistema,
-          celda a celda y en el orden de la tabla.
-        </p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo="Cómo elegir un sistema" hex={hex} level={1} />
 
       <section
         aria-label="Lo que dice el capítulo sobre la elección"
@@ -94,54 +80,18 @@ export function Elegir({ antigua = false }: { antigua?: boolean }) {
             </div>
           ))}
         </div>
-        <a href={href("visual", "eleccion")} className={`mt-1 ${enlace}`}>
-          Figura 2, p. {F2.pagina}: elección compartida <ArrowRight size={13} aria-hidden="true" />
-        </a>
       </section>
 
-      <section aria-labelledby="celdas-t1" className="mt-5">
-        <h2 id="celdas-t1" className="font-display text-lg font-semibold text-slate-900">
-          Lo que dice la Tabla 1 de cada sistema
-        </h2>
-        <p className="mt-1 text-sm text-slate-600">
-          Texto literal de las celdas. «Localización del algoritmo» dice dónde funciona el
-          algoritmo, no desde dónde se maneja el sistema.
-        </p>
-        <div className="mt-3 space-y-4">
-          {FILAS_ELECCION.map((etiqueta) => {
-            const fila = T1.filas.find((f) => f.etiqueta === etiqueta);
-            if (!fila) return null;
-            return (
-              <section
-                key={etiqueta}
-                aria-label={etiqueta}
-                className="rounded-2xl border bg-white p-3"
-                style={{ borderColor: "#e6e6e6" }}
-              >
-                <h3 className="text-sm font-bold text-slate-900">{etiqueta}</h3>
-                <dl className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                  {T1.columnas.map((nombre, c) => (
-                    <div
-                      key={nombre}
-                      className="min-w-0 rounded-lg border-l-4 bg-slate-50 px-3 py-2"
-                      style={{ borderColor: SISTEMA_HEX[c]?.strong ?? "#94a3b8" }}
-                    >
-                      <dt className="text-xs font-bold text-slate-700">{nombre}</dt>
-                      <dd className="mt-0.5 text-sm text-slate-900">
-                        <Lineas>{fila.celdas[c] ?? ""}</Lineas>
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              </section>
-            );
-          })}
-        </div>
+      {/* 0.70.0: sin la repetición de las celdas de la Tabla 1; se comparan en Sistemas. */}
+      <a href={href("sistemas", "todos", "esencial")} className={`mt-4 ${enlace}`}>
+        Comparar los cuatro en la Tabla 1 <ArrowRight size={13} aria-hidden="true" />
+      </a>
+      <section className="mt-2">
         <FuentePie
           fuentes={[
             { texto: `Tabla 1, ${pT1}`, ruta: rutaDeTabla("T1") ?? href("tablas", "T1") },
             { texto: "Apartado 6, p. 6", ruta: href("capitulo", "06-indicaciones") },
-            { texto: `Figura 2, p. ${F2.pagina}`, ruta: href("visual", "eleccion") },
+            { texto: `Figura 2, p. ${F2.pagina}`, ruta: href("visual", "figuras") },
           ]}
         />
       </section>

@@ -45,7 +45,7 @@ function LeerYComprender() {
       id="portada-leer"
       nivel={2}
       titulo="Leer y comprender"
-      resumen="El capítulo completo, sus tablas, sus figuras y diagramas que lo resumen."
+      resumen=""
       icono={BookOpen}
       hex={hex}
     >

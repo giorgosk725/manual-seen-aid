@@ -6,12 +6,7 @@ test.describe("Tablas y sistemas", () => {
   test("Parámetros por sistema: los cuatro en la Tabla 3; marcar uno abre su ficha", async ({
     page,
   }) => {
-    await page.goto("/#/");
-    await page
-      .getByRole("main")
-      .getByRole("link", { name: /^Comparar los parámetros/ })
-      .click();
-    await expect(page).toHaveURL(/#\/sistemas\/todos\/parametros$/);
+    await page.goto("/#/sistemas/todos/parametros");
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Sistemas");
     await expect(page.getByRole("link", { name: "Parámetros", exact: true })).toHaveAttribute(
       "aria-current",
@@ -36,7 +31,6 @@ test.describe("Tablas y sistemas", () => {
   }) => {
     await page.goto("/#/consultar/comparar/minimed-780g+omnipod-5");
     await expect(page).toHaveURL(/#\/sistemas\/mm780\+op5\/esencial$/);
-    await expect(page.getByText(/Comparando MiniMed 780G y Omnipod 5/)).toBeVisible();
     const grupo = page.getByRole("group", { name: "Sistemas" });
     await expect(grupo.getByRole("button", { name: /Omnipod 5/ })).toHaveAttribute(
       "aria-pressed",
@@ -49,65 +43,47 @@ test.describe("Tablas y sistemas", () => {
     await grupo.getByRole("button", { name: /MiniMed 780G/ }).click();
     await expect(page).toHaveURL(/#\/sistemas\/op5\/esencial$/);
     await expect(
-      page.getByRole("heading", { level: 2, name: /^Lo esencial · Omnipod 5/ }),
+      page.getByRole("heading", { level: 2, name: /^Indicación y material · Omnipod 5/ }),
     ).toBeVisible();
   });
 
-  test("la ficha por sección enseña solo esa; el selector añade otro (comparación) o lo quita", async ({
+  // 0.70.0: la ficha es una sola página; la sección de la ruta es adónde se salta.
+  // 0.70.0: la ficha es una sola página; la sección de la ruta es adónde se salta.
+  test("la ficha es una página; el selector añade otro (comparación) o lo quita", async ({
     page,
   }) => {
     await page.goto("/#/sistemas/op5/parametros");
     await expect(
       page.getByRole("heading", { level: 2, name: /^Parámetros · Omnipod 5/ }),
-    ).toBeVisible();
+    ).toBeInViewport();
     await expect(
-      page.getByRole("heading", { level: 2, name: /^Lo esencial · Omnipod 5/ }),
-    ).toBeHidden();
+      page.getByRole("heading", { level: 2, name: /^Cómo funciona · Omnipod 5/ }),
+    ).toHaveCount(1);
+    // Arriba de la ficha, el selector está abierto.
+    await page.goto("/#/sistemas/op5");
+    await page.evaluate(() => window.scrollTo(0, 0));
     const grupo = page.getByRole("group", { name: "Sistemas" });
-    await expect(grupo.getByRole("button", { name: /Omnipod 5/ })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
     await grupo.getByRole("button", { name: /CamAPS/ }).click();
-    await expect(page).toHaveURL(/#\/sistemas\/camaps\+op5\/parametros$/);
-    await expect(page.getByText(/Comparando myLoop CamAPS y Omnipod 5/)).toBeVisible();
-    await expect(page.getByRole("link", { name: "Parámetros", exact: true })).toHaveAttribute(
-      "aria-current",
-      "location",
-    );
-    // V54-04: antes del segundo clic, la barra ya refleja el primero (en CI, más lenta, el clic
-    // podía llegar mientras se volvía a pintar y necesitar un reintento).
+    await expect(page).toHaveURL(/#\/sistemas\/camaps\+op5\/esencial$/);
     await expect(grupo.getByRole("button", { name: /CamAPS/ })).toHaveAttribute(
       "aria-pressed",
       "true",
     );
     await grupo.getByRole("button", { name: /Omnipod 5/ }).click();
-    await expect(grupo.getByRole("button", { name: /Omnipod 5/ })).toHaveAttribute(
-      "aria-pressed",
-      "false",
-    );
-    await expect(page).toHaveURL(/#\/sistemas\/camaps\/parametros$/);
+    await expect(page).toHaveURL(/#\/sistemas\/camaps\/esencial$/);
     await expect(
-      page.getByRole("heading", { level: 2, name: /^Parámetros · myLoop CamAPS/ }),
-    ).toBeVisible();
-    await page.getByRole("link", { name: "Ficha completa" }).click();
-    await expect(page).toHaveURL(/#\/sistemas\/camaps\/completa$/);
-    await expect(
-      page.getByRole("heading", { level: 2, name: /^Lo esencial · myLoop CamAPS/ }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { level: 2, name: /^Parámetros · myLoop CamAPS/ }),
+      page.getByRole("heading", { level: 2, name: /^Indicación y material · myLoop CamAPS/ }),
     ).toBeVisible();
   });
 
-  test("la ficha abre por «Lo esencial»", async ({ page }) => {
+  test("la ficha abre por «Cómo funciona», con todo en la misma página", async ({ page }) => {
     await page.goto("/#/sistemas/op5");
     await expect(
-      page.getByRole("heading", { level: 2, name: /^Lo esencial · Omnipod 5/ }),
+      page.getByRole("heading", { level: 2, name: /^Cómo funciona · Omnipod 5/ }),
     ).toBeVisible();
     await expect(
       page.getByRole("heading", { level: 2, name: /^Parámetros · Omnipod 5/ }),
-    ).toBeHidden();
+    ).toHaveCount(1);
   });
 
   test("UX07-UX08: dos sistemas, la selección se ve y queda en el enlace", async ({ page }) => {
@@ -130,10 +106,6 @@ test.describe("Tablas y sistemas", () => {
     await page.goto("/#/sistemas/ciq/parametros");
     const titulo = page.getByRole("heading", { level: 2, name: /^Parámetros · Tandem Control-IQ/ });
     await expect(titulo).toBeInViewport();
-    await expect(page.getByRole("link", { name: /Los cuatro en la Tabla 3/ })).toHaveAttribute(
-      "href",
-      "#/sistemas/todos/parametros",
-    );
     await expect(page.getByRole("link", { name: "Parámetros", exact: true })).toHaveAttribute(
       "aria-current",
       "location",
@@ -144,7 +116,7 @@ test.describe("Tablas y sistemas", () => {
     page,
   }) => {
     await page.goto("/#/sistemas/mm780/completa");
-    for (const h of [/^Lo esencial · MiniMed 780G/, /^Parámetros · MiniMed 780G/])
+    for (const h of [/^Indicación y material · MiniMed 780G/, /^Parámetros · MiniMed 780G/])
       await expect(page.getByRole("heading", { level: 2, name: h })).toBeVisible();
     await expect(
       page.getByRole("heading", { name: /Ampliación técnica · fuera del capítulo/ }),

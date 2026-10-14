@@ -390,12 +390,7 @@ export function Repaso({ filtro }: { filtro?: string }) {
   const [n, setN] = useState(0);
   return (
     <div>
-      <CabeceraEditorial titulo="Tarjetas de repaso" hex={HEX} level={1}>
-        <p className="text-sm text-slate-600">
-          Cifras y siglas del capítulo, con su página. Lo que recuerdas vuelve más adelante; lo que
-          no, en esta ronda.
-        </p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo="Tarjetas de repaso" hex={HEX} level={1} />
       <Mazos filtro={filtro} />
       <h2 className="sr-only">{nombreDelMazo(filtro)}</h2>
       <div className="my-4 grid grid-cols-3 gap-2" aria-label="Tu avance en este mazo">

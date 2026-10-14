@@ -453,23 +453,14 @@ export function Casos({ id, paso }: { id?: string; paso?: string }) {
           <span aria-hidden="true">›</span>
           <span>{caso.titulo}</span>
         </div>
-        <CabeceraEditorial titulo={caso.titulo} hex={hex} level={1}>
-          <p className="text-sm text-slate-600">
-            {caso.sistema} · {caso.temas} · {caso.paginas}
-          </p>
-        </CabeceraEditorial>
+        <CabeceraEditorial titulo={caso.titulo} hex={hex} level={1} />
         <Nota />
         <CasoVista key={`${caso.id}/${paso ?? ""}`} caso={caso} inicial={Number(paso) - 1 || 0} />
       </div>
     );
   return (
     <div className="space-y-4">
-      <CabeceraEditorial titulo="Casos guiados" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          En cada paso, una opción y lo que indica el capítulo, literal. Personas ficticias, sin
-          dosis calculadas.
-        </p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo="Casos guiados" hex={hex} level={1} />
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {CASOS.map((c) => {
           const pr = progreso[c.id];

@@ -52,24 +52,8 @@ export const MATERIALES: Material[] = [
     version: "—",
     evidencia: "Fecha del pie del PDF; SHA-256 en «Esta versión»",
   },
-  {
-    id: "informacion",
-    estado: "aprobado",
-    nombre: "Información para pacientes, en pantalla",
-    tipo: "transcripcion",
-    fecha: "2026-10-09",
-    version: "0.46.1",
-    evidencia: "Texto idéntico al del PDF publicado (scripts/auditoria/fidelidad_extra.py)",
-  },
-  {
-    id: "extractos",
-    estado: "aprobado",
-    nombre: "Hojas breves: extractos de la Información para pacientes",
-    tipo: "transcripcion",
-    fecha: "2026-10-09",
-    version: "0.19.0",
-    evidencia: "Mismas preguntas y respuestas, sin texto nuevo",
-  },
+  // 0.70.0: sin la información en pantalla ni los extractos (decisión del responsable del
+  // 14-10-2026: en la app, solo el PDF publicado).
   {
     id: "hoja-cetonas",
     estado: "aprobado",
@@ -98,9 +82,9 @@ export const MATERIALES: Material[] = [
     nombre: "Plantillas del plan de seguridad (cuatro sistemas)",
     tipo: "plantilla",
     fecha: "2026-10-14",
-    version: "0.65.3",
+    version: "0.70.0",
     evidencia:
-      "Solo texto literal del capítulo (pp. 7-9, Figura 3 y Tabla 4); revisión clínica y visual del 13-10-2026 (delegada), a letra grande; el 13-10-2026 el responsable aprobó el título operativo y el recuadro de urgencia en la primera cara; el 14-10-2026, que el registro de los hidratos en CamAPS FX vaya solo en su plan",
+      "Solo texto literal del capítulo (pp. 7-9, Figura 3 y Tabla 4); revisión clínica y visual del 13-10-2026 (delegada), a letra grande; el 13-10-2026 el responsable aprobó el título operativo y el recuadro de urgencia en la primera cara; el 14-10-2026, que el registro de los hidratos en CamAPS FX vaya solo en su plan, y la simplificación (0.70.0, «sí a todo»): una cara con lo esencial y la hoja de cetonas aprobada como segunda cara",
   },
   {
     id: "calculadora",

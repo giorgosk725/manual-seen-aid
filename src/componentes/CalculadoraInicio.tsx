@@ -9,13 +9,9 @@ import type { ReactNode } from "react";
 import {
   Activity,
   AlertTriangle,
-  ArrowRight,
   Calculator,
-  CalendarCheck,
-  Check,
   Moon,
   Pen,
-  Power,
   RefreshCw,
   Repeat,
   ShieldCheck,
@@ -396,49 +392,6 @@ export function CalculadoraInicio({
 
   return (
     <div className="space-y-5">
-      {/* La calculadora es una ayuda dentro del inicio: el respaldo, la activación y el
-          calendario, a un toque (I61-04/08). */}
-      <nav
-        aria-label="El resto del inicio"
-        className="overflow-hidden rounded-md border bg-white"
-        style={{ borderColor: "#e6e6e6" }}
-      >
-        <div
-          className="px-3 pb-0.5 pt-2 text-xs font-bold uppercase tracking-wide"
-          style={{ color: hex.ink }}
-        >
-          El resto del inicio
-        </div>
-        <ul className="grid grid-cols-2 sm:grid-cols-4" style={{ borderColor: "#eeeeee" }}>
-          {[
-            { t: "Preparación", r: ruta("preparacion"), I: Check },
-            { t: "Plan de respaldo", r: ruta("inicio", "respaldo"), I: ShieldCheck },
-            { t: "Activar el automático", r: ruta("inicio", "arranque"), I: Power },
-            {
-              t: "Calendario de revisiones",
-              r: ruta("primeros-meses", "calendario"),
-              I: CalendarCheck,
-            },
-          ].map((x) => (
-            <li key={x.t}>
-              <a
-                href={x.r}
-                className="flex min-h-11 items-center gap-2 px-3 py-1.5 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
-              >
-                <x.I
-                  size={15}
-                  className="shrink-0"
-                  style={{ color: hex.strong }}
-                  aria-hidden="true"
-                />
-                <span className="min-w-0 flex-1 font-semibold text-slate-900">{x.t}</span>
-                <ArrowRight size={13} className="shrink-0 text-slate-400" aria-hidden="true" />
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
       <Paso n={1} titulo="¿De qué tratamiento viene?">
         <div className="grid grid-cols-3 gap-2">
           {(

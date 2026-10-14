@@ -43,12 +43,7 @@ const ICONO_TABLA: Record<string, LucideIcon> = {
 function IndiceTablas() {
   return (
     <div>
-      <CabeceraEditorial titulo="Tablas del capítulo" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          Las seis tablas, con la pregunta que responde cada una; las de sistemas se filtran por
-          sistema.
-        </p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo="Tablas del capítulo" hex={hex} level={1} />
       {/* 13-10-2026: la pregunta que responde cada tabla, delante y en negrita; el título del
           capítulo debajo, como referencia. Un icono por tabla. */}
       <ul className="grid gap-2 sm:grid-cols-2">
@@ -117,9 +112,7 @@ function TablaPantalla({ tid, seleccion }: { tid: TablaId; seleccion?: string })
         <span aria-hidden="true">›</span>
         <span>Tabla {tabla.numero}</span>
       </div>
-      <CabeceraEditorial titulo={`Tabla ${tabla.numero}`} hex={hex} level={1}>
-        <p className="text-sm text-slate-600">{PREGUNTA_TABLA[tid]}</p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo={`Tabla ${tabla.numero}`} hex={hex} level={1} />
       <div className="no-imprimir mb-4 overflow-x-auto">
         <Segmented
           label="Otra tabla"
@@ -172,11 +165,7 @@ function TablaPantalla({ tid, seleccion }: { tid: TablaId; seleccion?: string })
 export function Figura3Pantalla({ tramo }: { tramo?: string }) {
   return (
     <div>
-      <CabeceraEditorial titulo="Hiperglucemia y cetonemia" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          La Figura 3 del capítulo, como recorrido. El color de cada tramo es el de la figura.
-        </p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo="Hiperglucemia y cetonemia" hex={hex} level={1} />
       <div
         className="rounded-2xl border bg-white p-4 shadow-soft"
         style={{ borderColor: "#e6e6e6" }}
@@ -223,11 +212,7 @@ const DESTINO_INFO: Record<number, { slug: string; detalle?: string; etiqueta: s
 export function Infografia() {
   return (
     <div>
-      <CabeceraEditorial titulo="Infografía" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          {INFO.cabecera} (p. {INFO.pagina}). Cada bloque lleva al apartado que lo desarrolla.
-        </p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo="Infografía" hex={hex} level={1} />
       <ol className="grid gap-3 md:grid-cols-2">
         {INFO.cajas.map((c, i) => {
           const dest = DESTINO_INFO[i] || [];

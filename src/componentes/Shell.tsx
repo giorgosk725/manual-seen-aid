@@ -13,11 +13,10 @@ import {
 import {
   AArrowDown,
   AArrowUp,
-  BookOpen,
   ChevronDown,
   ChevronLeft,
-  Columns3,
-  HeartHandshake,
+  Cpu,
+  LifeBuoy,
   Home,
   Menu,
   Moon,
@@ -27,7 +26,7 @@ import {
 } from "lucide-react";
 import { APARTADOS, CAPITULO } from "../contenido";
 import { contextoDeRuta } from "../contexto";
-import { CONSULTA_RAPIDA, DESTINOS, MENU, areaDe, destinoActivo, type Area } from "../nav";
+import { DESTINOS, MENU, areaDe, destinoActivo } from "../nav";
 import {
   consumirNavegacionNueva,
   href,
@@ -550,9 +549,6 @@ function Lateral({ ruta }: { ruta: Ruta }) {
       </a>
       <BuscadorLateral />
       <MenuNavegacion ruta={ruta} etiqueta="Navegación principal" />
-      <div className="mt-auto px-3 pt-6 text-xs leading-relaxed text-slate-500">
-        No sustituye la ficha técnica de cada sistema ni el juicio clínico.
-      </div>
     </aside>
   );
 }
@@ -590,77 +586,39 @@ function BuscadorLateral() {
   );
 }
 
-/* ---------- Barra inferior (móvil): cinco áreas ----------
-   «Consultar» abre una hoja con las tareas de consulta (Sistemas, Situaciones, Figura 3,
-   Iniciar, Descarga…): a dos toques desde cualquier pantalla. */
-const AREAS: { area: Area; etiqueta: string; href?: string; icono: typeof Home }[] = [
-  { area: "inicio", etiqueta: "Inicio", href: "#/", icono: Home },
-  { area: "consultar", etiqueta: "Consultar", icono: Columns3 },
-  { area: "leer", etiqueta: "Leer", href: href("capitulo"), icono: BookOpen },
-  { area: "pacientes", etiqueta: "Paciente", href: href("pacientes"), icono: HeartHandshake },
-  { area: "buscar", etiqueta: "Buscar", href: href("buscar"), icono: Search },
+/* ---------- Barra inferior (móvil): cinco botones (0.70.0) ----------
+   Inicio · Sistemas · Situaciones · Buscar · Más («Más» abre el menú, el mismo del lateral). Sin
+   hoja «Consultar» ni menú arriba: una sola forma de llegar a cada sitio. */
+type Boton = "inicio" | "sistemas" | "situaciones" | "buscar" | "mas";
+const BOTONES: { id: Boton; etiqueta: string; href?: string; icono: typeof Home }[] = [
+  { id: "inicio", etiqueta: "Inicio", href: "#/", icono: Home },
+  { id: "sistemas", etiqueta: "Sistemas", href: href("sistemas"), icono: Cpu },
+  {
+    id: "situaciones",
+    etiqueta: "Situaciones",
+    href: href("consultar", "situacion"),
+    icono: LifeBuoy,
+  },
+  { id: "buscar", etiqueta: "Buscar", href: href("buscar"), icono: Search },
+  { id: "mas", etiqueta: "Más", icono: Menu },
 ];
-
-function HojaConsultar({
-  open,
-  onClose,
-  ruta,
-}: {
-  open: boolean;
-  onClose: () => void;
-  ruta: Ruta;
-}) {
-  return (
-    <Modal open={open} onClose={onClose} ariaLabel="Consultar" maxW="max-w-md">
-      <div className="p-3">
-        <div className="flex items-center justify-between">
-          <div className="px-3 text-sm font-bold text-slate-800">Consultar</div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Cerrar"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-          >
-            <X size={18} />
-          </button>
-        </div>
-        {CONSULTA_RAPIDA.map((g) => (
-          <div key={g.titulo} className="mt-2">
-            <div className="etiqueta-area px-3 text-[11px] text-slate-500">{g.titulo}</div>
-            <ul className="mt-0.5">
-              {g.ids.map((id) => {
-                const d = DESTINOS.find((x) => x.id === id)!;
-                const I = d.icono;
-                const on = destinoActivo(id, ruta);
-                return (
-                  <li key={id}>
-                    <a
-                      href={d.href}
-                      onClick={onClose}
-                      aria-current={on ? "page" : undefined}
-                      className={`flex min-h-11 items-center gap-2.5 rounded-md px-3 text-[14px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-800 hover:bg-slate-50"}`}
-                    >
-                      <I
-                        size={16}
-                        aria-hidden="true"
-                        style={{ color: CATEGORIA_HEX[d.cat].strong }}
-                      />
-                      {d.etiqueta}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </Modal>
-  );
+/* El botón que corresponde a la pantalla: las conductas (situaciones, cetonas, hipoglucemia,
+   interrupción) van con «Situaciones»; lo que no está en la barra, con «Más». */
+function botonDe(ruta: Ruta): Boton {
+  if (ruta.seccion === "") return "inicio";
+  if (ruta.seccion === "sistemas") return "sistemas";
+  if (ruta.seccion === "buscar") return "buscar";
+  if (
+    (ruta.seccion === "consultar" &&
+      ["situacion", "figura-3", "interrupcion"].includes(ruta.sub ?? "")) ||
+    (ruta.seccion === "visual" && ruta.sub === "hipoglucemia")
+  )
+    return "situaciones";
+  return "mas";
 }
 
-function Inferior({ ruta }: { ruta: Ruta }) {
-  const actual = areaDe(ruta.seccion);
-  const [hoja, setHoja] = useState(false);
+function Inferior({ ruta, onMas }: { ruta: Ruta; onMas: () => void }) {
+  const actual = botonDe(ruta);
   const clase = (on: boolean) =>
     `flex min-h-14 w-full flex-col items-center justify-center gap-0.5 py-1.5 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`;
   return (
@@ -670,11 +628,11 @@ function Inferior({ ruta }: { ruta: Ruta }) {
       style={{ borderColor: "#e6e6e6", paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <ul className="grid grid-cols-5">
-        {AREAS.map((it) => {
+        {BOTONES.map((it) => {
           const I = it.icono;
-          const on = it.area === actual;
+          const on = it.id === actual;
           return (
-            <li key={it.area}>
+            <li key={it.id}>
               {it.href ? (
                 <a
                   href={it.href}
@@ -688,9 +646,8 @@ function Inferior({ ruta }: { ruta: Ruta }) {
               ) : (
                 <button
                   type="button"
-                  onClick={() => setHoja(true)}
+                  onClick={onMas}
                   aria-haspopup="dialog"
-                  aria-expanded={hoja}
                   aria-current={on ? "page" : undefined}
                   className={clase(on)}
                   style={on ? { color: SEEN.burdeos } : undefined}
@@ -703,7 +660,6 @@ function Inferior({ ruta }: { ruta: Ruta }) {
           );
         })}
       </ul>
-      <HojaConsultar open={hoja} onClose={() => setHoja(false)} ruta={ruta} />
     </nav>
   );
 }
@@ -893,14 +849,6 @@ export function Shell({
         style={{ borderColor: "#e6e6e6" }}
       >
         <div className="mx-auto flex h-14 max-w-5xl items-center gap-2 px-3 sm:px-5">
-          <button
-            type="button"
-            onClick={() => setCajon(true)}
-            aria-label="Menú"
-            className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
-          >
-            <Menu size={20} />
-          </button>
           <a
             href="#/"
             aria-label="Manual de Endocrinología y Nutrición, complemento interactivo: inicio"
@@ -908,10 +856,8 @@ export function Shell({
           >
             <Rotulo compacto breve={enLectura} />
           </a>
-          <span className="hidden min-w-0 flex-1 truncate text-sm text-slate-600 md:block">
-            {titulo || (ruta.seccion === "" ? "" : CAPITULO.tituloCorto)}
-          </span>
-          <span className="flex-1 md:hidden" />
+          {/* Sin el título de la pantalla en la barra (repetía el H1, 0.70.0). */}
+          <span className="flex-1" />
           {enLectura && (
             <div
               className="flex items-center max-[359px]:hidden"
@@ -984,7 +930,7 @@ export function Shell({
           </ErrorBoundary>
         </div>
       </main>
-      <Inferior ruta={ruta} />
+      <Inferior ruta={ruta} onMas={() => setCajon(true)} />
       <Cajon open={cajon} onClose={cerrarCajon} ruta={ruta} />
       <Paleta open={paleta} onClose={cerrarPaleta} />
       <VolverArriba />

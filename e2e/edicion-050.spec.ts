@@ -4,38 +4,42 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Portada y navegación (0.50)", () => {
-  test("móvil: «Consultar» en la barra inferior abre las tareas de consulta", async ({ page }) => {
+  // 0.70.0: la barra inferior es Inicio · Sistemas · Situaciones · Buscar · Más.
+  test("móvil: la barra inferior lleva a Sistemas y Situaciones; «Más» abre el menú", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 393, height: 852 });
     await page.goto("/#/capitulo/09-descarga");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     const barra = page.getByRole("navigation", { name: "Barra inferior" });
-    await expect(barra.getByRole("link")).toHaveCount(4);
-    await barra.getByRole("button", { name: "Consultar" }).click();
-    const hoja = page.getByRole("dialog", { name: "Consultar" });
-    for (const n of [
-      "Sistemas AID",
+    await expect(barra.getByRole("link")).toHaveText([
+      "Inicio",
+      "Sistemas",
       "Situaciones",
-      "Hiperglucemia y cetonemia",
-      "Revisar la descarga",
-      "Tablas",
-    ])
-      await expect(hoja.getByRole("link", { name: n, exact: true })).toBeVisible();
-    await hoja.getByRole("link", { name: "Hiperglucemia y cetonemia", exact: true }).click();
-    await expect(page).toHaveURL(/#\/consultar\/figura-3$/);
-    await expect(barra.getByRole("button", { name: "Consultar" })).toHaveAttribute(
+      "Buscar",
+    ]);
+    await barra.getByRole("link", { name: "Situaciones" }).click();
+    await expect(page).toHaveURL(/#\/consultar\/situacion$/);
+    await expect(barra.getByRole("link", { name: "Situaciones" })).toHaveAttribute(
       "aria-current",
       "page",
     );
+    await barra.getByRole("button", { name: "Más" }).click();
+    const menu = page.getByRole("dialog", { name: "Menú" });
+    for (const n of ["Hiperglucemia y cetonemia", "Índice del capítulo", "Para el paciente"])
+      await expect(menu.getByRole("link", { name: n, exact: true })).toBeVisible();
   });
 
-  test("un nombre para la lectura: «Leer y comprender» (la barra inferior, «Leer»)", async ({
-    page,
-  }) => {
+  test("la lectura: «Índice del capítulo», en el menú «Leer y comprender»", async ({ page }) => {
     await page.setViewportSize({ width: 393, height: 852 });
     await page.goto("/#/capitulo");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Leer y comprender");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Índice del capítulo");
+    await page
+      .getByRole("navigation", { name: "Barra inferior" })
+      .getByRole("button", { name: "Más" })
+      .click();
     await expect(
-      page.getByRole("navigation", { name: "Barra inferior" }).getByRole("link", { name: "Leer" }),
+      page.getByRole("dialog", { name: "Menú" }).getByText("Leer y comprender"),
     ).toBeVisible();
   });
 
@@ -82,10 +86,16 @@ test.describe("Portada y navegación (0.50)", () => {
       return pequenos;
     };
     const mapa = page.locator("section[aria-labelledby^='mapa-'] a");
-    const barra = page.getByRole("navigation", { name: "Barra inferior" }).getByRole("link");
+    const barra = page
+      .getByRole("navigation", { name: "Barra inferior" })
+      .getByRole("link")
+      .or(page.getByRole("navigation", { name: "Barra inferior" }).getByRole("button"));
     expect(await medir(mapa)).toEqual([]);
     expect(await medir(barra)).toEqual([]);
-    await page.getByRole("button", { name: "Menú", exact: true }).click();
+    await page
+      .getByRole("navigation", { name: "Barra inferior" })
+      .getByRole("button", { name: "Más" })
+      .click();
     const menu = page.getByRole("dialog").getByRole("link");
     expect(await medir(menu)).toEqual([]);
   });

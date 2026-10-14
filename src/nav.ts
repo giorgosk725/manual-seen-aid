@@ -12,7 +12,6 @@ import {
   Columns3,
   Cpu,
   Droplets,
-  Files,
   FileText,
   FlaskConical,
   Footprints,
@@ -36,7 +35,6 @@ import {
   Route,
   ScanLine,
   Search,
-  ShieldCheck,
   SlidersHorizontal,
   Table2,
   Target,
@@ -65,7 +63,7 @@ export interface Destino {
 export const DESTINOS: Destino[] = [
   {
     id: "visual",
-    etiqueta: "Diagramas",
+    etiqueta: "Figuras y diagramas",
     corto: "Diagramas",
     href: href("visual"),
     icono: Workflow,
@@ -93,7 +91,7 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "elegir",
-    etiqueta: "Explorar criterios de elección",
+    etiqueta: "Cómo elegir un sistema",
     corto: "Criterios",
     href: href("sistemas", "elegir"),
     icono: Handshake,
@@ -104,7 +102,7 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "comparar",
-    etiqueta: "Comparar lo esencial",
+    etiqueta: "Comparar los cuatro",
     corto: "Comparar",
     href: href("sistemas", "todos", "esencial"),
     icono: Columns3,
@@ -241,38 +239,6 @@ export const DESTINOS: Destino[] = [
     cat: "pacientes",
     descripcion: "El PDF de la Información para pacientes publicado por el Manual SEEN.",
   },
-  // Las tres entradas del bloque «Para el paciente» del mapa (no van en el menú).
-  {
-    id: "pac-informacion",
-    etiqueta: "Información para pacientes (y su PDF)",
-    corto: "Información",
-    href: href("pacientes", "informacion"),
-    icono: FileText,
-    cat: "pacientes",
-    descripcion: "Las doce preguntas y respuestas y el mensaje final, para imprimir o descargar.",
-    fuente: "Información para pacientes",
-  },
-  {
-    id: "pac-plan",
-    etiqueta: "Plan de seguridad por sistema",
-    corto: "Plan",
-    href: href("pacientes", "plan"),
-    icono: ShieldCheck,
-    cat: "pacientes",
-    descripcion: "El plan de seguridad del capítulo para el sistema de la persona, con huecos.",
-    fuente: "Plan de seguridad",
-  },
-  {
-    id: "pac-hojas",
-    etiqueta: "Hojas y planes para entregar",
-    corto: "Hojas",
-    href: href("pacientes"),
-    icono: Files,
-    cat: "pacientes",
-    descripcion:
-      "Hojas breves (cetonas, pruebas y cirugía…), plantillas del plan de seguridad y la versión en pantalla.",
-    fuente: "Hojas para imprimir",
-  },
   {
     id: "pacientes",
     etiqueta: "Para el paciente",
@@ -283,17 +249,6 @@ export const DESTINOS: Destino[] = [
     descripcion:
       "La Información para pacientes publicada por el Manual SEEN y material complementario: hojas breves y plantillas del plan de seguridad, con letra grande.",
     fuente: "Hojas para imprimir",
-  },
-  {
-    id: "plan",
-    etiqueta: "Plan de seguridad por sistema",
-    corto: "Plan",
-    href: href("pacientes", "plan"),
-    icono: ShieldCheck,
-    cat: "pacientes",
-    descripcion:
-      "La hoja del plan de seguridad de cada sistema, hecha solo con texto del capítulo, para rellenar a mano.",
-    fuente: "Figura 3 y Tabla 4",
   },
   {
     id: "bibliografia",
@@ -346,23 +301,29 @@ export const DESTINOS: Destino[] = [
   },
 ];
 
-/* El mapa de consulta (portada): cuatro bloques, cada uno con la pregunta que responde. */
-export const MAPA_CONSULTA: { id: string; titulo: string; ids: string[]; ancho?: boolean }[] = [
-  {
-    id: "sistemas",
-    titulo: "¿Qué sistema y cómo se ajusta?",
-    ids: ["sistemas", "elegir", "comparar", "parametros"],
-  },
+/* El mapa de consulta (portada, 0.70.0): cuatro bloques, cada uno con la pregunta que responde.
+   `etiquetas` cambia el nombre de una entrada solo aquí («Todas las situaciones»). */
+export const MAPA_CONSULTA: {
+  id: string;
+  titulo: string;
+  ids: string[];
+  etiquetas?: Record<string, string>;
+  ancho?: boolean;
+}[] = [
+  { id: "sistemas", titulo: "¿Qué sistema y cómo se ajusta?", ids: ["comparar"] },
   {
     id: "situaciones",
     titulo: "¿Qué hago en esta situación?",
-    ids: ["situacion", "figura-3", "hipoglucemia", "interrupcion"],
+    ids: ["figura-3", "hipoglucemia", "interrupcion", "situacion"],
+    etiquetas: { situacion: "Todas las situaciones" },
   },
-  // Los cuatro bloques, como la pregunta que responden (13-10-2026).
   { id: "en-consulta", titulo: "¿Cómo lo inicio y lo reviso?", ids: ["inicio", "descarga"] },
-  // El PDF publicado, a un toque; y el resto del material para el paciente.
-  // (0.53.0: sin «Para el paciente» dentro de «Para el paciente».)
-  { id: "pacientes", titulo: "¿Qué le doy al paciente?", ids: ["pdf-pacientes", "pac-hojas"] },
+  {
+    id: "pacientes",
+    titulo: "¿Qué le doy al paciente?",
+    ids: ["pdf-pacientes", "pacientes"],
+    etiquetas: { pacientes: "Planes de seguridad y hojas" },
+  },
 ];
 
 /* Navegación global: cuatro áreas en la barra inferior (Inicio · Leer · Paciente · Buscar).
@@ -395,25 +356,24 @@ export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
   {
     area: "inicio",
     titulo: "Consultar",
-    ids: ["sistemas", "situacion", "figura-3", "inicio", "descarga"],
+    ids: [
+      "sistemas",
+      "figura-3",
+      "hipoglucemia",
+      "interrupcion",
+      "situacion",
+      "inicio",
+      "descarga",
+    ],
   },
   {
     area: "leer",
     titulo: "Leer y comprender",
-    ids: ["capitulo", "tablas", "figuras", "visual", "preguntas", "casos", "repaso", "test"].filter(
+    ids: ["capitulo", "tablas", "visual", "preguntas", "casos", "repaso", "test"].filter(
       (id) => !retirado(id),
     ),
   },
   { area: "pacientes", titulo: "Recursos", ids: ["pacientes", "bibliografia", "sobre"] },
-];
-
-/* La hoja «Consultar» de la barra inferior del móvil: las tareas de consulta, a dos toques desde
-   cualquier pantalla, y debajo lo que más se busca al lado (tablas y preguntas frecuentes). */
-export const CONSULTA_RAPIDA: { titulo: string; ids: string[] }[] = [
-  { titulo: "Sistemas", ids: ["sistemas", "comparar", "parametros", "elegir"] },
-  { titulo: "Situaciones", ids: ["situacion", "figura-3", "interrupcion"] },
-  { titulo: "En la consulta", ids: ["inicio", "descarga"] },
-  { titulo: "También", ids: ["tablas", "preguntas"] },
 ];
 
 /* ¿Está activo este destino en esta ruta? (un único criterio para lateral, menú y hubs).
@@ -426,7 +386,8 @@ export function destinoActivo(
   if (id === "capitulo") return ruta.seccion === "capitulo";
   // Figuras (#/visual/figuras) y Diagramas (#/visual y #/visual/<diagrama>) comparten sección.
   if (id === "figuras") return ruta.seccion === "visual" && ruta.sub === "figuras";
-  if (id === "visual") return ruta.seccion === "visual" && ruta.sub !== "figuras";
+  // «Figuras y diagramas»: una sola entrada (0.70.0); la hipoglucemia es de Consultar.
+  if (id === "visual") return ruta.seccion === "visual" && ruta.sub !== "hipoglucemia";
   const d = DESTINOS.find((x) => x.id === id);
   if (!d) return false;
   const [seccion, sub] = d.href.replace(/^#\//, "").split("/");

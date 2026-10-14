@@ -76,9 +76,6 @@ const Visual = lazy(() => visual().then((m) => ({ default: m.Visual })));
 
 const pacientes = () => import("./pantallas/Pacientes");
 const HubPacientes = lazy(() => pacientes().then((m) => ({ default: m.HubPacientes })));
-const InformacionPacientes = lazy(() =>
-  pacientes().then((m) => ({ default: m.InformacionPacientes })),
-);
 const PlanSeguridad = lazy(() => pacientes().then((m) => ({ default: m.PlanSeguridad })));
 const HojaPacientes = lazy(() => pacientes().then((m) => ({ default: m.HojaPacientes })));
 const ResumenPacientes = lazy(() => pacientes().then((m) => ({ default: m.ResumenPacientes })));
@@ -283,22 +280,17 @@ export default function App() {
       titulo = "Tarjetas de repaso";
       break;
     case "pacientes":
-      if (ruta.sub === "informacion") {
-        pantalla = <InformacionPacientes />;
-        titulo = "Información para pacientes";
-      } else if (ruta.sub === "resumen") {
-        pantalla = <ResumenPacientes />;
-        titulo = "Resumen del capítulo";
-      } else if (ruta.sub === "plan") {
+      // 0.70.0: sin información en pantalla ni resumen aquí (rutas antiguas, a la pantalla).
+      if (ruta.sub === "plan") {
         pantalla = <PlanSeguridad sistema={ruta.detalle} />;
         titulo = "Plan de seguridad";
       } else if (ruta.sub === "hoja") {
         pantalla = <HojaPacientes id={ruta.detalle} />;
         titulo = "Hoja para el paciente";
-      } else if (!ruta.sub) {
+      } else {
         pantalla = <HubPacientes />;
         titulo = "Para el paciente";
-      } else pantalla = <NoEncontrada />;
+      }
       break;
     case "mas":
       pantalla = <Sobre />;

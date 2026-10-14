@@ -111,9 +111,7 @@ test("móvil a 320 px: ninguna pantalla se desplaza de lado", async ({ page }) =
 
 /* V54-13: también en estados que no son la pantalla recién abierta: una búsqueda con texto,
    todos los plegables abiertos y el menú Consultar abierto a 320 × 640. */
-test("móvil: búsqueda con texto, plegables abiertos y menú Consultar a 320 px", async ({
-  page,
-}) => {
+test("móvil: búsqueda con texto, plegables abiertos y menú «Más» a 320 px", async ({ page }) => {
   test.setTimeout(180000);
   const fallos: string[] = [];
   const revisar = async (donde: string) => {
@@ -145,9 +143,9 @@ test("móvil: búsqueda con texto, plegables abiertos y menú Consultar a 320 px
   await abrir(page, "#/");
   await page
     .getByRole("navigation", { name: "Barra inferior" })
-    .getByRole("button", { name: "Consultar" })
+    .getByRole("button", { name: "Más" })
     .click();
   await expect(page.getByRole("dialog")).toBeVisible();
-  await revisar("menú Consultar a 320 px");
+  await revisar("menú «Más» a 320 px");
   expect(fallos, fallos.join("\n")).toEqual([]);
 });

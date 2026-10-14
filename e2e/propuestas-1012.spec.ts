@@ -20,23 +20,10 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     await expect(page.getByLabel("Texto a buscar")).toHaveValue("modo sueño");
   });
 
-  test("Cómo funciona comparado es una cuadrícula con los sistemas una sola vez", async ({
-    page,
-  }) => {
-    await page.goto("/#/sistemas/todos/funciona");
-    const tabla = page.getByRole("table", { name: "Cómo funciona, comparado" });
-    await expect(tabla).toBeVisible();
-    await expect(tabla.getByRole("columnheader", { name: /Omnipod 5/ })).toHaveCount(1);
-    await expect(tabla.getByRole("rowheader", { name: /Cómo decide y se adapta/ })).toBeVisible();
-  });
-
-  test("Para el paciente ofrece el PDF oficial para descargar", async ({ page }) => {
+  test("Para el paciente ofrece el PDF oficial", async ({ page }) => {
     await page.goto("/#/pacientes");
-    const pdf = page.getByRole("link", {
-      name: /Información para pacientes · PDF publicado por el Manual SEEN/,
-    });
+    const pdf = page.getByRole("link", { name: /Información para pacientes/ });
     await expect(pdf).toHaveAttribute("href", /pdf\/manual-seen-aid-pacientes\.pdf$/);
-    await expect(pdf).toHaveAttribute("download", "");
   });
 
   test("Ingreso hospitalario y gestación se consultan por los momentos del capítulo", async ({

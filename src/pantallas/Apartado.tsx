@@ -2,6 +2,7 @@
    (área, título en mayúsculas finas, ficha de color con el número), índice «En este
    apartado», barra de progreso, columna de lectura, paginación en círculos,
    anterior/siguiente e impresión. */
+import { diagramaEnEdicion } from "../diagramasRetirados";
 import { useEffect, useRef, useState } from "react";
 import { guardarUltimo } from "../prefs";
 import {
@@ -15,7 +16,6 @@ import {
 import {
   APARTADOS,
   DIAGRAMAS,
-  FIGURA3,
   FIGURAS,
   TABLAS,
   idDeBloque,
@@ -23,12 +23,10 @@ import {
   type Apartado as TApartado,
 } from "../contenido";
 import { ICONO_APARTADO, ICONO_DIAGRAMA } from "../nav";
-import { CIFRAS } from "../contenido/cifras";
 import { href } from "../rutas";
 import { BotonImprimir } from "../ui";
 import { CATEGORIA_HEX, SEEN, colorApartado } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
-import { retirado } from "../edicion";
 
 /* Recorridos de consulta que desarrollan cada apartado (los mismos de «Consultar»). */
 const RECORRIDOS: Record<string, { texto: string; ruta: string }[]> = {
@@ -96,11 +94,6 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
   const prev = APARTADOS[i - 1];
   const next = APARTADOS[i + 1];
   const subs = subapartados(apartado);
-  const cifras = CIFRAS[apartado.slug] || [];
-  // Las cifras, abiertas salvo en el móvil (allí, plegadas para que el texto empiece antes).
-  const [cifrasAbiertas, setCifrasAbiertas] = useState(
-    () => !window.matchMedia?.("(max-width: 767px)").matches,
-  );
   // Lo mismo para «En este apartado» (subapartados y recursos).
   const [localAbierto, setLocalAbierto] = useState(
     () => !window.matchMedia?.("(max-width: 767px)").matches,
@@ -121,6 +114,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         },
       ];
     if (b.t === "diagrama") {
+      if (!diagramaEnEdicion(b.id)) return [];
       const d = DIAGRAMAS.find((x) => x.id === b.id)!;
       return [{ ancla, icono: ICONO_DIAGRAMA[b.id], texto: d.titulo, tipo: "Diagrama" }];
     }
@@ -149,12 +143,6 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
           >
             Índice
           </a>
-          <span aria-hidden="true" className="text-slate-400">
-            ›
-          </span>
-          <span className="text-slate-500">
-            Apartado {apartado.n} de {APARTADOS.length}
-          </span>
         </div>
         <div className="flex items-start gap-3 sm:gap-4">
           <span
@@ -216,7 +204,10 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                   ·{" "}
                   {[
                     subs.length && `${subs.length} subapartados`,
-                    recursos.length && `${recursos.length} tablas, figuras o diagramas`,
+                    recursos.length &&
+                      (recursos.length === 1
+                        ? `1 ${recursos[0].tipo.toLowerCase()}`
+                        : `${recursos.length} tablas, figuras o diagramas`),
                   ]
                     .filter(Boolean)
                     .join(" · ")}
@@ -280,62 +271,6 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
           ))}
         </nav>
       )}
-      {cifras.length > 0 && (
-        <section aria-labelledby="cifras" className="mb-6">
-          {/* En el móvil, plegadas: el primer párrafo aparece antes (lectura continua). */}
-          <details
-            className="group"
-            open={cifrasAbiertas}
-            onToggle={(e) => setCifrasAbiertas(e.currentTarget.open)}
-          >
-            <summary className="mb-2 flex min-h-11 cursor-pointer items-center gap-1 text-slate-500 sm:min-h-8">
-              <ChevronDown
-                size={15}
-                aria-hidden="true"
-                className="shrink-0 -rotate-90 transition group-open:rotate-0"
-              />
-              <h2 id="cifras" className="inline text-xs font-bold uppercase tracking-wide">
-                Cifras y objetivos del apartado ({cifras.length}) · con su página
-              </h2>
-            </summary>
-            <ul className="grid grid-cols-2 gap-2 md:grid-cols-3">
-              {cifras.map((c, i) => (
-                <li key={i}>
-                  <a
-                    href={href("capitulo", apartado.slug, c.ancla)}
-                    className="hover-lift ease-brand flex h-full flex-col rounded-xl p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                    style={{ background: hex.soft }}
-                  >
-                    <span
-                      className="text-lg font-extrabold leading-tight tabular-nums"
-                      style={{ color: hex.ink }}
-                    >
-                      {c.valor}
-                    </span>
-                    <span className="mt-1 text-xs leading-snug text-slate-700">{c.etiqueta}</span>
-                    <span className="pagina-badge mt-auto pt-1.5">p. {c.p}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-            {!retirado("repaso") && (
-              <a
-                href={href("repaso", apartado.slug)}
-                className="mt-1 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
-              >
-                Repasar estas cifras como tarjetas <ArrowRight size={14} aria-hidden="true" />
-              </a>
-            )}
-            {/* Las dosis con asterisco (Figura 3) llevan siempre su nota. */}
-            {cifras.some((c) => c.valor.includes("*")) && (
-              <p className="mt-2 text-xs text-slate-600">
-                {FIGURA3.notaAsterisco} <span className="pagina-badge">Figura 3, p. 8</span>
-              </p>
-            )}
-          </details>
-        </section>
-      )}
-
       <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_13rem] xl:gap-10">
         <div className="lg:pr-16">
           <Bloques apartado={apartado} destacado={destacado} />
@@ -364,37 +299,9 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         )}
       </div>
 
-      <nav aria-label="Apartados del capítulo" className="paginacion no-imprimir mt-10">
-        <ol className="flex flex-wrap justify-center gap-1.5">
-          {APARTADOS.map((a) => (
-            <li key={a.slug}>
-              {a.slug === apartado.slug ? (
-                <span
-                  aria-current="page"
-                  className="flex items-center justify-center rounded-full text-sm font-semibold tabular-nums text-white"
-                  style={{ background: SEEN.azulOsc }}
-                >
-                  {a.n}
-                </span>
-              ) : (
-                <a
-                  href={href("capitulo", a.slug)}
-                  title={`${a.n}. ${a.titulo}`}
-                  aria-label={`Apartado ${a.n}: ${a.corto}`}
-                  className="tap-44 flex items-center justify-center rounded-full border-2 bg-white text-sm font-semibold tabular-nums transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                  style={{ borderColor: "#a9c3df", color: SEEN.azulOsc }}
-                >
-                  {a.n}
-                </a>
-              )}
-            </li>
-          ))}
-        </ol>
-      </nav>
-
       <nav
         aria-label="Apartado anterior y siguiente"
-        className="no-imprimir mt-5 grid gap-2 border-t pt-4 sm:grid-cols-2"
+        className="no-imprimir mt-10 grid gap-2 border-t pt-4 sm:grid-cols-2"
         style={{ borderColor: "#e6e6e6" }}
       >
         {prev ? (

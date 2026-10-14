@@ -10,12 +10,12 @@ test.describe("Navegación e historial", () => {
     await page.goto("/#/consultar/figura-3");
     const boton = page.getByRole("button", { name: /^β-OHB ≥3,0 mmol\/l/ });
     await boton.scrollIntoViewIfNeeded();
-    const antes = await page.evaluate(() => window.scrollY);
-    expect(antes).toBeGreaterThan(100);
+    // 0.70.0: con «Sospechar y comprobar» plegado en el móvil, los tramos están arriba; al
+    // elegir, la pantalla baja a la rama (nunca sube al principio).
     const largo = await page.evaluate(() => history.length);
     await boton.click();
     await expect(page).toHaveURL(/figura-3\/rojo$/);
-    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(50);
     expect(await page.evaluate(() => history.length)).toBe(largo);
   });
 
@@ -38,12 +38,14 @@ test.describe("Navegación e historial", () => {
     await expect(page.getByLabel("Texto a buscar")).toHaveValue("glargina");
   });
 
-  test("Atrás devuelve la Interrupción al tramo anterior", async ({ page }) => {
-    await page.goto("/#/consultar/interrupcion/breve");
-    await page.goto("/#/consultar/interrupcion/prolongada");
-    await expect(page.getByRole("heading", { level: 2, name: /Prolongada/ })).toBeVisible();
+  test("Atrás desde la Interrupción vuelve a la pantalla de antes", async ({ page }) => {
+    await page.goto("/#/consultar/situacion");
+    await page.goto("/#/consultar/interrupcion");
+    await expect(
+      page.getByRole("heading", { level: 1, name: /Interrupción del sistema/i }),
+    ).toBeVisible();
     await page.goBack();
-    await expect(page.getByRole("heading", { level: 2, name: "Muy breve" })).toBeVisible();
+    await expect(page).toHaveURL(/#\/consultar\/situacion$/);
   });
 
   test("el enlace a una referencia la deja a la vista", async ({ page }) => {

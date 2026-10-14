@@ -45,9 +45,8 @@ export function UrgenciaF3({
           </li>
         ))}
       </ul>
-      <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-        <span>Texto literal de la Figura 3.</span>
-        {enlace && (
+      {enlace && (
+        <p className="mt-1.5 text-xs">
           <a
             href={href("consultar", "figura-3")}
             className="inline-flex min-h-11 items-center gap-1 font-semibold underline focus:outline-none focus-visible:ring-2 focus-visible:ring-red-700 sm:min-h-6"
@@ -55,8 +54,8 @@ export function UrgenciaF3({
             Hiperglucemia y cetonemia: la figura completa
             <ArrowRight size={13} aria-hidden="true" />
           </a>
-        )}
-      </p>
+        </p>
+      )}
     </section>
   );
 }

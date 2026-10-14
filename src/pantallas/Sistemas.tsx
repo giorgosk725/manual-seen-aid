@@ -20,13 +20,10 @@ import {
   Minus,
   Radio,
   SlidersHorizontal,
-  Sparkles,
-  Stethoscope,
   Syringe,
   Target,
   Timer,
   TrendingDown,
-  UserRound,
   Users,
   Utensils,
   X,
@@ -77,7 +74,6 @@ import { Elegir } from "./Elegir";
 export { Elegir };
 import { comoFunciona } from "../guias";
 import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
-import type { Pieza } from "../inicio";
 import { PiezaVista } from "../componentes/Piezas";
 import { FuentePie } from "../componentes/FuentePie";
 import { paginasDe } from "../paginas";
@@ -437,10 +433,16 @@ const SLUG_CORTO = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
 
 /* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
 const TODAS_LAS_SECCIONES = [
-  { id: "esencial", t: "Lo esencial" },
   { id: "funciona", t: "Cómo funciona" },
+  { id: "esencial", t: "Indicación y material" },
   { id: "parametros", t: "Parámetros" },
   { id: "ampliacion", t: "Ampliación técnica" },
+] as const;
+/* La comparación (0.70.0): la Tabla 1 y la Tabla 3, sin «Cómo funciona» comparado (repetía la
+   Tabla 1). */
+const SECCIONES_COMPARACION = [
+  { id: "esencial", t: "Lo esencial" },
+  { id: "parametros", t: "Parámetros" },
 ] as const;
 /* La ampliación técnica no va en la edición editorial (A06): ni pestaña ni sección. */
 const SECCIONES_FICHA = TODAS_LAS_SECCIONES.filter((x) => !retirado(x.id));
@@ -568,17 +570,6 @@ function ColumnaTabla({
   );
 }
 
-function EnlacePie({ ruta, children }: { ruta: string; children: ReactNode }) {
-  return (
-    <a
-      href={ruta}
-      className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
-    >
-      {children} <ArrowRight size={13} aria-hidden="true" />
-    </a>
-  );
-}
-
 /* Título de sección con el sistema al lado: al entrar por un enlace directo, la cabecera de la
    ficha queda arriba y fuera de la vista. */
 function TituloSeccion({
@@ -622,10 +613,8 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const c = columnaDeSistema(s.id);
   const h = SISTEMA_HEX[c];
   const slug = SLUG_TABLA[c];
-  // Se enseña una sección (la entera son más de diez pantallas en el móvil); «Lo esencial» si
-  // la ruta no dice otra; /completa, la ficha entera (para leer o imprimir).
-  const sec = completa ? undefined : (seccion ?? "esencial");
-  const ver = (x: string) => completa || sec === x;
+  // Una sola página (0.70.0): la sección de la ruta es solo adónde se salta.
+  const sec = completa ? undefined : seccion;
   return (
     <div ref={ref} className="imprimible">
       <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
@@ -699,80 +688,47 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         </div>
       </header>
 
-      <BarraSistemas ids={[s.id]} seccion={sec} completa={completa} />
-      <section
-        aria-labelledby="esencial"
-        className="scroll-mt-56 sm:scroll-mt-44"
-        hidden={!ver("esencial")}
-      >
-        <TituloSeccion id="esencial" sistema={s.name} color={h.ink}>
-          Lo esencial
-        </TituloSeccion>
-        {/* Qué es y para quién, en tarjetas; cómo decide va en «Cómo funciona» y lo configurable,
-            en «Parámetros». */}
-        <ColumnaTabla
-          t={TABLAS.T1}
-          c={c}
-          filas={(_e, j) => [0, 1, 2, 7, 8, 9].includes(j)}
-          pie={
-            <>
-              <EnlacePie ruta={href("sistemas", "todos", "esencial")}>
-                Los cuatro en la Tabla 1
-              </EnlacePie>
-              <a
-                href={WEB_SISTEMA[s.id]}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="no-imprimir inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
-              >
-                Web oficial <ExternalLink size={12} aria-hidden="true" />
-              </a>
-            </>
-          }
-        />
-      </section>
-
-      <section
-        aria-labelledby="funciona"
-        className="mt-7 scroll-mt-56 sm:scroll-mt-44"
-        hidden={!ver("funciona")}
-      >
+      <BarraSistemas ids={[s.id]} seccion={sec} />
+      {/* 0.70.0: la ficha es una sola página; las pestañas llevan a cada sección. */}
+      <section aria-labelledby="funciona" className="scroll-mt-56 sm:scroll-mt-44">
         <TituloSeccion id="funciona" sistema={s.name} color={h.ink}>
           Cómo funciona
         </TituloSeccion>
         <ComoFuncionaSistema c={c} id={s.id as SistemaId} />
       </section>
 
-      <section
-        aria-labelledby="parametros"
-        className="mt-7 scroll-mt-56 sm:scroll-mt-44"
-        hidden={!ver("parametros")}
-      >
+      <section aria-labelledby="esencial" className="mt-7 scroll-mt-56 sm:scroll-mt-44">
+        <TituloSeccion id="esencial" sistema={s.name} color={h.ink}>
+          Indicación y material
+        </TituloSeccion>
+        <ColumnaTabla
+          t={TABLAS.T1}
+          c={c}
+          filas={(_e, j) => [0, 7, 8, 9].includes(j)}
+          pie={
+            <a
+              href={WEB_SISTEMA[s.id]}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="no-imprimir inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+            >
+              Web oficial <ExternalLink size={12} aria-hidden="true" />
+            </a>
+          }
+        />
+      </section>
+
+      <section aria-labelledby="parametros" className="mt-7 scroll-mt-56 sm:scroll-mt-44">
         <TituloSeccion id="parametros" sistema={s.name} color={h.ink}>
           Parámetros
         </TituloSeccion>
-        <p className="mb-2 text-sm text-slate-600">
-          Cuáles se pueden configurar en modo automático y cómo se ajusta cada uno en este sistema.
-        </p>
         <ParametrosAutomatico c={c} hexSistema={h} />
         <div className="mt-3">
-          <ColumnaTabla
-            t={TABLAS.T3}
-            c={c}
-            pie={
-              <EnlacePie ruta={href("sistemas", "todos", "parametros")}>
-                Los cuatro en la Tabla 3
-              </EnlacePie>
-            }
-          />
+          <ColumnaTabla t={TABLAS.T3} c={c} />
         </div>
       </section>
 
-      <section
-        aria-label="Más del capítulo sobre este sistema"
-        className="mt-7 space-y-3"
-        hidden={!completa}
-      >
+      <section aria-label="Más del capítulo sobre este sistema" className="mt-7">
         <Foldable title="Párrafos del capítulo que lo nombran" count={parrafos.length}>
           <ol className="space-y-3">
             {parrafos.map((p) => (
@@ -794,17 +750,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         </Foldable>
       </section>
 
-      {CON_AMPLIACION && ver("ampliacion") && <Ampliacion s={sistemaPorId(s.id)!} />}
-      {/* La ficha entera (para leer o imprimir), al final: fuera de la cabecera en el móvil. */}
-      <p className="no-imprimir mt-6 border-t pt-3" style={{ borderColor: "#e6e6e6" }}>
-        <a
-          href={href("sistemas", s.id, completa ? "esencial" : "completa")}
-          className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
-        >
-          {completa ? "Ver por secciones" : "Ficha completa de este sistema"}{" "}
-          <ArrowRight size={13} aria-hidden="true" />
-        </a>
-      </p>
+      {CON_AMPLIACION && <Ampliacion s={sistemaPorId(s.id)!} />}
     </div>
   );
 }
@@ -816,8 +762,6 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
    esta pantalla con los cuatro y la sección elegida. El selector es el mismo en todas las
    vistas: marcar añade, desmarcar quita; con uno, se ve su ficha. */
 const IDS_SISTEMA = ORDEN_SISTEMAS as readonly string[];
-const listaNombres = (n: string[]) =>
-  n.length < 2 ? n.join("") : `${n.slice(0, -1).join(", ")} y ${n[n.length - 1]}`;
 
 function leerSeleccion(sel?: string): string[] {
   if (!sel || sel === "todos") return [];
@@ -876,24 +820,17 @@ function AmpliacionRetirada({ ids }: { ids: string[] }) {
 
 /* Selector de sistemas y pestañas de sección, pegados arriba al desplazarse: el sistema y la
    sección que se consultan quedan siempre a mano. */
-function BarraSistemas({
-  ids,
-  seccion,
-  completa = false,
-}: {
-  ids: string[];
-  seccion?: string;
-  completa?: boolean;
-}) {
-  const sec = completa ? "completa" : seccion;
+function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
+  const sec = seccion;
+  const secciones = ids.length === 1 ? SECCIONES_FICHA : SECCIONES_COMPARACION;
   const selStr = ids.length ? ids.join("+") : "todos";
   const rutaCon = (nuevos: string[]) =>
     nuevos.length === 1
-      ? href("sistemas", nuevos[0], sec ?? "esencial")
+      ? href("sistemas", nuevos[0], sec ?? "funciona")
       : href(
           "sistemas",
           nuevos.length ? nuevos.join("+") : "todos",
-          sec === "completa" || !sec ? "esencial" : sec,
+          !sec || sec === "funciona" ? "esencial" : sec,
         );
   const alternar = (id: string) =>
     window.location.replace(
@@ -903,12 +840,6 @@ function BarraSistemas({
           : IDS_SISTEMA.filter((x) => ids.includes(x) || x === id),
       ),
     );
-  const pista =
-    ids.length === 0
-      ? "Se ven los cuatro: marca uno para ver su ficha o varios para compararlos"
-      : ids.length === 1
-        ? "Marca otro para compararlos"
-        : "Desmarca uno para volver a una sola ficha";
   // Al desplazarse, la barra se pliega a una línea («Control-IQ + Omnipod 5 · Cambiar») y las
   // pestañas; «Cambiar» vuelve a abrir el selector hasta el siguiente desplazamiento.
   const [plegada, setPlegada] = useState(false);
@@ -948,7 +879,6 @@ function BarraSistemas({
           etiqueta="Sistemas"
           seleccion={ids.map((id) => columnaDeSistema(id as SistemaId))}
           onToggle={(c) => alternar(IDS_SISTEMA[c])}
-          pista={pista}
           extra={
             <button
               type="button"
@@ -970,7 +900,7 @@ function BarraSistemas({
         aria-label="Sección"
         className="-mx-3 mt-1 flex items-center gap-1 overflow-x-auto px-3 sm:mx-0 sm:flex-wrap sm:px-0"
       >
-        {SECCIONES_FICHA.map((x) => (
+        {secciones.map((x) => (
           <a
             key={x.id}
             href={href("sistemas", selStr, x.id)}
@@ -1092,17 +1022,12 @@ function EntradaSistemas() {
                   <span className="col-span-2 -mt-1 block pl-5 text-xs leading-snug text-slate-600">
                     {k.correccion.texto.join(" · ")}
                   </span>
-                  {/* Lo que cuenta en automático y lo que se ajusta sobre todo para los bolos. */}
-                  <div className="col-span-2 border-t pt-2" style={{ borderColor: "#eceff3" }}>
-                    <ParametrosAuto c={c} compacto />
-                  </div>
                 </div>
               </a>
             </li>
           );
         })}
       </ul>
-      <p className="text-xs text-slate-600">{NOTA_PARAMETROS}</p>
       <a
         href={href("sistemas", "elegir")}
         className="flex min-h-11 items-center gap-3 rounded-xl border bg-white px-3 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
@@ -1114,32 +1039,10 @@ function EntradaSistemas() {
           style={{ color: hex.strong }}
           aria-hidden="true"
         />
-        <span className="min-w-0 flex-1">
-          Explorar criterios de elección
-          <span className="block text-xs font-normal text-slate-500">
-            Factores del apartado 6 y celdas de la Tabla 1, sistema a sistema
-          </span>
-        </span>
+        <span className="min-w-0 flex-1">Cómo elegir un sistema</span>
         <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
       </a>
-      <nav aria-label="Comparar los cuatro" className="flex flex-wrap gap-x-4 gap-y-1">
-        {(
-          [
-            ["esencial", "Comparar lo esencial", "Tabla 1"],
-            ["parametros", "Comparar los parámetros", "Tabla 3"],
-          ] as const
-        ).map(([sec, t, f]) => (
-          <a
-            key={sec}
-            href={href("sistemas", "todos", sec)}
-            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
-          >
-            {t} <span className="text-xs font-normal text-slate-500">({f})</span>{" "}
-            <ArrowRight size={13} aria-hidden="true" />
-          </a>
-        ))}
-      </nav>
-      <FuentePie fuentes={[fuenteT1()]} nota="los nombres de los algoritmos, del capítulo" />
+      <FuentePie fuentes={[fuenteT1()]} />
     </div>
   );
 }
@@ -1148,7 +1051,6 @@ function EntradaSistemas() {
    modo automático (con asterisco) y el resto, que interviene sobre todo en los bolos o en el
    modo manual (13-10-2026). */
 const FILA_PARAMETROS = 10;
-const NOTA_PARAMETROS = TABLAS.T1.notas[0];
 function parametrosDe(c: number) {
   const xs = TABLAS.T1.filas[FILA_PARAMETROS].celdas[c]
     .split("\n")
@@ -1248,20 +1150,6 @@ function claveDeCelda(fila: number, c: number): ReactNode {
   return null;
 }
 
-/* «Cómo funciona» comparado (aprobado el 11-10-2026): cuatro aspectos de la Tabla 1, celda a
-   celda, con los sistemas elegidos (hasta los cuatro); en el móvil, un bloque por aspecto con las
-   celdas una debajo de otra. Las condiciones de la modalidad híbrida (los cuatro) y de Liberty
-   (CamAPS FX) van debajo, con la modalidad a la que se refiere cada una. */
-const ASPECTOS_FUNCIONA: [string, number][] = [
-  ["Dónde está el algoritmo", 2],
-  // «se adapta», no «aprende»: lo que hacen los cuatro es adaptar parámetros (13-10-2026).
-  ["Cómo decide y se adapta", 3],
-  ["Cómo administra la insulina", 4],
-  // M61-02: hacia qué objetivo trabaja (fila 6 de la Tabla 1, celda entera).
-  ["Hacia qué objetivo", 6],
-  ["Bolos automáticos de corrección", 5],
-  ["Qué parámetros cuentan en automático", FILA_PARAMETROS],
-];
 /* Una celda de «Cómo funciona»: la clave arriba (si la hay) y la celda entera debajo; la de los
    parámetros, en sus dos grupos. */
 function CeldaFunciona({ fila, c }: { fila: number; c: number }) {
@@ -1365,24 +1253,23 @@ function TarjetaFunciona({
     </section>
   );
 }
-/* Las frases generales de «Cómo funciona» (las mismas para los cuatro sistemas). */
-const esGeneral = (p: Pieza) =>
-  p.t === "frase" &&
-  ((p.apartado === "02-componentes" && (p.bloque === "b4" || p.bloque === "b3")) ||
-    (p.apartado === "03-algoritmos" && p.bloque === "b1"));
-const TARJETAS_FUNCIONA: { rotulo: string; icono: LucideIcon }[] = [
-  { rotulo: "Qué sigue haciendo la persona", icono: UserRound },
-  { rotulo: "Qué lo distingue en la práctica", icono: Sparkles },
-  { rotulo: "Qué información devuelve", icono: BarChart3 },
-];
 function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
   const h = SISTEMA_HEX[c];
   const guia = comoFunciona(c, id);
-  const todas = guia.pasos.flatMap((x) => x.piezas);
-  const generales = todas.filter(esGeneral);
-  const piezasDe = (rotulo: string) => guia.pasos.find((x) => x.rotulo === rotulo)?.piezas ?? [];
+  const distingue = (
+    guia.pasos.find((x) => x.rotulo === "Qué lo distingue en la práctica")?.piezas ?? []
+  ).filter((p) => p.t === "frase");
+  // CamAPS FX: la modalidad Liberty de asa cerrada completa (apartado 3), propia de este sistema.
+  const liberty = (
+    guia.pasos.find((x) => x.rotulo === "Qué sigue haciendo la persona")?.piezas ?? []
+  ).filter((p) => p.t === "frase" && p.apartado === "03-algoritmos" && p.bloque === "b3");
   return (
     <div className="space-y-3">
+      {distingue.map((p, j) => (
+        <div key={j} className="text-[15px] leading-snug text-slate-800">
+          <PiezaVista pieza={p} sis={c} compacta />
+        </div>
+      ))}
       {/* El recorrido de la decisión: cuatro pasos seguidos; en el móvil, uno debajo de otro. */}
       <ol
         aria-label="Recorrido de la decisión"
@@ -1408,7 +1295,6 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
               <Icono size={14} aria-hidden="true" />
               {rotulo}
             </div>
-            <p className="mt-0.5 text-[11px] text-slate-500">{TABLAS.T1.filas[fila].etiqueta}</p>
             <div className="mt-1.5 text-sm">
               <ClaveRecorrido fila={fila} c={c} />
             </div>
@@ -1424,188 +1310,18 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
           <CeldaFunciona fila={5} c={c} />
         </TarjetaFunciona>
       </div>
-      {/* Lo que puede ajustar el profesional: la frase del apartado 2, los parámetros de este
-          sistema en sus dos grupos y el enlace a «Parámetros». */}
-      <TarjetaFunciona titulo="Qué puede ajustar el profesional" icono={Stethoscope} color={h.ink}>
-        {piezasDe("Qué puede ajustar el profesional").map((p, j) =>
-          p.t === "enlace" ? null : <PiezaVista key={j} pieza={p} sis={c} compacta />,
-        )}
-        <ParametrosAuto c={c} compacto />
-        <p className="text-xs text-slate-600">{NOTA_PARAMETROS}</p>
-        <a
-          href={href("sistemas", id, "parametros")}
-          className="no-imprimir inline-flex min-h-11 items-center gap-1 text-sm font-semibold hover:underline sm:min-h-8"
-          style={{ color: h.ink }}
+      {liberty.length > 0 && (
+        <TarjetaFunciona
+          titulo="Modalidad Liberty (asa cerrada completa)"
+          icono={Brain}
+          color={h.ink}
         >
-          Parámetros de este sistema (Tablas 1 y 3) <ArrowRight size={13} aria-hidden="true" />
-        </a>
-      </TarjetaFunciona>
-
-      <div className="grid gap-2 md:grid-cols-3">
-        {TARJETAS_FUNCIONA.map((t) => (
-          <TarjetaFunciona key={t.rotulo} titulo={t.rotulo} icono={t.icono} color="#475569">
-            {piezasDe(t.rotulo)
-              .filter((p) => !esGeneral(p))
-              .map((p, j) => (
-                <PiezaVista key={j} pieza={p} sis={c} compacta />
-              ))}
-          </TarjetaFunciona>
-        ))}
-      </div>
-
-      <Foldable title="Cómo funcionan los sistemas AID, en general" count={generales.length}>
-        <div className="space-y-2 text-sm">
-          {generales.map((p, j) => (
+          {liberty.map((p, j) => (
             <PiezaVista key={j} pieza={p} sis={c} compacta />
           ))}
-        </div>
-      </Foldable>
-      <FuentePie fuentes={fuentesDePiezas(todas)} />
-    </div>
-  );
-}
-
-function ComoFuncionaComparado({ cols, selStr }: { cols: number[]; selStr: string }) {
-  const t = TABLAS.T1;
-  const fuente = rutaEnCapitulo(t);
-  return (
-    <div className="space-y-3">
-      {/* Tableta y escritorio: una cuadrícula; los sistemas, con su foto, una sola vez. */}
-      <div
-        className="hidden overflow-x-auto rounded-xl border bg-white sm:block"
-        style={{ borderColor: "#e6e6e6" }}
-      >
-        <table className="w-full border-collapse text-sm" aria-label="Cómo funciona, comparado">
-          <thead>
-            <tr>
-              <th
-                scope="col"
-                className="w-40 p-3 text-left align-bottom text-[11px] font-bold uppercase tracking-wide text-slate-500"
-              >
-                Aspecto
-              </th>
-              {cols.map((c) => (
-                <th
-                  key={c}
-                  scope="col"
-                  className="p-3 text-left align-bottom"
-                  style={{ borderTop: `4px solid ${SISTEMA_HEX[c].strong}` }}
-                >
-                  <span className="flex items-center gap-2">
-                    <img
-                      src={FOTO_SISTEMA[CATALOGO_SISTEMAS[c].id]}
-                      alt=""
-                      className="h-10 w-10 shrink-0 rounded-lg border object-cover"
-                      style={{ borderColor: "#e6e6e6" }}
-                      loading="lazy"
-                    />
-                    <span className="text-sm font-extrabold" style={{ color: SISTEMA_HEX[c].ink }}>
-                      {t.columnas[c]}
-                    </span>
-                  </span>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {ASPECTOS_FUNCIONA.map(([rotulo, fila]) => (
-              <tr key={fila} className="border-t align-top" style={{ borderColor: "#e6e6e6" }}>
-                <th scope="row" className="p-3 text-left font-normal">
-                  <span className="block text-sm font-extrabold text-slate-900">{rotulo}</span>
-                </th>
-                {cols.map((c) => (
-                  <td
-                    key={c}
-                    className="p-3 text-slate-800"
-                    style={{ boxShadow: `inset 3px 0 0 0 ${SISTEMA_HEX[c].strong}` }}
-                  >
-                    <CeldaFunciona fila={fila} c={c} />
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {/* Móvil: un bloque por aspecto, con las casillas una debajo de otra. */}
-      <div className="space-y-3 sm:hidden">
-        {ASPECTOS_FUNCIONA.map(([rotulo, fila]) => (
-          <section
-            key={fila}
-            aria-label={rotulo}
-            className="rounded-xl border bg-white p-3"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-              <h3 className="text-sm font-extrabold text-slate-900">{rotulo}</h3>
-            </div>
-            <div className="grid gap-2">
-              {cols.map((c) => (
-                <div
-                  key={c}
-                  className="rounded-lg bg-slate-50 p-2.5"
-                  style={{ boxShadow: `inset 3px 0 0 0 ${SISTEMA_HEX[c].strong}` }}
-                >
-                  <div className="text-xs font-bold" style={{ color: SISTEMA_HEX[c].ink }}>
-                    {t.columnas[c]}
-                  </div>
-                  <div className="mt-0.5 text-sm text-slate-800">
-                    <CeldaFunciona fila={fila} c={c} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
-      <p className="text-xs text-slate-600">{NOTA_PARAMETROS}</p>
-      <section
-        aria-label="Condiciones por modalidad"
-        className="rounded-xl border bg-white p-3"
-        style={{ borderColor: "#e6e6e6" }}
-      >
-        <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
-          Modalidad híbrida · los cuatro sistemas
-        </p>
-        <div className="mt-1 text-sm">
-          <PiezaVista
-            pieza={{ t: "frase", apartado: "03-algoritmos", bloque: "b2", k: [0] }}
-            compacta
-          />
-        </div>
-        {cols.includes(2) && (
-          <>
-            <p className="mt-3 text-[11px] font-bold uppercase tracking-wide text-slate-500">
-              CamAPS FX · modalidad Liberty (asa cerrada completa)
-            </p>
-            <div className="mt-1 text-sm">
-              <PiezaVista
-                pieza={{ t: "frase", apartado: "03-algoritmos", bloque: "b3", k: [1, 2] }}
-                compacta
-              />
-            </div>
-          </>
-        )}
-      </section>
-      <FuentePie
-        fuentes={[
-          {
-            texto: `Tabla 1, ${paginasDe(t.paginas[0], t.paginas[1])}`,
-            ruta: fuente ?? undefined,
-          },
-          ...fuentesDePiezas([
-            { t: "frase", apartado: "03-algoritmos", bloque: "b2", k: [0] },
-            ...(cols.includes(2)
-              ? [{ t: "frase" as const, apartado: "03-algoritmos", bloque: "b3", k: [1, 2] }]
-              : []),
-          ]),
-        ]}
-      />
-      <p>
-        <EnlacePie ruta={href("sistemas", selStr, "parametros")}>
-          Comparar los parámetros (objetivos y ajustes) de estos sistemas
-        </EnlacePie>
-      </p>
+        </TarjetaFunciona>
+      )}
+      <FuentePie fuentes={[fuenteT1(), ...fuentesDePiezas([...distingue, ...liberty])]} />
     </div>
   );
 }
@@ -1656,10 +1372,11 @@ function TarjetaSistema({
   );
 }
 
-function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
+function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const cols = ids.length ? ids.map((id) => columnaDeSistema(id as SistemaId)) : [0, 1, 2, 3];
-  const nombres = cols.map((c) => TABLAS.T1.columnas[c]);
+  // «Cómo funciona» comparado ya no está (0.70.0): esa dirección lleva a la Tabla 1.
+  const seccion = pedida === "funciona" ? "esencial" : pedida;
   return (
     <div ref={ref} className="imprimible">
       <CabeceraEditorial
@@ -1673,17 +1390,7 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
             </BotonImprimir>
           )
         }
-      >
-        <p className="text-sm text-slate-600">
-          {!seccion
-            ? "Los cuatro sistemas comercializados en España, de uno en uno o comparados."
-            : seccion === "funciona"
-              ? `Cómo funciona cada uno: ${listaNombres(nombres)}.`
-              : ids.length
-                ? `Comparando ${listaNombres(nombres)}.`
-                : "Los cuatro sistemas, uno junto a otro."}
-        </p>
-      </CabeceraEditorial>
+      />
       <BarraSistemas ids={ids} seccion={seccion} />
       {!seccion ? (
         <EntradaSistemas />
@@ -1691,7 +1398,7 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
         <section
           key={seccion}
           className="pantalla-in"
-          aria-label={SECCIONES_FICHA.find((x) => x.id === seccion)?.t}
+          aria-label={SECCIONES_COMPARACION.find((x) => x.id === seccion)?.t}
         >
           {seccion === "esencial" && (
             <NivelTitulo.Provider value={2}>
@@ -1702,28 +1409,6 @@ function Comparacion({ ids, seccion }: { ids: string[]; seccion?: string }) {
                 iconoFila={(i) => iconoDeFila("T1", i)}
               />
             </NivelTitulo.Provider>
-          )}
-          {seccion === "funciona" && (
-            <>
-              <p className="mb-3 text-sm text-slate-600">
-                Compara cómo funcionan los sistemas seleccionados.
-              </p>
-              <ComoFuncionaComparado cols={cols} selStr={ids.length ? ids.join("+") : "todos"} />
-              <p className="mb-2 mt-5 text-xs font-bold uppercase tracking-wide text-slate-500">
-                El recorrido completo, sistema a sistema
-              </p>
-              <ul className="grid gap-3 sm:grid-cols-2">
-                {cols.map((c) => (
-                  <TarjetaSistema
-                    key={c}
-                    c={c}
-                    seccion="funciona"
-                    texto={<>{algoritmoDelCapitulo(c)}</>}
-                    enlace="Ver cómo funciona este sistema"
-                  />
-                ))}
-              </ul>
-            </>
           )}
           {seccion === "parametros" && (
             <>

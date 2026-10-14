@@ -5,44 +5,14 @@ import { expect, test } from "@playwright/test";
 import { retirado } from "../src/edicion";
 
 test.describe("Aprobado el 11-10 (0.37.0)", () => {
-  test("Cómo funciona comparado: cuatro aspectos, Liberty solo con CamAPS, parámetros con la selección", async ({
+  // 0.70.0: sin «Cómo funciona» comparado (repetía la Tabla 1): esa dirección lleva a la Tabla 1.
+  test("la comparación son dos pestañas; «funciona» comparado lleva a Lo esencial", async ({
     page,
   }) => {
     await page.goto("/#/sistemas/ciq+op5/funciona");
-    for (const a of [
-      "Dónde está el algoritmo",
-      "Cómo decide y se adapta",
-      "Cómo administra la insulina",
-      "Bolos automáticos de corrección",
-    ])
-      // Escritorio: fila de la cuadrícula; móvil: bloque por aspecto (0.43.0).
-      await expect(
-        page.getByRole("rowheader", { name: a }).or(page.getByRole("region", { name: a })),
-      ).toBeVisible();
-    await expect(page.getByText(/Modalidad híbrida · los cuatro sistemas/)).toBeVisible();
-    await expect(page.getByText(/modalidad Liberty/)).toHaveCount(0);
-    await page
-      .getByRole("link", { name: /Comparar los parámetros \(objetivos y ajustes\)/ })
-      .click();
-    await expect(page).toHaveURL(/#\/sistemas\/ciq\+op5\/parametros$/);
-    await page.goto("/#/sistemas/camaps+op5/funciona");
-    await expect(page.getByText(/modalidad Liberty/)).toBeVisible();
-    // Abrir la fuente y volver conserva selección y posición.
-    await page.evaluate(() => window.scrollBy(0, 500));
-    await page.waitForTimeout(400);
-    const antes = await page.evaluate(() => window.scrollY);
-    await page
-      .getByRole("link", { name: /^Tabla 1, pp\. 3-4$/ })
-      .first()
-      .click();
-    await expect(page).toHaveURL(/#\/capitulo\//);
-    // Como una persona: el capítulo se pinta y se lee antes de volver.
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await page.waitForTimeout(300);
-    await page.goBack();
-    await expect(page).toHaveURL(/#\/sistemas\/camaps\+op5\/funciona$/);
-    await page.waitForTimeout(600);
-    expect(Math.abs((await page.evaluate(() => window.scrollY)) - antes)).toBeLessThan(160);
+    const secciones = page.getByRole("navigation", { name: "Sección" });
+    await expect(secciones.getByRole("link")).toHaveText(["Lo esencial", "Parámetros"]);
+    await expect(page.getByRole("region", { name: "Lo esencial" })).toBeVisible();
   });
 
   test("paso 7 del ejemplo: contexto plegable antes de las opciones y comentario en cuatro partes", async ({

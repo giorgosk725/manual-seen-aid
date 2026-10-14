@@ -1,8 +1,7 @@
 /* La procedencia de un bloque de una herramienta, en una sola línea al pie: «Fuente: Tabla 1,
-   p. 3 · Apartado 8, p. 12 · capítulo del 8 de octubre de 2026». Dentro de las herramientas no se
+   p. 3 · Apartado 8, p. 12». La fecha del capítulo va en «Sobre» (0.70.0). Dentro de las herramientas no se
    repiten tablas ni páginas en títulos, filas o cabeceras: van aquí, con su enlace exacto.
    (La lectura del capítulo y el índice de tablas conservan su numeración.) */
-import { CAPITULO } from "../contenido";
 
 export interface Fuente {
   texto: string;
@@ -41,8 +40,6 @@ export function FuentePie({
         </span>
       ))}
       {nota && <> · {nota}</>}
-      {/* La fecha de la información (la del capítulo), distinta de la de la app (V54-11). */}
-      <span className="whitespace-nowrap"> · capítulo del {CAPITULO.fechaFuente}</span>
     </p>
   );
 }

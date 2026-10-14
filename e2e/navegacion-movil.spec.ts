@@ -7,24 +7,19 @@ test.describe("Navegación y portada (393 px)", () => {
     page,
   }) => {
     await page.goto("/#/");
+    // 0.70.0: Inicio · Sistemas · Situaciones · Buscar · Más.
     await expect(
       page
         .getByRole("navigation", { name: "Barra inferior" })
-        .getByRole("link", { name: "Paciente" }),
+        .getByRole("link", { name: "Situaciones" }),
     ).toBeVisible();
     // Pacientes en el mapa: el PDF publicado y el resto del material; las dos puertas, en la
     // primera pantalla.
     await expect(
       page.getByRole("region", { name: "¿Qué le doy al paciente?" }).getByRole("link"),
     ).toHaveCount(2);
-    // «Consultar» en la barra inferior, a mano en cualquier pantalla (13-10-2026).
     await expect(
-      page
-        .getByRole("navigation", { name: "Barra inferior" })
-        .getByRole("button", { name: "Consultar" }),
-    ).toBeInViewport();
-    await expect(
-      page.getByRole("navigation", { name: "Barra inferior" }).getByRole("link", { name: "Leer" }),
+      page.getByRole("navigation", { name: "Barra inferior" }).getByRole("button", { name: "Más" }),
     ).toBeInViewport();
     const { alto, vh } = await page.evaluate(() => ({
       alto: document.documentElement.scrollHeight,
@@ -56,20 +51,22 @@ test.describe("Navegación y portada (393 px)", () => {
     const barra = page.getByRole("navigation", { name: "Barra inferior" });
     for (const [ruta, area] of [
       ["/#/", "Inicio"],
-      ["/#/sistemas/op5", "Consultar"],
-      ["/#/sistemas/todos/parametros", "Consultar"],
-      ["/#/visual", "Leer"],
-      ["/#/consultar/tablas/T3", "Consultar"],
-      ["/#/capitulo/04-sistemas", "Leer"],
-      ["/#/test", "Leer"],
-      ["/#/repaso", "Leer"],
-      ["/#/pacientes", "Paciente"],
+      ["/#/sistemas/op5", "Sistemas"],
+      ["/#/sistemas/todos/parametros", "Sistemas"],
+      ["/#/consultar/situacion", "Situaciones"],
+      ["/#/consultar/figura-3", "Situaciones"],
+      ["/#/consultar/interrupcion", "Situaciones"],
+      ["/#/visual/hipoglucemia", "Situaciones"],
+      ["/#/visual", "Más"],
+      ["/#/consultar/tablas/T3", "Más"],
+      ["/#/capitulo/04-sistemas", "Más"],
+      ["/#/pacientes", "Más"],
       ["/#/buscar/insulina", "Buscar"],
     ]) {
       await page.goto(ruta);
-      // «Consultar» es un botón (abre la hoja de tareas); las demás, enlaces.
+      // «Más» es un botón (abre el menú); los demás, enlaces.
       const item =
-        area === "Consultar"
+        area === "Más"
           ? barra.getByRole("button", { name: area })
           : barra.getByRole("link", { name: area });
       await expect(item, ruta).toHaveAttribute("aria-current", "page");

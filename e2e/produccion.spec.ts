@@ -24,7 +24,7 @@ test.describe("Producción con service worker", () => {
     for (const [ruta, titulo] of [
       ["#/consultar/figura-3/naranja", /Hiperglucemia y cetonemia/],
       ["#/sistemas/ciq", /Tandem Control-IQ/],
-      ["#/pacientes/informacion", /Tratamiento insulínico/],
+      ["#/pacientes/plan/op5", /Plan de seguridad · Omnipod 5/],
       ["#/visual/gestacion-sistemas", /Gestación, sistema a sistema/],
       ["#/bibliografia", /Bibliografía/],
     ] as const) {
@@ -66,7 +66,7 @@ test.describe("Primera visita a un enlace profundo", () => {
      entrada. Se comprueba que precarga justo el trozo que la pantalla usa (si App.tsx cambia
      una ruta de pantalla y vite.config.ts no, esto falla). */
   const CASOS = [
-    ["#/pacientes/resumen", "Pacientes"],
+    ["#/pacientes/plan/op5", "Pacientes"],
     ["#/consultar/situacion/rm", "Recorridos"],
     ["#/consultar/figura-3", "Consultar"],
     ["#/sistemas/ciq", "Sistemas"],

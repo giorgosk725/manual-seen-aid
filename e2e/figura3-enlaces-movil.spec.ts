@@ -4,10 +4,9 @@ import { test, expect, type Page } from "@playwright/test";
    un enlace de la app y eligiendo el tramo, la rama («Rama de la figura») queda en la zona útil
    de la pantalla, bajo la cabecera; al volver con Atrás se restaura la posición. Se comprueban
    coordenadas: `toBeVisible` no ve si algo está fuera de la primera pantalla. */
-const RAMA = "Rama de la figura";
-
+/* 0.70.0: sin el rótulo «Rama de la figura»: se mide el principio de la rama. */
 async function enZonaUtil(page: Page) {
-  const cab = page.locator("li[aria-live=polite]").getByText(RAMA);
+  const cab = page.locator("li[aria-live=polite] > div").first();
   await expect
     .poll(
       async () => {

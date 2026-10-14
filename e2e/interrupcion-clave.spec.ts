@@ -1,19 +1,20 @@
-/* Interrupción del sistema (13-10-2026): la frase que responde a cada tramo, resaltada dentro
-   del párrafo entero. */
+/* Interrupción del sistema (0.70.0): los cinco casos de una vez, en texto literal del
+   apartado 7 (antes, una pestaña por duración con la frase resaltada). */
 import { expect, test } from "@playwright/test";
 
-test("cada duración resalta su frase del párrafo, que sigue entero", async ({ page }) => {
-  for (const [tramo, frase] of [
-    ["breve", /^Las interrupciones muy breves/],
-    ["una-hora", /^Como umbral operativo/],
-    ["pocas-horas", /^En interrupciones programadas y de pocas horas/],
-    ["prolongada", /^En interrupciones prolongadas/],
-    ["programada", /^Cuando se prevea una interrupción prolongada/],
-  ] as const) {
-    await page.goto(`/#/consultar/interrupcion/${tramo}`);
-    await expect(page.locator("mark").first()).toHaveText(frase);
-  }
-  // El párrafo sigue entero: la primera frase, sin resaltar.
-  await page.goto("/#/consultar/interrupcion/breve");
+test("los cinco casos, pod y bomba, en una sola pantalla", async ({ page }) => {
+  await page.goto("/#/consultar/interrupcion");
+  for (const frase of [
+    /^Las interrupciones muy breves/,
+    /a partir de aproximadamente 1 h sin administración de insulina debe actuarse/,
+    /^En interrupciones prolongadas/,
+    /^En interrupciones programadas y de pocas horas/,
+    /^Cuando se prevea una interrupción prolongada/,
+  ])
+    await expect(page.getByText(frase).first()).toBeVisible();
   await expect(page.getByText(/^Toda interrupción del sistema/)).toBeVisible();
+  await expect(page.getByText("Pod", { exact: true })).toBeVisible();
+  // Una dirección antigua con duración abre la misma pantalla.
+  await page.goto("/#/consultar/interrupcion/prolongada");
+  await expect(page.getByText(/^Las interrupciones muy breves/).first()).toBeVisible();
 });

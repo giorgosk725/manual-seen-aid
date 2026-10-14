@@ -71,9 +71,6 @@ describe("Guías por referencias: «Cómo funciona»", () => {
     expect(screen.getByRole("list", { name: "Recorrido de la decisión" })).toHaveTextContent(
       /Dexcom G7.*FreeStyle Libre 3 Plus.*En la app del smartphone/,
     );
-    expect(
-      screen.getByRole("heading", { level: 3, name: "Qué sigue haciendo la persona" }),
-    ).toBeInTheDocument();
     expect(screen.getAllByText(/^CamAPS Liberty es una función de CamAPS FX/).length).toBe(1);
     expect(await axe(container, AXE)).toHaveNoViolations();
   });

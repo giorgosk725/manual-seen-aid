@@ -11,7 +11,6 @@ import {
 import { FRECUENTES } from "../frecuentes";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
 import { BUILD } from "../build";
-import { MATERIALES, ROTULO_TIPO, fechaCorta } from "../materiales";
 import { PREGUNTAS } from "../contenido/test";
 import { elegirRuta, href } from "../rutas";
 import { alCambiarConsulta, consultaBuscar, ponerConsulta } from "../consultaBuscar";
@@ -215,12 +214,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
   const hayRespuesta = !!frecuente || respuestas.length > 0 || extras.length > 0;
   return (
     <div>
-      <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1}>
-        <p className="text-sm text-slate-600">
-          Escribe unos términos o una pregunta: primero salen los pasajes del capítulo que la
-          responden, con su página.
-        </p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1} />
       <label className="sr-only" htmlFor="buscar-q">
         Texto a buscar
       </label>
@@ -411,12 +405,7 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
   }, [destacada]);
   return (
     <div>
-      <CabeceraEditorial titulo="Bibliografía" hex={CATEGORIA_HEX.confiar} level={1}>
-        <p className="text-sm text-slate-600">
-          Las diez referencias del capítulo (pp. 24–25), tal como aparecen, con el DOI enlazado
-          cuando lo tienen (y, si no, su dirección web).
-        </p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo="Bibliografía" hex={CATEGORIA_HEX.confiar} level={1} />
       <ol className="space-y-2">
         {BIBLIOGRAFIA.map((r) => (
           <Revelar
@@ -468,38 +457,6 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
   );
 }
 
-/* Lo que se puede hacer, con un enlace a cada tarea (Sobre). */
-const ACCESOS_SOBRE: { t: string; enlaces: { t: string; r: string }[] }[] = [
-  {
-    t: "En la consulta",
-    enlaces: [
-      { t: "Sistemas y parámetros", r: href("sistemas") },
-      { t: "Situaciones", r: href("consultar", "situacion") },
-      { t: "Hiperglucemia y cetonemia", r: href("consultar", "figura-3") },
-      { t: "Interrupción del sistema", r: href("consultar", "interrupcion") },
-      { t: "Iniciar un sistema", r: href("consultar", "inicio") },
-      { t: "Revisar la descarga", r: href("consultar", "descarga", "1") },
-    ],
-  },
-  {
-    t: "Para leer y comprender",
-    enlaces: [
-      { t: "Índice del capítulo", r: href("capitulo") },
-      { t: "Tablas", r: href("consultar", "tablas") },
-      { t: "Figuras", r: href("visual", "figuras") },
-      { t: "Diagramas", r: href("visual") },
-      { t: "Preguntas frecuentes", r: href("preguntas") },
-    ],
-  },
-  {
-    t: "Para el paciente",
-    enlaces: [
-      { t: "Información para pacientes (PDF)", r: "pdf/manual-seen-aid-pacientes.pdf" },
-      { t: "Hojas y planes de seguridad", r: href("pacientes") },
-    ],
-  },
-];
-
 /* ---------- Sobre este complemento: un párrafo (decisión del autor, 13-10-2026) y, plegados, los
    datos de esta versión y de cada material (trazabilidad) ---------- */
 export function Sobre() {
@@ -518,21 +475,6 @@ export function Sobre() {
             Complemento interactivo del capítulo {CAPITULO.numero} del Manual SEEN sobre
             automatización de la insulinoterapia, para tenerlo a mano en la consulta.
           </p>
-          <ul className="space-y-2">
-            {ACCESOS_SOBRE.map((g) => (
-              <li key={g.t}>
-                <span className="font-bold text-slate-900">{g.t}: </span>
-                {g.enlaces.map((e, k) => (
-                  <span key={e.t}>
-                    {k > 0 && <span aria-hidden="true"> · </span>}
-                    <a href={e.r} className="font-semibold underline underline-offset-2">
-                      {e.t}
-                    </a>
-                  </span>
-                ))}
-              </li>
-            ))}
-          </ul>
           <ul className="list-disc space-y-1 pl-5 text-sm text-slate-700">
             <li>
               El contenido clínico es el texto del capítulo, con su página. Las preguntas
@@ -584,20 +526,6 @@ export function Sobre() {
               {CAPITULO.autor} · {CAPITULO.filiacion}
             </dd>
           </dl>
-          <ul className="mt-3 space-y-1.5">
-            {MATERIALES.map((m) => (
-              <li key={m.id}>
-                <span className="font-semibold text-slate-900">{m.nombre}</span> ·{" "}
-                {ROTULO_TIPO[m.tipo]} ·{" "}
-                {!m.fecha
-                  ? "revisión pendiente"
-                  : m.tipo === "publicado"
-                    ? fechaCorta(m.fecha)
-                    : `revisión registrada el ${fechaCorta(m.fecha)}`}
-                {m.pendiente ? " · con cambios pendientes de revisión" : ""}.
-              </li>
-            ))}
-          </ul>
         </details>
         <p className="mt-3 text-xs text-slate-500">
           Versión {BUILD.version} · {BUILD.fecha || "—"} · id.{" "}
@@ -724,12 +652,7 @@ export function Test() {
         titulo="Autoevaluación complementaria basada en el capítulo"
         hex={CATEGORIA_HEX.aprender}
         level={1}
-      >
-        <p className="text-sm text-slate-600">
-          {PREGUNTAS.length} preguntas de repaso. Las explicaciones son de este complemento; las
-          frases citadas, literales del capítulo con su página.
-        </p>
-      </CabeceraEditorial>
+      />
       {pendientes > 0 && (
         <ToneCard tone="amber" title="Pendiente de validación" className="mb-4">
           <p className="text-sm text-slate-800">
@@ -835,7 +758,8 @@ export function Preguntas({ id }: { id?: string }) {
             </button>
           </p>
         )}
-        {r && <RespuestasCapitulo respuestas={[]} q={f.pregunta} frecuente={r} sinPregunta />}
+        {/* En su pantalla, sin resaltar palabras (0.70.0). */}
+        {r && <RespuestasCapitulo respuestas={[]} q="" frecuente={r} sinPregunta />}
         {hermanas.length > 0 && (
           <section aria-labelledby="mismo-tema" className="mt-6">
             <h2
@@ -864,12 +788,7 @@ export function Preguntas({ id }: { id?: string }) {
   }
   return (
     <div>
-      <CabeceraEditorial titulo="Preguntas frecuentes" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          {FRECUENTES.length} preguntas revisadas, por temas; cada una abre los pasajes del capítulo
-          que la responden.
-        </p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo="Preguntas frecuentes" hex={hex} level={1} />
       {id && (
         <p role="status" className="mb-3 rounded-md bg-slate-100 px-3 py-2 text-sm text-slate-700">
           Esa pregunta no existe o no está en esta edición. Abajo, las preguntas revisadas.

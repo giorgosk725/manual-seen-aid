@@ -59,7 +59,7 @@ test.describe("Listas y tarjetas (0.29.0)", () => {
 
   test("Para el paciente: las hojas son filas que abren", async ({ page }) => {
     await page.goto("/#/pacientes");
-    await page.getByRole("link", { name: /Cetonas: qué hacer según el resultado/ }).click();
-    await expect(page).toHaveURL(/#\/pacientes\/hoja\/cetonas$/);
+    await page.getByRole("link", { name: /Antes de una prueba o una cirugía/ }).click();
+    await expect(page).toHaveURL(/#\/pacientes\/hoja\/pruebas-cirugia$/);
   });
 });

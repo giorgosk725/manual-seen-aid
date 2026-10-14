@@ -42,20 +42,13 @@ test.describe("Móvil compacto (360 px)", () => {
     for (const i of [1, 2, 3]) await mismaFila(sistemas.nth(0), sistemas.nth(i));
     // Solo letra grande (A12): el botón de imprimir, sin selector de formato.
     await expect(page.getByRole("group", { name: "Formato de impresión" })).toHaveCount(0);
-    await expect(page.getByRole("button", { name: "Imprimir con letra grande" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Imprimir", exact: true })).toBeVisible();
     await expect(page.locator(".hoja-a4")).toBeInViewport();
   });
 
-  test("leer capítulo: «Para comprender» una sola vez, arriba, y el índice a la vista", async ({
-    page,
-  }) => {
+  test("leer capítulo: el índice a la vista, sin bloques delante", async ({ page }) => {
     await page.goto("/#/capitulo");
-    await expect(page.getByRole("heading", { name: "Comprender y practicar" })).toHaveCount(0);
-    const comprender = page.getByRole("navigation", { name: "Para comprender" });
-    await expect(
-      comprender.getByRole("link", { name: "Cómo funciona cada sistema" }),
-    ).toHaveAttribute("href", "#/sistemas/todos/funciona");
-    await expect(comprender.getByRole("link", { name: "Preguntas frecuentes" })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Para comprender" })).toHaveCount(0);
     await expect(page.getByRole("link", { name: /3 Algoritmos de control/i })).toBeInViewport();
   });
 
@@ -77,15 +70,15 @@ test.describe("Móvil compacto (360 px)", () => {
     const situaciones = cab.getByRole("link", { name: "Situaciones" });
     for (const l of [iniciar, plan, situaciones]) await expect(l).toBeInViewport();
     expect(await arriba(iniciar)).toBeGreaterThan(await arriba(imprimir));
-    await expect(cab.getByRole("link", { name: /Ficha completa/ })).toHaveCount(0);
-    await expect(
-      page.getByRole("main").getByRole("link", { name: "Ficha completa de este sistema" }),
-    ).toHaveAttribute("href", "#/sistemas/mm780/completa");
+    // 0.70.0: la ficha es una sola página, sin «Ficha completa».
+    await expect(page.getByRole("main").getByRole("link", { name: /Ficha completa/ })).toHaveCount(
+      0,
+    );
   });
 
   test("iniciar un sistema: la hoja de comprobación a mano y sin guía aparte", async ({ page }) => {
     await page.goto("/#/consultar/inicio/inicio:omnipod-5");
-    await expect(page.getByRole("button", { name: "Hoja de comprobación" })).toBeVisible();
+    await expect(page.getByRole("button", { name: /Hoja de comprobación/ })).toBeVisible();
     await expect(page.getByRole("button", { name: "Guía paso a paso" })).toHaveCount(0);
     await expect(page.getByText(/Paso 1 de 5/)).toBeVisible();
   });

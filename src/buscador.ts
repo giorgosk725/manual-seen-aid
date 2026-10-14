@@ -359,10 +359,11 @@ export function indice(): Entrada[] {
     out.push({
       id: `pac/info/${s.pregunta}`,
       tipo: "pacientes",
-      titulo: `Información para pacientes · ${s.pregunta}`,
+      titulo: `Información para pacientes (PDF) · ${s.pregunta}`,
       texto: s.parrafos.join(" "),
       pagina: 0,
-      ruta: href("pacientes", "informacion"),
+      // 0.70.0: el texto está en el PDF publicado (sin la versión en pantalla).
+      ruta: "pdf/manual-seen-aid-pacientes.pdf",
     });
   RESUMEN_CAPITULO.parrafos.forEach((t, i) =>
     out.push({

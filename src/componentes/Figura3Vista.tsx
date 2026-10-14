@@ -5,6 +5,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   AlertTriangle,
+  ChevronDown,
   Ambulance,
   Check,
   Clock3,
@@ -79,10 +80,13 @@ function Rama({
   tramo,
   completa,
   aviso,
+  nota = true,
 }: {
   tramo: TramoFigura3;
   completa?: boolean;
   aviso?: boolean;
+  /* La nota de las dosis con asterisco en la rama (en la lectura, una sola vez al pie). */
+  nota?: boolean;
 }) {
   const hex = TRAMO_HEX[tramo.clave];
   return (
@@ -115,7 +119,7 @@ function Rama({
       {aviso && tramo.clave !== "rojo" && (
         <UrgenciaF3 className="mb-3" donde={`junto a la rama ${tramo.rango}`} />
       )}
-      {JSON.stringify(tramo.pasos).includes("*") && (
+      {nota && JSON.stringify(tramo.pasos).includes("*") && (
         <p className="mb-3 rounded-lg bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
           {FIGURA3.notaAsterisco}
         </p>
@@ -258,7 +262,7 @@ export function Figura3Lectura() {
       </div>
       <div className="grid gap-3 lg:grid-cols-2">
         {FIGURA3.tramos.map((t) => (
-          <Rama key={t.clave} tramo={t} completa />
+          <Rama key={t.clave} tramo={t} completa nota={false} />
         ))}
       </div>
       <Pies />
@@ -307,6 +311,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
     elegir(t);
     requestAnimationFrame(irARama);
   };
+  const [paso1Abierto] = useState(() => window.matchMedia?.("(min-width: 640px)").matches ?? true);
   return (
     <section aria-label="Figura 3, recorrido paso a paso">
       <Cabecera herramienta />
@@ -315,13 +320,21 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
       {!actual && <UrgenciaF3 className="mb-3" />}
       <ol className="space-y-4">
         <li>
-          <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-500">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-white">
-              1
-            </span>{" "}
-            Sospechar y comprobar
-          </div>
-          <SospecharComprobar />
+          {/* En el móvil, plegado (0.70.0): así los tramos de β-OHB quedan en la primera pantalla. */}
+          <details open={paso1Abierto} className="group">
+            <summary className="mb-2 flex min-h-11 cursor-pointer list-none items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-500 sm:min-h-0">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-white">
+                1
+              </span>{" "}
+              Sospechar y comprobar
+              <ChevronDown
+                size={14}
+                aria-hidden="true"
+                className="transition group-open:rotate-180"
+              />
+            </summary>
+            <SospecharComprobar />
+          </details>
         </li>
         <li>
           <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-500">
@@ -329,10 +342,6 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
               2
             </span>{" "}
             {FIGURA3.confirmar}
-          </div>
-          <div className="mb-2 text-sm text-slate-700">
-            ¿Cuál es la cetonemia (β-OHB)? Elige el tramo para ver su rama de la figura, con las
-            notas comunes debajo.
           </div>
           <div
             className="grid grid-cols-2 gap-2 lg:grid-cols-4"
@@ -374,23 +383,11 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
           </div>
         </li>
         <li ref={actuar} aria-live="polite" className="scroll-mt-20">
-          <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-500">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-white">
-              3
-            </span>{" "}
-            Rama de la figura
-          </div>
-          {actual ? (
+          {/* La rama, solo cuando hay un tramo elegido (0.70.0: sin el recuadro vacío). */}
+          {actual && (
             <div key={actual.clave} className="pantalla-in">
               <Rama tramo={actual} aviso />
               <NotasComunes conAsterisco={!JSON.stringify(actual.pasos).includes("*")} />
-            </div>
-          ) : (
-            <div
-              className="rounded-xl border border-dashed px-4 py-6 text-center text-sm text-slate-600"
-              style={{ borderColor: "#d4d4d4", background: "#f8fafc" }}
-            >
-              Elige un tramo de β-OHB arriba para ver la rama correspondiente de la figura.
             </div>
           )}
         </li>

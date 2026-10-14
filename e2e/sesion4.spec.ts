@@ -27,9 +27,6 @@ test.describe("Para el paciente: sin la versión compacta", () => {
     await expect(page.getByRole("button", { name: /Compacta|Imprimir en una cara/ })).toHaveCount(
       0,
     );
-    await expect(page.locator(".hoja-a4")).toContainText(
-      "Material complementario · Plantilla de plan de seguridad",
-    );
     await expect(page.locator(".hoja-a4 h1")).toHaveText("Plan de seguridad · MiniMed 780G");
     // V54-09: la urgencia de la Figura 3, en la primera cara.
     await expect(
@@ -41,10 +38,10 @@ test.describe("Para el paciente: sin la versión compacta", () => {
       "no es una publicación del Manual SEEN",
     );
   });
-  test("la Información para pacientes lleva la fecha del PDF publicado", async ({ page }) => {
-    await page.goto("/#/pacientes/informacion");
-    await expect(page.locator(".hoja-a4 .hoja-pie")).toContainText(
-      "PDF publicado el 9 de octubre de 2026",
+  test("la Información para pacientes (PDF) lleva su fecha", async ({ page }) => {
+    await page.goto("/#/pacientes");
+    await expect(page.getByRole("link", { name: /Información para pacientes/ })).toContainText(
+      "9 de octubre de 2026",
     );
   });
 });
@@ -54,13 +51,12 @@ test.describe("Para el paciente: sin la versión compacta", () => {
    la compacta se elige en la propia hoja y se recuerda en el navegador. */
 test.describe("Para el paciente: letra grande", () => {
   test("letra grande siempre; un solo botón de imprimir", async ({ page }) => {
-    await page.goto("/#/pacientes/resumen");
-    await expect(page.getByRole("button", { name: "Imprimir con letra grande" })).toBeVisible();
+    await page.goto("/#/capitulo/resumen");
+    await expect(page.getByRole("button", { name: "Imprimir", exact: true })).toBeVisible();
     await expect(page.locator(".hoja-a4.grande")).toHaveCount(1);
   });
   for (const [ruta, nombre, maximo] of [
-    ["/#/pacientes/informacion", "Información para pacientes", 3],
-    ["/#/pacientes/resumen", "Resumen", 2],
+    ["/#/capitulo/resumen", "Resumen", 2],
     // V54-09 (0.55.0): los cuatro planes y las dos hojas adaptadas. Los planes, 4 caras: la
     // urgencia va en la primera y la Figura 3 no parte ninguna rama (docs/IMPRESION_2026-10.md).
     ["/#/pacientes/plan/mm780", "Plan de seguridad · MiniMed 780G", 4],
@@ -99,14 +95,10 @@ test.describe("Nocturno en lo nuevo", () => {
     await auditar(page, "Portada con «¿Qué necesitas?»");
     for (const [ruta, nombre] of [
       ["/#/pacientes", "Para el paciente"],
-      ["/#/pacientes/informacion", "Información para pacientes"],
       ["/#/pacientes/plan/op5", "Plan de seguridad"],
-      ["/#/pacientes/hoja/glucosa", "Hoja breve · glucosa"],
       ["/#/test", "Autoevaluación"],
       ["/#/visual/gestacion-sistemas", "Gestación por sistema"],
       ["/#/visual/hospital", "Hospital"],
-      ["/#/visual/exploraciones", "Exploraciones"],
-      ["/#/visual/eleccion", "Elección compartida"],
       ["/#/visual/interrupcion", "Interrupción"],
     ] as const) {
       await page.goto(ruta);
@@ -127,12 +119,12 @@ test.describe("Búsqueda y enlaces", () => {
       .getByRole("button", { name: /^Otros recursos \(\d+\)/ })
       .click();
     await expect(page.getByText(/No es el texto del capítulo/)).toBeVisible();
-    await page
-      .getByRole("link", {
-        name: /Información para pacientes · ¿Cuándo se debe acudir a urgencias\?/,
-      })
-      .click();
-    await expect(page).toHaveURL(/#\/pacientes\/informacion$/);
+    // 0.70.0: la Información para pacientes es el PDF publicado.
+    await expect(
+      page.getByRole("link", {
+        name: /Información para pacientes \(PDF\) · ¿Cuándo se debe acudir a urgencias\?/,
+      }),
+    ).toHaveAttribute("href", "pdf/manual-seen-aid-pacientes.pdf");
   });
 
   test("la barra lateral: Inicio y tres grupos (Consultar, Leer y comprender, Recursos)", async ({

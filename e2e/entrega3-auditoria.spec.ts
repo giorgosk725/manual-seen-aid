@@ -12,21 +12,15 @@ test.describe("Entrega 3 (0.34.0)", () => {
     );
     await grupo.getByRole("button", { name: /Omnipod 5/ }).click();
     await expect(page).toHaveURL(/#\/sistemas\/op5\/parametros$/);
+    // 0.70.0: la ficha es una página; arriba del todo, la barra está abierta.
+    await page.goto("/#/sistemas/op5");
+    await page.evaluate(() => window.scrollTo(0, 0));
     await expect(grupo.getByRole("button", { name: "Los cuatro" })).toHaveAttribute(
       "aria-pressed",
       "false",
     );
-    // Al elegir un sistema la ficha baja a su sección y la barra pegada se recoloca: se espera a
-    // que el desplazamiento termine (bajo carga tardaba y el clic caía a mitad de movimiento).
-    await expect
-      .poll(async () => {
-        const a = await page.evaluate(() => window.scrollY);
-        await page.waitForTimeout(200);
-        return a === (await page.evaluate(() => window.scrollY));
-      })
-      .toBe(true);
     await grupo.getByRole("button", { name: "Los cuatro" }).click();
-    await expect(page).toHaveURL(/#\/sistemas\/todos\/parametros$/);
+    await expect(page).toHaveURL(/#\/sistemas\/todos\/esencial$/);
   });
 
   test("una fila de situación se abre con «Ver esta situación»; las preguntas no repiten grupo", async ({

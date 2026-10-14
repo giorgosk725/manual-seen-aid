@@ -110,41 +110,47 @@ export function Modal({
     };
   }, [open, onClose]);
   if (!open) return null;
+  // El fondo oscuro, aparte y debajo del diálogo (0.70.0): dentro de él, con z negativo, los
+  // comprobadores de contraste lo tomaban como si estuviera encima del panel.
   return createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto px-4 py-10"
-      role="dialog"
-      aria-modal="true"
-      aria-label={ariaLabel || title}
-    >
+    <>
       <button
         aria-hidden="true"
         tabIndex={-1}
         onClick={onClose}
-        className="fixed inset-0 -z-10 cursor-default"
+        className="fixed inset-0 z-50 cursor-default"
         style={{ backgroundColor: "rgba(15,23,42,0.45)" }}
       />
       <div
-        ref={panelRef}
-        tabIndex={-1}
-        className={`w-full ${maxW} rounded-2xl border border-slate-200 bg-white shadow-xl focus:outline-none`}
+        className="pointer-events-none fixed inset-0 z-50 flex items-start justify-center overflow-y-auto px-4 py-10"
+        role="dialog"
+        aria-modal="true"
+        aria-label={ariaLabel || title}
       >
-        {title && (
-          <div className="flex items-center gap-2 rounded-t-2xl bg-slate-100 px-4 py-3 text-slate-800">
-            {Icon && <Icon size={18} className="shrink-0" />}
-            <h2 className="flex-1 text-sm font-bold">{title}</h2>
-            <button
-              onClick={onClose}
-              aria-label="Cerrar"
-              className="shrink-0 rounded p-1 transition hover:bg-black/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-            >
-              <X size={16} />
-            </button>
-          </div>
-        )}
-        {children}
+        <div
+          ref={panelRef}
+          tabIndex={-1}
+          // El panel no pasa del alto de la pantalla: se desplaza por dentro (0.70.0; el menú
+          // entero no cabía a 320 × 640).
+          className={`pointer-events-auto max-h-[calc(100dvh-5rem)] w-full overflow-y-auto ${maxW} rounded-2xl border border-slate-200 bg-white shadow-xl focus:outline-none`}
+        >
+          {title && (
+            <div className="flex items-center gap-2 rounded-t-2xl bg-slate-100 px-4 py-3 text-slate-800">
+              {Icon && <Icon size={18} className="shrink-0" />}
+              <h2 className="flex-1 text-sm font-bold">{title}</h2>
+              <button
+                onClick={onClose}
+                aria-label="Cerrar"
+                className="shrink-0 rounded p-1 transition hover:bg-black/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          )}
+          {children}
+        </div>
       </div>
-    </div>,
+    </>,
     document.body,
   );
 }
@@ -521,13 +527,16 @@ export function CabeceraEditorial({
   return (
     <div className="mb-3">
       <div className="flex items-center gap-2.5">
-        <span
-          aria-hidden="true"
-          className="flex h-7 min-w-[1.75rem] shrink-0 items-center justify-center rounded-[3px] px-1 font-display text-sm font-medium tabular-nums text-white"
-          style={{ background: hex.strong }}
-        >
-          {numero ?? ""}
-        </span>
+        {/* El cuadro de color, solo con número (apartados): sin él era decoración (0.70.0). */}
+        {numero != null && numero !== "" && (
+          <span
+            aria-hidden="true"
+            className="flex h-7 min-w-[1.75rem] shrink-0 items-center justify-center rounded-[3px] px-1 font-display text-sm font-medium tabular-nums text-white"
+            style={{ background: hex.strong }}
+          >
+            {numero}
+          </span>
+        )}
         <H
           className="font-display text-lg font-medium uppercase leading-tight tracking-[0.04em]"
           style={{ color: hex.ink }}

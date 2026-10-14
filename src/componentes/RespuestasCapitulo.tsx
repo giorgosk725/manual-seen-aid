@@ -479,9 +479,14 @@ function BloqueFrecuente({
       className="mt-3 rounded-xl border-2 bg-white p-3 sm:p-4"
       style={{ borderColor: "#8E254E" }}
     >
+      {/* En la pantalla de la pregunta, el rótulo solo para lectores de pantalla (0.70.0). */}
       <H
         id={id}
-        className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"
+        className={
+          sinPregunta
+            ? "sr-only"
+            : "mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"
+        }
         style={{ color: "#8E254E" }}
       >
         <MessageCircleQuestion size={14} aria-hidden="true" /> Pregunta frecuente
@@ -535,9 +540,6 @@ function BloqueFrecuente({
           </a>
         </p>
       )}
-      <p className="mt-2 text-xs text-slate-500">
-        Pasajes del capítulo relacionados con esta pregunta.
-      </p>
     </section>
   );
 }
@@ -666,13 +668,6 @@ export function RespuestasCapitulo({
         >
           <Quote size={14} aria-hidden="true" /> {titulo}
         </H>
-        {cercana && !frecuente && (
-          <p className="mb-2 text-xs text-slate-600">
-            {varias
-              ? "Varios pasajes responden casi igual de bien: comprueba cuál es el tuyo."
-              : "Coincide solo con parte de la búsqueda: revisa su contexto antes de usarlo."}
-          </p>
-        )}
         <Tarjeta
           r={r}
           q={q}
@@ -714,9 +709,6 @@ export function RespuestasCapitulo({
         ) : (
           masPasajes(otras)
         )}
-        <p className="mt-2 text-xs text-slate-500">
-          Elegido por coincidencia de palabras: comprueba que responde a lo que buscas.
-        </p>
       </section>
       {Relacionadas}
     </>

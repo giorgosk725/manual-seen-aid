@@ -37,10 +37,14 @@ test.describe("Pertinencia y continuación (0.42.0)", () => {
     await expect(page.getByText(/múltiples dosis|dosis total diaria/i).first()).toBeVisible();
   });
 
-  test("Para el paciente: cada hoja dice para qué sirve", async ({ page }) => {
+  test("Para el paciente: tres entradas, sin entradillas", async ({ page }) => {
     await page.goto("/#/pacientes");
+    const main = page.getByRole("main");
+    await expect(main.getByRole("link", { name: /Información para pacientes/ })).toBeVisible();
+    await expect(main.getByRole("heading", { name: "Plan de seguridad" })).toBeVisible();
     await expect(
-      page.getByText(/Hoja de actuación para entregar · Esta hoja resume/),
+      main.getByRole("link", { name: /Antes de una prueba o una cirugía/ }),
     ).toBeVisible();
+    await expect(main.getByText(/No son una publicación del Manual SEEN/)).toHaveCount(0);
   });
 });

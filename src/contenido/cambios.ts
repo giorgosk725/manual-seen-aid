@@ -15,7 +15,20 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-14",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — Omnipod 5: «Adapta la basal por pod»`,
+    titulo: `Complemento interactivo ${VERSION_APP} — simplificación a fondo`,
+    detalle: [
+      "Para el paciente: una pantalla con tres entradas (el PDF publicado, el plan de seguridad de cada sistema y la hoja de pruebas y cirugía); sin la información en pantalla ni los extractos. El plan, en una cara con lo esencial y la hoja de cetonas como segunda cara.",
+      "Sin frases de entrada bajo los títulos, sin rótulos encima de los bloques, sin avisos explicativos y sin la fecha del capítulo en cada fuente (va en «Sobre»). La barra de arriba ya no repite el título.",
+      "Navegación: la misma lista de consulta en la portada, el menú lateral y el móvil; en el móvil, la barra de abajo es Inicio · Sistemas · Situaciones · Buscar · Más.",
+      "Sistemas: la ficha de cada sistema en una sola página (cómo funciona, indicación y material, parámetros); la comparación, con la Tabla 1 y la Tabla 3.",
+      "Interrupción del sistema: los cinco casos de una vez. Figura 3: en el móvil, los tramos de β-OHB en la primera pantalla. Iniciar: «Calcular» y «Fases», y la hoja para imprimir.",
+      "Lectura: sin «Cifras y objetivos», los diagramas como un enlace junto a su párrafo, la nota de las dosis de la Figura 3 una sola vez; «Figuras y diagramas» en una sola pantalla, sin los tres diagramas que repetían una tabla o una figura.",
+    ],
+  },
+  {
+    fecha: "2026-10-14",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.68.1 — Omnipod 5: «Adapta la basal por pod»",
     detalle: [
       "Tabla 1, Omnipod 5: «Adapta la basal por pod» en vez de «Posee autoaprendizaje por pod» (corrección posterior a la publicación). Junto a la casilla, una nota dice qué pone el capítulo publicado.",
       "Portada sin «Seguir leyendo».",

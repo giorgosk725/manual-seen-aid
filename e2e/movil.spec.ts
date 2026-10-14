@@ -12,19 +12,24 @@ const sinScrollHorizontal = async (page: Page, pantalla: string) => {
 };
 
 test.describe("Móvil (393 px)", () => {
-  test("barra inferior con cuatro destinos y sin barra lateral", async ({ page }) => {
+  test("barra inferior: Inicio, Sistemas, Situaciones, Buscar y Más; sin barra lateral", async ({
+    page,
+  }) => {
     await page.goto("/");
     const barra = page.getByRole("navigation", { name: /Barra inferior/ });
-    for (const e of ["Inicio", "Leer", "Paciente", "Buscar"]) {
+    for (const e of ["Inicio", "Sistemas", "Situaciones", "Buscar"])
       await expect(barra.getByRole("link", { name: e })).toBeVisible();
-    }
+    await expect(barra.getByRole("button", { name: "Más" })).toBeVisible();
     await expect(page.getByRole("navigation", { name: /Navegación principal/ })).toBeHidden();
     await sinScrollHorizontal(page, "Portada");
   });
 
   test("el menú abre un apartado; la tabla se ve como fichas", async ({ page }) => {
     await page.goto("/#/capitulo");
-    await page.getByRole("button", { name: "Menú" }).click();
+    await page
+      .getByRole("navigation", { name: "Barra inferior" })
+      .getByRole("button", { name: "Más" })
+      .click();
     await page
       .getByRole("dialog")
       .getByRole("link", { name: /Sistemas en España/i })

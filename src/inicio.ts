@@ -50,7 +50,7 @@ export const FASES: Fase[] = [
       { t: "casilla", tabla: "T1", fila: 7 },
       { t: "frase", apartado: "06-indicaciones", bloque: "b5", k: [0] },
       { t: "frase", apartado: "06-indicaciones", bloque: "b5", k: [2] },
-      { t: "enlace", texto: "Elección compartida (Figura 2)", ruta: href("visual", "eleccion") },
+      { t: "enlace", texto: "Cómo elegir un sistema (Figura 2)", ruta: href("sistemas", "elegir") },
       { t: "frase", apartado: "07-educacion", bloque: "b1", k: [2] },
       { t: "lista", apartado: "07-educacion", bloque: "b4" },
       // 13-10-2026: lo que el capítulo pide en la preparación y no salía aquí.
@@ -82,7 +82,11 @@ export const FASES: Fase[] = [
       { t: "casilla", tabla: "T1", fila: 10 },
       { t: "frase", apartado: "08-iniciacion", bloque: "b7", k: [1] },
       { t: "fila", tabla: "T2", fila: 8 },
-      { t: "enlace", texto: "Transición desde MDI (diagrama)", ruta: href("visual", "transicion") },
+      {
+        t: "enlace",
+        texto: "Transición desde MDI (Tabla 2)",
+        ruta: href("consultar", "tablas", "T2"),
+      },
       { t: "enlace", texto: "Tabla 2 completa", ruta: href("consultar", "tablas", "T2") },
       // 13-10-2026: respaldo y transición (apartado 7), qué esperar del algoritmo (Tabla 1),
       // funciones temporales (Tabla 3), gestación y el «punto de partida» del apartado 8.

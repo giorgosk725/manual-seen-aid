@@ -12,7 +12,6 @@ import {
   Baby,
   BedDouble,
   Bike,
-  BookOpen,
   Box,
   Check,
   ChevronLeft,
@@ -33,7 +32,6 @@ import {
   ShieldCheck,
   Siren,
   Syringe,
-  Table2,
   Thermometer,
   TrendingDown,
   TrendingUp,
@@ -45,6 +43,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, rutaDeTabla } from "../contenido";
+import { INTERRUPCION_LINEA } from "../contenido/diagramas";
+import { InterrupcionPantalla } from "../componentes/Diagramas";
 import {
   GUION,
   SIS_IDS,
@@ -63,7 +63,7 @@ import { kDe, type Pieza } from "../inicio";
 import { elegirRuta, fueNavegacionNueva, href } from "../rutas";
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
-import { CabeceraEditorial, Segmented } from "../ui";
+import { CabeceraEditorial } from "../ui";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { useIrAlCambiar, useSubirAlElegir } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
@@ -361,7 +361,7 @@ function GuionVista({
                     : { background: hex.soft, color: hex.ink }
                 }
               >
-                {i + 1}
+                {i - desde + 1}
               </span>
               <h3>
                 <button
@@ -371,7 +371,7 @@ function GuionVista({
                   className="flex min-h-11 w-full items-center justify-between gap-3 py-1 text-left text-sm font-bold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                 >
                   <span>
-                    <span className="sr-only">{i + 1}. </span>
+                    <span className="sr-only">{i - desde + 1}. </span>
                     {m.rotulo}
                   </span>
                   <ChevronRight
@@ -415,12 +415,10 @@ function GuionVista({
 /* La situación elegida, arriba y una sola vez: su icono, su nombre y «Cambiar» (en el móvil). */
 function CabeceraSituacion({
   id,
-  rotulo,
   etiqueta,
   onCambiar,
 }: {
   id: string;
-  rotulo: string;
   etiqueta: string;
   onCambiar: () => void;
 }) {
@@ -438,9 +436,6 @@ function CabeceraSituacion({
         <I size={22} style={{ color: hex.strong }} />
       </span>
       <div className="min-w-0 flex-1">
-        <div className="text-[11px] font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
-          {rotulo}
-        </div>
         <h2 className="text-base font-extrabold leading-snug text-slate-900 sm:text-lg">
           {etiqueta}
         </h2>
@@ -463,6 +458,7 @@ function ParaSeguir({
 }: {
   filas: { href: string; t: string; I: LucideIcon; color?: string }[];
 }) {
+  if (!filas.length) return null;
   return (
     <section
       aria-label="Para seguir"
@@ -687,11 +683,7 @@ export function SituacionSistema({
   );
   return (
     <div>
-      <CabeceraEditorial titulo="Situaciones" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          Elige la situación; si la conducta cambia según el sistema, elige también el sistema.
-        </p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo="Situaciones" hex={hex} level={1} />
       <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">
         <div className={(sit || guia) && !verLista ? "hidden lg:block" : undefined}>
           <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
@@ -727,12 +719,7 @@ export function SituacionSistema({
           )}
           {guia && (
             <div key={guia.id} className="pantalla-in space-y-4">
-              <CabeceraSituacion
-                id={guia.id}
-                rotulo="Situación"
-                etiqueta={guia.etiqueta}
-                onCambiar={cambiar}
-              />
+              <CabeceraSituacion id={guia.id} etiqueta={guia.etiqueta} onCambiar={cambiar} />
               <p
                 id="conducta-situacion"
                 className="scroll-mb-28 scroll-mt-24 px-1 text-sm text-slate-700"
@@ -767,12 +754,7 @@ export function SituacionSistema({
           )}
           {sit && tabla && fila && (
             <div key={sit.id} className="pantalla-in space-y-4">
-              <CabeceraSituacion
-                id={sit.id}
-                rotulo={tabla.cabeceraEtiqueta}
-                etiqueta={sit.etiqueta}
-                onCambiar={cambiar}
-              />
+              <CabeceraSituacion id={sit.id} etiqueta={sit.etiqueta} onCambiar={cambiar} />
               {/* En el ejercicio, las comprobaciones antes de empezar van antes de la conducta de
                   cada sistema (S61-01): pueden obligar a retrasar o a no hacer el ejercicio. */}
               {ANTES_DE_ACTUAR.includes(sit.id) && GUION[sit.id] && (
@@ -827,7 +809,7 @@ export function SituacionSistema({
                 {porSistema && (
                   <div>
                     <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-                      {sisIdx >= 0 ? "Sistema" : "Por sistema · elige uno para ver solo el suyo"}
+                      Sistema
                     </div>
                     <CasillasSistema
                       seleccion={sisIdx >= 0 ? [sisIdx] : []}
@@ -911,14 +893,6 @@ export function SituacionSistema({
                         );
                       })}
                     </dl>
-                    <p className="text-xs text-slate-600">
-                      Conducta común a los cuatro sistemas: el capítulo no distingue entre sistemas.
-                      Lo propio de cada uno está en su ficha de{" "}
-                      <a href={href("sistemas")} className="font-semibold underline">
-                        Sistemas
-                      </a>
-                      .
-                    </p>
                   </>
                 )}
                 <FuentePie
@@ -928,6 +902,10 @@ export function SituacionSistema({
                       texto: `Tabla ${tabla.numero}, ${paginasDe(tabla.paginas[0], tabla.paginas[1])}`,
                       ruta: rutaDeTabla(sit.tabla),
                     },
+                    ...sit.leer.map((l) => ({
+                      texto: l.titulo,
+                      ruta: href("capitulo", l.slug, l.ancla),
+                    })),
                   ]}
                 />
               </section>
@@ -940,6 +918,7 @@ export function SituacionSistema({
                   desde={ANTES_DE_ACTUAR.includes(sit.id) ? 1 : 0}
                 />
               )}
+              {/* 0.70.0: dos como mucho, la hoja para el paciente y su plan de seguridad. */}
               <ParaSeguir
                 filas={[
                   ...(sit.tabla === "T6" || sit.id.startsWith("hiperglucemia")
@@ -947,28 +926,24 @@ export function SituacionSistema({
                         {
                           href: href(
                             "pacientes",
-                            "hoja",
-                            sit.tabla === "T6" ? "pruebas-cirugia" : "cetonas",
+                            sit.tabla === "T6" ? "hoja" : "plan",
+                            sit.tabla === "T6"
+                              ? "pruebas-cirugia"
+                              : sisIdx >= 0
+                                ? ORDEN_SISTEMAS[sisIdx]
+                                : undefined,
                           ),
-                          t: `Hoja para entregar al paciente: ${sit.tabla === "T6" ? "pruebas y cirugía" : "cetonas"}`,
+                          t:
+                            sit.tabla === "T6"
+                              ? "Hoja para el paciente: antes de una prueba o una cirugía"
+                              : "Plan de seguridad y hoja de cetonas para el paciente",
                           I: HeartHandshake,
                           color: CATEGORIA_HEX.pacientes.strong,
                         },
                       ]
                     : []),
-                  ...sit.leer.map((l) => ({
-                    href: href("capitulo", l.slug, l.ancla),
-                    t: `En el capítulo: ${l.titulo}`,
-                    I: BookOpen,
-                    color: CATEGORIA_HEX.leer.strong,
-                  })),
-                  ...(sit.tabla === "T6" || sit.id.startsWith("ejercicio")
+                  ...(sit.id.startsWith("ejercicio")
                     ? [
-                        {
-                          href: href("consultar", "interrupcion"),
-                          t: "Interrupción del sistema: cuánto dura y qué hacer con la insulina",
-                          I: Unplug,
-                        },
                         {
                           href: href(
                             "pacientes",
@@ -980,11 +955,6 @@ export function SituacionSistema({
                         },
                       ]
                     : []),
-                  {
-                    href: href("consultar", "tablas", sit.tabla),
-                    t: `Tabla ${tabla.numero} completa`,
-                    I: Table2,
-                  },
                 ]}
               />
             </div>
@@ -1029,23 +999,13 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
   const alPaso = useIrAlCambiar(String(n), "paso-descarga");
   return (
     <div>
-      <CabeceraEditorial titulo="Revisar la descarga" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          Ocho pasos: de la visión global a la causa y al plan de cambios.
-        </p>
-      </CabeceraEditorial>
+      <CabeceraEditorial titulo="Revisar la descarga" hex={hex} level={1} />
       {/* «Paso n de 8» y el selector en una sola fila (en el móvil, sin el rótulo visible). */}
       <div className="no-imprimir mb-3 flex items-center gap-x-3 text-sm">
         <span className="shrink-0 font-semibold text-slate-900">
           Paso {n} de {t.filas.length}
         </span>
         <label className="inline-flex min-h-11 min-w-0 flex-1 items-center gap-2 sm:min-h-9 sm:flex-none">
-          <span
-            className="sr-only text-xs font-semibold sm:not-sr-only"
-            style={{ color: hex.strong }}
-          >
-            Cambiar paso
-          </span>
           <select
             aria-label="Cambiar paso"
             value={n}
@@ -1078,12 +1038,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
         aria-live="polite"
       >
         <div className="flex items-start justify-between gap-2">
-          <h2 className="text-lg font-extrabold text-slate-900">
-            <span className="mr-2 tabular-nums" style={{ color: hex.strong }}>
-              {n}.
-            </span>
-            {fila.celdas[0]}
-          </h2>
+          <h2 className="text-lg font-extrabold text-slate-900">{fila.celdas[0]}</h2>
         </div>
         <dl
           className="mt-3 divide-y md:grid md:grid-cols-3 md:gap-4 md:divide-y-0"
@@ -1186,167 +1141,37 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           </button>
         </div>
       </section>
-      <p className="mt-3 text-xs text-slate-500">
-        <Texto>{t.notas[1]}</Texto>
-      </p>
+      {/* La nota de la Tabla 5, una vez: en el primer paso (0.70.0). */}
+      {n === 1 && (
+        <p className="mt-3 text-xs text-slate-500">
+          <Texto>{t.notas[1]}</Texto>
+        </p>
+      )}
     </div>
   );
 }
 
-/* ---------- Interrupción del sistema (línea de tiempo) ---------- */
-const FIGURA3_SI =
-  "Si existe cetonemia, hiperglucemia persistente o sospecha de fallo de infusión, se seguirá el algoritmo de la figura 3.";
-/* «clave»: las frases del párrafo que responden a ese tramo (índices), resaltadas dentro del
-   párrafo entero, que sigue a la vista (13-10-2026: el de «Muy breve» se leía como un bloque). */
-const TRAMOS_INTERRUPCION = [
-  {
-    id: "breve",
-    titulo: "Muy breve",
-    sub: "reanudación o sustitución inmediata",
-    parrafo: 0,
-    clave: [1, 2, 3],
-  },
-  {
-    id: "una-hora",
-    titulo: "Alrededor de 1 h",
-    sub: "hay que actuar",
-    parrafo: 0,
-    clave: [4],
-  },
-  {
-    id: "pocas-horas",
-    titulo: "Programada, hasta 2-3 h",
-    sub: "deporte, baño, exploraciones",
-    parrafo: 1,
-    clave: [1],
-  },
-  {
-    id: "prolongada",
-    titulo: "Prolongada o fallo definitivo",
-    sub: "pasar a plumas",
-    parrafo: 2,
-    clave: [0],
-  },
-  {
-    id: "programada",
-    titulo: "Cirugía, ingreso o exploración larga",
-    sub: "glargina programada y reinicio",
-    parrafo: 3,
-    clave: [0, 1],
-  },
-];
-/* Las frases de un párrafo: corte tras punto y espacio, antes de mayúscula. */
-const frasesDeParrafo = (t: string) => t.split(/(?<=\.)\s+(?=[A-ZÁÉÍÓÚÑ¿«])/);
-
-export function Interrupcion({ tramo }: { tramo?: string }) {
+/* ---------- Interrupción del sistema (0.70.0) ----------
+   Los cinco casos de una vez (no programada: muy breve, hacia 1 h, prolongada; programada: pocas
+   horas, glargina programada), pod y bomba, y la basal de respaldo: el esquema del apartado 7, en
+   texto literal y a tamaño de lectura. Sustituye a las pestañas por duración. */
+export function Interrupcion(_props: { tramo?: string }) {
   const a = APARTADOS.find((x) => x.slug === "07-educacion")!;
-  const inicio = a.bloques.findIndex((b) => b.t === "h3" && b.id === "interrupcion");
-  const fin = a.bloques.findIndex((b, i) => i > inicio && b.t === "h3");
-  const parrafos = a.bloques
-    .slice(inicio + 1, fin)
-    .map((b, k) => ({ b, ancla: idDeBloque(b, inicio + 1 + k) }))
-    .filter((x) => x.b.t === "p") as { b: Extract<Bloque, { t: "p" }>; ancla: string }[];
-  // El tramo vive en la URL (Atrás/Adelante y enlaces lo respetan).
-  const sel = tramo && TRAMOS_INTERRUPCION.some((t) => t.id === tramo) ? tramo : "breve";
-  const actual = TRAMOS_INTERRUPCION.find((t) => t.id === sel)!;
-  const p = parrafos[actual.parrafo];
-  // Elegida otra duración, su párrafo a la vista (en el móvil queda bajo las opciones).
-  useSubirAlElegir(sel, "parrafo-interrupcion");
   return (
     <div>
-      <CabeceraEditorial titulo="Interrupción del sistema" hex={hex} level={1}>
-        <p className="text-sm text-slate-600">
-          «Interrupción del sistema y pauta alternativa»: elige cuánto va a durar y lee su párrafo.
-        </p>
-      </CabeceraEditorial>
-      <div className="no-imprimir mb-4">
-        <Segmented
-          label="Duración de la interrupción"
-          wrap
-          value={sel}
-          onChange={(v) => {
-            elegirRuta("consultar", "interrupcion", v);
-          }}
-          options={TRAMOS_INTERRUPCION.map((t) => ({ id: t.id, label: t.titulo }))}
-        />
+      <CabeceraEditorial titulo="Interrupción del sistema" hex={hex} level={1} />
+      <div className="interrupcion-grande">
+        <InterrupcionPantalla />
       </div>
-      <ol className="relative mb-4 grid grid-cols-5 gap-1" aria-hidden="true">
-        {TRAMOS_INTERRUPCION.map((t, i) => (
-          <li key={t.id} className="text-center">
-            <div
-              className="mx-auto h-2 rounded-full"
-              style={{
-                background:
-                  i <= TRAMOS_INTERRUPCION.findIndex((x) => x.id === sel) ? hex.strong : "#e6e6e6",
-              }}
-            />
-            <div className="mt-1 hidden text-[11px] text-slate-500 sm:block">{t.sub}</div>
-          </li>
-        ))}
-      </ol>
-      <section
-        key={sel}
-        id="parrafo-interrupcion"
-        className="pantalla-in scroll-mt-24 rounded-2xl border bg-white p-4 shadow-soft"
-        style={{ borderColor: "#e6e6e6" }}
-        aria-live="polite"
-      >
-        <h2 className="text-lg font-extrabold text-slate-900">{actual.titulo}</h2>
-        <p className="text-sm text-slate-500">{actual.sub}</p>
-        {p && (
-          <>
-            <p
-              className="mt-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide"
-              style={{ color: hex.ink }}
-            >
-              <span
-                aria-hidden="true"
-                className="inline-block h-2.5 w-2.5 rounded-sm"
-                style={{ background: hex.soft, boxShadow: `inset 0 0 0 1px ${hex.strong}` }}
-              />
-              Lo que responde a este caso, resaltado en el párrafo
-            </p>
-            <p className="prosa mt-1">
-              {frasesDeParrafo(p.b.texto).map((f, k) => (
-                <span key={k}>
-                  {k > 0 && " "}
-                  {actual.clave.includes(k) ? (
-                    <mark
-                      className="rounded px-0.5 font-semibold text-slate-900"
-                      style={{ background: hex.soft, boxShadow: `inset 0 -2px 0 0 ${hex.strong}` }}
-                    >
-                      <Texto>{f}</Texto>
-                    </mark>
-                  ) : (
-                    <span className="text-slate-600">
-                      <Texto>{f}</Texto>
-                    </span>
-                  )}
-                </span>
-              ))}
-            </p>
-          </>
-        )}
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          <a
-            href={href("capitulo", "07-educacion", "interrupcion")}
-            className="inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-slate-600 hover:underline sm:min-h-6"
-          >
-            {p ? `Fuente: Apartado 7, p. ${p.b.p} · ` : ""}Leer el subapartado completo{" "}
-            <ArrowRight size={11} aria-hidden="true" />
-          </a>
-          {/* Desde cualquier duración (S61-06), con la frase del capítulo (p. 9). */}
-          <a
-            href={href("consultar", "figura-3")}
-            className="inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-slate-600 hover:underline sm:min-h-6"
-          >
-            {FIGURA3_SI} <ArrowRight size={11} aria-hidden="true" />
-          </a>
-        </div>
-      </section>
-      <p className="mt-3 text-xs text-slate-500">
-        <Texto>{parrafos[4]?.b.texto ?? ""}</Texto>
-      </p>
+      <FuentePie
+        className="mt-3"
+        fuentes={[
+          {
+            texto: `Apartado ${a.n}, p. ${INTERRUPCION_LINEA.pagina}`,
+            ruta: href("capitulo", a.slug, "interrupcion"),
+          },
+        ]}
+      />
     </div>
   );
 }

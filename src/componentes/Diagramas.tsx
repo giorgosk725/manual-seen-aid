@@ -68,7 +68,8 @@ const TONO: Record<TonoFranja, { bg: string; fg: string }> = {
 
 /* Nivel del título del diagrama: 2 en su pantalla (#/visual, tras el h1) y 3 dentro de un
    apartado. Los subtítulos del diagrama van un nivel por debajo. */
-const NivelDiagrama = createContext<Nivel>(3);
+/* 1: el diagrama es la pantalla (Interrupción), bajo su h1. */
+const NivelDiagrama = createContext<Nivel | 1>(3);
 function Sub({
   children,
   className,
@@ -81,7 +82,7 @@ function Sub({
   id?: string;
 }) {
   const nivel = useContext(NivelDiagrama);
-  const H = nivel === 2 ? "h3" : nivel === 3 ? "h4" : "h5";
+  const H = nivel === 1 ? "h2" : nivel === 2 ? "h3" : nivel === 3 ? "h4" : "h5";
   return (
     <H id={id} className={className} style={style}>
       {children}
@@ -114,14 +115,10 @@ export function MarcoDiagrama({
       >
         <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
           <div className="min-w-0">
-            <div className="text-xs font-bold uppercase tracking-wide" style={{ color: "#343093" }}>
-              Diagrama · a partir del texto del capítulo
-            </div>
+            {/* 0.70.0: solo el título (sin rótulo ni resumen); la fuente, al pie. */}
             <Titulo id={`diag-${id}`} className="text-base font-extrabold text-slate-900">
               {meta.titulo}
             </Titulo>
-            {/* Qué enseña, en una línea (13-10-2026); la fuente, al pie del diagrama. */}
-            <p className="mt-0.5 text-sm text-slate-600">{meta.resumen}</p>
           </div>
         </div>
         {children}
@@ -1279,6 +1276,14 @@ function Eleccion() {
 
 /* ---------- 12. Interrupción del sistema según su duración ---------- */
 
+/* Como pantalla de consulta (Interrupción del sistema, bajo su h1): subtítulos en h2. */
+export function InterrupcionPantalla() {
+  return (
+    <NivelDiagrama.Provider value={1}>
+      <InterrupcionLinea />
+    </NivelDiagrama.Provider>
+  );
+}
 function InterrupcionLinea() {
   const L = INTERRUPCION_LINEA;
   const Tramo = ({
