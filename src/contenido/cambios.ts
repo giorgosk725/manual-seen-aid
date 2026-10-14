@@ -15,7 +15,24 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-14",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — sistemas y repeticiones`,
+    titulo: `Complemento interactivo ${VERSION_APP} — más operativa y más visual`,
+    detalle: [
+      "Hecha a partir de cuatro auditorías de uso (residente de guardia en el móvil, adjunto en consulta en el ordenador, enfermera educadora y residente de primer año en la tablet, y diseño) y de una segunda ronda sobre lo cambiado.",
+      "Urgencias: en la portada, hiperglucemia y cetonemia, hipoglucemia e interrupción en tres tarjetas con su color. Figura 3 con la cifra de cada tramo en grande y la escala de colores. Interrupción del sistema en tarjetas por caso, con el tiempo arriba y la basal de respaldo dentro del fallo definitivo. Hipoglucemia con las dos cantidades primero.",
+      "En las pantallas de consulta, las cifras con unidad (1-2 h, ≥ 70 %, 0,1 UI/kg, 112,5–160 mg/dl) van en negrita; el texto es el mismo.",
+      "Iniciar un sistema: «Calcular · Fases · Hoja» en un solo control; en el ordenador, los datos a la izquierda y los parámetros de partida a la derecha, siempre a la vista; la hoja de comprobación lleva esos valores (o líneas en blanco para escribirlos).",
+      "Revisar la descarga: los ocho pasos a la vista (botones numerados en el móvil y la lista con sus títulos en el ordenador), con un icono por columna y los patrones abiertos en el ordenador.",
+      "Sistemas: la ficha sin cajas dentro de cajas; en la Tabla 3, una insignia dice qué parámetro tiene efecto directo en el modo automático; la casilla entera de la Tabla 1 y la nota de corrección de Omnipod 5, a un toque; «Sí»/«No» de los bolos automáticos en su propia línea. «Cómo elegir» compara los sistemas que se valoran.",
+      "Situaciones con un color por tema y cuatro puntos de color en las que cambian según el sistema; el filtro entiende «ducha», «pod», «catéter» o «alarma» y, si no encuentra nada, lleva a la búsqueda. Gestación y hospital enseñan sus objetivos de MCG arriba; el ingreso abre lo operativo.",
+      "Búsqueda: «cetonas», «hipoglucemia» o «desconectar» abren su herramienta; «gestante» lleva a la gestación; «modo actividad» y «el pod falla, no tengo repuesto» llevan a su sitio. En la pantalla de búsqueda, una sola caja.",
+      "Para el paciente: la hoja de cetonas también suelta; al imprimir el plan, la hoja de cetonas empieza en su propia cara.",
+      "Tablet: la barra lateral sale desde 1024 px (por debajo, la barra inferior) y la portada va a dos columnas. Ordenador: tablas sin doble barra de desplazamiento y más ancho en monitores grandes. Preguntas frecuentes con un icono por tema y la foto en las de cada sistema; autoevaluación con el avance fijo arriba; Tabla 4 de un sistema con los rótulos legibles.",
+    ],
+  },
+  {
+    fecha: "2026-10-14",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.71.0 — sistemas y repeticiones",
     detalle: [
       "Sistemas: en el ordenador, la barra de sistemas ya no se pliega al bajar; en el móvil, la ficha y la lista empiezan con la barra en una línea («Cambiar o comparar»). Las tarjetas de la lista dicen el formato (bomba con catéter o pod), y las pestañas de la lista, que comparan los cuatro.",
       "Sin el título de la Tabla 1 repetido encima de sus casillas, ni la miga de pan sobre las tablas.",

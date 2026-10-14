@@ -15,7 +15,10 @@
 /** Abre los `<details>` cerrados de la región y devuelve cómo dejarlos como estaban. */
 export function abrirPlegables(region) {
   if (!region || typeof region.querySelectorAll !== "function") return () => {};
-  const cerrados = [...region.querySelectorAll("details")].filter((d) => !d.open);
+  // Los de una zona que no se imprime (.no-imprimir) se quedan como están.
+  const cerrados = [...region.querySelectorAll("details")].filter(
+    (d) => !d.open && !d.closest(".no-imprimir"),
+  );
   cerrados.forEach((d) => {
     d.open = true;
   });

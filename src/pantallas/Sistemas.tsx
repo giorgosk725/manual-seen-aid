@@ -745,7 +745,8 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         />
       </section>
 
-      <section aria-label="Más del capítulo sobre este sistema" className="mt-7">
+      {/* En papel, sin los párrafos (0.72.0: la ficha impresa salía en cinco caras). */}
+      <section aria-label="Más del capítulo sobre este sistema" className="no-imprimir mt-7">
         <Foldable title="Párrafos del capítulo que lo nombran" count={parrafos.length}>
           <ol className="space-y-3">
             {parrafos.map((p) => (
@@ -891,7 +892,10 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
           className="flex min-h-11 w-full items-center gap-2 text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           aria-expanded={false}
         >
-          <span className="min-w-0 flex-1 truncate font-semibold text-slate-900">{resumen}</span>
+          {/* En la ficha, el nombre ya está en la cabecera y en cada sección (0.72.0). */}
+          <span className="min-w-0 flex-1 truncate font-semibold text-slate-900">
+            {ids.length === 1 ? "" : resumen}
+          </span>
           <span className="shrink-0 text-xs font-semibold" style={{ color: SEEN.burdeos }}>
             {ids.length === 1
               ? "Cambiar o comparar"
