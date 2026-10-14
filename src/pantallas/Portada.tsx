@@ -3,6 +3,7 @@
    «Leer y comprender» con la misma forma (14-10-2026) y el capítulo publicado
    (decisiones del autor del 13-10-2026: sin las dos puertas). El buscador vive en la barra lateral
    (escritorio) y en la barra de abajo (móvil): la portada no lo repite. */
+import { diagramaEnEdicion } from "../diagramasRetirados";
 import { ArrowRight, BookOpen, ExternalLink } from "lucide-react";
 import { CAPITULO } from "../contenido";
 import { MapaConsulta, TarjetaPortada } from "../componentes/MapaConsulta";
@@ -35,8 +36,13 @@ function Franja() {
 const LECTURA: { id: string; detalle: string }[] = [
   { id: "capitulo", detalle: `${APARTADOS.length} apartados` },
   { id: "tablas", detalle: `${LISTA_TABLAS.length} tablas` },
-  { id: "figuras", detalle: "Originales e infografía" },
-  { id: "visual", detalle: `${DIAGRAMAS.length} diagramas` },
+  // 0.72.0: «Figuras» y «Figuras y diagramas» eran la misma pantalla; una entrada, y las
+  // preguntas frecuentes en su lugar.
+  {
+    id: "visual",
+    detalle: `Figuras originales · ${DIAGRAMAS.filter((d) => diagramaEnEdicion(d.id)).length} diagramas`,
+  },
+  { id: "preguntas", detalle: "Por temas y por sistema" },
 ];
 function LeerYComprender() {
   const hex = CATEGORIA_HEX.leer;

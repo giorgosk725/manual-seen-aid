@@ -175,8 +175,8 @@ export function MapaConsulta() {
       <h2 id="mapa-consulta" tabIndex={-1} className="sr-only scroll-mt-24">
         Consultar
       </h2>
-      {/* Con la barra lateral (desde 768 px), una columna hasta que hay ancho para dos (V54-08). */}
-      <div className="grid gap-2 sm:gap-3 lg:grid-cols-2">
+      {/* Dos columnas desde la tablet (0.72.0: la barra lateral sale desde 1024 px). */}
+      <div className="grid gap-2 sm:gap-3 md:grid-cols-2">
         {MAPA_CONSULTA.map((b) => (
           <TarjetaPortada
             key={b.id}

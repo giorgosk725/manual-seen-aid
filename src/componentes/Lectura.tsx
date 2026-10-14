@@ -53,7 +53,7 @@ export function VolverArriba() {
         const reducido = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
         window.scrollTo({ top: 0, behavior: reducido ? "auto" : "smooth" });
       }}
-      className="volver-arriba no-imprimir fixed bottom-20 right-3 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700 shadow-lg transition hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 md:bottom-6 md:right-6"
+      className="volver-arriba no-imprimir fixed bottom-20 right-3 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700 shadow-lg transition hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 lg:bottom-6 lg:right-6"
       aria-label="Volver arriba"
       title="Volver arriba"
     >

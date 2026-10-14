@@ -277,7 +277,7 @@ function AvisoVersion() {
     return (
       <div
         role="status"
-        className="aviso-version fixed inset-x-3 bottom-32 z-40 mx-auto flex max-w-md items-center gap-3 rounded-xl border border-slate-300 bg-white p-3 shadow-xl md:bottom-4"
+        className="aviso-version fixed inset-x-3 bottom-32 z-40 mx-auto flex max-w-md items-center gap-3 rounded-xl border border-slate-300 bg-white p-3 shadow-xl lg:bottom-4"
       >
         <p className="flex-1 text-sm text-slate-800">
           {desde === VERSION_APP
@@ -300,7 +300,7 @@ function AvisoVersion() {
   return (
     <div
       role="status"
-      className="aviso-version fixed inset-x-3 bottom-32 z-40 mx-auto max-w-md rounded-xl border border-slate-300 bg-white p-3 shadow-xl md:bottom-4"
+      className="aviso-version fixed inset-x-3 bottom-32 z-40 mx-auto max-w-md rounded-xl border border-slate-300 bg-white p-3 shadow-xl lg:bottom-4"
     >
       <p className="text-sm text-slate-800">
         Hay una versión nueva del complemento (ahora usas la {VERSION_APP}). Se carga al pulsar
@@ -538,7 +538,7 @@ function Lateral({ ruta }: { ruta: Ruta }) {
   return (
     <aside
       aria-label="Menú del capítulo"
-      className="barra-lateral fixed inset-y-0 left-0 z-30 hidden w-64 flex-col overflow-y-auto px-3 py-4 md:flex"
+      className="barra-lateral fixed inset-y-0 left-0 z-30 hidden w-64 flex-col overflow-y-auto px-3 py-4 lg:flex"
     >
       <a
         href="#/"
@@ -630,7 +630,7 @@ function Inferior({ ruta, onMas }: { ruta: Ruta; onMas: () => void }) {
   return (
     <nav
       aria-label="Barra inferior"
-      className="fixed inset-x-0 bottom-0 z-30 border-t bg-white md:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 border-t bg-white lg:hidden"
       style={{ borderColor: "#e6e6e6", paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <ul className="grid grid-cols-5">
@@ -851,14 +851,14 @@ export function Shell({
       </button>
       <Lateral ruta={ruta} />
       <header
-        className="cabecera sticky top-0 z-20 border-b backdrop-blur md:ml-64"
+        className="cabecera sticky top-0 z-20 border-b backdrop-blur lg:ml-64"
         style={{ borderColor: "#e6e6e6" }}
       >
         <div className="mx-auto flex h-14 max-w-5xl items-center gap-2 px-3 sm:px-5">
           <a
             href="#/"
             aria-label="Manual de Endocrinología y Nutrición, complemento interactivo: inicio"
-            className="inline-flex min-h-11 min-w-0 shrink-0 items-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 md:hidden"
+            className="inline-flex min-h-11 min-w-0 shrink-0 items-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 lg:hidden"
           >
             <Rotulo compacto breve={enLectura} />
           </a>
@@ -906,7 +906,7 @@ export function Shell({
       <main
         ref={mainRef}
         tabIndex={-1}
-        className="focus:outline-none md:ml-64"
+        className="focus:outline-none lg:ml-64"
         style={{
           ["--cat" as string]: cat.strong,
           ["--cat-soft" as string]: cat.soft,
@@ -917,7 +917,7 @@ export function Shell({
           key={clavePantalla}
           // 0.72.0: en monitores anchos, las pantallas de consulta usan más ancho; la lectura del
           // capítulo conserva su medida.
-          className={`pantalla-in mx-auto max-w-5xl px-3 pb-24 pt-4 sm:px-5 md:pb-10 ${ruta.seccion === "capitulo" ? "" : "2xl:max-w-7xl"}`}
+          className={`pantalla-in mx-auto max-w-5xl px-3 pb-24 pt-4 sm:px-5 lg:pb-10 ${ruta.seccion === "capitulo" ? "" : "2xl:max-w-7xl"}`}
         >
           {volver && ruta.seccion === "capitulo" && (
             <div className="no-imprimir mb-3">
