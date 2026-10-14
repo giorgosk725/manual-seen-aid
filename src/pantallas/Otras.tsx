@@ -139,10 +139,15 @@ export function Buscar({ inicial }: { inicial?: string }) {
     [motor, qEf, tope],
   );
   const res = busqueda.resultados;
-  const respuestas = useMemo(
-    () => (motor && qEf.trim().length >= 2 ? motor.fusionar(qEf, parecidos) : []),
-    [motor, qEf, parecidos],
-  );
+  const respuestas = useMemo(() => {
+    const rs = motor && qEf.trim().length >= 2 ? motor.fusionar(qEf, parecidos) : [];
+    // 0.72.0: una sigla del glosario no va de pasaje principal si la consulta no la nombra
+    // («cetonas» daba «β-OHB: β-hidroxibutirato»); pasa detrás. Solo cambia el orden.
+    const nq = normalizar(qEf);
+    if (rs.length > 1 && rs[0].tipo === "sigla" && !nq.includes(normalizar(rs[0].titulo)))
+      return [...rs.slice(1), rs[0]];
+    return rs;
+  }, [motor, qEf, parecidos]);
   const frecuente = useMemo(
     () => (motor && qEf.trim().length >= 2 ? motor.preguntaFrecuente(qEf) : null),
     [motor, qEf],

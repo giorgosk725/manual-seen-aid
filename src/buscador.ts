@@ -569,6 +569,39 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         puntos: 0,
       });
   }
+  // 0.72.0: la consulta que nombra una urgencia abre su herramienta (sin elegir rama: A01).
+  // «cetonas» no casaba con «cetonemia» por la raíz de seis letras.
+  if (!/\b(hoja|paciente|entregar)/.test(normalizar(consulta))) {
+    const HERRAMIENTA: [RegExp, string, string][] = [
+      [
+        /ceton|\bbohb\b|β-ohb|cetosis|cetoacid/,
+        "Hiperglucemia y cetonemia (Figura 3)",
+        href("consultar", "figura-3"),
+      ],
+      [/hipogluc|\bhipos?\b/, "Hipoglucemia en asa cerrada", href("visual", "hipoglucemia")],
+      [
+        /interrup|desconect|sin repuesto|se ha roto|averi/,
+        "Interrupción del sistema",
+        href("consultar", "interrupcion"),
+      ],
+    ];
+    const n = normalizar(consulta);
+    // Con una cifra de cetonas, el aviso de la Figura 3 completa ya va el primero (A01).
+    for (const [re, titulo, ruta] of HERRAMIENTA)
+      if (re.test(n) && !(ruta === href("consultar", "figura-3") && /\d/.test(n)))
+        out.push({
+          entrada: {
+            id: `recurso/herramienta/${ruta}`,
+            tipo: "atajo",
+            titulo,
+            texto: "",
+            pagina: 0,
+            ruta,
+          },
+          fragmento: "",
+          puntos: 0,
+        });
+  }
   const nombrados = res
     .filter((r) => r.entrada.tipo === "atajo" || r.entrada.tipo === "caso")
     .filter(
