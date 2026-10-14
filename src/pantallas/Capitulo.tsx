@@ -203,7 +203,8 @@ export function CapituloEntero() {
             {BIBLIOGRAFIA.map((r) => (
               <li key={r.n} className="flex gap-2">
                 <span className="w-6 shrink-0 text-right font-bold tabular-nums">{r.n}.</span>
-                <span className="min-w-0 flex-1">
+                {/* Las direcciones largas se parten en el móvil (14-10-2026). */}
+                <span className="min-w-0 flex-1 [overflow-wrap:anywhere]">
                   {r.cita}
                   {r.doi ? ` doi: ${r.doi}` : r.url ? ` ${r.url}` : ""}
                 </span>

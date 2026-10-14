@@ -20,7 +20,7 @@ export const FOTO_SISTEMA: Record<SistemaId, string> = {
 export const ORDEN_SISTEMAS: SistemaId[] = ["mm780", "ciq", "camaps", "op5"];
 
 /* Nombre corto de cada sistema (selectores en el móvil), en el orden de las columnas. */
-export const CORTO_SISTEMA = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
+export const CORTO_SISTEMA = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
 
 export const columnaDeSistema = (id: SistemaId) => ORDEN_SISTEMAS.indexOf(id);
 

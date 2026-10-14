@@ -119,7 +119,7 @@ describe("App", () => {
     expect(screen.queryByText(/deben ofrecerse como modalidad preferente/)).toBeNull();
     await userEvent.click(
       screen.getByRole("button", {
-        name: /Persisten retos relacionados con el predominio de sistemas híbridos/,
+        name: /Persisten retos como el predominio de sistemas híbridos/,
       }),
     );
     expect(screen.getByText(/^Correcto\./)).toBeInTheDocument();

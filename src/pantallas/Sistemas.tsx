@@ -433,7 +433,7 @@ const fuenteT1 = (p?: number) => ({
 /* Identificador de cada sistema en las rutas de tablas, situaciones e inicio (orden de la
    Tabla 1). */
 const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
-const SLUG_CORTO = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
+const SLUG_CORTO = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
 
 /* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
 const TODAS_LAS_SECCIONES = [

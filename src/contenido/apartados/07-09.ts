@@ -5,7 +5,7 @@ export const A07: Apartado = {
   n: 7,
   slug: "07-educacion",
   titulo: "Educación terapéutica y plan de seguridad",
-  corto: "Educación y seguridad",
+  corto: "Educación y plan de seguridad",
   paginas: [6, 10],
   bloques: [
     {
@@ -190,7 +190,7 @@ export const A09: Apartado = {
   n: 9,
   slug: "09-descarga",
   titulo: "Interpretación de la descarga y resolución de problemas",
-  corto: "Descarga y problemas",
+  corto: "Descarga y resolución de problemas",
   paginas: [13, 17],
   bloques: [
     {

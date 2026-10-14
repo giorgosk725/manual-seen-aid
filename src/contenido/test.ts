@@ -44,10 +44,10 @@ export const PREGUNTAS_TODAS: Pregunta[] = [
     enunciado:
       "¿Cuál de las siguientes afirmaciones resume mejor los retos actuales de los sistemas AID en diabetes tipo 1?",
     opciones: [
-      "Los sistemas AID han eliminado la necesidad de educación terapéutica y seguimiento clínico.",
-      "Las principales limitaciones actuales son exclusivamente el coste y la financiación.",
-      "Persisten retos relacionados con el predominio de sistemas híbridos, la absorción subcutánea de insulina, el retraso intersticial, los fallos de infusión, la conectividad, la carga tecnológica, la equidad de acceso y la necesidad de equipos entrenados.",
-      "Los problemas de hiperglucemia persistente y cetosis desaparecen al utilizar el modo automático.",
+      "Los sistemas AID han eliminado la necesidad de educación terapéutica y de seguimiento clínico, porque el algoritmo corrige por sí solo los errores de dosificación.",
+      "Las principales limitaciones actuales son exclusivamente el coste y la financiación; resueltas estas, los problemas técnicos de los sistemas ya están superados.",
+      "Persisten retos como el predominio de sistemas híbridos, la absorción subcutánea de insulina, los fallos de infusión, la conectividad, la carga tecnológica y la equidad de acceso.",
+      "Los problemas de hiperglucemia persistente y cetosis desaparecen al utilizar el modo automático, por lo que ya no hace falta un plan de respaldo con plumas.",
     ],
     correcta: 2,
     explicacion:

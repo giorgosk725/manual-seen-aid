@@ -167,9 +167,10 @@ export const MATERIALES: Material[] = [
     estado: "aprobado",
     nombre: "Autoevaluación complementaria (10 preguntas)",
     tipo: "preguntas",
-    fecha: "2026-10-13",
-    version: "0.50.0",
-    evidencia: "Confirmada el 9-10-2026; q02 y q03 corregidas el 13-10-2026 tras su revisión",
+    fecha: "2026-10-14",
+    version: "0.66.0",
+    evidencia:
+      "Confirmada el 9-10-2026; q02 y q03 corregidas el 13-10-2026 tras su revisión; q01 con opciones de longitud parecida el 14-10-2026 (decisión del responsable)",
   },
 ];
 

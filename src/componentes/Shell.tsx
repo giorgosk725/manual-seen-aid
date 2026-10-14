@@ -52,6 +52,7 @@ import { SinResultados } from "./SinResultados";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
 import { irABuscar, ponerConsulta } from "../consultaBuscar";
 import { VERSION_APP } from "../version";
+import { ComentarPantalla } from "./ComentarPantalla";
 
 /* ---------- Espera mientras llega una pantalla perezosa ---------- */
 function CargandoPantalla() {
@@ -982,6 +983,7 @@ export function Shell({
           <ErrorBoundary>
             <Suspense fallback={<CargandoPantalla />}>{children}</Suspense>
           </ErrorBoundary>
+          <ComentarPantalla titulo={titulo} />
         </div>
       </main>
       <Inferior ruta={ruta} />

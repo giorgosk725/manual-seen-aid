@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-14",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — hojas para el paciente`,
+    titulo: `Complemento interactivo ${VERSION_APP} — comentar una pantalla`,
+    detalle: [
+      "Al pie de cada pantalla, «¿Algo que comentar de esta pantalla?»: abre un correo con la pantalla, su dirección y la versión ya escritas, o copia esos datos. No se envía ni se guarda nada.",
+      "El nombre corto de CamAPS es «CamAPS FX» en toda la app; los apartados 7 y 9, «Educación y plan de seguridad» y «Descarga y resolución de problemas».",
+      "Autoevaluación, pregunta 1: opciones de longitud parecida.",
+      "Bibliografía: las direcciones largas se parten en el móvil.",
+    ],
+  },
+  {
+    fecha: "2026-10-14",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.65.3 — hojas para el paciente",
     detalle: [
       "Hoja «Pruebas y cirugía»: «Si hay que quitarse la bomba o el pod» y «TC (tomografía computarizada, escáner)», como en el resto de la app.",
       "Plan de seguridad: lo de registrar los hidratos como «tratamiento de hipoglucemia» va solo en el de CamAPS FX; en los otros tres, que no deben anunciarse como comida.",
