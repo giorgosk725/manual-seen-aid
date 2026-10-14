@@ -614,6 +614,11 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         href("consultar", "situacion", `ejercicio-aerobico${sis >= 0 ? `:${SIS_IDS[sis]}` : ""}`),
       ],
       [
+        /cateter|canula|set de infusion/,
+        "Tipos de catéter y cánula (apartado 9)",
+        href("capitulo", "09-descarga", "b25"),
+      ],
+      [
         /(?<!no )gestan|embaraz|gestacion|\bparto\b|posparto/,
         "Situaciones · Gestación, parto y posparto",
         href("consultar", "situacion", "gestacion"),

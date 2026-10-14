@@ -11,14 +11,14 @@ anterior. Las propuestas respetan las reglas del proyecto: texto clínico litera
 aprobado sin cambios de texto, sin frases de entrada ni avisos, fuente al pie, tono neutro, sin
 librerías nuevas y dentro del presupuesto de tamaño.
 
-| Persona                                  | Ronda 1 | Ronda 2                                                                  | Final       |
-| ---------------------------------------- | ------- | ------------------------------------------------------------------------ | ----------- |
-| Residente de guardia, móvil              | 6,2     | 6,6                                                                      | (pendiente) |
-| Adjunto en consulta, ordenador           | 6,6     | 7,7                                                                      | (pendiente) |
-| Enfermera educadora y R1, tablet y móvil | 6,9     | 7,0                                                                      | (pendiente) |
-| Diseño visual                            | 7,0     | 7,6                                                                      | (pendiente) |
-| Médico de urgencias no experto, móvil    | —       | 6,0                                                                      | (pendiente) |
-| Accesibilidad (WCAG 2.2 AA)              | —       | 0 infracciones de axe en 100 pasadas; 7 fallos que axe no ve, corregidos | —           |
+| Persona                                  | Ronda 1 | Ronda 2                                                                  | Final |
+| ---------------------------------------- | ------- | ------------------------------------------------------------------------ | ----- |
+| Residente de guardia, móvil              | 6,2     | 6,6                                                                      | 7,3   |
+| Adjunto en consulta, ordenador           | 6,6     | 7,7                                                                      | 8,0   |
+| Enfermera educadora y R1, tablet y móvil | 6,9     | 7,0                                                                      | 7,2   |
+| Diseño visual                            | 7,0     | 7,6                                                                      | 7,9   |
+| Médico de urgencias no experto, móvil    | —       | 6,0                                                                      | 7,5   |
+| Accesibilidad (WCAG 2.2 AA)              | —       | 0 infracciones de axe en 100 pasadas; 7 fallos que axe no ve, corregidos | —     |
 
 ## Lo aplicado
 
@@ -55,3 +55,8 @@ Pruebas: 235 unitarias y 203 e2e (con `e2e/auditorias-072.spec.ts`, `src/cifras.
 6. **Hipoglucemia grave.** El capítulo apenas la trata; la app solo puede enlazar lo que hay.
 7. **«Comparar los cuatro» desde la portada en el móvil**: lleva a la tabla entera (muy larga).
 8. **Siglas pulsables en las pantallas de consulta** (hoy solo en la lectura del capítulo).
+9. **Ejercicio con el sistema en la ruta** («modo actividad» con 780G): no baja a la tarjeta de
+   ese sistema, para no saltarse «Antes de actuar» (S61-01).
+
+La nota de urgencias de la ronda final es la de las tres tareas repetidas; con las siete de su
+ronda queda en 6,5. Lo que más resta ya es de decisión del autor (puntos 1, 2, 4 y 5).
