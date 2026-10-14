@@ -981,6 +981,26 @@ html.night .pagina-badge {
   }
 }
 
+/* 0.72.0 (accesibilidad, 2.4.11 y 1.4.11): lo enfocado no queda bajo la cabecera ni la barra
+   de abajo al moverse con el teclado, y el anillo de foco contrasta también de noche. */
+html {
+  scroll-padding-top: 4.5rem;
+  scroll-padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+}
+@media (min-width: 1024px) {
+  html {
+    scroll-padding-bottom: 1rem;
+  }
+}
+html:has(.barra-pegada) {
+  scroll-padding-top: 10rem;
+}
+html.night .focus-visible\:ring-slate-500:focus-visible,
+html.night .focus-visible\:ring-slate-600:focus-visible,
+html.night .focus-visible\:ring-slate-700:focus-visible {
+  --tw-ring-color: #cbd5e1;
+}
+
 /* Cifras con unidad dentro del texto literal (texto.tsx, ConCifras). */
 .cifra {
   font-weight: 700;

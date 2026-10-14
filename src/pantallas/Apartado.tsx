@@ -221,7 +221,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                     <a
                       key={s.id}
                       href={href("capitulo", apartado.slug, s.id)}
-                      className="tap-44 inline-flex min-h-9 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                      className="tap-44 inline-flex min-h-9 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
                     >
                       {s.texto}
                     </a>

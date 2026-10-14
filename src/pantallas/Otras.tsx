@@ -1,4 +1,5 @@
 /* Buscar, Bibliografía, Sobre esta app, Autoevaluación y Preguntas frecuentes. */
+import { Anuncio } from "../componentes/Anuncio";
 import { guardarReciente } from "../prefs";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -242,6 +243,18 @@ export function Buscar({ inicial }: { inicial?: string }) {
         placeholder="Busca: cetonas, modo sueño, TBR…"
         className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-soft placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
         autoComplete="off"
+      />
+      {/* 0.72.0 (4.1.3): lo que ha encontrado, dicho al lector cuando se deja de escribir. */}
+      <Anuncio
+        texto={
+          qEf.trim().length < 2 || estado !== "listo"
+            ? ""
+            : hayRespuesta
+              ? `Hay respuesta del capítulo y ${res.length} resultados.`
+              : res.length
+                ? `${res.length} resultados.`
+                : "Sin resultados."
+        }
       />
       {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
       {!frecuente && <Autocompletar items={sugerencias} onElegir={setQ} />}

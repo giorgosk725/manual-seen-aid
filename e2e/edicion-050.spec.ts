@@ -64,10 +64,10 @@ test.describe("Portada y navegación (0.50)", () => {
     page,
   }) => {
     await page.goto("/#/");
+    // 0.72.0: en la barra lateral, el nombre incluye también el capítulo que se ve debajo.
     const inicio = page
-      .getByRole("link", {
-        name: "Manual de Endocrinología y Nutrición, complemento interactivo: inicio",
-      })
+      .getByRole("link", { name: /^Manual de Endocrinología y Nutrición, complemento interactivo/ })
+      .locator("visible=true")
       .first();
     await expect(inicio).toBeVisible();
   });

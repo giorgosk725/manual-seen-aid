@@ -133,7 +133,7 @@ function Hoja({ sis }: { sis?: number }) {
         <button
           type="button"
           onClick={() => imprimirRegion(() => ref.current)}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-slate-800 px-3 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-slate-800 px-3 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
         >
           <Printer size={15} aria-hidden="true" /> Imprimir la hoja
         </button>

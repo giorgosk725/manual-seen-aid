@@ -1184,8 +1184,8 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                     className={`flex w-full items-start gap-2 rounded-lg px-2 py-1.5 text-left text-[13px] leading-snug transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-white font-semibold text-slate-900 shadow-soft" : "text-slate-700 hover:bg-white"}`}
                   >
                     <span
-                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold tabular-nums ${on ? "text-white" : "text-slate-700"}`}
-                      style={on ? { background: "#8E254E" } : { background: "#eef0f2" }}
+                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold tabular-nums ${on ? "text-white" : "bg-slate-100 text-slate-700"}`}
+                      style={on ? { background: "#8E254E" } : undefined}
                     >
                       {i + 1}
                     </span>

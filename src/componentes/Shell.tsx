@@ -543,7 +543,7 @@ function Lateral({ ruta }: { ruta: Ruta }) {
     >
       <a
         href="#/"
-        aria-label="Manual de Endocrinología y Nutrición, complemento interactivo: inicio"
+        aria-label={`Manual de Endocrinología y Nutrición, complemento interactivo. Capítulo ${CAPITULO.numero} · ${CAPITULO.tituloCorto}: inicio`}
         className="rounded-md px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
         <Rotulo />

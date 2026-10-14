@@ -54,7 +54,7 @@ function Ancla({ id, slug }: { id: string; slug: string }) {
       href={href("capitulo", slug, id)}
       aria-label="Enlace a este bloque"
       title="Enlace a este bloque"
-      className="no-imprimir absolute -left-7 top-0.5 hidden h-6 w-6 items-center justify-center rounded text-slate-300 opacity-0 transition hover:text-slate-600 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 group-hover:opacity-100 lg:flex"
+      className="no-imprimir absolute -left-7 top-0.5 hidden h-6 w-6 items-center justify-center rounded text-slate-300 opacity-0 transition hover:text-slate-600 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 group-hover:opacity-100 lg:flex"
     >
       <Link2 size={14} />
     </a>

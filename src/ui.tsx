@@ -141,7 +141,7 @@ export function Modal({
               <button
                 onClick={onClose}
                 aria-label="Cerrar"
-                className="shrink-0 rounded p-1 transition hover:bg-black/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                className="shrink-0 rounded p-1 transition hover:bg-black/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
               >
                 <X size={16} />
               </button>
@@ -282,7 +282,7 @@ export function Segmented<T extends string>({
             type="button"
             onClick={() => onChange(o.id)}
             aria-pressed={on}
-            className={`flex min-h-11 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-semibold transition sm:min-h-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 ${wrap ? "" : "flex-1"} ${on ? "text-white shadow-sm" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
+            className={`flex min-h-11 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-semibold transition sm:min-h-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 ${wrap ? "" : "flex-1"} ${on ? "text-white shadow-sm" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
             style={on ? { background: o.gradient || "#8E254E" } : undefined}
           >
             {I && <I size={15} aria-hidden="true" />}
@@ -327,7 +327,7 @@ export function Foldable({
       open={open || undefined}
       className={`group scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-soft ${className}`}
     >
-      <summary className="flex cursor-pointer list-none items-center gap-2.5 rounded-xl px-4 py-3 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
+      <summary className="flex cursor-pointer list-none items-center gap-2.5 rounded-xl px-4 py-3 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600">
         {Icon && (
           <span
             aria-hidden="true"
@@ -388,14 +388,14 @@ export class ErrorBoundary extends React.Component<{ children: ReactNode }, { ha
             <button
               type="button"
               onClick={() => this.setState({ hasError: false })}
-              className="flex items-center gap-1.5 rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-800 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+              className="flex items-center gap-1.5 rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-800 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
             >
               <RotateCcw size={14} /> Reintentar
             </button>
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="rounded-md bg-slate-800 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+              className="rounded-md bg-slate-800 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
             >
               Recargar la página
             </button>
@@ -405,7 +405,7 @@ export class ErrorBoundary extends React.Component<{ children: ReactNode }, { ha
                 restablecerPreferencias();
                 window.location.reload();
               }}
-              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-800 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-800 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
             >
               Restablecer preferencias
             </button>
@@ -436,7 +436,7 @@ export function BotonImprimir({
       className={
         compacto
           ? "tap-44 inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-          : "flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg bg-slate-800 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+          : "flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg bg-slate-800 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
       }
     >
       <Printer size={compacto ? 14 : 15} aria-hidden="true" />

@@ -30,7 +30,12 @@ test.describe("Calculadora (I61-01/02/03)", () => {
     await expect(paso(page, 4).getByText(/Falta: DTD actual, peso/)).toBeVisible();
     await page.getByLabel(/DTD actual/).fill("36");
     await page.getByLabel(/^Peso/).fill("8");
-    await expect(page.getByRole("alert").filter({ hasText: "no hay propuesta" })).toBeVisible();
+    // 0.72.0: un grupo rotulado (no una alerta a cada tecla); el lector lo oye en el resumen.
+    await expect(
+      page
+        .getByRole("group", { name: "Fuera de la indicación" })
+        .filter({ hasText: "no hay propuesta" }),
+    ).toBeVisible();
     await expect(
       paso(page, 5).getByText(/Sin propuesta: hay un dato fuera de la indicación/),
     ).toBeVisible();

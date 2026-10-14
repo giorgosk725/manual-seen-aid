@@ -4,6 +4,7 @@
    (calculadora.ts). 0.63.0 (auditoría de la 0.61): una sola lectura de cada campo; sin datos
    completos y válidos no hay cifras; la comparación con la Tabla 1 decide si hay propuesta; la
    pauta previa se comparte con los pasos (trabajo-inicio.ts) y «Nuevo inicio» lo vacía todo. */
+import { Anuncio } from "./Anuncio";
 import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
@@ -250,10 +251,12 @@ const NOMBRE_CLAVE: Record<Clave, string> = {
 /* Lo que bloquea o deja pendiente la propuesta, siempre antes de las cifras (I61-03). */
 function Estado({ ev, sis }: { ev: Evaluacion; sis?: number }) {
   return (
-    <div className="space-y-2" aria-live="polite">
+    // 0.72.0 (4.1.3): sin regiones vivas aquí; lo anuncia un solo resumen, con calma (Anuncio).
+    <div className="space-y-2">
       {ev.indicacion.fuera.length > 0 && sis !== undefined && (
         <div
-          role="alert"
+          role="group"
+          aria-label="Fuera de la indicación"
           className="rounded-xl border-2 px-3 py-2 text-sm text-red-900"
           style={{ borderColor: "#fca5a5", background: "#fef2f2" }}
         >
@@ -773,12 +776,20 @@ export function CalculadoraInicio({
           className="min-w-0 scroll-mt-20 xl:sticky xl:top-20 xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto"
         >
           <Paso n={4} titulo="Parámetros de partida">
+            <Anuncio
+              texto={
+                ev.indicacion.fuera.length > 0 && sis !== undefined
+                  ? "Fuera de la indicación: no hay propuesta."
+                  : ev.errores.length
+                    ? ev.errores.join(". ")
+                    : resumen.length
+                      ? `Parámetros de partida: ${resumen.join(", ")}.`
+                      : ""
+              }
+            />
             <Estado ev={ev} sis={sis} />
             {ev.lista && (ev.calcula.basal || ev.calcula.ratioFactor) && (
-              <div
-                aria-live="polite"
-                className="grid grid-cols-2 gap-2 lg:grid-cols-4 xl:grid-cols-2"
-              >
+              <div className="grid grid-cols-2 gap-2 lg:grid-cols-4 xl:grid-cols-2">
                 <Cifra
                   titulo="DTD de inicio"
                   valor={coma(redondea(ev.dtdInicio!, 1))}
