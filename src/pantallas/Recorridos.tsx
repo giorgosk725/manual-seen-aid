@@ -122,6 +122,12 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
         alias: ["hipo", "bajada", "hidratos", "alarma", "baja"],
       },
       {
+        t: "Hipoglucemia nocturna",
+        fuente: "Apartado 9",
+        ruta: href("capitulo", "09-descarga", "b7"),
+        alias: ["noche", "nocturna", "dormir", "madrugada"],
+      },
+      {
         t: "Bolo omitido o retrasado",
         fuente: "Apartado 9",
         ruta: href("capitulo", "09-descarga", "b20"),
@@ -138,6 +144,24 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
         fuente: "Apartado 9",
         ruta: href("capitulo", "09-descarga", "b22"),
         alias: ["bluetooth", "senal", "manual"],
+      },
+      {
+        t: "Tipos de catéter y cánula",
+        fuente: "Apartado 9",
+        ruta: href("capitulo", "09-descarga", "b25"),
+        alias: ["cateter", "canula", "set", "infusion", "cambio"],
+      },
+      {
+        t: "Problemas cutáneos",
+        fuente: "Apartado 9",
+        ruta: href("capitulo", "09-descarga", "b24"),
+        alias: ["piel", "adhesivo", "irritacion", "alergia", "lipodistrofia"],
+      },
+      {
+        t: "Fatiga por alarmas",
+        fuente: "Apartado 9",
+        ruta: href("capitulo", "09-descarga", "b26"),
+        alias: ["alarma", "alarmas", "pitidos", "avisos"],
       },
       {
         t: "Viajes y controles del aeropuerto",
@@ -234,31 +258,39 @@ const ICONO_SITUACION: Record<string, LucideIcon> = {
   adolescencia: Users,
 };
 const iconoDeTexto = (t: string): LucideIcon =>
-  /^hipoglucemia/i.test(t)
-    ? TrendingDown
-    : /bolo omitido/i.test(t)
-      ? Syringe
-      : /compresión/i.test(t)
-        ? BedDouble
-        : /señal/i.test(t)
-          ? WifiOff
-          : /viajes/i.test(t)
-            ? Plane
-            : /cetonemia/i.test(t)
-              ? Droplet
-              : /enfermedad intercurrente/i.test(t)
-                ? Thermometer
-                : /glucocorticoide/i.test(t)
-                  ? Pill
-                  : /diálisis/i.test(t)
-                    ? Activity
-                    : /interrupción/i.test(t)
-                      ? Unplug
-                      : /adolescencia/i.test(t)
-                        ? Users
-                        : /mayor/i.test(t)
-                          ? Users
-                          : ArrowRight;
+  /^hipoglucemia nocturna/i.test(t)
+    ? Moon
+    : /^hipoglucemia/i.test(t)
+      ? TrendingDown
+      : /catéter/i.test(t)
+        ? Syringe
+        : /cutáneos/i.test(t)
+          ? ShieldCheck
+          : /alarmas/i.test(t)
+            ? Siren
+            : /bolo omitido/i.test(t)
+              ? Syringe
+              : /compresión/i.test(t)
+                ? BedDouble
+                : /señal/i.test(t)
+                  ? WifiOff
+                  : /viajes/i.test(t)
+                    ? Plane
+                    : /cetonemia/i.test(t)
+                      ? Droplet
+                      : /enfermedad intercurrente/i.test(t)
+                        ? Thermometer
+                        : /glucocorticoide/i.test(t)
+                          ? Pill
+                          : /diálisis/i.test(t)
+                            ? Activity
+                            : /interrupción/i.test(t)
+                              ? Unplug
+                              : /adolescencia/i.test(t)
+                                ? Users
+                                : /mayor/i.test(t)
+                                  ? Users
+                                  : ArrowRight;
 
 type SituacionLista = Situacion | SituacionGuia;
 /* Situaciones con comprobaciones previas (su primer momento) antes de la conducta. */

@@ -34,12 +34,10 @@ export const SITUACIONES: Situacion[] = [
     etiqueta: "Sueño / período nocturno",
     tabla: "T4",
     fila: 2,
+    // 0.72.0: un enlace por párrafo (el de «patrones» caía cuatro párrafos antes).
     leer: [
-      {
-        slug: "09-descarga",
-        ancla: "patrones",
-        titulo: "Hipoglucemia nocturna · Hiperglucemia matutina",
-      },
+      { slug: "09-descarga", ancla: "b7", titulo: "Hipoglucemia nocturna" },
+      { slug: "09-descarga", ancla: "b8", titulo: "Hiperglucemia matutina" },
     ],
   },
   {
