@@ -52,12 +52,20 @@ import {
   type EstadoExploracion,
   type TonoFranja,
 } from "../contenido/diagramas";
-import { F2, FIGURA3, TABLAS, algoritmoDelCapitulo, ubicacionDeDiagrama } from "../contenido";
+import {
+  F2,
+  FIGURA3,
+  GLOSARIO,
+  TABLAS,
+  algoritmoDelCapitulo,
+  ubicacionDeDiagrama,
+} from "../contenido";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
 import { BotonImprimir, PaginaBadge, Segmented } from "../ui";
 import { SISTEMA_HEX, TRAMO_HEX } from "../tokens";
 import { Lineas, Texto } from "../texto";
+import { siglasPorTexto } from "../siglas";
 import { useNivelTitulo, type Nivel } from "../nivel-contexto";
 import type { LucideIcon } from "lucide-react";
 
@@ -1369,6 +1377,29 @@ function InterrupcionLinea() {
   const respaldo = detalle("Basal de respaldo");
   const reinicio = detalle("Al reiniciar");
   const cetonemia = detalle("Cetonemia");
+  // 0.72.0: las siglas del glosario, pulsables la primera vez que salen en la pantalla (en el
+  // orden en que se pintan).
+  const orden = [
+    L.premisa,
+    cetonemia?.texto ?? "",
+    L.formatos.pod,
+    `${L.formatos.bomba}. ${L.formatos.pausa}`,
+    L.tramos[0].texto + ".",
+    L.tramos[0].condicion ?? "",
+    L.tramos[1].texto + ".",
+    L.tramos[2].texto,
+    respaldo?.texto ?? "",
+    ...L.programadas.flatMap((x) => [x.texto, ...x.mas]),
+    reinicio?.texto ?? "",
+    ...L.detalles.map((d) => d.texto),
+  ];
+  const porTexto = new Map<string, Set<string>>();
+  siglasPorTexto(orden, new Set(GLOSARIO.map((g) => g.sigla))).forEach((x, k) => {
+    if (!porTexto.has(orden[k])) porTexto.set(orden[k], x);
+  });
+  const TS = ({ children }: { children: string }) => (
+    <Texto siglas={porTexto.get(children)}>{children}</Texto>
+  );
   /* 0.72.0: cada caso, una tarjeta con su tiempo arriba en grande y el tono de su riesgo; los
      detalles del apartado, dentro del caso al que se refieren (fragmentos literales). */
   const Tramo = ({
@@ -1406,14 +1437,14 @@ function InterrupcionLinea() {
       <span className="block text-xs font-bold uppercase tracking-wide text-slate-600">
         {titulo}
       </span>
-      <Texto>{texto}</Texto>
+      <TS>{texto}</TS>
     </span>
   );
   const PROGRAMADA = { soft: "#f1f5f9", strong: "#475569", ink: "#334155" };
   return (
     <div className="space-y-4">
       <p className="text-sm text-slate-700">
-        <Texto>{L.premisa}</Texto>
+        <TS>{L.premisa}</TS>
       </p>
       {cetonemia && (
         <a
@@ -1424,7 +1455,7 @@ function InterrupcionLinea() {
           <Droplets size={16} aria-hidden="true" style={{ color: TRAMO_HEX.rojo.strong }} />
           <span className="min-w-0 flex-1">
             <span className="font-bold">{cetonemia.cuando}: </span>
-            <Texto>{cetonemia.texto}</Texto>
+            <TS>{cetonemia.texto}</TS>
           </span>
           <span className="shrink-0 text-xs font-semibold underline">Ver la Figura 3</span>
           <ArrowRight size={14} aria-hidden="true" className="shrink-0 text-slate-500" />
@@ -1440,7 +1471,7 @@ function InterrupcionLinea() {
           <span className="mb-0.5 flex items-center gap-1.5 font-bold text-slate-900">
             <Package size={15} aria-hidden="true" className="text-slate-500" /> Pod
           </span>
-          <Texto>{L.formatos.pod}</Texto>
+          <TS>{L.formatos.pod}</TS>
         </p>
         <p
           className="rounded-xl border bg-white p-3 text-sm leading-snug text-slate-800"
@@ -1449,7 +1480,7 @@ function InterrupcionLinea() {
           <span className="mb-0.5 flex items-center gap-1.5 font-bold text-slate-900">
             <Cable size={15} aria-hidden="true" className="text-slate-500" /> Bomba con catéter
           </span>
-          <Texto>{`${L.formatos.bomba}. ${L.formatos.pausa}`}</Texto>
+          <TS>{`${L.formatos.bomba}. ${L.formatos.pausa}`}</TS>
         </p>
       </section>
       {/* Dos caminos que no son una sola línea de tiempo: lo programado se decide antes de
@@ -1459,20 +1490,20 @@ function InterrupcionLinea() {
         <ol className="grid gap-2 md:grid-cols-3">
           <Tramo cuando={L.tramos[0].cuando} tono={TRAMO_HEX.verde} icono={Timer}>
             <span className="block">
-              <Texto>{L.tramos[0].texto + "."}</Texto>
+              <TS>{L.tramos[0].texto + "."}</TS>
             </span>
             <span className="block font-semibold">
-              <Texto>{L.tramos[0].condicion ?? ""}</Texto>
+              <TS>{L.tramos[0].condicion ?? ""}</TS>
             </span>
           </Tramo>
           <Tramo cuando={L.tramos[1].cuando} tono={TRAMO_HEX.amarillo} icono={Timer}>
             <span className="block">
-              <Texto>{L.tramos[1].texto + "."}</Texto>
+              <TS>{L.tramos[1].texto + "."}</TS>
             </span>
           </Tramo>
           <Tramo cuando={L.tramos[2].cuando} tono={TRAMO_HEX.rojo} icono={Syringe}>
             <span className="block">
-              <Texto>{L.tramos[2].texto}</Texto>
+              <TS>{L.tramos[2].texto}</TS>
             </span>
             {respaldo && <Anexo titulo={respaldo.cuando} texto={respaldo.texto} />}
           </Tramo>
@@ -1486,11 +1517,11 @@ function InterrupcionLinea() {
           {L.programadas.map((x, k) => (
             <Tramo key={x.cuando} cuando={x.cuando} tono={PROGRAMADA} icono={CalendarClock}>
               <span className="block">
-                <Texto>{x.texto}</Texto>
+                <TS>{x.texto}</TS>
               </span>
               {x.mas.map((m) => (
                 <span key={m} className="block">
-                  <Texto>{m}</Texto>
+                  <TS>{m}</TS>
                 </span>
               ))}
               {k === 1 && reinicio && <Anexo titulo={reinicio.cuando} texto={reinicio.texto} />}
@@ -1503,7 +1534,7 @@ function InterrupcionLinea() {
         .map((d) => (
           <p key={d.cuando} className="text-sm text-slate-800">
             <span className="font-bold text-slate-900">{d.cuando}: </span>
-            <Texto>{d.texto}</Texto>
+            <TS>{d.texto}</TS>
           </p>
         ))}
       <p className="text-xs text-slate-600">{L.nota}</p>
