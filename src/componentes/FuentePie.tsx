@@ -26,7 +26,8 @@ export function FuentePie({
       Fuente:{" "}
       {unicas.map((f, k) => (
         <span key={f.texto}>
-          {k > 0 && " · "}
+          {/* Espacio duro tras el punto: si la línea se parte, el «·» baja con su fuente. */}
+          {k > 0 && " · "}
           {f.ruta ? (
             <a
               href={f.ruta}
