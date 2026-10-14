@@ -33,6 +33,7 @@ export const CAMBIOS: Cambio[] = [
       "Búsqueda: el nombre de un sistema o de su fabricante abre su ficha; «tabla 4 omnipod», «qué tocar en CamAPS», «camaps tc», «quitar la bomba» o «catéter» llevan a su sitio; lo que se está escribiendo ya no se toma como seguimiento de la consulta anterior.",
       "Ingreso hospitalario: abre «Mantener la MCG, la bomba o el AID» y «Cuándo no continuar», enlazado desde Interrupción y desde la rama roja de la Figura 3. Hipoglucemia lleva al plan de seguridad y a la hipoglucemia nocturna.",
       "Accesibilidad: lo enfocado no queda bajo la cabecera ni la barra de abajo; el anillo de foco contrasta también de noche; la calculadora y la búsqueda anuncian un solo resumen al dejar de escribir; el foco va al título de lo elegido.",
+      "Siglas del glosario pulsables también en las guías de situaciones (la primera vez que salen en cada momento) y en todas las frases de Iniciar.",
       "Tablet: la barra lateral sale desde 1024 px (por debajo, la barra inferior) y la portada va a dos columnas. Ordenador: tablas sin doble barra de desplazamiento y más ancho en monitores grandes. Preguntas frecuentes con un icono por tema y la foto en las de cada sistema; autoevaluación con el avance fijo arriba; Tabla 4 de un sistema con los rótulos legibles.",
     ],
   },

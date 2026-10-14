@@ -3,12 +3,21 @@
    (y a sus frases), a una lista, a una fila de tabla o a la casilla de un sistema, y se pinta
    tal cual con su página. Los nombres de las fases son los del propio capítulo (p. 10).
    Lo único de la app: los rótulos cortos de la navegación y de los hitos del seguimiento. */
-import { APARTADOS, TABLAS, idDeBloque, rutaDeTabla, type Bloque, type TablaId } from "./contenido";
+import {
+  APARTADOS,
+  GLOSARIO,
+  TABLAS,
+  idDeBloque,
+  rutaDeTabla,
+  type Bloque,
+  type TablaId,
+} from "./contenido";
 import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import { plano } from "./marcado";
 import { frases } from "./frases";
 import { href } from "./rutas";
 import { materialListo } from "./materiales";
+import { siglasEn } from "./siglas";
 /* Solo «para entregar» si las plantillas del plan están aprobadas (V50-02). */
 const TEXTO_PLAN = materialListo("planes")
   ? "Plan de seguridad para entregar"
@@ -375,7 +384,8 @@ export const piezasSueltas = (fase: Fase) =>
 export function textosDePieza(pieza: Pieza, sis?: number): string[] {
   switch (pieza.t) {
     case "frase":
-      return frasesDe(pieza.apartado, pieza.bloque, pieza.k, pieza.trozo).frases;
+      // Unidas, como se pintan (Piezas.tsx): así casan las siglas de cada texto (0.72.0).
+      return [frasesDe(pieza.apartado, pieza.bloque, pieza.k, pieza.trozo).frases.join(" ")];
     case "lista": {
       const l = listaDe(pieza.apartado, pieza.bloque);
       return [l.intro ?? "", ...l.items];
@@ -395,4 +405,15 @@ export function textosDePieza(pieza: Pieza, sis?: number): string[] {
     default:
       return [];
   }
+}
+
+/* Las siglas del glosario, pulsables la primera vez que salen en un bloque de piezas: a cada
+   pieza le llegan las que no han salido en las anteriores (Iniciar; 0.72.0, también Situaciones). */
+export function siglasPorPiezas(piezas: Pieza[], sis?: number): Set<string>[] {
+  const vistas = new Set<string>();
+  return piezas.map((p) => {
+    const pend = new Set(GLOSARIO.map((g) => g.sigla).filter((x) => !vistas.has(x)));
+    for (const t of textosDePieza(p, sis)) for (const x of siglasEn(t)) vistas.add(x);
+    return pend;
+  });
 }

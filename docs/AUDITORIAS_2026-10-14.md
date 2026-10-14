@@ -54,7 +54,8 @@ Pruebas: 235 unitarias y 203 e2e (con `e2e/auditorias-072.spec.ts`, `src/cifras.
    (decisión S61-01: las comprobaciones antes de la conducta).
 6. **Hipoglucemia grave.** El capítulo apenas la trata; la app solo puede enlazar lo que hay.
 7. **«Comparar los cuatro» desde la portada en el móvil**: lleva a la tabla entera (muy larga).
-8. **Siglas pulsables en las pantallas de consulta** (hoy solo en la lectura del capítulo).
+8. **Siglas pulsables en el resto de pantallas de consulta**: ya lo son en la lectura, en Iniciar y
+   (desde esta versión) en las guías de situaciones; faltan Figura 3, Interrupción y las tarjetas.
 9. **Ejercicio con el sistema en la ruta** («modo actividad» con 780G): no baja a la tarjeta de
    ese sistema, para no saltarse «Antes de actuar» (S61-01).
 

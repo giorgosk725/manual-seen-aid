@@ -66,7 +66,7 @@ import {
 } from "../situaciones";
 import { PiezaVista } from "../componentes/Piezas";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
-import { kDe, type Pieza } from "../inicio";
+import { kDe, siglasPorPiezas, type Pieza } from "../inicio";
 
 import { elegirRuta, fueNavegacionNueva, href } from "../rutas";
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
@@ -450,9 +450,14 @@ function GuionVista({
               </h3>
               {abierto(i) && (
                 <div className="space-y-2 pb-2">
-                  {piezasDe(m).map((pz, k) => (
-                    <PiezaVista key={k} pieza={pz} compacta />
-                  ))}
+                  {/* 0.72.0: las siglas, pulsables la primera vez que salen en el momento. */}
+                  {(() => {
+                    const pz = piezasDe(m);
+                    const sg = siglasPorPiezas(pz);
+                    return pz.map((x, k) => (
+                      <PiezaVista key={k} pieza={x} compacta siglas={sg[k]} />
+                    ));
+                  })()}
                   {/* Una sola línea de fuente por momento, al párrafo exacto. */}
                   <p className="text-[13px] text-slate-500">
                     Fuente:{" "}

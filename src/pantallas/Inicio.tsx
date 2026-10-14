@@ -28,7 +28,7 @@ import {
   piezasDePaso,
   preguntasActivas,
 } from "../guia-inicio";
-import { GLOSARIO, TABLAS } from "../contenido";
+import { TABLAS } from "../contenido";
 import { ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { SIS_IDS } from "../situaciones";
 import { elegirRuta, href } from "../rutas";
@@ -41,7 +41,6 @@ import { Lineas } from "../texto";
 import { coma, evaluar, redondea } from "../calculadora";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { PiezaVista } from "../componentes/Piezas";
-import { siglasEn } from "../siglas";
 import { CATEGORIA_HEX } from "../tokens";
 import {
   FASES,
@@ -49,9 +48,8 @@ import {
   piezasSueltas,
   tareaDePieza,
   tareasDe,
-  textosDePieza,
+  siglasPorPiezas,
   type Fase,
-  type Pieza,
   type Tarea,
 } from "../inicio";
 import { fuentesDePiezas } from "../fuentesPiezas";
@@ -68,17 +66,6 @@ const CALC = "calculadora";
 
 const fuentesDeTarea = (fase: Fase, t: Tarea) =>
   fuentesDePiezas(t.piezas.map((i) => fase.piezas[i]));
-/* Las siglas del glosario, pulsables la primera vez que salen en el bloque: a cada pieza le
-   llegan las que no han salido en las anteriores. */
-function siglasPorPiezas(piezas: Pieza[], sis?: number): Set<string>[] {
-  const vistas = new Set<string>();
-  return piezas.map((p) => {
-    const pend = new Set(GLOSARIO.map((g) => g.sigla).filter((x) => !vistas.has(x)));
-    for (const t of textosDePieza(p, sis)) for (const x of siglasEn(t)) vistas.add(x);
-    return pend;
-  });
-}
-
 const capitalizar = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /* Lo elegido y lo marcado vive en el trabajo del inicio (trabajo-inicio.ts), con la
