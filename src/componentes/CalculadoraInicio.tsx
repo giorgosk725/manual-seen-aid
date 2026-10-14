@@ -5,10 +5,12 @@
    completos y válidos no hay cifras; la comparación con la Tabla 1 decide si hay propuesta; la
    pauta previa se comparte con los pasos (trabajo-inicio.ts) y «Nuevo inicio» lo vacía todo. */
 import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import {
   Activity,
   AlertTriangle,
+  ArrowDown,
   Calculator,
   Moon,
   Pen,
@@ -338,6 +340,17 @@ export function CalculadoraInicio({
   });
   const h = sis !== undefined ? SISTEMA_HEX[sis] : null;
   const color = h?.ink ?? "#1f2f5c";
+  const resultados = useRef<HTMLDivElement>(null);
+  const [resultadosVisibles, setResultadosVisibles] = useState(true);
+  useEffect(() => {
+    const el = resultados.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([e]) => setResultadosVisibles(e.isIntersecting), {
+      rootMargin: "0px 0px -80px 0px",
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const peso = leerCifra(d.peso, LIMITES.peso);
   const pideObjetivo = mdi || !d.referencia;
   const ruta = (fase: string, tarea = "") =>
@@ -396,8 +409,39 @@ export function CalculadoraInicio({
     { texto: `Tabla 3, p. ${TABLAS.T3.paginas[0]}`, ruta: rutaDeTabla("T3") },
   ].map((f) => ({ texto: f.texto, ruta: f.ruta ?? undefined }));
 
+  const resumen = [
+    ev.lista && ev.dtdInicio !== null ? `DTD ${coma(redondea(ev.dtdInicio, 1))} UI/día` : null,
+    ev.lista && ev.calcula.basal && ev.basalHora !== null
+      ? `basal ≈ ${coma(redondea(ev.basalHora, 2))} UI/h`
+      : null,
+    ev.lista && ev.calcula.ratioFactor && ev.ratio !== null
+      ? `I/HC ${coma(redondea(ev.ratio, 1))} g/UI`
+      : null,
+    ev.lista && ev.calcula.ratioFactor && ev.factor !== null
+      ? `sensibilidad ${Math.round(ev.factor)} mg/dl/UI`
+      : null,
+  ].filter((x): x is string => !!x);
+
   return (
     <div className="space-y-5">
+      {/* 0.72.0: hasta la pantalla ancha, mientras los parámetros de partida no están a la
+          vista, una barra con sus cifras (las mismas); al tocarla, se va a ellos. */}
+      {/* En un portal: la animación de entrada de la pantalla (transform) haría que «fixed» se
+          quedara dentro de ella. */}
+      {resumen.length > 0 &&
+        !resultadosVisibles &&
+        createPortal(
+          <button
+            type="button"
+            onClick={() => resultados.current?.scrollIntoView({ block: "start" })}
+            className="no-imprimir fixed inset-x-3 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-20 flex min-h-11 items-center gap-2 rounded-xl px-3 py-2 text-left text-xs font-bold tabular-nums text-white shadow-xl lg:bottom-4 lg:left-[17rem] xl:hidden"
+            style={{ background: "#8E254E" }}
+          >
+            <span className="min-w-0 flex-1">{resumen.join(" · ")}</span>
+            <ArrowDown size={14} aria-hidden="true" className="shrink-0" />
+          </button>,
+          document.body,
+        )}
       {/* 0.72.0: en pantallas anchas, los datos a la izquierda y los parámetros de partida a la
           derecha, a la vista mientras se cambian los datos. */}
       <div className="space-y-5 xl:grid xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start xl:gap-6 xl:space-y-0">
@@ -724,7 +768,10 @@ export function CalculadoraInicio({
             )}
           </Paso>
         </div>
-        <div className="min-w-0 xl:sticky xl:top-20 xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto">
+        <div
+          ref={resultados}
+          className="min-w-0 scroll-mt-20 xl:sticky xl:top-20 xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto"
+        >
           <Paso n={4} titulo="Parámetros de partida">
             <Estado ev={ev} sis={sis} />
             {ev.lista && (ev.calcula.basal || ev.calcula.ratioFactor) && (
