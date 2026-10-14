@@ -485,6 +485,7 @@ function ColumnaTabla({
   filas,
   pie,
   insignia,
+  destacar,
   notaExtra,
   fuentesExtra = [],
 }: {
@@ -493,6 +494,8 @@ function ColumnaTabla({
   filas?: (etiqueta: string, j: number) => boolean;
   pie?: ReactNode;
   insignia?: (j: number) => ReactNode;
+  /* Tarjetas que se destacan con el borde del sistema (efecto directo en automático). */
+  destacar?: (j: number) => boolean;
   notaExtra?: string;
   fuentesExtra?: { texto: string; ruta?: string }[];
 }) {
@@ -515,7 +518,12 @@ function ColumnaTabla({
             <div
               key={j}
               className="rounded-xl p-3"
-              style={{ background: hexS.soft, boxShadow: `inset 3px 0 0 0 ${hexS.strong}` }}
+              style={{
+                background: hexS.soft,
+                boxShadow: destacar?.(j)
+                  ? `inset 0 0 0 2px ${hexS.strong}`
+                  : `inset 3px 0 0 0 ${hexS.strong}`,
+              }}
             >
               <dt
                 className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wide"
@@ -740,6 +748,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           t={TABLAS.T3}
           c={c}
           insignia={(j) => insigniaParametro(c, j)}
+          destacar={(j) => esDirecto(c, j)}
           notaExtra={TABLAS.T1.notas[0]}
           fuentesExtra={[fuenteT1(4)]}
         />
@@ -1121,6 +1130,8 @@ const FILA_PARAMETROS = 10;
 /* Insignia de una fila de la Tabla 3 según la Tabla 1 (fila «Parámetros configurables en modo
    automático»): con asterisco, efecto directo en automático; sin él, sobre todo en bolos. */
 const CLAVE_FILA_T3 = [/objetivo/i, /basal/i, /ratio/i, /sensibilidad/i, /insulina activa/i];
+const esDirecto = (c: number, j: number) =>
+  !!CLAVE_FILA_T3[j] && parametrosDe(c).directos.some((x) => CLAVE_FILA_T3[j].test(x));
 function insigniaParametro(c: number, j: number): ReactNode {
   const { directos, resto } = parametrosDe(c);
   const re = CLAVE_FILA_T3[j];
