@@ -58,7 +58,9 @@ describe("Preguntas al capítulo", () => {
       // Desde la 0.13.0 cuentan también las preguntas frecuentes (lo que ve el usuario).
       // 0.53.0: calibración de «directa» (docs/BUSQUEDA_2026-10.md): las directas equivocadas
       // bajan en todos los bancos; el orden apenas cambia.
-      ["Ciego 1", ciego1 as PreguntaCiega[], 0.79, 0.91, 0.07],
+      // 0.68.0: 0,79 → 0,78 (Omnipod 5 «Adapta la basal por pod»: «basal adaptativa Omnipod» pone
+      // primero la fila de la Tabla 3; la casilla corregida sigue entre las tres).
+      ["Ciego 1", ciego1 as PreguntaCiega[], 0.78, 0.91, 0.07],
       ["Ciego 2", ciego2 as PreguntaCiega[], 0.62, 0.8, 0.07],
       // Medido a ciegas con el motor ya cerrado (la cifra honesta de la 0.10.0).
       // Edición editorial (A01): una cifra de cetonas ya no elige rama de la Figura 3; «0,6 de

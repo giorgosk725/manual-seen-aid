@@ -62,10 +62,8 @@ test.describe("Entrega 1 (0.32.0)", () => {
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     await page.waitForTimeout(800);
     await page.goto("/#/");
-    await expect(page.getByRole("link", { name: /Seguir leyendo/ })).toHaveAttribute(
-      "href",
-      "#/capitulo/07-educacion",
-    );
+    // 14-10-2026: «Seguir leyendo» sale de la portada (decisión del autor).
+    await expect(page.getByRole("link", { name: /Seguir leyendo/ })).toHaveCount(0);
     await page.goto("/#/capitulo");
     await expect(page.getByText(/^Leído$/)).toHaveCount(0);
   });

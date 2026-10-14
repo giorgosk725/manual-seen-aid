@@ -1,5 +1,15 @@
 # Correcciones editoriales aplicadas en la app
 
+## Correcciones del autor posteriores a la publicación
+
+| Fecha      | Dónde                                                    | Publicado (8-10-2026)           | En la app                 | Por qué                                                                                                                                          | Fichero          |
+| ---------- | -------------------------------------------------------- | ------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- |
+| 14-10-2026 | Tabla 1, Omnipod 5, «Lógica del algoritmo y aprendizaje» | «Posee autoaprendizaje por pod» | «Adapta la basal por pod» | SmartAdjust actualiza la basal adaptativa con la insulina administrada en cada cambio de pod (Brown SA et al. Diabetes Care 2021;44(7):1630-40). | `tablas.ts` (T1) |
+
+Junto a la casilla, allí donde se enseña, va una nota que dice qué pone el capítulo publicado
+(`NOTA_ADAPTA_OMNIPOD`, `src/notas-complementarias.ts`). `fidelidad.py` dará esta celda como diferencia
+con el PDF publicado: es esta corrección. Pendiente de pasar al Manual SEEN en su próxima revisión.
+
 ## Capítulo publicado (8-10-2026): fuente única desde entonces
 
 Publicado en <https://manual.seen.es/article?id=6ac781b3-b8f0-43a6-959e-3bc70aca0133> como capítulo 89 (Área II,

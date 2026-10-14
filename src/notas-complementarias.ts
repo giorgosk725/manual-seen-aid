@@ -4,11 +4,10 @@
 export const NOTA_EDAD_LIBERTY =
   "Nota complementaria (no es texto del capítulo): para la edad de CamAPS Liberty, este complemento sigue la Tabla 1 («Liberty: > 13 años»). El apartado 3 dice «no se recomienda en menores de 13 años». Las dos frases son del capítulo.";
 
-/* Omnipod 5 (decisión del responsable, 14-10-2026): la Tabla 1 dice «autoaprendizaje por pod»;
-   lo que hace es actualizar la basal adaptativa con la insulina administrada en cada cambio de
-   pod. El texto de la Tabla 1 no cambia (borradores/autoaprendizaje-tabla1_2026-10-13.md). */
+/* Omnipod 5 (corrección del autor, 14-10-2026): la casilla de la Tabla 1 lleva «Adapta la basal
+   por pod»; la nota dice qué pone el capítulo publicado (docs/CORRECCIONES.md). */
 export const NOTA_ADAPTA_OMNIPOD =
-  "Nota complementaria (no es texto del capítulo): en Omnipod 5, lo que la Tabla 1 llama «autoaprendizaje por pod» es la actualización de la basal adaptativa a partir de la insulina total administrada, con cada cambio de pod (Brown SA et al. Diabetes Care 2021;44(7):1630-40). Es una adaptación de ese parámetro, no un aprendizaje en sentido estricto.";
+  "Corrección posterior a la publicación (14-10-2026): el capítulo publicado dice «Posee autoaprendizaje por pod». Lo que hace SmartAdjust es adaptar la basal con cada cambio de pod a partir de la insulina total administrada (Brown SA et al. Diabetes Care 2021;44(7):1630-40): una adaptación de ese parámetro, no un aprendizaje en sentido estricto.";
 
 /* Pasajes donde se enseña: la fila de indicación de la Tabla 1 y la frase del apartado 3
    (Liberty); la fila «Lógica del algoritmo y aprendizaje» (Omnipod 5). */

@@ -39,22 +39,11 @@ test.describe("Portada y navegación (0.50)", () => {
     ).toBeVisible();
   });
 
-  test("«Seguir leyendo» guarda y enseña solo la ruta del apartado", async ({ page }) => {
-    await page.goto("/#/capitulo/07-educacion/b11~4");
+  // 14-10-2026: «Seguir leyendo» sale de la portada (decisión del autor).
+  test("la portada no lleva «Seguir leyendo»", async ({ page }) => {
+    await page.goto("/#/capitulo/07-educacion");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    const guardado = await page.evaluate(() => localStorage.getItem("mseen:ultimo"));
-    expect(JSON.parse(guardado!).ruta).toBe("#/capitulo/07-educacion");
     await page.goto("/#/");
-    const seguir = page.getByRole("link", { name: /Seguir leyendo/ });
-    await expect(seguir).toHaveAttribute("href", "#/capitulo/07-educacion");
-    // Una posición antigua con ancla o con otra ruta no se enseña.
-    await page.evaluate(() =>
-      localStorage.setItem(
-        "mseen:ultimo",
-        JSON.stringify({ ruta: "#/buscar/cetonas", titulo: "x", slug: "07-educacion" }),
-      ),
-    );
-    await page.reload();
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await expect(page.getByRole("link", { name: /Seguir leyendo/ })).toHaveCount(0);
   });

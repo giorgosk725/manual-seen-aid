@@ -1,5 +1,5 @@
 /* Portada: el título del capítulo tal cual, en negrita, y debajo qué es esta versión;
-   «Seguir leyendo»; el mapa de consulta (componentes/MapaConsulta),
+   el mapa de consulta (componentes/MapaConsulta),
    «Leer y comprender» con la misma forma (14-10-2026) y el capítulo publicado
    (decisiones del autor del 13-10-2026: sin las dos puertas). El buscador vive en la barra lateral
    (escritorio) y en la barra de abajo (móvil): la portada no lo repite. */
@@ -11,7 +11,6 @@ import { href } from "../rutas";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
 import { DESTINOS } from "../nav";
 import { APARTADOS, DIAGRAMAS, LISTA_TABLAS } from "../contenido";
-import { useUltimo } from "../prefs";
 
 const fecha = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("es-ES", {
@@ -28,27 +27,6 @@ function Franja() {
         <span key={c} className="flex-1" style={{ background: c }} />
       ))}
     </div>
-  );
-}
-
-/* El último apartado abierto: solo si su ruta es la canónica de un apartado del capítulo. */
-function SeguirLeyendo() {
-  const ultimo = useUltimo();
-  const a = ultimo && APARTADOS.find((x) => x.slug === ultimo.slug);
-  if (!a || ultimo!.ruta !== href("capitulo", a.slug)) return null;
-  return (
-    <a
-      href={href("capitulo", a.slug)}
-      className="flex min-h-11 items-center gap-2 rounded-md border bg-white px-3 text-sm text-slate-800 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-      style={{ borderColor: "#e6e6e6" }}
-    >
-      <BookOpen size={15} aria-hidden="true" style={{ color: CATEGORIA_HEX.leer.strong }} />
-      <span className="font-semibold">Seguir leyendo:</span>
-      <span className="min-w-0 flex-1 truncate">
-        {a.n}. {a.corto}
-      </span>
-      <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
-    </a>
   );
 }
 
@@ -152,8 +130,6 @@ export function Portada() {
           </div>
         </div>
       </section>
-
-      <SeguirLeyendo />
 
       {/* Primero la consulta (cuatro preguntas) y, con la misma forma, la lectura. */}
       <div className="space-y-2 sm:space-y-3">

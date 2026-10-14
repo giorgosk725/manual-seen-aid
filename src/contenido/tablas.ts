@@ -55,7 +55,9 @@ export const T1: Tabla = {
         "SmartGuard: algoritmo de tipo PID + lógica difusa. Posee autoaprendizaje continuo que actualiza el valor basal automático cada medianoche, basándose en la dosis total diaria (DTD) de los últimos 2–6 días",
         "Control-IQ: algoritmo de tipo MPC, que ajusta la administración cada 5 min a partir de una predicción a 30 min. No incorpora autoaprendizaje, por lo que su rendimiento depende de mantener optimizados el ritmo basal y el factor de sensibilidad.",
         "CamAPS FX: algoritmo de tipo MPC adaptativo. Posee un aprendizaje multinivel (DTD, variaciones diurnas y patrones posprandiales) que se actualiza cada 24 h",
-        "SmartAdjust: algoritmo de tipo MPC. Posee autoaprendizaje por pod: calcula una «basal adaptativa» que se recalcula con cada cambio de pod a partir del historial de administración de insulina, ponderando los pods más recientes.",
+        // Corrección del autor del 14-10-2026 (docs/CORRECCIONES.md): el capítulo publicado dice
+        // «Posee autoaprendizaje por pod»; lo que hace es adaptar la basal con cada pod.
+        "SmartAdjust: algoritmo de tipo MPC. Adapta la basal por pod: calcula una «basal adaptativa» que se recalcula con cada cambio de pod a partir del historial de administración de insulina, ponderando los pods más recientes.",
       ],
     },
     {

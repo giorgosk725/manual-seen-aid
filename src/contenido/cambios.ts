@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-14",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — portada nueva y situaciones a la vista`,
+    titulo: `Complemento interactivo ${VERSION_APP} — Omnipod 5: «Adapta la basal por pod»`,
+    detalle: [
+      "Tabla 1, Omnipod 5: «Adapta la basal por pod» en vez de «Posee autoaprendizaje por pod» (corrección posterior a la publicación). Junto a la casilla, una nota dice qué pone el capítulo publicado.",
+      "Portada sin «Seguir leyendo».",
+    ],
+  },
+  {
+    fecha: "2026-10-14",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.67.0 — portada nueva y situaciones a la vista",
     detalle: [
       "Portada: las cuatro preguntas de consulta en tarjetas con icono y una línea de qué contienen; en la de sistemas, los cuatro con su foto a un toque de su ficha; «Leer y comprender» debajo, con la misma forma y lo que contiene cada acceso.",
       "Situaciones: al elegir una situación (también una de las últimas de la lista), la pantalla sube al principio de su texto. Lo mismo al elegir la duración en «Interrupción del sistema».",

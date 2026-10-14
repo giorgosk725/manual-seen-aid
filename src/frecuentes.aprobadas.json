@@ -625,6 +625,12 @@
       "version": "0.65.2",
       "evidencia": "Decisión del autor del 14-10-2026 en la sesión de trabajo: «sí a los cambios de f77, f90 y la resonancia» (títulos; pasajes sin cambios)",
       "huella": "1a6cvt1xpxrmj"
+    },
+    {
+      "fecha": "2026-10-14",
+      "version": "0.68.0",
+      "evidencia": "Mismos pasajes; cambia el texto de T1/3 (Omnipod 5: «Adapta la basal por pod», corrección posterior a la publicación decidida por el responsable el 14-10-2026)",
+      "huella": "104risaxim860"
     }
   ],
   "f78": [
@@ -681,6 +687,12 @@
       "version": "0.51.0",
       "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
       "huella": "hj78a3ufbcuh"
+    },
+    {
+      "fecha": "2026-10-14",
+      "version": "0.68.0",
+      "evidencia": "Mismos pasajes; cambia el texto de T1/3 (Omnipod 5: «Adapta la basal por pod», corrección posterior a la publicación decidida por el responsable el 14-10-2026)",
+      "huella": "10yqsq0v8cp1m"
     }
   ],
   "f85": [
@@ -735,6 +747,12 @@
       "version": "0.65.2",
       "evidencia": "Decisión del autor del 14-10-2026 en la sesión de trabajo: «sí a los cambios de f77, f90 y la resonancia» (títulos; pasajes sin cambios)",
       "huella": "wirlsc1i6ekku"
+    },
+    {
+      "fecha": "2026-10-14",
+      "version": "0.68.0",
+      "evidencia": "Mismos pasajes; cambia el texto de T1/3 (Omnipod 5: «Adapta la basal por pod», corrección posterior a la publicación decidida por el responsable el 14-10-2026)",
+      "huella": "14i7mi7sze4el"
     }
   ],
   "f91": [
@@ -783,6 +801,12 @@
       "version": "0.51.0",
       "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
       "huella": "1lmttc01rvgjm"
+    },
+    {
+      "fecha": "2026-10-14",
+      "version": "0.68.0",
+      "evidencia": "Mismos pasajes; cambia el texto de T1/3 (Omnipod 5: «Adapta la basal por pod», corrección posterior a la publicación decidida por el responsable el 14-10-2026)",
+      "huella": "1qv3n0jkgj0td"
     }
   ],
   "f97": [
