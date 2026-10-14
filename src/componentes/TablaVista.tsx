@@ -169,9 +169,28 @@ function TablaHTML({
               >
                 <span className="flex items-start gap-1.5">
                   {iconoFila?.(i)}
-                  <span>
-                    <Lineas>{f.etiqueta}</Lineas>
-                  </span>
+                  {/* En la Tabla 4, lo que sigue al nombre de la situación es la conducta común:
+                      debajo y en gris, como en la vista de un sistema (0.72.0). */}
+                  {tabla.id === "T4" ? (
+                    <span>
+                      {f.etiqueta.split("\n").map((l, k) => (
+                        <span
+                          key={k}
+                          className={
+                            k === 0
+                              ? "block"
+                              : "mt-1 block text-[11px] font-normal leading-snug text-slate-600"
+                          }
+                        >
+                          <Texto>{l}</Texto>
+                        </span>
+                      ))}
+                    </span>
+                  ) : (
+                    <span>
+                      <Lineas>{f.etiqueta}</Lineas>
+                    </span>
+                  )}
                 </span>
               </th>
               {f.unida ? (

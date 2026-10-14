@@ -173,8 +173,10 @@ function Campo({
   const l = leerCifra(valor, max);
   const error = l.estado === "invalido" ? l.motivo : null;
   return (
-    <div>
-      <label htmlFor={id} className="mb-1 block text-sm font-semibold text-slate-800">
+    // 0.72.0: la etiqueta ocupa lo que sobre y las cajas quedan alineadas en su fila aunque
+    // unas lleven ayuda y otras no.
+    <div className="flex flex-col">
+      <label htmlFor={id} className="mb-1 block flex-1 text-sm font-semibold text-slate-800">
         {etiqueta}
         {ayuda && <span className="block text-xs font-normal text-slate-500">{ayuda}</span>}
       </label>
