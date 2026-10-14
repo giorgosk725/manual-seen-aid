@@ -5,7 +5,7 @@
      (1 = fichas grandes; 2–3 = columnas elegidas; todos = tabla completa). En las demás, un
      filtro por fila (p. ej. Tabla 6, por procedimiento). La selección viaja en la ruta
      (`T1:minimed-780g+omnipod-5`, `T6:3`) para poder compartirla. */
-import { NOTAS_POR_TABLA } from "../notas-complementarias";
+import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE, NOTAS_POR_TABLA } from "../notas-complementarias";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ExternalLink } from "lucide-react";
 import type { Tabla, TablaId } from "../contenido";
@@ -469,14 +469,24 @@ export function TablaVista({
         </>
       )}
       <Notas notas={tabla.notas} />
-      {(NOTAS_POR_TABLA[tabla.id] ?? []).map((n) => (
-        <p
-          key={n}
-          className="mt-1.5 rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs text-slate-600"
-        >
-          {n}
-        </p>
-      ))}
+      {/* 0.72.0: cada nota, solo si su sistema está a la vista (la de Liberty no va en una
+          comparación sin CamAPS). */}
+      {(NOTAS_POR_TABLA[tabla.id] ?? [])
+        .filter((n) => {
+          const k = Object.keys(NOTAS_POR_PASAJE).find(
+            (x) => x.startsWith(`${tabla.id}/`) && NOTAS_POR_PASAJE[x] === n,
+          );
+          const col = k !== undefined ? COLUMNA_DE_NOTA[k] : undefined;
+          return col === undefined || columnas.includes(col);
+        })
+        .map((n) => (
+          <p
+            key={n}
+            className="mt-1.5 rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs text-slate-600"
+          >
+            {n}
+          </p>
+        ))}
       {herramienta && (
         <FuentePie
           fuentes={[

@@ -926,7 +926,7 @@ export function Preguntas({ id }: { id?: string }) {
         className={
           filtradas
             ? "hidden"
-            : "space-y-2 lg:columns-2 lg:gap-3 lg:space-y-0 lg:[&>*]:mb-2 [&>*]:break-inside-avoid"
+            : "grid gap-2 lg:block lg:columns-2 lg:gap-3 lg:[&>*]:mb-2 [&>*]:break-inside-avoid"
         }
       >
         {TEMAS.map((tema) => (
