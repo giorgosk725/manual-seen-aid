@@ -416,7 +416,8 @@ function Tarjeta({
             {NOTAS_POR_PASAJE[r.id]}
           </p>
         )}
-      {/* 0.71.0: la procedencia y el enlace, en uno: dice de dónde es y lleva allí. */}
+      {/* 0.71.0: la procedencia y el enlace, en uno: dice de dónde es y lleva allí. 0.72.0: con el
+          peso de una línea de fuente, no el del texto. */}
       <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-0">
         <a
           href={ruta}
@@ -432,7 +433,7 @@ function Tarjeta({
                     ? "Ver la tabla"
                     : "Ver en el apartado"
           }: ${r.fuente.replace(/^(Tabla \d+)\..*$/s, "$1")}, ${paginas(r)}`}
-          className={enlace}
+          className="inline-flex min-h-11 items-center gap-1 text-[13px] font-semibold text-slate-600 hover:underline sm:min-h-8"
         >
           {r.fuente.replace(/^(Tabla \d+)\..*$/s, "$1")}, {paginas(r)}
           {r.tipo === "tabla" && casilla ? " · ficha del sistema" : ""}
