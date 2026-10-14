@@ -42,9 +42,9 @@ test.describe("Calculadora de parámetros iniciales", () => {
   }) => {
     await page.goto("/#/consultar/inicio/calculadora:omnipod-5");
     await page.getByRole("button", { name: /Bomba de insulina/ }).click();
-    await page.getByRole("button", { name: "Sí: se traslada" }).click();
+    await page.getByRole("button", { name: "Sí: se traslada tal cual" }).click();
     await expect(page.getByText(/puede trasladarse tal cual/)).toBeVisible();
-    await page.getByRole("button", { name: "No, o no hay referencia" }).click();
+    await page.getByRole("button", { name: "No es adecuada o no hay programación previa" }).click();
     await page.getByLabel("DTD actual").fill("40");
     await expect(page.getByText("11,3", { exact: true })).toBeVisible();
     await expect(page.getByText("43", { exact: true })).toBeVisible();

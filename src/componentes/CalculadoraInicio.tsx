@@ -55,6 +55,7 @@ import {
 } from "../calculadora";
 import { TABLAS, rutaDeTabla } from "../contenido";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { SETS_INFUSION } from "../ampliacion/datos";
 import { SIS_IDS } from "../situaciones";
 import { href } from "../rutas";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
@@ -281,7 +282,7 @@ function Estado({ ev, sis }: { ev: Evaluacion; sis?: number }) {
           style={{ borderColor: "#cbd5e1" }}
         >
           <Calculator size={18} className="mx-auto mb-1 text-slate-400" aria-hidden="true" />
-          Falta: {ev.faltan.join(", ").toLowerCase()}.
+          Falta: {ev.faltan.map(enMinuscula).join(", ")}.
         </p>
       )}
       {ev.indicacion.variante && (
@@ -507,8 +508,8 @@ export function CalculadoraInicio({
         </div>
         {sis === 2 && (
           <p className="text-xs text-slate-600">
-            La inicialización de la Tabla 2 es la de CamAPS FX. Liberty, en la Tabla 1: «Liberty:
-            &gt; 13 años».
+            Los pasos de inicio son los de CamAPS FX. Para la modalidad Liberty, el capítulo indica
+            «&gt; 13 años».
           </p>
         )}
       </Paso>
@@ -528,7 +529,7 @@ export function CalculadoraInicio({
               <Campo
                 id="calc-rapida"
                 etiqueta="Insulina rápida"
-                ayuda="Total diario; escribe 0 si no usa"
+                ayuda="Total diario (0 si no usa insulina rápida)"
                 unidad="UI/día"
                 valor={d.rapida}
                 onChange={(v) => set({ rapida: v })}
@@ -551,8 +552,8 @@ export function CalculadoraInicio({
             <Opciones
               etiqueta="Ratio y factor de sensibilidad"
               opciones={[
-                { v: "no", t: "Sin referencia: reglas del 450 y del 1700" },
-                { v: "si", t: "Ya tiene ratio y factor propios que le funcionan" },
+                { v: "no", t: "Sin ratio ni factor propios: reglas del 450 y del 1700" },
+                { v: "si", t: "Con ratio y factor propios ya ajustados" },
               ]}
               valor={d.referencia ? "si" : "no"}
               onChange={(v) => set({ referencia: v === "si" })}
@@ -613,7 +614,7 @@ export function CalculadoraInicio({
               </div>
               <p className="mt-1 text-xs text-slate-600">{REGLAS.reduccion.texto}.</p>
               <p className="mt-1 text-xs font-semibold text-slate-700">
-                Es un punto de partida dentro del intervalo del capítulo: ajústalo.
+                Punto de partida dentro del intervalo del capítulo; puede ajustarse.
                 {d.control === "bueno" &&
                   d.ultralarga &&
                   !d.tocado.reduccion &&
@@ -640,10 +641,10 @@ export function CalculadoraInicio({
         ) : (
           <div className="space-y-4">
             <Opciones
-              etiqueta={`¿Funcionaba la programación ${previa}?`}
+              etiqueta={`¿Es adecuada la programación ${previa}?`}
               opciones={[
-                { v: "si", t: "Sí: se traslada" },
-                { v: "no", t: "No, o no hay referencia" },
+                { v: "si", t: "Sí: se traslada tal cual" },
+                { v: "no", t: "No es adecuada o no hay programación previa" },
               ]}
               valor={d.referencia ? "si" : "no"}
               onChange={(v) => set({ referencia: v === "si" })}
@@ -938,6 +939,7 @@ export function CalculadoraInicio({
                 <dt className="text-xs font-semibold text-slate-600">{m.rotulo}</dt>
                 <dd className="text-sm font-semibold text-slate-900">
                   <Lineas>{m.texto}</Lineas>
+                  {m.rotulo === "Formato" && <SetsDeInfusion sis={sis} />}
                 </dd>
               </div>
             ))}
@@ -1033,5 +1035,51 @@ function Lista({
         })}
       </ul>
     </div>
+  );
+}
+
+/* «Falta: DTD actual, peso»: en minúscula, salvo las siglas. */
+const enMinuscula = (x: string) =>
+  /^[A-ZÁÉÍÓÚ]{2}/.test(x) ? x : x.charAt(0).toLowerCase() + x.slice(1);
+
+/* Sets de infusión de cada sistema (14-10-2026, a petición del responsable): plegados bajo el
+   formato. NO es texto del capítulo: datos de ficha técnica de los fabricantes recogidos en el
+   proyecto asistente-aid (ampliacion/datos.ts, 2-10-2026), rotulados como complementarios. */
+const cifras = (xs: number[], u: string) =>
+  `${xs
+    .map((x) => String(x).replace(".", ","))
+    .join(xs.length > 2 ? ", " : " o ")
+    .replace(/, ([^,]*)$/, " o $1")} ${u}`;
+function SetsDeInfusion({ sis }: { sis: number }) {
+  const sets = SETS_INFUSION[ORDEN_SISTEMAS[sis]] ?? [];
+  if (!sets.length) return null;
+  return (
+    <details
+      className="mt-1.5 rounded-lg border bg-slate-50 font-normal"
+      style={{ borderColor: "#e2e8f0" }}
+    >
+      <summary className="tap-44 flex cursor-pointer items-center gap-1.5 px-2.5 py-1.5 text-sm font-semibold text-slate-800">
+        Sets de infusión ({sets.length})
+      </summary>
+      <ul className="space-y-1.5 border-t px-2.5 py-2" style={{ borderColor: "#e2e8f0" }}>
+        {sets.map((x) => (
+          <li key={x.name} className="text-sm">
+            <span className="font-semibold text-slate-900">{x.name}</span>
+            <span className="block text-xs leading-snug text-slate-600">
+              {x.material} · {x.angle} · cánula de {cifras(x.cannula, "mm")} · tubo de{" "}
+              {cifras(x.tubing, "cm")} · {x.insertion.toLowerCase()} ·{" "}
+              {x.change >= 7 ? `hasta ${x.change} días` : `cambio habitual cada ${x.change} días`}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p
+        className="border-t px-2.5 py-1.5 text-xs text-slate-600"
+        style={{ borderColor: "#e2e8f0" }}
+      >
+        Información complementaria (no es texto del capítulo): fichas técnicas de los fabricantes,
+        recogidas el 2-10-2026. La oferta disponible depende del proveedor.
+      </p>
+    </details>
   );
 }

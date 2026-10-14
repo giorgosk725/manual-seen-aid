@@ -25,9 +25,9 @@ test.describe("Calculadora (I61-01/02/03)", () => {
   }) => {
     await page.goto("/#/consultar/inicio/calculadora:camaps");
     await page.getByRole("button", { name: /Bomba de insulina/ }).click();
-    await page.getByRole("button", { name: "Sí: se traslada" }).click();
+    await page.getByRole("button", { name: "Sí: se traslada tal cual" }).click();
     await expect(page.getByLabel(/DTD actual/)).toBeVisible();
-    await expect(paso(page, 4).getByText(/Falta: dtd actual, peso/)).toBeVisible();
+    await expect(paso(page, 4).getByText(/Falta: DTD actual, peso/)).toBeVisible();
     await page.getByLabel(/DTD actual/).fill("36");
     await page.getByLabel(/^Peso/).fill("8");
     await expect(page.getByRole("alert").filter({ hasText: "no hay propuesta" })).toBeVisible();

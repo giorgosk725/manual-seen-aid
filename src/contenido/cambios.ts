@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-14",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — comentar una pantalla`,
+    titulo: `Complemento interactivo ${VERSION_APP} — calculadora: textos y sets de infusión`,
+    detalle: [
+      "Calculadora de inicio: opciones y ayudas en tono de herramienta clínica («Con ratio y factor propios ya ajustados», «¿Es adecuada la programación…?», «No es adecuada o no hay programación previa», «Total diario (0 si no usa insulina rápida)»…), y «DTD» con mayúsculas en lo que falta por rellenar.",
+      "Material de cada sistema: los sets de infusión, plegados bajo el formato, con material, ángulo, cánula, tubo, inserción y cambio. Es información complementaria de las fichas técnicas, no texto del capítulo.",
+    ],
+  },
+  {
+    fecha: "2026-10-14",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.66.0 — comentar una pantalla",
     detalle: [
       "Al pie de cada pantalla, «¿Algo que comentar de esta pantalla?»: abre un correo con la pantalla, su dirección y la versión ya escritas, o copia esos datos. No se envía ni se guarda nada.",
       "El nombre corto de CamAPS es «CamAPS FX» en toda la app; los apartados 7 y 9, «Educación y plan de seguridad» y «Descarga y resolución de problemas».",
