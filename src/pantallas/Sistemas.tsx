@@ -603,10 +603,7 @@ function TituloSeccion({
   children: ReactNode;
 }) {
   return (
-    <h2
-      id={id}
-      className="mb-2 scroll-mt-56 text-base font-extrabold text-slate-900 sm:scroll-mt-44"
-    >
+    <h2 id={id} className="mb-2 scroll-mt-2 text-base font-extrabold text-slate-900">
       {children} <span style={{ color }}>· {sistema}</span>
     </h2>
   );
@@ -709,14 +706,14 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
 
       <BarraSistemas ids={[s.id]} seccion={sec} />
       {/* 0.70.0: la ficha es una sola página; las pestañas llevan a cada sección. */}
-      <section aria-labelledby="funciona" className="scroll-mt-56 sm:scroll-mt-44">
+      <section aria-labelledby="funciona" className="scroll-mt-2">
         <TituloSeccion id="funciona" sistema={s.name} color={h.ink}>
           Cómo funciona
         </TituloSeccion>
         <ComoFuncionaSistema c={c} id={s.id as SistemaId} />
       </section>
 
-      <section aria-labelledby="esencial" className="mt-7 scroll-mt-56 sm:scroll-mt-44">
+      <section aria-labelledby="esencial" className="mt-7 scroll-mt-2">
         <TituloSeccion id="esencial" sistema={s.name} color={h.ink}>
           Indicación y material
         </TituloSeccion>
@@ -737,7 +734,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         />
       </section>
 
-      <section aria-labelledby="parametros" className="mt-7 scroll-mt-56 sm:scroll-mt-44">
+      <section aria-labelledby="parametros" className="mt-7 scroll-mt-2">
         <TituloSeccion id="parametros" sistema={s.name} color={h.ink}>
           Parámetros
         </TituloSeccion>
