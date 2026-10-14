@@ -30,3 +30,4 @@ Cloudflare Pages).
 | 2026-10-13 23:01 | main   | 0.65.1  | 846bf3d6394e | index-Wr0FUw4O.js                       | 0.65.0 (f265b15bbee2) |
 | 2026-10-14 05:52 | main   | 0.65.2  | 44a8bffe330a | index-CWIALDm5.js                       | 0.65.1 (846bf3d6394e) |
 | 2026-10-14 06:06 | main   | 0.65.3  | 395c44ae5ced | index-BCLKIH60.js                       | 0.65.2 (44a8bffe330a) |
+| 2026-10-14 06:31 | main   | 0.66.0  | f0861dc9b583 | index-CdST3TwD.js                       | 0.65.3 (395c44ae5ced) |
