@@ -1,15 +1,16 @@
 /* Portada: el título del capítulo tal cual, en negrita, y debajo qué es esta versión;
-   «Seguir leyendo»; el mapa de consulta (componentes/MapaConsulta) y el capítulo publicado
+   «Seguir leyendo»; el mapa de consulta (componentes/MapaConsulta),
+   «Leer y comprender» con la misma forma (14-10-2026) y el capítulo publicado
    (decisiones del autor del 13-10-2026: sin las dos puertas). El buscador vive en la barra lateral
    (escritorio) y en la barra de abajo (móvil): la portada no lo repite. */
 import { ArrowRight, BookOpen, ExternalLink } from "lucide-react";
 import { CAPITULO } from "../contenido";
-import { MapaConsulta } from "../componentes/MapaConsulta";
+import { MapaConsulta, TarjetaPortada } from "../componentes/MapaConsulta";
 import { VERSION_APP } from "../version";
 import { href } from "../rutas";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
 import { DESTINOS } from "../nav";
-import { APARTADOS } from "../contenido";
+import { APARTADOS, DIAGRAMAS, LISTA_TABLAS } from "../contenido";
 import { useUltimo } from "../prefs";
 
 const fecha = (iso: string) =>
@@ -51,50 +52,62 @@ function SeguirLeyendo() {
   );
 }
 
-/* Leer y comprender (V54-07): región propia, antes del mapa y con su mismo formato (13-10-2026):
-   un bloque con filas de icono, nombre y flecha; en una fila de cuatro desde 640 px. */
-const LECTURA = ["capitulo", "tablas", "figuras", "visual"];
+/* Leer y comprender (V54-07; 14-10-2026): una tarjeta con la misma forma que las del mapa, con
+   sus cuatro accesos en una fila desde la pantalla ancha y lo que contiene cada uno. */
+const LECTURA: { id: string; detalle: string }[] = [
+  { id: "capitulo", detalle: `${APARTADOS.length} apartados` },
+  { id: "tablas", detalle: `${LISTA_TABLAS.length} tablas` },
+  { id: "figuras", detalle: "Originales e infografía" },
+  { id: "visual", detalle: `${DIAGRAMAS.length} diagramas` },
+];
 function LeerYComprender() {
+  const hex = CATEGORIA_HEX.leer;
   return (
-    <section
-      aria-labelledby="portada-leer"
-      className="rounded-md border bg-white"
-      style={{ borderColor: "#e6e6e6" }}
+    <TarjetaPortada
+      id="portada-leer"
+      nivel={2}
+      titulo="Leer y comprender"
+      resumen="El capítulo completo, sus tablas, sus figuras y diagramas que lo resumen."
+      icono={BookOpen}
+      hex={hex}
     >
-      <h2
-        id="portada-leer"
-        className="px-3 pb-0.5 pt-2 text-xs font-bold uppercase tracking-wide"
-        style={{ color: CATEGORIA_HEX.consultar.ink }}
-      >
-        Leer y comprender
-      </h2>
-      <ul
-        className="divide-y sm:grid sm:grid-cols-4 sm:divide-x sm:divide-y-0"
-        style={{ borderColor: "#e6e6e6" }}
-      >
-        {LECTURA.map((id) => {
+      <ul className="grid grid-cols-2 xl:grid-cols-4" style={{ borderColor: "#eef0f2" }}>
+        {LECTURA.map(({ id, detalle }) => {
           const d = DESTINOS.find((x) => x.id === id)!;
           const I = d.icono;
           return (
-            <li key={id}>
+            <li
+              key={id}
+              className="border-t [&:nth-child(-n+2)]:border-t-0 [&:nth-child(even)]:border-l xl:border-l xl:border-t-0 xl:first:border-l-0"
+              style={{ borderColor: "#eef0f2" }}
+            >
               <a
                 href={d.href}
-                className="flex min-h-11 items-center gap-3 px-3 py-1.5 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                className="group flex min-h-11 items-start gap-3 px-4 py-2.5 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
               >
                 <I
                   size={16}
-                  className="shrink-0"
-                  style={{ color: CATEGORIA_HEX.leer.strong }}
+                  className="mt-0.5 shrink-0"
+                  style={{ color: hex.strong }}
                   aria-hidden="true"
                 />
-                <span className="min-w-0 flex-1 font-semibold text-slate-900">{d.etiqueta}</span>
-                <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+                <span className="min-w-0 flex-1">
+                  <span className="block font-semibold text-slate-900">{d.etiqueta}</span>
+                  <span className="hidden text-xs leading-snug text-slate-600 sm:block">
+                    {detalle}
+                  </span>
+                </span>
+                <ArrowRight
+                  size={14}
+                  className="mt-0.5 shrink-0 text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-slate-600"
+                  aria-hidden="true"
+                />
               </a>
             </li>
           );
         })}
       </ul>
-    </section>
+    </TarjetaPortada>
   );
 }
 
@@ -142,10 +155,10 @@ export function Portada() {
 
       <SeguirLeyendo />
 
-      {/* La lectura y el mapa, un mismo conjunto: el mismo hueco entre bloques. */}
-      <div className="space-y-2">
-        <LeerYComprender />
+      {/* Primero la consulta (cuatro preguntas) y, con la misma forma, la lectura. */}
+      <div className="space-y-2 sm:space-y-3">
         <MapaConsulta />
+        <LeerYComprender />
       </div>
 
       <footer

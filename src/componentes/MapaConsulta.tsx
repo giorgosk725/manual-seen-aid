@@ -1,71 +1,172 @@
-/* El mapa de consulta: cuatro bloques, cada uno con la pregunta que responde y sus entradas en
-   filas (solo el nombre: la fuente se ve al entrar). La lectura va aparte, antes, en su propia
-   región de la portada y con este mismo formato (V54-07). Es la portada misma: no hay otra pantalla «Consultar». */
-import { ArrowRight } from "lucide-react";
+/* El mapa de consulta (14-10-2026, segunda vuelta de la portada): cuatro tarjetas, cada una con
+   la pregunta que responde, una línea de qué contiene y sus entradas en filas. La lectura
+   («Leer y comprender») va debajo, en una tarjeta con la misma forma (Portada.tsx). Es la portada
+   misma: no hay otra pantalla «Consultar». */
+import { ArrowRight, HeartHandshake, LifeBuoy, PlayCircle, SlidersHorizontal } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 import { DESTINOS, MAPA_CONSULTA } from "../nav";
-import { CATEGORIA_HEX } from "../tokens";
+import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
+import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { href } from "../rutas";
+
+/* Lo que contiene cada bloque, en una línea (texto de la app). */
+const BLOQUE: Record<string, { icono: LucideIcon; resumen: string }> = {
+  sistemas: {
+    icono: SlidersHorizontal,
+    resumen: "Ficha de cada sistema, criterios de elección y comparación de los cuatro.",
+  },
+  situaciones: {
+    icono: LifeBuoy,
+    resumen: "Conducta por situación: hiperglucemia y cetonas, hipoglucemia y desconexión.",
+  },
+  "en-consulta": {
+    icono: PlayCircle,
+    resumen: "Parámetros de partida, fases del inicio y revisión de la descarga.",
+  },
+  pacientes: {
+    icono: HeartHandshake,
+    resumen: "Información publicada para pacientes, hojas y planes de seguridad.",
+  },
+};
+
+/* Tarjeta de la portada: cabecera con icono, título y resumen; debajo, sus filas. */
+export function TarjetaPortada({
+  id,
+  titulo,
+  resumen,
+  icono: Icono,
+  hex,
+  nivel = 3,
+  children,
+}: {
+  id: string;
+  nivel?: 2 | 3;
+  titulo: string;
+  resumen: string;
+  icono: LucideIcon;
+  hex: { soft: string; strong: string; ink: string };
+  children: ReactNode;
+}) {
+  const Titulo = nivel === 2 ? "h2" : "h3";
+  return (
+    <section
+      aria-labelledby={id}
+      className="flex min-w-0 flex-col overflow-hidden rounded-xl border bg-white"
+      style={{ borderColor: "#e6e6e6" }}
+    >
+      <header className="flex items-center gap-3 px-4 pb-2 pt-2.5 sm:items-start sm:pb-3 sm:pt-4">
+        <span
+          aria-hidden="true"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg sm:h-10 sm:w-10 sm:rounded-xl"
+          style={{ background: hex.soft, color: hex.strong }}
+        >
+          <Icono size={20} />
+        </span>
+        <div className="min-w-0">
+          <Titulo id={id} className="text-base font-extrabold leading-snug text-slate-900">
+            {titulo}
+          </Titulo>
+          <p className="mt-0.5 hidden text-sm leading-snug text-slate-600 sm:block">{resumen}</p>
+        </div>
+      </header>
+      <div className="mt-auto border-t" style={{ borderColor: "#eef0f2" }}>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+/* Una fila de entrada: icono, nombre y flecha. */
+export function FilaDestino({ id }: { id: string }) {
+  const d = DESTINOS.find((x) => x.id === id)!;
+  const I = d.icono;
+  return (
+    <a
+      href={d.href}
+      className="group flex min-h-11 items-center gap-3 px-4 py-1.5 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
+    >
+      <I
+        size={16}
+        className="shrink-0"
+        style={{ color: CATEGORIA_HEX[d.cat].strong }}
+        aria-hidden="true"
+      />
+      <span className="min-w-0 flex-1 font-semibold text-slate-900">{d.etiqueta}</span>
+      <ArrowRight
+        size={14}
+        className="shrink-0 text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-slate-600"
+        aria-hidden="true"
+      />
+    </a>
+  );
+}
+
+/* Los cuatro sistemas, con su foto, a un toque de su ficha (14-10-2026), dentro de la tarjeta
+   de sistemas (la cabecera de la portada no lleva enlaces). */
+function SistemasDeUnVistazo() {
+  return (
+    <nav
+      aria-label="Los cuatro sistemas"
+      className="border-b px-2 py-2 sm:px-3"
+      style={{ borderColor: "#eef0f2" }}
+    >
+      <ul className="grid grid-cols-4 gap-1">
+        {ORDEN_SISTEMAS.map((id, c) => (
+          <li key={id} className="min-w-0">
+            <a
+              href={href("sistemas", id)}
+              className="flex min-h-11 flex-col items-center gap-1 rounded-lg p-1 text-center transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            >
+              <img
+                src={FOTO_SISTEMA[id]}
+                alt=""
+                width={44}
+                height={44}
+                className="h-10 w-10 shrink-0 rounded-lg border bg-white object-cover sm:h-11 sm:w-11"
+                style={{ borderColor: "#e6e6e6" }}
+              />
+              <span
+                className="min-w-0 text-[11px] font-bold leading-tight sm:text-xs"
+                style={{ color: SISTEMA_HEX[c].ink }}
+              >
+                {CORTO_SISTEMA[c]}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
 
 export function MapaConsulta() {
-  const hex = CATEGORIA_HEX.consultar;
   return (
     <section aria-labelledby="mapa-consulta">
-      {/* Cada bloque dice ya qué ofrece: el título del mapa, solo para lectores de pantalla. */}
+      {/* Cada tarjeta dice ya qué ofrece: el título del mapa, solo para lectores de pantalla. */}
       <h2 id="mapa-consulta" tabIndex={-1} className="sr-only scroll-mt-24">
         Consultar
       </h2>
       {/* Con la barra lateral (desde 768 px), una columna hasta que hay ancho para dos (V54-08). */}
-      <div className="grid gap-2 lg:grid-cols-2">
+      <div className="grid gap-2 sm:gap-3 lg:grid-cols-2">
         {MAPA_CONSULTA.map((b) => (
-          <section
+          <TarjetaPortada
             key={b.id}
-            aria-labelledby={`mapa-${b.id}`}
-            className={`rounded-md border bg-white ${b.ancho ? "md:col-span-2" : ""}`}
-            style={{ borderColor: "#e6e6e6" }}
+            id={`mapa-${b.id}`}
+            titulo={b.titulo}
+            resumen={BLOQUE[b.id]?.resumen ?? ""}
+            icono={BLOQUE[b.id]?.icono ?? SlidersHorizontal}
+            hex={b.id === "pacientes" ? CATEGORIA_HEX.pacientes : CATEGORIA_HEX.consultar}
           >
-            <h3
-              id={`mapa-${b.id}`}
-              className="px-3 pb-0.5 pt-2 text-xs font-bold uppercase tracking-wide"
-              style={{ color: hex.ink }}
-            >
-              {b.titulo}
-            </h3>
-            <ul
-              className={
-                b.ancho
-                  ? `divide-y sm:grid sm:divide-x sm:divide-y-0 ${b.ids.length === 4 ? "sm:grid-cols-4" : "sm:grid-cols-3"}`
-                  : "divide-y"
-              }
-              style={{ borderColor: "#e6e6e6" }}
-            >
-              {b.ids.map((id) => {
-                const d = DESTINOS.find((x) => x.id === id)!;
-                const I = d.icono;
-                return (
-                  <li key={id}>
-                    <a
-                      href={d.href}
-                      className="flex min-h-11 items-center gap-3 px-3 py-1.5 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                    >
-                      <I
-                        size={16}
-                        className="shrink-0"
-                        style={{ color: CATEGORIA_HEX[d.cat].strong }}
-                        aria-hidden="true"
-                      />
-                      <span className="min-w-0 flex-1 font-semibold text-slate-900">
-                        {d.etiqueta}
-                      </span>
-                      <ArrowRight
-                        size={14}
-                        className="shrink-0 text-slate-400"
-                        aria-hidden="true"
-                      />
-                    </a>
-                  </li>
-                );
-              })}
+            {b.id === "sistemas" && <SistemasDeUnVistazo />}
+            <ul className="divide-y" style={{ borderColor: "#eef0f2" }}>
+              {b.ids.map((id) => (
+                <li key={id}>
+                  <FilaDestino id={id} />
+                </li>
+              ))}
             </ul>
-          </section>
+          </TarjetaPortada>
         ))}
       </div>
     </section>

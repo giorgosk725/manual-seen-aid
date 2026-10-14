@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-14",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — calculadora: textos y sets de infusión`,
+    titulo: `Complemento interactivo ${VERSION_APP} — portada nueva y situaciones a la vista`,
+    detalle: [
+      "Portada: las cuatro preguntas de consulta en tarjetas con icono y una línea de qué contienen; en la de sistemas, los cuatro con su foto a un toque de su ficha; «Leer y comprender» debajo, con la misma forma y lo que contiene cada acceso.",
+      "Situaciones: al elegir una situación (también una de las últimas de la lista), la pantalla sube al principio de su texto. Lo mismo al elegir la duración en «Interrupción del sistema».",
+    ],
+  },
+  {
+    fecha: "2026-10-14",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.66.1 — calculadora: textos y sets de infusión",
     detalle: [
       "Calculadora de inicio: opciones y ayudas en tono de herramienta clínica («Con ratio y factor propios ya ajustados», «¿Es adecuada la programación…?», «No es adecuada o no hay programación previa», «Total diario (0 si no usa insulina rápida)»…), y «DTD» con mayúsculas en lo que falta por rellenar.",
       "Material de cada sistema: los sets de infusión, plegados bajo el formato, con material, ángulo, cánula, tubo, inserción y cambio. Es información complementaria de las fichas técnicas, no texto del capítulo.",

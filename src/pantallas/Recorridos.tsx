@@ -65,7 +65,7 @@ import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
 import { CabeceraEditorial, Segmented } from "../ui";
 import { CasillasSistema } from "../componentes/CasillasSistema";
-import { useIrAlCambiar } from "../irAlCambiar";
+import { useIrAlCambiar, useSubirAlElegir } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { FuentePie } from "../componentes/FuentePie";
@@ -669,6 +669,8 @@ export function SituacionSistema({
       0,
     );
   };
+  // Elegida otra situación (sobre todo una de las últimas de la lista), al principio de su texto.
+  useSubirAlElegir(situacion ?? "", "detalle-situacion");
   const sisIdx = sistema ? SIS_IDS.indexOf(sistema) : -1;
   const tabla = sit ? TABLAS[sit.tabla] : null;
   const fila = sit && tabla ? tabla.filas[sit.fila] : null;
@@ -710,7 +712,11 @@ export function SituacionSistema({
             onLimpiar={() => setFiltro("")}
           />
         </div>
-        <div aria-live="polite" className={sit || guia ? "order-first lg:order-none" : undefined}>
+        <div
+          id="detalle-situacion"
+          aria-live="polite"
+          className={`scroll-mt-24 ${sit || guia ? "order-first lg:order-none" : ""}`}
+        >
           {!sit && !guia && (
             <div
               className="hidden rounded-xl border lg:block border-dashed px-4 py-8 text-center text-sm text-slate-600"
@@ -1244,6 +1250,8 @@ export function Interrupcion({ tramo }: { tramo?: string }) {
   const sel = tramo && TRAMOS_INTERRUPCION.some((t) => t.id === tramo) ? tramo : "breve";
   const actual = TRAMOS_INTERRUPCION.find((t) => t.id === sel)!;
   const p = parrafos[actual.parrafo];
+  // Elegida otra duración, su párrafo a la vista (en el móvil queda bajo las opciones).
+  useSubirAlElegir(sel, "parrafo-interrupcion");
   return (
     <div>
       <CabeceraEditorial titulo="Interrupción del sistema" hex={hex} level={1}>
@@ -1278,7 +1286,8 @@ export function Interrupcion({ tramo }: { tramo?: string }) {
       </ol>
       <section
         key={sel}
-        className="pantalla-in rounded-2xl border bg-white p-4 shadow-soft"
+        id="parrafo-interrupcion"
+        className="pantalla-in scroll-mt-24 rounded-2xl border bg-white p-4 shadow-soft"
         style={{ borderColor: "#e6e6e6" }}
         aria-live="polite"
       >
