@@ -6,7 +6,7 @@
      filtro por fila (p. ej. Tabla 6, por procedimiento). La selección viaja en la ruta
      (`T1:minimed-780g+omnipod-5`, `T6:3`) para poder compartirla. */
 import { NOTAS_POR_TABLA } from "../notas-complementarias";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ExternalLink } from "lucide-react";
 import type { Tabla, TablaId } from "../contenido";
 import { Lineas, Texto } from "../texto";
@@ -112,9 +112,24 @@ function TablaHTML({
   herramienta?: boolean;
   iconoFila?: (i: number) => ReactNode;
 }) {
+  // 0.72.0: si la tabla cabe a lo ancho, sin caja de desplazamiento propia (clase «cabe»): la
+  // cabecera se queda pegada al bajar por la página. Si no cabe, se desplaza a lo ancho.
+  const caja = useRef<HTMLDivElement>(null);
+  const [cabe, setCabe] = useState(false);
+  useEffect(() => {
+    const el = caja.current;
+    const t = el?.querySelector("table");
+    if (!el || !t || typeof ResizeObserver === "undefined") return;
+    const medir = () => setCabe(t.offsetWidth <= el.clientWidth + 2);
+    medir();
+    const ro = new ResizeObserver(medir);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [columnas.length]);
   return (
     <div
-      className="tabla-scroll fade-right-scroll rounded-xl border focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+      ref={caja}
+      className={`tabla-scroll fade-right-scroll rounded-xl border focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${cabe ? "cabe" : ""}`}
       style={{ borderColor: "#e6e6e6" }}
       tabIndex={0}
       role="region"
@@ -339,15 +354,21 @@ export function TablaVista({
   onSeleccion?: (seleccion: string | undefined) => void;
 }) {
   const todas = tabla.columnas.map((_, i) => i);
-  const [sel, setSelInterna] = useState<number[]>(() => {
-    if (columnasFijas) return columnasFijas;
-    if (tabla.porSistema && seleccionInicial) {
-      const ids = seleccionInicial.split("+");
-      const cs = CORTOS.map((_, c) => c).filter((c) => ids.includes(slugDe(c)));
-      if (cs.length) return cs;
-    }
-    return [];
-  });
+  const desdeRuta = (s?: string): number[] => {
+    if (!tabla.porSistema || !s) return [];
+    const ids = s.split("+");
+    return CORTOS.map((_, c) => c).filter((c) => ids.includes(slugDe(c)));
+  };
+  const [sel, setSelInterna] = useState<number[]>(() =>
+    columnasFijas ? columnasFijas : desdeRuta(seleccionInicial),
+  );
+  // 0.72.0: con la pantalla ya abierta, la ruta manda (Atrás, un enlace a «T4:<sistema>»).
+  useEffect(() => {
+    if (columnasFijas) return;
+    const n = desdeRuta(seleccionInicial);
+    setSelInterna((p) => (p.join() === n.join() ? p : n));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seleccionInicial]);
   const setSel = (f: (s: number[]) => number[]) => {
     const nueva = f(sel);
     setSelInterna(nueva);

@@ -1046,14 +1046,19 @@ html.night [style*="rgb(255, 255, 255) 0px 0px 0px 2px inset"] {
 }
 /* 0.72.0: en el ordenador, sin caja de 70vh con su propio scroll (doble scroll); la tabla sigue
    la página y, si es más ancha, se desplaza a lo ancho. */
-@media screen and (min-width: 1024px) {
-  /* «clip» no es contenedor de desplazamiento: así la cabecera se queda pegada bajo la barra de arriba
-     al bajar por la página (a 1366 y 1920 ninguna tabla desborda). */
+/* Desde la tablet, sin caja de 70vh. Si la tabla cabe (TablaVista pone «cabe»), «clip», que no es
+   contenedor de desplazamiento: la cabecera se queda pegada bajo la barra de arriba al bajar por
+   la página. Si no cabe, se desplaza solo a lo ancho. */
+@media screen and (min-width: 768px) {
   .tabla-scroll {
     max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .tabla-scroll.cabe {
     overflow: clip;
   }
-  .tabla-scroll .tabla-capitulo thead th {
+  .tabla-scroll.cabe .tabla-capitulo thead th {
     top: 3.5rem;
   }
 }
