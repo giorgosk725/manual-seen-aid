@@ -850,7 +850,19 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
           nuevos.length ? nuevos.join("+") : "todos",
           !sec || sec === "funciona" ? "esencial" : sec,
         );
+  // En la entrada (los cuatro), las casillas se van marcando sin cambiar de pantalla; con dos
+  // o más, «Comparar» (0.72.0: la primera casilla llevaba a la ficha).
+  const entrada = ids.length === 0 && !sec;
+  const [marcados, setMarcados] = useState<string[]>([]);
   const alternar = (id: string) => {
+    if (entrada) {
+      setMarcados((m) =>
+        m.includes(id)
+          ? m.filter((x) => x !== id)
+          : IDS_SISTEMA.filter((x) => m.includes(x) || x === id),
+      );
+      return;
+    }
     const nuevos = ids.includes(id)
       ? ids.filter((x) => x !== id)
       : IDS_SISTEMA.filter((x) => ids.includes(x) || x === id);
@@ -909,22 +921,36 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
       ) : (
         <CasillasSistema
           etiqueta="Sistemas"
-          seleccion={ids.map((id) => columnaDeSistema(id as SistemaId))}
+          seleccion={(entrada ? marcados : ids).map((id) => columnaDeSistema(id as SistemaId))}
           onToggle={(c) => alternar(IDS_SISTEMA[c])}
           extra={
-            <button
-              type="button"
-              aria-pressed={ids.length === 0}
-              onClick={() => window.location.replace(rutaCon([]))}
-              className="tap-44 inline-flex shrink-0 items-center whitespace-nowrap rounded-md border px-2.5 py-1 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-              style={
-                ids.length === 0
-                  ? { borderColor: SEEN.burdeos, background: "#f7eff3", color: "#1e293b" }
-                  : { borderColor: "#d4d4d4", background: "#fff", color: "#334155" }
-              }
-            >
-              Los cuatro
-            </button>
+            entrada ? (
+              marcados.length > 0 && (
+                <a
+                  href={rutaCon(marcados)}
+                  onClick={() => window.scrollTo({ top: 0 })}
+                  className="tap-44 inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-md px-3 py-1 text-sm font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                  style={{ background: SEEN.burdeos }}
+                >
+                  {marcados.length === 1 ? "Ver la ficha" : `Comparar (${marcados.length})`}
+                  <ArrowRight size={13} aria-hidden="true" />
+                </a>
+              )
+            ) : (
+              <button
+                type="button"
+                aria-pressed={ids.length === 0}
+                onClick={() => window.location.replace(rutaCon([]))}
+                className="tap-44 inline-flex shrink-0 items-center whitespace-nowrap rounded-md border px-2.5 py-1 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                style={
+                  ids.length === 0
+                    ? { borderColor: SEEN.burdeos, background: "#f7eff3", color: "#1e293b" }
+                    : { borderColor: "#d4d4d4", background: "#fff", color: "#334155" }
+                }
+              >
+                Los cuatro
+              </button>
+            )
           }
         />
       )}

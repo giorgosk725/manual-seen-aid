@@ -1,0 +1,75 @@
+/* 0.72.0 (14-10-2026): lo corregido tras las auditorías de uso (guardia, consulta, educadora y
+   diseño, dos rondas), para que no vuelva. */
+import { expect, test } from "@playwright/test";
+
+const buscar = async (page: import("@playwright/test").Page, q: string) => {
+  await page.goto("/#/buscar");
+  await page.getByLabel("Texto a buscar").fill(q);
+};
+
+test.describe("Auditorías 0.72.0", () => {
+  test("Sistemas: en la entrada, las casillas se acumulan y «Comparar (2)» compara", async ({
+    page,
+  }) => {
+    await page.goto("/#/sistemas");
+    const elegir = page.getByRole("button", { name: /Elegir para comparar/ });
+    if (await elegir.isVisible()) await elegir.click();
+    const grupo = page.getByRole("group", { name: "Sistemas", exact: true });
+    await grupo.getByRole("button").nth(0).click();
+    await expect(page).toHaveURL(/#\/sistemas$/);
+    await grupo.getByRole("button").nth(3).click();
+    await page.getByRole("link", { name: /Comparar \(2\)/ }).click();
+    await expect(page).toHaveURL(/#\/sistemas\/mm780\+op5\/esencial$/);
+  });
+
+  test("búsqueda: «gestante» y «modo actividad» abren su situación; «cetonas» su herramienta", async ({
+    page,
+  }) => {
+    const abrir = page.getByRole("list", { name: "Abrir" });
+    await buscar(page, "gestante");
+    await expect(abrir.getByRole("link").first()).toHaveAttribute(
+      "href",
+      "#/consultar/situacion/gestacion",
+    );
+    await buscar(page, "modo actividad");
+    await expect(abrir.getByRole("link").first()).toHaveAttribute(
+      "href",
+      "#/consultar/situacion/ejercicio-aerobico",
+    );
+    await buscar(page, "cetonas");
+    await expect(abrir.getByRole("link").first()).toHaveAttribute("href", "#/consultar/figura-3");
+  });
+
+  test("con una cifra de cetonas: los cuatro tramos, ninguno marcado, y la urgencia una vez (A01)", async ({
+    page,
+  }) => {
+    await buscar(page, "cetonas 2,1");
+    const tramos = page.getByRole("list", { name: "Tramos de la Figura 3" }).getByRole("link");
+    await expect(tramos).toHaveCount(4);
+    await expect(page.getByText("URGENCIAS / VALORACIÓN HOSPITALARIA INMEDIATA.")).toHaveCount(1);
+  });
+
+  test("descarga: los ocho pasos a la vista, el actual marcado", async ({ page }) => {
+    await page.goto("/#/consultar/descarga/2");
+    const pasos = page.getByRole("navigation", { name: "Pasos de la descarga" });
+    await expect(pasos.locator("visible=true").getByRole("button")).toHaveCount(8);
+    await expect(
+      pasos.locator("visible=true").getByRole("button", { name: /Seguridad clínica/ }),
+    ).toHaveAttribute("aria-current", "step");
+  });
+
+  test("ficha: la Tabla 3 dice qué tiene efecto directo en automático", async ({ page }) => {
+    await page.goto("/#/sistemas/ciq/parametros");
+    await expect(page.getByText("Efecto directo en el modo automático (*)").first()).toBeVisible();
+  });
+
+  test("Iniciar: «Calcular · Fases · Hoja» y la hoja con los valores de partida", async ({
+    page,
+  }) => {
+    await page.goto("/#/consultar/inicio");
+    const herramienta = page.getByRole("group", { name: "Herramienta" });
+    await expect(herramienta.getByRole("button")).toHaveCount(3);
+    await herramienta.getByRole("button", { name: /Hoja de comprobación/ }).click();
+    await expect(page.getByRole("heading", { name: "Valores de partida" })).toBeVisible();
+  });
+});
