@@ -58,5 +58,9 @@ Pruebas: 235 unitarias y 203 e2e (con `e2e/auditorias-072.spec.ts`, `src/cifras.
 9. **Ejercicio con el sistema en la ruta** («modo actividad» con 780G): no baja a la tarjeta de
    ese sistema, para no saltarse «Antes de actuar» (S61-01).
 
+10. **«¿Qué es el modo automático?»** devuelve primero una fila de la Tabla 2; la definición está
+    en el apartado 2 (p. 2). Tocar el motor pide medirlo antes con un banco ciego nuevo (el 11 ya
+    se usó dos veces).
+
 La nota de urgencias de la ronda final es la de las tres tareas repetidas; con las siete de su
 ronda queda en 6,5. Lo que más resta ya es de decisión del autor (puntos 1, 2, 4 y 5).
