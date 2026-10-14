@@ -170,15 +170,16 @@ function RangoTramo({ rango, on }: { rango: string; on: boolean }) {
 /* En los rótulos en mayúsculas, la β sigue siendo β (en mayúscula se lee como una B). */
 function BetaMinuscula({ t }: { t: string }) {
   const partes = t.split("β");
+  // Un solo elemento: dentro de una fila flex, cada trozo sería una columna.
   return (
-    <>
+    <span>
       {partes.map((x, i) => (
         <span key={i}>
           {i > 0 && <span className="normal-case">β</span>}
           {x}
         </span>
       ))}
-    </>
+    </span>
   );
 }
 
