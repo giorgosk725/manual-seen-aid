@@ -349,7 +349,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
           >
             <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-9">
               Todos los resultados (
-              {hayMas
+              {hayMas && res.length < busqueda.totalCapitulo + busqueda.totalFuera
                 ? `se muestran ${res.length} de ${busqueda.totalCapitulo + busqueda.totalFuera}`
                 : res.length}
               )

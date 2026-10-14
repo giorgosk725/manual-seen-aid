@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-14",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — simplificación a fondo`,
+    titulo: `Complemento interactivo ${VERSION_APP} — sistemas y repeticiones`,
+    detalle: [
+      "Sistemas: en el ordenador, la barra de sistemas ya no se pliega al bajar; en el móvil, la ficha y la lista empiezan con la barra en una línea («Cambiar o comparar»). Las tarjetas de la lista dicen el formato (bomba con catéter o pod), y las pestañas de la lista, que comparan los cuatro.",
+      "Sin el título de la Tabla 1 repetido encima de sus casillas, ni la miga de pan sobre las tablas.",
+      "Búsqueda: un solo enlace por tarjeta, con la fuente y la página en el propio enlace.",
+      "Hipoglucemia sin el párrafo de entrada; Situaciones a todo lo ancho mientras no se elige ninguna; el índice del capítulo ya no se repite en el menú lateral; Inicio sin el segundo enlace al apartado 8.",
+    ],
+  },
+  {
+    fecha: "2026-10-14",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.70.0 — simplificación a fondo",
     detalle: [
       "Para el paciente: una pantalla con tres entradas (el PDF publicado, el plan de seguridad de cada sistema y la hoja de pruebas y cirugía); sin la información en pantalla ni los extractos. El plan, en una cara con lo esencial y la hoja de cetonas como segunda cara.",
       "Sin frases de entrada bajo los títulos, sin rótulos encima de los bloques, sin avisos explicativos y sin la fecha del capítulo en cada fuente (va en «Sobre»). La barra de arriba ya no repite el título.",

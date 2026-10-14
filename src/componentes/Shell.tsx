@@ -401,7 +401,8 @@ function MenuNavegacion({
   etiqueta: string;
   onIr?: () => void;
 }) {
-  const enCapitulo = ruta.seccion === "capitulo";
+  // Dentro de un apartado (0.71.0): en el propio índice, la lista del lateral lo repetía.
+  const enCapitulo = ruta.seccion === "capitulo" && !!ruta.sub;
   const area = areaDe(ruta.seccion);
   // El índice de los apartados se despliega dentro de la lectura; pulsar otra vez «Índice del
   // capítulo» estando ya en ella lo pliega (y vuelve a desplegarlo).

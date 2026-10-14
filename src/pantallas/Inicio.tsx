@@ -785,14 +785,6 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
           </button>
         </div>
       )}
-      <p className="mt-3 text-xs text-slate-500">
-        <a
-          href={href("capitulo", "08-iniciacion")}
-          className="inline-flex min-h-11 items-center font-semibold underline"
-        >
-          Leer el apartado 8 completo
-        </a>
-      </p>
     </div>
   );
 }

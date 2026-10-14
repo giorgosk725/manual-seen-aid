@@ -730,9 +730,8 @@ function Algoritmos() {
 function Hipoglucemia() {
   return (
     <div>
-      <p className="text-sm text-slate-700">
-        {HIPOGLUCEMIA.regla} {HIPOGLUCEMIA.porque}
-      </p>
+      {/* 0.71.0: sin la frase que solo anuncia («Dos reglas operativas merecen mención…»). */}
+      <p className="text-sm text-slate-700">{HIPOGLUCEMIA.porque}</p>
       <p
         className="mt-2 rounded-lg border-l-4 px-3 py-2 text-sm font-semibold text-slate-900"
         style={{ borderColor: "#dc2626", background: "#fef2f2" }}

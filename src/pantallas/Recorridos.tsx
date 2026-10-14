@@ -499,7 +499,10 @@ function ListaSituaciones({
   sistema,
   filtro = "",
   onLimpiar,
+  ancha = false,
 }: {
+  /* Sin situación elegida, a todo el ancho y en columnas (0.71.0). */
+  ancha?: boolean;
   sit: Situacion | null;
   sistema?: string;
   /* Texto escrito en «Filtrar»: las entradas cuyo nombre o alias casan (casaFiltro). */
@@ -556,7 +559,14 @@ function ListaSituaciones({
     </>
   );
   return (
-    <div id="lista-situaciones" className="scroll-mt-20 space-y-2">
+    <div
+      id="lista-situaciones"
+      className={
+        ancha
+          ? "scroll-mt-20 gap-3 lg:columns-2 2xl:columns-3 [&>*]:mb-2 [&>*]:break-inside-avoid"
+          : "scroll-mt-20 space-y-2"
+      }
+    >
       {f && (
         <p className="text-xs text-slate-600" aria-live="polite">
           {total === 1 ? "1 resultado" : `${total} resultados`}
@@ -684,24 +694,23 @@ export function SituacionSistema({
   return (
     <div>
       <CabeceraEditorial titulo="Situaciones" hex={hex} level={1} />
-      <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">
+      {/* Sin situación elegida, la lista a todo el ancho; con una, lista a la izquierda (0.71.0). */}
+      <div className={`grid gap-4 ${sit || guia ? "lg:grid-cols-[18rem_1fr]" : ""}`}>
         <div className={(sit || guia) && !verLista ? "hidden lg:block" : undefined}>
-          <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-            1 · Situación
-          </div>
           <input
             type="search"
             aria-label="Filtrar situaciones"
             placeholder="Filtrar: resonancia, ejercicio, sueño…"
             value={filtro}
             onChange={(e) => setFiltro(e.target.value)}
-            className="mb-2 min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10"
+            className={`mb-2 min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10 ${!sit && !guia ? "lg:max-w-md" : ""}`}
           />
           <ListaSituaciones
             sit={sit}
             sistema={sistema}
             filtro={filtro}
             onLimpiar={() => setFiltro("")}
+            ancha={!sit && !guia}
           />
         </div>
         <div
@@ -709,14 +718,6 @@ export function SituacionSistema({
           aria-live="polite"
           className={`scroll-mt-24 ${sit || guia ? "order-first lg:order-none" : ""}`}
         >
-          {!sit && !guia && (
-            <div
-              className="hidden rounded-xl border lg:block border-dashed px-4 py-8 text-center text-sm text-slate-600"
-              style={{ borderColor: "#d4d4d4", background: "#f8fafc" }}
-            >
-              Elige una situación de la lista.
-            </div>
-          )}
           {guia && (
             <div key={guia.id} className="pantalla-in space-y-4">
               <CabeceraSituacion id={guia.id} etiqueta={guia.etiqueta} onCambiar={cambiar} />

@@ -25,7 +25,8 @@ test.describe("Móvil (393 px)", () => {
   });
 
   test("el menú abre un apartado; la tabla se ve como fichas", async ({ page }) => {
-    await page.goto("/#/capitulo");
+    // 0.71.0: el índice se despliega en el menú dentro de un apartado (en el índice, lo repetía).
+    await page.goto("/#/capitulo/02-componentes");
     await page
       .getByRole("navigation", { name: "Barra inferior" })
       .getByRole("button", { name: "Más" })

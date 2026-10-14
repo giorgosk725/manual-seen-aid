@@ -104,6 +104,9 @@ test.describe("Móvil compacto, segunda tanda (360 px)", () => {
       ["/#/consultar/tablas/T4", "Filtrar por sistema"],
     ] as const) {
       await page.goto(ruta);
+      // 0.71.0: en la lista de sistemas, la barra empieza en una línea.
+      if (ruta === "/#/sistemas")
+        await page.getByRole("button", { name: /Elegir para comparar/ }).click();
       const b = page.getByRole("group", { name: grupo, exact: true }).getByRole("button");
       await expect(b.first(), ruta).toBeVisible();
       for (const i of [1, 2, 3]) await mismaFila(b.nth(0), b.nth(i));

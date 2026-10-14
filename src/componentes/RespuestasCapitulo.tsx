@@ -414,23 +414,29 @@ function Tarjeta({
             {NOTAS_POR_PASAJE[r.id]}
           </p>
         )}
-      {/* La procedencia, al pie de la tarjeta (no encima del dato). */}
-      <p className="mt-1.5 text-[13px] text-slate-500">
-        Fuente: {r.fuente.replace(/^(Tabla \d+)\..*$/s, "$1")}, {paginas(r)}
-      </p>
-      <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-0">
-        <a href={ruta} onClick={onIr} className={enlace}>
-          {r.tipo === "texto"
-            ? "Ver en el apartado"
-            : r.tipo === "figura"
-              ? "Ver la figura"
-              : r.tipo === "tabla"
-                ? casilla
-                  ? "Ver en la ficha del sistema"
-                  : ruta.includes("/situacion/")
-                    ? "Ver esta situación"
-                    : "Ver la tabla"
-                : "Ver en el apartado"}{" "}
+      {/* 0.71.0: la procedencia y el enlace, en uno: dice de dónde es y lleva allí. */}
+      <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-0">
+        <a
+          href={ruta}
+          onClick={onIr}
+          aria-label={`${
+            r.tipo === "tabla" && casilla
+              ? "Ver en la ficha del sistema"
+              : r.tipo === "tabla" && ruta.includes("/situacion/")
+                ? "Ver esta situación"
+                : r.tipo === "figura"
+                  ? "Ver la figura"
+                  : r.tipo === "tabla"
+                    ? "Ver la tabla"
+                    : "Ver en el apartado"
+          }: ${r.fuente.replace(/^(Tabla \d+)\..*$/s, "$1")}, ${paginas(r)}`}
+          className={enlace}
+        >
+          {r.fuente.replace(/^(Tabla \d+)\..*$/s, "$1")}, {paginas(r)}
+          {r.tipo === "tabla" && casilla ? " · ficha del sistema" : ""}
+          {r.tipo === "tabla" && !casilla && ruta.includes("/situacion/")
+            ? " · situación"
+            : ""}{" "}
           <ArrowRight size={14} aria-hidden="true" />
         </a>
         {principal && r.tipo === "texto" && contexto && (

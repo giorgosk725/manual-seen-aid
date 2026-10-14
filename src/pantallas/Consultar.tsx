@@ -102,17 +102,9 @@ function TablaPantalla({ tid, seleccion }: { tid: TablaId; seleccion?: string })
   const ref = useRef<HTMLDivElement>(null);
   return (
     <div>
-      <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
-        <a
-          href={href("consultar", "tablas")}
-          className="inline-flex min-h-11 items-center font-semibold hover:underline"
-        >
-          Tablas del capítulo
-        </a>
-        <span aria-hidden="true">›</span>
-        <span>Tabla {tabla.numero}</span>
-      </div>
-      <CabeceraEditorial titulo={`Tabla ${tabla.numero}`} hex={hex} level={1} />
+      {/* 0.71.0: «Tabla N» una vez (pestaña y cabecera de la tabla); sin migas: las pestañas
+          llevan a las demás. */}
+      <CabeceraEditorial titulo="Tablas del capítulo" hex={hex} level={1} />
       <div className="no-imprimir mb-4 overflow-x-auto">
         <Segmented
           label="Otra tabla"

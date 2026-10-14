@@ -498,8 +498,7 @@ function ColumnaTabla({
   const siglas = t.notas.filter(esSiglas);
   return (
     <div className="rounded-xl border bg-white p-3 sm:p-4" style={{ borderColor: "#e6e6e6" }}>
-      <div className="text-xs font-semibold text-slate-600">{t.titulo}</div>
-      <dl className="mt-2 grid gap-2 sm:grid-cols-2">
+      <dl className="grid gap-2 sm:grid-cols-2">
         {t.filas.map((f, j) => {
           if (filas && !filas(f.etiqueta, j)) return null;
           const I = ICONO_FILA[t.id]?.[j];
@@ -840,19 +839,24 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
           : IDS_SISTEMA.filter((x) => ids.includes(x) || x === id),
       ),
     );
-  // Al desplazarse, la barra se pliega a una línea («Control-IQ + Omnipod 5 · Cambiar») y las
-  // pestañas; «Cambiar» vuelve a abrir el selector hasta el siguiente desplazamiento.
-  const [plegada, setPlegada] = useState(false);
+  // 0.71.0: en escritorio la barra no se pliega (hay sitio). En el móvil, al bajar se pliega a
+  // una línea («Control-IQ + Omnipod 5 · Cambiar») y, en la ficha de un sistema, empieza plegada:
+  // el contenido queda en la primera pantalla. «Cambiar» la abre hasta el siguiente desplazamiento.
+  const [movil] = useState(() => window.matchMedia?.("(max-width: 639px)").matches ?? false);
+  // Plegada de entrada en la ficha de un sistema y en la lista (las tarjetas ya eligen).
+  const deEntrada = ids.length === 1 || (ids.length === 0 && !seccion);
+  const [plegada, setPlegada] = useState(movil && deEntrada);
   const [abierta, setAbierta] = useState(false);
   useEffect(() => {
+    if (!movil) return;
     const onScroll = () => {
-      const lejos = window.scrollY > 220;
+      const lejos = window.scrollY > 220 || deEntrada;
       setPlegada((p) => (p !== lejos ? lejos : p));
-      if (lejos) setAbierta(false);
+      if (window.scrollY > 220) setAbierta(false);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [movil, deEntrada]);
   const compacta = plegada && !abierta;
   const resumen = ids.length
     ? ids.map((id) => SLUG_CORTO[columnaDeSistema(id as SistemaId)]).join(" + ")
@@ -866,12 +870,16 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
         <button
           type="button"
           onClick={() => setAbierta(true)}
-          className="flex min-h-9 w-full items-center gap-2 text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+          className="flex min-h-11 w-full items-center gap-2 text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           aria-expanded={false}
         >
           <span className="min-w-0 flex-1 truncate font-semibold text-slate-900">{resumen}</span>
           <span className="shrink-0 text-xs font-semibold" style={{ color: SEEN.burdeos }}>
-            Cambiar
+            {ids.length === 1
+              ? "Cambiar o comparar"
+              : ids.length === 0 && !seccion
+                ? "Elegir para comparar"
+                : "Cambiar"}
           </span>
         </button>
       ) : (
@@ -900,6 +908,11 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
         aria-label="Sección"
         className="-mx-3 mt-1 flex items-center gap-1 overflow-x-auto px-3 sm:mx-0 sm:flex-wrap sm:px-0"
       >
+        {ids.length === 0 && !sec && (
+          <span className="shrink-0 pl-1 pr-1 text-xs font-semibold text-slate-500">
+            Comparar los cuatro:
+          </span>
+        )}
         {secciones.map((x) => (
           <a
             key={x.id}
@@ -930,7 +943,11 @@ function EntradaSistemas() {
           const [nombreAlg, tipo] = algoritmoDelCapitulo(c).split(": algoritmo de tipo ");
           const sensores = TABLAS.T1.filas.find((f) => f.etiqueta === "Sensores compatibles")!
             .celdas[c];
+          // El formato, hasta la primera pausa de su casilla («Bomba con catéter», «Pod
+          // desechable, sin tubo externo»): fragmento literal de la Tabla 1.
+          const formato = TABLAS.T1.filas[0].celdas[c].split(/;| \(/)[0].replace(/\.$/, "");
           const datos: [typeof Cpu, string, string][] = [
+            [Box, "Formato", formato],
             [Cpu, "Algoritmo", k.donde.join(" · ")],
             [Timer, "Actúa", k.actua.join(" · ")],
             [Target, "Objetivo", k.objetivo.join(" · ")],
