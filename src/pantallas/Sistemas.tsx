@@ -1222,7 +1222,7 @@ function CeldaFunciona({ fila, c }: { fila: number; c: number }) {
       <span className="block font-bold leading-snug text-slate-900">{clave}</span>
       {/* 0.72.0: la casilla entera, a un toque (repetía la clave de encima). */}
       <details className="group mt-1 text-[13px] leading-snug text-slate-600">
-        <summary className="inline-flex min-h-8 cursor-pointer list-none items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-800 [&::-webkit-details-marker]:hidden">
+        <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-1 sm:min-h-8 text-xs font-semibold text-slate-500 hover:text-slate-800 [&::-webkit-details-marker]:hidden">
           <ChevronDown size={12} aria-hidden="true" className="transition group-open:rotate-180" />
           Texto completo
         </summary>

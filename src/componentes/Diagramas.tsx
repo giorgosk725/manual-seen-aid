@@ -738,47 +738,56 @@ function Algoritmos() {
 function Hipoglucemia() {
   return (
     <div>
-      {/* 0.71.0: sin la frase que solo anuncia («Dos reglas operativas merecen mención…»). */}
-      <p className="text-sm text-slate-700">{HIPOGLUCEMIA.porque}</p>
-      <p
-        className="mt-2 rounded-lg border-l-4 px-3 py-2 text-sm font-semibold text-slate-900"
-        style={{ borderColor: "#dc2626", background: "#fef2f2" }}
-      >
-        {HIPOGLUCEMIA.orientacion}
-      </p>
-      <div className="mt-3 grid gap-2 sm:grid-cols-2">
+      {/* 0.72.0: primero las dos cantidades, en grande; debajo, la frase literal de la que salen.
+          Sin el párrafo que empieza «La primera es…» (fuera de su contexto no se entendía). */}
+      <div className="grid gap-2 sm:grid-cols-2">
         {HIPOGLUCEMIA.ramas.map((r) => (
           <p
             key={r.cantidad}
-            className="rounded-xl border border-l-4 bg-white px-3 py-2 text-sm text-slate-800"
-            style={{ borderColor: "#e6e6e6", borderLeftColor: TONO[r.tono].bg }}
+            className="rounded-xl border bg-white px-3 py-2.5 text-sm text-slate-800"
+            style={{ borderColor: "#e6e6e6", borderTop: `4px solid ${TONO[r.tono].bg}` }}
           >
-            <span className="block text-lg font-extrabold tabular-nums text-slate-900">
+            <span className="block text-2xl font-extrabold leading-tight tabular-nums text-slate-900 sm:text-3xl">
               {r.cantidad}
             </span>
-            {r.condicion}
+            <span className="mt-0.5 block">
+              <Texto>{r.condicion}</Texto>
+            </span>
           </p>
         ))}
       </div>
-      <ul
-        className="mt-3 space-y-1.5 rounded-xl p-3 text-sm text-slate-800"
-        style={{ background: "#f1f5f9" }}
-      >
-        {HIPOGLUCEMIA.despues.map((d) => (
-          <li key={d.texto} className="flex gap-2">
-            <span aria-hidden="true">·</span>
-            <span>
-              {"tema" in d && d.tema && <strong>{d.tema}: </strong>}
-              {d.texto}
-              {d.p !== HIPOGLUCEMIA.pagina && (
-                <>
-                  {" "}
-                  <PaginaBadge p={d.p} />
-                </>
-              )}
-            </span>
-          </li>
-        ))}
+      <p className="mt-3 border-l-2 pl-3 text-sm text-slate-700" style={{ borderColor: "#cbd5e1" }}>
+        <Texto>{HIPOGLUCEMIA.orientacion}</Texto>
+      </p>
+      <ul className="mt-3 space-y-2 text-sm text-slate-800">
+        {HIPOGLUCEMIA.despues.map((d) => {
+          const I = /15 min/.test(d.texto) ? Timer : /comida/.test(d.texto) ? Utensils : RefreshCw;
+          return (
+            <li
+              key={d.texto}
+              className="flex gap-2.5 rounded-xl border bg-white p-3"
+              style={{ borderColor: "#e6e6e6" }}
+            >
+              <span
+                aria-hidden="true"
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+                style={{ background: "#f1f5f9", color: "#475569" }}
+              >
+                <I size={15} />
+              </span>
+              <span className="min-w-0">
+                {"tema" in d && d.tema && <strong>{d.tema}: </strong>}
+                <Texto>{d.texto}</Texto>
+                {d.p !== HIPOGLUCEMIA.pagina && (
+                  <>
+                    {" "}
+                    <PaginaBadge p={d.p} />
+                  </>
+                )}
+              </span>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
@@ -1337,7 +1346,7 @@ function InterrupcionLinea() {
       <Texto>{texto}</Texto>
     </span>
   );
-  const PROGRAMADA = { soft: "#eef2f7", strong: "#475569", ink: "#334155" };
+  const PROGRAMADA = { soft: "#f1f5f9", strong: "#475569", ink: "#334155" };
   return (
     <div className="space-y-4">
       <p className="text-sm text-slate-700">
@@ -1354,6 +1363,7 @@ function InterrupcionLinea() {
             <span className="font-bold">{cetonemia.cuando}: </span>
             <Texto>{cetonemia.texto}</Texto>
           </span>
+          <span className="shrink-0 text-xs font-semibold underline">Ver la Figura 3</span>
           <ArrowRight size={14} aria-hidden="true" className="shrink-0 text-slate-500" />
         </a>
       )}

@@ -5,9 +5,20 @@ import {
   ArrowRight,
   CheckCircle2,
   ExternalLink,
+  CalendarClock,
+  CirclePlay,
+  ClipboardCheck,
+  Droplets,
+  GraduationCap,
+  ListChecks,
   MessageCircleQuestion,
+  Route,
+  SlidersHorizontal,
+  Unplug,
   XCircle,
+  type LucideIcon,
 } from "lucide-react";
+import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { FRECUENTES } from "../frecuentes";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
 import { BUILD } from "../build";
@@ -716,6 +727,43 @@ const TEMAS = [
 ].filter((t) => FRECUENTES.some((f) => f.tema === t));
 const PRIMER_TEMA_SISTEMA = TEMAS.find((t) => TEMAS_SISTEMA.includes(t));
 
+const ICONO_TEMA_FRECUENTE: Record<string, LucideIcon> = {
+  "Selección e indicación": ClipboardCheck,
+  "Sistemas y parámetros": SlidersHorizontal,
+  "Inicio del sistema": CirclePlay,
+  "Educación y plan de seguridad": GraduationCap,
+  "Descarga y seguimiento": ListChecks,
+  "Incidencias y cetonemia": Droplets,
+  "Interrupción del sistema": Unplug,
+  "Situaciones especiales": Route,
+  "Uso en el día a día": CalendarClock,
+};
+function IconoTema({ tema }: { tema: string }) {
+  const k = TEMAS_SISTEMA.indexOf(tema);
+  if (k >= 0)
+    return (
+      <img
+        src={FOTO_SISTEMA[ORDEN_SISTEMAS[k]]}
+        alt=""
+        width={32}
+        height={32}
+        className="my-1.5 h-8 w-8 shrink-0 rounded-lg border bg-white object-cover"
+        style={{ borderColor: "#e6e6e6" }}
+      />
+    );
+  const I = ICONO_TEMA_FRECUENTE[tema] ?? MessageCircleQuestion;
+  const h = CATEGORIA_HEX.consultar;
+  return (
+    <span
+      aria-hidden="true"
+      className="my-1.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+      style={{ background: h.soft, color: h.strong }}
+    >
+      <I size={16} />
+    </span>
+  );
+}
+
 export function Preguntas({ id }: { id?: string }) {
   const { motor, estado, reintentar } = useBuscador(true);
   const [todas, setTodas] = useState(false);
@@ -835,11 +883,18 @@ export function Preguntas({ id }: { id?: string }) {
           ))}
         </ul>
       )}
-      <div className={filtradas ? "hidden" : "space-y-2"}>
+      {/* 0.72.0: un icono por tema (la foto en los de sistema) y, en el ordenador, dos columnas. */}
+      <div
+        className={
+          filtradas
+            ? "hidden"
+            : "space-y-2 lg:columns-2 lg:gap-3 lg:space-y-0 [&>*]:lg:mb-2 [&>*]:break-inside-avoid"
+        }
+      >
         {TEMAS.map((tema) => (
           <div key={tema}>
             {tema === PRIMER_TEMA_SISTEMA && (
-              <h2 className="mb-1 mt-4 text-xs font-bold uppercase tracking-wide text-slate-500">
+              <h2 className="mb-1 mt-4 text-xs font-bold uppercase tracking-wide text-slate-500 lg:mt-0">
                 Preguntas por sistema
               </h2>
             )}
@@ -849,9 +904,9 @@ export function Preguntas({ id }: { id?: string }) {
               style={{ borderColor: "#e6e6e6" }}
             >
               <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 text-sm font-bold text-slate-900 [&::-webkit-details-marker]:hidden">
-                <MessageCircleQuestion size={15} aria-hidden="true" style={{ color: hex.strong }} />
+                <IconoTema tema={tema} />
                 <span className="flex-1">{tema}</span>
-                <span className="text-xs font-semibold text-slate-500">
+                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold tabular-nums text-slate-600">
                   {FRECUENTES.filter((x) => x.tema === tema).length}
                 </span>
                 <ArrowRight

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   AlertTriangle,
   ChevronDown,
+  ChevronRight,
   Ambulance,
   Check,
   Clock3,
@@ -130,6 +131,39 @@ function Rama({
         ))}
       </ol>
     </section>
+  );
+}
+
+/* «β-OHB 1,0-2,9 mmol/l» → «β-OHB» pequeño, «1,0-2,9» grande y «mmol/l» pequeño; el resto
+   («o signos de gravedad»), debajo. Mismo texto, mismos espacios. */
+function RangoTramo({ rango, on }: { rango: string; on: boolean }) {
+  const m = /^(β-OHB) (\S+) (mmol\/l)(.*)$/.exec(rango);
+  if (!m)
+    return (
+      <div className="flex items-center gap-1.5 text-sm font-extrabold leading-tight">
+        <Droplets size={15} aria-hidden="true" /> {rango}
+      </div>
+    );
+  return (
+    <div className="leading-none">
+      <span className="flex items-center justify-between gap-1 text-[11px] font-bold">
+        <span className="inline-flex items-center gap-1">
+          <Droplets size={13} aria-hidden="true" />
+          {m[1]}
+        </span>
+        <ChevronRight
+          size={15}
+          aria-hidden="true"
+          className={`shrink-0 transition ${on ? "rotate-90" : ""}`}
+        />
+      </span>{" "}
+      <span className="mt-1 inline-block whitespace-nowrap">
+        <span className="text-2xl font-extrabold tabular-nums">{m[2]}</span>{" "}
+        <span className="text-xs font-bold">{m[3]}</span>
+      </span>
+      {m[4] && " "}
+      {m[4] && <span className="mt-0.5 block text-xs font-bold leading-tight">{m[4].trim()}</span>}
+    </div>
   );
 }
 
@@ -343,6 +377,19 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
             </span>{" "}
             {FIGURA3.confirmar}
           </div>
+          {/* La escala de la figura, de menos a más (decorativa: los botones la dicen). */}
+          <div aria-hidden="true" className="mb-2 flex h-1.5 gap-0.5 overflow-hidden rounded-full">
+            {TRAMOS.map((k) => (
+              <span
+                key={k}
+                className="flex-1 transition"
+                style={{
+                  background: TRAMO_HEX[k].strong,
+                  opacity: !tramo || tramo === k ? 1 : 0.3,
+                }}
+              />
+            ))}
+          </div>
           <div
             className="grid grid-cols-2 gap-2 lg:grid-cols-4"
             role="group"
@@ -371,9 +418,9 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
                         }
                   }
                 >
-                  <div className="flex items-center gap-1.5 text-sm font-extrabold leading-tight">
-                    <Droplets size={15} aria-hidden="true" /> {t.rango}
-                  </div>
+                  {/* 0.72.0: la cifra del tramo, protagonista (el rótulo literal, partido en
+                      sus piezas y con sus espacios: el nombre accesible no cambia). */}
+                  <RangoTramo rango={t.rango} on={on} />
                   <div className={`mt-1 text-xs font-semibold ${on ? "text-white/90" : ""}`}>
                     {t.titulo}
                   </div>

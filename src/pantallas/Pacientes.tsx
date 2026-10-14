@@ -7,6 +7,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import {
   ArrowRight,
+  Droplets,
   FileDown,
   Printer,
   ScanLine,
@@ -191,6 +192,8 @@ function Fila({
 
 export function HubPacientes() {
   const pruebas = hojaExtraPorId("pruebas-cirugia");
+  // 0.72.0: la hoja de cetonas, también suelta (va de cara 2 en el plan; costaba encontrarla).
+  const cetonas = hojaExtraPorId("cetonas");
   return (
     <div>
       <CabeceraEditorial titulo="Para el paciente" hex={hex} level={1} />
@@ -246,6 +249,16 @@ export function HubPacientes() {
             ))}
           </ul>
         </section>
+        {cetonas && (
+          <div className="border-t" style={{ borderColor: "#eef0f2" }}>
+            <Fila
+              href={href("pacientes", "hoja", cetonas.id)}
+              icono={Droplets}
+              titulo={cetonas.titulo}
+              detalle="Va también como segunda cara del plan de seguridad"
+            />
+          </div>
+        )}
         {pruebas && (
           <div className="border-t" style={{ borderColor: "#eef0f2" }}>
             <Fila

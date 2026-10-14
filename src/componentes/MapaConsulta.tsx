@@ -6,7 +6,7 @@ import { ArrowRight, HeartHandshake, LifeBuoy, PlayCircle, SlidersHorizontal } f
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { DESTINOS, MAPA_CONSULTA } from "../nav";
-import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
+import { CATEGORIA_HEX, SISTEMA_HEX, TRAMO_HEX } from "../tokens";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
 
@@ -128,6 +128,46 @@ function SistemasDeUnVistazo() {
   );
 }
 
+/* Las tres situaciones de urgencia (0.72.0): tarjetas con el tono de su riesgo, a un toque. */
+const URGENTES = ["figura-3", "hipoglucemia", "interrupcion"];
+const TONO_URGENTE: Record<string, { soft: string; strong: string; ink: string }> = {
+  "figura-3": TRAMO_HEX.naranja,
+  hipoglucemia: TRAMO_HEX.rojo,
+  interrupcion: TRAMO_HEX.amarillo,
+};
+function SituacionesUrgentes({ ids }: { ids: string[] }) {
+  return (
+    <ul
+      className="grid grid-cols-3 gap-1.5 border-b p-2 sm:gap-2 sm:p-3"
+      style={{ borderColor: "#eef0f2" }}
+    >
+      {ids.map((id) => {
+        const d = DESTINOS.find((x) => x.id === id)!;
+        const I = d.icono;
+        const t = TONO_URGENTE[id];
+        return (
+          <li key={id} className="min-w-0">
+            <a
+              href={d.href}
+              className="flex h-full min-h-20 flex-col gap-1.5 rounded-xl border p-2 text-[13px] font-bold leading-tight transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:p-2.5 sm:text-sm"
+              style={{ borderColor: "#e6e6e6", background: t.soft, color: t.ink }}
+            >
+              <span
+                aria-hidden="true"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-white"
+                style={{ background: t.strong }}
+              >
+                <I size={17} />
+              </span>
+              <span className="min-w-0 [hyphens:auto]">{d.etiqueta}</span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 export function MapaConsulta() {
   return (
     <section aria-labelledby="mapa-consulta">
@@ -147,12 +187,15 @@ export function MapaConsulta() {
             hex={b.id === "pacientes" ? CATEGORIA_HEX.pacientes : CATEGORIA_HEX.consultar}
           >
             {b.id === "sistemas" && <SistemasDeUnVistazo />}
+            {b.id === "situaciones" && <SituacionesUrgentes ids={URGENTES} />}
             <ul className="divide-y" style={{ borderColor: "#eef0f2" }}>
-              {b.ids.map((id) => (
-                <li key={id}>
-                  <FilaDestino id={id} etiqueta={b.etiquetas?.[id]} />
-                </li>
-              ))}
+              {b.ids
+                .filter((id) => b.id !== "situaciones" || !URGENTES.includes(id))
+                .map((id) => (
+                  <li key={id}>
+                    <FilaDestino id={id} etiqueta={b.etiquetas?.[id]} />
+                  </li>
+                ))}
             </ul>
           </TarjetaPortada>
         ))}

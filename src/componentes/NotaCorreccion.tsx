@@ -9,7 +9,7 @@ export function NotaCorreccion({ nota }: { nota: string }) {
   const cuerpo = k > 0 ? nota.slice(k + 2) : nota;
   return (
     <details className="group mt-1.5 rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs font-normal text-slate-600">
-      <summary className="flex min-h-8 cursor-pointer list-none items-center gap-1 font-semibold text-slate-700 [&::-webkit-details-marker]:hidden">
+      <summary className="flex min-h-11 cursor-pointer sm:min-h-8 list-none items-center gap-1 font-semibold text-slate-700 [&::-webkit-details-marker]:hidden">
         <ChevronDown
           size={12}
           aria-hidden="true"

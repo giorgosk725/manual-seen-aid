@@ -551,7 +551,9 @@ function Lateral({ ruta }: { ruta: Ruta }) {
           Capítulo {CAPITULO.numero} · {CAPITULO.tituloCorto}
         </span>
       </a>
-      <BuscadorLateral />
+      {/* En la propia pantalla de búsqueda, una sola caja (0.72.0: había dos con la misma
+          consulta). */}
+      {ruta.seccion !== "buscar" && <BuscadorLateral />}
       <MenuNavegacion ruta={ruta} etiqueta="Navegación principal" />
     </aside>
   );

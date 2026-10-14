@@ -4,6 +4,7 @@
    - Revisar la descarga: la Tabla 5 paso a paso (8 pasos), con el patrón relacionado.
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
+import { ponerConsulta } from "../consultaBuscar";
 import { useEffect, useState } from "react";
 import {
   Activity,
@@ -17,6 +18,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Droplet,
+  Eye,
+  Lightbulb,
+  Wrench,
   Dumbbell,
   HeartHandshake,
   Hospital,
@@ -67,7 +71,7 @@ import { CabeceraEditorial } from "../ui";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { useIrAlCambiar, useSubirAlElegir } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
-import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
+import { CATEGORIA_HEX, FICHA_AREA, SISTEMA_HEX } from "../tokens";
 import { FuentePie } from "../componentes/FuentePie";
 import { paginasDe } from "../paginas";
 import { fuentesDePiezas } from "../fuentesPiezas";
@@ -103,7 +107,7 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
         t: "Hiperglucemia y cetonemia",
         fuente: "Figura 3",
         ruta: href("consultar", "figura-3"),
-        alias: ["cetonas", "cetonemia", "bohb"],
+        alias: ["cetonas", "cetonemia", "bohb", "set", "cateter", "infusion", "canula"],
       },
     ],
   },
@@ -115,7 +119,7 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
         t: "Hipoglucemia en asa cerrada",
         fuente: "Apartado 7",
         ruta: href("visual", "hipoglucemia"),
-        alias: ["hipo", "bajada", "hidratos"],
+        alias: ["hipo", "bajada", "hidratos", "alarma", "baja"],
       },
       {
         t: "Bolo omitido o retrasado",
@@ -165,7 +169,18 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
         t: "Cuánto va a durar la interrupción y qué hacer",
         fuente: "p. 9",
         ruta: href("consultar", "interrupcion"),
-        alias: ["desconectar", "desconexion", "quitar", "retirar"],
+        alias: [
+          "desconectar",
+          "desconexion",
+          "quitar",
+          "retirar",
+          "ducha",
+          "bano",
+          "pod",
+          "bomba",
+          "fallo",
+          "repuesto",
+        ],
       },
     ],
   },
@@ -175,6 +190,16 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
   },
 ];
 
+/* Un tono por tema (0.72.0): el cuadrado del icono, en el color de área del Manual con el
+   icono blanco; así el color dice el tema. */
+const TONO_TEMA: Record<string, string> = {
+  "Ejercicio y comidas": FICHA_AREA.nutricion,
+  "Noche, enfermedad e hiperglucemia": FICHA_AREA.lipidos,
+  "Incidencias del día a día": FICHA_AREA.obesidad,
+  "Exploraciones, cirugía e ingreso": FICHA_AREA.pizarra,
+  "Interrupción del sistema": FICHA_AREA.mineral,
+  "Poblaciones y situaciones especiales": FICHA_AREA.diabetes,
+};
 /* Un icono por tema y por situación (13-10-2026): la lista se recorre de un vistazo. */
 const ICONO_TEMA: Record<string, LucideIcon> = {
   "Ejercicio y comidas": Dumbbell,
@@ -527,30 +552,40 @@ function ListaSituaciones({
     texto,
     chip,
     on,
+    tono,
   }: {
     I: LucideIcon;
     texto: string;
     chip?: boolean;
     on?: boolean;
+    tono: string;
   }) => (
     <>
       <span
         aria-hidden="true"
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-        style={on ? { background: "rgba(255,255,255,.18)" } : { background: hex.soft }}
+        style={{ background: on ? "rgba(255,255,255,.18)" : tono }}
       >
-        <I size={16} style={{ color: on ? "#fff" : hex.strong }} />
+        <I size={16} style={{ color: "#fff" }} />
       </span>
-      <span className="min-w-0 flex-1">
-        <span className="block font-semibold leading-snug">{texto}</span>
-        {chip && (
-          <span
-            className={`mt-0.5 inline-block rounded-full px-1.5 text-[11px] font-bold ${on ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"}`}
-          >
-            Cambia según el sistema
-          </span>
-        )}
-      </span>
+      <span className="min-w-0 flex-1 font-semibold leading-snug">{texto}</span>
+      {/* «Cambia según el sistema»: cuatro puntos con el color de cada sistema. */}
+      {chip && (
+        <span
+          className="flex shrink-0 gap-0.5"
+          title="Cambia según el sistema"
+          role="img"
+          aria-label="Cambia según el sistema"
+        >
+          {SISTEMA_HEX.map((x, k) => (
+            <span
+              key={k}
+              className="h-2 w-2 rounded-full"
+              style={{ background: on ? "#fff" : x.strong, opacity: on ? 0.85 : 1 }}
+            />
+          ))}
+        </span>
+      )}
       {on ? (
         <Check size={15} className="shrink-0" aria-hidden="true" />
       ) : (
@@ -578,6 +613,14 @@ function ListaSituaciones({
           style={{ borderColor: "#d4d4d4" }}
         >
           Ninguna situación coincide con «{f}».{" "}
+          {/* La consulta pasa en memoria (A03: no va en la URL). */}
+          <a
+            href={href("buscar")}
+            onClick={() => ponerConsulta(f)}
+            className="inline-flex min-h-11 items-center font-semibold underline underline-offset-2 sm:min-h-6"
+          >
+            Buscarlo en el capítulo
+          </a>{" "}
           {onLimpiar && (
             <button
               type="button"
@@ -633,6 +676,7 @@ function ListaSituaciones({
                         texto={s.etiqueta}
                         chip={porSis}
                         on={on}
+                        tono={TONO_TEMA[tema.t] ?? hex.strong}
                       />
                     </button>
                   </li>
@@ -641,7 +685,11 @@ function ListaSituaciones({
               {extras.map((x) => (
                 <li key={x.ruta}>
                   <a href={x.ruta} className={`${fila} text-slate-900 hover:bg-slate-50`}>
-                    <Fila I={iconoDeTexto(x.t)} texto={x.t} />
+                    <Fila
+                      I={iconoDeTexto(x.t)}
+                      texto={x.t}
+                      tono={TONO_TEMA[tema.t] ?? hex.strong}
+                    />
                   </a>
                 </li>
               ))}
@@ -998,29 +1046,43 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
   const patrones = parrafosConLead(PATRON_DEL_PASO[n] || []);
   const ir = (k: number) => elegirRuta("consultar", "descarga", String(k));
   const alPaso = useIrAlCambiar(String(n), "paso-descarga");
+  // En el ordenador, los patrones del paso abiertos (hay sitio).
+  const [ancha] = useState(() => window.matchMedia?.("(min-width: 1024px)").matches ?? false);
   return (
     <div>
       <CabeceraEditorial titulo="Revisar la descarga" hex={hex} level={1} />
-      {/* «Paso n de 8» y el selector en una sola fila (en el móvil, sin el rótulo visible). */}
-      <div className="no-imprimir mb-3 flex items-center gap-x-3 text-sm">
-        <span className="shrink-0 font-semibold text-slate-900">
+      {/* 0.72.0: los ocho pasos a la vista. Hasta el ordenador ancho, ocho botones numerados
+          con el avance; en él, la lista con sus títulos a la izquierda. */}
+      <nav aria-label="Pasos de la descarga" className="no-imprimir mb-3 lg:hidden">
+        <div className="mb-1.5 text-sm font-semibold text-slate-900">
           Paso {n} de {t.filas.length}
-        </span>
-        <label className="inline-flex min-h-11 min-w-0 flex-1 items-center gap-2 sm:min-h-9 sm:flex-none">
-          <select
-            aria-label="Cambiar paso"
-            value={n}
-            onChange={(e) => ir(Number(e.target.value))}
-            className="min-h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-800 sm:min-h-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:max-w-md"
-          >
-            {t.filas.map((f, i) => (
-              <option key={i} value={i + 1}>
-                {i + 1}. {f.celdas[0]}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
+        </div>
+        {/* 44 px por botón: a menos de 390 px de ancho, la fila se desplaza de lado. */}
+        <ol className="-mx-1 flex gap-0.5 overflow-x-auto px-1 pb-0.5">
+          {t.filas.map((f, i) => {
+            const on = i + 1 === n;
+            return (
+              <li key={i} className="min-w-11 flex-1">
+                <button
+                  type="button"
+                  aria-current={on ? "step" : undefined}
+                  aria-label={`Paso ${i + 1}: ${f.celdas[0]}`}
+                  title={f.celdas[0]}
+                  onClick={() => ir(i + 1)}
+                  className={`flex h-11 w-full items-center justify-center rounded-lg border text-sm font-bold tabular-nums transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : i + 1 < n ? "bg-white text-slate-900" : "bg-white text-slate-500"}`}
+                  style={
+                    on
+                      ? { background: "#8E254E", borderColor: "#8E254E" }
+                      : { borderColor: i + 1 < n ? "#8E254E" : "#d4d4d4" }
+                  }
+                >
+                  {i + 1}
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
       {/* La bandera roja (paso 8) a mano desde cualquier paso, sin terminar los anteriores (A09). */}
       <a
         href={href("consultar", "figura-3")}
@@ -1030,118 +1092,152 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
         <span className="min-w-0 flex-1">Bandera roja: hiperglucemia persistente o cetonemia</span>
         <ArrowRight size={14} className="shrink-0" aria-hidden="true" />
       </a>
-      <section
-        key={n}
-        id="paso-descarga"
-        tabIndex={-1}
-        className="pantalla-in scroll-mt-24 rounded-2xl border bg-white p-4 shadow-soft focus:outline-none"
-        style={{ borderColor: "#e6e6e6" }}
-        aria-live="polite"
-      >
-        <div className="flex items-start justify-between gap-2">
-          <h2 className="text-lg font-extrabold text-slate-900">{fila.celdas[0]}</h2>
-        </div>
-        <dl
-          className="mt-3 divide-y md:grid md:grid-cols-3 md:gap-4 md:divide-y-0"
-          style={{ borderColor: "#e6e6e6" }}
+      <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-4">
+        <nav
+          aria-label="Pasos de la descarga"
+          className="no-imprimir hidden lg:sticky lg:top-20 lg:block"
         >
-          {t.columnas.slice(1).map((col, j) => (
-            <div key={col} className="py-2.5 md:py-0">
-              <dt
-                className="mb-1 text-xs font-bold uppercase tracking-wide"
-                style={{ color: j === 2 ? hex.ink : "#475569" }}
-              >
-                {col}
-              </dt>
-              <dd className="text-[15px] text-slate-800">
-                <Lineas>{fila.celdas[j + 1]}</Lineas>
-              </dd>
-            </div>
-          ))}
-        </dl>
-        <ComoInterpretar tabla="T5" fila={n - 1} />
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-          {CON_CASOS && casoPorId("ejemplo-descarga") && (
-            <a
-              href={href("casos", "ejemplo-descarga", String(n))}
-              className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 hover:border-slate-500"
-            >
-              Ver este paso en el ejemplo comentado <ArrowRight size={14} aria-hidden="true" />
-            </a>
-          )}
-          {rutaDeTabla("T5") && (
-            <a
-              href={rutaDeTabla("T5")}
-              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
-            >
-              Fuente: Tabla 5, {paginasDe(t.paginas[0], t.paginas[1])} · Ver en el capítulo{" "}
-              <ArrowRight size={13} aria-hidden="true" />
-            </a>
-          )}
-        </div>
-        {patrones.length > 0 && (
-          <details className="mt-4">
-            <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
-              Patrones relacionados del capítulo ({patrones.length})
-            </summary>
-            <ul className="mt-2 space-y-2">
-              {patrones.map((p) => (
-                <li
-                  key={p.ancla}
-                  className="rounded-xl border p-3 text-sm text-slate-800"
-                  style={{ borderColor: "#e6e6e6" }}
-                >
-                  <strong>{p.b.lead} </strong>
-                  <Texto>{p.b.texto}</Texto>
-                  <a
-                    href={href("capitulo", "09-descarga", p.ancla)}
-                    className="tap-44 ml-1 inline-flex items-center gap-0.5 text-xs font-semibold text-slate-600 hover:underline"
+          <ol className="space-y-1">
+            {t.filas.map((f, i) => {
+              const on = i + 1 === n;
+              return (
+                <li key={i}>
+                  <button
+                    type="button"
+                    aria-current={on ? "step" : undefined}
+                    onClick={() => ir(i + 1)}
+                    className={`flex w-full items-start gap-2 rounded-lg px-2 py-1.5 text-left text-[13px] leading-snug transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-white font-semibold text-slate-900 shadow-soft" : "text-slate-700 hover:bg-white"}`}
                   >
-                    p. {p.b.p} <ArrowRight size={11} aria-hidden="true" />
-                  </a>
+                    <span
+                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold tabular-nums ${on ? "text-white" : "text-slate-700"}`}
+                      style={on ? { background: "#8E254E" } : { background: "#eef0f2" }}
+                    >
+                      {i + 1}
+                    </span>
+                    <span className="min-w-0 pt-0.5">{f.celdas[0]}</span>
+                  </button>
                 </li>
-              ))}
-            </ul>
-          </details>
-        )}
-        {n === 8 && (
-          <a
-            href={href("consultar", "figura-3")}
-            className="mt-4 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-white"
-            style={{ background: hex.strong }}
-          >
-            Aplicar la Figura 3 paso a paso <ArrowRight size={14} aria-hidden="true" />
-          </a>
-        )}
-        <div
-          className="mt-4 flex items-center justify-between border-t pt-3"
+              );
+            })}
+          </ol>
+        </nav>
+        <section
+          key={n}
+          id="paso-descarga"
+          tabIndex={-1}
+          className="pantalla-in scroll-mt-24 rounded-2xl border bg-white p-4 shadow-soft focus:outline-none"
           style={{ borderColor: "#e6e6e6" }}
+          aria-live="polite"
         >
-          <button
-            type="button"
-            disabled={n === 1}
-            onClick={() => {
-              alPaso();
-              ir(n - 1);
-            }}
-            className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 disabled:opacity-40"
+          <div className="flex items-start justify-between gap-2">
+            <h2 className="text-lg font-extrabold text-slate-900">{fila.celdas[0]}</h2>
+          </div>
+          <dl
+            className="mt-3 divide-y md:grid md:grid-cols-3 md:gap-4 md:divide-y-0"
+            style={{ borderColor: "#e6e6e6" }}
           >
-            <ChevronLeft size={14} aria-hidden="true" /> Paso {n - 1 || 1}
-          </button>
-          <button
-            type="button"
-            disabled={n === 8}
-            onClick={() => {
-              alPaso();
-              ir(n + 1);
-            }}
-            className="inline-flex min-h-11 items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-40"
-            style={{ background: hex.strong }}
+            {t.columnas.slice(1).map((col, j) => {
+              const I = [Eye, Lightbulb, Wrench][j] ?? Eye;
+              return (
+                <div key={col} className="py-2.5 md:py-0">
+                  <dt
+                    className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"
+                    style={{ color: j === 2 ? hex.ink : "#475569" }}
+                  >
+                    <I size={14} aria-hidden="true" />
+                    {col}
+                  </dt>
+                  <dd className="text-[15px] text-slate-800">
+                    <Lineas>{fila.celdas[j + 1]}</Lineas>
+                  </dd>
+                </div>
+              );
+            })}
+          </dl>
+          <ComoInterpretar tabla="T5" fila={n - 1} />
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+            {CON_CASOS && casoPorId("ejemplo-descarga") && (
+              <a
+                href={href("casos", "ejemplo-descarga", String(n))}
+                className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 hover:border-slate-500"
+              >
+                Ver este paso en el ejemplo comentado <ArrowRight size={14} aria-hidden="true" />
+              </a>
+            )}
+            <FuentePie
+              className=""
+              fuentes={[
+                {
+                  texto: `Tabla 5, ${paginasDe(t.paginas[0], t.paginas[1])}`,
+                  ruta: rutaDeTabla("T5") ?? undefined,
+                },
+              ]}
+            />
+          </div>
+          {patrones.length > 0 && (
+            <details className="mt-4" open={ancha}>
+              <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
+                Patrones relacionados del capítulo ({patrones.length})
+              </summary>
+              <ul className="mt-2 space-y-2">
+                {patrones.map((p) => (
+                  <li
+                    key={p.ancla}
+                    className="rounded-xl border p-3 text-sm text-slate-800"
+                    style={{ borderColor: "#e6e6e6" }}
+                  >
+                    <strong>{p.b.lead} </strong>
+                    <Texto>{p.b.texto}</Texto>
+                    <a
+                      href={href("capitulo", "09-descarga", p.ancla)}
+                      className="tap-44 ml-1 inline-flex items-center gap-0.5 text-xs font-semibold text-slate-600 hover:underline"
+                    >
+                      p. {p.b.p} <ArrowRight size={11} aria-hidden="true" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+          {n === 8 && (
+            <a
+              href={href("consultar", "figura-3")}
+              className="mt-4 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-white"
+              style={{ background: hex.strong }}
+            >
+              Aplicar la Figura 3 paso a paso <ArrowRight size={14} aria-hidden="true" />
+            </a>
+          )}
+          <div
+            className="mt-4 flex items-center justify-between border-t pt-3"
+            style={{ borderColor: "#e6e6e6" }}
           >
-            Paso {Math.min(8, n + 1)} <ChevronRight size={14} aria-hidden="true" />
-          </button>
-        </div>
-      </section>
+            <button
+              type="button"
+              disabled={n === 1}
+              onClick={() => {
+                alPaso();
+                ir(n - 1);
+              }}
+              className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 disabled:opacity-40"
+            >
+              <ChevronLeft size={14} aria-hidden="true" /> Paso {n - 1 || 1}
+            </button>
+            <button
+              type="button"
+              disabled={n === 8}
+              onClick={() => {
+                alPaso();
+                ir(n + 1);
+              }}
+              className="inline-flex min-h-11 items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-40"
+              style={{ background: hex.strong }}
+            >
+              Paso {Math.min(8, n + 1)} <ChevronRight size={14} aria-hidden="true" />
+            </button>
+          </div>
+        </section>
+      </div>
       {/* La nota de la Tabla 5, una vez: en el primer paso (0.70.0). */}
       {n === 1 && (
         <p className="mt-3 text-xs text-slate-500">

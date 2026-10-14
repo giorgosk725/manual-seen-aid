@@ -136,12 +136,20 @@ test.describe("Móvil compacto, segunda tanda (360 px)", () => {
     await mismaFila(t.nth(2), t.nth(3));
   });
 
-  test("revisar la descarga: «Paso n de 8» y el selector en una fila", async ({ page }) => {
+  test("revisar la descarga: los ocho pasos en una fila, con el actual marcado (0.72.0)", async ({
+    page,
+  }) => {
     await page.goto("/#/consultar/descarga/3");
-    await mismaFila(
-      page.getByText("Paso 3 de 8"),
-      page.getByRole("combobox", { name: "Cambiar paso" }),
-    );
+    await expect(page.getByText("Paso 3 de 8")).toBeVisible();
+    const pasos = page
+      .getByRole("navigation", { name: "Pasos de la descarga" })
+      .first()
+      .getByRole("button");
+    await expect(pasos).toHaveCount(8);
+    await mismaFila(pasos.nth(0), pasos.nth(7));
+    await expect(pasos.nth(2)).toHaveAttribute("aria-current", "step");
+    await pasos.nth(4).click();
+    await expect(page).toHaveURL(/descarga\/5$/);
   });
 
   test("apartado: páginas e Imprimir / PDF en una fila", async ({ page }) => {
