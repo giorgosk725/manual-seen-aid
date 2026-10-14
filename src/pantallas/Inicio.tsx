@@ -38,6 +38,7 @@ import { useIrAlCambiar } from "../irAlCambiar";
 import { CAPITULO } from "../contenido";
 import { VERSION_APP } from "../version";
 import { Lineas } from "../texto";
+import { coma, evaluar, redondea } from "../calculadora";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { PiezaVista } from "../componentes/Piezas";
 import { siglasEn } from "../siglas";
@@ -89,7 +90,33 @@ function Hoja({ sis }: { sis?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   // Las casillas son las mismas que las de la guía: lo marcado allí sale marcado aquí (y al
   // revés), mientras dura la consulta. No se guarda nada.
-  const { hechos } = useTrabajo();
+  const { hechos, calc } = useTrabajo();
+  // 0.72.0: las cifras de «Calcular» pasan a la hoja (las mismas, sin recalcular nada nuevo); sin
+  // datos, líneas en blanco para escribirlas a mano. No se guarda nada.
+  const ev = evaluar(sis, {
+    origen: calc.origen,
+    referencia: calc.referencia,
+    basal: calc.basal,
+    rapida: calc.rapida,
+    dtd: calc.dtd,
+    peso: calc.peso,
+    reduccion: calc.reduccion,
+    basalPct: calc.basalPct,
+    regla: calc.regla,
+  });
+  const cifra = (v: number | null, d: number, unidad: string, previo = "") =>
+    ev.lista && v !== null ? `${previo}${coma(redondea(v, d))} ${unidad}` : null;
+  const partida: [string, string | null][] = [
+    ["DTD de inicio", cifra(ev.dtdInicio, 1, "UI/día")],
+    ["Tasa basal", ev.calcula.basal ? cifra(ev.basalHora, 2, "UI/h", "≈ ") : null],
+    ["Ratio I/HC", ev.calcula.ratioFactor ? cifra(ev.ratio, 1, "g por 1 UI") : null],
+    [
+      "Factor de sensibilidad",
+      ev.calcula.ratioFactor && ev.factor !== null && ev.lista
+        ? `${Math.round(ev.factor)} mg/dl por 1 UI`
+        : null,
+    ],
+  ];
   const marcar = (k: string) => {
     const s = new Set(hechos);
     if (s.has(k)) s.delete(k);
@@ -186,6 +213,23 @@ function Hoja({ sis }: { sis?: number }) {
             )}
           </>
         )}
+        <h3 className="mt-3 text-sm font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
+          Valores de partida
+        </h3>
+        <dl className="mt-1 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {partida.map(([k, v]) => (
+            <div key={k} className="rounded-lg bg-slate-50 p-2">
+              <dt className="text-xs font-bold text-slate-600">{k}</dt>
+              <dd className="mt-0.5 min-h-6 text-sm font-bold tabular-nums text-slate-900">
+                {v ?? (
+                  <span className="block h-5 border-b border-dashed border-slate-400">
+                    <span className="sr-only">por rellenar</span>
+                  </span>
+                )}
+              </dd>
+            </div>
+          ))}
+        </dl>
         <h3 className="mt-3 text-sm font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
           Seguimiento de los primeros 3 meses
         </h3>
@@ -582,31 +626,23 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
   };
   return (
     <div>
-      {hayTrabajo() && (
-        <div className="no-imprimir mb-2 flex justify-end">
-          <button
-            type="button"
-            onClick={nuevoTrabajo}
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 hover:border-slate-500"
-          >
-            <RotateCcw size={14} aria-hidden="true" /> Nuevo inicio (vaciar datos)
-          </button>
-        </div>
-      )}
       <CabeceraEditorial titulo="Iniciar un sistema" hex={hex} level={1} />
 
-      {/* Dos herramientas, la calculadora y el recorrido por fases; la hoja, para imprimir. */}
-      <div role="group" aria-label="Herramienta" className="mb-2 grid grid-cols-2 gap-1.5">
+      {/* 0.72.0: las tres vistas en un solo control (la calculadora, las fases y la hoja para
+          imprimir). */}
+      <div role="group" aria-label="Herramienta" className="mb-2 grid grid-cols-3 gap-1.5">
         {(
           [
             { id: CALC, t: "Calcular", I: Calculator, on: actual === CALC },
             { id: FASES[0].id, t: "Fases", I: ListOrdered, on: enFases },
+            { id: HOJA, t: "Hoja", I: Printer, on: actual === HOJA },
           ] as const
         ).map((x) => (
           <button
             key={x.id}
             type="button"
             aria-pressed={x.on}
+            aria-label={x.id === HOJA ? "Hoja de comprobación para imprimir" : undefined}
             onClick={() => (x.id === FASES[0].id && enFases ? undefined : ir(x.id))}
             className={`flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 text-center text-[13px] font-bold leading-tight transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:flex-row sm:gap-2 sm:text-sm ${x.on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
             style={
@@ -621,16 +657,18 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
         ))}
       </div>
 
-      <p className="mb-4 text-right">
-        <button
-          type="button"
-          onClick={() => ir(HOJA)}
-          aria-pressed={actual === HOJA}
-          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-slate-700 underline-offset-2 hover:underline sm:min-h-8"
-        >
-          <Printer size={14} aria-hidden="true" /> Hoja de comprobación para imprimir
-        </button>
-      </p>
+      {/* «Nuevo inicio», con su sitio guardado: al escribir el primer dato la pantalla no salta. */}
+      <div className="no-imprimir mb-3 flex min-h-11 justify-end">
+        {hayTrabajo() && (
+          <button
+            type="button"
+            onClick={nuevoTrabajo}
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-semibold text-slate-700 hover:underline"
+          >
+            <RotateCcw size={14} aria-hidden="true" /> Nuevo inicio (vaciar datos)
+          </button>
+        )}
+      </div>
 
       {actual !== CALC && (
         <>

@@ -48,7 +48,7 @@ import {
 } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, rutaDeTabla } from "../contenido";
 import { INTERRUPCION_LINEA } from "../contenido/diagramas";
-import { InterrupcionPantalla } from "../componentes/Diagramas";
+import { InterrupcionPantalla, ObjetivosDePoblacion } from "../componentes/Diagramas";
 import {
   GUION,
   SIS_IDS,
@@ -285,6 +285,8 @@ const indiceDeMomento = (m?: string) => {
   const n = m && /^m\d+$/.test(m) ? Number(m.slice(1)) - 1 : NaN;
   return Number.isInteger(n) && n >= 0 ? n : null;
 };
+/* En el ingreso, de entrada «Mantener la MCG, la bomba o el AID» (el marco, plegado). */
+const MOMENTO_INICIAL: Record<string, number> = { "ingreso-hospitalario": 1 };
 function GuionVista({
   momentos,
   rotulo = "Lo que dice el capítulo, por momentos",
@@ -292,7 +294,10 @@ function GuionVista({
   sistema,
   momento,
   desde = 0,
+  inicial = desde,
 }: {
+  /* El momento abierto de entrada (0.72.0: en el ingreso, el operativo y no el marco). */
+  inicial?: number;
   momentos: Momento[];
   rotulo?: string;
   /* Los primeros momentos que ya van arriba (p. ej., las comprobaciones antes del ejercicio). */
@@ -307,7 +312,7 @@ function GuionVista({
   const valido = pedido !== null && pedido < momentos.length ? pedido : null;
   const [estado, setEstado] = useState(() => {
     const m = momentosMemoria.get(clave);
-    const abiertos = new Set(m?.abiertos ?? [valido ?? desde]);
+    const abiertos = new Set(m?.abiertos ?? [valido ?? inicial]);
     if (valido !== null) abiertos.add(valido);
     return { abiertos, todos: m?.todos ?? false };
   });
@@ -769,34 +774,47 @@ export function SituacionSistema({
           {guia && (
             <div key={guia.id} className="pantalla-in space-y-4">
               <CabeceraSituacion id={guia.id} etiqueta={guia.etiqueta} onCambiar={cambiar} />
-              <p
-                id="conducta-situacion"
-                className="scroll-mb-28 scroll-mt-24 px-1 text-sm text-slate-700"
-              >
-                {guia.intro}
-              </p>
+              {/* 0.72.0: sin la frase de entrada (la regla de la 0.70.0; queda en la búsqueda). */}
+              <div id="conducta-situacion" className="scroll-mb-28 scroll-mt-24" />
+              {/* Los objetivos de MCG de esa población, a la vista (antes, un enlace al pie). */}
+              {guia.enlaces
+                .map((l) => /^#\/visual\/objetivos-mcg\/([a-z-]+)$/.exec(l.ruta)?.[1])
+                .filter((x): x is string => !!x)
+                .map((pob) => (
+                  <section
+                    key={pob}
+                    aria-label="Objetivos de MCG"
+                    className="rounded-2xl border bg-white p-4 shadow-soft"
+                    style={{ borderColor: "#e6e6e6" }}
+                  >
+                    <ObjetivosDePoblacion id={pob} />
+                  </section>
+                ))}
               <GuionVista
                 momentos={guia.guion}
                 rotulo={guia.rotuloGuion}
                 clave={guia.id}
                 momento={momento}
+                inicial={MOMENTO_INICIAL[guia.id] ?? 0}
               />
               <div>
                 <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
                   Seguir en
                 </div>
                 <ul className="flex flex-wrap gap-1.5">
-                  {guia.enlaces.map((l) => (
-                    <li key={l.ruta}>
-                      <a
-                        href={l.ruta}
-                        className="inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-8"
-                        style={{ borderColor: "#d4d4d4" }}
-                      >
-                        {l.texto} <ArrowRight size={12} aria-hidden="true" />
-                      </a>
-                    </li>
-                  ))}
+                  {guia.enlaces
+                    .filter((l) => !l.ruta.startsWith("#/visual/objetivos-mcg/"))
+                    .map((l) => (
+                      <li key={l.ruta}>
+                        <a
+                          href={l.ruta}
+                          className="inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-8"
+                          style={{ borderColor: "#d4d4d4" }}
+                        >
+                          {l.texto} <ArrowRight size={12} aria-hidden="true" />
+                        </a>
+                      </li>
+                    ))}
                 </ul>
               </div>
             </div>

@@ -222,6 +222,17 @@ function Escalera({ i }: { i: number }) {
   );
 }
 
+/* Los objetivos de una población, sueltos (0.72.0: arriba de su situación —gestación, hospital—,
+   en vez de un enlace al pie). Subtítulos en h2 bajo el h1 de la pantalla. */
+export function ObjetivosDePoblacion({ id }: { id: string }) {
+  const i = OBJETIVOS_MCG.findIndex((p) => p.id === id);
+  if (i < 0) return null;
+  return (
+    <NivelDiagrama.Provider value={1}>
+      <Escalera i={i} />
+    </NivelDiagrama.Provider>
+  );
+}
 function ObjetivosMCG({ opcion }: { opcion?: string }) {
   const [sel, setSel] = useState(
     OBJETIVOS_MCG.find((p) => p.id === opcion)?.id ?? OBJETIVOS_MCG[0].id,

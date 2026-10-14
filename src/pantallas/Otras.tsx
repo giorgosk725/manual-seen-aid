@@ -672,10 +672,25 @@ export function Test() {
           </p>
         </ToneCard>
       )}
-      <p className="mb-2 text-xs text-slate-600" aria-live="polite">
-        Respondidas {n} de {PREGUNTAS.length}
-        {n > 0 ? ` · ${aciertos} ${aciertos === 1 ? "acierto" : "aciertos"}` : ""}
-      </p>
+      {/* 0.72.0: el avance, pegado bajo la cabecera mientras se baja por las preguntas. */}
+      <div
+        className="barra-pegada sticky top-14 z-10 -mx-3 mb-3 border-b px-3 py-2 sm:mx-0 sm:rounded-lg sm:border"
+        style={{ borderColor: "#e6e6e6" }}
+      >
+        <p className="text-xs font-semibold text-slate-700" aria-live="polite">
+          Respondidas {n} de {PREGUNTAS.length}
+          {n > 0 ? ` · ${aciertos} ${aciertos === 1 ? "acierto" : "aciertos"}` : ""}
+        </p>
+        <div aria-hidden="true" className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-200">
+          <div
+            className="h-full rounded-full transition-all"
+            style={{
+              width: `${(n / PREGUNTAS.length) * 100}%`,
+              background: CATEGORIA_HEX.aprender.strong,
+            }}
+          />
+        </div>
+      </div>
       <ol className="space-y-3" key={intento}>
         {PREGUNTAS.map((p, i) => (
           <Pregunta

@@ -269,8 +269,21 @@ function FichaSistema({ tabla, c }: { tabla: Tabla; c: number }) {
       <dl className="divide-y px-4 pb-2" style={{ borderColor: "#e6e6e6" }}>
         {tabla.filas.map((f, i) => (
           <div key={i} className="grid gap-1 py-3 sm:grid-cols-[13rem_1fr] sm:gap-4">
-            <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">
-              <Lineas>{f.etiqueta}</Lineas>
+            {/* 0.72.0: el nombre de la fila en minúscula y negrita (en versalitas de 11 px costaba
+                leerlo); lo que sigue en su casilla —la conducta común—, debajo y en gris. */}
+            <dt className="text-sm leading-snug">
+              {f.etiqueta.split("\n").map((l, k) => (
+                <span
+                  key={k}
+                  className={
+                    k === 0
+                      ? "block font-bold text-slate-900"
+                      : "mt-1 block text-[13px] font-normal text-slate-600"
+                  }
+                >
+                  <Texto>{l}</Texto>
+                </span>
+              ))}
             </dt>
             <dd className="text-[15px] text-slate-800">
               <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
