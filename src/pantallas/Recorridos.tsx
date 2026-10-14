@@ -321,8 +321,9 @@ const indiceDeMomento = (m?: string) => {
   const n = m && /^m\d+$/.test(m) ? Number(m.slice(1)) - 1 : NaN;
   return Number.isInteger(n) && n >= 0 ? n : null;
 };
-/* En el ingreso, de entrada «Mantener la MCG, la bomba o el AID» (el marco, plegado). */
-const MOMENTO_INICIAL: Record<string, number> = { "ingreso-hospitalario": 1 };
+/* En el ingreso, de entrada «Mantener la MCG, la bomba o el AID» y «Cuándo no continuar» (el
+   marco, plegado). */
+const MOMENTO_INICIAL: Record<string, number[]> = { "ingreso-hospitalario": [1, 3] };
 function GuionVista({
   momentos,
   rotulo = "Lo que dice el capítulo, por momentos",
@@ -330,10 +331,10 @@ function GuionVista({
   sistema,
   momento,
   desde = 0,
-  inicial = desde,
+  inicial = [desde],
 }: {
   /* El momento abierto de entrada (0.72.0: en el ingreso, el operativo y no el marco). */
-  inicial?: number;
+  inicial?: number[];
   momentos: Momento[];
   rotulo?: string;
   /* Los primeros momentos que ya van arriba (p. ej., las comprobaciones antes del ejercicio). */
@@ -348,7 +349,7 @@ function GuionVista({
   const valido = pedido !== null && pedido < momentos.length ? pedido : null;
   const [estado, setEstado] = useState(() => {
     const m = momentosMemoria.get(clave);
-    const abiertos = new Set(m?.abiertos ?? [valido ?? inicial]);
+    const abiertos = new Set(m?.abiertos ?? (valido !== null ? [valido] : inicial));
     if (valido !== null) abiertos.add(valido);
     return { abiertos, todos: m?.todos ?? false };
   });
@@ -851,7 +852,7 @@ export function SituacionSistema({
                 rotulo={guia.rotuloGuion}
                 clave={guia.id}
                 momento={momento}
-                inicial={MOMENTO_INICIAL[guia.id] ?? 0}
+                inicial={MOMENTO_INICIAL[guia.id] ?? [0]}
               />
               <div>
                 <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
@@ -1343,6 +1344,20 @@ export function Interrupcion(_props: { tramo?: string }) {
           },
         ]}
       />
+      {/* 0.72.0: «¿le quito la bomba?» en el hospital está en el ingreso (apartado 10). */}
+      <div className="no-imprimir mt-4">
+        <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
+          Seguir en
+        </div>
+        <a
+          href={href("consultar", "situacion", "ingreso-hospitalario::m4")}
+          className="inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-8"
+          style={{ borderColor: "#d4d4d4" }}
+        >
+          Ingreso hospitalario: cuándo no continuar y cómo pasar a pauta subcutánea{" "}
+          <ArrowRight size={12} aria-hidden="true" />
+        </a>
+      </div>
     </div>
   );
 }

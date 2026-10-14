@@ -458,9 +458,28 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   const terminos = terminosDe(consulta)
     .map((v) => v[0])
     .filter((w) => !ALIAS_SISTEMA.some((re) => re.test(w)) && w !== "5");
-  if (!terminos.length) return [];
-  const out: Resultado[] = [];
   const sis = sistemaDeConsulta(consulta);
+  // Solo el nombre de un sistema o de su fabricante («medtronic», «omnipod»): su ficha (0.72.0).
+  if (!terminos.length) {
+    const s = sis >= 0 && sistemasDeConsulta(consulta).length === 1 ? CATALOGO_SISTEMAS[sis] : null;
+    return s
+      ? [
+          {
+            entrada: {
+              id: `recurso/ficha/${s.id}`,
+              tipo: "atajo",
+              titulo: `Ficha del sistema · ${s.name}`,
+              texto: "",
+              pagina: TABLAS.T1.paginas[0],
+              ruta: href("sistemas", s.id),
+            },
+            fragmento: "",
+            puntos: 0,
+          },
+        ]
+      : [];
+  }
+  const out: Resultado[] = [];
   // «Iniciar Omnipod 5 desde MDI»: el recorrido de inicio para ese sistema, el primero.
   // «Diferencia entre 780G y Omnipod 5»: la comparación de los dos (Tabla 1), la primera.
   const varios = sistemasDeConsulta(consulta);
@@ -580,7 +599,7 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
       ],
       [/hipogluc|\bhipos?\b/, "Hipoglucemia en asa cerrada", href("visual", "hipoglucemia")],
       [
-        /interrup|desconect|repuesto|se ha roto|averi|falla (el |la )?(pod|bomba)|(pod|bomba) (que )?falla/,
+        /interrup|desconect|repuesto|se ha roto|averi|falla (el |la )?(pod|bomba)|(pod|bomba) (que )?falla|(quit|retir)(ar|o|amos)? (la |el )?(bomba|pod)/,
         "Interrupción del sistema",
         href("consultar", "interrupcion"),
       ],
@@ -815,6 +834,13 @@ export function recordarTema(q: string) {
 }
 /* «y en Omnipod 5» → la búsqueda anterior con ese sistema; null si no es un seguimiento. */
 export function consultaEfectiva(q: string): string | null {
+  // Escribir letra a letra no es un seguimiento: si una consulta empieza por la otra, es la
+  // misma que se está escribiendo o borrando («cam», «camaps», «camaps tc») (0.72.0).
+  if (temaAnterior) {
+    const a = normalizar(q.trim());
+    const b = normalizar(temaAnterior.trim());
+    if (a.startsWith(b) || b.startsWith(a)) return null;
+  }
   return conContextoDe(q, temaAnterior);
 }
 

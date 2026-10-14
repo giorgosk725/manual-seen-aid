@@ -450,6 +450,17 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
           {actual && (
             <div key={actual.clave} className="pantalla-in">
               <Rama tramo={actual} aviso />
+              {/* En urgencias, lo siguiente: qué hacer con el sistema en el hospital (0.72.0). */}
+              {actual.clave === "rojo" && (
+                <a
+                  href={href("consultar", "situacion", "ingreso-hospitalario::m4")}
+                  className="no-imprimir mt-3 inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-8"
+                  style={{ borderColor: "#d4d4d4" }}
+                >
+                  Ingreso hospitalario: cuándo no continuar el sistema{" "}
+                  <ChevronRight size={12} aria-hidden="true" />
+                </a>
+              )}
               <NotasComunes conAsterisco={!JSON.stringify(actual.pasos).includes("*")} />
             </div>
           )}
