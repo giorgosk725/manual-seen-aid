@@ -134,7 +134,7 @@ describe("A04 · circuito de aprobación de las preguntas frecuentes", () => {
       Array.from({ length: 103 }, (_, i) => `f${String(i + 1).padStart(2, "0")}`),
     );
     for (const f of FRECUENTES) {
-      expect(f.revision.fecha, f.id).toMatch(/^2026-10-(08|11|13)$/);
+      expect(f.revision.fecha, f.id).toMatch(/^2026-10-(08|11|13|14)$/);
       expect(f.revision.registro.length, f.id).toBeGreaterThan(20);
     }
     // Solo las aprobadas salen: FRECUENTES es exactamente el filtro de FRECUENTES_TODAS.

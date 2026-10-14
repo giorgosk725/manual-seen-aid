@@ -160,7 +160,7 @@ export const MATERIALES: Material[] = [
     fecha: "2026-10-13",
     version: "0.51.0",
     evidencia:
-      "f01–f50 aprobadas el 8-10-2026, f51–f61 el 11-10-2026 y f62–f103 el 13-10-2026 (revisión delegada), docs/FRECUENTES.md",
+      "f01–f50 aprobadas el 8-10-2026, f51–f61 el 11-10-2026 y f62–f103 el 13-10-2026 (revisión delegada); títulos de f70, f77 y f90 el 14-10-2026, docs/FRECUENTES.md",
   },
   {
     id: "autoevaluacion",

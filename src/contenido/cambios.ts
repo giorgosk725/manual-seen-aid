@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-14",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — «Cómo funciona» de un vistazo`,
+    titulo: `Complemento interactivo ${VERSION_APP} — títulos de tres preguntas frecuentes`,
+    detalle: [
+      "«MiniMed 780G: ¿cómo decide y cómo se adapta?» y «CamAPS FX: ¿dónde está el algoritmo y cómo se adapta?», en vez de «qué aprende».",
+      "«Tras una resonancia con el sensor puesto, ¿son fiables las lecturas?». Los pasajes de las tres no cambian; aprobadas de nuevo el 14-10-2026.",
+    ],
+  },
+  {
+    fecha: "2026-10-14",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.65.1 — «Cómo funciona» de un vistazo",
     detalle: [
       "«Cómo funciona» de cada sistema: arriba, el recorrido de la decisión (mide, decide, administra, hacia qué objetivo) con lo esencial del sistema; debajo, cómo decide y se adapta, los bolos automáticos de corrección y lo que puede ajustar el profesional, con los parámetros en sus dos grupos.",
       "Lo que sigue haciendo la persona, lo que distingue al sistema y lo que devuelve, en tarjetas; las frases generales del capítulo, iguales para los cuatro, plegadas al final.",

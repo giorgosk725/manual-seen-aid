@@ -751,7 +751,7 @@ export const TODAS: Frecuente[] = [
   {
     id: "f70",
     tema: "Uso en el día a día",
-    pregunta: "Tras una resonancia con el sensor puesto, ¿se puede fiar de las lecturas?",
+    pregunta: "Tras una resonancia con el sensor puesto, ¿son fiables las lecturas?",
     variantes: ["lecturas del sensor después de una resonancia", "sensor tras RM"],
     pasajes: ["t/10-situaciones/b42/0", "t/10-situaciones/b42/1"],
   },
@@ -805,7 +805,7 @@ export const TODAS: Frecuente[] = [
   {
     id: "f77",
     tema: "MiniMed 780G",
-    pregunta: "MiniMed 780G: ¿cómo decide y qué aprende?",
+    pregunta: "MiniMed 780G: ¿cómo decide y cómo se adapta?",
     variantes: ["algoritmo SmartGuard de la 780G", "autoaprendizaje de la 780G"],
     pasajes: ["T1/3", "T1/4"],
     sistema: 0,
@@ -915,7 +915,7 @@ export const TODAS: Frecuente[] = [
   {
     id: "f90",
     tema: "myLoop CamAPS",
-    pregunta: "CamAPS FX: ¿dónde está el algoritmo y qué aprende?",
+    pregunta: "CamAPS FX: ¿dónde está el algoritmo y cómo se adapta?",
     variantes: ["algoritmo de CamAPS en el móvil", "CamAPS en el móvil"],
     pasajes: ["T1/2", "T1/3", "T1/1"],
     sistema: 2,
