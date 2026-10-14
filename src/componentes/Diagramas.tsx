@@ -1430,6 +1430,28 @@ function InterrupcionLinea() {
           <ArrowRight size={14} aria-hidden="true" className="shrink-0 text-slate-500" />
         </a>
       )}
+      {/* 0.72.0: el formato, antes de los casos (qué se puede desconectar y qué no). */}
+      <section className="grid gap-2 md:grid-cols-2">
+        <Sub className="sr-only">Según el formato</Sub>
+        <p
+          className="rounded-xl border bg-white p-3 text-sm leading-snug text-slate-800"
+          style={{ borderColor: "#e6e6e6" }}
+        >
+          <span className="mb-0.5 flex items-center gap-1.5 font-bold text-slate-900">
+            <Package size={15} aria-hidden="true" className="text-slate-500" /> Pod
+          </span>
+          <Texto>{L.formatos.pod}</Texto>
+        </p>
+        <p
+          className="rounded-xl border bg-white p-3 text-sm leading-snug text-slate-800"
+          style={{ borderColor: "#e6e6e6" }}
+        >
+          <span className="mb-0.5 flex items-center gap-1.5 font-bold text-slate-900">
+            <Cable size={15} aria-hidden="true" className="text-slate-500" /> Bomba con catéter
+          </span>
+          <Texto>{`${L.formatos.bomba}. ${L.formatos.pausa}`}</Texto>
+        </p>
+      </section>
       {/* Dos caminos que no son una sola línea de tiempo: lo programado se decide antes de
           desconectar; lo no programado se actúa a partir de aproximadamente 1 h sin insulina. */}
       <section>
@@ -1475,27 +1497,6 @@ function InterrupcionLinea() {
             </Tramo>
           ))}
         </ul>
-      </section>
-      <section className="grid gap-2 md:grid-cols-2">
-        <Sub className="sr-only">Según el formato</Sub>
-        <p
-          className="rounded-xl border bg-white p-3 text-sm leading-snug text-slate-800"
-          style={{ borderColor: "#e6e6e6" }}
-        >
-          <span className="mb-0.5 flex items-center gap-1.5 font-bold text-slate-900">
-            <Package size={15} aria-hidden="true" className="text-slate-500" /> Pod
-          </span>
-          <Texto>{L.formatos.pod}</Texto>
-        </p>
-        <p
-          className="rounded-xl border bg-white p-3 text-sm leading-snug text-slate-800"
-          style={{ borderColor: "#e6e6e6" }}
-        >
-          <span className="mb-0.5 flex items-center gap-1.5 font-bold text-slate-900">
-            <Cable size={15} aria-hidden="true" className="text-slate-500" /> Bomba con catéter
-          </span>
-          <Texto>{`${L.formatos.bomba}. ${L.formatos.pausa}`}</Texto>
-        </p>
       </section>
       {L.detalles
         .filter((d) => d !== respaldo && d !== reinicio && d !== cetonemia)

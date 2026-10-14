@@ -1018,6 +1018,14 @@ html.night [style*="rgb(255, 255, 255) 0px 0px 0px 2px inset"] {
   box-shadow: inset 0 0 0 2px #0f172a !important;
 }
 
+/* Los títulos que reciben el foco al elegir algo (irAlCambiar.ts) no son controles: sin anillo. */
+h1[tabindex="-1"]:focus,
+h2[tabindex="-1"]:focus,
+h3[tabindex="-1"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 /* Cifras con unidad dentro del texto literal (texto.tsx, ConCifras). */
 .cifra {
   font-weight: 700;

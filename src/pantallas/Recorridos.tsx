@@ -1286,9 +1286,11 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
             className="mt-4 flex items-center justify-between border-t pt-3"
             style={{ borderColor: "#e6e6e6" }}
           >
+            {/* 0.72.0: en el primer y el último paso, sin el botón que no lleva a ningún sitio. */}
             <button
               type="button"
               disabled={n === 1}
+              hidden={n === 1}
               onClick={() => {
                 alPaso();
                 ir(n - 1);
@@ -1297,9 +1299,11 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
             >
               <ChevronLeft size={14} aria-hidden="true" /> Paso {n - 1 || 1}
             </button>
+            <span aria-hidden="true" hidden={n !== 1} />
             <button
               type="button"
               disabled={n === 8}
+              hidden={n === 8}
               onClick={() => {
                 alPaso();
                 ir(n + 1);

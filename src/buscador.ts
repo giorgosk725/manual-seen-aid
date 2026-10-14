@@ -31,7 +31,7 @@ import {
   type Entrada,
   type Resultado,
 } from "./busqueda";
-import { SIS_IDS, SITUACIONES, SITUACIONES_GUIA } from "./situaciones";
+import { ALIAS as ALIAS_SITUACION, SIS_IDS, SITUACIONES, SITUACIONES_GUIA } from "./situaciones";
 import { tituloDeTarea } from "./inicio";
 import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import { OBJETIVOS_MCG } from "./contenido/diagramas";
@@ -448,7 +448,9 @@ const ALIAS_SISTEMA: RegExp[] = [
 /* Si la consulta nombra un recurso de la app (un caso, una herramienta, la sección de la ficha
    de un sistema), ese recurso va el primero («Abrir …»), encima de los pasajes. */
 const SECCION_PEDIDA: [RegExp, string, string][] = [
-  [/par[aá]metro|configur|ajust|cambiar/, "parametros", "Parámetros"],
+  // «tabla 4 omnipod»: la Tabla 4 de ese sistema (0.72.0).
+  [/tabla 4|\bt4\b/, "tabla4", "Tabla 4"],
+  [/par[aá]metro|configur|ajust|cambiar|tocar|modific/, "parametros", "Parámetros"],
   [/c[oó]mo funciona|algoritmo/, "funciona", "Cómo funciona"],
   [/situaci/, "situaciones", "Situaciones"],
   [/ficha t[eé]cnica|ampliaci/, "ampliacion", "Ampliación técnica"],
@@ -536,7 +538,9 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
           ruta:
             sec[1] === "situaciones"
               ? href("consultar", "situacion", `:${SIS_IDS[sis]}`)
-              : href("sistemas", s.id, sec[1]),
+              : sec[1] === "tabla4"
+                ? href("consultar", "tablas", `T4:${SIS_IDS[sis]}`)
+                : href("sistemas", s.id, sec[1]),
         },
         fragmento: "",
         puntos: 0,
@@ -631,6 +635,30 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
           fragmento: "",
           puntos: 0,
         });
+  }
+  // 0.72.0: una exploración nombrada por su sigla o su nombre corriente («camaps tc»): su
+  // situación, con el sistema si lo hay.
+  {
+    const palabras = normalizar(consulta).split(/[^a-z0-9ñ]+/);
+    const exp = ["rm", "tc", "rx", "pet", "diatermia", "eco"].find((id) =>
+      (ALIAS_SITUACION[id] ?? []).some((a) =>
+        a.includes(" ") ? normalizar(consulta).includes(a) : palabras.includes(a),
+      ),
+    );
+    const sit = exp ? SITUACIONES.find((x) => x.id === exp) : undefined;
+    if (sit)
+      out.push({
+        entrada: {
+          id: `recurso/situacion/${sit.id}`,
+          tipo: "atajo",
+          titulo: `Situaciones · ${sit.etiqueta}`,
+          texto: "",
+          pagina: 0,
+          ruta: href("consultar", "situacion", `${sit.id}${sis >= 0 ? `:${SIS_IDS[sis]}` : ""}`),
+        },
+        fragmento: "",
+        puntos: 0,
+      });
   }
   const nombrados = res
     .filter((r) => r.entrada.tipo === "atajo" || r.entrada.tipo === "caso")
