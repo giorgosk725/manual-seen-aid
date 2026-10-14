@@ -5,6 +5,7 @@
    aparte la Ampliación técnica, fuera del capítulo y con sus fuentes. Varios o todos
    (#/sistemas/<a+b|todos>/<seccion>) = la misma sección, un sistema junto a otro: eso son
    «Comparar sistemas» y «Parámetros por sistema». */
+import { siglasPorPiezas } from "../inicio";
 import { NotaCorreccion } from "../componentes/NotaCorreccion";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
@@ -1374,11 +1375,13 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
   const liberty = (
     guia.pasos.find((x) => x.rotulo === "Qué sigue haciendo la persona")?.piezas ?? []
   ).filter((p) => p.t === "frase" && p.apartado === "03-algoritmos" && p.bloque === "b3");
+  // Las siglas, pulsables la primera vez que salen (0.72.0).
+  const sg = siglasPorPiezas([...distingue, ...liberty], c);
   return (
     <div className="space-y-3">
       {distingue.map((p, j) => (
         <div key={j} className="text-[15px] leading-snug text-slate-800">
-          <PiezaVista pieza={p} sis={c} compacta />
+          <PiezaVista pieza={p} sis={c} compacta siglas={sg[j]} />
         </div>
       ))}
       {/* El recorrido de la decisión: cuatro pasos seguidos; en el móvil, uno debajo de otro. */}
@@ -1428,7 +1431,7 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
           color={h.ink}
         >
           {liberty.map((p, j) => (
-            <PiezaVista key={j} pieza={p} sis={c} compacta />
+            <PiezaVista key={j} pieza={p} sis={c} compacta siglas={sg[distingue.length + j]} />
           ))}
         </TarjetaFunciona>
       )}
