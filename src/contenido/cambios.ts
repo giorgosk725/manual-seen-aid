@@ -19,6 +19,7 @@ export const CAMBIOS: Cambio[] = [
     detalle: [
       "Tabla 1, Omnipod 5: «Adapta la basal por pod» en vez de «Posee autoaprendizaje por pod» (corrección posterior a la publicación). Junto a la casilla, una nota dice qué pone el capítulo publicado.",
       "Portada sin «Seguir leyendo».",
+      "Sin «¿Algo que comentar de esta pantalla?» al pie de las pantallas.",
     ],
   },
   {
