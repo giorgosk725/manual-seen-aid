@@ -95,6 +95,15 @@ function Sub({
   );
 }
 
+/* Por dónde seguir desde un diagrama que se consulta (0.72.0, auditoría de urgencias). */
+const SEGUIR_DIAGRAMA: Partial<Record<DiagramaId, { texto: string; ruta: string }[]>> = {
+  hipoglucemia: [
+    { texto: "Plan de seguridad para entregar", ruta: href("pacientes") },
+    { texto: "Hipoglucemia nocturna", ruta: href("capitulo", "09-descarga", "b7") },
+    { texto: "Tiempo por debajo del rango elevado", ruta: href("capitulo", "09-descarga", "b10") },
+  ],
+};
+
 export function MarcoDiagrama({
   id,
   children,
@@ -157,6 +166,16 @@ export function MarcoDiagrama({
               <Images size={12} aria-hidden="true" /> Abrir a pantalla completa
             </a>
           )}
+          {!enApartado &&
+            (SEGUIR_DIAGRAMA[id] ?? []).map((l) => (
+              <a
+                key={l.ruta}
+                href={l.ruta}
+                className="tap-44 inline-flex items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
+              >
+                {l.texto} <ArrowRight size={12} aria-hidden="true" />
+              </a>
+            ))}
           <BotonImprimir objetivo={ref} compacto>
             Imprimir
           </BotonImprimir>
