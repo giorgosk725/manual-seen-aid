@@ -15,9 +15,13 @@ test.describe("Explorar criterios de elección", () => {
       main.getByText(/dentro del criterio|fuera del criterio|Con autorización/),
     ).toHaveCount(0);
     await expect(main.getByRole("heading", { name: "Factores de la Figura 2" })).toBeVisible();
-    await expect(
-      main.getByRole("link", { name: /Comparar los cuatro en la Tabla 1/ }),
-    ).toBeVisible();
+    // 0.72.0: con dos marcados, se comparan esos (sin datos de la persona: solo sistemas).
+    await expect(main.getByRole("link", { name: /Comparar los cuatro/ })).toBeVisible();
+    const grupo = main.getByRole("group", { name: "Sistemas que se valoran" });
+    await grupo.getByRole("button").nth(0).click();
+    await grupo.getByRole("button").nth(3).click();
+    await main.getByRole("link", { name: /Comparar los 2/ }).click();
+    await expect(page).toHaveURL(/#\/sistemas\/mm780\+op5\/esencial$/);
   });
 
   test("una dirección antigua con criterios abre la consulta sin sus valores", async ({ page }) => {

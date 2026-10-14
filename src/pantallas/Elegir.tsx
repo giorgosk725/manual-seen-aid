@@ -6,7 +6,9 @@
    condiciones por variante y ámbito (CE, FDA, Europa, EE. UU.) quedan en sus celdas, tal cual.
    El explorador anterior por criterios (eleccion.ts) se conserva fuera de esta edición; una
    dirección antigua con criterios abre esta consulta y no reutiliza ni guarda sus valores. */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { CasillasSistema } from "../componentes/CasillasSistema";
+import { ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { ArrowRight } from "lucide-react";
 import { APARTADOS, F2, TABLAS, rutaDeTabla } from "../contenido";
 import { elegirRuta, href } from "../rutas";
@@ -33,6 +35,7 @@ export function Elegir({ antigua = false }: { antigua?: boolean }) {
   const pT1 = paginasDe(T1.paginas[0], T1.paginas[1]);
   const perfil = F2.cajas[0];
   const sistema = F2.cajas[2];
+  const [sel, setSel] = useState<number[]>([]);
   return (
     <div>
       <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
@@ -82,10 +85,37 @@ export function Elegir({ antigua = false }: { antigua?: boolean }) {
         </div>
       </section>
 
-      {/* 0.70.0: sin la repetición de las celdas de la Tabla 1; se comparan en Sistemas. */}
-      <a href={href("sistemas", "todos", "esencial")} className={`mt-4 ${enlace}`}>
-        Comparar los cuatro en la Tabla 1 <ArrowRight size={13} aria-hidden="true" />
-      </a>
+      {/* 0.72.0: los que se están valorando, lado a lado (la Tabla 1, en Sistemas). */}
+      <section
+        aria-labelledby="comparar-elegir"
+        className="no-imprimir mt-4 rounded-2xl border bg-white p-4"
+        style={{ borderColor: "#e6e6e6" }}
+      >
+        <h2 id="comparar-elegir" className="text-sm font-bold text-slate-900">
+          Comparar los que se valoran
+        </h2>
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <CasillasSistema
+            etiqueta="Sistemas que se valoran"
+            seleccion={sel}
+            onToggle={(c) =>
+              setSel((s) => (s.includes(c) ? s.filter((x) => x !== c) : [...s, c].sort()))
+            }
+          />
+          <a
+            href={
+              sel.length >= 2
+                ? href("sistemas", sel.map((c) => ORDEN_SISTEMAS[c]).join("+"), "esencial")
+                : href("sistemas", "todos", "esencial")
+            }
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-4 text-sm font-bold text-white"
+            style={{ background: hex.strong }}
+          >
+            {sel.length >= 2 ? `Comparar los ${sel.length}` : "Comparar los cuatro"}
+            <ArrowRight size={14} aria-hidden="true" />
+          </a>
+        </div>
+      </section>
       <section className="mt-2">
         <FuentePie
           fuentes={[
