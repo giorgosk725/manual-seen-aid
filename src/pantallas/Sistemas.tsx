@@ -5,6 +5,7 @@
    aparte la Ampliación técnica, fuera del capítulo y con sus fuentes. Varios o todos
    (#/sistemas/<a+b|todos>/<seccion>) = la misma sección, un sistema junto a otro: eso son
    «Comparar sistemas» y «Parámetros por sistema». */
+import { NotaCorreccion } from "../componentes/NotaCorreccion";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   Activity,
@@ -13,6 +14,7 @@ import {
   BarChart3,
   Box,
   Brain,
+  ChevronDown,
   Check,
   Cpu,
   ExternalLink,
@@ -482,11 +484,17 @@ function ColumnaTabla({
   c,
   filas,
   pie,
+  insignia,
+  notaExtra,
+  fuentesExtra = [],
 }: {
   t: Tabla;
   c: number;
   filas?: (etiqueta: string, j: number) => boolean;
   pie?: ReactNode;
+  insignia?: (j: number) => ReactNode;
+  notaExtra?: string;
+  fuentesExtra?: { texto: string; ruta?: string }[];
 }) {
   const hexS = SISTEMA_HEX[c];
   // La nota del asterisco solo si alguna celda mostrada lo lleva; la lista de siglas, plegada.
@@ -497,7 +505,8 @@ function ColumnaTabla({
   const notas = t.notas.filter((n) => (esAsterisco(n) ? hayAsterisco : !esSiglas(n)));
   const siglas = t.notas.filter(esSiglas);
   return (
-    <div className="rounded-xl border bg-white p-3 sm:p-4" style={{ borderColor: "#e6e6e6" }}>
+    // 0.72.0: sin la caja de fuera (tarjetas dentro de una tarjeta).
+    <div>
       <dl className="grid gap-2 sm:grid-cols-2">
         {t.filas.map((f, j) => {
           if (filas && !filas(f.etiqueta, j)) return null;
@@ -522,18 +531,20 @@ function ColumnaTabla({
                 </span>
               </dt>
               <dd className="mt-1.5 text-[15px] text-slate-800">
+                {/* La insignia, dentro del dd: en un <dl> solo caben dt y dd. */}
+                {insignia?.(j) && <span className="-mt-0.5 mb-1 block">{insignia(j)}</span>}
                 <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
               </dd>
             </div>
           );
         })}
       </dl>
-      {notas.length > 0 && (
+      {(notas.length > 0 || notaExtra) && (
         <div
           className="mt-2 space-y-1 border-t pt-2 text-xs text-slate-600"
           style={{ borderColor: "#e6e6e6" }}
         >
-          {notas.map((n, k) => (
+          {[...(notaExtra ? [notaExtra] : []), ...notas].map((n, k) => (
             <p key={k}>
               <Texto>{n}</Texto>
             </p>
@@ -561,6 +572,7 @@ function ColumnaTabla({
               texto: `Tabla ${t.numero}, ${paginasDe(t.paginas[0], t.paginas[1])}`,
               ruta: rutaEnCapitulo(t) ?? undefined,
             },
+            ...fuentesExtra,
           ]}
         />
         {pie}
@@ -721,10 +733,16 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         <TituloSeccion id="parametros" sistema={s.name} color={h.ink}>
           Parámetros
         </TituloSeccion>
-        <ParametrosAutomatico c={c} hexSistema={h} />
-        <div className="mt-3">
-          <ColumnaTabla t={TABLAS.T3} c={c} />
-        </div>
+        {/* 0.72.0: lo que cuenta en automático, como insignia en cada tarjeta de la Tabla 3
+            (según la fila «Parámetros configurables en modo automático» de la Tabla 1 y su nota),
+            en vez de un recuadro aparte que repetía los nombres. */}
+        <ColumnaTabla
+          t={TABLAS.T3}
+          c={c}
+          insignia={(j) => insigniaParametro(c, j)}
+          notaExtra={TABLAS.T1.notas[0]}
+          fuentesExtra={[fuenteT1(4)]}
+        />
       </section>
 
       <section aria-label="Más del capítulo sobre este sistema" className="mt-7">
@@ -1068,6 +1086,31 @@ function EntradaSistemas() {
    modo automático (con asterisco) y el resto, que interviene sobre todo en los bolos o en el
    modo manual (13-10-2026). */
 const FILA_PARAMETROS = 10;
+/* Insignia de una fila de la Tabla 3 según la Tabla 1 (fila «Parámetros configurables en modo
+   automático»): con asterisco, efecto directo en automático; sin él, sobre todo en bolos. */
+const CLAVE_FILA_T3 = [/objetivo/i, /basal/i, /ratio/i, /sensibilidad/i, /insulina activa/i];
+function insigniaParametro(c: number, j: number): ReactNode {
+  const { directos, resto } = parametrosDe(c);
+  const re = CLAVE_FILA_T3[j];
+  if (!re) return null;
+  const h = SISTEMA_HEX[c];
+  if (directos.some((x) => re.test(x)))
+    return (
+      <span
+        className="inline-block rounded-full px-2 py-0.5 text-[11px] font-bold text-white"
+        style={{ background: h.ink }}
+      >
+        Efecto directo en el modo automático (*)
+      </span>
+    );
+  if (resto.some((x) => re.test(x)))
+    return (
+      <span className="inline-block rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600">
+        Sobre todo en los bolos y el modo manual
+      </span>
+    );
+  return null;
+}
 function parametrosDe(c: number) {
   const xs = TABLAS.T1.filas[FILA_PARAMETROS].celdas[c]
     .split("\n")
@@ -1152,7 +1195,7 @@ function claveDeCelda(fila: number, c: number): ReactNode {
     return (
       <>
         <span
-          className="mr-1.5 inline-block rounded px-1.5 text-[11px] font-extrabold"
+          className="mb-0.5 block w-fit rounded px-1.5 text-[11px] font-extrabold"
           style={
             k.correccion.si
               ? { background: h.ink, color: "#fff" }
@@ -1161,7 +1204,7 @@ function claveDeCelda(fila: number, c: number): ReactNode {
         >
           {k.correccion.si ? "Sí" : "No"}
         </span>
-        {k.correccion.texto.join(" · ")}
+        <span className="block">{k.correccion.texto.join(" · ")}</span>
       </>
     );
   return null;
@@ -1177,14 +1220,17 @@ function CeldaFunciona({ fila, c }: { fila: number; c: number }) {
   return clave ? (
     <>
       <span className="block font-bold leading-snug text-slate-900">{clave}</span>
-      <span className="mt-1 block text-[13px] leading-snug text-slate-600">
-        <Lineas>{celda}</Lineas>
-      </span>
-      {nota && fila === 3 && (
-        <span className="mt-1.5 block rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs font-normal text-slate-600">
-          {nota}
+      {/* 0.72.0: la casilla entera, a un toque (repetía la clave de encima). */}
+      <details className="group mt-1 text-[13px] leading-snug text-slate-600">
+        <summary className="inline-flex min-h-8 cursor-pointer list-none items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-800 [&::-webkit-details-marker]:hidden">
+          <ChevronDown size={12} aria-hidden="true" className="transition group-open:rotate-180" />
+          Texto completo
+        </summary>
+        <span className="mt-0.5 block">
+          <Lineas>{celda}</Lineas>
         </span>
-      )}
+      </details>
+      {nota && fila === 3 && <NotaCorreccion nota={nota} />}
     </>
   ) : (
     <span className="font-semibold text-slate-900">

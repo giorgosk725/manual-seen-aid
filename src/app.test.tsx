@@ -8,6 +8,13 @@ import App from "./App";
 import { BIBLIOGRAFIA } from "./contenido";
 
 /* Navega y espera a que la pantalla (perezosa, React.lazy) haya llegado. */
+/* 0.72.0: las cifras con unidad van en <b className="cifra">: el texto literal queda repartido
+   entre nodos. Busca el elemento más interno cuyo texto completo cumple la expresión. */
+const enTexto = (re: RegExp) => (_: string, el: Element | null) =>
+  !!el &&
+  re.test(el.textContent ?? "") &&
+  ![...el.children].some((c) => re.test(c.textContent ?? ""));
+
 const ir = async (hash: string) => {
   await act(async () => {
     window.location.hash = hash;
@@ -93,7 +100,7 @@ describe("App", () => {
     const grupo = screen.getByRole("group", { name: /Filtrar por sistema/ });
     await userEvent.click(within(grupo).getByRole("button", { name: /Omnipod 5/ }));
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
-    expect(screen.getByText(/sin peso mínimo; DTD ≥ 5 UI\/día/)).toBeInTheDocument();
+    expect(screen.getByText(enTexto(/sin peso mínimo; DTD ≥ 5 UI\/día/))).toBeInTheDocument();
     expect(screen.queryByText(/Guardian 4/)).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: /Los cuatro/ }));
     expect(screen.getByRole("table")).toBeInTheDocument();
@@ -188,14 +195,16 @@ describe("App", () => {
     expect(screen.getByRole("heading", { name: /^Parámetros · Omnipod 5/ })).toBeInTheDocument();
     expect(screen.queryByText(/Ampliación técnica · fuera del capítulo/)).toBeNull();
     expect(screen.queryByText(/Insulinas rápidas compatibles/)).toBeNull();
-    expect(screen.getAllByText(/sin peso mínimo; DTD ≥ 5 UI\/día/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(enTexto(/sin peso mínimo; DTD ≥ 5 UI\/día/)).length).toBeGreaterThan(
+      0,
+    );
   });
 
   it("Situación y sistema muestra la celda literal de la Tabla 4", async () => {
     render(<App />);
     await ir("#/consultar/situacion/comida-grasa:control-iq");
     expect(
-      screen.getByText(/bolo extendido \(hasta 2 h; Control-IQ\+: de 15 min a 8 h\)/),
+      screen.getByText(enTexto(/bolo extendido \(hasta 2 h; Control-IQ\+: de 15 min a 8 h\)/)),
     ).toBeInTheDocument();
     expect(screen.queryByText(/Función comida de absorción lenta/)).not.toBeInTheDocument();
   });

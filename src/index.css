@@ -977,6 +977,13 @@ html.night .pagina-badge {
   }
 }
 
+/* Cifras con unidad dentro del texto literal (texto.tsx, ConCifras). */
+.cifra {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 /* Resaltado de la búsqueda (contraste AA en día y en nocturno). */
 .resaltado {
   background: #fef08a;
@@ -995,6 +1002,15 @@ html.night .pagina-badge {
   max-height: 70vh;
   overflow: auto;
   overscroll-behavior: contain;
+}
+/* 0.72.0: en el ordenador, sin caja de 70vh con su propio scroll (doble scroll); la tabla sigue
+   la página y, si es más ancha, se desplaza a lo ancho. */
+@media screen and (min-width: 1024px) {
+  .tabla-scroll {
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
 }
 
 /* Aparición al entrar en pantalla (IntersectionObserver en ui.tsx). Solo con movimiento. */
@@ -1321,8 +1337,10 @@ html.night .tramo-plan {
     font-size: 9.2pt;
     line-height: 1.38;
   }
+  /* «auto», no «1»: con column-count:1 sigue siendo multicolumna y Chromium ignora el salto
+     de la cara 2 (0.72.0). */
   html.imprimiendo .hoja-a4.holgada .hoja-cuerpo {
-    column-count: 1;
+    column-count: auto;
   }
   html.imprimiendo .hoja-a4.holgada p {
     margin-top: 1.6mm !important;
@@ -1347,8 +1365,10 @@ html.night .tramo-plan {
     margin-bottom: 3mm !important;
     padding-bottom: 2mm !important;
   }
+  /* «auto», no «1»: con column-count:1 sigue siendo multicolumna y Chromium ignora el salto
+     de la cara 2 (0.72.0). */
   html.imprimiendo .hoja-a4.grande .hoja-cuerpo {
-    column-count: 1;
+    column-count: auto;
   }
   html.imprimiendo .hoja-a4.grande .hoja-seccion {
     margin-bottom: 2.6mm !important;
@@ -1481,7 +1501,11 @@ html.night .regla-seccion > span:last-child {
 }
 /* Nocturno: bordes finos en línea, tintes suaves y tintas de las categorías nuevas. */
 html.night [style*="border-color: rgb(230, 230, 230)"],
-html.night [style*="border-color: rgb(212, 212, 212)"] {
+html.night [style*="border-color: rgb(212, 212, 212)"],
+html.night [style*="border-color: rgb(226, 232, 240)"],
+html.night [style*="border-color: rgb(236, 239, 243)"],
+html.night [style*="border-color: rgb(238, 240, 242)"],
+html.night [style*="border-color: rgb(238, 238, 238)"] {
   border-color: #334155 !important;
 }
 html.night [style*="background: rgb(238, 243, 249)"] {

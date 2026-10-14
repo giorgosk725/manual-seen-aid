@@ -15,6 +15,10 @@ import {
   ArrowDown,
   ArrowRight,
   BookOpen,
+  Cable,
+  CalendarClock,
+  Droplets,
+  Package,
   Cpu,
   Images,
   RefreshCw,
@@ -55,6 +59,7 @@ import { BotonImprimir, PaginaBadge, Segmented } from "../ui";
 import { SISTEMA_HEX, TRAMO_HEX } from "../tokens";
 import { Lineas, Texto } from "../texto";
 import { useNivelTitulo, type Nivel } from "../nivel-contexto";
+import type { LucideIcon } from "lucide-react";
 
 /* Colores de franja (familia AGP). Texto con contraste AA sobre cada fondo. */
 const TONO: Record<TonoFranja, { bg: string; fg: string }> = {
@@ -662,8 +667,9 @@ function Algoritmos() {
                 <span className="tabular-nums">{unidos(k.objetivo)}</span>
               </DatoAlgoritmo>
               <DatoAlgoritmo icono={Syringe} etiqueta="Bolos de corrección" hex={h.strong}>
+                {/* «Sí»/«No» en su línea: pegado al detalle se leía al revés (0.72.0). */}
                 <span
-                  className="mr-1.5 inline-block rounded px-1.5 text-xs font-extrabold"
+                  className="mb-0.5 block w-fit rounded px-1.5 text-xs font-extrabold"
                   style={
                     k.correccion.si
                       ? { background: h.ink, color: "#fff" }
@@ -672,7 +678,9 @@ function Algoritmos() {
                 >
                   {k.correccion.si ? "Sí" : "No"}
                 </span>
-                <span className="font-normal text-slate-800">{unidos(k.correccion.texto)}</span>
+                <span className="block font-normal text-slate-800">
+                  {unidos(k.correccion.texto)}
+                </span>
               </DatoAlgoritmo>
               <DatoAlgoritmo icono={RefreshCw} etiqueta="Cómo se adapta" hex={h.strong}>
                 {unidos(k.aprendizaje)}
@@ -1285,42 +1293,93 @@ export function InterrupcionPantalla() {
 }
 function InterrupcionLinea() {
   const L = INTERRUPCION_LINEA;
+  const detalle = (empieza: string) => L.detalles.find((d) => d.cuando.startsWith(empieza));
+  const respaldo = detalle("Basal de respaldo");
+  const reinicio = detalle("Al reiniciar");
+  const cetonemia = detalle("Cetonemia");
+  /* 0.72.0: cada caso, una tarjeta con su tiempo arriba en grande y el tono de su riesgo; los
+     detalles del apartado, dentro del caso al que se refieren (fragmentos literales). */
   const Tramo = ({
     cuando,
-    color,
+    tono,
+    icono: Icono,
     children,
   }: {
     cuando: string;
-    color: string;
+    tono: { soft: string; strong: string; ink: string };
+    icono: LucideIcon;
     children: ReactNode;
   }) => (
     <li
-      className="flex flex-col overflow-hidden rounded-xl border bg-white"
-      style={{ borderColor: "#e6e6e6" }}
+      className="flex min-w-0 flex-col overflow-hidden rounded-xl border bg-white"
+      style={{ borderColor: "#e6e6e6", borderTop: `4px solid ${tono.strong}` }}
     >
-      <span className="px-3 py-1.5 text-xs font-bold text-white" style={{ background: color }}>
+      <span
+        className="flex items-start gap-2 px-3 py-2 text-[15px] font-extrabold leading-snug"
+        style={{ background: tono.soft, color: tono.ink }}
+      >
+        <Icono size={17} aria-hidden="true" className="mt-0.5 shrink-0" />
         {cuando}
       </span>
-      <span className="space-y-1 px-3 py-2 text-xs leading-snug text-slate-800">{children}</span>
+      <span className="space-y-1.5 px-3 py-2.5 text-sm leading-snug text-slate-800">
+        {children}
+      </span>
     </li>
   );
+  const Anexo = ({ titulo, texto }: { titulo: string; texto: string }) => (
+    <span
+      className="mt-1 block rounded-lg px-2.5 py-2 text-[13px] leading-snug"
+      style={{ background: "#f1f5f9" }}
+    >
+      <span className="block text-xs font-bold uppercase tracking-wide text-slate-600">
+        {titulo}
+      </span>
+      <Texto>{texto}</Texto>
+    </span>
+  );
+  const PROGRAMADA = { soft: "#eef2f7", strong: "#475569", ink: "#334155" };
   return (
-    <div className="space-y-3">
-      <p className="text-sm text-slate-700">{L.premisa}</p>
+    <div className="space-y-4">
+      <p className="text-sm text-slate-700">
+        <Texto>{L.premisa}</Texto>
+      </p>
+      {cetonemia && (
+        <a
+          href={href("consultar", "figura-3")}
+          className="no-imprimir flex min-h-11 items-center gap-2 rounded-xl border px-3 py-2 text-sm text-slate-900 transition hover:border-slate-500"
+          style={{ borderColor: TRAMO_HEX.rojo.border, background: TRAMO_HEX.rojo.soft }}
+        >
+          <Droplets size={16} aria-hidden="true" style={{ color: TRAMO_HEX.rojo.strong }} />
+          <span className="min-w-0 flex-1">
+            <span className="font-bold">{cetonemia.cuando}: </span>
+            <Texto>{cetonemia.texto}</Texto>
+          </span>
+          <ArrowRight size={14} aria-hidden="true" className="shrink-0 text-slate-500" />
+        </a>
+      )}
       {/* Dos caminos que no son una sola línea de tiempo: lo programado se decide antes de
           desconectar; lo no programado se actúa a partir de aproximadamente 1 h sin insulina. */}
       <section>
         <Sub className="mb-1.5 text-sm font-extrabold text-slate-900">Si no estaba programada</Sub>
         <ol className="grid gap-2 md:grid-cols-3">
-          <Tramo cuando={L.tramos[0].cuando} color="#15803d">
-            <span className="block">{L.tramos[0].texto}.</span>
-            <span className="block font-semibold">{L.tramos[0].condicion}</span>
+          <Tramo cuando={L.tramos[0].cuando} tono={TRAMO_HEX.verde} icono={Timer}>
+            <span className="block">
+              <Texto>{L.tramos[0].texto + "."}</Texto>
+            </span>
+            <span className="block font-semibold">
+              <Texto>{L.tramos[0].condicion ?? ""}</Texto>
+            </span>
           </Tramo>
-          <Tramo cuando={L.tramos[1].cuando} color="#a16207">
-            <span className="block">{L.tramos[1].texto}.</span>
+          <Tramo cuando={L.tramos[1].cuando} tono={TRAMO_HEX.amarillo} icono={Timer}>
+            <span className="block">
+              <Texto>{L.tramos[1].texto + "."}</Texto>
+            </span>
           </Tramo>
-          <Tramo cuando={L.tramos[2].cuando} color="#b91c1c">
-            <span className="block">{L.tramos[2].texto}</span>
+          <Tramo cuando={L.tramos[2].cuando} tono={TRAMO_HEX.rojo} icono={Syringe}>
+            <span className="block">
+              <Texto>{L.tramos[2].texto}</Texto>
+            </span>
+            {respaldo && <Anexo titulo={respaldo.cuando} texto={respaldo.texto} />}
           </Tramo>
         </ol>
       </section>
@@ -1329,59 +1388,50 @@ function InterrupcionLinea() {
           Si está programada: se decide antes de desconectar
         </Sub>
         <ul className="grid gap-2 md:grid-cols-2">
-          {L.programadas.map((x) => (
-            <Tramo key={x.cuando} cuando={x.cuando} color="#475569">
-              <span className="block">{x.texto}</span>
+          {L.programadas.map((x, k) => (
+            <Tramo key={x.cuando} cuando={x.cuando} tono={PROGRAMADA} icono={CalendarClock}>
+              <span className="block">
+                <Texto>{x.texto}</Texto>
+              </span>
               {x.mas.map((m) => (
                 <span key={m} className="block">
-                  {m}
+                  <Texto>{m}</Texto>
                 </span>
               ))}
+              {k === 1 && reinicio && <Anexo titulo={reinicio.cuando} texto={reinicio.texto} />}
             </Tramo>
           ))}
         </ul>
       </section>
-      <div className="grid gap-2 md:grid-cols-2">
+      <section className="grid gap-2 md:grid-cols-2">
+        <Sub className="sr-only">Según el formato</Sub>
         <p
-          className="rounded-xl p-3 text-xs leading-snug text-slate-800"
-          style={{ background: "#f1f5f9" }}
+          className="rounded-xl border bg-white p-3 text-sm leading-snug text-slate-800"
+          style={{ borderColor: "#e6e6e6" }}
         >
-          <span className="block font-bold text-slate-900">Pod</span>
-          {L.formatos.pod}
+          <span className="mb-0.5 flex items-center gap-1.5 font-bold text-slate-900">
+            <Package size={15} aria-hidden="true" className="text-slate-500" /> Pod
+          </span>
+          <Texto>{L.formatos.pod}</Texto>
         </p>
         <p
-          className="rounded-xl p-3 text-xs leading-snug text-slate-800"
-          style={{ background: "#f1f5f9" }}
+          className="rounded-xl border bg-white p-3 text-sm leading-snug text-slate-800"
+          style={{ borderColor: "#e6e6e6" }}
         >
-          <span className="block font-bold text-slate-900">Bomba con catéter</span>
-          {L.formatos.bomba}. {L.formatos.pausa}
+          <span className="mb-0.5 flex items-center gap-1.5 font-bold text-slate-900">
+            <Cable size={15} aria-hidden="true" className="text-slate-500" /> Bomba con catéter
+          </span>
+          <Texto>{`${L.formatos.bomba}. ${L.formatos.pausa}`}</Texto>
         </p>
-      </div>
-      <ul className="space-y-1 text-xs text-slate-800">
-        {L.detalles.map((d) => (
-          <li key={d.cuando} className="flex gap-2">
-            <span
-              aria-hidden="true"
-              className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500"
-            />
-            <span>
-              <span className="font-bold text-slate-900">{d.cuando}: </span>
-              {d.texto}
-              {d.cuando.startsWith("Cetonemia") && (
-                <>
-                  {" "}
-                  <a
-                    href={href("consultar", "figura-3")}
-                    className="no-imprimir font-semibold underline"
-                  >
-                    Ver la Figura 3
-                  </a>
-                </>
-              )}
-            </span>
-          </li>
+      </section>
+      {L.detalles
+        .filter((d) => d !== respaldo && d !== reinicio && d !== cetonemia)
+        .map((d) => (
+          <p key={d.cuando} className="text-sm text-slate-800">
+            <span className="font-bold text-slate-900">{d.cuando}: </span>
+            <Texto>{d.texto}</Texto>
+          </p>
         ))}
-      </ul>
       <p className="text-xs text-slate-600">{L.nota}</p>
     </div>
   );

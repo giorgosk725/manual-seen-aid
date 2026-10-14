@@ -292,7 +292,9 @@ export function indice(): Entrada[] {
       id: `atajo/mcg/${pob.id}`,
       tipo: "atajo",
       titulo: `Objetivos de MCG · ${pob.nombre}`,
-      texto: `Objetivos de MCG (TIR, TBR, TAR) · ${pob.nombre}`,
+      // Sin «no gestantes» en el texto que se busca: «gestante» tiene que llevar a la gestación
+      // (0.72.0, auditoría de guardia).
+      texto: `Objetivos de MCG (TIR, TBR, TAR) · ${pob.nombre.replace(/\s*no gestantes?/i, "")}`,
       pagina: pob.pagina,
       ruta: href("visual", "objetivos-mcg", pob.id),
     });
@@ -304,6 +306,12 @@ export function indice(): Entrada[] {
       href("consultar", "figura-3"),
     ],
     [
+      "Ejercicio aeróbico planificado (Tabla 4)",
+      "Ejercicio, deporte, modo actividad, función actividad, modo ejercicio, objetivo temporal, objetivo de ejercicio, modos temporales: qué función usar en cada sistema",
+      11,
+      href("consultar", "situacion", "ejercicio-aerobico"),
+    ],
+    [
       "Revisar la descarga (Tabla 5)",
       "Revisar la descarga en consulta: los ocho pasos de la Tabla 5 y sus patrones",
       13,
@@ -311,7 +319,7 @@ export function indice(): Entrada[] {
     ],
     [
       "Interrupción del sistema",
-      "Interrupción o desconexión del sistema: cuánto dura y qué hacer, pauta alternativa",
+      "Interrupción o desconexión del sistema: cuánto dura y qué hacer, pauta alternativa; el pod o la bomba fallan, sin repuesto ni material, volver a plumas",
       9,
       href("consultar", "interrupcion"),
     ],

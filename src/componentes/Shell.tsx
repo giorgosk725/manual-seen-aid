@@ -1,6 +1,7 @@
 /* Shell: barra superior (con la búsqueda en escritorio), menú en tres grupos (barra lateral de
    escritorio y menú del móvil), barra inferior móvil (Inicio · Leer · Paciente · Buscar),
    paleta de búsqueda (Ctrl K) y aviso de versión nueva. El destino activo sale de nav.ts. */
+import { ConCifras } from "../texto";
 import {
   Suspense,
   useCallback,
@@ -51,6 +52,8 @@ import { SinResultados } from "./SinResultados";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
 import { irABuscar, ponerConsulta } from "../consultaBuscar";
 import { VERSION_APP } from "../version";
+
+const CON_CIFRAS = new Set(["consultar", "sistemas", "visual", "buscar", "preguntas"]);
 
 /* ---------- Espera mientras llega una pantalla perezosa ---------- */
 function CargandoPantalla() {
@@ -910,7 +913,9 @@ export function Shell({
       >
         <div
           key={clavePantalla}
-          className="pantalla-in mx-auto max-w-5xl px-3 pb-24 pt-4 sm:px-5 md:pb-10"
+          // 0.72.0: en monitores anchos, las pantallas de consulta usan más ancho; la lectura del
+          // capítulo conserva su medida.
+          className={`pantalla-in mx-auto max-w-5xl px-3 pb-24 pt-4 sm:px-5 md:pb-10 ${ruta.seccion === "capitulo" ? "" : "2xl:max-w-7xl"}`}
         >
           {volver && ruta.seccion === "capitulo" && (
             <div className="no-imprimir mb-3">
@@ -927,7 +932,11 @@ export function Shell({
           )}
           {/* Un fallo en una pantalla deja en pie la barra lateral y la navegación. */}
           <ErrorBoundary>
-            <Suspense fallback={<CargandoPantalla />}>{children}</Suspense>
+            <Suspense fallback={<CargandoPantalla />}>
+              {/* Las cifras con unidad, destacadas en las pantallas de consulta (no en la
+                  lectura del capítulo ni en las hojas del paciente). */}
+              {CON_CIFRAS.has(ruta.seccion) ? <ConCifras>{children}</ConCifras> : children}
+            </Suspense>
           </ErrorBoundary>
         </div>
       </main>

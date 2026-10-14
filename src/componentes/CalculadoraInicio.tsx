@@ -72,12 +72,16 @@ const PARTIDA_MDI =
 function Paso({ n, titulo, children }: { n: number; titulo: string; children: ReactNode }) {
   return (
     <section aria-labelledby={`calc-paso-${n}`} className="space-y-2">
+      {/* 0.72.0: cabecera de paso ligera (círculo burdeos); el foco visual, en los resultados. */}
       <h2
         id={`calc-paso-${n}`}
-        className="flex items-center gap-2 rounded-lg px-3 py-2 text-[15px] font-bold text-white"
-        style={{ background: "#1f2f5c" }}
+        className="flex items-center gap-2 border-b pb-1.5 text-[15px] font-extrabold text-slate-900"
+        style={{ borderColor: "#e6e6e6" }}
       >
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/20 text-xs tabular-nums">
+        <span
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold tabular-nums text-white"
+          style={{ background: "#8E254E" }}
+        >
           {n}
         </span>
         {titulo}
@@ -118,7 +122,7 @@ function Opciones<T extends string | number>({
               onClick={() => onChange(o.v)}
               className={`inline-flex min-h-11 items-center rounded-full border px-3 text-left text-sm font-semibold leading-tight transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
               style={
-                on ? { background: "#334155", borderColor: "#334155" } : { borderColor: "#d4d4d4" }
+                on ? { background: "#8E254E", borderColor: "#8E254E" } : { borderColor: "#d4d4d4" }
               }
             >
               {o.t}
@@ -392,396 +396,422 @@ export function CalculadoraInicio({
 
   return (
     <div className="space-y-5">
-      <Paso n={1} titulo="¿De qué tratamiento viene?">
-        <div className="grid grid-cols-3 gap-2">
-          {(
-            [
-              { v: "mdi", t: "MDI", dd: "Plumas: basal y rápida", I: Pen },
-              { v: "isci", t: "Bomba de insulina", dd: "ISCI sin automatización", I: Syringe },
-              { v: "aid", t: "Otro sistema AID", dd: "Cambio de sistema", I: Repeat },
-            ] as const
-          ).map((o) => {
-            const on = d.origen === o.v;
-            return (
-              <button
-                key={o.v}
-                type="button"
-                aria-pressed={on}
-                onClick={() => set({ origen: o.v })}
-                className="flex min-h-20 flex-col items-center justify-center gap-1 rounded-xl border-2 px-1 py-3 text-center transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                style={
-                  on
-                    ? { borderColor: hex.strong, background: hex.soft }
-                    : { borderColor: "#e2e8f0", background: "#fff" }
-                }
-              >
-                <o.I size={22} aria-hidden="true" style={{ color: on ? hex.strong : "#64748b" }} />
-                <span className="text-sm font-extrabold leading-tight text-slate-900 sm:text-base">
-                  {o.t}
-                </span>
-                <span className="text-[11px] leading-tight text-slate-600 sm:text-xs">{o.dd}</span>
-              </button>
-            );
-          })}
-        </div>
-      </Paso>
-
-      <Paso n={2} titulo="¿Qué sistema?">
-        <div role="group" aria-label="Sistema" className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {ORDEN_SISTEMAS.map((id, c) => {
-            const on = sis === c;
-            const hs = SISTEMA_HEX[c];
-            return (
-              <button
-                key={id}
-                type="button"
-                aria-pressed={on}
-                onClick={() => onSistema(c)}
-                className="flex min-h-14 items-center gap-2 rounded-xl border-2 p-2 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                style={
-                  on
-                    ? { borderColor: hs.strong, background: hs.soft }
-                    : { borderColor: "#e2e8f0", background: "#fff" }
-                }
-              >
-                <img
-                  src={FOTO_SISTEMA[id]}
-                  alt=""
-                  className="h-10 w-10 shrink-0 rounded-lg bg-white object-cover"
-                />
-                <span
-                  className="min-w-0 text-sm font-bold leading-tight"
-                  style={{ color: on ? hs.ink : "#1e293b" }}
-                >
-                  {CORTOS[c]}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        {sis === 2 && (
-          <p className="text-xs text-slate-600">
-            Los pasos de inicio son los de CamAPS FX. Para la modalidad Liberty, el capítulo indica
-            «&gt; 13 años».
-          </p>
-        )}
-      </Paso>
-
-      <Paso n={3} titulo={mdi ? "Dosis actuales y perfil" : "Programación actual"}>
-        {mdi ? (
-          <div className="space-y-4">
-            <div className="grid gap-3 sm:grid-cols-3">
-              <Campo
-                id="calc-basal"
-                etiqueta="Insulina basal"
-                unidad="UI/día"
-                valor={d.basal}
-                onChange={(v) => set({ basal: v })}
-                max={LIMITES.dosis}
-              />
-              <Campo
-                id="calc-rapida"
-                etiqueta="Insulina rápida"
-                ayuda="Total diario (0 si no usa insulina rápida)"
-                unidad="UI/día"
-                valor={d.rapida}
-                onChange={(v) => set({ rapida: v })}
-                max={LIMITES.dosis}
-              />
-              <Campo
-                id="calc-peso"
-                etiqueta="Peso"
-                ayuda={
-                  pidePesoYDtd(sis)
-                    ? `${CORTOS[sis!]} lo pide para iniciar el automático`
-                    : "Para comprobar la indicación"
-                }
-                unidad="kg"
-                valor={d.peso}
-                onChange={(v) => set({ peso: v })}
-                max={LIMITES.peso}
-              />
+      {/* 0.72.0: en pantallas anchas, los datos a la izquierda y los parámetros de partida a la
+          derecha, a la vista mientras se cambian los datos. */}
+      <div className="space-y-5 xl:grid xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start xl:gap-6 xl:space-y-0">
+        <div className="min-w-0 space-y-5">
+          <Paso n={1} titulo="¿De qué tratamiento viene?">
+            <div className="grid grid-cols-3 gap-2">
+              {(
+                [
+                  { v: "mdi", t: "MDI", dd: "Plumas: basal y rápida", I: Pen },
+                  { v: "isci", t: "Bomba de insulina", dd: "ISCI sin automatización", I: Syringe },
+                  { v: "aid", t: "Otro sistema AID", dd: "Cambio de sistema", I: Repeat },
+                ] as const
+              ).map((o) => {
+                const on = d.origen === o.v;
+                return (
+                  <button
+                    key={o.v}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => set({ origen: o.v })}
+                    className="flex min-h-20 flex-col items-center justify-center gap-1 rounded-xl border-2 px-1 py-3 text-center transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                    style={
+                      on
+                        ? { borderColor: hex.strong, background: hex.soft }
+                        : { borderColor: "#e2e8f0", background: "#fff" }
+                    }
+                  >
+                    <o.I
+                      size={22}
+                      aria-hidden="true"
+                      style={{ color: on ? hex.strong : "#64748b" }}
+                    />
+                    <span className="text-sm font-extrabold leading-tight text-slate-900 sm:text-base">
+                      {o.t}
+                    </span>
+                    <span className="text-[11px] leading-tight text-slate-600 sm:text-xs">
+                      {o.dd}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-            <Opciones
-              etiqueta="Ratio y factor de sensibilidad"
-              opciones={[
-                { v: "no", t: "Sin ratio ni factor propios: reglas del 450 y del 1700" },
-                { v: "si", t: "Con ratio y factor propios ya ajustados" },
-              ]}
-              valor={d.referencia ? "si" : "no"}
-              onChange={(v) => set({ referencia: v === "si" })}
-            />
-            {d.referencia && <p className="text-xs text-slate-600">{PARTIDA_MDI}.</p>}
-            <Opciones
-              etiqueta="Control previo"
-              opciones={CONTROLES.map((c) => ({ v: c.id, t: c.texto }))}
-              valor={d.control}
-              onChange={elegirControl}
-            />
-            <div>
-              <label
-                htmlFor="calc-reduccion"
-                className="mb-1 flex flex-wrap items-baseline justify-between gap-x-2 text-sm font-semibold text-slate-800"
-              >
-                <span>
-                  Reducción de la DTD{" "}
-                  <Marca
-                    modificado={d.tocado.reduccion}
-                    onRestablecer={() =>
+          </Paso>
+
+          <Paso n={2} titulo="¿Qué sistema?">
+            <div
+              role="group"
+              aria-label="Sistema"
+              className="grid grid-cols-2 gap-2 sm:grid-cols-4"
+            >
+              {ORDEN_SISTEMAS.map((id, c) => {
+                const on = sis === c;
+                const hs = SISTEMA_HEX[c];
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => onSistema(c)}
+                    className="flex min-h-14 items-center gap-2 rounded-xl border-2 p-2 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                    style={
+                      on
+                        ? { borderColor: hs.strong, background: hs.soft }
+                        : { borderColor: "#e2e8f0", background: "#fff" }
+                    }
+                  >
+                    <img
+                      src={FOTO_SISTEMA[id]}
+                      alt=""
+                      className="h-10 w-10 shrink-0 rounded-lg bg-white object-cover"
+                    />
+                    {/* Sin color en línea si no está elegido: de noche, «#1e293b» era el fondo. */}
+                    <span
+                      className={`min-w-0 text-sm font-bold leading-tight ${on ? "" : "text-slate-900"}`}
+                      style={on ? { color: hs.ink } : undefined}
+                    >
+                      {CORTOS[c]}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {sis === 2 && (
+              <p className="text-xs text-slate-600">
+                Los pasos de inicio son los de CamAPS FX. Para la modalidad Liberty, el capítulo
+                indica «&gt; 13 años».
+              </p>
+            )}
+          </Paso>
+
+          <Paso n={3} titulo={mdi ? "Dosis actuales y perfil" : "Programación actual"}>
+            {mdi ? (
+              <div className="space-y-4">
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <Campo
+                    id="calc-basal"
+                    etiqueta="Insulina basal"
+                    unidad="UI/día"
+                    valor={d.basal}
+                    onChange={(v) => set({ basal: v })}
+                    max={LIMITES.dosis}
+                  />
+                  <Campo
+                    id="calc-rapida"
+                    etiqueta="Insulina rápida"
+                    ayuda="Total diario (0 si no usa insulina rápida)"
+                    unidad="UI/día"
+                    valor={d.rapida}
+                    onChange={(v) => set({ rapida: v })}
+                    max={LIMITES.dosis}
+                  />
+                  <Campo
+                    id="calc-peso"
+                    etiqueta="Peso"
+                    ayuda={
+                      pidePesoYDtd(sis)
+                        ? `${CORTOS[sis!]} lo pide para iniciar el automático`
+                        : "Para comprobar la indicación"
+                    }
+                    unidad="kg"
+                    valor={d.peso}
+                    onChange={(v) => set({ peso: v })}
+                    max={LIMITES.peso}
+                  />
+                </div>
+                <Opciones
+                  etiqueta="Ratio y factor de sensibilidad"
+                  opciones={[
+                    { v: "no", t: "Sin ratio ni factor propios: reglas del 450 y del 1700" },
+                    { v: "si", t: "Con ratio y factor propios ya ajustados" },
+                  ]}
+                  valor={d.referencia ? "si" : "no"}
+                  onChange={(v) => set({ referencia: v === "si" })}
+                />
+                {d.referencia && <p className="text-xs text-slate-600">{PARTIDA_MDI}.</p>}
+                <Opciones
+                  etiqueta="Control previo"
+                  opciones={CONTROLES.map((c) => ({ v: c.id, t: c.texto }))}
+                  valor={d.control}
+                  onChange={elegirControl}
+                />
+                <div>
+                  <label
+                    htmlFor="calc-reduccion"
+                    className="mb-1 flex flex-wrap items-baseline justify-between gap-x-2 text-sm font-semibold text-slate-800"
+                  >
+                    <span>
+                      Reducción de la DTD{" "}
+                      <Marca
+                        modificado={d.tocado.reduccion}
+                        onRestablecer={() =>
+                          set({
+                            reduccion: reduccionDePartida(d.control, d.ultralarga),
+                            tocado: { ...d.tocado, reduccion: false },
+                          })
+                        }
+                      />
+                    </span>
+                    <span
+                      className="text-lg font-extrabold tabular-nums"
+                      style={{ color: hex.strong }}
+                    >
+                      {d.reduccion} %
+                    </span>
+                  </label>
+                  <input
+                    id="calc-reduccion"
+                    type="range"
+                    min={0}
+                    max={20}
+                    step={5}
+                    value={d.reduccion}
+                    onChange={(e) =>
                       set({
-                        reduccion: reduccionDePartida(d.control, d.ultralarga),
-                        tocado: { ...d.tocado, reduccion: false },
+                        reduccion: Number(e.target.value),
+                        tocado: { ...d.tocado, reduccion: true },
                       })
                     }
+                    className="h-11 w-full"
+                    style={{ accentColor: hex.strong }}
                   />
-                </span>
-                <span className="text-lg font-extrabold tabular-nums" style={{ color: hex.strong }}>
-                  {d.reduccion} %
-                </span>
-              </label>
-              <input
-                id="calc-reduccion"
-                type="range"
-                min={0}
-                max={20}
-                step={5}
-                value={d.reduccion}
-                onChange={(e) =>
-                  set({
-                    reduccion: Number(e.target.value),
-                    tocado: { ...d.tocado, reduccion: true },
-                  })
-                }
-                className="h-11 w-full"
-                style={{ accentColor: hex.strong }}
-              />
-              <div
-                className="flex justify-between text-[11px] tabular-nums text-slate-500"
-                aria-hidden="true"
-              >
-                <span>0 %</span>
-                <span>5 %</span>
-                <span>10 %</span>
-                <span>15 %</span>
-                <span>20 %</span>
+                  <div
+                    className="flex justify-between text-[11px] tabular-nums text-slate-500"
+                    aria-hidden="true"
+                  >
+                    <span>0 %</span>
+                    <span>5 %</span>
+                    <span>10 %</span>
+                    <span>15 %</span>
+                    <span>20 %</span>
+                  </div>
+                  <p className="mt-1 text-xs text-slate-600">{REGLAS.reduccion.texto}.</p>
+                  <p className="mt-1 text-xs font-semibold text-slate-700">
+                    Punto de partida dentro del intervalo del capítulo; puede ajustarse.
+                    {d.control === "bueno" &&
+                      d.ultralarga &&
+                      !d.tocado.reduccion &&
+                      " Con glargina U-300 o degludec y buen control previo, se parte del 20 %, por el riesgo de hipoglucemia de los primeros días."}
+                  </p>
+                </div>
+                <label className="flex min-h-11 items-center gap-2 text-sm text-slate-800">
+                  <input
+                    type="checkbox"
+                    checked={d.ultralarga}
+                    onChange={(e) =>
+                      set({
+                        ultralarga: e.target.checked,
+                        ...(d.control === "bueno" && !d.tocado.reduccion
+                          ? { reduccion: reduccionDePartida("bueno", e.target.checked) }
+                          : {}),
+                      })
+                    }
+                    className="h-6 w-6 shrink-0 accent-slate-700"
+                  />
+                  La basal previa es glargina U-300 o degludec
+                </label>
               </div>
-              <p className="mt-1 text-xs text-slate-600">{REGLAS.reduccion.texto}.</p>
-              <p className="mt-1 text-xs font-semibold text-slate-700">
-                Punto de partida dentro del intervalo del capítulo; puede ajustarse.
-                {d.control === "bueno" &&
-                  d.ultralarga &&
-                  !d.tocado.reduccion &&
-                  " Con glargina U-300 o degludec y buen control previo, se parte del 20 %, por el riesgo de hipoglucemia de los primeros días."}
-              </p>
-            </div>
-            <label className="flex min-h-11 items-center gap-2 text-sm text-slate-800">
-              <input
-                type="checkbox"
-                checked={d.ultralarga}
-                onChange={(e) =>
-                  set({
-                    ultralarga: e.target.checked,
-                    ...(d.control === "bueno" && !d.tocado.reduccion
-                      ? { reduccion: reduccionDePartida("bueno", e.target.checked) }
-                      : {}),
-                  })
-                }
-                className="h-6 w-6 shrink-0 accent-slate-700"
-              />
-              La basal previa es glargina U-300 o degludec
-            </label>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <Opciones
-              etiqueta={`¿Es adecuada la programación ${previa}?`}
-              opciones={[
-                { v: "si", t: "Sí: se traslada tal cual" },
-                { v: "no", t: "No es adecuada o no hay programación previa" },
-              ]}
-              valor={d.referencia ? "si" : "no"}
-              onChange={(v) => set({ referencia: v === "si" })}
-            />
-            <p
-              className="rounded-lg px-3 py-2 text-sm text-slate-800"
-              style={{ background: "#f1f5f9" }}
-            >
-              {d.referencia
-                ? `${DESDE_ISCI.trasladar.charAt(0).toUpperCase()}${DESDE_ISCI.trasladar.slice(1)}.`
-                : `${DESDE_ISCI.sinReferencia.charAt(0).toUpperCase()}${DESDE_ISCI.sinReferencia.slice(1)}. ${DESDE_ISCI.basalPlana}.`}
-            </p>
-            {d.origen === "aid" && (
-              <p className="text-xs text-slate-600">
-                Al cambiar de sistema, los parámetros que cuentan en automático no son los mismos:{" "}
-                <a
-                  href={href("sistemas", "todos", "parametros")}
-                  className="font-semibold underline"
+            ) : (
+              <div className="space-y-4">
+                <Opciones
+                  etiqueta={`¿Es adecuada la programación ${previa}?`}
+                  opciones={[
+                    { v: "si", t: "Sí: se traslada tal cual" },
+                    { v: "no", t: "No es adecuada o no hay programación previa" },
+                  ]}
+                  valor={d.referencia ? "si" : "no"}
+                  onChange={(v) => set({ referencia: v === "si" })}
+                />
+                <p
+                  className="rounded-lg px-3 py-2 text-sm text-slate-800"
+                  style={{ background: "#f1f5f9" }}
                 >
-                  compara los parámetros
-                </a>
-                .
+                  {d.referencia
+                    ? `${DESDE_ISCI.trasladar.charAt(0).toUpperCase()}${DESDE_ISCI.trasladar.slice(1)}.`
+                    : `${DESDE_ISCI.sinReferencia.charAt(0).toUpperCase()}${DESDE_ISCI.sinReferencia.slice(1)}. ${DESDE_ISCI.basalPlana}.`}
+                </p>
+                {d.origen === "aid" && (
+                  <p className="text-xs text-slate-600">
+                    Al cambiar de sistema, los parámetros que cuentan en automático no son los
+                    mismos:{" "}
+                    <a
+                      href={href("sistemas", "todos", "parametros")}
+                      className="font-semibold underline"
+                    >
+                      compara los parámetros
+                    </a>
+                    .
+                  </p>
+                )}
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <Campo
+                    id="calc-dtd"
+                    etiqueta="DTD actual"
+                    ayuda={
+                      !d.referencia
+                        ? "Para las reglas del 450 y del 1700"
+                        : pidePesoYDtd(sis)
+                          ? `${CORTOS[sis!]} la pide para iniciar el automático`
+                          : "Para comprobar la indicación"
+                    }
+                    unidad="UI/día"
+                    valor={d.dtd}
+                    onChange={(v) => set({ dtd: v })}
+                    max={LIMITES.dosis}
+                  />
+                  <Campo
+                    id="calc-peso"
+                    etiqueta="Peso"
+                    ayuda={
+                      pidePesoYDtd(sis)
+                        ? `${CORTOS[sis!]} lo pide para iniciar el automático`
+                        : "Para comprobar la indicación"
+                    }
+                    unidad="kg"
+                    valor={d.peso}
+                    onChange={(v) => set({ peso: v })}
+                    max={LIMITES.peso}
+                  />
+                </div>
+              </div>
+            )}
+            {(ev.calcula.basal || ev.calcula.ratioFactor || pideObjetivo) && (
+              <div className="grid gap-3 sm:grid-cols-3">
+                {ev.calcula.basal && (
+                  <Opciones
+                    etiqueta="Basal, % de la DTD"
+                    opciones={[40, 45, 50].map((v) => ({ v, t: `${v} %` }))}
+                    valor={d.basalPct}
+                    onChange={(v) => set({ basalPct: v })}
+                  />
+                )}
+                {ev.calcula.ratioFactor && (
+                  <Opciones
+                    etiqueta="Factor de sensibilidad"
+                    marca={<Marca modificado={d.tocado.regla} />}
+                    opciones={[
+                      { v: 1700 as const, t: "Regla del 1700" },
+                      { v: 1800 as const, t: "Regla del 1800" },
+                    ]}
+                    valor={d.regla}
+                    onChange={(v) => set({ regla: v, tocado: { ...d.tocado, regla: true } })}
+                  />
+                )}
+                {pideObjetivo && (
+                  <Opciones
+                    etiqueta="Objetivo del calculador de bolos manual"
+                    marca={<Marca modificado={d.tocado.objetivo} />}
+                    opciones={OBJETIVOS_CALCULADOR.map((o) => ({
+                      v: o.mgdl,
+                      t: (
+                        <span>
+                          {o.mgdl} mg/dl
+                          <span className="block text-[11px] font-normal opacity-80">
+                            {o.texto}
+                          </span>
+                        </span>
+                      ),
+                    }))}
+                    valor={d.objetivo}
+                    onChange={(v) => set({ objetivo: v, tocado: { ...d.tocado, objetivo: true } })}
+                  />
+                )}
+              </div>
+            )}
+          </Paso>
+        </div>
+        <div className="min-w-0 xl:sticky xl:top-20 xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto">
+          <Paso n={4} titulo="Parámetros de partida">
+            <Estado ev={ev} sis={sis} />
+            {ev.lista && (ev.calcula.basal || ev.calcula.ratioFactor) && (
+              <div
+                aria-live="polite"
+                className="grid grid-cols-2 gap-2 lg:grid-cols-4 xl:grid-cols-2"
+              >
+                <Cifra
+                  titulo="DTD de inicio"
+                  valor={coma(redondea(ev.dtdInicio!, 1))}
+                  unidad="UI/día"
+                  cuenta={
+                    mdi
+                      ? `${coma(redondea(ev.dtdPrevia!, 1))} UI − ${d.reduccion} %`
+                      : `${coma(redondea(ev.dtdPrevia!, 1))} UI (sin reducción)`
+                  }
+                  regla={mdi ? "Reducción respecto a MDI" : `DTD ${previa}`}
+                  color={color}
+                />
+                {ev.calcula.basal && (
+                  <Cifra
+                    titulo="Tasa basal"
+                    valor={`≈ ${coma(redondea(ev.basalHora!, 2))}`}
+                    unidad="UI/h"
+                    cuenta={`${d.basalPct} % = ${coma(redondea(ev.basalDia!, 1))} UI/día ÷ 24 h (redondeado)`}
+                    regla="Basal plana; o individualizar según MCG"
+                    color={color}
+                  />
+                )}
+                {ev.calcula.ratioFactor && (
+                  <>
+                    <Cifra
+                      titulo="Ratio I/HC"
+                      valor={coma(redondea(ev.ratio!, 1))}
+                      unidad="g por 1 UI"
+                      cuenta={`450 ÷ ${coma(redondea(ev.dtdInicio!, 1))}`}
+                      regla="Regla del 450"
+                      color={color}
+                    />
+                    <Cifra
+                      titulo="Factor de sensibilidad"
+                      valor={String(Math.round(ev.factor!))}
+                      unidad="mg/dl por 1 UI"
+                      cuenta={`${d.regla} ÷ ${coma(redondea(ev.dtdInicio!, 1))}`}
+                      regla={`Regla del ${d.regla}`}
+                      color={color}
+                    />
+                  </>
+                )}
+              </div>
+            )}
+            {ev.lista && !ev.calcula.basal && !ev.calcula.ratioFactor && (
+              <p
+                className="rounded-lg px-3 py-2 text-sm text-slate-800"
+                style={{ background: "#f1f5f9" }}
+              >
+                Se traslada la programación {previa}: no hay nada que calcular.
               </p>
             )}
-            <div className="grid gap-3 sm:grid-cols-3">
-              <Campo
-                id="calc-dtd"
-                etiqueta="DTD actual"
-                ayuda={
-                  !d.referencia
-                    ? "Para las reglas del 450 y del 1700"
-                    : pidePesoYDtd(sis)
-                      ? `${CORTOS[sis!]} la pide para iniciar el automático`
-                      : "Para comprobar la indicación"
-                }
-                unidad="UI/día"
-                valor={d.dtd}
-                onChange={(v) => set({ dtd: v })}
-                max={LIMITES.dosis}
-              />
-              <Campo
-                id="calc-peso"
-                etiqueta="Peso"
-                ayuda={
-                  pidePesoYDtd(sis)
-                    ? `${CORTOS[sis!]} lo pide para iniciar el automático`
-                    : "Para comprobar la indicación"
-                }
-                unidad="kg"
-                valor={d.peso}
-                onChange={(v) => set({ peso: v })}
-                max={LIMITES.peso}
-              />
-            </div>
-          </div>
-        )}
-        {(ev.calcula.basal || ev.calcula.ratioFactor || pideObjetivo) && (
-          <div className="grid gap-3 sm:grid-cols-3">
-            {ev.calcula.basal && (
-              <Opciones
-                etiqueta="Basal, % de la DTD"
-                opciones={[40, 45, 50].map((v) => ({ v, t: `${v} %` }))}
-                valor={d.basalPct}
-                onChange={(v) => set({ basalPct: v })}
-              />
+            {ev.lista && ev.calcula.ratioFactor && (
+              <p className="text-xs text-slate-600">
+                Las reglas se aplican a la DTD de inicio, la misma con la que se calcula la basal.
+              </p>
             )}
-            {ev.calcula.ratioFactor && (
-              <Opciones
-                etiqueta="Factor de sensibilidad"
-                marca={<Marca modificado={d.tocado.regla} />}
-                opciones={[
-                  { v: 1700 as const, t: "Regla del 1700" },
-                  { v: 1800 as const, t: "Regla del 1800" },
-                ]}
-                valor={d.regla}
-                onChange={(v) => set({ regla: v, tocado: { ...d.tocado, regla: true } })}
-              />
-            )}
+            <p className="text-xs text-slate-500">
+              Solo se comparan la DTD y el peso con la indicación del sistema; la edad, la
+              gestación, la variante del sistema y la experiencia previa, no.
+            </p>
             {pideObjetivo && (
-              <Opciones
-                etiqueta="Objetivo del calculador de bolos manual"
-                marca={<Marca modificado={d.tocado.objetivo} />}
-                opciones={OBJETIVOS_CALCULADOR.map((o) => ({
-                  v: o.mgdl,
-                  t: (
-                    <span>
-                      {o.mgdl} mg/dl
-                      <span className="block text-[11px] font-normal opacity-80">{o.texto}</span>
-                    </span>
-                  ),
-                }))}
-                valor={d.objetivo}
-                onChange={(v) => set({ objetivo: v, tocado: { ...d.tocado, objetivo: true } })}
-              />
+              <p className="text-xs text-slate-600">
+                Objetivo del calculador de bolos manual: <strong>{d.objetivo} mg/dl</strong>.{" "}
+                {REGLAS.objetivo.nota.replace(" (v. Tabla 1)", "")}.
+              </p>
             )}
-          </div>
-        )}
-      </Paso>
-
-      <Paso n={4} titulo="Parámetros de partida">
-        <Estado ev={ev} sis={sis} />
-        {ev.lista && (ev.calcula.basal || ev.calcula.ratioFactor) && (
-          <div aria-live="polite" className="grid grid-cols-2 gap-2 lg:grid-cols-4">
-            <Cifra
-              titulo="DTD de inicio"
-              valor={coma(redondea(ev.dtdInicio!, 1))}
-              unidad="UI/día"
-              cuenta={
-                mdi
-                  ? `${coma(redondea(ev.dtdPrevia!, 1))} UI − ${d.reduccion} %`
-                  : `${coma(redondea(ev.dtdPrevia!, 1))} UI (sin reducción)`
-              }
-              regla={mdi ? "Reducción respecto a MDI" : `DTD ${previa}`}
-              color={color}
-            />
-            {ev.calcula.basal && (
-              <Cifra
-                titulo="Tasa basal"
-                valor={`≈ ${coma(redondea(ev.basalHora!, 2))}`}
-                unidad="UI/h"
-                cuenta={`${d.basalPct} % = ${coma(redondea(ev.basalDia!, 1))} UI/día ÷ 24 h (redondeado)`}
-                regla="Basal plana; o individualizar según MCG"
-                color={color}
-              />
+            {mdi && d.ultralarga && (
+              <p
+                role="note"
+                className="flex gap-2 rounded-lg border px-3 py-2 text-sm text-amber-900"
+                style={{ borderColor: "#f3d38a", background: "#fffbeb" }}
+              >
+                <AlertTriangle size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
+                <span>
+                  {REGLAS.solapamiento.texto}. {REGLAS.solapamiento.nota}.
+                </span>
+              </p>
             )}
-            {ev.calcula.ratioFactor && (
-              <>
-                <Cifra
-                  titulo="Ratio I/HC"
-                  valor={coma(redondea(ev.ratio!, 1))}
-                  unidad="g por 1 UI"
-                  cuenta={`450 ÷ ${coma(redondea(ev.dtdInicio!, 1))}`}
-                  regla="Regla del 450"
-                  color={color}
-                />
-                <Cifra
-                  titulo="Factor de sensibilidad"
-                  valor={String(Math.round(ev.factor!))}
-                  unidad="mg/dl por 1 UI"
-                  cuenta={`${d.regla} ÷ ${coma(redondea(ev.dtdInicio!, 1))}`}
-                  regla={`Regla del ${d.regla}`}
-                  color={color}
-                />
-              </>
-            )}
-          </div>
-        )}
-        {ev.lista && !ev.calcula.basal && !ev.calcula.ratioFactor && (
-          <p
-            className="rounded-lg px-3 py-2 text-sm text-slate-800"
-            style={{ background: "#f1f5f9" }}
-          >
-            Se traslada la programación {previa}: no hay nada que calcular.
-          </p>
-        )}
-        {ev.lista && ev.calcula.ratioFactor && (
-          <p className="text-xs text-slate-600">
-            Las reglas se aplican a la DTD de inicio, la misma con la que se calcula la basal.
-          </p>
-        )}
-        <p className="text-xs text-slate-500">
-          Solo se comparan la DTD y el peso con la indicación del sistema; la edad, la gestación, la
-          variante del sistema y la experiencia previa, no.
-        </p>
-        {pideObjetivo && (
-          <p className="text-xs text-slate-600">
-            Objetivo del calculador de bolos manual: <strong>{d.objetivo} mg/dl</strong>.{" "}
-            {REGLAS.objetivo.nota.replace(" (v. Tabla 1)", "")}.
-          </p>
-        )}
-        {mdi && d.ultralarga && (
-          <p
-            role="note"
-            className="flex gap-2 rounded-lg border px-3 py-2 text-sm text-amber-900"
-            style={{ borderColor: "#f3d38a", background: "#fffbeb" }}
-          >
-            <AlertTriangle size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
-            <span>
-              {REGLAS.solapamiento.texto}. {REGLAS.solapamiento.nota}.
-            </span>
-          </p>
-        )}
-      </Paso>
-
+          </Paso>
+        </div>
+      </div>
       <Paso n={5} titulo={sis !== undefined ? `Qué programar en ${CORTOS[sis]}` : "Qué programar"}>
         {sis === undefined ? (
           <p className="text-sm text-slate-600">Elige el sistema en el paso 2.</p>

@@ -498,7 +498,12 @@ export const CLAVE_ALGORITMO: ClaveAlgoritmo[] = [
     actua: ["bolos extendidos cada 8–12 min"],
     prediccion: ["de 2,5 a 4 h"],
     objetivo: ["80–198 mg/dl", "De fábrica: 104 mg/dl"],
-    correccion: { si: false, texto: ["sin bolos de corrección diferenciados"] },
+    correccion: {
+      si: false,
+      texto: [
+        "modula la administración continua de insulina, sin bolos de corrección diferenciados",
+      ],
+    },
     aprendizaje: ["aprendizaje multinivel", "se actualiza cada 24 h"],
   },
   {
@@ -506,7 +511,10 @@ export const CLAVE_ALGORITMO: ClaveAlgoritmo[] = [
     actua: ["microbolos cada 5 min"],
     prediccion: ["a 60 min"],
     objetivo: ["110, 120, 130, 140 o 150 mg/dl"],
-    correccion: { si: false, texto: ["incrementa la tasa basal adaptativa hasta un 400 %"] },
+    correccion: {
+      si: false,
+      texto: ["en su lugar, incrementa la tasa basal adaptativa hasta un 400 %"],
+    },
     aprendizaje: ["se recalcula con cada cambio de pod"],
   },
 ];

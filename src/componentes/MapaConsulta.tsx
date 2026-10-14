@@ -58,7 +58,7 @@ export function TarjetaPortada({
           {resumen && <p className="mt-0.5 text-sm leading-snug text-slate-600">{resumen}</p>}
         </div>
       </header>
-      <div className="mt-auto border-t" style={{ borderColor: "#eef0f2" }}>
+      <div className="flex flex-1 flex-col border-t" style={{ borderColor: "#eef0f2" }}>
         {children}
       </div>
     </section>
@@ -96,10 +96,10 @@ function SistemasDeUnVistazo() {
   return (
     <nav
       aria-label="Los cuatro sistemas"
-      className="border-b px-2 py-2 sm:px-3"
+      className="flex flex-1 items-center border-b px-2 py-2 sm:px-3"
       style={{ borderColor: "#eef0f2" }}
     >
-      <ul className="grid grid-cols-4 gap-1">
+      <ul className="grid w-full grid-cols-4 gap-1">
         {ORDEN_SISTEMAS.map((id, c) => (
           <li key={id} className="min-w-0">
             <a
@@ -111,7 +111,7 @@ function SistemasDeUnVistazo() {
                 alt=""
                 width={44}
                 height={44}
-                className="h-10 w-10 shrink-0 rounded-lg border bg-white object-cover sm:h-11 sm:w-11"
+                className="h-10 w-10 shrink-0 rounded-lg border bg-white object-cover sm:h-11 sm:w-11 lg:h-14 lg:w-14"
                 style={{ borderColor: "#e6e6e6" }}
               />
               <span
