@@ -54,12 +54,12 @@ export function mantenerEnVista(el: HTMLElement, ms = 2500): () => void {
    la lista, el texto empieza arriba y la pantalla parece vacía. Tras el cambio (no en la primera
    carga), si el principio del bloque no está a la vista, se sube a él (14-10-2026). */
 export function useSubirAlElegir(clave: string, id: string) {
-  const primera = useRef(true);
+  // Se compara con la clave anterior (no con «primera vez»): en StrictMode el efecto corre dos
+  // veces al montar y la segunda subía la pantalla sin haber elegido nada (0.72.0).
+  const previa = useRef(clave);
   useEffect(() => {
-    if (primera.current) {
-      primera.current = false;
-      return;
-    }
+    if (previa.current === clave) return;
+    previa.current = clave;
     const el = document.getElementById(id);
     if (!el) return;
     const arriba = el.getBoundingClientRect().top;

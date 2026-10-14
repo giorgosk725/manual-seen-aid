@@ -580,9 +580,20 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
       ],
       [/hipogluc|\bhipos?\b/, "Hipoglucemia en asa cerrada", href("visual", "hipoglucemia")],
       [
-        /interrup|desconect|sin repuesto|se ha roto|averi/,
+        /interrup|desconect|repuesto|se ha roto|averi|falla (el |la )?(pod|bomba)|(pod|bomba) (que )?falla/,
         "Interrupción del sistema",
         href("consultar", "interrupcion"),
+      ],
+      [
+        /modo actividad|funcion actividad|objetivo temporal|modo ejercicio|objetivo de ejercicio|ease-?off/,
+        "Ejercicio aeróbico planificado (Tabla 4)",
+        // Con el sistema nombrado, su conducta («objetivo temporal 780G»).
+        href("consultar", "situacion", `ejercicio-aerobico${sis >= 0 ? `:${SIS_IDS[sis]}` : ""}`),
+      ],
+      [
+        /(?<!no )gestan|embaraz|gestacion|\bparto\b|posparto/,
+        "Situaciones · Gestación, parto y posparto",
+        href("consultar", "situacion", "gestacion"),
       ],
     ];
     const n = normalizar(consulta);
@@ -609,9 +620,11 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         !paso || !/paso \d/.test(r.entrada.titulo) || r.entrada.titulo.includes(`paso ${paso}`),
     )
     .map((r) => {
+      // Sin lo negado del título: «gestante» no abre «Adultos no gestantes» (0.72.0).
       const t = normalizar(
         r.entrada.tipo === "caso" ? `${r.entrada.titulo} ${r.entrada.texto}` : r.entrada.titulo,
       )
+        .replace(/\bno [a-zñ]+/g, " ")
         .split(/[^a-z0-9ñ]+/)
         .map(raiz);
       return { r, f: terminos.filter((x) => t.includes(raiz(x))).length / terminos.length };

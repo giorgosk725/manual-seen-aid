@@ -854,7 +854,9 @@ export function Shell({
         className="cabecera sticky top-0 z-20 border-b backdrop-blur lg:ml-64"
         style={{ borderColor: "#e6e6e6" }}
       >
-        <div className="mx-auto flex h-14 max-w-5xl items-center gap-2 px-3 sm:px-5">
+        <div
+          className={`mx-auto flex h-14 max-w-5xl items-center gap-2 px-3 sm:px-5 ${ruta.seccion === "capitulo" ? "" : "2xl:max-w-7xl"}`}
+        >
           <a
             href="#/"
             aria-label="Manual de Endocrinología y Nutrición, complemento interactivo: inicio"

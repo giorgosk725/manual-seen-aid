@@ -167,6 +167,21 @@ function RangoTramo({ rango, on }: { rango: string; on: boolean }) {
   );
 }
 
+/* En los rótulos en mayúsculas, la β sigue siendo β (en mayúscula se lee como una B). */
+function BetaMinuscula({ t }: { t: string }) {
+  const partes = t.split("β");
+  return (
+    <>
+      {partes.map((x, i) => (
+        <span key={i}>
+          {i > 0 && <span className="normal-case">β</span>}
+          {x}
+        </span>
+      ))}
+    </>
+  );
+}
+
 function NotasDelPie() {
   return (
     <div className="grid gap-3 sm:grid-cols-3">
@@ -292,7 +307,7 @@ export function Figura3Lectura() {
         className="my-3 rounded-xl px-4 py-2.5 text-center text-sm font-bold uppercase tracking-wide text-white"
         style={{ background: "#4b73b0" }}
       >
-        {FIGURA3.confirmar}
+        <BetaMinuscula t={FIGURA3.confirmar} />
       </div>
       <div className="grid gap-3 lg:grid-cols-2">
         {FIGURA3.tramos.map((t) => (
@@ -375,7 +390,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-white">
               2
             </span>{" "}
-            {FIGURA3.confirmar}
+            <BetaMinuscula t={FIGURA3.confirmar} />
           </div>
           {/* La escala de la figura, de menos a más (decorativa: los botones la dicen). */}
           <div aria-hidden="true" className="mb-2 flex h-1.5 gap-0.5 overflow-hidden rounded-full">

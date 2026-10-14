@@ -1,6 +1,6 @@
 /* Buscar, Bibliografía, Sobre esta app, Autoevaluación y Preguntas frecuentes. */
 import { guardarReciente } from "../prefs";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   CheckCircle2,
@@ -564,6 +564,8 @@ function Pregunta({
 }) {
   const [elegida, setElegida] = useState<number | null>(null);
   const ap = apartadoPorSlug(p.apartado);
+  // Al responder, la explicación a la vista (0.72.0: en el móvil quedaba debajo, fuera).
+  const explicacion = useRef<HTMLDivElement>(null);
   return (
     <li className="rounded-2xl border bg-white p-4 shadow-soft" style={{ borderColor: "#e6e6e6" }}>
       <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
@@ -587,6 +589,9 @@ function Pregunta({
                   if (resuelta) return;
                   setElegida(i);
                   onResponder(esCorrecta);
+                  requestAnimationFrame(() =>
+                    explicacion.current?.scrollIntoView?.({ block: "nearest" }),
+                  );
                 }}
                 // aria-disabled (no «disabled»): el botón pulsado conserva el foco al responder.
                 aria-disabled={resuelta || undefined}
@@ -609,7 +614,7 @@ function Pregunta({
         })}
       </ol>
       {/* Región viva montada desde el principio: así se anuncia la explicación al responder. */}
-      <div aria-live="polite">
+      <div aria-live="polite" ref={explicacion} className="scroll-mb-24">
         {elegida != null && (
           <div className="animate-in mt-3 space-y-2">
             <div className="rounded-xl p-3 text-sm" style={{ background: "#eef3f8" }}>
@@ -908,7 +913,7 @@ export function Preguntas({ id }: { id?: string }) {
         className={
           filtradas
             ? "hidden"
-            : "space-y-2 lg:columns-2 lg:gap-3 lg:space-y-0 [&>*]:lg:mb-2 [&>*]:break-inside-avoid"
+            : "space-y-2 lg:columns-2 lg:gap-3 lg:space-y-0 lg:[&>*]:mb-2 [&>*]:break-inside-avoid"
         }
       >
         {TEMAS.map((tema) => (

@@ -92,7 +92,8 @@
      SOLO por debajo de lg: ahí la tabla (~720px con 4 sistemas) desborda de verdad. En
      escritorio cabe entera y el degradado se leía como un defecto —sobre todo desde que
      la fila de encabezado es oscura, donde el desvanecido canta. */
-  @media (max-width: 1023px) {
+  /* 0.72.0: hasta 767 px (desde la tablet ya no hay barra lateral y la tabla cabe). */
+  @media (max-width: 767px) {
     .fade-right-scroll {
       -webkit-mask-image: linear-gradient(90deg, #000 92%, transparent 100%);
       mask-image: linear-gradient(90deg, #000 92%, transparent 100%);
@@ -338,6 +339,9 @@ main .note-soft {
   html.night .hover\:border-slate-400:hover {
     border-color: #7d8ba0;
   }
+  /* 0.72.0: también los separadores sin color propio (el gris claro por defecto, de noche,
+     era una línea blanca entre filas). */
+  html.night .divide-y > :not([hidden]) ~ :not([hidden]),
   html.night .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
     border-color: #334155;
   }
@@ -1006,10 +1010,14 @@ html.night .pagina-badge {
 /* 0.72.0: en el ordenador, sin caja de 70vh con su propio scroll (doble scroll); la tabla sigue
    la página y, si es más ancha, se desplaza a lo ancho. */
 @media screen and (min-width: 1024px) {
+  /* «clip» no es contenedor de desplazamiento: así la cabecera se queda pegada bajo la barra de arriba
+     al bajar por la página (a 1366 y 1920 ninguna tabla desborda). */
   .tabla-scroll {
     max-height: none;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow: clip;
+  }
+  .tabla-scroll .tabla-capitulo thead th {
+    top: 3.5rem;
   }
 }
 

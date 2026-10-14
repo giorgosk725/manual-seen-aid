@@ -138,7 +138,8 @@ const TONO_URGENTE: Record<string, { soft: string; strong: string; ink: string }
 function SituacionesUrgentes({ ids }: { ids: string[] }) {
   return (
     <ul
-      className="grid grid-cols-3 gap-1.5 border-b p-2 sm:gap-2 sm:p-3"
+      // En la tablet y el portátil, la tarjeta es estrecha: una fila por urgencia (0.72.0).
+      className="grid grid-cols-3 gap-1.5 border-b p-2 sm:gap-2 sm:p-3 md:grid-cols-1 xl:grid-cols-3"
       style={{ borderColor: "#eef0f2" }}
     >
       {ids.map((id) => {
@@ -149,7 +150,7 @@ function SituacionesUrgentes({ ids }: { ids: string[] }) {
           <li key={id} className="min-w-0">
             <a
               href={d.href}
-              className="flex h-full min-h-20 flex-col gap-1.5 rounded-xl border p-2 text-[13px] font-bold leading-tight transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:p-2.5 sm:text-sm"
+              className="flex h-full min-h-20 flex-col gap-1.5 rounded-xl border p-2 text-[13px] font-bold leading-tight transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:p-2.5 sm:text-sm md:min-h-11 md:flex-row md:items-center md:gap-2.5 xl:min-h-20 xl:flex-col xl:items-start xl:gap-1.5"
               style={{ borderColor: "#e6e6e6", background: t.soft, color: t.ink }}
             >
               <span

@@ -612,6 +612,17 @@ function ListaSituaciones({
           {total === 1 ? "1 resultado" : `${total} resultados`}
         </p>
       )}
+      {/* La leyenda de los puntos (en el móvil no hay «title» al pasar el ratón). */}
+      {!f && (
+        <p aria-hidden="true" className="flex items-center gap-1.5 px-1 text-xs text-slate-600">
+          <span className="flex gap-0.5">
+            {SISTEMA_HEX.map((x, k) => (
+              <span key={k} className="h-2 w-2 rounded-full" style={{ background: x.strong }} />
+            ))}
+          </span>
+          Cambia según el sistema
+        </p>
+      )}
       {f && total === 0 && (
         <div
           className="rounded-md border border-dashed px-3 py-3 text-sm text-slate-700"

@@ -850,14 +850,14 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
           nuevos.length ? nuevos.join("+") : "todos",
           !sec || sec === "funciona" ? "esencial" : sec,
         );
-  const alternar = (id: string) =>
-    window.location.replace(
-      rutaCon(
-        ids.includes(id)
-          ? ids.filter((x) => x !== id)
-          : IDS_SISTEMA.filter((x) => ids.includes(x) || x === id),
-      ),
-    );
+  const alternar = (id: string) => {
+    const nuevos = ids.includes(id)
+      ? ids.filter((x) => x !== id)
+      : IDS_SISTEMA.filter((x) => ids.includes(x) || x === id);
+    window.location.replace(rutaCon(nuevos));
+    // De la ficha a la comparación (o al revés), arriba: es otra pantalla (0.72.0).
+    if ((ids.length === 1) !== (nuevos.length === 1)) window.scrollTo({ top: 0 });
+  };
   // 0.71.0: en escritorio la barra no se pliega (hay sitio). En el móvil, al bajar se pliega a
   // una línea («Control-IQ + Omnipod 5 · Cambiar») y, en la ficha de un sistema, empieza plegada:
   // el contenido queda en la primera pantalla. «Cambiar» la abre hasta el siguiente desplazamiento.
@@ -882,7 +882,9 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
     : "Los cuatro sistemas";
   return (
     <div
-      className="barra-pegada no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 pt-2 sm:mx-0 sm:rounded-lg sm:border sm:px-3"
+      // En la comparación del ordenador, la barra no se pega: lo que queda arriba al bajar es la
+      // cabecera de la tabla, con los nombres de los sistemas (0.72.0).
+      className={`barra-pegada no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 pt-2 sm:mx-0 sm:rounded-lg sm:border sm:px-3 ${ids.length === 1 ? "" : "lg:static"}`}
       style={{ borderColor: "#e6e6e6" }}
     >
       {compacta ? (

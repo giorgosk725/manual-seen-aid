@@ -255,7 +255,7 @@ export function HubPacientes() {
               href={href("pacientes", "hoja", cetonas.id)}
               icono={Droplets}
               titulo={cetonas.titulo}
-              detalle="Va también como segunda cara del plan de seguridad"
+              detalle="Va también con el plan de seguridad, en hoja aparte"
             />
           </div>
         )}
@@ -583,7 +583,10 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
           <dl className="plan-t4 mt-1 space-y-1.5 text-sm">
             {t4.map((f) => (
               <div key={f.etiqueta}>
-                <dt className="font-bold text-slate-900">{f.etiqueta.split("\n")[0]}</dt>
+                {/* Sin el punto final: en papel va seguido de «: » (0.72.0: salía «.:»). */}
+                <dt className="font-bold text-slate-900">
+                  {f.etiqueta.split("\n")[0].replace(/\.$/, "")}
+                </dt>
                 <dd className="text-slate-800">
                   {(f.unida ? celdaUnidaDelSistema(f.celdas[0], c) : f.celdas[c]).replace(
                     /\n/g,

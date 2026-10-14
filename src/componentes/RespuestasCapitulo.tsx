@@ -6,7 +6,7 @@ import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
 import { TABLAS } from "../contenido";
 import { useId, useState, type ReactNode } from "react";
 import { ArrowRight, MessageCircleQuestion, Quote } from "lucide-react";
-import { marcar, type Respuesta } from "../busqueda";
+import { marcar, tramoDeConsulta, type Respuesta } from "../busqueda";
 import type { RespuestaFrecuente } from "../respuestas";
 import type { Frecuente } from "../frecuentes";
 import { FIGURA3, LISTA_TABLAS, type TablaId } from "../contenido";
@@ -371,7 +371,9 @@ function Tarjeta({
           </ul>
         )
       )}
-      {/^F3\/(inicio|verde|amarillo|naranja)$/.test(r.id) && (
+      {/* Con una cifra de β-OHB en la consulta, la urgencia ya va arriba (AvisosBusqueda): una
+          sola vez (0.72.0). */}
+      {/^F3\/(inicio|verde|amarillo|naranja)$/.test(r.id) && !tramoDeConsulta(q) && (
         <UrgenciaF3 className="mt-2" donde={`junto a «${r.titulo}»`} />
       )}
       {r.partes && (
