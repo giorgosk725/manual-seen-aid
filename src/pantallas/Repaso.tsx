@@ -124,7 +124,7 @@ function TarjetaVista({
   return (
     <article
       ref={tarjeta}
-      className="scroll-mt-20 overflow-hidden rounded-2xl border bg-white shadow-soft"
+      className="scroll-mt-4 overflow-hidden rounded-2xl border bg-white shadow-soft"
       style={{ borderColor: "#e6e6e6" }}
       aria-label={`Tarjeta ${posicion}`}
     >

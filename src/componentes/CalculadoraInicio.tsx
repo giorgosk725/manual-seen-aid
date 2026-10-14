@@ -773,7 +773,7 @@ export function CalculadoraInicio({
         </div>
         <div
           ref={resultados}
-          className="min-w-0 scroll-mt-20 xl:sticky xl:top-20 xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto"
+          className="min-w-0 scroll-mt-4 xl:sticky xl:top-20 xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto"
         >
           <Paso n={4} titulo="Parámetros de partida">
             <Anuncio

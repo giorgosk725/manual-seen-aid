@@ -387,7 +387,7 @@ function PasosInicio({
   const boton = (on: boolean) =>
     `inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`;
   return (
-    <div id="paso-guia" className="scroll-mt-24">
+    <div id="paso-guia" className="scroll-mt-4">
       <ol className="mb-3 grid gap-1.5 sm:grid-cols-5" aria-label="Pasos de la fase">
         {PASOS_GUIA.map((x, i) => {
           const on = i === n - 1;
@@ -727,7 +727,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
         </div>
       )}
 
-      <div id="paso-inicio" tabIndex={-1} className="scroll-mt-24 focus:outline-none">
+      <div id="paso-inicio" tabIndex={-1} className="scroll-mt-4 focus:outline-none">
         {actual === CALC ? (
           <CalculadoraInicio sis={sis} onSistema={(c) => ir(CALC, sis === c ? undefined : c)} />
         ) : fase ? (

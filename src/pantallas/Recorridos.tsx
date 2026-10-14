@@ -410,7 +410,7 @@ function GuionVista({
             <li
               key={`${m.bloque}-${i}`}
               id={`momento-${i}`}
-              className="relative scroll-mt-24 pb-1 pl-10"
+              className="relative scroll-mt-4 pb-1 pl-10"
             >
               {i < momentos.length - 1 && (
                 <span
@@ -640,8 +640,8 @@ function ListaSituaciones({
       id="lista-situaciones"
       className={
         ancha
-          ? "scroll-mt-20 gap-3 lg:columns-2 2xl:columns-3 [&>*]:mb-2 [&>*]:break-inside-avoid"
-          : "scroll-mt-20 space-y-2"
+          ? "scroll-mt-4 gap-3 lg:columns-2 2xl:columns-3 [&>*]:mb-2 [&>*]:break-inside-avoid"
+          : "scroll-mt-4 space-y-2"
       }
     >
       {f && (
@@ -816,13 +816,13 @@ export function SituacionSistema({
         </div>
         <div
           id="detalle-situacion"
-          className={`scroll-mt-24 ${sit || guia ? "order-first lg:order-none" : ""}`}
+          className={`scroll-mt-4 ${sit || guia ? "order-first lg:order-none" : ""}`}
         >
           {guia && (
             <div key={guia.id} className="pantalla-in space-y-4">
               <CabeceraSituacion id={guia.id} etiqueta={guia.etiqueta} onCambiar={cambiar} />
               {/* 0.72.0: sin la frase de entrada (la regla de la 0.70.0; queda en la búsqueda). */}
-              <div id="conducta-situacion" className="scroll-mb-28 scroll-mt-24" />
+              <div id="conducta-situacion" className="scroll-mb-28 scroll-mt-4" />
               {/* Los objetivos de MCG de esa población, a la vista (antes, un enlace al pie). */}
               {guia.enlaces
                 .map((l) => /^#\/visual\/objetivos-mcg\/([a-z-]+)$/.exec(l.ruta)?.[1])
@@ -884,7 +884,7 @@ export function SituacionSistema({
                 <section
                   id="antes-situacion"
                   aria-label="Antes de actuar"
-                  className="scroll-mt-24 rounded-2xl border-2 p-4"
+                  className="scroll-mt-4 rounded-2xl border-2 p-4"
                   style={{ borderColor: "#f3d38a", background: "#fffbeb" }}
                 >
                   <h2 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-amber-900">
@@ -901,7 +901,7 @@ export function SituacionSistema({
               )}
               <section
                 id="conducta-situacion"
-                className="scroll-mb-28 scroll-mt-24 space-y-3 rounded-2xl border bg-white p-4 shadow-soft"
+                className="scroll-mb-28 scroll-mt-4 space-y-3 rounded-2xl border bg-white p-4 shadow-soft"
                 style={{ borderColor: "#e6e6e6" }}
                 aria-label="Conducta recomendada"
               >
@@ -1199,7 +1199,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           key={n}
           id="paso-descarga"
           tabIndex={-1}
-          className="pantalla-in scroll-mt-24 rounded-2xl border bg-white p-4 shadow-soft focus:outline-none"
+          className="pantalla-in scroll-mt-4 rounded-2xl border bg-white p-4 shadow-soft focus:outline-none"
           style={{ borderColor: "#e6e6e6" }}
           aria-live="polite"
         >

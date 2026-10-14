@@ -445,7 +445,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
             })}
           </div>
         </li>
-        <li ref={actuar} aria-live="polite" className="scroll-mt-20">
+        <li ref={actuar} aria-live="polite" className="scroll-mt-4">
           {/* La rama, solo cuando hay un tramo elegido (0.70.0: sin el recuadro vacío). */}
           {actual && (
             <div key={actual.clave} className="pantalla-in">

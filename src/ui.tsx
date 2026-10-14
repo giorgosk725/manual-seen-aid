@@ -325,7 +325,7 @@ export function Foldable({
     <details
       id={id}
       open={open || undefined}
-      className={`group scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-soft ${className}`}
+      className={`group scroll-mt-4 rounded-xl border border-slate-200 bg-white shadow-soft ${className}`}
     >
       <summary className="flex cursor-pointer list-none items-center gap-2.5 rounded-xl px-4 py-3 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600">
         {Icon && (

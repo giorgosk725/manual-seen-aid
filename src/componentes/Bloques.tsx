@@ -79,7 +79,7 @@ function Marco({
   ancho?: boolean;
 }) {
   return (
-    <div id={id} className={`group relative scroll-mt-24 ${ancho ? "" : "prosa"}`}>
+    <div id={id} className={`group relative scroll-mt-4 ${ancho ? "" : "prosa"}`}>
       <Ancla id={ancla} slug={slug} />
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">{children}</div>
@@ -160,19 +160,19 @@ function BloqueVista({
       );
     case "tabla":
       return (
-        <div id={id} className="scroll-mt-24 lg:-mr-16">
+        <div id={id} className="scroll-mt-4 lg:-mr-16">
           <TablaVista tabla={TABLAS[b.id]} modo="lectura" />
         </div>
       );
     case "diagrama":
       return (
-        <div id={id} className="scroll-mt-24 lg:-mr-16">
+        <div id={id} className="scroll-mt-4 lg:-mr-16">
           <Diagrama id={b.id} enApartado />
         </div>
       );
     case "figura":
       return (
-        <div id={id} className="scroll-mt-24 lg:-mr-16">
+        <div id={id} className="scroll-mt-4 lg:-mr-16">
           {b.id === "F3" ? (
             <Suspense fallback={<div className="min-h-40" aria-busy="true" />}>
               <Figura3Lectura />
@@ -254,7 +254,7 @@ export const Bloques = memo(function Bloques({
                 <div
                   key={d.id}
                   id={prefijo ? `${prefijo}-d-${d.id}` : `d-${d.id}`}
-                  className="scroll-mt-24 lg:-mr-16"
+                  className="scroll-mt-4 lg:-mr-16"
                 >
                   <Diagrama id={d.id} enApartado />
                 </div>

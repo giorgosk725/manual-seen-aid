@@ -173,7 +173,7 @@ export function MapaConsulta() {
   return (
     <section aria-labelledby="mapa-consulta">
       {/* Cada tarjeta dice ya qué ofrece: el título del mapa, solo para lectores de pantalla. */}
-      <h2 id="mapa-consulta" tabIndex={-1} className="sr-only scroll-mt-24">
+      <h2 id="mapa-consulta" tabIndex={-1} className="sr-only scroll-mt-4">
         Consultar
       </h2>
       {/* Dos columnas desde la tablet (0.72.0: la barra lateral sale desde 1024 px). */}

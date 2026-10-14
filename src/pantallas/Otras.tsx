@@ -441,7 +441,7 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
             as="li"
             key={r.n}
             id={`ref-${r.n}`}
-            className={`scroll-mt-24 rounded-xl border bg-white p-3 shadow-soft ${destacada === `ref-${r.n}` ? "ring-2 ring-sky-300" : ""}`}
+            className={`scroll-mt-4 rounded-xl border bg-white p-3 shadow-soft ${destacada === `ref-${r.n}` ? "ring-2 ring-sky-300" : ""}`}
           >
             <div className="flex gap-3">
               <span
