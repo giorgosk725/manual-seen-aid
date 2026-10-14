@@ -816,7 +816,6 @@ export function SituacionSistema({
         </div>
         <div
           id="detalle-situacion"
-          aria-live="polite"
           className={`scroll-mt-24 ${sit || guia ? "order-first lg:order-none" : ""}`}
         >
           {guia && (

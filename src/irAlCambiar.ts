@@ -65,5 +65,13 @@ export function useSubirAlElegir(clave: string, id: string) {
     const arriba = el.getBoundingClientRect().top;
     // Arriba de la vista, o tan abajo que apenas se ve el principio: se sube a él.
     if (arriba < 56 || arriba > window.innerHeight * 0.7) el.scrollIntoView({ block: "start" });
+    // El foco, al título de lo elegido (2.4.3): no se queda en el botón ni cae al principio, y
+    // el lector lee el título en vez de todo el bloque (0.72.0).
+    if (!clave) return;
+    const t = el.querySelector<HTMLElement>("h1, h2, h3");
+    if (t) {
+      t.setAttribute("tabindex", "-1");
+      t.focus({ preventScroll: true });
+    }
   }, [clave, id]);
 }

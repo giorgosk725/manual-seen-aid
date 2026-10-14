@@ -887,6 +887,7 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
   const deEntrada = ids.length === 1 || (ids.length === 0 && !seccion);
   const [plegada, setPlegada] = useState(movil && deEntrada);
   const [abierta, setAbierta] = useState(false);
+  const barra = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!movil) return;
     const onScroll = () => {
@@ -903,6 +904,7 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
     : "Los cuatro sistemas";
   return (
     <div
+      ref={barra}
       // En la comparación del ordenador, la barra no se pega: lo que queda arriba al bajar es la
       // cabecera de la tabla, con los nombres de los sistemas (0.72.0).
       className={`barra-pegada no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 pt-2 sm:mx-0 sm:rounded-lg sm:border sm:px-3 ${ids.length === 1 ? "" : "lg:static"}`}
@@ -911,7 +913,13 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
       {compacta ? (
         <button
           type="button"
-          onClick={() => setAbierta(true)}
+          onClick={() => {
+            setAbierta(true);
+            // El foco, a la primera casilla (2.4.3: el botón desaparece al abrirse).
+            requestAnimationFrame(() =>
+              barra.current?.querySelector<HTMLElement>('[role="group"] button')?.focus(),
+            );
+          }}
           className="flex min-h-11 w-full items-center gap-2 text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           aria-expanded={false}
         >

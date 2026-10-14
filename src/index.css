@@ -995,6 +995,18 @@ html {
 html:has(.barra-pegada) {
   scroll-padding-top: 10rem;
 }
+/* Con poca altura (zoom al 200 %, móvil apaisado), la cabecera y las barras no se pegan: si no,
+   se comían más de la mitad de la pantalla. */
+@media screen and (max-height: 520px) {
+  .cabecera,
+  .barra-pegada {
+    position: static !important;
+  }
+  html,
+  html:has(.barra-pegada) {
+    scroll-padding-top: 1rem;
+  }
+}
 html.night .focus-visible\:ring-slate-500:focus-visible,
 html.night .focus-visible\:ring-slate-600:focus-visible,
 html.night .focus-visible\:ring-slate-700:focus-visible {
