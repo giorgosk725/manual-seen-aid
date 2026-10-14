@@ -407,12 +407,15 @@ export function textosDePieza(pieza: Pieza, sis?: number): string[] {
   }
 }
 
+/* En las pantallas de consulta, todas menos «UI»: es obvia y, pulsable, partía la cifra de la
+   dosis («0,1 UI/kg») que se destaca en negrita (0.72.0). */
+export const SIGLAS_CONSULTA = GLOSARIO.map((g) => g.sigla).filter((x) => x !== "UI");
 /* Las siglas del glosario, pulsables la primera vez que salen en un bloque de piezas: a cada
    pieza le llegan las que no han salido en las anteriores (Iniciar; 0.72.0, también Situaciones). */
 export function siglasPorPiezas(piezas: Pieza[], sis?: number): Set<string>[] {
   const vistas = new Set<string>();
   return piezas.map((p) => {
-    const pend = new Set(GLOSARIO.map((g) => g.sigla).filter((x) => !vistas.has(x)));
+    const pend = new Set(SIGLAS_CONSULTA.filter((x) => !vistas.has(x)));
     for (const t of textosDePieza(p, sis)) for (const x of siglasEn(t)) vistas.add(x);
     return pend;
   });

@@ -52,20 +52,14 @@ import {
   type EstadoExploracion,
   type TonoFranja,
 } from "../contenido/diagramas";
-import {
-  F2,
-  FIGURA3,
-  GLOSARIO,
-  TABLAS,
-  algoritmoDelCapitulo,
-  ubicacionDeDiagrama,
-} from "../contenido";
+import { F2, FIGURA3, TABLAS, algoritmoDelCapitulo, ubicacionDeDiagrama } from "../contenido";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
 import { BotonImprimir, PaginaBadge, Segmented } from "../ui";
 import { SISTEMA_HEX, TRAMO_HEX } from "../tokens";
 import { Lineas, Texto } from "../texto";
 import { siglasPorTexto } from "../siglas";
+import { SIGLAS_CONSULTA } from "../inicio";
 import { useNivelTitulo, type Nivel } from "../nivel-contexto";
 import type { LucideIcon } from "lucide-react";
 
@@ -1394,7 +1388,7 @@ function InterrupcionLinea() {
     ...L.detalles.map((d) => d.texto),
   ];
   const porTexto = new Map<string, Set<string>>();
-  siglasPorTexto(orden, new Set(GLOSARIO.map((g) => g.sigla))).forEach((x, k) => {
+  siglasPorTexto(orden, new Set(SIGLAS_CONSULTA)).forEach((x, k) => {
     if (!porTexto.has(orden[k])) porTexto.set(orden[k], x);
   });
   const TS = ({ children }: { children: string }) => (
