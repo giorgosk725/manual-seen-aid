@@ -1013,6 +1013,11 @@ html.night .focus-visible\:ring-slate-700:focus-visible {
   --tw-ring-color: #cbd5e1;
 }
 
+/* Separación blanca entre casillas tintadas de la comparación; de noche, el color del fondo. */
+html.night [style*="rgb(255, 255, 255) 0px 0px 0px 2px inset"] {
+  box-shadow: inset 0 0 0 2px #0f172a !important;
+}
+
 /* Cifras con unidad dentro del texto literal (texto.tsx, ConCifras). */
 .cifra {
   font-weight: 700;
