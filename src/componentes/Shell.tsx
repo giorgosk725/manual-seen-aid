@@ -14,6 +14,7 @@ import {
 import {
   AArrowDown,
   AArrowUp,
+  ArrowRight,
   ChevronDown,
   ChevronLeft,
   Cpu,
@@ -587,6 +588,16 @@ function BuscadorLateral() {
           autoComplete="off"
           className="w-full min-w-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none"
         />
+        {/* 0.72.0: que se vea que Intro (o este botón) abre los resultados. */}
+        {q.trim() && (
+          <button
+            type="submit"
+            className="tap-44 inline-flex shrink-0 items-center gap-0.5 rounded px-1.5 text-xs font-bold text-white"
+            style={{ background: "#8E254E" }}
+          >
+            Buscar <ArrowRight size={12} aria-hidden="true" />
+          </button>
+        )}
       </div>
     </form>
   );
