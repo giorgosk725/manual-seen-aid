@@ -12,9 +12,27 @@ export type EstadoBuscador = "inactivo" | "cargando" | "listo" | "error";
 let listo: Motor | null = null;
 let pedido: Promise<Motor> | null = null;
 
+/* 0.72.0: con el motor cargado, sus cachés (índice, raíces, expansiones) se llenan en reposo con
+   una consulta cualquiera: la primera tecla de verdad ya no espera ~400 ms. */
+const calentar = (m: Motor) => {
+  const f = () => {
+    try {
+      m.buscar("cetonas", 5);
+      m.responder("cetonas");
+    } catch {
+      /* solo es una precarga */
+    }
+  };
+  if (typeof window.requestIdleCallback === "function") window.requestIdleCallback(f);
+  else window.setTimeout(f, 200);
+};
 export const precargarBuscador = () =>
   (pedido ??= import("./buscador")
-    .then((m) => (listo = m))
+    .then((m) => {
+      listo = m;
+      calentar(m);
+      return m;
+    })
     .catch((e) => {
       pedido = null; // el siguiente intento vuelve a pedirlo
       throw e;
