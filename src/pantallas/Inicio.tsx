@@ -58,7 +58,7 @@ import { FuentePie } from "../componentes/FuentePie";
 const hex = CATEGORIA_HEX.consultar;
 const NOMBRES = TABLAS.T1.columnas;
 /* En los botones, el nombre corto (el largo se cortaba en el móvil). */
-const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
+const CORTOS = ["MiniMed 780G", "Control-IQ / Control-IQ+", "CamAPS FX", "Omnipod 5"];
 const HOJA = "hoja";
 const GUIA = "guia";
 /* La calculadora de parámetros iniciales: lo primero al entrar (13-10-2026). */

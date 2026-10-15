@@ -62,7 +62,7 @@ import { FuentePie } from "./FuentePie";
 import { cambiarCalculadora, useTrabajo } from "../trabajo-inicio";
 
 const hex = CATEGORIA_HEX.consultar;
-const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
+const CORTOS = ["MiniMed 780G", "Control-IQ / Control-IQ+", "CamAPS FX", "Omnipod 5"];
 /* La pauta previa, por origen: lo que se traslada y lo que se calcula (apartado 8, p. 12). */
 const PREVIA: Record<Origen, string> = {
   mdi: "de su pauta",

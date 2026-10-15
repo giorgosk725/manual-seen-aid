@@ -20,7 +20,11 @@ export const FOTO_SISTEMA: Record<SistemaId, string> = {
 export const ORDEN_SISTEMAS: SistemaId[] = ["mm780", "ciq", "camaps", "op5"];
 
 /* Nombre corto de cada sistema (selectores en el móvil), en el orden de las columnas. */
-export const CORTO_SISTEMA = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
+/* 0.74.2: Tandem lleva Control-IQ o Control-IQ+ según el dispositivo y la versión de software
+   (apartado 4; Mobi, con Control-IQ+): los dos nombres a la vista. */
+export const CORTO_SISTEMA = ["MiniMed 780G", "Control-IQ / Control-IQ+", "CamAPS FX", "Omnipod 5"];
+/* En las casillas estrechas del selector (cuatro en una fila en el móvil), el nombre breve. */
+export const CORTO_CASILLA = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
 
 export const columnaDeSistema = (id: SistemaId) => ORDEN_SISTEMAS.indexOf(id);
 
@@ -42,7 +46,7 @@ export interface SistemaCatalogo {
 }
 export const CATALOGO_SISTEMAS: SistemaCatalogo[] = [
   { id: "mm780", name: "MiniMed 780G", short: "780G" },
-  { id: "ciq", name: "Tandem Control-IQ", short: "Control-IQ" },
+  { id: "ciq", name: "Tandem Control-IQ / Control-IQ+", short: "Control-IQ" },
   { id: "camaps", name: "myLoop CamAPS", short: "CamAPS" },
   { id: "op5", name: "Omnipod 5", short: "Omnipod 5" },
 ];

@@ -8,7 +8,7 @@ import type { Ruta } from "./rutas";
 
 const NOMBRE_SIS: Record<string, string> = {
   "minimed-780g": "MiniMed 780G",
-  "control-iq": "Control-IQ",
+  "control-iq": "Control-IQ / Control-IQ+",
   camaps: "CamAPS FX",
   "omnipod-5": "Omnipod 5",
 };
@@ -21,7 +21,7 @@ const FASE: Record<string, string> = {
 };
 const NOMBRE_ID: Record<string, string> = {
   mm780: "MiniMed 780G",
-  ciq: "Control-IQ",
+  ciq: "Control-IQ / Control-IQ+",
   camaps: "CamAPS FX",
   op5: "Omnipod 5",
 };

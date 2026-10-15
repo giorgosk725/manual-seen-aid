@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
 import { Check } from "lucide-react";
 import { TABLAS } from "../contenido";
 import { SEEN, SISTEMA_HEX } from "../tokens";
-import { CORTO_SISTEMA } from "../ampliacion/ids";
+import { CORTO_CASILLA as CORTO_SISTEMA } from "../ampliacion/ids";
 
 /* En la casilla estrecha del móvil, el nombre puede ir en dos líneas, pero un final corto
    («Omnipod 5», «CamAPS FX») no se queda solo: espacio duro antes de él. */

@@ -5,7 +5,7 @@
    aparte la Ampliación técnica, fuera del capítulo y con sus fuentes. Varios o todos
    (#/sistemas/<a+b|todos>/<seccion>) = la misma sección, un sistema junto a otro: eso son
    «Comparar sistemas» y «Parámetros por sistema». */
-import { siglasPorPiezas, textosDePieza } from "../inicio";
+import { frasesDe, siglasPorPiezas, textosDePieza } from "../inicio";
 import { NotaCorreccion } from "../componentes/NotaCorreccion";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
@@ -436,7 +436,7 @@ const fuenteT1 = (p?: number) => ({
 /* Identificador de cada sistema en las rutas de tablas, situaciones e inicio (orden de la
    Tabla 1). */
 const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
-const SLUG_CORTO = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
+const SLUG_CORTO = ["MiniMed 780G", "Control-IQ / Control-IQ+", "CamAPS FX", "Omnipod 5"];
 
 /* En la ficha, la pregunta sin el nombre del sistema delante («MiniMed 780G: ¿cómo…?» →
    «¿Cómo…?»); si el nombre lleva algo más («… en la gestación: ¿…?»), se deja entera. */
@@ -1109,6 +1109,30 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
 
 /* Entrada de Sistemas (#/sistemas): los cuatro con su foto y su algoritmo (Tabla 1), los
    criterios de elección y la comparación de los cuatro por sección. */
+/* La variante de Tandem (Control-IQ+) y la de CamAPS FX (Liberty), en las tarjetas del resumen:
+   líneas literales de la Tabla 1 (indicación, gestación; basal temporal en la Tabla 3) y, en
+   Liberty, la frase que la define (apartado 3). */
+const lineaDe = (tabla: "T1" | "T3", fila: number, c: number, re: RegExp) =>
+  TABLAS[tabla].filas[fila].celdas[c].split("\n").find((l) => re.test(l)) ?? "";
+const VARIANTE: Record<number, { rotulo: string; lineas: string[] }> = {
+  1: {
+    rotulo: "Control-IQ+",
+    lineas: [
+      `Indicación: ${lineaDe("T1", 7, 1, /^Control-IQ\+/)}`,
+      `Gestación: ${lineaDe("T1", 8, 1, /^Control-IQ\+/)}`,
+      (TABLAS.T3.filas[1].celdas[1].match(/Control-IQ\+ añade además[^.]*/) ?? [""])[0],
+    ].filter((x) => !/: $/.test(x) && x),
+  },
+  2: {
+    rotulo: "Liberty (asa cerrada completa)",
+    lineas: [
+      frasesDe("03-algoritmos", "b3", [1]).frases[0],
+      `Indicación: ${lineaDe("T1", 7, 2, /^Liberty/)}`,
+      `Gestación: ${lineaDe("T1", 8, 2, /^Liberty/)}`,
+    ].filter((x) => !/: $/.test(x) && x),
+  },
+};
+
 function EntradaSistemas() {
   return (
     <div className="space-y-4">
@@ -1217,6 +1241,27 @@ function EntradaSistemas() {
                   <span className="col-span-2 -mt-1 block pl-5 text-xs leading-snug text-slate-600">
                     {k.correccion.texto.join(" · ")}
                   </span>
+                  {/* 0.74.2 (petición del responsable): la variante de cada sistema a la vista,
+                      con sus líneas literales de la Tabla 1 (y la frase del apartado 3 en
+                      Liberty). */}
+                  {VARIANTE[c] && (
+                    <span
+                      className="col-span-2 mt-0.5 block rounded-lg px-2.5 py-2 text-xs leading-snug text-slate-800"
+                      style={{ background: h.soft }}
+                    >
+                      <span
+                        className="block text-[10px] font-bold uppercase tracking-wide"
+                        style={{ color: h.ink }}
+                      >
+                        {VARIANTE[c]!.rotulo}
+                      </span>
+                      {VARIANTE[c]!.lineas.map((l) => (
+                        <span key={l} className="mt-0.5 block">
+                          {l}
+                        </span>
+                      ))}
+                    </span>
+                  )}
                 </div>
               </a>
             </li>
@@ -1237,7 +1282,16 @@ function EntradaSistemas() {
         <span className="min-w-0 flex-1">Elección del sistema</span>
         <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
       </a>
-      <FuentePie fuentes={[fuenteT1()]} />
+      <FuentePie
+        fuentes={[
+          fuenteT1(),
+          {
+            texto: `Tabla 3, ${paginasDe(TABLAS.T3.paginas[0], TABLAS.T3.paginas[1])}`,
+            ruta: rutaDeTabla("T3"),
+          },
+          ...fuentesDePiezas([{ t: "frase", apartado: "03-algoritmos", bloque: "b3", k: [1] }]),
+        ]}
+      />
     </div>
   );
 }
