@@ -368,7 +368,8 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
     elegir(t);
     requestAnimationFrame(irARama);
   };
-  const [paso1Abierto] = useState(() => window.matchMedia?.("(min-width: 640px)").matches ?? true);
+  // 0.74.2 (petición del responsable: nada útil plegado): abierto también en el móvil.
+  const paso1Abierto = true;
   return (
     <section aria-label="Figura 3 por tramos">
       <Cabecera herramienta />
@@ -377,7 +378,6 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
           para residentes y adjuntos que leen el capítulo). Junto a las ramas no rojas, sigue. */}
       <ol className="space-y-4">
         <li>
-          {/* En el móvil, plegado (0.70.0): así los tramos de β-OHB quedan en la primera pantalla. */}
           <details open={paso1Abierto} className="group">
             <summary className="mb-2 flex min-h-11 cursor-pointer list-none items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-500 sm:min-h-0">
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-white">

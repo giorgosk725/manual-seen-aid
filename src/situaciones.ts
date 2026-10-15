@@ -191,6 +191,8 @@ const EJERCICIO_COMUN: Momento[] = [
     apartado: S,
     bloque: "b20",
   },
+  // 0.74.2 (auditoría): por qué cambia la conducta según el tipo de ejercicio.
+  { rotulo: "Efecto según el tipo de ejercicio", apartado: S, bloque: "b19", k: [1] },
 ];
 const EJERCICIO_FINAL: Momento[] = [
   {
@@ -199,7 +201,13 @@ const EJERCICIO_FINAL: Momento[] = [
     bloque: "b6",
     mas: [{ apartado: E, bloque: "b7" }],
   },
-  { rotulo: "Deportes de contacto, acuáticos y desconexión", apartado: S, bloque: "b24" },
+  {
+    rotulo: "Deportes de contacto, acuáticos y desconexión",
+    apartado: S,
+    bloque: "b24",
+    // 0.74.2: la desconexión programada por ejercicio (apartado 7: bolo previo y reducción).
+    mas: [{ apartado: E, bloque: "b12", k: [1, 2, 3] }],
+  },
   { rotulo: "Después del ejercicio: hipoglucemia diferida y noche", apartado: S, bloque: "b25" },
 ];
 const EXPLORACION: Momento[] = [
@@ -220,12 +228,17 @@ export const GUION: Record<string, Momento[]> = {
       apartado: S,
       bloque: "b22",
     },
-    { rotulo: "Actividad no planificada: al empezar", apartado: S, bloque: "b23" },
+    { rotulo: "Actividad no planificada: al empezar", apartado: S, bloque: "b23", k: [0] },
     ...EJERCICIO_FINAL,
   ],
   "ejercicio-anaerobico": [
     ...EJERCICIO_COMUN,
-    { rotulo: "Esfuerzo breve de alta intensidad o anaeróbico", apartado: S, bloque: "b23" },
+    {
+      rotulo: "Esfuerzo breve de alta intensidad o anaeróbico",
+      apartado: S,
+      bloque: "b23",
+      k: [1],
+    },
     ...EJERCICIO_FINAL,
   ],
   rm: EXPLORACION,

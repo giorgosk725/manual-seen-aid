@@ -84,11 +84,10 @@ test.describe("Situaciones (S61-01/02/06)", () => {
     page,
   }) => {
     await page.goto("/#/consultar/situacion/ejercicio-aerobico:camaps");
-    // 0.72.0 (decisión del responsable): sigue antes de la conducta, plegado con su título.
+    // 0.74.2 (petición del responsable): antes de la conducta y a la vista, sin plegar.
     const antes = page.locator("#antes-situacion");
     const conducta = page.getByRole("region", { name: "Conducta recomendada" });
     await expect(antes.getByRole("heading", { name: /Comprobaciones previas/ })).toBeVisible();
-    await antes.locator("summary").click();
     await expect(antes).toContainText(/126–180 mg\/dl/);
     expect((await antes.boundingBox())!.y).toBeLessThan((await conducta.boundingBox())!.y);
   });
@@ -121,7 +120,6 @@ test.describe("Sistemas (M61-01/02/03)", () => {
     await expect(page.getByText(/no actúa en modo Sueño/).first()).toBeVisible();
     // 0.72.2: la nota de Liberty, plegada junto a la casilla de indicación de la Tabla 1.
     await page.goto("/#/sistemas/camaps/esencial");
-    await page.locator("summary", { hasText: "Nota complementaria" }).first().click();
     await expect(
       page.getByText(/Nota complementaria \(no es texto del capítulo\)/).first(),
     ).toBeVisible();

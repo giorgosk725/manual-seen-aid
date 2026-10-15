@@ -539,7 +539,7 @@ export function Sobre() {
         </div>
         {/* Fuentes y revisión, para el lector; las huellas completas, los commits y el registro
             de publicación están en la documentación técnica (docs/PUBLICACIONES.md) (V54-10). */}
-        <details className="mt-3 text-sm">
+        <details className="mt-3 text-sm" open>
           <summary className="min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-8">
             Fuentes y revisión
           </summary>
@@ -755,7 +755,12 @@ export function Test() {
    cada una abre sus pasajes literales con el mismo bloque que en la búsqueda. */
 /* Los temas en su orden: los generales, «Uso habitual» y, al final, uno por sistema.
    Solo las preguntas aprobadas (FRECUENTES); las pendientes no salen. */
-const TEMAS_SISTEMA = ["MiniMed 780G", "Tandem Control-IQ", "myLoop CamAPS", "Omnipod 5"];
+const TEMAS_SISTEMA = [
+  "MiniMed 780G",
+  "Tandem Control-IQ / Control-IQ+",
+  "myLoop CamAPS FX",
+  "Omnipod 5",
+];
 const TEMAS = [
   ...[...new Set(FRECUENTES.map((f) => f.tema))].filter(
     (t) => t !== "Uso habitual" && !TEMAS_SISTEMA.includes(t),

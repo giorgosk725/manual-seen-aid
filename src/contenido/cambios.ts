@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-15",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — sin plegar lo que se consulta`,
+    titulo: `Complemento interactivo ${VERSION_APP} — todo a la vista, Control-IQ+ y Liberty`,
+    detalle: [
+      "Nada útil plegado (petición del responsable): los apartados de cada situación, las comprobaciones previas del ejercicio, las tareas de cada fase de la iniciación, el paso «Sospechar y comprobar» de la Figura 3 en el móvil, las notas (edad de Liberty; corrección de Omnipod 5) y «Fuentes y revisión», abiertos; en la búsqueda, hasta tres pasajes más, abiertos.",
+      "Control-IQ+: Tandem se nombra «Control-IQ / Control-IQ+» (el capítulo: según el dispositivo y la versión de software; Mobi, con Control-IQ+). En las tarjetas del resumen, Control-IQ+ (indicación, gestación, basal temporal) y Liberty en CamAPS FX (la frase que la define, indicación y gestación). Elección del sistema con la indicación y la gestación de cada uno.",
+      "Ejercicio: el efecto según el tipo de ejercicio (apartado 10), la desconexión programada por ejercicio (apartado 7: bolo previo y reducción), las frases de la actividad no planificada y del esfuerzo anaeróbico en su sitio, y enlaces al diagrama «Glucemia y ejercicio», a la interrupción y a la Tabla 4. Con Control-IQ, sus rangos de objetivo y modos.",
+      "Interpretación de la descarga: en el paso de las funciones temporales, las herramientas por sistema (Tabla 4).",
+      "Nombres de sistema iguales en selectores, tarjetas y categorías de preguntas (myLoop CamAPS FX; Tandem Control-IQ / Control-IQ+); las cabeceras de las tablas siguen literales.",
+    ],
+  },
+  {
+    fecha: "2026-10-15",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.74.1 — sin plegar lo que se consulta",
     detalle: [
       "Cómo funciona: los rasgos distintivos de cada sistema (apartado 4), directamente, como una tarjeta más, sin plegar y sin puntos suspensivos (petición del responsable).",
       "Lo de cada sistema en las situaciones, sin puntos suspensivos en los recortes; la fuente al pie lleva a la frase entera.",

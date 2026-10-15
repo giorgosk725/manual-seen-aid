@@ -47,7 +47,7 @@ export interface SistemaCatalogo {
 export const CATALOGO_SISTEMAS: SistemaCatalogo[] = [
   { id: "mm780", name: "MiniMed 780G", short: "780G" },
   { id: "ciq", name: "Tandem Control-IQ / Control-IQ+", short: "Control-IQ" },
-  { id: "camaps", name: "myLoop CamAPS", short: "CamAPS" },
+  { id: "camaps", name: "myLoop CamAPS FX", short: "CamAPS" },
   { id: "op5", name: "Omnipod 5", short: "Omnipod 5" },
 ];
 export const sistemaDelCatalogo = (id: string | undefined) =>

@@ -30,11 +30,6 @@ const BOOST = s10(
   [1],
   /Boost puede utilizarse transitoriamente cuando aumentan las necesidades de insulina —[^—]*—/,
 );
-const EASE_OFF = s10(
-  "b7",
-  [1],
-  /Ease-off puede ser útil ante ejercicio o situaciones de mayor sensibilidad a la insulina, incluido el periodo periparto y el posparto inmediato/,
-);
 
 /* ---------- Gestación (apartado 10, pp. 17-18) ---------- */
 const GESTACION: BloqueSistema[][] = [
@@ -164,13 +159,12 @@ export const TABLA4_POR_SISTEMA: Record<string, BloqueSistema[][]> = {
     ],
     [{ rotulo: "Hiperglucemia tardía", piezas: [s9("b6", [2])] }],
   ],
+  // 0.74.2 (auditoría): sin la desconexión (va en el guion, con el apartado 7) ni el Ease-off
+  // del párrafo de la gestación; en Control-IQ, sus rangos (modo ejercicio 140–160).
   "ejercicio-aerobico": [
-    [{ rotulo: "Desconexión", piezas: [CATETER_PAUSAR] }],
-    [{ rotulo: "Desconexión", piezas: [CATETER_PAUSAR] }],
-    [
-      { rotulo: "Ease-off", piezas: [EASE_OFF] },
-      { rotulo: "Desconexión", piezas: [CATETER_PAUSAR] },
-    ],
+    [],
+    [{ rotulo: "Rangos de objetivo y modos", piezas: [casilla("T1", 6)] }],
+    [],
     [
       {
         rotulo: "Actividad acuática",

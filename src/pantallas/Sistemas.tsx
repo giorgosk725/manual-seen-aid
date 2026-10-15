@@ -565,12 +565,9 @@ function ColumnaTabla({
                   j === 7 &&
                   COLUMNA_DE_NOTA[`T1/${j}`] === c &&
                   NOTAS_POR_PASAJE[`T1/${j}`] && (
-                    <details className="mt-1.5 text-xs text-slate-600">
-                      <summary className="min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-6">
-                        Nota complementaria
-                      </summary>
-                      <p className="mt-1">{NOTAS_POR_PASAJE[`T1/${j}`]}</p>
-                    </details>
+                    <p className="mt-1.5 rounded-md border border-dashed border-slate-300 px-2 py-1.5 text-xs text-slate-600">
+                      {NOTAS_POR_PASAJE[`T1/${j}`]}
+                    </p>
                   )}
               </dd>
             </div>

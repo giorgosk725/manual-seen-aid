@@ -33,8 +33,7 @@ test.describe("Entrega 2 (0.33.0)", () => {
     await expect(page).toHaveURL(/:parametros$/);
     await expect(page.getByText(/Regla del 450/)).toBeVisible();
     await page.goto("/#/consultar/inicio/primeros-meses:omnipod-5");
-    await page.getByRole("button", { name: "Fase completa" }).click();
-    // Tres tareas desde la 0.62.0 (calendario, ajustes y qué vigilar).
+    // 0.74.2: la fase entera, abierta de entrada. Tres tareas desde la 0.62.0.
     await expect.poll(() => page.locator("h3 button[aria-expanded='true']").count()).toBe(3);
   });
 });

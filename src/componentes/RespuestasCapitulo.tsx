@@ -525,7 +525,7 @@ function BloqueFrecuente({
           <>
             <div className="space-y-2">{principales.map(tarjeta)}</div>
             {ampliacion.length > 0 && (
-              <details className="mt-2">
+              <details className="mt-2" open>
                 <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
                   Todos los sistemas
                 </summary>
@@ -608,10 +608,10 @@ export function RespuestasCapitulo({
         </ul>
       </nav>
     ) : null;
-  // Lo que no responde de entrada va plegado: el lector decide si lo abre.
+  // 0.74.2 (nada útil plegado): hasta tres pasajes más, abiertos; si son más, plegados.
   const masPasajes = (lista: Respuesta[]) =>
     lista.length > 0 && (
-      <details className="mt-3">
+      <details className="mt-3" open={lista.length <= 3}>
         <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
           Más pasajes del capítulo ({lista.length})
         </summary>

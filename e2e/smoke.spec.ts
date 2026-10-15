@@ -90,7 +90,7 @@ test.describe("Recorrido básico (escritorio)", () => {
       .getByRole("link", { name: /myLoop CamAPS/ })
       .first()
       .click();
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("myLoop CamAPS");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("myLoop CamAPS FX");
     await expect(page.getByRole("img", { name: /Foto oficial de myLoop CamAPS/ })).toBeVisible();
     await expect(page.getByRole("link", { name: "Ampliación técnica", exact: true })).toHaveCount(
       0,

@@ -39,6 +39,7 @@ import {
   Thermometer,
   TrendingDown,
   TrendingUp,
+  Table2,
   Unplug,
   Users,
   UtensilsCrossed,
@@ -63,7 +64,7 @@ import {
 import { PiezaVista } from "../componentes/Piezas";
 import { AnadidoDelSistema, BloquesPorSistema } from "../componentes/BloquesPorSistema";
 import { GUIA_POR_SISTEMA, TABLA4_POR_SISTEMA } from "../porSistema";
-import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CATALOGO_SISTEMAS, CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { kDe, siglasPorPiezas, type Pieza } from "../inicio";
 
 import { elegirRuta, fueNavegacionNueva, href } from "../rutas";
@@ -339,7 +340,10 @@ function GuionVista({
   const valido = pedido !== null && pedido < momentos.length ? pedido : null;
   const [estado, setEstado] = useState(() => {
     const m = momentosMemoria.get(clave);
-    const abiertos = new Set(m?.abiertos ?? (valido !== null ? [valido] : inicial));
+    // 0.74.2 (petición del responsable: nada útil plegado): todos los momentos abiertos de
+    // entrada; cada uno se puede plegar.
+    void inicial;
+    const abiertos = new Set(m?.abiertos ?? momentos.map((_, i) => i));
     if (valido !== null) abiertos.add(valido);
     return { abiertos, todos: m?.todos ?? false };
   });
@@ -380,17 +384,9 @@ function GuionVista({
       className="rounded-2xl border bg-white p-4"
       style={{ borderColor: "#e6e6e6" }}
     >
-      {/* 0.72.2: sin rótulo visible encima (los títulos numerados ya dicen qué es). */}
-      <div className="flex flex-wrap items-baseline justify-end gap-x-3 gap-y-1">
-        <h2 className="sr-only">{rotulo}</h2>
-        <button
-          type="button"
-          onClick={() => guardar({ abiertos: estado.abiertos, todos: !estado.todos })}
-          className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-6"
-        >
-          {estado.todos ? "Plegar" : "Desplegar todo"}
-        </button>
-      </div>
+      {/* 0.72.2: sin rótulo visible encima (los títulos numerados ya dicen qué es). 0.74.2:
+          sin «Desplegar todo» (ya van abiertos). */}
+      <h2 className="sr-only">{rotulo}</h2>
       {/* Los momentos en orden, como una línea de tiempo: el número en su círculo y una raya
           que los une; el título abre el párrafo literal (13-10-2026: sin el índice repetido). */}
       <ol className="mt-2" aria-label="Momentos">
@@ -828,34 +824,30 @@ export function SituacionSistema({
                   conducta, pero plegado con su título a la vista, para que la conducta de cada
                   sistema quede en la primera pantalla. */}
               {ANTES_DE_ACTUAR.includes(sit.id) && GUION[sit.id] && (
-                <details
+                // 0.74.2 (petición del responsable: nada útil plegado): a la vista, sin plegar.
+                <section
                   id="antes-situacion"
-                  className="group scroll-mt-4 rounded-2xl border-2 px-4 py-2"
+                  aria-labelledby="antes-situacion-titulo"
+                  className="scroll-mt-4 rounded-2xl border-2 px-4 py-3"
                   style={{ borderColor: "#f3d38a", background: "#fffbeb" }}
                 >
-                  <summary className="flex min-h-11 cursor-pointer list-none items-center gap-1.5 [&::-webkit-details-marker]:hidden">
-                    <h2 className="flex min-w-0 flex-1 items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-amber-900">
-                      <AlertTriangle size={14} aria-hidden="true" className="shrink-0" />
-                      <span>
-                        {GUION[sit.id][0].rotulo.replace(
-                          /^Antes de empezar: /,
-                          "Comprobaciones previas: ",
-                        )}
-                      </span>
-                    </h2>
-                    <ChevronRight
-                      size={15}
-                      aria-hidden="true"
-                      className="shrink-0 text-amber-900 transition group-open:rotate-90"
-                    />
-                  </summary>
-                  <div className="mt-1 space-y-2 pb-2">
+                  <h2
+                    id="antes-situacion-titulo"
+                    className="flex items-center gap-1.5 text-sm font-bold text-amber-900"
+                  >
+                    <AlertTriangle size={15} aria-hidden="true" className="shrink-0" />
+                    {GUION[sit.id][0].rotulo.replace(
+                      /^Antes de empezar: /,
+                      "Comprobaciones previas: ",
+                    )}
+                  </h2>
+                  <div className="mt-1.5 space-y-2">
                     {piezasDe(GUION[sit.id][0]).map((pz, k) => (
                       <PiezaVista key={k} pieza={pz} compacta />
                     ))}
                     <FuentePie fuentes={fuentesDeMomento(GUION[sit.id][0])} />
                   </div>
-                </details>
+                </section>
               )}
               <section
                 id="conducta-situacion"
@@ -927,7 +919,7 @@ export function SituacionSistema({
                               className="text-sm font-extrabold"
                               style={{ color: SISTEMA_HEX[c].ink }}
                             >
-                              {nombre}
+                              {CATALOGO_SISTEMAS[c]?.name ?? nombre}
                             </span>
                           </div>
                           <p
@@ -950,7 +942,7 @@ export function SituacionSistema({
                     onClick={() => elegirRuta("consultar", "situacion", sit.id)}
                     className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
                   >
-                    Todos los sistemas
+                    Quitar la selección
                   </button>
                 )}
                 {!porSistema && !fila.unida && (
@@ -1035,8 +1027,24 @@ export function SituacionSistema({
                             "plan",
                             sisIdx >= 0 ? ORDEN_SISTEMAS[sisIdx] : undefined,
                           ),
-                          t: `Plan de seguridad${sisIdx >= 0 ? ` · ${TABLAS.T1.columnas[sisIdx]}` : ""}`,
+                          t: `Plan de seguridad${sisIdx >= 0 ? ` · ${CORTO_SISTEMA[sisIdx]}` : ""}`,
                           I: ShieldCheck,
+                        },
+                        // 0.74.2 (auditoría): el diagrama, la interrupción y la Tabla 4.
+                        {
+                          href: href("visual", "ejercicio"),
+                          t: "Glucemia y ejercicio",
+                          I: Activity,
+                        },
+                        {
+                          href: href("consultar", "interrupcion"),
+                          t: "Interrupción del sistema y pauta alternativa",
+                          I: Unplug,
+                        },
+                        {
+                          href: href("consultar", "tablas", "T4"),
+                          t: "Herramientas del sistema ante situaciones clínicas",
+                          I: Table2,
                         },
                       ]
                     : []),
@@ -1250,6 +1258,17 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
               <Siren size={14} className="shrink-0" aria-hidden="true" />
               {TABLAS.T5.filas[7].celdas[0]}
               <ArrowRight size={13} className="shrink-0" aria-hidden="true" />
+            </a>
+          )}
+          {/* 0.74.2 (auditoría): en el paso de las funciones temporales, sus herramientas por
+              sistema (Tabla 4). */}
+          {n === 5 && (
+            <a
+              href={href("consultar", "tablas", "T4")}
+              className="mt-4 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+            >
+              Herramientas del sistema ante situaciones clínicas{" "}
+              <ArrowRight size={14} aria-hidden="true" />
             </a>
           )}
           {n === 8 && (

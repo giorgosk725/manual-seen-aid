@@ -137,7 +137,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f11",
-    tema: "myLoop CamAPS",
+    tema: "myLoop CamAPS FX",
     sistema: 2,
     pregunta: "¿Qué es Liberty y quién puede usarlo?",
     variantes: [
@@ -679,7 +679,7 @@ export const TODAS: Frecuente[] = [
   // 0.35.0: una comparación entre variantes del mismo sistema es una sola pregunta.
   {
     id: "f61",
-    tema: "Tandem Control-IQ",
+    tema: "Tandem Control-IQ / Control-IQ+",
     pregunta: "¿Qué diferencia hay entre Control-IQ y Control-IQ+?",
     variantes: [
       "diferencias entre control-iq y control-iq plus",
@@ -884,7 +884,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f84",
-    tema: "Tandem Control-IQ",
+    tema: "Tandem Control-IQ / Control-IQ+",
     pregunta: "Control-IQ: ¿por qué hay que afinar la basal y el factor de sensibilidad?",
     variantes: ["Control-IQ no aprende", "basal programada en Tandem"],
     pasajes: ["T1/3", "T3/1", "T3/3"],
@@ -892,7 +892,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f85",
-    tema: "Tandem Control-IQ",
+    tema: "Tandem Control-IQ / Control-IQ+",
     pregunta: "Control-IQ: ¿cómo usar los modos sueño y ejercicio?",
     variantes: ["modo sueño Tandem", "modo ejercicio Control-IQ"],
     pasajes: ["T1/6", "T4/2", "T4/0"],
@@ -900,7 +900,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f86",
-    tema: "Tandem Control-IQ",
+    tema: "Tandem Control-IQ / Control-IQ+",
     pregunta: "Control-IQ: ¿cuándo pone bolos automáticos de corrección?",
     variantes: ["autocorrecciones de Control-IQ", "bolo automático Tandem"],
     pasajes: ["T1/5"],
@@ -908,7 +908,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f87",
-    tema: "Tandem Control-IQ",
+    tema: "Tandem Control-IQ / Control-IQ+",
     pregunta: "Control-IQ+ en la gestación: ¿cómo se intensifica?",
     variantes: ["Control-IQ+ embarazo", "modo sueño continuo en la gestación"],
     pasajes: [
@@ -922,7 +922,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f88",
-    tema: "Tandem Control-IQ",
+    tema: "Tandem Control-IQ / Control-IQ+",
     pregunta: "Control-IQ: ¿cómo se inicia el modo automático?",
     variantes: ["arrancar Control-IQ", "inicio de Tandem"],
     pasajes: ["T2/1"],
@@ -930,7 +930,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f89",
-    tema: "Tandem Control-IQ",
+    tema: "Tandem Control-IQ / Control-IQ+",
     pregunta: "Control-IQ: ¿qué hacer ante enfermedad leve o una hiperglucemia puntual?",
     variantes: ["Tandem enfermedad leve", "Control-IQ hiperglucemia aislada"],
     pasajes: ["T4/3", "T4/4"],
@@ -938,7 +938,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f90",
-    tema: "myLoop CamAPS",
+    tema: "myLoop CamAPS FX",
     pregunta: "CamAPS FX: ¿dónde está el algoritmo y cómo se adapta?",
     variantes: ["algoritmo de CamAPS en el móvil", "CamAPS en el móvil"],
     pasajes: ["T1/2", "T1/3", "T1/1"],
@@ -946,7 +946,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f91",
-    tema: "myLoop CamAPS",
+    tema: "myLoop CamAPS FX",
     pregunta: "CamAPS FX: ¿para qué sirven Boost y Ease-off?",
     variantes: ["qué es Boost", "qué es Ease-off"],
     pasajes: ["T3/0", "t/10-situaciones/b7/1", "T4/3"],
@@ -954,7 +954,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f92",
-    tema: "myLoop CamAPS",
+    tema: "myLoop CamAPS FX",
     pregunta: "CamAPS FX: ¿cuentan el factor de sensibilidad y la insulina activa en automático?",
     variantes: ["factor de sensibilidad en CamAPS", "insulina activa CamAPS"],
     pasajes: ["t/10-situaciones/b7/0", "T3/3", "T3/4"],
@@ -962,7 +962,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f93",
-    tema: "myLoop CamAPS",
+    tema: "myLoop CamAPS FX",
     pregunta: "CamAPS FX en la gestación: ¿qué objetivo poner?",
     variantes: ["CamAPS embarazo objetivo", "objetivo 80 en la gestación"],
     pasajes: ["T1/8", "t/10-situaciones/b6/2", "t/10-situaciones/b6/3", "t/10-situaciones/b6/4"],
@@ -970,7 +970,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f94",
-    tema: "myLoop CamAPS",
+    tema: "myLoop CamAPS FX",
     pregunta: "CamAPS FX: ¿qué hacer con una comida grasa o un ejercicio intenso?",
     variantes: ["comida de absorción lenta CamAPS", "Boost en el ejercicio"],
     pasajes: ["T4/5", "T4/1"],
@@ -978,7 +978,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f95",
-    tema: "myLoop CamAPS",
+    tema: "myLoop CamAPS FX",
     pregunta: "CamAPS FX: ¿cómo se inicia el modo automático?",
     variantes: ["arrancar CamAPS", "inicio de CamAPS"],
     pasajes: ["T2/1"],

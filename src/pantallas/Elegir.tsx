@@ -7,7 +7,7 @@
    El explorador anterior por criterios (eleccion.ts) se conserva fuera de esta edición; una
    dirección antigua con criterios abre esta consulta y no reutiliza ni guarda sus valores. */
 import { useEffect, useState } from "react";
-import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CATALOGO_SISTEMAS, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { ArrowRight, Check, X } from "lucide-react";
 import { SISTEMA_HEX } from "../tokens";
 import { APARTADOS, F2, TABLAS, rutaDeTabla } from "../contenido";
@@ -101,7 +101,7 @@ function PorCaracteristicas() {
         : href("sistemas");
   const rotulo =
     hayAlgo && reunen.length === 1
-      ? `Ver la ficha de ${T1.columnas[reunen[0]]}`
+      ? `Ver la ficha de ${CATALOGO_SISTEMAS[reunen[0]].name}`
       : hayAlgo && reunen.length >= 2
         ? `Comparar los ${reunen.length}`
         : "Comparación de sistemas";
@@ -167,7 +167,7 @@ function PorCaracteristicas() {
                   className="h-8 w-8 shrink-0 rounded-md border bg-white object-cover"
                   style={{ borderColor: "#e6e6e6" }}
                 />
-                {T1.columnas[c]}
+                {CATALOGO_SISTEMAS[c].name}
               </a>
               {fuera && (
                 <span className="mt-0.5 inline-flex w-fit items-center gap-1 rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-bold text-slate-700">
@@ -197,6 +197,18 @@ function PorCaracteristicas() {
                     </div>
                   );
                 })}
+                {/* 0.74.2 (auditoría): la indicación y la gestación (Tabla 1), con las variantes
+                    Control-IQ+ y Liberty, a la vista en cada tarjeta. */}
+                {[7, 8].map((fila) => (
+                  <div key={fila}>
+                    <dt className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                      {T1.filas[fila].etiqueta}
+                    </dt>
+                    <dd className="whitespace-pre-line pl-5 text-slate-700">
+                      {T1.filas[fila].celdas[c]}
+                    </dd>
+                  </div>
+                ))}
               </dl>
             </li>
           );

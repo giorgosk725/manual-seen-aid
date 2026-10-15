@@ -32,7 +32,6 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     await page.goto("/#/consultar/situacion/ingreso-hospitalario");
     const momentos = page.getByRole("region", { name: "Texto del capítulo" });
     await expect(momentos.getByRole("heading", { name: /Período perioperatorio/ })).toBeVisible();
-    await momentos.getByRole("button", { name: "Desplegar todo" }).click();
     await expect(momentos.getByText(/unas 22 h tras la última dosis/)).toBeVisible();
     await page.goto("/#/consultar/situacion/gestacion");
     await expect(
@@ -101,12 +100,11 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     await page.goto("/#/consultar/situacion/ejercicio-aerobico");
     const guion = page.getByRole("region", { name: "Texto del capítulo" });
     await expect(guion.getByRole("list", { name: "Momentos" })).toBeVisible();
+    // 0.74.2: todos los momentos abiertos de entrada, cada uno con su línea de fuente.
     const hipo = guion.locator("h3 button", { hasText: /Hipoglucemia: hidratos/ });
-    await expect(hipo).toHaveAttribute("aria-expanded", "false");
-    await hipo.click();
+    await expect(hipo).toHaveAttribute("aria-expanded", "true");
     await expect(guion.getByText(/suele requerir menos hidratos/)).toBeVisible();
-    // Una línea de fuente por momento abierto (el primero y el de hipoglucemia).
-    await expect(guion.getByText(/^Fuente:/)).toHaveCount(2);
+    await expect(guion.getByText(/^Fuente:/)).toHaveCount(6);
   });
 
   test("ampliación técnica: fuera de la edición; la ruta antigua explica el alcance (A06)", async ({
@@ -141,16 +139,18 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     await page.goto("/#/consultar/situacion/ejercicio-aerobico:omnipod-5");
     const guion = page.getByRole("region", { name: "Texto del capítulo" });
     const despues = guion.locator("h3 button", { hasText: /Después del ejercicio/ });
+    // 0.74.2: abierto de entrada; plegar y volver a abrir lo deja en la ruta.
+    await despues.click();
     await despues.click();
     await expect(despues).toHaveAttribute("aria-expanded", "true");
-    await expect(page).toHaveURL(/ejercicio-aerobico:omnipod-5:m6$/);
-    const fuente = page.locator("#momento-5").getByRole("link", { name: /Apartado 10, p\. 19/ });
+    await expect(page).toHaveURL(/ejercicio-aerobico:omnipod-5:m7$/);
+    const fuente = page.locator("#momento-6").getByRole("link", { name: /Apartado 10, p\. 19/ });
     await expect(fuente).toHaveAttribute("href", /10-situaciones\/b25$/);
     await fuente.click();
     await expect(page).toHaveURL(/#\/capitulo\//);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await page.getByRole("button", { name: /Volver a la consulta/ }).click();
-    await expect(page).toHaveURL(/ejercicio-aerobico:omnipod-5:m6$/);
+    await expect(page).toHaveURL(/ejercicio-aerobico:omnipod-5:m7$/);
     await expect(
       page
         .getByRole("region", { name: "Texto del capítulo" })

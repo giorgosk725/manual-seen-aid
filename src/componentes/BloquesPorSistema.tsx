@@ -21,7 +21,7 @@ function Bloques({ c, bloques }: { c: number; bloques: BloqueSistema[] }) {
   const desde = bloques.map((_, i) => bloques.slice(0, i).reduce((n, x) => n + x.piezas.length, 0));
   return (
     <PiezasSinTitulos.Provider value={true}>
-      <dl className="grid gap-2 lg:grid-cols-2" aria-live="polite">
+      <dl className={`grid gap-2 ${bloques.length > 1 ? "lg:grid-cols-2" : ""}`} aria-live="polite">
         {bloques.map((b, i) => (
           <div
             key={b.rotulo}

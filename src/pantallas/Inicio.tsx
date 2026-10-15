@@ -570,7 +570,8 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
   const alPaso = useIrAlCambiar(actual, "paso-inicio");
   // Abiertas: la pedida (o la primera); «Fase completa» las abre todas.
   const [abiertas, setAbiertas] = useState<Set<string>>(new Set());
-  const [completa, setCompleta] = useState(false);
+  // 0.74.2 (petición del responsable: nada útil plegado): la fase entera, abierta de entrada.
+  const [completa, setCompleta] = useState(true);
   useEffect(() => {
     const lista = tareasDe(actual);
     setAbiertas(
@@ -580,10 +581,12 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
           : [pedida ?? lista[0]?.id].filter((x): x is string => !!x),
       ),
     );
-  }, [actual, pedida, completa]);
+    // Solo al cambiar de fase o con «Fase completa»/«Plegar»: abrir o cerrar una tarea (que
+    // cambia `pedida` en la ruta) no vuelve a abrir ni cerrar las demás.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actual, completa]);
   const alternar = (id: string) => {
     const abrir = !abiertas.has(id);
-    setCompleta(false);
     setAbiertas((prev) => {
       const s = new Set(prev);
       if (abrir) s.add(id);
