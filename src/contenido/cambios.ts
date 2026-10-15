@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-15",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — lo de cada sistema, a la vista`,
+    titulo: `Complemento interactivo ${VERSION_APP} — sin plegar lo que se consulta`,
+    detalle: [
+      "Cómo funciona: los rasgos distintivos de cada sistema (apartado 4), directamente, como una tarjeta más, sin plegar y sin puntos suspensivos (petición del responsable).",
+      "Lo de cada sistema en las situaciones, sin puntos suspensivos en los recortes; la fuente al pie lleva a la frase entera.",
+      "Interpretación de la descarga: los patrones relacionados, abiertos también en el móvil.",
+    ],
+  },
+  {
+    fecha: "2026-10-15",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.74.0 — lo de cada sistema, a la vista",
     detalle: [
       "Hecha a partir de dos auditorías profundas (contenido por sistema; uso, ruido y registro).",
       "Lo que el capítulo dice de cada sistema, donde se busca y con su texto literal: gestación (con CamAPS FX, el objetivo por trimestres y tras el parto, qué parámetros cuentan en automático, Boost y Ease-off; con MiniMed 780G, el objetivo mínimo y la estrategia; con Control-IQ+, la intensificación y el modo sueño continuado), enfermedad intercurrente, glucocorticoides e ingreso hospitalario, con un selector de sistema arriba y lo común debajo.",

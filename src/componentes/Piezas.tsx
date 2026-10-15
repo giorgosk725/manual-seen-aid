@@ -4,7 +4,7 @@ import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
    de cada sistema. Aquí no hay texto propio: todo sale del capítulo con su página. */
 import { ArrowRight } from "lucide-react";
 import { useContext } from "react";
-import { PiezasSinTitulos } from "./piezasContexto";
+import { PiezasSinTitulos, sinPuntos } from "./piezasContexto";
 import { TABLAS } from "../contenido";
 import { PaginaBadge } from "../ui";
 import { Lineas, Texto } from "../texto";
@@ -149,8 +149,12 @@ function PiezaVistaBase({
       const f = frasesDe(pieza.apartado, pieza.bloque, pieza.k, pieza.trozo);
       return (
         <p className={compacta ? "text-[15px] leading-relaxed text-slate-800" : "prosa"}>
-          {f.lead && <strong>{f.lead} </strong>}
-          <T>{f.frases.join(" ")}</T>
+          {f.lead && !sinTitulos && <strong>{f.lead} </strong>}
+          {sinTitulos ? (
+            <Texto siglas={pend(f.frases.join(" "))}>{sinPuntos(f.frases.join(" "))}</Texto>
+          ) : (
+            <T>{f.frases.join(" ")}</T>
+          )}
           {!compacta && <EnlacePagina ruta={f.ruta} p={f.pagina} />}
         </p>
       );

@@ -5,7 +5,7 @@
    aparte la Ampliación técnica, fuera del capítulo y con sus fuentes. Varios o todos
    (#/sistemas/<a+b|todos>/<seccion>) = la misma sección, un sistema junto a otro: eso son
    «Comparar sistemas» y «Parámetros por sistema». */
-import { siglasPorPiezas } from "../inicio";
+import { siglasPorPiezas, textosDePieza } from "../inicio";
 import { NotaCorreccion } from "../componentes/NotaCorreccion";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
@@ -32,6 +32,7 @@ import {
   Zap,
   type LucideIcon,
   MessageCircleQuestion,
+  Fingerprint,
 } from "lucide-react";
 import { CLAVE_ALGORITMO } from "../contenido/diagramas";
 import {
@@ -1462,6 +1463,34 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
             </dd>
           </div>
         ))}
+        {/* 0.74.1 (a petición del responsable): lo que lo distingue (apartado 4), directamente
+            como una tarjeta más, sin plegar y sin los puntos suspensivos del recorte. */}
+        {distingue.length > 0 && (
+          <div
+            className="relative min-w-0 rounded-xl border bg-white py-3 pl-[3.75rem] pr-3"
+            style={{ borderColor: "#e6e6e6" }}
+          >
+            <dt className="text-[11px] font-bold uppercase tracking-wide" style={{ color: h.ink }}>
+              <span
+                aria-hidden="true"
+                className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-lg"
+                style={{ background: h.soft, color: h.strong }}
+              >
+                <Fingerprint size={18} />
+              </span>
+              Rasgos distintivos
+            </dt>
+            <dd className="mt-1 space-y-1 text-[15px] leading-snug text-slate-900">
+              {distingue.map((p, j) => (
+                <p key={j}>
+                  <Texto siglas={sg[j]}>
+                    {textosDePieza(p, c).join(" ").replace(/^…\s*/, "").replace(/\s*…$/, "")}
+                  </Texto>
+                </p>
+              ))}
+            </dd>
+          </div>
+        )}
       </dl>
       {liberty.length > 0 && (
         <TarjetaFunciona
@@ -1476,21 +1505,6 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
       )}
       {/* 0.73.0: la frase del apartado 4 que lo distingue, plegada debajo (antes, arriba, como
           entradilla con puntos suspensivos): la primera pantalla son las tarjetas. */}
-      {distingue.length > 0 && (
-        <details
-          className="group rounded-xl border bg-white px-3 py-1"
-          style={{ borderColor: "#e6e6e6" }}
-        >
-          <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8 sm:py-1.5">
-            Rasgos distintivos (apartado 4)
-          </summary>
-          <div className="space-y-2 pb-2 text-[15px] leading-snug text-slate-800">
-            {distingue.map((p, j) => (
-              <PiezaVista key={j} pieza={p} sis={c} compacta siglas={sg[j]} />
-            ))}
-          </div>
-        </details>
-      )}
       <FuentePie fuentes={[fuenteT1(), ...fuentesDePiezas([...distingue, ...liberty])]} />
     </div>
   );

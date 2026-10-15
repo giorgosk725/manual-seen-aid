@@ -1092,8 +1092,6 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
     if (izq < fila.scrollLeft || izq + b.offsetWidth > fila.scrollLeft + fila.clientWidth)
       fila.scrollLeft = izq - (fila.clientWidth - b.offsetWidth) / 2;
   }, [n]);
-  // En el ordenador, los patrones del paso abiertos (hay sitio).
-  const [ancha] = useState(() => window.matchMedia?.("(min-width: 1024px)").matches ?? false);
   return (
     <div>
       <CabeceraEditorial titulo="Interpretación de la descarga" hex={hex} level={1} />
@@ -1212,7 +1210,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
             />
           </div>
           {patrones.length > 0 && (
-            <details className="mt-4" open={ancha}>
+            <details className="mt-4" open>
               <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
                 Patrones relacionados ({patrones.length})
               </summary>
