@@ -1,4 +1,4 @@
-/* Recorrido «Iniciar un sistema» (#/consultar/inicio/<fase>[:<sistema>][:<tarea>]): el apartado 8
+/* Recorrido «Iniciación del sistema» (#/consultar/inicio/<fase>[:<sistema>][:<tarea>]): el apartado 8
    en sus cuatro fases, cada una como una lista corta de tareas desplegables (inicio.ts, TAREAS),
    con el sistema elegido o los cuatro, y la hoja de comprobación como herramienta del recorrido.
    El contenido sale de inicio.ts (referencias al texto literal); aquí solo se pinta. */
@@ -613,7 +613,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
   };
   return (
     <div>
-      <CabeceraEditorial titulo="Iniciar un sistema" hex={hex} level={1} />
+      <CabeceraEditorial titulo="Iniciación del sistema" hex={hex} level={1} />
 
       {/* 0.72.0: las tres vistas en un solo control (la calculadora, las fases y la hoja para
           imprimir). */}

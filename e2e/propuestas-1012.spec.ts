@@ -20,7 +20,7 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     await expect(page.getByLabel("Texto a buscar")).toHaveValue("modo sueño");
   });
 
-  test("Para el paciente ofrece el PDF oficial", async ({ page }) => {
+  test("Material para el paciente ofrece el PDF oficial", async ({ page }) => {
     await page.goto("/#/pacientes");
     const pdf = page.getByRole("link", { name: /Información para pacientes/ });
     await expect(pdf).toHaveAttribute("href", /pdf\/manual-seen-aid-pacientes\.pdf$/);

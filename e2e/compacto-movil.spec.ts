@@ -35,7 +35,7 @@ test.describe("Móvil compacto (360 px)", () => {
   }) => {
     await page.goto("/#/pacientes/plan/mm780");
     const migas = page.getByRole("navigation", { name: "Hojas para el paciente" });
-    await expect(migas.getByRole("link", { name: "Para el paciente" })).toBeVisible();
+    await expect(migas.getByRole("link", { name: "Material para el paciente" })).toBeVisible();
     expect((await migas.boundingBox())!.height).toBeLessThanOrEqual(48);
     const sistemas = page.getByRole("group", { name: "Sistema" }).getByRole("button");
     await expect(sistemas).toHaveCount(4);

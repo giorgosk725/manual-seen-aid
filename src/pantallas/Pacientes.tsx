@@ -1,4 +1,4 @@
-/* «Para el paciente» (0.70.0, simplificación del 14-10-2026): una pantalla con tres entradas
+/* «Material para el paciente» (0.70.0, simplificación del 14-10-2026): una pantalla con tres entradas
    — la Información para pacientes publicada por el Manual SEEN (PDF), el plan de seguridad de cada
    sistema y la hoja «Antes de una prueba o una cirugía» —. Sin transcripciones en pantalla del
    PDF. El plan cabe en una cara (lo que hay que tener y rellenar, y qué función usar del sistema)
@@ -196,7 +196,7 @@ export function HubPacientes() {
   const cetonas = hojaExtraPorId("cetonas");
   return (
     <div>
-      <CabeceraEditorial titulo="Para el paciente" hex={hex} level={1} />
+      <CabeceraEditorial titulo="Material para el paciente" hex={hex} level={1} />
       <div
         className="overflow-hidden rounded-xl border bg-white"
         style={{ borderColor: "#e6e6e6" }}
@@ -385,7 +385,7 @@ export function ResumenPacientes() {
   );
 }
 
-/* Migas de una hoja, en una línea: vuelve a «Para el paciente» y dice cuál se está viendo. */
+/* Migas de una hoja, en una línea: vuelve a «Material para el paciente» y dice cuál se está viendo. */
 function Volver({ actual }: { actual: string }) {
   return (
     <nav
@@ -396,7 +396,7 @@ function Volver({ actual }: { actual: string }) {
         href={href("pacientes")}
         className="inline-flex min-h-11 shrink-0 items-center font-semibold hover:underline"
       >
-        Para el paciente
+        Material para el paciente
       </a>
       <span aria-hidden="true">›</span>
       <span aria-current="page" className="min-w-0 truncate">

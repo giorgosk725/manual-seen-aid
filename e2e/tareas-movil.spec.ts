@@ -66,12 +66,12 @@ test.describe("Tareas en dos toques (393 px)", () => {
 
 test.describe("Pantallas nuevas en el móvil", () => {
   for (const [ruta, nombre] of [
-    ["/#/pacientes", "Para el paciente"],
+    ["/#/pacientes", "Material para el paciente"],
     ["/#/pacientes/informacion", "Información para pacientes"],
     ["/#/pacientes/plan/camaps", "Plan de seguridad · CamAPS"],
     ["/#/test", "Autoevaluación"],
     ["/#/repaso", "Tarjetas de repaso"],
-    ["/#/consultar/inicio/inicio:omnipod-5", "Iniciar un sistema"],
+    ["/#/consultar/inicio/inicio:omnipod-5", "Iniciación del sistema"],
     ["/#/consultar/inicio/calculadora:control-iq", "Calculadora de inicio"],
     ["/#/consultar/situacion", "Situaciones"],
     ["/#/sistemas", "Sistemas AID"],

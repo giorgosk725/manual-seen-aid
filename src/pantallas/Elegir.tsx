@@ -242,9 +242,9 @@ export function Elegir({ antigua = false }: { antigua?: boolean }) {
           Sistemas AID
         </a>
         <span aria-hidden="true">›</span>
-        <span>Cómo elegir un sistema</span>
+        <span>Elección del sistema</span>
       </div>
-      <CabeceraEditorial titulo="Cómo elegir un sistema" hex={hex} level={1} />
+      <CabeceraEditorial titulo="Elección del sistema" hex={hex} level={1} />
 
       <PorCaracteristicas />
 

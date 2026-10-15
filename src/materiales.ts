@@ -89,7 +89,7 @@ export const MATERIALES: Material[] = [
   {
     id: "calculadora",
     estado: "aprobado",
-    nombre: "Calculadora de inicio («Iniciar un sistema»)",
+    nombre: "Calculadora de inicio («Iniciación del sistema»)",
     tipo: "ayuda",
     fecha: "2026-10-13",
     version: "0.58.0",

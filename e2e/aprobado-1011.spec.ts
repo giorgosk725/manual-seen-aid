@@ -6,19 +6,19 @@ import { retirado } from "../src/edicion";
 
 test.describe("Aprobado el 11-10 (0.37.0)", () => {
   // 0.70.0: sin «Cómo funciona» comparado (repetía la Tabla 1): esa dirección lleva a la Tabla 1.
-  test("la comparación son dos pestañas; «funciona» comparado lleva a Lo esencial", async ({
+  test("la comparación son dos pestañas; «funciona» comparado lleva a Características", async ({
     page,
   }) => {
     await page.goto("/#/sistemas/ciq+op5/funciona");
     const secciones = page.getByRole("navigation", { name: "Sección" });
-    // 0.72.1: y «De un vistazo» delante, para volver a las tarjetas.
+    // 0.72.1: y «Resumen» delante, para volver a las tarjetas.
     await expect(secciones.getByRole("link")).toHaveText([
-      "De un vistazo",
-      "Lo esencial",
+      "Resumen",
+      "Características",
       "Parámetros",
     ]);
-    await expect(page.getByRole("region", { name: "Lo esencial" })).toBeVisible();
-    await secciones.getByRole("link", { name: "De un vistazo" }).click();
+    await expect(page.getByRole("region", { name: "Características" })).toBeVisible();
+    await secciones.getByRole("link", { name: "Resumen" }).click();
     await expect(page).toHaveURL(/#\/sistemas$/);
   });
 

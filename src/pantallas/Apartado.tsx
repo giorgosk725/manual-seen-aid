@@ -34,9 +34,14 @@ const RECORRIDOS: Record<string, { texto: string; ruta: string }[]> = {
     { texto: "Hiperglucemia y cetonemia", ruta: href("consultar", "figura-3") },
     { texto: "Interrupción del sistema", ruta: href("consultar", "interrupcion") },
   ],
-  "08-iniciacion": [{ texto: "Iniciar un sistema paso a paso", ruta: href("consultar", "inicio") }],
+  "08-iniciacion": [
+    { texto: "Iniciación del sistema paso a paso", ruta: href("consultar", "inicio") },
+  ],
   "09-descarga": [
-    { texto: "Revisar la descarga en ocho pasos", ruta: href("consultar", "descarga", "1") },
+    {
+      texto: "Interpretación de la descarga en ocho pasos",
+      ruta: href("consultar", "descarga", "1"),
+    },
   ],
   "10-situaciones": [
     { texto: "Situación y sistema (Tablas 4 y 6)", ruta: href("consultar", "situacion") },

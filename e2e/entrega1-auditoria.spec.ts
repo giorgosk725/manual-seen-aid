@@ -44,7 +44,7 @@ test.describe("Entrega 1 (0.32.0)", () => {
     await page.goto("/#/buscar/paso%207%20de%20la%20descarga");
     const abrir = page
       .getByRole("list", { name: "Abrir" })
-      .getByRole("link", { name: /Revisar la descarga · paso 7/ });
+      .getByRole("link", { name: /Interpretación de la descarga · paso 7/ });
     await expect(abrir).toHaveCount(1);
     await expect(page.getByText(/Paso 7 · Respuesta automática/).first()).toBeVisible();
   });

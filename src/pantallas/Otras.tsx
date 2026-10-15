@@ -54,7 +54,7 @@ const TIPO: Record<string, string> = {
   referencia: "Bibliografía",
   sigla: "Sigla",
   ampliacion: "Ampliación",
-  pacientes: "Para el paciente",
+  pacientes: "Material para el paciente",
   resumen: "Resumen del capítulo",
   test: "Autoevaluación",
   atajo: "Ir a",
@@ -515,7 +515,7 @@ export function Sobre() {
               consultar sin conexión una vez cargado.
             </li>
             <li>
-              La ayuda de cálculo de «Iniciar un sistema» aplica las reglas de la Tabla 2 y del
+              La ayuda de cálculo de «Iniciación del sistema» aplica las reglas de la Tabla 2 y del
               apartado 8 y unos puntos de partida del responsable de este complemento (no del Manual
               SEEN). Da un punto de partida para revisión profesional, no una pauta, y no guarda ni
               envía las cifras. No escribas datos que identifiquen a una persona.

@@ -1,4 +1,4 @@
-/* El selector de sistema de toda la app (Sistemas AID, Situaciones, Iniciar un sistema): una
+/* El selector de sistema de toda la app (Sistemas AID, Situaciones, Iniciación del sistema): una
    casilla por sistema (cuadro con marca y punto de su color). Uno o varios según quien lo use;
    el nombre corto en el móvil y el completo en pantallas grandes, salvo que se den nombres.
    En el móvil, las cuatro en una fila (marca y punto arriba, nombre debajo) y lo demás («Los

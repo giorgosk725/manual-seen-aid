@@ -1,4 +1,4 @@
-/* Recorrido «Iniciar un sistema»: que cada pieza apunte a texto del capítulo que existe, que
+/* Recorrido «Iniciación del sistema»: que cada pieza apunte a texto del capítulo que existe, que
    cada sistema tenga su línea de inicialización y que la pantalla y la hoja se pinten. */
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
@@ -6,7 +6,7 @@ import { axe } from "jest-axe";
 import { FASES, frasesDe, hojaDeComprobacion, lineasInicializacion, listaDe } from "./inicio";
 import { IniciarSistema } from "./pantallas/Inicio";
 
-describe("Iniciar un sistema: el texto sale del capítulo", () => {
+describe("Iniciación del sistema: el texto sale del capítulo", () => {
   it("cada frase, lista y fila citada existe", () => {
     for (const f of FASES)
       for (const p of f.piezas) {
@@ -53,7 +53,7 @@ describe("Iniciar un sistema: el texto sale del capítulo", () => {
   });
 });
 
-describe("Iniciar un sistema: tareas", () => {
+describe("Iniciación del sistema: tareas", () => {
   it("cada pieza de cada fase está en una tarea o suelta, y ninguna en dos", async () => {
     const { tareasDe, piezasSueltas } = await import("./inicio");
     for (const f of FASES) {
@@ -71,7 +71,7 @@ describe("Iniciar un sistema: tareas", () => {
   });
 });
 
-describe("Iniciar un sistema: pantalla", () => {
+describe("Iniciación del sistema: pantalla", () => {
   it("con Omnipod 5, la fase de inicio enseña solo su línea y sus casillas", async () => {
     const { container } = render(<IniciarSistema detalle="inicio:omnipod-5:arranque" />);
     expect(

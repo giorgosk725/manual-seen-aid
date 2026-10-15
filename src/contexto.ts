@@ -26,7 +26,7 @@ const NOMBRE_ID: Record<string, string> = {
   op5: "Omnipod 5",
 };
 const SECCION: Record<string, string> = {
-  esencial: "Lo esencial",
+  esencial: "Características",
   funciona: "Cómo funciona",
   parametros: "Parámetros",
   situaciones: "Situaciones",

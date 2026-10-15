@@ -1,4 +1,4 @@
-/* «Iniciar un sistema»: el apartado 8 (pp. 10-12) en sus cuatro fases, con lo que piden los
+/* «Iniciación del sistema»: el apartado 8 (pp. 10-12) en sus cuatro fases, con lo que piden los
    apartados 6, 7 y 9 en cada una. No hay texto escrito aquí: cada pieza apunta a un párrafo
    (y a sus frases), a una lista, a una fila de tabla o a la casilla de un sistema, y se pinta
    tal cual con su página. Los nombres de las fases son los del propio capítulo (p. 10).
@@ -59,7 +59,7 @@ export const FASES: Fase[] = [
       { t: "casilla", tabla: "T1", fila: 7 },
       { t: "frase", apartado: "06-indicaciones", bloque: "b5", k: [0] },
       { t: "frase", apartado: "06-indicaciones", bloque: "b5", k: [2] },
-      { t: "enlace", texto: "Cómo elegir un sistema (Figura 2)", ruta: href("sistemas", "elegir") },
+      { t: "enlace", texto: "Elección del sistema (Figura 2)", ruta: href("sistemas", "elegir") },
       { t: "frase", apartado: "07-educacion", bloque: "b1", k: [2] },
       { t: "lista", apartado: "07-educacion", bloque: "b4" },
       // 13-10-2026: lo que el capítulo pide en la preparación y no salía aquí.
@@ -143,7 +143,7 @@ export const FASES: Fase[] = [
       { t: "frase", apartado: "09-descarga", bloque: "b2", k: [0, 1] },
       {
         t: "enlace",
-        texto: "Revisar la descarga (Tabla 5, ocho pasos)",
+        texto: "Interpretación de la descarga (Tabla 5, ocho pasos)",
         ruta: href("consultar", "descarga", "1"),
       },
       // 13-10-2026: qué vigilar en las primeras descargas (Tabla 5, paso 1; apartado 9).
@@ -361,7 +361,7 @@ export const TAREAS: Record<string, Tarea[]> = {
       titulo: "Qué se ajusta en las primeras descargas",
       piezas: [4, 5],
       siguiente: () => ({
-        texto: "Revisar la descarga, paso a paso",
+        texto: "Interpretación de la descarga, paso a paso",
         ruta: href("consultar", "descarga", "1"),
       }),
     },

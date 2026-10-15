@@ -5,10 +5,10 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Explorar criterios de elección", () => {
-  // 0.70.0: «Cómo elegir un sistema», sin la repetición de las celdas de la Tabla 1.
+  // 0.70.0: «Elección del sistema», sin la repetición de las celdas de la Tabla 1.
   test("sin entradas de perfil ni veredictos; el apartado 6 y la Figura 2", async ({ page }) => {
     await page.goto("/#/sistemas/elegir");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Cómo elegir un sistema");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Elección del sistema");
     const main = page.getByRole("main");
     await expect(main.locator("input, select, textarea")).toHaveCount(0);
     await expect(
@@ -32,7 +32,7 @@ test.describe("Explorar criterios de elección", () => {
 
   test("una dirección antigua con criterios abre la consulta sin sus valores", async ({ page }) => {
     await page.goto("/#/sistemas/elegir/edad:10+dm2");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Cómo elegir un sistema");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Elección del sistema");
     await expect(page).toHaveURL(/#\/sistemas\/elegir$/);
     const guardado = await page.evaluate(() => JSON.stringify(localStorage));
     expect(guardado).not.toContain("edad:10");
@@ -40,7 +40,7 @@ test.describe("Explorar criterios de elección", () => {
 
   test("se llega desde Sistemas", async ({ page }) => {
     await page.goto("/#/sistemas");
-    await page.getByRole("link", { name: /^Cómo elegir un sistema/ }).click();
+    await page.getByRole("link", { name: /^Elección del sistema/ }).click();
     await expect(page).toHaveURL(/#\/sistemas\/elegir$/);
   });
 });

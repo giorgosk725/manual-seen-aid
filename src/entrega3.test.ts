@@ -199,7 +199,7 @@ describe("Entrega 1 de la auditoría de la 0.31 (0.32.0)", () => {
     expect(rec("iniciar Omnipod 5 desde múltiples dosis")[0].entrada.ruta).toBe(
       "#/consultar/inicio/preparacion:omnipod-5",
     );
-    expect(rec("empezar con control iq")[0].entrada.titulo).toMatch(/Iniciar un sistema/);
+    expect(rec("empezar con control iq")[0].entrada.titulo).toMatch(/Iniciación del sistema/);
     const top = responder("iniciar Omnipod 5 desde múltiples dosis")[0];
     expect(top.id).not.toMatch(/nota/);
   });
@@ -219,9 +219,11 @@ describe("Entrega 4 de la auditoría (0.35.0)", () => {
     );
   });
   it("«pasar de plumas a Omnipod» conserva el acceso a Iniciar", () => {
-    expect(rec("quiero pasar de plumas a Omnipod")[0].entrada.titulo).toMatch(/Iniciar un sistema/);
+    expect(rec("quiero pasar de plumas a Omnipod")[0].entrada.titulo).toMatch(
+      /Iniciación del sistema/,
+    );
     expect(rec("dejar las plumas y empezar con control iq")[0].entrada.titulo).toMatch(
-      /Iniciar un sistema/,
+      /Iniciación del sistema/,
     );
   });
 });
@@ -235,7 +237,7 @@ describe("Reformulaciones nuevas y cobertura parcial (0.36.0)", () => {
       "poner en marcha una 780G en un paciente con MDI",
       "arrancar control iq desde pauta bolo-basal",
     ])
-      expect(rec(q)[0]?.entrada.titulo, q).toMatch(/Iniciar un sistema/);
+      expect(rec(q)[0]?.entrada.titulo, q).toMatch(/Iniciación del sistema/);
   });
   it("comparaciones con otras palabras", () => {
     expect(preguntaFrecuente("en qué se diferencian control iq y control iq plus")?.id).toBe("f61");

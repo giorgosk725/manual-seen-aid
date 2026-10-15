@@ -41,7 +41,7 @@ test.describe("Uso 0.10.0 en el móvil", () => {
       .toBe(true);
   });
 
-  test("Iniciar un sistema: nombres de sistema enteros, sin cortar", async ({ page }) => {
+  test("Iniciación del sistema: nombres de sistema enteros, sin cortar", async ({ page }) => {
     await page.goto("/#/consultar/inicio/inicio");
     for (const nombre of ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"]) {
       const b = page.getByRole("group", { name: "Sistema" }).getByRole("button", { name: nombre });

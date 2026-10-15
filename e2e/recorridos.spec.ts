@@ -41,10 +41,10 @@ test.describe("Recorridos completos (0.36.0)", () => {
     await page.goto("/#/buscar/quiero%20pasar%20de%20plumas%20a%20Omnipod");
     await page
       .getByRole("list", { name: "Abrir" })
-      .getByRole("link", { name: /Iniciar un sistema · Omnipod 5/ })
+      .getByRole("link", { name: /Iniciación del sistema · Omnipod 5/ })
       .click();
     await expect(page).toHaveURL(/#\/consultar\/inicio\/preparacion:omnipod-5$/);
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Iniciar un sistema");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Iniciación del sistema");
   });
 
   test("3 · Elegir una tarea de Inicio → consultar su fuente → regresar a la misma tarea", async ({

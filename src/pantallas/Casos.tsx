@@ -304,7 +304,8 @@ export function CasoVista({ caso, inicial = 0 }: { caso: Caso; inicial?: number 
               href={href("consultar", "descarga", String(paso + 1))}
               className="mt-1 inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-slate-600 hover:underline sm:min-h-6"
             >
-              Este paso en «Revisar la descarga» <ArrowRight size={12} aria-hidden="true" />
+              Este paso en «Interpretación de la descarga»{" "}
+              <ArrowRight size={12} aria-hidden="true" />
             </a>
           )}
           {p.situacion && (

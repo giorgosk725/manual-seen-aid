@@ -14,7 +14,9 @@ test.describe("Pertinencia y continuación (0.42.0)", () => {
       page.getByText(/Control-IQ frente a Control-IQ\+|diferencia hay entre Control-IQ/),
     ).toHaveCount(0);
     await expect(
-      page.getByRole("link", { name: /Véase también: Iniciar un sistema · Programación inicial/ }),
+      page.getByRole("link", {
+        name: /Véase también: Iniciación del sistema · Programación inicial/,
+      }),
     ).toBeVisible();
     await expect(page.getByText("Cómo leer esta tabla")).toHaveCount(0);
   });
@@ -37,7 +39,7 @@ test.describe("Pertinencia y continuación (0.42.0)", () => {
     await expect(page.getByText(/múltiples dosis|dosis total diaria/i).first()).toBeVisible();
   });
 
-  test("Para el paciente: tres entradas, sin entradillas", async ({ page }) => {
+  test("Material para el paciente: tres entradas, sin entradillas", async ({ page }) => {
     await page.goto("/#/pacientes");
     const main = page.getByRole("main");
     await expect(main.getByRole("link", { name: /Información para pacientes/ })).toBeVisible();

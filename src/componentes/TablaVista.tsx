@@ -24,9 +24,12 @@ const CORTOS = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
 
 /* La herramienta de la app que recorre cada tabla, desde la lectura del capítulo. */
 const HERRAMIENTA_DE_TABLA: Record<string, { texto: string; ruta: string }> = {
-  T2: { texto: "Iniciar un sistema, paso a paso", ruta: href("consultar", "inicio") },
+  T2: { texto: "Iniciación del sistema, paso a paso", ruta: href("consultar", "inicio") },
   T4: { texto: "Situaciones", ruta: href("consultar", "situacion") },
-  T5: { texto: "Revisar la descarga, paso a paso", ruta: href("consultar", "descarga", "1") },
+  T5: {
+    texto: "Interpretación de la descarga, paso a paso",
+    ruta: href("consultar", "descarga", "1"),
+  },
   T6: { texto: "Situaciones", ruta: href("consultar", "situacion") },
 };
 const slugDe = (c: number) => CORTOS[c].toLowerCase().replace(/\s/g, "-");

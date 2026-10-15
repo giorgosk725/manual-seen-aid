@@ -117,7 +117,7 @@ export function comoFunciona(c: number, id: SistemaId): Guia {
           casilla("Plataforma de descarga"),
           {
             t: "enlace",
-            texto: "Revisar la descarga en ocho pasos",
+            texto: "Interpretación de la descarga en ocho pasos",
             ruta: href("consultar", "descarga", "1"),
           },
         ],

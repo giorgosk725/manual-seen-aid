@@ -91,7 +91,7 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "elegir",
-    etiqueta: "Cómo elegir un sistema",
+    etiqueta: "Elección del sistema",
     corto: "Criterios",
     href: href("sistemas", "elegir"),
     icono: Handshake,
@@ -135,7 +135,7 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "inicio",
-    etiqueta: "Iniciar un sistema",
+    etiqueta: "Iniciación del sistema",
     corto: "Iniciar",
     href: href("consultar", "inicio"),
     icono: CirclePlay,
@@ -146,7 +146,7 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "descarga",
-    etiqueta: "Revisar la descarga",
+    etiqueta: "Interpretación de la descarga",
     corto: "Descarga",
     href: href("consultar", "descarga", "1"),
     icono: ListChecks,
@@ -241,7 +241,7 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "pacientes",
-    etiqueta: "Para el paciente",
+    etiqueta: "Material para el paciente",
     corto: "Pacientes",
     href: href("pacientes"),
     icono: HeartHandshake,
@@ -310,19 +310,19 @@ export const MAPA_CONSULTA: {
   etiquetas?: Record<string, string>;
   ancho?: boolean;
 }[] = [
-  { id: "sistemas", titulo: "¿Qué sistema y cómo se ajusta?", ids: ["comparar"] },
+  { id: "sistemas", titulo: "Sistemas y ajuste de parámetros", ids: ["comparar"] },
   {
     id: "situaciones",
-    titulo: "¿Qué hago en esta situación?",
+    titulo: "Situaciones clínicas",
     ids: ["figura-3", "hipoglucemia", "interrupcion", "situacion"],
     etiquetas: { situacion: "Todas las situaciones" },
   },
-  { id: "en-consulta", titulo: "¿Cómo lo inicio y lo reviso?", ids: ["inicio", "descarga"] },
+  { id: "en-consulta", titulo: "Iniciación y seguimiento", ids: ["inicio", "descarga"] },
   {
     id: "pacientes",
-    titulo: "¿Qué le doy al paciente?",
+    titulo: "Material para el paciente",
     ids: ["pdf-pacientes", "pacientes"],
-    etiquetas: { pacientes: "Planes de seguridad y hojas" },
+    etiquetas: { pacientes: "Plan de seguridad y hojas informativas" },
   },
 ];
 

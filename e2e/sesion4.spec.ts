@@ -17,7 +17,7 @@ const paginasAlImprimir = async (page: Page) => {
 
 /* Edición editorial (A12): solo letra grande. La compacta de 7 pt no se ofrece, aunque una
    versión anterior la dejara guardada. Las hojas y plantillas se rotulan complementarias. */
-test.describe("Para el paciente: sin la versión compacta", () => {
+test.describe("Material para el paciente: sin la versión compacta", () => {
   test("con «una-cara» guardada, la hoja sale con letra grande y sin selector", async ({
     page,
   }) => {
@@ -49,7 +49,7 @@ test.describe("Para el paciente: sin la versión compacta", () => {
 /* Letra grande (decisión del autor, 3-10-2026): 12 pt en una columna, aunque ocupe varias caras;
    el resumen, dos. Desde la 0.12.0 es el formato por defecto (auditoría externa del 6-10-2026);
    la compacta se elige en la propia hoja y se recuerda en el navegador. */
-test.describe("Para el paciente: letra grande", () => {
+test.describe("Material para el paciente: letra grande", () => {
   test("letra grande siempre; un solo botón de imprimir", async ({ page }) => {
     await page.goto("/#/capitulo/resumen");
     await expect(page.getByRole("button", { name: "Imprimir", exact: true })).toBeVisible();
@@ -94,7 +94,7 @@ test.describe("Nocturno en lo nuevo", () => {
     await expect(page.locator("html")).toHaveClass(/night/);
     await auditar(page, "Portada con «¿Qué necesitas?»");
     for (const [ruta, nombre] of [
-      ["/#/pacientes", "Para el paciente"],
+      ["/#/pacientes", "Material para el paciente"],
       ["/#/pacientes/plan/op5", "Plan de seguridad"],
       ["/#/test", "Autoevaluación"],
       ["/#/visual/gestacion-sistemas", "Gestación por sistema"],
@@ -136,18 +136,18 @@ test.describe("Búsqueda y enlaces", () => {
       await expect(nav.getByText(g, { exact: true }).first()).toBeVisible();
     await expect(nav.getByRole("link", { name: "Sistemas AID", exact: true })).toBeVisible();
     await expect(nav.getByRole("link", { name: "Sobre este complemento" })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Para el paciente" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Material para el paciente" })).toBeVisible();
     await page.goto("/#/pacientes");
-    await expect(nav.getByRole("link", { name: "Para el paciente" })).toHaveAttribute(
+    await expect(nav.getByRole("link", { name: "Material para el paciente" })).toHaveAttribute(
       "aria-current",
       "page",
     );
   });
 });
 
-/* Iniciar un sistema (0.9.0): la hoja de comprobación cabe en una cara, con sistema y sin él;
+/* Iniciación del sistema (0.9.0): la hoja de comprobación cabe en una cara, con sistema y sin él;
    se llega desde la ficha del sistema y desde el apartado 8. */
-test.describe("Iniciar un sistema", () => {
+test.describe("Iniciación del sistema", () => {
   for (const ruta of ["hoja:omnipod-5", "hoja"]) {
     test(`la hoja de comprobación (${ruta}) cabe en una cara`, async ({ page }) => {
       await page.goto(`/#/consultar/inicio/${ruta}`);
@@ -168,11 +168,11 @@ test.describe("Iniciar un sistema", () => {
       page.getByText(/^Omnipod 5: iniciar modo automático desde el primer pod/),
     ).toBeVisible();
     await expect(page.getByText(/^MiniMed 780G: SmartGuard/)).toHaveCount(0);
-    await auditar(page, "Iniciar un sistema · Omnipod 5");
+    await auditar(page, "Iniciación del sistema · Omnipod 5");
   });
   test("el apartado 8 lleva al recorrido", async ({ page }) => {
     await page.goto("/#/capitulo/08-iniciacion");
-    await page.getByRole("link", { name: "Iniciar un sistema paso a paso" }).click();
-    await expect(page.getByRole("heading", { level: 1 })).toContainText(/Iniciar un sistema/i);
+    await page.getByRole("link", { name: "Iniciación del sistema paso a paso" }).click();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(/Iniciación del sistema/i);
   });
 });

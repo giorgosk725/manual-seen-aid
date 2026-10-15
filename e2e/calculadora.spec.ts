@@ -2,7 +2,7 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Calculadora de parámetros iniciales", () => {
-  test("es lo primero de Iniciar un sistema y calcula con las reglas del capítulo", async ({
+  test("es lo primero de Iniciación del sistema y calcula con las reglas del capítulo", async ({
     page,
   }) => {
     await page.goto("/#/consultar/inicio");

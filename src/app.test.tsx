@@ -159,7 +159,9 @@ describe("App", () => {
   it("las hojas breves (extractos del PDF) ya no están: la ruta lleva a la pantalla", async () => {
     render(<App />);
     await ir("#/pacientes/hoja/glucosa");
-    expect(screen.getByRole("heading", { level: 1, name: "Para el paciente" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Material para el paciente" }),
+    ).toBeInTheDocument();
   });
 
   it("la versión extendida no se muestra (ni en la lectura ni en las fichas)", async () => {
@@ -203,7 +205,7 @@ describe("App", () => {
     expect(screen.queryByText(/Función comida de absorción lenta/)).not.toBeInTheDocument();
   });
 
-  it("Revisar la descarga abre el paso 8 y enlaza a la Figura 3", async () => {
+  it("Interpretación de la descarga abre el paso 8 y enlaza a la Figura 3", async () => {
     render(<App />);
     await ir("#/consultar/descarga/8");
     expect(screen.getByRole("heading", { level: 2, name: /Bandera roja/ })).toBeInTheDocument();

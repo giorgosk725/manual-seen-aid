@@ -1,5 +1,5 @@
 /* Sistemas: una sola pantalla para uno o varios. Uno = su ficha, la misma para entender y para
-   consultar, en secciones con ruta propia (#/sistemas/<id>/<seccion>): Lo esencial (Tabla 1),
+   consultar, en secciones con ruta propia (#/sistemas/<id>/<seccion>): Características (Tabla 1),
    Cómo funciona, Parámetros (Tablas 1 y 3), Situaciones (Tabla 4), literales, con la fuente al
    pie de cada bloque (componentes/FuentePie), y
    aparte la Ampliación técnica, fuera del capítulo y con sus fuentes. Varios o todos
@@ -444,7 +444,7 @@ const TODAS_LAS_SECCIONES = [
 /* La comparación (0.70.0): la Tabla 1 y la Tabla 3, sin «Cómo funciona» comparado (repetía la
    Tabla 1). */
 const SECCIONES_COMPARACION = [
-  { id: "esencial", t: "Lo esencial" },
+  { id: "esencial", t: "Características" },
   { id: "parametros", t: "Parámetros" },
 ] as const;
 /* La ampliación técnica no va en la edición editorial (A06): ni pestaña ni sección. */
@@ -982,7 +982,7 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
             className={`inline-flex min-h-11 shrink-0 items-center border-b-2 px-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${entrada ? "font-bold" : "border-transparent font-semibold text-slate-600 hover:text-slate-900"}`}
             style={entrada ? { borderColor: SEEN.burdeos, color: SEEN.burdeos } : undefined}
           >
-            De un vistazo
+            Resumen
           </a>
         )}
         {secciones.map((x) => (
@@ -1128,7 +1128,7 @@ function EntradaSistemas() {
           style={{ color: hex.strong }}
           aria-hidden="true"
         />
-        <span className="min-w-0 flex-1">Cómo elegir un sistema</span>
+        <span className="min-w-0 flex-1">Elección del sistema</span>
         <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
       </a>
       <FuentePie fuentes={[fuenteT1()]} />
@@ -1225,7 +1225,7 @@ function ParametrosAuto({ c, compacto = false }: { c: number; compacto?: boolean
   );
 }
 
-/* Lo esencial de cada celda de «Cómo funciona», arriba y en negrita (fragmentos literales de
+/* Características de cada celda de «Cómo funciona», arriba y en negrita (fragmentos literales de
    CLAVE_ALGORITMO); la celda entera, debajo. */
 function claveDeCelda(fila: number, c: number): ReactNode {
   const k = CLAVE_ALGORITMO[c];

@@ -26,7 +26,11 @@ test.describe("Portada y navegación (0.50)", () => {
     );
     await barra.getByRole("button", { name: "Más" }).click();
     const menu = page.getByRole("dialog", { name: "Menú" });
-    for (const n of ["Hiperglucemia y cetonemia", "Índice del capítulo", "Para el paciente"])
+    for (const n of [
+      "Hiperglucemia y cetonemia",
+      "Índice del capítulo",
+      "Material para el paciente",
+    ])
       await expect(menu.getByRole("link", { name: n, exact: true })).toBeVisible();
   });
 
@@ -55,7 +59,7 @@ test.describe("Portada y navegación (0.50)", () => {
   test("el PDF publicado para pacientes, a un toque desde la portada", async ({ page }) => {
     await page.goto("/#/");
     const pdf = page
-      .getByRole("region", { name: "¿Qué le doy al paciente?" })
+      .getByRole("region", { name: "Material para el paciente" })
       .getByRole("link", { name: "Información para pacientes", exact: true });
     await expect(pdf).toHaveAttribute("href", "pdf/manual-seen-aid-pacientes.pdf");
   });

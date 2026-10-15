@@ -1,7 +1,7 @@
 /* Recorridos de consulta construidos solo con el texto del capítulo:
    - Situaciones: eliges una situación (filas de las Tablas 4 y 6) y, si procede, un
      sistema, y ves la celda exacta más los párrafos del capítulo que la desarrollan.
-   - Revisar la descarga: la Tabla 5 paso a paso (8 pasos), con el patrón relacionado.
+   - Interpretación de la descarga: la Tabla 5 paso a paso (8 pasos), con el patrón relacionado.
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
 import { ponerConsulta } from "../consultaBuscar";
@@ -1107,7 +1107,7 @@ export function SituacionSistema({
   );
 }
 
-/* ---------- Revisar la descarga (Tabla 5 paso a paso) ---------- */
+/* ---------- Interpretación de la descarga (Tabla 5 paso a paso) ---------- */
 const PATRON_DEL_PASO: Record<number, string[]> = {
   1: ["Salidas repetidas del modo automático.", "Pérdidas de señal y salidas del modo automático."],
   2: ["Tiempo por debajo del rango elevado.", "Hipoglucemia nocturna."],
@@ -1153,7 +1153,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
   const [ancha] = useState(() => window.matchMedia?.("(min-width: 1024px)").matches ?? false);
   return (
     <div>
-      <CabeceraEditorial titulo="Revisar la descarga" hex={hex} level={1} />
+      <CabeceraEditorial titulo="Interpretación de la descarga" hex={hex} level={1} />
       {/* 0.72.0: los ocho pasos a la vista. Hasta el ordenador ancho, ocho botones numerados
           con el avance; en él, la lista con sus títulos a la izquierda. */}
       <nav ref={filaPasos} aria-label="Pasos de la descarga" className="no-imprimir mb-3 lg:hidden">

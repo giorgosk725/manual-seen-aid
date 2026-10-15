@@ -243,12 +243,12 @@ export function indice(): Entrada[] {
   // de los sistemas, para que «resonancia 780G» o «ejercicio omnipod» los encuentren.
   const NOMBRES =
     "MiniMed 780G Medtronic Tandem Control-IQ t:slim myLoop CamAPS FX mylife YpsoPump Omnipod 5 Insulet";
-  // Los ocho pasos de «Revisar la descarga» (Tabla 5): «paso 7», «respuesta automática DTD»…
+  // Los ocho pasos de «Interpretación de la descarga» (Tabla 5): «paso 7», «respuesta automática DTD»…
   TABLAS.T5.filas.forEach((f, i) => {
     out.push({
       id: `atajo/descarga/${i + 1}`,
       tipo: "atajo",
-      titulo: `Revisar la descarga · paso ${i + 1}: ${f.celdas[0]}`,
+      titulo: `Interpretación de la descarga · paso ${i + 1}: ${f.celdas[0]}`,
       texto: `Paso ${i + 1} de la descarga. ${f.celdas.join(" ")}`,
       pagina: TABLAS.T5.paginas[0],
       pagina2: TABLAS.T5.paginas[1],
@@ -312,8 +312,8 @@ export function indice(): Entrada[] {
       href("consultar", "situacion", "ejercicio-aerobico"),
     ],
     [
-      "Revisar la descarga (Tabla 5)",
-      "Revisar la descarga en consulta: los ocho pasos de la Tabla 5 y sus patrones",
+      "Interpretación de la descarga (Tabla 5)",
+      "Interpretación de la descarga en consulta: los ocho pasos de la Tabla 5 y sus patrones",
       13,
       href("consultar", "descarga", "1"),
     ],
@@ -324,7 +324,7 @@ export function indice(): Entrada[] {
       href("consultar", "interrupcion"),
     ],
     [
-      "Iniciar un sistema (apartado 8, Tabla 2)",
+      "Iniciación del sistema (apartado 8, Tabla 2)",
       "Iniciar, empezar, arrancar, inicio del sistema, transición desde MDI, parámetros iniciales, reducción de la DTD, ratio y factor de sensibilidad, plan de respaldo, primeros 3 meses, seguimiento, hoja de comprobación",
       10,
       href("consultar", "inicio"),
@@ -515,7 +515,7 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
       entrada: {
         id: `recurso/inicio/${SIS_IDS[sis]}`,
         tipo: "atajo",
-        titulo: `Iniciar un sistema · ${nombre}`,
+        titulo: `Iniciación del sistema · ${nombre}`,
         texto: "",
         pagina: TABLAS.T2.paginas[0],
         ruta: href("consultar", "inicio", `preparacion:${SIS_IDS[sis]}`),
@@ -560,7 +560,7 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         entrada: {
           id: `recurso/descarga/${paso}`,
           tipo: "atajo",
-          titulo: `Revisar la descarga · paso ${paso}: ${f.celdas[0]}`,
+          titulo: `Interpretación de la descarga · paso ${paso}: ${f.celdas[0]}`,
           texto: "",
           pagina: TABLAS.T5.paginas[0],
           pagina2: TABLAS.T5.paginas[1],
@@ -791,8 +791,8 @@ export interface Sugerencia {
 }
 
 const HERRAMIENTAS: [string, string][] = [
-  ["Revisar la descarga (Tabla 5, ocho pasos)", href("consultar", "descarga", "1")],
-  ["Iniciar un sistema (apartado 8)", href("consultar", "inicio")],
+  ["Interpretación de la descarga (Tabla 5, ocho pasos)", href("consultar", "descarga", "1")],
+  ["Iniciación del sistema (apartado 8)", href("consultar", "inicio")],
   ["Explorar criterios de elección (apartado 6 y Tabla 1)", href("sistemas", "elegir")],
   ["Comparar sistemas (Tabla 1)", href("sistemas", "todos", "esencial")],
   ["Parámetros por sistema (Tabla 3)", href("sistemas", "todos", "parametros")],
@@ -878,7 +878,7 @@ export function consultaEfectiva(q: string): string | null {
 }
 
 /* La continuación operativa de una respuesta que es una fila de la Tabla 2 o la Tabla 3: la
-   tarea de «Iniciar un sistema» que la trabaja, con el sistema nombrado si lo hay. */
+   tarea de «Iniciación del sistema» que la trabaja, con el sistema nombrado si lo hay. */
 const TAREA_DE_T2: Record<number, string> = {
   0: "respaldo",
   1: "arranque",
@@ -903,7 +903,7 @@ export function continuacionDe(
   const sis = sistema >= 0 ? SIS_IDS[sistema] : "";
   const nombre = sistema >= 0 ? ` (${TABLAS.T1.columnas[sistema]})` : "";
   return {
-    texto: `Iniciar un sistema · ${titulo}${nombre}`,
+    texto: `Iniciación del sistema · ${titulo}${nombre}`,
     ruta: href("consultar", "inicio", `inicio:${sis}:${tarea}`),
   };
 }

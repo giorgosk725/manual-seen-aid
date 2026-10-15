@@ -1,4 +1,4 @@
-/* La fase «Inicio del sistema» de Iniciar un sistema, como recorrido paso a paso
+/* La fase «Inicio del sistema» de Iniciación del sistema, como recorrido paso a paso
    (#/consultar/inicio/inicio[:sistema][:paso]): cinco pasos en el orden en que se trabaja con la
    persona delante (de qué pauta viene, programación, objetivos, respaldo y activación). Las
    preguntas eligen qué pasajes se enseñan (sin elegir, se enseñan todos); las casillas se marcan

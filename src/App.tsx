@@ -206,11 +206,11 @@ export default function App() {
           break;
         case "inicio":
           pantalla = <IniciarSistema detalle={ruta.detalle} />;
-          titulo = "Iniciar un sistema";
+          titulo = "Iniciación del sistema";
           break;
         case "descarga":
           pantalla = <RevisarDescarga paso={ruta.detalle} />;
-          titulo = "Revisar la descarga";
+          titulo = "Interpretación de la descarga";
           break;
         case "interrupcion":
           pantalla = <Interrupcion tramo={ruta.detalle} />;
@@ -289,7 +289,7 @@ export default function App() {
         titulo = "Hoja para el paciente";
       } else {
         pantalla = <HubPacientes />;
-        titulo = "Para el paciente";
+        titulo = "Material para el paciente";
       }
       break;
     case "mas":

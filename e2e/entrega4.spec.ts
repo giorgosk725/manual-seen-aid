@@ -57,7 +57,7 @@ test.describe("Listas y tarjetas (0.29.0)", () => {
     await expect(page.getByRole("link", { name: /Paso 3 de 5 · Continuar/ })).toBeVisible();
   });
 
-  test("Para el paciente: las hojas son filas que abren", async ({ page }) => {
+  test("Material para el paciente: las hojas son filas que abren", async ({ page }) => {
     await page.goto("/#/pacientes");
     await page.getByRole("link", { name: /Antes de una prueba o una cirugía/ }).click();
     await expect(page).toHaveURL(/#\/pacientes\/hoja\/pruebas-cirugia$/);

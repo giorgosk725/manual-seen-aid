@@ -1,6 +1,6 @@
 import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
 /* Pinta una «pieza» por referencia (inicio.ts): frases de un párrafo, una lista, una fila de
-   tabla, la casilla de un sistema, la línea de inicialización, un hito o un enlace. La usan «Iniciar un sistema» y las guías por referencias (guias/) de la ficha
+   tabla, la casilla de un sistema, la línea de inicialización, un hito o un enlace. La usan «Iniciación del sistema» y las guías por referencias (guias/) de la ficha
    de cada sistema. Aquí no hay texto propio: todo sale del capítulo con su página. */
 import { ArrowRight } from "lucide-react";
 import { TABLAS } from "../contenido";
@@ -70,7 +70,7 @@ function Casilla({
   );
 }
 
-/* `compacta`: dentro de una tarea de «Iniciar un sistema», la pieza va sin su cabecera de tabla,
+/* `compacta`: dentro de una tarea de «Iniciación del sistema», la pieza va sin su cabecera de tabla,
    sin badge de página y sin enlace de página junto a cada frase; la procedencia la pone la
    tarea, una sola vez, al pie. Fuera de ahí (guías de la ficha), todo como siempre. */
 /* La nota complementaria registrada de una pieza (M61-03), la misma que en la lectura y en la

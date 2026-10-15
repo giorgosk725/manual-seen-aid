@@ -86,7 +86,9 @@ test.describe("Uso 0.10.0", () => {
     await expect(respuesta).not.toContainText("Dosis orientativas para personas adultas");
   });
 
-  test("Iniciar un sistema: «Siguiente» lleva al principio de la fase nueva", async ({ page }) => {
+  test("Iniciación del sistema: «Siguiente» lleva al principio de la fase nueva", async ({
+    page,
+  }) => {
     await page.goto("/#/consultar/inicio/preparacion");
     await page.getByRole("button", { name: "Siguiente" }).click();
     await expect(page).toHaveURL(/inicio\/inicio$/);
@@ -100,7 +102,7 @@ test.describe("Uso 0.10.0", () => {
     ).toBeVisible();
   });
 
-  test("Revisar la descarga: «Paso 2» lleva al principio del paso", async ({ page }) => {
+  test("Interpretación de la descarga: «Paso 2» lleva al principio del paso", async ({ page }) => {
     await page.goto("/#/consultar/descarga/1");
     await page.getByRole("button", { name: "Paso 2" }).click();
     await expect(page.locator("#paso-descarga")).toBeFocused();
