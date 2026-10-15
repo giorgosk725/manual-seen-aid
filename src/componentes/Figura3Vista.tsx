@@ -116,10 +116,6 @@ function Rama({
           </div>
         </div>
       </div>
-      {/* Junto a una rama no roja abierta sola, la urgencia y los signos de gravedad de la figura. */}
-      {aviso && tramo.clave !== "rojo" && (
-        <UrgenciaF3 className="mb-3" donde={`junto a la rama ${tramo.rango}`} />
-      )}
       {nota && JSON.stringify(tramo.pasos).includes("*") && (
         <p className="mb-3 rounded-lg bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
           {FIGURA3.notaAsterisco}
@@ -130,6 +126,12 @@ function Rama({
           <Paso key={i} paso={p} hex={hex} i={i} />
         ))}
       </ol>
+      {/* Junto a una rama no roja abierta sola, la urgencia y los signos de gravedad de la
+          figura. Decisión del responsable (15-10-2026, A01 revisada): después de los pasos de la
+          rama, para que la conducta del tramo quede en la primera pantalla; sigue junto a ella. */}
+      {aviso && tramo.clave !== "rojo" && (
+        <UrgenciaF3 className="mt-3" donde={`junto a la rama ${tramo.rango}`} />
+      )}
     </section>
   );
 }

@@ -885,24 +885,33 @@ export function SituacionSistema({
               <CabeceraSituacion id={sit.id} etiqueta={sit.etiqueta} onCambiar={cambiar} />
               {/* En el ejercicio, las comprobaciones antes de empezar van antes de la conducta de
                   cada sistema (S61-01): pueden obligar a retrasar o a no hacer el ejercicio. */}
+              {/* Decisión del responsable (15-10-2026, S61-01 revisada): sigue antes de la
+                  conducta, pero plegado con su título a la vista, para que la conducta de cada
+                  sistema quede en la primera pantalla. */}
               {ANTES_DE_ACTUAR.includes(sit.id) && GUION[sit.id] && (
-                <section
+                <details
                   id="antes-situacion"
-                  aria-label="Antes de actuar"
-                  className="scroll-mt-4 rounded-2xl border-2 p-4"
+                  className="group scroll-mt-4 rounded-2xl border-2 px-4 py-2"
                   style={{ borderColor: "#f3d38a", background: "#fffbeb" }}
                 >
-                  <h2 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-amber-900">
-                    <AlertTriangle size={14} aria-hidden="true" /> Antes de actuar ·{" "}
-                    {GUION[sit.id][0].rotulo}
-                  </h2>
-                  <div className="mt-2 space-y-2">
+                  <summary className="flex min-h-11 cursor-pointer list-none items-center gap-1.5 [&::-webkit-details-marker]:hidden">
+                    <h2 className="flex min-w-0 flex-1 items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-amber-900">
+                      <AlertTriangle size={14} aria-hidden="true" className="shrink-0" />
+                      <span>Antes de actuar · {GUION[sit.id][0].rotulo}</span>
+                    </h2>
+                    <ChevronRight
+                      size={15}
+                      aria-hidden="true"
+                      className="shrink-0 text-amber-900 transition group-open:rotate-90"
+                    />
+                  </summary>
+                  <div className="mt-1 space-y-2 pb-2">
                     {piezasDe(GUION[sit.id][0]).map((pz, k) => (
                       <PiezaVista key={k} pieza={pz} compacta />
                     ))}
+                    <FuentePie fuentes={fuentesDeMomento(GUION[sit.id][0])} />
                   </div>
-                  <FuentePie fuentes={fuentesDeMomento(GUION[sit.id][0])} />
-                </section>
+                </details>
               )}
               <section
                 id="conducta-situacion"

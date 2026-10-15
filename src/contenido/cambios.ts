@@ -34,6 +34,7 @@ export const CAMBIOS: Cambio[] = [
       "Ingreso hospitalario: abre «Mantener la MCG, la bomba o el AID» y «Cuándo no continuar», enlazado desde Interrupción y desde la rama roja de la Figura 3. Hipoglucemia lleva al plan de seguridad y a la hipoglucemia nocturna.",
       "Accesibilidad: lo enfocado no queda bajo la cabecera ni la barra de abajo; el anillo de foco contrasta también de noche; la calculadora y la búsqueda anuncian un solo resumen al dejar de escribir; el foco va al título de lo elegido.",
       "Siglas del glosario pulsables también en las guías de situaciones (la primera vez que salen en cada momento) y en todas las frases de Iniciar.",
+      "Decisiones del responsable (15-10-2026): en la Figura 3, el recuadro de urgencia va después de los pasos de las ramas que no son la roja (sigue junto a ellas); en el ejercicio, «Antes de actuar» sigue antes de la conducta, plegado con su título; las preguntas frecuentes responden también a «el sensor falla» y a «¿le quito la bomba?».",
       "Tablet: la barra lateral sale desde 1024 px (por debajo, la barra inferior) y la portada va a dos columnas. Ordenador: tablas sin doble barra de desplazamiento y más ancho en monitores grandes. Preguntas frecuentes con un icono por tema y la foto en las de cada sistema; autoevaluación con el avance fijo arriba; Tabla 4 de un sistema con los rótulos legibles.",
     ],
   },

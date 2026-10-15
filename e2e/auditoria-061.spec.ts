@@ -84,8 +84,11 @@ test.describe("Situaciones (S61-01/02/06)", () => {
     page,
   }) => {
     await page.goto("/#/consultar/situacion/ejercicio-aerobico:camaps");
-    const antes = page.getByRole("region", { name: "Antes de actuar" });
+    // 0.72.0 (decisión del responsable): sigue antes de la conducta, plegado con su título.
+    const antes = page.locator("#antes-situacion");
     const conducta = page.getByRole("region", { name: "Conducta recomendada" });
+    await expect(antes.getByRole("heading", { name: /Antes de actuar/ })).toBeVisible();
+    await antes.locator("summary").click();
     await expect(antes).toContainText(/126–180 mg\/dl/);
     expect((await antes.boundingBox())!.y).toBeLessThan((await conducta.boundingBox())!.y);
   });

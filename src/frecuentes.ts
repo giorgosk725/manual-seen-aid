@@ -430,6 +430,9 @@ export const TODAS: Frecuente[] = [
       "bolo antes de una desconexión breve",
       "cuánto tiempo sin bomba",
       "interrupción breve del sistema",
+      // 0.72.0 (decisión del responsable, 15-10-2026; auditoría de urgencias).
+      "le quito la bomba",
+      "quitar la bomba o el pod",
     ],
     pasajes: ["t/07-educacion/b11/4", "t/07-educacion/b11/1"],
   },
@@ -499,6 +502,8 @@ export const TODAS: Frecuente[] = [
       "asa cerrada en el hospital",
       "ingreso hospitalario con bomba",
       "cuándo retirar el sistema en planta",
+      // 0.72.0 (decisión del responsable, 15-10-2026; auditoría de urgencias).
+      "le quito la bomba en el hospital",
     ],
     pasajes: ["t/10-situaciones/b34/0", "t/10-situaciones/b34/3", "t/10-situaciones/b36/0"],
   },
@@ -582,6 +587,10 @@ export const TODAS: Frecuente[] = [
       "pérdida de señal del sensor",
       "el sensor no conecta por bluetooth",
       "sensor sin señal",
+      // 0.72.0 (decisión del responsable, 15-10-2026; auditoría de la educadora).
+      "el sensor falla",
+      "qué hago si el sensor falla",
+      "fallo del sensor",
     ],
     pasajes: ["t/09-descarga/b22/0", "t/09-descarga/b22/1", "t/02-componentes/b4/2"],
   },

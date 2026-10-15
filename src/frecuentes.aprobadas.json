@@ -301,6 +301,12 @@
       "version": "0.12.0",
       "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
       "huella": "1r2gdftgux7or"
+    },
+    {
+      "fecha": "2026-10-15",
+      "version": "0.72.0",
+      "evidencia": "Decisión del responsable en la conversación del 15-10-2026 («haz esto»): variantes de «¿le quito la bomba?» en f38 (genérica) y f45 (en el hospital), de la auditoría de urgencias de la 0.72.0; mismos pasajes",
+      "huella": "1yv6p9d2p6i4j"
     }
   ],
   "f39": [
@@ -357,6 +363,24 @@
       "version": "0.12.0",
       "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
       "huella": "1yfbe1h1mf9z1z"
+    },
+    {
+      "fecha": "2026-10-15",
+      "version": "0.72.0",
+      "evidencia": "Decisión del responsable en la conversación del 15-10-2026 («haz esto»): nuevas variantes «el sensor falla» (f53) y «¿le quito la bomba?» (f45), de las auditorías de uso de la 0.72.0; mismos pasajes",
+      "huella": "7xxghzpnovs5"
+    },
+    {
+      "fecha": "2026-10-15",
+      "version": "0.72.0",
+      "evidencia": "Decisión del responsable en la conversación del 15-10-2026 («haz esto»): variantes de «¿le quito la bomba?» en f38 (genérica) y f45 (en el hospital), de la auditoría de urgencias de la 0.72.0; mismos pasajes",
+      "huella": "8pucsw3bjo7m"
+    },
+    {
+      "fecha": "2026-10-15",
+      "version": "0.72.0",
+      "evidencia": "Decisión del responsable del 15-10-2026: sin la variante «quitar el pod al ingresar» (nombra un sistema y la pregunta es general); mismos pasajes",
+      "huella": "w9xpz2bu20s"
     }
   ],
   "f46": [
@@ -421,6 +445,12 @@
       "version": "0.38.0",
       "evidencia": "Visto bueno editorial del autor en la revisión de la 0.38; docs/FRECUENTES.md",
       "huella": "17yi6hl1fbdnej"
+    },
+    {
+      "fecha": "2026-10-15",
+      "version": "0.72.0",
+      "evidencia": "Decisión del responsable en la conversación del 15-10-2026 («haz esto»): nuevas variantes «el sensor falla» (f53) y «¿le quito la bomba?» (f45), de las auditorías de uso de la 0.72.0; mismos pasajes",
+      "huella": "7bstjk15l1ulu"
     }
   ],
   "f54": [

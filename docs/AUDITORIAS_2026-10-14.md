@@ -37,6 +37,16 @@ confunde lo que se está escribiendo con un seguimiento; tablet con barra inferi
 Pruebas: 235 unitarias y 203 e2e (con `e2e/auditorias-072.spec.ts`, `src/cifras.test.tsx` y
 `src/seguimiento.test.ts` nuevas).
 
+## Decidido por el responsable (15-10-2026) y aplicado
+
+- **Figura 3 (A01 revisada):** en las ramas que no son la roja, el recuadro de urgencia va después
+  de los pasos de la rama (sigue junto a ella); la nota de las dosis con asterisco, antes.
+- **Ejercicio (S61-01 revisada):** «Antes de actuar» sigue antes de la conducta, plegado con su
+  título a la vista.
+- **Preguntas frecuentes:** variantes «el sensor falla» (f53), «le quito la bomba» (f38) y «le
+  quito la bomba en el hospital» (f45), registradas como revisión del 15-10-2026 en
+  `src/frecuentes.aprobadas.json`.
+
 ## Pendiente de decisión del autor
 
 1. **Plan de seguridad en 3 caras.** Hoy, al imprimir, la hoja de cetonas empieza en su propia
