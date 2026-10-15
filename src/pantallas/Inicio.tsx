@@ -137,7 +137,7 @@ function Hoja({ sis }: { sis?: number }) {
           {hechos.size > 0
             ? "Recoge lo que has marcado en el inicio paso a paso (no se guarda). "
             : "Lo que marques en el inicio paso a paso sale marcado aquí. "}
-          {sistema ? "" : "Elige el sistema para que la hoja muestre solo su línea de inicio."}
+          {sistema ? "" : "Al seleccionar el sistema, la hoja muestra solo su línea de inicio."}
         </span>
         {hechos.size > 0 && (
           <button
@@ -201,7 +201,7 @@ function Hoja({ sis }: { sis?: number }) {
           </>
         )}
         <h3 className="mt-3 text-sm font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
-          Valores de partida
+          Parámetros iniciales
         </h3>
         <dl className="mt-1 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {partida.map(([k, v]) => (
@@ -315,7 +315,7 @@ function TareaVista({
                 href={siguiente.ruta}
                 className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline sm:min-h-8"
               >
-                Seguir en: {siguiente.texto} <ArrowRight size={13} aria-hidden="true" />
+                Véase también: {siguiente.texto} <ArrowRight size={13} aria-hidden="true" />
               </a>
             </p>
           )}
@@ -512,7 +512,7 @@ function PasosInicio({
             href={enlace.ruta}
             className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline sm:min-h-8"
           >
-            Seguir en: {enlace.texto} <ArrowRight size={13} aria-hidden="true" />
+            Véase también: {enlace.texto} <ArrowRight size={13} aria-hidden="true" />
           </a>
         </p>
       )}

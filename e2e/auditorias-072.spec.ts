@@ -61,7 +61,7 @@ test.describe("Auditorías 0.72.0", () => {
 
   test("ficha: la Tabla 3 dice qué tiene efecto directo en automático", async ({ page }) => {
     await page.goto("/#/sistemas/ciq/parametros");
-    await expect(page.getByText("Efecto directo en el modo automático (*)").first()).toBeVisible();
+    await expect(page.getByText("Efecto directo sobre el algoritmo (*)").first()).toBeVisible();
   });
 
   test("Iniciar: «Calcular · Fases · Hoja» y la hoja con los valores de partida", async ({
@@ -71,6 +71,6 @@ test.describe("Auditorías 0.72.0", () => {
     const herramienta = page.getByRole("group", { name: "Herramienta" });
     await expect(herramienta.getByRole("button")).toHaveCount(3);
     await herramienta.getByRole("button", { name: /Hoja de comprobación/ }).click();
-    await expect(page.getByRole("heading", { name: "Valores de partida" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Parámetros iniciales" })).toBeVisible();
   });
 });

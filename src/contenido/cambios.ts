@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-15",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — volver a las tarjetas y Figura 3 más directa`,
+    titulo: `Complemento interactivo ${VERSION_APP} — elegir por características y rótulos de manual`,
+    detalle: [
+      "Cómo elegir un sistema: por las características del dispositivo (formato, sensores compatibles, localización del algoritmo, bolos automáticos de corrección), con las casillas literales de la Tabla 1; sin datos de la persona ni puntuación, los cuatro en el orden de la tabla y lo que no coincide, en gris (petición del responsable).",
+      "Cómo funciona: los rótulos de la Tabla 1 y en su orden («Sensores compatibles», «Localización del algoritmo», «Lógica del algoritmo y aprendizaje», «Estrategia de automatización», «Bolos automáticos de corrección», «Objetivo glucémico en modo automático») en lugar de «Mide · Decide · Administra · Hacia el objetivo».",
+      "Rótulos de manual en toda la app: «Parámetros iniciales», «Programación inicial», «Pauta previa», «Véase también», «Comprobaciones previas», «Resolución de incidencias», «Conducta distinta según el sistema», «Efecto directo sobre el algoritmo», «Criterios para no continuar»; instrucciones en forma impersonal.",
+    ],
+  },
+  {
+    fecha: "2026-10-15",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.72.1 — volver a las tarjetas y Figura 3 más directa",
     detalle: [
       "Sistemas: «De un vistazo» (las tarjetas), «Lo esencial» y «Parámetros» como tres pestañas: desde la comparación se vuelve a las tarjetas con un toque.",
       "Figura 3: sin el recuadro de urgencia repetido (encima del selector, junto a las ramas que no son la roja y en la búsqueda con una cifra de cetonas): la tarjeta «≥3,0 o signos de gravedad» lleva a la rama roja, a un toque (decisión del responsable). El plan de seguridad del paciente lo conserva.",

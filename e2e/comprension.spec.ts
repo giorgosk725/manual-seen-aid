@@ -29,8 +29,8 @@ test.describe("Comprensión", () => {
     await expect(
       page.getByRole("heading", { level: 2, name: /^Cómo funciona · Omnipod 5/ }),
     ).toBeInViewport();
-    // 14-10-2026: el recorrido de la decisión con las casillas del sistema.
-    await expect(page.getByRole("list", { name: "Recorrido de la decisión" })).toContainText(
+    // 0.72.2: la ficha técnica con las casillas del sistema.
+    await expect(page.getByLabel("Características del sistema (Tabla 1)")).toContainText(
       "FreeStyle Libre 2 Plus",
     );
     // 0.70.0: la ficha es una página; la pestaña lleva a su sección.

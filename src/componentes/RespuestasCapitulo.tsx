@@ -541,7 +541,7 @@ function BloqueFrecuente({
             onClick={onIr}
             className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline sm:min-h-8"
           >
-            Seguir en: {frecuente.siguiente.texto} <ArrowRight size={13} aria-hidden="true" />
+            Véase también: {frecuente.siguiente.texto} <ArrowRight size={13} aria-hidden="true" />
           </a>
         </p>
       )}
@@ -694,7 +694,7 @@ export function RespuestasCapitulo({
               onClick={onIr}
               className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline sm:min-h-8"
             >
-              Seguir en: {continuacion.texto} <ArrowRight size={13} aria-hidden="true" />
+              Véase también: {continuacion.texto} <ArrowRight size={13} aria-hidden="true" />
             </a>
           </p>
         )}

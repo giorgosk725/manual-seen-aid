@@ -396,7 +396,7 @@ export function TablaVista({
       {interactiva && tabla.porSistema && !columnasFijas && (
         <div className="no-imprimir mb-3">
           <div className="mb-1 text-xs font-semibold text-slate-500">
-            {ayuda ?? "Marca uno para leerlo o varios para compararlos"}
+            {ayuda ?? "Seleccionar uno para consultarlo o varios para compararlos"}
           </div>
           <CasillasSistema
             etiqueta="Filtrar por sistema"

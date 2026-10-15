@@ -449,7 +449,7 @@ export function CalculadoraInicio({
           derecha, a la vista mientras se cambian los datos. */}
       <div className="space-y-5 xl:grid xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start xl:gap-6 xl:space-y-0">
         <div className="min-w-0 space-y-5">
-          <Paso n={1} titulo="¿De qué tratamiento viene?">
+          <Paso n={1} titulo="Pauta previa">
             <div className="grid grid-cols-3 gap-2">
               {(
                 [
@@ -489,7 +489,7 @@ export function CalculadoraInicio({
             </div>
           </Paso>
 
-          <Paso n={2} titulo="¿Qué sistema?">
+          <Paso n={2} titulo="Sistema">
             <div
               role="group"
               aria-label="Sistema"
@@ -775,7 +775,7 @@ export function CalculadoraInicio({
           ref={resultados}
           className="min-w-0 scroll-mt-4 xl:sticky xl:top-20 xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto"
         >
-          <Paso n={4} titulo="Parámetros de partida">
+          <Paso n={4} titulo="Parámetros iniciales">
             <Anuncio
               texto={
                 ev.indicacion.fuera.length > 0 && sis !== undefined
@@ -783,7 +783,7 @@ export function CalculadoraInicio({
                   : ev.errores.length
                     ? ev.errores.join(". ")
                     : resumen.length
-                      ? `Parámetros de partida: ${resumen.join(", ")}.`
+                      ? `Parámetros iniciales: ${resumen.join(", ")}.`
                       : ""
               }
             />
@@ -872,9 +872,14 @@ export function CalculadoraInicio({
           </Paso>
         </div>
       </div>
-      <Paso n={5} titulo={sis !== undefined ? `Qué programar en ${CORTOS[sis]}` : "Qué programar"}>
+      <Paso
+        n={5}
+        titulo={
+          sis !== undefined ? `Programación inicial en ${CORTOS[sis]}` : "Programación inicial"
+        }
+      >
         {sis === undefined ? (
-          <p className="text-sm text-slate-600">Elige el sistema en el paso 2.</p>
+          <p className="text-sm text-slate-600">Seleccionar el sistema en el paso 2.</p>
         ) : (
           <div
             className="overflow-hidden rounded-xl border bg-white"
@@ -900,7 +905,7 @@ export function CalculadoraInicio({
               </p>
             )}
             <Lista
-              titulo="Lo que cuenta en el modo automático o para iniciarlo"
+              titulo="Con efecto directo sobre el algoritmo o necesario para iniciar el modo automático"
               nota="Efecto directo sobre el algoritmo, o lo que el sistema necesita para iniciar el modo automático"
               claves={gruposDeProgramar(sis).automatico}
               sis={sis}
@@ -938,7 +943,7 @@ export function CalculadoraInicio({
               </ul>
             </div>
             <Lista
-              titulo="Sobre todo en los bolos y el modo manual"
+              titulo="Sobre todo en los bolos o el modo manual"
               claves={gruposDeProgramar(sis).manual}
               sis={sis}
               valorDe={valorDe}
@@ -946,7 +951,7 @@ export function CalculadoraInicio({
             />
             <div className="border-t px-3 py-2" style={{ borderColor: "#eceff3" }}>
               <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-500">
-                <RefreshCw size={13} aria-hidden="true" /> Qué esperar del algoritmo
+                <RefreshCw size={13} aria-hidden="true" /> Adaptación posterior del algoritmo
               </div>
               <p className="mt-0.5 text-sm text-slate-800">{aprendizajeDe(sis)}</p>
               {sis === COLUMNA_DE_NOTA["T1/3"] && (

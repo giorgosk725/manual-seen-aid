@@ -116,7 +116,7 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
     ],
   },
   {
-    t: "Incidencias del día a día",
+    t: "Resolución de incidencias",
     ids: [],
     extras: [
       {
@@ -194,7 +194,7 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
     ids: [],
     extras: [
       {
-        t: "Cuánto va a durar la interrupción y qué hacer",
+        t: "Interrupción del sistema y pauta alternativa",
         fuente: "p. 9",
         ruta: href("consultar", "interrupcion"),
         alias: [
@@ -223,7 +223,7 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
 const TONO_TEMA: Record<string, string> = {
   "Ejercicio y comidas": FICHA_AREA.nutricion,
   "Noche, enfermedad e hiperglucemia": FICHA_AREA.lipidos,
-  "Incidencias del día a día": FICHA_AREA.obesidad,
+  "Resolución de incidencias": FICHA_AREA.obesidad,
   "Exploraciones, cirugía e ingreso": FICHA_AREA.pizarra,
   "Interrupción del sistema": FICHA_AREA.mineral,
   "Poblaciones y situaciones especiales": FICHA_AREA.diabetes,
@@ -234,7 +234,7 @@ const ICONO_TEMA: Record<string, LucideIcon> = {
   "Noche, enfermedad e hiperglucemia": Moon,
   "Exploraciones, cirugía e ingreso": Hospital,
   "Interrupción del sistema": Unplug,
-  "Incidencias del día a día": AlertTriangle,
+  "Resolución de incidencias": AlertTriangle,
   "Poblaciones y situaciones especiales": Users,
 };
 const ICONO_SITUACION: Record<string, LucideIcon> = {
@@ -533,7 +533,7 @@ function ParaSeguir({
   if (!filas.length) return null;
   return (
     <section
-      aria-label="Para seguir"
+      aria-label="Véase también"
       className="overflow-hidden rounded-md border bg-white"
       style={{ borderColor: "#e6e6e6" }}
     >
@@ -541,7 +541,7 @@ function ParaSeguir({
         className="px-3 pb-0.5 pt-2 text-xs font-bold uppercase tracking-wide"
         style={{ color: hex.ink }}
       >
-        Para seguir
+        Véase también
       </h2>
       <ul className="divide-y" style={{ borderColor: "#eeeeee" }}>
         {filas.map((f) => (
@@ -620,9 +620,9 @@ function ListaSituaciones({
       {chip && (
         <span
           className="flex shrink-0 gap-0.5"
-          title="Cambia según el sistema"
+          title="Conducta distinta según el sistema"
           role="img"
-          aria-label="Cambia según el sistema"
+          aria-label="Conducta distinta según el sistema"
         >
           {SISTEMA_HEX.map((x, k) => (
             <span
@@ -662,7 +662,7 @@ function ListaSituaciones({
               <span key={k} className="h-2 w-2 rounded-full" style={{ background: x.strong }} />
             ))}
           </span>
-          Cambia según el sistema
+          Conducta distinta según el sistema
         </p>
       )}
       {f && total === 0 && (
@@ -860,7 +860,7 @@ export function SituacionSistema({
               />
               <div>
                 <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-                  Seguir en
+                  Véase también
                 </div>
                 <ul className="flex flex-wrap gap-1.5">
                   {guia.enlaces
@@ -897,7 +897,12 @@ export function SituacionSistema({
                   <summary className="flex min-h-11 cursor-pointer list-none items-center gap-1.5 [&::-webkit-details-marker]:hidden">
                     <h2 className="flex min-w-0 flex-1 items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-amber-900">
                       <AlertTriangle size={14} aria-hidden="true" className="shrink-0" />
-                      <span>Antes de actuar · {GUION[sit.id][0].rotulo}</span>
+                      <span>
+                        {GUION[sit.id][0].rotulo.replace(
+                          /^Antes de empezar: /,
+                          "Comprobaciones previas: ",
+                        )}
+                      </span>
                     </h2>
                     <ChevronRight
                       size={15}
@@ -1187,7 +1192,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
         className="no-imprimir mb-3 flex min-h-11 items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-semibold text-red-900 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-red-700"
       >
         <Siren size={15} className="shrink-0" aria-hidden="true" />
-        <span className="min-w-0 flex-1">Bandera roja: hiperglucemia persistente o cetonemia</span>
+        <span className="min-w-0 flex-1">{TABLAS.T5.filas[7].celdas[0]}</span>
         <ArrowRight size={14} className="shrink-0" aria-hidden="true" />
       </a>
       <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-4">
@@ -1381,7 +1386,7 @@ export function Interrupcion(_props: { tramo?: string }) {
           className="inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-8"
           style={{ borderColor: "#d4d4d4" }}
         >
-          Ingreso hospitalario: cuándo no continuar y cómo pasar a pauta subcutánea{" "}
+          Ingreso hospitalario: criterios para no continuar y paso a pauta subcutánea{" "}
           <ArrowRight size={12} aria-hidden="true" />
         </a>
       </div>

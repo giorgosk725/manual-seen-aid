@@ -115,11 +115,11 @@ function ParametrosConfigurables({ c, ink }: { c: number; ink: string }) {
   const lineas = (PARAMETROS_AUTO?.celdas[c] ?? "").split("\n").map((l) => l.trim());
   const grupos = [
     {
-      rotulo: "Efecto directo en el modo automático (*)",
+      rotulo: "Efecto directo sobre el algoritmo (*)",
       items: lineas.filter((l) => l.endsWith("*")),
     },
     {
-      rotulo: "Sobre todo en los bolos y el modo manual",
+      rotulo: "Sobre todo en los bolos o el modo manual",
       items: lineas.filter((l) => l && !l.endsWith("*")),
     },
   ].filter((g) => g.items.length);
@@ -1020,8 +1020,8 @@ function EntradaSistemas() {
           const formato = TABLAS.T1.filas[0].celdas[c].split(/;| \(/)[0].replace(/\.$/, "");
           const datos: [typeof Cpu, string, string][] = [
             [Box, "Formato", formato],
-            [Cpu, "Algoritmo", k.donde.join(" · ")],
-            [Timer, "Actúa", k.actua.join(" · ")],
+            [Cpu, "Localización del algoritmo", k.donde.join(" · ")],
+            [Timer, "Estrategia de automatización", k.actua.join(" · ")],
             [Target, "Objetivo", k.objetivo.join(" · ")],
             [Radio, "Sensores", sensores],
           ];
@@ -1156,13 +1156,13 @@ function insigniaParametro(c: number, j: number): ReactNode {
         className="inline-block rounded-full px-2 py-0.5 text-[11px] font-bold text-white"
         style={{ background: h.ink }}
       >
-        Efecto directo en el modo automático (*)
+        Efecto directo sobre el algoritmo (*)
       </span>
     );
   if (resto.some((x) => re.test(x)))
     return (
       <span className="inline-block rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600">
-        Sobre todo en los bolos y el modo manual
+        Sobre todo en los bolos o el modo manual
       </span>
     );
   return null;
@@ -1213,8 +1213,8 @@ function ParametrosAuto({ c, compacto = false }: { c: number; compacto?: boolean
     );
   return (
     <div className={compacto ? "space-y-1.5" : "space-y-2"}>
-      {grupo("Efecto directo en el modo automático", directos, true)}
-      {grupo("Sobre todo en los bolos y el modo manual", resto, false)}
+      {grupo("Efecto directo sobre el algoritmo", directos, true)}
+      {grupo("Sobre todo en los bolos o el modo manual", resto, false)}
       {/* M61-04: el papel de la basal programada en cada sistema (Tabla 3, celda entera): en
           Omnipod 5, por ejemplo, cuenta para el primer pod y luego no. */}
       <p className="text-xs leading-snug text-slate-600">
@@ -1280,7 +1280,7 @@ function CeldaFunciona({ fila, c }: { fila: number; c: number }) {
       <details className="group mt-1 text-[13px] leading-snug text-slate-600">
         <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-1 sm:min-h-8 text-xs font-semibold text-slate-500 hover:text-slate-800 [&::-webkit-details-marker]:hidden">
           <ChevronDown size={12} aria-hidden="true" className="transition group-open:rotate-180" />
-          Texto completo
+          Casilla completa (Tabla 1)
         </summary>
         <span className="mt-0.5 block">
           <Lineas>{celda}</Lineas>
@@ -1301,11 +1301,14 @@ function CeldaFunciona({ fila, c }: { fila: number; c: number }) {
    manos de la persona y del profesional, lo que lo distingue y lo que devuelve. Las frases
    generales de los apartados 2 y 3 (las mismas para los cuatro), plegadas al final. Las piezas
    salen de la guía comoFunciona (guias/index.ts), así que siguen comprobadas frase a frase. */
-const RECORRIDO: { rotulo: string; icono: LucideIcon; fila: number }[] = [
-  { rotulo: "Mide", icono: Radio, fila: 1 },
-  { rotulo: "Decide", icono: Cpu, fila: 2 },
-  { rotulo: "Administra", icono: Syringe, fila: 4 },
-  { rotulo: "Hacia el objetivo", icono: Target, fila: 6 },
+/* Filas de la Tabla 1 que dicen cómo funciona, en el orden de la tabla. */
+const FICHA_TECNICA: { icono: LucideIcon; fila: number }[] = [
+  { icono: Radio, fila: 1 },
+  { icono: Cpu, fila: 2 },
+  { icono: Brain, fila: 3 },
+  { icono: Syringe, fila: 4 },
+  { icono: Activity, fila: 5 },
+  { icono: Target, fila: 6 },
 ];
 function ClaveRecorrido({ fila, c }: { fila: number; c: number }) {
   const h = SISTEMA_HEX[c];
@@ -1324,22 +1327,9 @@ function ClaveRecorrido({ fila, c }: { fila: number; c: number }) {
         ))}
       </ul>
     );
-  if (fila === 2) {
-    const tipo = algoritmoDelCapitulo(c).split(": algoritmo de tipo ")[1];
-    return (
-      <>
-        <span className="block font-bold leading-snug text-slate-900">{celda}</span>
-        {tipo && (
-          <span
-            className="mt-1 inline-block rounded-full px-2 text-[11px] font-bold text-white"
-            style={{ background: h.ink }}
-          >
-            {tipo}
-          </span>
-        )}
-      </>
-    );
-  }
+  // 0.72.2: el tipo de algoritmo, solo en «Lógica del algoritmo y aprendizaje» (salía dos veces).
+  if (fila === 2)
+    return <span className="block font-bold leading-snug text-slate-900">{celda}</span>;
   if (fila === 4) return <CeldaFunciona fila={4} c={c} />;
   return (
     <span className="block font-bold leading-snug text-slate-900">
@@ -1387,50 +1377,48 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
   return (
     <div className="space-y-3">
       {distingue.map((p, j) => (
-        <div key={j} className="text-[15px] leading-snug text-slate-800">
+        <div
+          key={j}
+          className="border-l-4 pl-3 text-[15px] leading-snug text-slate-800"
+          style={{ borderColor: h.strong }}
+        >
           <PiezaVista pieza={p} sis={c} compacta siglas={sg[j]} />
         </div>
       ))}
-      {/* El recorrido de la decisión: cuatro pasos seguidos; en el móvil, uno debajo de otro. */}
-      <ol
-        aria-label="Recorrido de la decisión"
-        className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4"
+      {/* 0.72.2: una ficha técnica con los rótulos de la Tabla 1 y en su orden (antes «Mide ·
+          Decide · Administra», términos de divulgación). Cada casilla, con su icono y su clave;
+          la casilla entera, a un toque. */}
+      <dl
+        aria-label="Características del sistema (Tabla 1)"
+        className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3"
       >
-        {RECORRIDO.map(({ rotulo, icono: Icono, fila }, k) => (
-          <li
+        {FICHA_TECNICA.map(({ fila, icono: Icono }) => (
+          // En un <dl> solo caben dt y dd: el icono va dentro del dt, a la izquierda.
+          <div
             key={fila}
-            className="min-w-0 rounded-xl border bg-white p-3"
-            style={{ borderColor: "#e6e6e6", borderTop: `4px solid ${h.strong}` }}
+            className="relative min-w-0 rounded-xl border bg-white py-3 pl-[3.75rem] pr-3"
+            style={{ borderColor: "#e6e6e6" }}
           >
-            <div
-              className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide"
-              style={{ color: h.ink }}
-            >
+            <dt className="text-[11px] font-bold uppercase tracking-wide" style={{ color: h.ink }}>
               <span
                 aria-hidden="true"
-                className="flex h-5 w-5 items-center justify-center rounded-full text-[11px] text-white"
-                style={{ background: h.strong }}
+                className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-lg"
+                style={{ background: h.soft, color: h.strong }}
               >
-                {k + 1}
+                <Icono size={18} />
               </span>
-              <Icono size={14} aria-hidden="true" />
-              {rotulo}
-            </div>
-            <div className="mt-1.5 text-sm">
-              <ClaveRecorrido fila={fila} c={c} />
-            </div>
-          </li>
+              {TABLAS.T1.filas[fila].etiqueta}
+            </dt>
+            <dd className="mt-1 text-[15px] leading-snug">
+              {fila === 3 || fila === 5 ? (
+                <CeldaFunciona fila={fila} c={c} />
+              ) : (
+                <ClaveRecorrido fila={fila} c={c} />
+              )}
+            </dd>
+          </div>
         ))}
-      </ol>
-
-      <div className="grid gap-2 sm:grid-cols-2">
-        <TarjetaFunciona titulo="Cómo decide y se adapta" icono={Brain} color={h.ink}>
-          <CeldaFunciona fila={3} c={c} />
-        </TarjetaFunciona>
-        <TarjetaFunciona titulo="Bolos automáticos de corrección" icono={Activity} color={h.ink}>
-          <CeldaFunciona fila={5} c={c} />
-        </TarjetaFunciona>
-      </div>
+      </dl>
       {liberty.length > 0 && (
         <TarjetaFunciona
           titulo="Modalidad Liberty (asa cerrada completa)"

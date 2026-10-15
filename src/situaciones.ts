@@ -208,7 +208,7 @@ const EXPLORACION: Momento[] = [
 ];
 const CIRUGIA: Momento[] = [
   { rotulo: "Período perioperatorio", apartado: S, bloque: "b39" },
-  { rotulo: "Cuándo no continuar y cómo pasar a pauta subcutánea", apartado: S, bloque: "b36" },
+  { rotulo: "Criterios para no continuar y paso a pauta subcutánea", apartado: S, bloque: "b36" },
   { rotulo: "Basal programada antes de retirar el dispositivo", apartado: E, bloque: "b14" },
 ];
 /* Los momentos de cada situación de las Tablas 4 y 6 (los que los tienen). */
@@ -260,12 +260,16 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
     pagina: 20,
     rotuloGuion: "Qué revisar durante el ingreso",
     guion: [
-      { rotulo: "Marco y a quién se aplica", apartado: S, bloque: "b33" },
-      { rotulo: "Mantener la MCG, la bomba o el AID", apartado: S, bloque: "b34" },
+      { rotulo: "Ámbito de aplicación", apartado: S, bloque: "b33" },
+      { rotulo: "Mantenimiento de la MCG, la bomba o el AID", apartado: S, bloque: "b34" },
       { rotulo: "Objetivos de glucosa en el hospital", apartado: S, bloque: "b35" },
-      { rotulo: "Cuándo no continuar y cómo pasar a pauta subcutánea", apartado: S, bloque: "b36" },
+      {
+        rotulo: "Criterios para no continuar y paso a pauta subcutánea",
+        apartado: S,
+        bloque: "b36",
+      },
       { rotulo: "Dosis suplementarias y datos compartidos", apartado: S, bloque: "b37" },
-      { rotulo: "Leer la MCG en el hospital", apartado: S, bloque: "b38" },
+      { rotulo: "Interpretación de la MCG en el hospital", apartado: S, bloque: "b38" },
       { rotulo: "Período perioperatorio", apartado: S, bloque: "b39" },
     ],
     enlaces: [
@@ -287,7 +291,7 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
     pagina: 17,
     rotuloGuion: "Por temas",
     guion: [
-      { rotulo: "Qué sistema: autorización y evidencia", apartado: S, bloque: "b3" },
+      { rotulo: "Autorización y evidencia por sistema", apartado: S, bloque: "b3" },
       { rotulo: "Objetivos de HbA1c y de MCG", apartado: S, bloque: "b4" },
       { rotulo: "Evidencia: AiDAPT, CRISTAL y CIRCUIT", apartado: S, bloque: "b5" },
       { rotulo: "Seguimiento y objetivo del algoritmo", apartado: S, bloque: "b6" },

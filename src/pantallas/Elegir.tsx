@@ -7,9 +7,9 @@
    El explorador anterior por criterios (eleccion.ts) se conserva fuera de esta edición; una
    dirección antigua con criterios abre esta consulta y no reutiliza ni guarda sus valores. */
 import { useEffect, useState } from "react";
-import { CasillasSistema } from "../componentes/CasillasSistema";
-import { ORDEN_SISTEMAS } from "../ampliacion/ids";
-import { ArrowRight } from "lucide-react";
+import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { ArrowRight, Check, X } from "lucide-react";
+import { SISTEMA_HEX } from "../tokens";
 import { APARTADOS, F2, TABLAS, rutaDeTabla } from "../contenido";
 import { elegirRuta, href } from "../rutas";
 import { CabeceraEditorial } from "../ui";
@@ -23,6 +23,203 @@ const hex = CATEGORIA_HEX.consultar;
 const enlace =
   "inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8";
 
+/* 0.72.2 (petición del autor, 15-10-2026; A02 revisada): elegir por las características
+   diferenciales del DISPOSITIVO, con las casillas literales de la Tabla 1. Sin datos de la
+   persona (edad, peso, dosis, gestación), sin puntuación ni orden: los cuatro en el orden de la
+   tabla; lo que no reúne lo marcado va en gris, con la casilla que no coincide marcada. Dentro de un
+   grupo vale cualquiera de lo marcado; entre grupos, todo. */
+type Criterio = {
+  id: string;
+  fila: number;
+  opciones: { t: string; casa: (c: string) => boolean }[];
+};
+const SENSORES = [
+  "Guardian 4",
+  "Simplera Sync",
+  "Instinct",
+  "Dexcom G6",
+  "Dexcom G7",
+  "FreeStyle Libre 2 Plus",
+  "FreeStyle Libre 3 Plus",
+];
+const CRITERIOS: Criterio[] = [
+  {
+    id: "formato",
+    fila: 0,
+    opciones: ["Bomba con catéter", "Pod desechable, sin tubo externo"].map((t) => ({
+      t,
+      casa: (c) => c.startsWith(t),
+    })),
+  },
+  {
+    id: "sensor",
+    fila: 1,
+    opciones: SENSORES.map((t) => ({
+      t,
+      // «Dexcom G6, G7» (Control-IQ) lleva los dos.
+      casa: (c) => (t === "Dexcom G7" ? /Dexcom (G6, )?G7/.test(c) : c.includes(t)),
+    })),
+  },
+  {
+    id: "algoritmo",
+    fila: 2,
+    opciones: ["En la bomba", "En la app del smartphone", "En el pod"].map((t) => ({
+      t,
+      casa: (c) => c.startsWith(t),
+    })),
+  },
+  {
+    id: "bolos",
+    fila: 5,
+    opciones: ["Sí", "No"].map((t) => ({ t, casa: (c) => c.startsWith(t) })),
+  },
+];
+
+function PorCaracteristicas() {
+  const T1 = TABLAS.T1;
+  const [marcado, setMarcado] = useState<Record<string, string[]>>({});
+  const alternar = (id: string, t: string) =>
+    setMarcado((m) => {
+      const ya = m[id] ?? [];
+      return { ...m, [id]: ya.includes(t) ? ya.filter((x) => x !== t) : [...ya, t] };
+    });
+  const casa = (cr: Criterio, c: number) => {
+    const sel = marcado[cr.id] ?? [];
+    if (!sel.length) return null;
+    const celda = T1.filas[cr.fila].celdas[c];
+    return cr.opciones.some((o) => sel.includes(o.t) && o.casa(celda));
+  };
+  const hayAlgo = CRITERIOS.some((cr) => (marcado[cr.id] ?? []).length > 0);
+  const reunen = ORDEN_SISTEMAS.map((_, c) => c).filter((c) =>
+    CRITERIOS.every((cr) => casa(cr, c) !== false),
+  );
+  const destino =
+    hayAlgo && reunen.length === 1
+      ? href("sistemas", ORDEN_SISTEMAS[reunen[0]])
+      : hayAlgo && reunen.length >= 2
+        ? href("sistemas", reunen.map((c) => ORDEN_SISTEMAS[c]).join("+"), "esencial")
+        : href("sistemas", "todos", "esencial");
+  const rotulo =
+    hayAlgo && reunen.length === 1
+      ? `Ver la ficha de ${T1.columnas[reunen[0]]}`
+      : hayAlgo && reunen.length >= 2
+        ? `Comparar los ${reunen.length}`
+        : "Comparar los cuatro";
+  return (
+    <section
+      aria-labelledby="por-caracteristicas"
+      className="no-imprimir rounded-2xl border bg-white p-4"
+      style={{ borderColor: "#e6e6e6" }}
+    >
+      <h2 id="por-caracteristicas" className="text-base font-extrabold text-slate-900">
+        Por las características del sistema
+      </h2>
+      <div className="mt-3 grid gap-3 md:grid-cols-2">
+        {CRITERIOS.map((cr) => (
+          <div key={cr.id} role="group" aria-label={T1.filas[cr.fila].etiqueta}>
+            <div className="mb-1 text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              {T1.filas[cr.fila].etiqueta}
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {cr.opciones.map((o) => {
+                const on = (marcado[cr.id] ?? []).includes(o.t);
+                return (
+                  <button
+                    key={o.t}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => alternar(cr.id, o.t)}
+                    className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
+                    style={
+                      on
+                        ? { background: hex.strong, borderColor: hex.strong }
+                        : { borderColor: "#d4d4d4" }
+                    }
+                  >
+                    {o.t}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+      <ul className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4" aria-live="polite">
+        {ORDEN_SISTEMAS.map((id, c) => {
+          const h = SISTEMA_HEX[c];
+          const fuera = hayAlgo && !reunen.includes(c);
+          return (
+            <li
+              key={id}
+              className={`flex min-w-0 flex-col rounded-xl border p-3 transition ${fuera ? "border-dashed bg-slate-50" : "bg-white"}`}
+              style={{ borderColor: "#e6e6e6", borderTop: `4px solid ${h.strong}` }}
+            >
+              <a
+                href={href("sistemas", id)}
+                className="flex min-h-11 items-center gap-2 font-extrabold hover:underline"
+                style={{ color: h.ink }}
+              >
+                <img
+                  src={FOTO_SISTEMA[id]}
+                  alt=""
+                  width={32}
+                  height={32}
+                  className="h-8 w-8 shrink-0 rounded-md border bg-white object-cover"
+                  style={{ borderColor: "#e6e6e6" }}
+                />
+                {T1.columnas[c]}
+              </a>
+              <dl className="mt-1 space-y-1.5 text-[13px]">
+                {CRITERIOS.map((cr) => {
+                  const r = casa(cr, c);
+                  return (
+                    <div key={cr.id}>
+                      <dt className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                        {T1.filas[cr.fila].etiqueta}
+                        <span className="sr-only">
+                          {r === true ? " (coincide)" : r === false ? " (no coincide)" : ""}
+                        </span>
+                      </dt>
+                      <dd
+                        className={`flex gap-1.5 ${r === true ? "font-semibold text-slate-900" : "text-slate-700"}`}
+                      >
+                        <span aria-hidden="true" className="mt-0.5 w-3.5 shrink-0">
+                          {r === true && <Check size={14} className="text-emerald-700" />}
+                          {r === false && <X size={14} className="text-slate-400" />}
+                        </span>
+                        <span className="min-w-0">{T1.filas[cr.fila].celdas[c]}</span>
+                      </dd>
+                    </div>
+                  );
+                })}
+              </dl>
+            </li>
+          );
+        })}
+      </ul>
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <a
+          href={destino}
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-4 text-sm font-bold text-white"
+          style={{ background: hex.strong }}
+        >
+          {rotulo}
+          <ArrowRight size={14} aria-hidden="true" />
+        </a>
+        {hayAlgo && (
+          <button
+            type="button"
+            onClick={() => setMarcado({})}
+            className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-600 underline underline-offset-2 sm:min-h-8"
+          >
+            Quitar lo marcado
+          </button>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export function Elegir({ antigua = false }: { antigua?: boolean }) {
   // Dirección antigua con criterios (#/sistemas/elegir/edad=…): se sustituye por la de la
   // consulta, sin los valores, y no se guardan.
@@ -35,7 +232,6 @@ export function Elegir({ antigua = false }: { antigua?: boolean }) {
   const pT1 = paginasDe(T1.paginas[0], T1.paginas[1]);
   const perfil = F2.cajas[0];
   const sistema = F2.cajas[2];
-  const [sel, setSel] = useState<number[]>([]);
   return (
     <div>
       <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
@@ -50,9 +246,11 @@ export function Elegir({ antigua = false }: { antigua?: boolean }) {
       </div>
       <CabeceraEditorial titulo="Cómo elegir un sistema" hex={hex} level={1} />
 
+      <PorCaracteristicas />
+
       <section
         aria-label="Lo que dice el capítulo sobre la elección"
-        className="prosa rounded-2xl border bg-white p-4"
+        className="prosa mt-4 rounded-2xl border bg-white p-4"
         style={{ borderColor: "#e6e6e6" }}
       >
         <p className="text-sm">{b5.t === "p" && <Texto>{b5.texto}</Texto>}</p>
@@ -85,37 +283,6 @@ export function Elegir({ antigua = false }: { antigua?: boolean }) {
         </div>
       </section>
 
-      {/* 0.72.0: los que se están valorando, lado a lado (la Tabla 1, en Sistemas). */}
-      <section
-        aria-labelledby="comparar-elegir"
-        className="no-imprimir mt-4 rounded-2xl border bg-white p-4"
-        style={{ borderColor: "#e6e6e6" }}
-      >
-        <h2 id="comparar-elegir" className="text-sm font-bold text-slate-900">
-          Comparar los que se valoran
-        </h2>
-        <div className="mt-2 flex flex-wrap items-center gap-2">
-          <CasillasSistema
-            etiqueta="Sistemas que se valoran"
-            seleccion={sel}
-            onToggle={(c) =>
-              setSel((s) => (s.includes(c) ? s.filter((x) => x !== c) : [...s, c].sort()))
-            }
-          />
-          <a
-            href={
-              sel.length >= 2
-                ? href("sistemas", sel.map((c) => ORDEN_SISTEMAS[c]).join("+"), "esencial")
-                : href("sistemas", "todos", "esencial")
-            }
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-4 text-sm font-bold text-white"
-            style={{ background: hex.strong }}
-          >
-            {sel.length >= 2 ? `Comparar los ${sel.length}` : "Comparar los cuatro"}
-            <ArrowRight size={14} aria-hidden="true" />
-          </a>
-        </div>
-      </section>
       <section className="mt-2">
         <FuentePie
           fuentes={[

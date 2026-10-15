@@ -67,8 +67,8 @@ describe("Guías por referencias: «Cómo funciona»", () => {
     expect(
       screen.getByRole("heading", { level: 2, name: /^Cómo funciona · myLoop CamAPS/ }),
     ).toBeInTheDocument();
-    // 14-10-2026: el recorrido de la decisión arriba, con las casillas del sistema.
-    expect(screen.getByRole("list", { name: "Recorrido de la decisión" })).toHaveTextContent(
+    // 0.72.2: la ficha técnica con los rótulos de la Tabla 1 y las casillas del sistema.
+    expect(screen.getByLabelText("Características del sistema (Tabla 1)")).toHaveTextContent(
       /Dexcom G7.*FreeStyle Libre 3 Plus.*En la app del smartphone/,
     );
     expect(screen.getAllByText(/^CamAPS Liberty es una función de CamAPS FX/).length).toBe(1);

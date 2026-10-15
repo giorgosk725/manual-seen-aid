@@ -65,7 +65,7 @@ export const DIAGRAMAS: DiagramaMeta[] = [
   },
   {
     id: "algoritmos",
-    titulo: "Los cuatro algoritmos de un vistazo",
+    titulo: "Algoritmos de control de los cuatro sistemas",
     resumen:
       "Dónde está el algoritmo de cada sistema, cómo actúa, si corrige solo, hacia qué objetivo y qué parámetros cuentan.",
     paginas: [3, 4],
@@ -98,7 +98,7 @@ export const DIAGRAMAS: DiagramaMeta[] = [
   },
   {
     id: "hospital",
-    titulo: "Hospital: cuándo no continuar el sistema",
+    titulo: "Hospital: criterios para no continuar el sistema",
     resumen:
       "Adultos no críticos: cuándo mantener el sistema y cuándo no, la pauta alternativa, la perfusión intravenosa y la vuelta al sistema.",
     paginas: [20, 21, 22],

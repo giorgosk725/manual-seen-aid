@@ -206,7 +206,7 @@ export function leerCifra(s: string, max: number): Lectura {
   const t = s.trim();
   if (!t) return { estado: "vacio" };
   if (!/^\d+([.,]\d+)?$/.test(t))
-    return { estado: "invalido", motivo: "Escribe solo cifras, con coma o punto decimal." };
+    return { estado: "invalido", motivo: "Solo cifras, con coma o punto decimal." };
   const v = Number(t.replace(",", "."));
   if (!Number.isFinite(v)) return { estado: "invalido", motivo: "Cifra no válida." };
   if (v > max) return { estado: "invalido", motivo: `Revisa la cifra (máximo ${max}).` };

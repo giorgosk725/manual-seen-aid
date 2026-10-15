@@ -15,13 +15,19 @@ test.describe("Explorar criterios de elección", () => {
       main.getByText(/dentro del criterio|fuera del criterio|Con autorización/),
     ).toHaveCount(0);
     await expect(main.getByRole("heading", { name: "Factores de la Figura 2" })).toBeVisible();
-    // 0.72.0: con dos marcados, se comparan esos (sin datos de la persona: solo sistemas).
+    // 0.72.2 (A02 revisada por el autor): por las características del dispositivo (Tabla 1),
+    // sin datos de la persona ni puntuación; los cuatro en el orden de la tabla.
     await expect(main.getByRole("link", { name: /Comparar los cuatro/ })).toBeVisible();
-    const grupo = main.getByRole("group", { name: "Sistemas que se valoran" });
-    await grupo.getByRole("button").nth(0).click();
-    await grupo.getByRole("button").nth(3).click();
+    await main
+      .getByRole("group", { name: "Formato" })
+      .getByRole("button", { name: "Bomba con catéter" })
+      .click();
+    await main
+      .getByRole("group", { name: "Sensores compatibles" })
+      .getByRole("button", { name: "Dexcom G7" })
+      .click();
     await main.getByRole("link", { name: /Comparar los 2/ }).click();
-    await expect(page).toHaveURL(/#\/sistemas\/mm780\+op5\/esencial$/);
+    await expect(page).toHaveURL(/#\/sistemas\/ciq\+camaps\/esencial$/);
   });
 
   test("una dirección antigua con criterios abre la consulta sin sus valores", async ({ page }) => {

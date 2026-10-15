@@ -680,13 +680,13 @@ function Algoritmos() {
                   </div>
                 </div>
               </header>
-              <DatoAlgoritmo icono={Cpu} etiqueta="Dónde está el algoritmo" hex={h.strong}>
+              <DatoAlgoritmo icono={Cpu} etiqueta="Localización del algoritmo" hex={h.strong}>
                 {unidos(k.donde)}
               </DatoAlgoritmo>
-              <DatoAlgoritmo icono={Timer} etiqueta="Cómo actúa" hex={h.strong}>
+              <DatoAlgoritmo icono={Timer} etiqueta="Estrategia de automatización" hex={h.strong}>
                 {unidos(k.actua)}
               </DatoAlgoritmo>
-              <DatoAlgoritmo icono={TrendingUp} etiqueta="Predicción" hex={h.strong}>
+              <DatoAlgoritmo icono={TrendingUp} etiqueta="Horizonte de predicción" hex={h.strong}>
                 {k.prediccion.length ? (
                   unidos(k.prediccion)
                 ) : (
@@ -714,7 +714,11 @@ function Algoritmos() {
                   {unidos(k.correccion.texto)}
                 </span>
               </DatoAlgoritmo>
-              <DatoAlgoritmo icono={RefreshCw} etiqueta="Cómo se adapta" hex={h.strong}>
+              <DatoAlgoritmo
+                icono={RefreshCw}
+                etiqueta="Lógica del algoritmo y aprendizaje"
+                hex={h.strong}
+              >
                 {unidos(k.aprendizaje)}
               </DatoAlgoritmo>
               <DatoAlgoritmo icono={SlidersHorizontal} etiqueta="Parámetros" hex={h.strong}>

@@ -25,7 +25,9 @@ test.describe("Calculadora de parámetros iniciales", () => {
     await expect(page.getByText("≈ 0,71", { exact: true })).toBeVisible();
     await expect(page.getByText("11,9", { exact: true })).toBeVisible();
     await expect(page.getByText("45", { exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: /Qué programar en Control-IQ/ })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Programación inicial en Control-IQ/ }),
+    ).toBeVisible();
     // Con la regla del 1800, el factor cambia.
     await page.getByRole("button", { name: "Regla del 1800" }).click();
     await expect(page.getByText("48", { exact: true })).toBeVisible();

@@ -463,7 +463,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
                   className="no-imprimir mt-3 inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-8"
                   style={{ borderColor: "#d4d4d4" }}
                 >
-                  Ingreso hospitalario: cuándo no continuar el sistema{" "}
+                  Ingreso hospitalario: criterios para no continuar el sistema{" "}
                   <ChevronRight size={12} aria-hidden="true" />
                 </a>
               )}

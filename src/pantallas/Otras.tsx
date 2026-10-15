@@ -240,7 +240,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
         autoFocus
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Busca: cetonas, modo sueño, TBR…"
+        placeholder="Buscar: cetonas, modo sueño, TBR…"
         className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-soft placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
         autoComplete="off"
       />
@@ -734,7 +734,7 @@ export function Test() {
             Resultado: {aciertos} de {PREGUNTAS.length}
           </h2>
           <p className="mt-1 text-sm text-slate-700">
-            Repasa las que fallaste con su explicación y su página.
+            Revisar las respuestas incorrectas, con su explicación y su página.
           </p>
           <button
             type="button"

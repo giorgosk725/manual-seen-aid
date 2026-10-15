@@ -12,7 +12,7 @@ test.describe("Calculadora (I61-01/02/03)", () => {
     await expect(paso(page, 4).getByText(/Falta: insulina rápida/)).toBeVisible();
     await expect(paso(page, 4).getByText("Ratio I/HC")).toHaveCount(0);
     await page.getByLabel("Insulina rápida").fill("abc");
-    await expect(paso(page, 4).getByText(/Insulina rápida: Escribe solo cifras/)).toBeVisible();
+    await expect(paso(page, 4).getByText(/Insulina rápida: Solo cifras/)).toBeVisible();
     await expect(paso(page, 4).getByText("Ratio I/HC")).toHaveCount(0);
     await page.getByLabel("Insulina rápida").fill("1e2");
     await expect(paso(page, 4).getByText("Ratio I/HC")).toHaveCount(0);
@@ -87,7 +87,7 @@ test.describe("Situaciones (S61-01/02/06)", () => {
     // 0.72.0 (decisión del responsable): sigue antes de la conducta, plegado con su título.
     const antes = page.locator("#antes-situacion");
     const conducta = page.getByRole("region", { name: "Conducta recomendada" });
-    await expect(antes.getByRole("heading", { name: /Antes de actuar/ })).toBeVisible();
+    await expect(antes.getByRole("heading", { name: /Comprobaciones previas/ })).toBeVisible();
     await antes.locator("summary").click();
     await expect(antes).toContainText(/126–180 mg\/dl/);
     expect((await antes.boundingBox())!.y).toBeLessThan((await conducta.boundingBox())!.y);
@@ -99,7 +99,7 @@ test.describe("Situaciones (S61-01/02/06)", () => {
     await page.goto("/#/consultar/situacion/tc");
     await expect(
       page
-        .getByRole("region", { name: "Para seguir" })
+        .getByRole("region", { name: "Véase también" })
         .getByRole("link", { name: /antes de una prueba o una cirugía/ }),
     ).toBeVisible();
     await page.goto("/#/consultar/interrupcion");
@@ -113,8 +113,9 @@ test.describe("Sistemas (M61-01/02/03)", () => {
   }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/#/sistemas/ciq/funciona");
-    await expect(page.getByRole("list", { name: "Recorrido de la decisión" })).toContainText(
-      "Hacia el objetivo",
+    // 0.72.2: rótulos de la Tabla 1 (antes «Hacia el objetivo»).
+    await expect(page.getByLabel("Características del sistema (Tabla 1)")).toContainText(
+      "Objetivo glucémico en modo automático",
     );
     await page.goto("/#/sistemas");
     await expect(page.getByText(/no actúa en modo Sueño/).first()).toBeVisible();
