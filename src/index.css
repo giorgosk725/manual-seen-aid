@@ -267,10 +267,21 @@
       white-space: nowrap;
     }
   }
-  .pestana[aria-current] {
+  .pestana[aria-current],
+  .pestana[aria-pressed="true"] {
     border-bottom-color: var(--acento);
     color: var(--acento-texto);
     font-weight: 700;
+  }
+  /* Queda más a la derecha (data-mas lo pone quien pinta las pestañas): desvanecido al borde. */
+  .pestanas[data-mas="1"] {
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 2.5rem), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 2.5rem), transparent);
+  }
+  /* Foto de un sistema: de noche, algo más apagada (el fondo blanco de la foto era lo más
+     brillante de la pantalla). */
+  html.night .foto-sistema {
+    filter: brightness(0.85);
   }
   /* Rejilla de dos columnas sin hueco: la última tarjeta, si queda sola, a lo ancho. */
   .ultima-ancha > :last-child:nth-child(odd) {
@@ -301,9 +312,7 @@
     box-shadow: none;
   }
   .hover-lift:hover {
-    box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.06),
-      0 6px 16px rgba(0, 0, 0, 0.08);
+    border-color: var(--tinta-3);
   }
   /* Curva de movimiento única de la casa (la misma de animate-in/loop-draw) para
      transiciones de hover: una sola personalidad de movimiento en toda la portada. */
@@ -468,7 +477,7 @@
     box-shadow: none;
   }
   html.night .hover-lift:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    border-color: var(--tinta-3);
   }
   /* Controles nativos */
   html.night input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
@@ -623,19 +632,19 @@
   /* Tintes «soft» por sistema y categoría (ACCENT_HEX, CATEGORY_HEX, BRAND, FORMACION):
      fondo oscuro del mismo matiz y texto claro (el color «ink» en línea no se lee). */
   html.night [style*="background: rgb(238, 244, 249)"] {
-    background: #172a3f !important;
+    background: color-mix(in srgb, #004b87 22%, #1e293b) !important;
     color: #e2e8f0 !important;
   }
   html.night [style*="background: rgb(242, 238, 248)"] {
-    background: #241d38 !important;
+    background: color-mix(in srgb, #522d80 24%, #1e293b) !important;
     color: #e2e8f0 !important;
   }
   html.night [style*="background: rgb(232, 247, 243)"] {
-    background: #12302b !important;
+    background: color-mix(in srgb, #0e8c77 20%, #1e293b) !important;
     color: #e2e8f0 !important;
   }
   html.night [style*="background: rgb(252, 239, 231)"] {
-    background: #33211a !important;
+    background: color-mix(in srgb, #e05300 16%, #1e293b) !important;
     color: #e2e8f0 !important;
   }
   html.night [style*="background: rgb(238, 243, 248)"] {
@@ -1105,7 +1114,15 @@ html {
 }
 @media (min-width: 1024px) {
   html {
+    scroll-padding-top: 1.5rem;
     scroll-padding-bottom: 1rem;
+  }
+  /* La barra pegada de Sistemas y la cabecera de las tablas, sin la cabecera (no la hay en lg). */
+  .barra-pegada {
+    top: 0;
+  }
+  .tabla-scroll.cabe .tabla-capitulo thead th {
+    top: 0;
   }
 }
 html:has(.barra-pegada) {
@@ -1347,7 +1364,18 @@ html.night ::highlight(frase-citada) {
     color: #000 !important;
   }
   .tabla-capitulo {
-    font-size: 9pt;
+    font-size: 8.5pt;
+    table-layout: fixed;
+    width: 100%;
+  }
+  .tabla-capitulo th,
+  .tabla-capitulo td {
+    min-width: 0 !important;
+    padding: 4pt 5pt;
+    overflow-wrap: anywhere;
+  }
+  .tabla-capitulo thead th img {
+    display: none;
   }
   /* En papel, las tablas siempre como tabla (la página A4 queda por debajo de md). */
   .vista-tabla {

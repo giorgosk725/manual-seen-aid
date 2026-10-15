@@ -132,7 +132,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
     <div ref={ref} className="imprimible">
       <div
         aria-hidden="true"
-        className="no-imprimir fixed left-0 right-0 top-14 z-20 h-0.5 bg-transparent md:left-64"
+        className="no-imprimir fixed left-0 right-0 top-14 z-20 h-0.5 bg-transparent md:left-64 lg:top-0"
       >
         <div
           ref={barra}
@@ -281,7 +281,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         </div>
         {subs.length > 0 && (
           <aside aria-label="Índice lateral del apartado" className="no-imprimir hidden xl:block">
-            <nav aria-label="Índice del apartado" className="sticky top-20">
+            <nav aria-label="Índice del apartado" className="sticky top-6">
               <div className="mb-2 rotulo text-slate-500">En este apartado</div>
               <ol className="linea space-y-1 border-l-2 pl-3">
                 {subs.map((s) => (

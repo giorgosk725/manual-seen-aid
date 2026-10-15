@@ -103,13 +103,10 @@ function Notas({ notas }: { notas: string[] }) {
 function TablaHTML({
   tabla,
   columnas,
-  herramienta = false,
   iconoFila,
 }: {
   tabla: Tabla;
   columnas: number[];
-  /* Dentro de una herramienta: casillas tintadas con el color de cada sistema. */
-  herramienta?: boolean;
   iconoFila?: (i: number) => ReactNode;
 }) {
   // 0.72.0: si la tabla cabe a lo ancho, sin caja de desplazamiento propia (clase «cabe»): la
@@ -159,7 +156,7 @@ function TablaHTML({
                     <img
                       src={FOTO_SISTEMA[ORDEN_SISTEMAS[c]]}
                       alt=""
-                      className="h-7 w-7 rounded-md bg-white object-cover"
+                      className="foto-sistema h-7 w-7 rounded-md bg-white object-cover"
                     />
                     {tabla.columnas[c]}
                   </span>
@@ -218,7 +215,7 @@ function TablaHTML({
                     className="separador border-t px-3 py-2 text-slate-700"
                     style={{
                       minWidth: tabla.porSistema ? "11rem" : "10rem",
-                      ...(herramienta && tabla.porSistema
+                      ...(tabla.porSistema
                         ? { background: SISTEMA_HEX[c].soft, boxShadow: "inset 0 0 0 2px #fff" }
                         : {}),
                     }}
@@ -443,12 +440,7 @@ export function TablaVista({
       ) : (
         <>
           <div className="vista-tabla hidden md:block">
-            <TablaHTML
-              tabla={tabla}
-              columnas={columnas}
-              herramienta={herramienta}
-              iconoFila={iconoFila}
-            />
+            <TablaHTML tabla={tabla} columnas={columnas} iconoFila={iconoFila} />
           </div>
           <div className="vista-fichas md:hidden">
             <Fichas tabla={tabla} columnas={columnas} />

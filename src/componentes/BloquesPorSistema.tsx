@@ -10,8 +10,9 @@ import { FuentePie } from "./FuentePie";
 import { siglasPorPiezas } from "../inicio";
 import type { BloqueSistema } from "../porSistema";
 import { fuentesDePiezas } from "../fuentesPiezas";
-import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CORTO_SISTEMA } from "../ampliacion/ids";
 import { SISTEMA_HEX } from "../tokens";
+import { CasillasSistema } from "./CasillasSistema";
 
 function Bloques({ c, bloques }: { c: number; bloques: BloqueSistema[] }) {
   const h = SISTEMA_HEX[c];
@@ -22,7 +23,7 @@ function Bloques({ c, bloques }: { c: number; bloques: BloqueSistema[] }) {
   return (
     <PiezasSinTitulos.Provider value={true}>
       <dl
-        className={`ultima-ancha grid gap-3 ${bloques.length > 1 ? "lg:grid-cols-2" : ""}`}
+        className={`ultima-ancha grid items-start gap-3 ${bloques.length > 1 ? "lg:grid-cols-2" : ""}`}
         aria-live="polite"
         style={{ ["--sis" as string]: h.strong }}
       >
@@ -76,34 +77,9 @@ export function BloquesPorSistema({
   const todas = [...bloques[c], ...comun].flatMap((b) => b.piezas);
   return (
     <div>
-      <div role="group" aria-label="Sistema" className="mb-3 grid grid-cols-4 gap-1.5">
-        {ORDEN_SISTEMAS.map((id, i) => {
-          const on = i === c;
-          const hi = SISTEMA_HEX[i];
-          return (
-            <button
-              key={id}
-              type="button"
-              aria-pressed={on}
-              onClick={() => setC(i)}
-              className="tarjeta flex min-h-11 flex-col items-center gap-1 p-1.5 text-center text-xs font-bold leading-tight transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:flex-row sm:gap-2 sm:text-left sm:text-sm"
-              style={{
-                borderColor: on ? hi.strong : undefined,
-                boxShadow: on ? `inset 0 0 0 1px ${hi.strong}` : undefined,
-                color: hi.ink,
-              }}
-            >
-              <img
-                src={FOTO_SISTEMA[id]}
-                alt=""
-                width={32}
-                height={32}
-                className="h-8 w-8 shrink-0 rounded-md bg-white object-cover"
-              />
-              {CORTO_SISTEMA[i]}
-            </button>
-          );
-        })}
+      {/* 0.76: el mismo selector de sistema de toda la app (uno marcado). */}
+      <div className="mb-3">
+        <CasillasSistema seleccion={[c]} onToggle={(i) => setC(i)} nombres={CORTO_SISTEMA} />
       </div>
       <Bloques c={c} bloques={[...bloques[c], ...comun]} />
       <FuentePie className="mt-3" fuentes={fuentesDePiezas(todas)} />

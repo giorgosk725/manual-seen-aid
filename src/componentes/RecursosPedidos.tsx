@@ -1,7 +1,7 @@
 /* «Abrir …»: cuando la búsqueda nombra un recurso de la app (un caso, una herramienta, la
    sección de un sistema), ese recurso va el primero, encima de los pasajes (buscador.ts,
    recursosPedidos). Los tres buscadores lo usan. */
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import type { Resultado } from "../busqueda";
 
 export function RecursosPedidos({ items, onIr }: { items: Resultado[]; onIr?: () => void }) {
@@ -28,7 +28,6 @@ export function RecursosPedidos({ items, onIr }: { items: Resultado[]; onIr?: ()
               </span>
               {r.entrada.titulo}
             </span>
-            <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
           </a>
         </li>
       ))}

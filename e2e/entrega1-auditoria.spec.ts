@@ -11,7 +11,9 @@ test.describe("Entrega 1 (0.32.0)", () => {
     await page.evaluate(() => window.scrollBy(0, 400));
     await page.waitForTimeout(400);
     const antes = await page.evaluate(() => window.scrollY);
-    expect(antes).toBeGreaterThan(250);
+    // Sin cabecera fija en el ordenador y con la foto a 64 px, la ficha es más corta: basta con
+    // que se haya bajado de verdad (sistema visual, segunda vuelta).
+    expect(antes).toBeGreaterThan(100);
     await page
       .locator("#parametros")
       .locator("..")

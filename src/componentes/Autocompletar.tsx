@@ -1,15 +1,7 @@
 /* Sugerencias mientras se escribe (buscador.ts, sugerir): preguntas frecuentes, situaciones,
    sistemas, herramientas, hojas y siglas que empiezan por lo escrito. Una pregunta rellena la
    caja (y responde con sus pasajes); lo demás abre su pantalla. Lo usan los tres buscadores. */
-import {
-  ArrowRight,
-  BookA,
-  Cpu,
-  FileText,
-  MessageCircleQuestion,
-  Route,
-  Wrench,
-} from "lucide-react";
+import { BookA, Cpu, FileText, MessageCircleQuestion, Route, Wrench } from "lucide-react";
 import type { Sugerencia } from "../buscador";
 
 const ICONO: Record<Sugerencia["tipo"], typeof Route> = {
@@ -50,7 +42,6 @@ export function Autocompletar({
             <I size={15} className="shrink-0 text-slate-500" aria-hidden="true" />
             <span className="min-w-0 flex-1">{s.texto}</span>
             <span className="shrink-0 text-xs text-slate-500">{ROTULO[s.tipo]}</span>
-            <ArrowRight size={13} className="shrink-0 text-slate-400" aria-hidden="true" />
           </>
         );
         return (

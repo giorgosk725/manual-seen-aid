@@ -10,7 +10,7 @@ import {
   type TablaId,
 } from "../contenido";
 import { elegirRuta, href } from "../rutas";
-import { BotonImprimir, CabeceraEditorial, PaginaBadge, Revelar, Segmented } from "../ui";
+import { BotonImprimir, CabeceraEditorial, PaginaBadge, Revelar } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
 import { TablaVista } from "../componentes/TablaVista";
 import { Figura3Recorrido } from "../componentes/Figura3Vista";
@@ -19,6 +19,15 @@ import { Texto } from "../texto";
 import { NivelTitulo } from "../nivel-contexto";
 
 const hex = CATEGORIA_HEX.consultar;
+/* El tema de cada tabla en la pestaña (rótulo de navegación de la app, no del capítulo). */
+const TEMA_TABLA: Record<string, string> = {
+  T1: "Sistemas",
+  T2: "Desde MDI",
+  T3: "Parámetros",
+  T4: "Situaciones",
+  T5: "Descarga",
+  T6: "Pruebas y cirugía",
+};
 
 /* Las seis tablas como filas: número, título y la pregunta que responde cada una. */
 function IndiceTablas() {
@@ -68,20 +77,20 @@ function TablaPantalla({ tid, seleccion }: { tid: TablaId; seleccion?: string })
       {/* 0.71.0: «Tabla N» una vez (pestaña y cabecera de la tabla); sin migas: las pestañas
           llevan a las demás. */}
       <CabeceraEditorial titulo="Tablas del capítulo" hex={hex} level={1} />
-      <div className="no-imprimir mb-4 overflow-x-auto">
-        <Segmented
-          label="Otra tabla"
-          options={LISTA_TABLAS.map((t) => ({
-            id: t.id,
-            label: `Tabla ${t.numero}`,
-            shortLabel: `T${t.numero}`,
-          }))}
-          value={tid}
-          onChange={(v) => {
-            window.location.hash = href("consultar", "tablas", v);
-          }}
-        />
-      </div>
+      {/* 0.76: pestañas (como en Sistemas), con el tema de cada tabla en el ordenador. */}
+      <nav aria-label="Otra tabla" className="pestanas no-imprimir mb-4 sm:gap-1">
+        {LISTA_TABLAS.map((t) => (
+          <a
+            key={t.id}
+            href={href("consultar", "tablas", t.id)}
+            aria-current={t.id === tid ? "page" : undefined}
+            className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+          >
+            Tabla {t.numero}
+            <span className="hidden font-normal lg:inline">&nbsp;· {TEMA_TABLA[t.id]}</span>
+          </a>
+        ))}
+      </nav>
       <div ref={ref} className="imprimible tarjeta p-4" key={tid}>
         <NivelTitulo.Provider value={2}>
           <TablaVista
@@ -159,14 +168,14 @@ export function Infografia() {
   return (
     <div>
       <CabeceraEditorial titulo="Infografía" hex={hex} level={1} />
-      <ol className="grid gap-3 md:grid-cols-2">
+      <ol className="grid items-start gap-3 md:grid-cols-2">
         {INFO.cajas.map((c, i) => {
           const dest = DESTINO_INFO[i] || [];
           const esPlan = i === 4;
           return (
             <Revelar as="li" key={i} className={i >= 4 ? "md:col-span-2" : ""}>
               <section
-                className="h-full rounded-xl border p-4"
+                className="tarjeta tarjeta-sistema p-4"
                 style={{ ["--sis" as string]: hex.strong }}
                 aria-labelledby={`info-${i}`}
               >
@@ -210,7 +219,7 @@ export function Infografia() {
                       className="chip text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                       style={{ borderColor: `${hex.strong}40`, color: hex.ink }}
                     >
-                      {d.etiqueta} <ArrowRight size={12} aria-hidden="true" />
+                      {d.etiqueta}
                     </a>
                   ))}
                   {esPlan && (
@@ -219,7 +228,7 @@ export function Infografia() {
                       className="chip border-transparent text-xs text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                       style={{ background: hex.strong }}
                     >
-                      Figura 3 paso a paso <ArrowRight size={12} aria-hidden="true" />
+                      Figura 3 paso a paso
                     </a>
                   )}
                 </div>

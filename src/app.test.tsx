@@ -260,7 +260,9 @@ describe("App", () => {
 
   it("el modo nocturno se activa y se guarda", async () => {
     render(<App />);
-    await userEvent.click(screen.getByRole("button", { name: "Modo nocturno" }));
+    // Dos interruptores en el DOM (cabecera del móvil y pie de la barra lateral); en el navegador
+    // solo se ve uno (lg:hidden / hidden lg:flex); jsdom no aplica el CSS.
+    await userEvent.click(screen.getAllByRole("button", { name: "Modo nocturno" })[0]);
     expect(document.documentElement).toHaveClass("night");
     expect(window.localStorage.getItem("mseen:night")).toBe("1");
   });

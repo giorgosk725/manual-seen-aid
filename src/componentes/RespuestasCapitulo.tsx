@@ -591,7 +591,7 @@ export function RespuestasCapitulo({
                 onClick={onIr}
                 className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
               >
-                {f.pregunta} <ArrowRight size={13} aria-hidden="true" />
+                {f.pregunta}
               </a>
             </li>
           ))}

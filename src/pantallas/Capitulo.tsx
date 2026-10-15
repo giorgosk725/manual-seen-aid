@@ -2,18 +2,12 @@
    empezar; debajo, lo que ayuda a comprender y repasar. Y el «capítulo entero» para imprimir
    de una vez. */
 import { useRef } from "react";
-import { ArrowRight, BookOpen, ExternalLink } from "lucide-react";
-import { ICONO_APARTADO } from "../nav";
+import { ArrowRight, ExternalLink } from "lucide-react";
 import { BIBLIOGRAFIA, APARTADOS, CAPITULO, subapartados } from "../contenido";
 import { href } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Revelar } from "../ui";
 import { CATEGORIA_HEX, colorApartado } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
-
-function IconoApartado({ slug }: { slug: string }) {
-  const I = ICONO_APARTADO[slug] ?? BookOpen;
-  return <I size={20} strokeWidth={1.5} />;
-}
 
 export function IndiceCapitulo() {
   const hex = CATEGORIA_HEX.leer;
@@ -32,18 +26,21 @@ export function IndiceCapitulo() {
               <Revelar as="li" key={a.slug}>
                 <a
                   href={href("capitulo", a.slug)}
-                  className="linea hover-lift ease-brand flex items-start gap-3 rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:p-4"
+                  className="tarjeta hover-lift ease-brand flex items-start gap-3 p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:p-4"
                 >
-                  <span
-                    aria-hidden="true"
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[3px] text-white"
-                    style={{ background: colorApartado(a.n) }}
-                  >
-                    <IconoApartado slug={a.slug} />
+                  <span className="flex w-10 shrink-0 items-center gap-2 pt-0.5">
+                    <span
+                      aria-hidden="true"
+                      className="h-2 w-2 shrink-0 rounded-full"
+                      style={{ background: colorApartado(a.n) }}
+                    />
+                    <span className="text-[15px] font-semibold tabular-nums text-slate-500">
+                      {a.n}
+                    </span>
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block text-[15px] font-semibold uppercase leading-snug tracking-wide text-slate-900">
-                      <span className="tabular-nums text-slate-500">{a.n}</span> {a.titulo}
+                      {a.titulo}
                     </span>
                     {subs.length > 0 && (
                       <span className="mt-1 block text-xs text-slate-600">
@@ -65,24 +62,13 @@ export function IndiceCapitulo() {
         </ol>
       </section>
       <div className="mt-6 flex flex-wrap gap-2">
-        <a
-          href={href("bibliografia")}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-400"
-        >
+        <a href={href("bibliografia")} className="chip">
           Bibliografía (pp. 24–25) <ArrowRight size={14} aria-hidden="true" />
         </a>
-        <a
-          href={href("capitulo", "resumen")}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-400"
-        >
+        <a href={href("capitulo", "resumen")} className="chip">
           Resumen del capítulo <ArrowRight size={14} aria-hidden="true" />
         </a>
-        <a
-          href={CAPITULO.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-400"
-        >
+        <a href={CAPITULO.url} target="_blank" rel="noopener noreferrer" className="chip">
           Ver el capítulo en el Manual SEEN <ExternalLink size={13} aria-hidden="true" />
         </a>
       </div>

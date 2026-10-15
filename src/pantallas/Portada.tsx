@@ -48,8 +48,9 @@ export function Portada() {
                 className="inline-block h-2.5 w-2.5"
                 style={{ background: SEEN.diabetes }}
               />
-              <span>Capítulo {CAPITULO.numero} del Manual SEEN</span>
-              <span aria-hidden="true">·</span>
+              <span>
+                Capítulo {CAPITULO.numero} del Manual SEEN<span aria-hidden="true">&nbsp;·</span>
+              </span>
               <span>{CAPITULO.area}</span>
             </div>
             <h1

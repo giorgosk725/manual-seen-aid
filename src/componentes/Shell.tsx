@@ -344,48 +344,41 @@ export function Rotulo({
       <span className="flex flex-col gap-1 leading-none" aria-hidden="true">
         <span className="flex items-center gap-1.5">
           <span
-            className="font-display text-[1.35rem] font-semibold uppercase tracking-tight"
+            className="font-display text-[1.5rem] font-semibold uppercase tracking-tight"
             style={{ color: SEEN.azulOsc }}
           >
             Manual
           </span>
-          <span className="flex flex-col font-display text-[0.66rem] font-medium uppercase leading-[0.95]">
+          <span className="flex flex-col font-display text-xs font-medium uppercase leading-none">
             <span style={{ color: SEEN.burdeos }}>de Endocrinología</span>
             <span style={{ color: SEEN.mostazaOsc }}>y Nutrición</span>
           </span>
         </span>
-        <span className="font-display text-[0.72rem] font-medium uppercase tracking-wide text-slate-600">
+        <span className="font-display text-xs font-medium uppercase tracking-wide text-slate-600">
           Complemento interactivo
         </span>
       </span>
     );
-  // En la cabecera del móvil, en una fila (el alto es de 56 px).
-  const pequeno = "whitespace-nowrap text-[0.52rem] min-[400px]:text-[0.6rem]";
+  // En la cabecera del móvil, en una sola línea y con letra de 12 px como mínimo (sistema
+  // visual): «Manual SEEN · Complemento interactivo».
   return (
-    <span className="flex items-center gap-1.5 leading-none" aria-hidden="true">
+    <span className="flex items-baseline gap-1.5 leading-none" aria-hidden="true">
       <span
-        className="font-display text-[1.15rem] font-semibold uppercase tracking-tight min-[400px]:text-[1.35rem]"
+        className="font-display text-[1.25rem] font-semibold uppercase tracking-tight"
         style={{ color: SEEN.azulOsc }}
       >
         Manual
       </span>
-      <span className="flex flex-col font-display font-medium uppercase leading-[0.95]">
-        <span className={pequeno} style={{ color: SEEN.burdeos }}>
-          de Endocrinología
-        </span>
-        <span className={pequeno} style={{ color: SEEN.mostazaOsc }}>
-          y Nutrición
-        </span>
+      <span
+        className="font-display text-xs font-medium uppercase tracking-wide"
+        style={{ color: SEEN.burdeos }}
+      >
+        SEEN
       </span>
       <span
-        className={`mx-0.5 self-stretch border-l ${fuera}`}
-        style={{ borderColor: "#d4d4d4" }}
-      />
-      <span
-        className={`flex flex-col font-display font-medium uppercase leading-[0.95] text-slate-600 ${fuera}`}
+        className={`whitespace-nowrap font-display text-xs font-medium uppercase tracking-wide text-slate-600 ${fuera}`}
       >
-        <span className={pequeno}>Complemento</span>
-        <span className={pequeno}>interactivo</span>
+        · Complemento interactivo
       </span>
     </span>
   );
@@ -533,27 +526,32 @@ function MenuNavegacion({
 }
 
 /* ---------- Barra lateral (escritorio) ---------- */
-function Lateral({ ruta }: { ruta: Ruta }) {
+function Lateral({ ruta, pie }: { ruta: Ruta; pie: ReactNode }) {
   return (
     <aside
       aria-label="Menú del capítulo"
-      className="barra-lateral fixed inset-y-0 left-0 z-30 hidden w-64 flex-col overflow-y-auto px-3 py-4 lg:flex"
+      className="barra-lateral fixed inset-y-0 left-0 z-30 hidden w-64 flex-col lg:flex"
     >
-      <a
-        href="#/"
-        aria-label={`Manual de Endocrinología y Nutrición, complemento interactivo. Capítulo ${CAPITULO.numero} · ${CAPITULO.tituloCorto}: inicio`}
-        className="rounded-md px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-      >
-        <Rotulo />
-        {/* El rótulo ya dice «Complemento interactivo»: aquí, de qué capítulo (V54-08). */}
-        <span className="mt-1.5 block text-xs font-semibold leading-snug text-slate-700">
-          Capítulo {CAPITULO.numero} · {CAPITULO.tituloCorto}
-        </span>
-      </a>
-      {/* En la propia pantalla de búsqueda, una sola caja (0.72.0: había dos con la misma
+      <div className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
+        <a
+          href="#/"
+          aria-label={`Manual de Endocrinología y Nutrición, complemento interactivo. Capítulo ${CAPITULO.numero} · ${CAPITULO.tituloCorto}: inicio`}
+          className="rounded-md px-2 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        >
+          <Rotulo />
+          {/* El rótulo ya dice «Complemento interactivo»: aquí, de qué capítulo (V54-08). */}
+          <span className="mt-1.5 block text-xs font-semibold leading-snug text-slate-700">
+            Capítulo {CAPITULO.numero} · {CAPITULO.tituloCorto}
+          </span>
+        </a>
+        {/* En la propia pantalla de búsqueda, una sola caja (0.72.0: había dos con la misma
           consulta). */}
-      {ruta.seccion !== "buscar" && <BuscadorLateral />}
-      <MenuNavegacion ruta={ruta} etiqueta="Navegación principal" />
+        {ruta.seccion !== "buscar" && <BuscadorLateral />}
+        <MenuNavegacion ruta={ruta} etiqueta="Navegación principal" />
+      </div>
+      {/* Sistema visual: sin cabecera fija en el ordenador; sus mandos, al pie del menú, siempre
+          a la vista (fuera de la zona que se desplaza). */}
+      <div className="separador flex shrink-0 items-center gap-1 border-t px-3 py-2">{pie}</div>
     </aside>
   );
 }
@@ -847,8 +845,15 @@ export function Shell({
             ? CATEGORIA_HEX.pacientes
             : CATEGORIA_HEX.leer;
 
-  const menor = TAMANOS[Math.max(0, TAMANOS.indexOf(letra) - 1)];
-  const mayor = TAMANOS[Math.min(TAMANOS.length - 1, TAMANOS.indexOf(letra) + 1)];
+  const mandos = (
+    <Mandos
+      enLectura={enLectura}
+      letra={letra}
+      setLetra={setLetra}
+      night={night}
+      toggleNight={toggleNight}
+    />
+  );
 
   return (
     <div className="lienzo min-h-screen bg-slate-50 text-slate-900">
@@ -860,8 +865,8 @@ export function Shell({
       >
         Saltar al contenido
       </button>
-      <Lateral ruta={ruta} />
-      <header className="separador cabecera sticky top-0 z-20 border-b backdrop-blur lg:ml-64">
+      <Lateral ruta={ruta} pie={mandos} />
+      <header className="separador cabecera sticky top-0 z-20 border-b backdrop-blur lg:hidden">
         <div
           className={`mx-auto flex h-14 max-w-5xl items-center gap-2 px-3 sm:px-5 ${ruta.seccion === "capitulo" ? "" : "2xl:max-w-7xl"}`}
         >
@@ -874,43 +879,7 @@ export function Shell({
           </a>
           {/* Sin el título de la pantalla en la barra (repetía el H1, 0.70.0). */}
           <span className="flex-1" />
-          {enLectura && (
-            <div
-              className="flex items-center max-[359px]:hidden"
-              role="group"
-              aria-label="Tamaño de letra"
-            >
-              <button
-                type="button"
-                onClick={() => setLetra(menor)}
-                disabled={letra === menor}
-                aria-label="Letra más pequeña"
-                className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-              >
-                <AArrowDown size={18} />
-              </button>
-              <button
-                type="button"
-                onClick={() => setLetra(mayor)}
-                disabled={letra === mayor}
-                aria-label="Letra más grande"
-                className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-              >
-                <AArrowUp size={18} />
-              </button>
-            </div>
-          )}
-          {/* Sin lupa en la cabecera del móvil (0.53.0): «Buscar» ya está en la barra de abajo. */}
-          <button
-            type="button"
-            onClick={toggleNight}
-            aria-pressed={night}
-            aria-label={night ? "Modo diurno" : "Modo nocturno"}
-            title={night ? "Modo diurno" : "Modo nocturno"}
-            className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-          >
-            {night ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
+          {mandos}
         </div>
       </header>
       <main
@@ -927,7 +896,7 @@ export function Shell({
           key={clavePantalla}
           // 0.72.0: en monitores anchos, las pantallas de consulta usan más ancho; la lectura del
           // capítulo conserva su medida.
-          className={`pantalla-in mx-auto max-w-5xl px-3 pb-24 pt-4 sm:px-5 lg:pb-10 ${ruta.seccion === "capitulo" ? "" : "2xl:max-w-7xl"}`}
+          className={`pantalla-in mx-auto max-w-5xl px-3 pb-24 pt-4 sm:px-5 lg:pb-10 lg:pt-6 ${ruta.seccion === "capitulo" ? "" : "2xl:max-w-7xl"}`}
         >
           {volver && ruta.seccion === "capitulo" && (
             <div className="no-imprimir mb-3">
@@ -957,5 +926,65 @@ export function Shell({
       <VolverArriba />
       <AvisoVersion />
     </div>
+  );
+}
+
+/* Los mandos de la cabecera (letra en la lectura, modo nocturno): en el móvil, en la cabecera;
+   en el ordenador, al pie de la barra lateral. Un solo juego en el DOM visible. */
+function Mandos({
+  enLectura,
+  letra,
+  setLetra,
+  night,
+  toggleNight,
+}: {
+  enLectura: boolean;
+  letra: (typeof TAMANOS)[number];
+  setLetra: (v: (typeof TAMANOS)[number]) => void;
+  night: boolean;
+  toggleNight: () => void;
+}) {
+  const menor = TAMANOS[Math.max(0, TAMANOS.indexOf(letra) - 1)];
+  const mayor = TAMANOS[Math.min(TAMANOS.length - 1, TAMANOS.indexOf(letra) + 1)];
+  return (
+    <>
+      {enLectura && (
+        <div
+          className="flex items-center max-[359px]:hidden"
+          role="group"
+          aria-label="Tamaño de letra"
+        >
+          <button
+            type="button"
+            onClick={() => setLetra(menor)}
+            disabled={letra === menor}
+            aria-label="Letra más pequeña"
+            className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+          >
+            <AArrowDown size={18} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setLetra(mayor)}
+            disabled={letra === mayor}
+            aria-label="Letra más grande"
+            className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+          >
+            <AArrowUp size={18} />
+          </button>
+        </div>
+      )}
+      {/* Sin lupa en la cabecera del móvil (0.53.0): «Buscar» ya está en la barra de abajo. */}
+      <button
+        type="button"
+        onClick={toggleNight}
+        aria-pressed={night}
+        aria-label={night ? "Modo diurno" : "Modo nocturno"}
+        title={night ? "Modo diurno" : "Modo nocturno"}
+        className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+      >
+        {night ? <Sun size={18} /> : <Moon size={18} />}
+      </button>
+    </>
   );
 }

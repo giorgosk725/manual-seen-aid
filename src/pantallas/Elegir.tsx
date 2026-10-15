@@ -133,7 +133,7 @@ function PorCaracteristicas() {
           </div>
         ))}
       </div>
-      <ul className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4" aria-live="polite">
+      <ul className="mt-4 grid items-start gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-live="polite">
         {ORDEN_SISTEMAS.map((id, c) => {
           const h = SISTEMA_HEX[c];
           const fuera = hayAlgo && !reunen.includes(c);
@@ -153,7 +153,7 @@ function PorCaracteristicas() {
                   alt=""
                   width={32}
                   height={32}
-                  className="h-8 w-8 shrink-0 rounded-md bg-white object-cover"
+                  className="foto-sistema h-8 w-8 shrink-0 rounded-md bg-white object-cover"
                 />
                 {CATALOGO_SISTEMAS[c].name}
               </a>
@@ -174,13 +174,23 @@ function PorCaracteristicas() {
                         </span>
                       </dt>
                       <dd
-                        className={`flex gap-1.5 ${r === true ? "font-semibold text-slate-900" : "text-slate-700"}`}
+                        className={r === true ? "font-semibold text-slate-900" : "text-slate-700"}
                       >
-                        <span aria-hidden="true" className="mt-0.5 w-3.5 shrink-0">
-                          {r === true && <Check size={14} className="text-emerald-700" />}
-                          {r === false && <X size={14} className="text-slate-400" />}
-                        </span>
-                        <span className="min-w-0">{T1.filas[cr.fila].celdas[c]}</span>
+                        {r === true && (
+                          <Check
+                            size={14}
+                            aria-hidden="true"
+                            className="mr-1 inline-block align-[-2px] text-emerald-700"
+                          />
+                        )}
+                        {r === false && (
+                          <X
+                            size={14}
+                            aria-hidden="true"
+                            className="mr-1 inline-block align-[-2px] text-slate-400"
+                          />
+                        )}
+                        {T1.filas[cr.fila].celdas[c]}
                       </dd>
                     </div>
                   );
@@ -190,7 +200,7 @@ function PorCaracteristicas() {
                 {[7, 8].map((fila) => (
                   <div key={fila}>
                     <dt className="rotulo text-slate-500">{T1.filas[fila].etiqueta}</dt>
-                    <dd className="whitespace-pre-line pl-5 text-slate-700">
+                    <dd className="whitespace-pre-line text-slate-700">
                       {T1.filas[fila].celdas[c]}
                     </dd>
                   </div>
@@ -259,7 +269,8 @@ export function Elegir({ antigua = false }: { antigua?: boolean }) {
 
       <section
         aria-label="Elección compartida: texto del capítulo"
-        className="prosa mt-4 tarjeta p-4"
+        className="prosa tarjeta mt-4 p-4"
+        style={{ maxWidth: "none" }}
       >
         <p className="literal text-sm">{b5.t === "p" && <Texto>{b5.texto}</Texto>}</p>
         <a href={href("capitulo", a6.slug, "b5")} className={enlace}>

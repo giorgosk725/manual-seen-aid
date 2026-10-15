@@ -369,6 +369,12 @@ function ParametrosAutomatico({
   );
 }
 
+/* Una tabla como fuente, con su intervalo de páginas. */
+const fuenteTabla = (t: Tabla) => ({
+  texto: `Tabla ${t.numero}, ${paginasDe(t.paginas[0], t.paginas[1])}`,
+  ruta: rutaEnCapitulo(t) ?? undefined,
+});
+
 /* La Tabla 1 como fuente: con una página dada si la fila está en ella; si no, el intervalo
    entero de la tabla (A11). */
 const fuenteT1 = (p?: number) => ({
@@ -431,6 +437,7 @@ function ColumnaTabla({
   destacar,
   notaExtra,
   fuentesExtra = [],
+  sinFuente = false,
 }: {
   t: Tabla;
   c: number;
@@ -441,6 +448,8 @@ function ColumnaTabla({
   destacar?: (j: number) => boolean;
   notaExtra?: string;
   fuentesExtra?: { texto: string; ruta?: string }[];
+  /* La línea de fuente la pone quien la usa, al pie de toda la sección (0.76: una por sección). */
+  sinFuente?: boolean;
 }) {
   const hexS = SISTEMA_HEX[c];
   // La nota del asterisco solo si alguna celda mostrada lo lleva; la lista de siglas, plegada.
@@ -454,7 +463,7 @@ function ColumnaTabla({
     // 0.72.0: sin la caja de fuera (tarjetas dentro de una tarjeta). sistema visual: una tarjeta por
     // fila con la pleca del sistema; la que cuenta en automático, con el borde del sistema.
     <div>
-      <dl className="ultima-ancha grid gap-3 sm:grid-cols-2">
+      <dl className="ultima-ancha grid items-start gap-3 sm:grid-cols-2">
         {t.filas.map((f, j) => {
           if (filas && !filas(f.etiqueta, j)) return null;
           return (
@@ -465,16 +474,15 @@ function ColumnaTabla({
             >
               {/* En la Tabla 4, lo que sigue al nombre de la situación es la conducta común:
                   debajo y en gris, como en la tabla. */}
-              <dt
-                className={t.id === "T4" ? "titulo-tarjeta" : "rotulo"}
-                style={{ color: hexS.ink }}
-              >
+              <dt className="rotulo" style={{ color: hexS.ink }}>
                 {t.id === "T4" ? (
                   f.etiqueta.split("\n").map((l, k) => (
                     <span
                       key={k}
                       className={
-                        k === 0 ? "block" : "mt-1 block text-[13px] font-normal text-slate-600"
+                        k === 0
+                          ? "block"
+                          : "mt-1 block text-[13px] font-normal normal-case tracking-normal text-slate-600"
                       }
                     >
                       <Texto>{l}</Texto>
@@ -524,7 +532,9 @@ function ColumnaTabla({
           ))}
         </details>
       )}
-      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+      <div
+        className={`mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 ${sinFuente ? "hidden" : ""}`}
+      >
         <FuentePie
           className=""
           nota=""
@@ -571,6 +581,9 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const ref = useRef<HTMLDivElement>(null);
   const parrafos = useMemo(() => (s ? parrafosDelSistema(s.id) : []), [s]);
   const completa = seccion === "completa";
+  // 0.76: en el móvil, el selector de sistemas se abre desde la cabecera (la barra pegada solo
+  // lleva las pestañas).
+  const [abrirSelector, setAbrirSelector] = useState(0);
   // Enlace a una sección concreta (#/sistemas/<id>/parametros): se abre en ella; la barra con
   // el sistema y la sección queda pegada arriba (scroll-mt de la sección deja sitio).
   const montada = useRef(false);
@@ -597,6 +610,8 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   // cinco pantallas en el móvil); «completa» las enseña todas.
   const vista = sec && SECCIONES_FICHA.some((x) => x.id === sec) ? sec : "funciona";
   const ver = (id: string) => completa || vista === id;
+  // En papel se imprime la ficha entera: las secciones de otras pestañas van ocultas en pantalla.
+  const papel = (id: string) => (ver(id) ? "" : "hidden print:block print:mt-7");
   const mt = completa ? "mt-7" : "";
   return (
     <div ref={ref} className="imprimible">
@@ -614,20 +629,20 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       <header className="mb-3 grid grid-cols-[auto_1fr] items-center gap-x-3 sm:mb-4 sm:items-start sm:gap-x-4">
         <AbrirEnVisor
           imagen={{ src: FOTO_SISTEMA[s.id], alt: `Foto oficial de ${s.name}`, titulo: s.name }}
-          className="tarjeta h-14 w-14 shrink-0 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:row-span-2 sm:h-28 sm:w-28"
+          className="tarjeta h-14 w-14 shrink-0 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:row-span-2 sm:h-16 sm:w-16"
           etiqueta={`Ampliar la foto de ${s.name}`}
         >
           <img
             src={FOTO_SISTEMA[s.id]}
             alt={`Foto oficial de ${s.name}`}
-            className="h-full w-full object-cover"
+            className="foto-sistema h-full w-full object-cover"
           />
         </AbrirEnVisor>
         <div className="min-w-0">
           {/* Imprimir, junto al título (A09): la única acción secundaria de la cabecera. */}
           <div className="flex items-start justify-between gap-2">
             <h1
-              className="min-w-0 text-xl font-extrabold tracking-tight sm:text-3xl"
+              className="min-w-0 font-display text-xl font-medium uppercase leading-tight tracking-[0.04em] sm:text-2xl"
               style={{ color: h.ink }}
             >
               {s.name}
@@ -657,22 +672,30 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           <a href={href("consultar", "situacion", `:${slug}`)} className={accesoFicha}>
             Situaciones
           </a>
+          <button
+            type="button"
+            onClick={() => {
+              setAbrirSelector((n) => n + 1);
+              window.scrollTo({ top: 0 });
+            }}
+            className={`${accesoFicha} sm:hidden`}
+          >
+            Otro sistema o comparación
+          </button>
         </div>
       </header>
 
-      <BarraSistemas ids={[s.id]} seccion={sec} />
+      <BarraSistemas ids={[s.id]} seccion={sec} abrir={abrirSelector} />
       {/* 0.70.0: la ficha es una sola página; las pestañas llevan a cada sección. */}
-      {ver("funciona") && (
-        <section aria-labelledby="funciona" className="scroll-mt-2">
-          <TituloSeccion id="funciona" sistema={s.name} color={h.ink}>
-            Cómo funciona
-          </TituloSeccion>
-          <ComoFuncionaSistema c={c} id={s.id as SistemaId} />
-        </section>
-      )}
+      <section aria-labelledby="funciona" className={`scroll-mt-2 ${papel("funciona")}`}>
+        <TituloSeccion id="funciona" sistema={s.name} color={h.ink}>
+          Cómo funciona
+        </TituloSeccion>
+        <ComoFuncionaSistema c={c} id={s.id as SistemaId} />
+      </section>
 
-      {ver("esencial") && (
-        <section aria-labelledby="esencial" className={`${mt} scroll-mt-2`}>
+      {
+        <section aria-labelledby="esencial" className={`${mt} scroll-mt-2 ${papel("esencial")}`}>
           <TituloSeccion id="esencial" sistema={s.name} color={h.ink}>
             Indicación y material
           </TituloSeccion>
@@ -692,10 +715,13 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             }
           />
         </section>
-      )}
+      }
 
-      {ver("parametros") && (
-        <section aria-labelledby="parametros" className={`${mt} scroll-mt-2`}>
+      {
+        <section
+          aria-labelledby="parametros"
+          className={`${mt} scroll-mt-2 ${papel("parametros")}`}
+        >
           <TituloSeccion id="parametros" sistema={s.name} color={h.ink}>
             Parámetros
           </TituloSeccion>
@@ -710,18 +736,32 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             // 0.73.0: sin la nota del asterisco (en las tarjetas ya no hay asteriscos: lo dice la
             // insignia); su fila de la Tabla 1, en la fuente.
             fuentesExtra={[fuenteT1(4)]}
+            sinFuente
           />
-          <AnadidoDelSistema c={c} bloques={FICHA_PARAMETROS[c]} />
+          <AnadidoDelSistema c={c} bloques={FICHA_PARAMETROS[c]} sinFuente />
+          <FuentePie
+            fuentes={[
+              fuenteTabla(TABLAS.T3),
+              fuenteT1(4),
+              ...fuentesDePiezas(FICHA_PARAMETROS[c].flatMap((b) => b.piezas)),
+            ]}
+          />
         </section>
-      )}
+      }
 
       {ver("modos") && (
         <section aria-labelledby="modos" className={`no-imprimir ${mt} scroll-mt-2`}>
           <TituloSeccion id="modos" sistema={s.name} color={h.ink}>
             Modos y funciones
           </TituloSeccion>
-          <ColumnaTabla t={TABLAS.T4} c={c} />
-          <AnadidoDelSistema c={c} bloques={FICHA_MODOS[c]} />
+          <ColumnaTabla t={TABLAS.T4} c={c} sinFuente />
+          <AnadidoDelSistema c={c} bloques={FICHA_MODOS[c]} sinFuente />
+          <FuentePie
+            fuentes={[
+              fuenteTabla(TABLAS.T4),
+              ...fuentesDePiezas(FICHA_MODOS[c].flatMap((b) => b.piezas)),
+            ]}
+          />
         </section>
       )}
 
@@ -846,7 +886,16 @@ function AmpliacionRetirada({ ids }: { ids: string[] }) {
 
 /* Selector de sistemas y pestañas de sección, pegados arriba al desplazarse: el sistema y la
    sección que se consultan quedan siempre a mano. */
-function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
+function BarraSistemas({
+  ids,
+  seccion,
+  abrir = 0,
+}: {
+  ids: string[];
+  seccion?: string;
+  /* Cada cambio abre el selector (desde «Otro sistema o comparación» de la cabecera). */
+  abrir?: number;
+}) {
   const sec = seccion;
   const secciones = ids.length === 1 ? SECCIONES_FICHA : SECCIONES_COMPARACION;
   // En la ficha, sin sección en la ruta se ve «Cómo funciona» (0.73.0).
@@ -900,6 +949,28 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [movil, deEntrada]);
+  useEffect(() => {
+    if (abrir > 0) setAbierta(true);
+  }, [abrir]);
+  // Pestañas en una fila: con más a la derecha, un desvanecido lo dice; la activa, a la vista.
+  const pestanas = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = pestanas.current;
+    if (!el) return;
+    const medir = () =>
+      el.setAttribute("data-mas", el.scrollLeft + el.clientWidth < el.scrollWidth - 2 ? "1" : "0");
+    el.querySelector<HTMLElement>("[aria-current]")?.scrollIntoView?.({
+      block: "nearest",
+      inline: "nearest",
+    });
+    medir();
+    el.addEventListener("scroll", medir, { passive: true });
+    window.addEventListener("resize", medir);
+    return () => {
+      el.removeEventListener("scroll", medir);
+      window.removeEventListener("resize", medir);
+    };
+  }, [ids, sec]);
   const compacta = plegada && !abierta;
   const resumen = ids.length
     ? ids.map((id) => SLUG_CORTO[columnaDeSistema(id as SistemaId)]).join(" + ")
@@ -909,9 +980,9 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
       ref={barra}
       // En la comparación del ordenador, la barra no se pega: lo que queda arriba al bajar es la
       // cabecera de la tabla, con los nombres de los sistemas (0.72.0).
-      className={`barra-pegada separador no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 pt-2 sm:mx-0 sm:rounded-lg sm:border sm:px-3 ${ids.length === 1 ? "" : "lg:static"}`}
+      className={`barra-pegada separador no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 sm:mx-0 sm:rounded-lg sm:border sm:px-3 sm:pt-2 ${ids.length === 1 ? "" : "lg:static"} ${compacta && ids.length === 1 ? "" : "pt-2"}`}
     >
-      {compacta ? (
+      {compacta && ids.length === 1 ? null : compacta ? (
         <button
           type="button"
           onClick={() => {
@@ -967,14 +1038,18 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
           }
         />
       )}
-      <nav aria-label="Sección" className="pestanas -mx-3 mt-1 px-3 sm:mx-0 sm:gap-1 sm:px-0">
+      <nav
+        ref={pestanas}
+        aria-label="Sección"
+        className="pestanas -mx-3 px-3 sm:mx-0 sm:mt-1 sm:gap-1 sm:px-0"
+      >
         {/* 0.72.1: las tarjetas son una vista más, al lado de las dos tablas: así se vuelve a
             ellas desde la comparación (antes solo con «Sistemas» abajo o Atrás). */}
         {ids.length !== 1 && (
           <a
             href={href("sistemas")}
             aria-current={entrada ? "location" : undefined}
-            className="pestana focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             Resumen
           </a>
@@ -984,7 +1059,7 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
             key={x.id}
             href={href("sistemas", selStr, x.id)}
             aria-current={activa === x.id ? "location" : undefined}
-            className="pestana px-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-2"
+            className="pestana tap-44 px-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-2"
           >
             {/* 0.73.0: en el móvil, el rótulo corto (las cinco pestañas caben a la vista). */}
             {"corto" in x && x.corto ? (
@@ -1037,7 +1112,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
     <div className="space-y-4">
       {/* 13-10-2026: cada tarjeta con lo esencial de la Tabla 1 (fragmentos literales,
           CLAVE_ALGORITMO) para distinguirlos antes de entrar. */}
-      <ul className="grid gap-3 sm:grid-cols-2">
+      <ul className="grid items-start gap-3 sm:grid-cols-2">
         {visibles.map(({ s, c }) => {
           const h = SISTEMA_HEX[c];
           const k = CLAVE_ALGORITMO[c];
@@ -1065,7 +1140,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                   <img
                     src={FOTO_SISTEMA[s.id]}
                     alt=""
-                    className="h-12 w-12 shrink-0 rounded-md bg-white object-cover"
+                    className="foto-sistema h-12 w-12 shrink-0 rounded-md bg-white object-cover"
                     loading="lazy"
                   />
                   <span className="min-w-0 flex-1">
@@ -1301,7 +1376,7 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
           la casilla entera, a un toque. */}
       <dl
         aria-label="Características del sistema (Tabla 1)"
-        className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+        className="grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-3"
         style={{ ["--sis" as string]: h.strong }}
       >
         {FICHA_TECNICA.map(({ fila }) => (
@@ -1436,7 +1511,7 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
                 <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
                   Parámetros configurables en modo automático
                 </summary>
-                <div className="ultima-ancha mt-2 grid gap-3 sm:grid-cols-2">
+                <div className="ultima-ancha mt-2 grid items-start gap-3 sm:grid-cols-2">
                   {cols.map((c) => (
                     <div key={c}>
                       <div className="titulo-tarjeta mb-1" style={{ color: SISTEMA_HEX[c].ink }}>

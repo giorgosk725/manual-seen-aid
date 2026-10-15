@@ -1,9 +1,8 @@
 /* «Figuras y diagramas» (#/visual, 0.70.0): una sola pantalla, las figuras originales con visor y
    zoom arriba y los diagramas hechos con el texto del capítulo debajo, por temas. Sin los tres que
    redibujaban una tabla o una figura (diagramasRetirados.ts). */
-import { ArrowRight, Images, Maximize2 } from "lucide-react";
+import { Maximize2 } from "lucide-react";
 import { diagramaEnEdicion, rutaDeDiagrama } from "../diagramasRetirados";
-import { ICONO_DIAGRAMA } from "../nav";
 import { DIAGRAMAS, type DiagramaId } from "../contenido/diagramas";
 import { F1, F2, INFO, apartadoDeFigura, rutaDeFigura } from "../contenido";
 import { INFO_F3 } from "../componentes/figura3-imagen";
@@ -50,52 +49,32 @@ const GRUPOS: { id: string; titulo: string; color: string; tinte: string; ids: D
 
 function GaleriaDiagramas() {
   return (
-    <div className="space-y-6">
+    <div className="grid items-start gap-3 lg:grid-cols-3">
       {GRUPOS.map((g) => (
-        <section key={g.id} aria-labelledby={`diag-${g.id}`}>
+        <section
+          key={g.id}
+          aria-labelledby={`diag-${g.id}`}
+          className="tarjeta tarjeta-sistema overflow-hidden"
+          style={{ ["--sis" as string]: g.color }}
+        >
           <h2
             id={`diag-${g.id}`}
-            className="mb-2 flex items-center gap-2 rotulo"
+            className="titulo-tarjeta px-4 pb-1.5 pt-3"
             style={{ color: g.color }}
           >
-            <span
-              aria-hidden="true"
-              className="h-2.5 w-2.5 rounded-sm"
-              style={{ background: g.color }}
-            />
             {g.titulo}
           </h2>
-          <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="filas">
             {g.ids.filter(diagramaEnEdicion).map((id) => {
               const d = DIAGRAMAS.find((x) => x.id === id)!;
-              const I = ICONO_DIAGRAMA[d.id];
               return (
                 <li key={d.id}>
                   <a
                     // Con un solo hogar en consulta, la galería lleva allí (0.72.2-0.73.0).
                     href={rutaDeDiagrama(d.id)}
-                    className="group flex h-full gap-3 rounded-lg border bg-white p-3 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                    style={{ borderColor: "var(--linea)", borderLeft: `4px solid ${g.color}` }}
+                    className="fila pl-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-600"
                   >
-                    <span
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
-                      style={{ background: g.tinte, color: g.color }}
-                      aria-hidden="true"
-                    >
-                      <I size={20} />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="flex items-start justify-between gap-2">
-                        <span className="text-[15px] font-bold leading-snug text-slate-900">
-                          {d.titulo}
-                        </span>
-                        <ArrowRight
-                          size={15}
-                          className="mt-0.5 shrink-0 text-slate-400 transition group-hover:translate-x-0.5"
-                          aria-hidden="true"
-                        />
-                      </span>
-                    </span>
+                    <span className="min-w-0 flex-1">{d.titulo}</span>
                   </a>
                 </li>
               );
@@ -112,10 +91,10 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
     <div>
       <CabeceraEditorial titulo="Figuras y diagramas" hex={hex} level={1} />
       <section aria-labelledby="figuras" className="mb-8">
-        <h2 id="figuras" className="mb-2 flex items-center gap-2 rotulo text-slate-600">
-          <Images size={14} aria-hidden="true" /> Figuras del capítulo
+        <h2 id="figuras" className="titulo-seccion mb-2">
+          Figuras del capítulo
         </h2>
-        <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 items-start gap-3 lg:grid-cols-4">
           {FIGURAS_GALERIA.map(({ fig, extra }) => {
             const ap = apartadoDeFigura(fig.id);
             const img = fig.imagen!;
@@ -145,25 +124,25 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                   <div className="text-sm font-bold leading-snug text-slate-900">
                     {fig.titulo.replace(/\.$/, "")}
                   </div>
-                  <div className="mt-1.5 flex flex-wrap gap-1.5">
-                    {ap && (
+                  {extra && (
+                    <a
+                      href={extra.href}
+                      className="mt-1 inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 sm:min-h-8"
+                    >
+                      {extra.texto}
+                    </a>
+                  )}
+                  {ap && (
+                    <p className="fuente-pie mt-1">
+                      Fuente:{" "}
                       <a
                         href={rutaDeFigura(fig.id) ?? href("capitulo", ap.slug)}
-                        className="chip text-xs"
+                        className="tap-44 inline-block py-1"
                       >
                         Apartado {ap.n}, p. {fig.pagina}
                       </a>
-                    )}
-                    {extra && (
-                      <a
-                        href={extra.href}
-                        className="chip border-transparent text-xs text-white"
-                        style={{ background: hex.strong }}
-                      >
-                        {extra.texto}
-                      </a>
-                    )}
-                  </div>
+                    </p>
+                  )}
                 </div>
               </li>
             );
@@ -185,7 +164,7 @@ export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }
           href={href("visual")}
           className="inline-flex min-h-11 items-center gap-1 font-semibold hover:underline"
         >
-          <Images size={12} aria-hidden="true" /> Figuras y diagramas
+          Figuras y diagramas
         </a>
       </div>
       <h1 className="sr-only">{d.titulo}</h1>

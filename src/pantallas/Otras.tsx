@@ -2,7 +2,7 @@
 import { Anuncio } from "../componentes/Anuncio";
 import { guardarReciente } from "../prefs";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, CheckCircle2, ExternalLink, XCircle } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronDown, ExternalLink, XCircle } from "lucide-react";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { FRECUENTES } from "../frecuentes";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
@@ -664,7 +664,7 @@ export function Test() {
         </ToneCard>
       )}
       {/* 0.72.0: el avance, pegado bajo la cabecera mientras se baja por las preguntas. */}
-      <div className="separador barra-pegada sticky top-14 z-10 -mx-3 mb-3 border-b px-3 py-2 sm:mx-0 sm:rounded-lg sm:border">
+      <div className="separador barra-pegada sticky top-14 z-10 -mx-3 mb-3 border-b px-3 py-2 sm:mx-0 sm:rounded-lg sm:border lg:top-0">
         <p className="text-xs font-semibold text-slate-700" aria-live="polite">
           Respondidas {n} de {PREGUNTAS.length}
           {n > 0 ? ` · ${aciertos} ${aciertos === 1 ? "acierto" : "aciertos"}` : ""}
@@ -744,7 +744,7 @@ function IconoTema({ tema }: { tema: string }) {
         alt=""
         width={32}
         height={32}
-        className="my-1.5 h-8 w-8 shrink-0 tarjeta object-cover"
+        className="foto-sistema my-1.5 h-8 w-8 shrink-0 rounded-md bg-white object-cover"
       />
     );
   return null;
@@ -867,7 +867,7 @@ export function Preguntas({ id }: { id?: string }) {
         {TEMAS.map((tema) => (
           <div key={tema}>
             {tema === PRIMER_TEMA_SISTEMA && (
-              <h2 className="rotulo mb-1.5 mt-4 lg:mt-0">Preguntas por sistema</h2>
+              <h2 className="titulo-tarjeta mb-1.5 mt-4 lg:mt-0">Preguntas por sistema</h2>
             )}
             <details open={todas || undefined} className="tarjeta group">
               <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 text-sm font-bold text-slate-900 [&::-webkit-details-marker]:hidden">
@@ -876,9 +876,9 @@ export function Preguntas({ id }: { id?: string }) {
                 <span className="insignia tabular-nums">
                   {FRECUENTES.filter((x) => x.tema === tema).length}
                 </span>
-                <ArrowRight
-                  size={14}
-                  className="text-slate-400 transition group-open:rotate-90"
+                <ChevronDown
+                  size={15}
+                  className="text-slate-400 transition group-open:rotate-180"
                   aria-hidden="true"
                 />
               </summary>

@@ -198,7 +198,7 @@ export function HubPacientes() {
                   <img
                     src={FOTO_SISTEMA[id]}
                     alt=""
-                    className="h-9 w-9 shrink-0 rounded-md object-cover"
+                    className="foto-sistema h-9 w-9 shrink-0 rounded-md object-cover"
                   />
                   <span className="text-sm font-bold" style={{ color: SISTEMA_HEX[c].ink }}>
                     {CORTO_SISTEMA[c]}

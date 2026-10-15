@@ -142,7 +142,7 @@ function RangoTramo({ rango, on }: { rango: string; on: boolean }) {
     );
   return (
     <div className="leading-none">
-      <span className="flex items-center justify-between gap-1 text-[11px] font-bold">
+      <span className="flex items-center justify-between gap-1 text-xs font-bold">
         <span className="inline-flex items-center gap-1">
           <Droplets size={13} aria-hidden="true" />
           {m[1]}
@@ -150,7 +150,7 @@ function RangoTramo({ rango, on }: { rango: string; on: boolean }) {
         <ChevronRight
           size={15}
           aria-hidden="true"
-          className={`shrink-0 transition ${on ? "rotate-90" : ""}`}
+          className={`no-imprimir shrink-0 transition ${on ? "rotate-90" : ""}`}
         />
       </span>{" "}
       <span className="mt-1 inline-block whitespace-nowrap">
@@ -181,7 +181,7 @@ function BetaMinuscula({ t }: { t: string }) {
 
 function NotasDelPie() {
   return (
-    <div className="grid gap-3 sm:grid-cols-3">
+    <div className="grid items-start gap-3 sm:grid-cols-3">
       {FIGURA3.pie.map((p, i) => (
         <div key={i} className="tarjeta p-3 text-sm text-slate-700">
           <span className="font-bold text-slate-900">{p.titulo}</span> <Texto>{p.texto}</Texto>
@@ -256,7 +256,7 @@ function Cabecera({ herramienta = false }: { herramienta?: boolean }) {
 
 function SospecharComprobar() {
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
+    <div className="grid items-start gap-3 sm:grid-cols-2">
       <div className="tarjeta p-3">
         <div
           className="mb-1.5 flex items-center gap-2 text-sm font-bold"
@@ -301,7 +301,7 @@ export function Figura3Lectura() {
       >
         <BetaMinuscula t={FIGURA3.confirmar} />
       </div>
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid items-start gap-3 lg:grid-cols-2">
         {FIGURA3.tramos.map((t) => (
           <Rama key={t.clave} tramo={t} completa nota={false} />
         ))}
@@ -374,10 +374,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
         <li>
           <details open={paso1Abierto} className="group">
             <summary className="mb-2 flex min-h-11 cursor-pointer list-none items-center gap-2 rotulo text-slate-500 sm:min-h-0">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-white">
-                1
-              </span>{" "}
-              Sospechar y comprobar
+              <span className="num num-on">1</span> Sospechar y comprobar
               <ChevronDown
                 size={14}
                 aria-hidden="true"
@@ -389,10 +386,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
         </li>
         <li>
           <div className="mb-2 flex items-center gap-2 rotulo text-slate-500">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-white">
-              2
-            </span>{" "}
-            <BetaMinuscula t={FIGURA3.confirmar} />
+            <span className="num num-on">2</span> <BetaMinuscula t={FIGURA3.confirmar} />
           </div>
           {/* La escala de la figura, de menos a más (decorativa: los botones la dicen). */}
           <div aria-hidden="true" className="mb-2 flex h-1.5 gap-0.5 overflow-hidden rounded-full">
@@ -459,7 +453,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
                   style={{ borderColor: "#d4d4d4" }}
                 >
                   Ingreso hospitalario: criterios para no continuar el sistema{" "}
-                  <ChevronRight size={12} aria-hidden="true" />
+                  <ChevronRight size={12} aria-hidden="true" className="no-imprimir" />
                 </a>
               )}
               <NotasComunes conAsterisco={!JSON.stringify(actual.pasos).includes("*")} />

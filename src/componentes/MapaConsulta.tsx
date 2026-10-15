@@ -10,7 +10,7 @@ import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { DESTINOS, MAPA_CONSULTA } from "../nav";
 import { CATEGORIA_HEX, SISTEMA_HEX, TRAMO_HEX } from "../tokens";
-import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CORTO_CASILLA, CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
 
 const foco =
@@ -83,7 +83,7 @@ const SLUG_INICIO = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 
 function Sistemas() {
   const b = MAPA_CONSULTA.find((x) => x.id === "sistemas")!;
-  const enlace = `flex min-h-9 items-center justify-center px-1 text-[13px] font-semibold text-slate-700 transition hover:bg-slate-50 hover:underline ${foco}`;
+  const enlace = `flex min-h-9 items-center justify-center px-2 text-[13px] font-semibold text-slate-700 transition hover:bg-slate-50 hover:underline ${foco}`;
   return (
     <TarjetaPortada
       id="mapa-sistemas"
@@ -91,7 +91,10 @@ function Sistemas() {
       icono={SlidersHorizontal}
       hex={CATEGORIA_HEX.consultar}
     >
-      <ul aria-label="Los cuatro sistemas" className="grid grid-cols-4 gap-2 p-2 sm:p-3">
+      <ul
+        aria-label="Los cuatro sistemas"
+        className="grid grid-cols-2 gap-2 p-2 sm:grid-cols-4 sm:p-3"
+      >
         {ORDEN_SISTEMAS.map((id, c) => {
           const h = SISTEMA_HEX[c];
           return (
@@ -102,20 +105,21 @@ function Sistemas() {
             >
               <a
                 href={href("sistemas", id)}
-                className={`flex min-h-11 flex-1 flex-col items-center gap-1 p-1.5 text-center transition hover:bg-slate-50 sm:flex-row sm:gap-2.5 sm:p-2 sm:pl-3 sm:text-left ${foco}`}
+                className={`flex min-h-11 flex-1 items-center gap-2 p-1.5 pl-2.5 text-left transition hover:bg-slate-50 sm:gap-2.5 sm:p-2 sm:pl-3 ${foco}`}
               >
                 <img
                   src={FOTO_SISTEMA[id]}
                   alt=""
                   width={48}
                   height={48}
-                  className="h-10 w-10 shrink-0 rounded-md bg-white object-cover sm:h-12 sm:w-12"
+                  className="foto-sistema h-10 w-10 shrink-0 rounded-md bg-white object-cover sm:h-12 sm:w-12"
                 />
+                {/* El nombre corto de la casilla («Control-IQ»): en una línea. */}
                 <span
-                  className="min-w-0 text-xs font-bold leading-tight sm:text-sm"
+                  className="min-w-0 text-[13px] font-bold leading-tight sm:text-sm"
                   style={{ color: h.ink }}
                 >
-                  {CORTO_SISTEMA[c]}
+                  {CORTO_CASILLA[c]}
                 </span>
               </a>
               {/* Desde la tablet, los accesos más usados de cada ficha (en el móvil, la ficha
@@ -253,11 +257,12 @@ function Paciente() {
 
 /* Las tres que tienen pantalla propia, con el color de su riesgo; después, las que más se
    consultan, por su nombre corto (la lista entera, en «Todas las situaciones»). */
-const CON_COLOR: [string, { strong: string; soft: string; border: string; ink: string }][] = [
-  ["figura-3", TRAMO_HEX.naranja],
-  ["hipoglucemia", TRAMO_HEX.rojo],
-  ["interrupcion", TRAMO_HEX.amarillo],
-];
+const CON_COLOR: [string, { strong: string; soft: string; border: string; ink: string } | null][] =
+  [
+    ["figura-3", TRAMO_HEX.naranja],
+    ["hipoglucemia", null],
+    ["interrupcion", null],
+  ];
 const SITUACIONES_PORTADA: [string, string][] = [
   ["ejercicio-aerobico", "Ejercicio"],
   ["enfermedad-intercurrente", "Enfermedad intercurrente"],
@@ -285,7 +290,7 @@ function Situaciones() {
               <a
                 href={d.href}
                 className="chip focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                style={{ borderColor: t.border, background: t.soft, color: t.ink }}
+                style={t ? { borderColor: t.border, background: t.soft, color: t.ink } : undefined}
               >
                 {d.etiqueta}
               </a>

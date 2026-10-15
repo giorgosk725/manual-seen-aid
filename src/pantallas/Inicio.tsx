@@ -566,7 +566,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
 
       {/* 0.72.0: las tres vistas en un solo control (la calculadora, las fases y la hoja para
           imprimir). */}
-      <div role="group" aria-label="Herramienta" className="mb-2 grid grid-cols-3 gap-1.5">
+      <div role="group" aria-label="Herramienta" className="pestanas no-imprimir mb-3 gap-1">
         {(
           [
             { id: CALC, t: "Cálculo", on: actual === CALC },
@@ -580,7 +580,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
             aria-pressed={x.on}
             aria-label={x.id === HOJA ? "Hoja de comprobación para imprimir" : undefined}
             onClick={() => (x.id === FASES[0].id && enFases ? undefined : ir(x.id))}
-            className="chip justify-center text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             {x.t}
           </button>
@@ -601,7 +601,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
       </div>
 
       {actual !== CALC && (
-        <>
+        <div className="no-imprimir">
           <div className="rotulo mb-1">Sistema</div>
           <div className="mb-4">
             <CasillasSistema
@@ -616,12 +616,12 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
               nombres={CORTOS}
             />
           </div>
-        </>
+        </div>
       )}
 
       {/* Las cuatro fases en su fila (la hoja y la calculadora van arriba, como herramientas). */}
       {enFases && (
-        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start">
+        <div className="no-imprimir mb-4 flex flex-col gap-2 sm:flex-row sm:items-start">
           <ol
             className="grid w-full grid-cols-2 gap-1.5 sm:flex-1 sm:grid-cols-4"
             aria-label="Fases"
@@ -655,8 +655,8 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
             className="pantalla-in tarjeta px-4 pb-3 pt-4"
             aria-labelledby="fase-titulo"
           >
-            <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
-              <h2 id="fase-titulo" className="titulo-seccion">
+            <div className="mb-2 flex items-start justify-between gap-3">
+              <h2 id="fase-titulo" className="titulo-seccion min-w-0 flex-1">
                 <span className="mr-2 tabular-nums" style={{ color: hex.strong }}>
                   {n + 1}.
                 </span>
@@ -670,7 +670,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                     setCompleta(!completa);
                     if (completa) ir(actual, sis, null);
                   }}
-                  className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
+                  className="no-imprimir inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
                 >
                   {completa ? "Plegar" : "Fase completa"}
                 </button>

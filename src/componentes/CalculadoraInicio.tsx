@@ -38,12 +38,13 @@ import {
   type Origen,
 } from "../calculadora";
 import { TABLAS, rutaDeTabla } from "../contenido";
-import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { SETS_INFUSION } from "../ampliacion/datos";
 import { SIS_IDS } from "../situaciones";
 import { href } from "../rutas";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { FuentePie } from "./FuentePie";
+import { CasillasSistema } from "./CasillasSistema";
 import { cambiarCalculadora, useTrabajo } from "../trabajo-inicio";
 
 const hex = CATEGORIA_HEX.consultar;
@@ -459,43 +460,12 @@ export function CalculadoraInicio({
           </Paso>
 
           <Paso n={2} titulo="Sistema">
-            <div
-              role="group"
-              aria-label="Sistema"
-              className="grid grid-cols-2 gap-2 sm:grid-cols-4"
-            >
-              {ORDEN_SISTEMAS.map((id, c) => {
-                const on = sis === c;
-                const hs = SISTEMA_HEX[c];
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    aria-pressed={on}
-                    onClick={() => onSistema(c)}
-                    className="tarjeta flex min-h-14 items-center gap-2 p-2 text-left transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                    style={
-                      on
-                        ? { borderColor: hs.strong, boxShadow: `inset 0 0 0 1px ${hs.strong}` }
-                        : undefined
-                    }
-                  >
-                    <img
-                      src={FOTO_SISTEMA[id]}
-                      alt=""
-                      className="h-10 w-10 shrink-0 rounded-md bg-white object-cover"
-                    />
-                    {/* Sin color en línea si no está elegido: de noche, «#1e293b» era el fondo. */}
-                    <span
-                      className={`min-w-0 text-sm font-bold leading-tight ${on ? "" : "text-slate-900"}`}
-                      style={on ? { color: hs.ink } : undefined}
-                    >
-                      {CORTOS[c]}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+            {/* 0.76: el mismo selector de sistema de toda la app. */}
+            <CasillasSistema
+              seleccion={sis !== undefined ? [sis] : []}
+              onToggle={onSistema}
+              nombres={CORTOS}
+            />
             {sis === 2 && (
               <p className="text-xs text-slate-600">
                 Los pasos de inicio son los de CamAPS FX. Para la modalidad Liberty, el capítulo
@@ -596,7 +566,7 @@ export function CalculadoraInicio({
                     style={{ accentColor: hex.strong }}
                   />
                   <div
-                    className="flex justify-between text-[11px] tabular-nums text-slate-500"
+                    className="flex justify-between text-xs tabular-nums text-slate-500"
                     aria-hidden="true"
                   >
                     <span>0 %</span>
@@ -723,9 +693,7 @@ export function CalculadoraInicio({
                       t: (
                         <span>
                           {o.mgdl} mg/dl
-                          <span className="block text-[11px] font-normal opacity-80">
-                            {o.texto}
-                          </span>
+                          <span className="block text-xs font-normal opacity-80">{o.texto}</span>
                         </span>
                       ),
                     }))}
@@ -739,7 +707,7 @@ export function CalculadoraInicio({
         </div>
         <div
           ref={resultados}
-          className="min-w-0 scroll-mt-4 xl:sticky xl:top-20 xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto"
+          className="min-w-0 scroll-mt-4 xl:sticky xl:top-6 xl:max-h-[calc(100vh-3rem)] xl:overflow-y-auto"
         >
           <Paso n={4} titulo="Parámetros iniciales">
             <Anuncio

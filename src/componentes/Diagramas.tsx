@@ -17,10 +17,7 @@ import {
   ArrowDown,
   ArrowRight,
   BookOpen,
-  Cable,
-  CalendarClock,
   Droplets,
-  Package,
   Cpu,
   Images,
   RefreshCw,
@@ -59,7 +56,6 @@ import { Lineas, Texto } from "../texto";
 import { siglasPorTexto } from "../siglas";
 import { SIGLAS_CONSULTA } from "../inicio";
 import { useNivelTitulo, type Nivel } from "../nivel-contexto";
-import type { LucideIcon } from "lucide-react";
 
 /* Colores de franja (familia AGP). Texto con contraste AA sobre cada fondo. */
 const TONO: Record<TonoFranja, { bg: string; fg: string }> = {
@@ -635,7 +631,7 @@ function Algoritmos() {
                 <img
                   src={FOTO_SISTEMA[id]}
                   alt=""
-                  className="h-11 w-11 shrink-0 rounded-lg bg-white object-cover"
+                  className="foto-sistema h-11 w-11 shrink-0 rounded-md bg-white object-cover"
                 />
                 <div className="min-w-0">
                   <Sub
@@ -1212,26 +1208,25 @@ function InterrupcionLinea() {
   );
   /* 0.72.0: cada caso, una tarjeta con su tiempo arriba en grande y el tono de su riesgo; los
      detalles del apartado, dentro del caso al que se refieren (fragmentos literales). */
+  /* Cada caso: cabecera con el color de su riesgo y cuerpo; en la rejilla, las cabeceras de
+     la fila quedan a la misma altura (subrejilla). */
   const Tramo = ({
     cuando,
     tono,
-    icono: Icono,
     children,
   }: {
     cuando: string;
     tono: { soft: string; strong: string; ink: string };
-    icono: LucideIcon;
     children: ReactNode;
   }) => (
     <li
-      className="flex min-w-0 flex-col overflow-hidden rounded-xl border bg-white"
-      style={{ borderColor: "var(--linea)", borderTop: `4px solid ${tono.strong}` }}
+      className="tarjeta grid min-w-0 grid-rows-[auto_1fr] overflow-hidden md:row-span-2 md:grid-rows-subgrid"
+      style={{ borderTop: `4px solid ${tono.strong}` }}
     >
       <span
-        className="flex items-start gap-2 px-3 py-2 text-[15px] font-extrabold leading-snug"
+        className="flex items-start px-3 py-2 text-[15px] font-bold leading-snug"
         style={{ background: tono.soft, color: tono.ink }}
       >
-        <Icono size={17} aria-hidden="true" className="mt-0.5 shrink-0" />
         {cuando}
       </span>
       <span className="space-y-1.5 px-3 py-2.5 text-sm leading-snug text-slate-800">
@@ -1240,11 +1235,8 @@ function InterrupcionLinea() {
     </li>
   );
   const Anexo = ({ titulo, texto }: { titulo: string; texto: string }) => (
-    <span
-      className="mt-1 block rounded-lg px-2.5 py-2 text-[13px] leading-snug"
-      style={{ background: "#f1f5f9" }}
-    >
-      <span className="block rotulo text-slate-600">{titulo}</span>
+    <span className="casilla mt-1 block px-2.5 py-2 text-[13px] leading-snug">
+      <span className="rotulo block">{titulo}</span>
       <TS>{texto}</TS>
     </span>
   );
@@ -1273,27 +1265,23 @@ function InterrupcionLinea() {
         </a>
       )}
       {/* 0.72.0: el formato, antes de los casos (qué se puede desconectar y qué no). */}
-      <section className="grid gap-2 md:grid-cols-2">
+      <section className="grid items-start gap-3 md:grid-cols-2">
         <Sub className="sr-only">Según el formato</Sub>
         <p className="tarjeta p-3 text-sm leading-snug text-slate-800">
-          <span className="mb-0.5 flex items-center gap-1.5 font-bold text-slate-900">
-            <Package size={15} aria-hidden="true" className="text-slate-500" /> Pod
-          </span>
+          <span className="rotulo mb-1 block">Pod</span>
           <TS>{L.formatos.pod}</TS>
         </p>
         <p className="tarjeta p-3 text-sm leading-snug text-slate-800">
-          <span className="mb-0.5 flex items-center gap-1.5 font-bold text-slate-900">
-            <Cable size={15} aria-hidden="true" className="text-slate-500" /> Bomba con catéter
-          </span>
+          <span className="rotulo mb-1 block">Bomba con catéter</span>
           <TS>{`${L.formatos.bomba}. ${L.formatos.pausa}`}</TS>
         </p>
       </section>
       {/* Dos caminos que no son una sola línea de tiempo: lo programado se decide antes de
           desconectar; lo no programado se actúa a partir de aproximadamente 1 h sin insulina. */}
       <section>
-        <Sub className="mb-1.5 text-sm font-extrabold text-slate-900">Si no estaba programada</Sub>
-        <ol className="grid gap-2 md:grid-cols-3">
-          <Tramo cuando={L.tramos[0].cuando} tono={TRAMO_HEX.verde} icono={Timer}>
+        <Sub className="titulo-tarjeta mb-1.5">Si no estaba programada</Sub>
+        <ol className="grid gap-3 md:grid-cols-3">
+          <Tramo cuando={L.tramos[0].cuando} tono={TRAMO_HEX.verde}>
             <span className="block">
               <TS>{L.tramos[0].texto + "."}</TS>
             </span>
@@ -1301,12 +1289,12 @@ function InterrupcionLinea() {
               <TS>{L.tramos[0].condicion ?? ""}</TS>
             </span>
           </Tramo>
-          <Tramo cuando={L.tramos[1].cuando} tono={TRAMO_HEX.amarillo} icono={Timer}>
+          <Tramo cuando={L.tramos[1].cuando} tono={TRAMO_HEX.amarillo}>
             <span className="block">
               <TS>{L.tramos[1].texto + "."}</TS>
             </span>
           </Tramo>
-          <Tramo cuando={L.tramos[2].cuando} tono={TRAMO_HEX.rojo} icono={Syringe}>
+          <Tramo cuando={L.tramos[2].cuando} tono={TRAMO_HEX.rojo}>
             <span className="block">
               <TS>{L.tramos[2].texto}</TS>
             </span>
@@ -1315,12 +1303,12 @@ function InterrupcionLinea() {
         </ol>
       </section>
       <section>
-        <Sub className="mb-1.5 text-sm font-extrabold text-slate-900">
+        <Sub className="titulo-tarjeta mb-1.5">
           Si está programada: se decide antes de desconectar
         </Sub>
-        <ul className="grid gap-2 md:grid-cols-2">
+        <ul className="grid gap-3 md:grid-cols-2">
           {L.programadas.map((x, k) => (
-            <Tramo key={x.cuando} cuando={x.cuando} tono={PROGRAMADA} icono={CalendarClock}>
+            <Tramo key={x.cuando} cuando={x.cuando} tono={PROGRAMADA}>
               <span className="block">
                 <TS>{x.texto}</TS>
               </span>

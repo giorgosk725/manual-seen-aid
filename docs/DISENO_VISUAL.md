@@ -85,3 +85,33 @@ Las superficies, bordes y rótulos leen variables (`--papel`, `--superficie`, `-
 `--tinta-*`), redefinidas en `html.night`; los colores de sistema y los clínicos no cambian.
 Toda clase nueva lleva su valor nocturno en la propia variable, no en una regla aparte. En papel
 las tarjetas se imprimen con borde y sin sombra; la pleca de sistema se imprime (color exacto).
+
+## 8. Segunda vuelta (auditoría 8,1 → objetivo ≥ 9)
+
+- **Rejillas**: `items-start` siempre (ninguna tarjeta se estira hasta la más alta de su fila);
+  en Interrupción, los casos de una fila comparten subrejilla (`md:grid-rows-subgrid`) para
+  que las cabeceras de color queden a la misma altura.
+- **Un solo h1**: `CabeceraEditorial` (Oswald, mayúsculas, 20–24 px). La ficha de un sistema lo
+  lleva en el color del sistema con la foto a 64 px. La única excepción documentada es la
+  portada: el título del capítulo tal cual, en negrita, como en el Manual.
+- **Un solo selector de sistema**: `CasillasSistema` (casilla + punto de color) en Sistemas,
+  Tablas, Iniciación (fases y cálculo), Situaciones y bloques por sistema. Las fotos quedan
+  para enlaces de navegación (portada, planes del paciente, comparación), no para seleccionar.
+- **Pestañas** (`.pestana`, subrayado burdeos) en la ficha, en Sistemas, en Iniciación
+  («Cálculo · Fases · Hoja») y en Tablas («Tabla N · tema»). En el móvil, una fila con
+  desvanecido a la derecha (`data-mas`) y la activa a la vista.
+- **Iconos**: ninguno por fila ni en cabeceras de tarjeta (índice del capítulo: número gris y
+  punto de 8 px del color del área; diagramas y preguntas: `.filas`; Interrupción: rótulos).
+- **Letra mínima 12 px** también en el rótulo del móvil («Manual SEEN · Complemento
+  interactivo» en una línea), la barra lateral, el deslizador de la calculadora, la Figura 3 y
+  los ejes de los diagramas.
+- **Sin cabecera fija en el ordenador**: el modo nocturno (y el tamaño de letra en la lectura)
+  van al pie de la barra lateral, siempre a la vista. En el móvil, la ficha deja un cromo fijo
+  de ≈ 102 px (cabecera + pestañas); «Otro sistema o comparación» es un enlace de la cabecera.
+- **Fuentes**: una línea `Fuente:` al pie de cada sección, también cuando la sección tiene los
+  bloques añadidos de `porSistema.ts` (una sola línea para todo).
+- **Nocturno**: tintes por sistema con `color-mix` del color fuerte sobre la superficie; fotos
+  de sistema con `.foto-sistema` (brillo 0,85).
+- **Papel**: la ficha imprime todas sus secciones (`hidden print:block`); la Tabla 1 cabe en A4
+  vertical (`table-layout: fixed`); los controles de Iniciación no se imprimen; sin chevrones.
+- **Hover**: sin sombra; el borde se oscurece (`.hover-lift`).

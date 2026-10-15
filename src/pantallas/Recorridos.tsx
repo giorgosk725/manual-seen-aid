@@ -384,7 +384,7 @@ function ParaSeguir({ filas }: { filas: { href: string; t: string; color?: strin
   if (!filas.length) return null;
   return (
     <section aria-label="Véase también" className="tarjeta overflow-hidden">
-      <h2 className="rotulo px-3 pb-1 pt-2.5" style={{ color: hex.ink }}>
+      <h2 className="titulo-tarjeta px-3 pb-1.5 pt-3" style={{ color: hex.ink }}>
         Véase también
       </h2>
       <ul className="filas">
@@ -479,7 +479,7 @@ function ListaSituaciones({
         if (!sits.length && !extras.length) return null;
         return (
           <section key={tema.t} aria-label={tema.t} className="tarjeta overflow-hidden">
-            <h2 className="rotulo px-3 pb-1 pt-2.5" style={{ color: hex.ink }}>
+            <h2 className="titulo-tarjeta px-3 pb-1.5 pt-3" style={{ color: hex.ink }}>
               {tema.t}
             </h2>
             <ul className="filas" role="list">
@@ -570,7 +570,7 @@ export function SituacionSistema({
             placeholder="Filtrar: resonancia, ejercicio, sueño…"
             value={filtro}
             onChange={(e) => setFiltro(e.target.value)}
-            className={`mb-3 min-h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10 ${!sit && !guia ? "lg:max-w-md" : ""}`}
+            className="mb-3 min-h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10"
           />
           <ListaSituaciones
             sit={sit}
@@ -706,7 +706,7 @@ export function SituacionSistema({
                   </div>
                 )}
                 {porSistema && (
-                  <div className={sisIdx >= 0 ? "" : "grid gap-3 sm:grid-cols-2"}>
+                  <div className={sisIdx >= 0 ? "" : "grid items-start gap-3 sm:grid-cols-2"}>
                     {tabla.columnas.map((nombre, c) =>
                       sisIdx >= 0 && c !== sisIdx ? null : (
                         <div
@@ -718,7 +718,7 @@ export function SituacionSistema({
                             <img
                               src={FOTO_SISTEMA[ORDEN_SISTEMAS[c]]}
                               alt=""
-                              className="h-7 w-7 shrink-0 rounded-md bg-white object-cover"
+                              className="foto-sistema h-7 w-7 shrink-0 rounded-md bg-white object-cover"
                             />
                             <span className="titulo-tarjeta" style={{ color: SISTEMA_HEX[c].ink }}>
                               {CATALOGO_SISTEMAS[c]?.name ?? nombre}
@@ -753,7 +753,7 @@ export function SituacionSistema({
                 )}
                 {!porSistema && !fila.unida && (
                   <>
-                    <dl className="ultima-ancha grid gap-3 sm:grid-cols-2">
+                    <dl className="ultima-ancha grid items-start gap-3 sm:grid-cols-2">
                       {tabla.columnas.map((nombre, c) => {
                         return (
                           <div key={c} className="tarjeta p-3">
@@ -943,7 +943,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
       <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-4">
         <nav
           aria-label="Pasos de la descarga"
-          className="no-imprimir hidden lg:sticky lg:top-20 lg:block"
+          className="no-imprimir hidden lg:sticky lg:top-6 lg:block"
         >
           <ol className="space-y-1">
             {t.filas.map((f, i) => {
