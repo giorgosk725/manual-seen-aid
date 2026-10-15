@@ -783,7 +783,7 @@ export function Preguntas({ id }: { id?: string }) {
         {estado === "error" && (
           <p className="flex flex-wrap items-center gap-2 text-sm text-slate-700">
             No se han podido cargar los pasajes.
-            <button type="button" onClick={reintentar} className="chip min-h-9 text-xs sm:min-h-8">
+            <button type="button" onClick={reintentar} className="chip text-xs">
               Reintentar
             </button>
           </p>

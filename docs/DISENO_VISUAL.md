@@ -1,4 +1,4 @@
-# Sistema visual (0.76.0, 15-10-2026)
+# Sistema visual (rama diseno-visual, 15-10-2026)
 
 Reglas del rediseño visual de la rama `diseno-visual`. Objetivo: un solo lenguaje en todas las
 pantallas de consulta, con la identidad del Manual SEEN (`src/tokens.ts`), calmado y legible en

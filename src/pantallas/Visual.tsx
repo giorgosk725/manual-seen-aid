@@ -149,7 +149,7 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                     {ap && (
                       <a
                         href={rutaDeFigura(fig.id) ?? href("capitulo", ap.slug)}
-                        className="chip min-h-9 text-xs sm:min-h-8"
+                        className="chip text-xs"
                       >
                         Apartado {ap.n}, p. {fig.pagina}
                       </a>
@@ -157,7 +157,7 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                     {extra && (
                       <a
                         href={extra.href}
-                        className="chip min-h-9 border-transparent text-xs text-white sm:min-h-8"
+                        className="chip border-transparent text-xs text-white"
                         style={{ background: hex.strong }}
                       >
                         {extra.texto}

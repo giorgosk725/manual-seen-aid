@@ -451,7 +451,7 @@ function ColumnaTabla({
   const notas = t.notas.filter((n) => (esAsterisco(n) ? hayAsterisco : !esSiglas(n)));
   const siglas = t.notas.filter(esSiglas);
   return (
-    // 0.72.0: sin la caja de fuera (tarjetas dentro de una tarjeta). 0.76.0: una tarjeta por
+    // 0.72.0: sin la caja de fuera (tarjetas dentro de una tarjeta). sistema visual: una tarjeta por
     // fila con la pleca del sistema; la que cuenta en automático, con el borde del sistema.
     <div>
       <dl className="ultima-ancha grid gap-3 sm:grid-cols-2">
@@ -639,7 +639,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             </div>
           </div>
         </div>
-        {/* 0.76.0: los tres accesos como enlaces de texto en una fila (en el móvil eran tres
+        {/* Sistema visual: los tres accesos como enlaces de texto en una fila (en el móvil eran tres
             botones apilados antes del contenido). */}
         <div className="no-imprimir col-span-2 mt-1 flex flex-wrap gap-x-4 gap-y-0 sm:col-span-1 sm:col-start-2 sm:mt-0">
           <a

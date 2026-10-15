@@ -207,7 +207,7 @@ export function Infografia() {
                     <a
                       key={d.slug + (d.detalle || "")}
                       href={href("capitulo", d.slug, d.detalle)}
-                      className="chip min-h-9 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-8"
+                      className="chip text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                       style={{ borderColor: `${hex.strong}40`, color: hex.ink }}
                     >
                       {d.etiqueta} <ArrowRight size={12} aria-hidden="true" />
@@ -216,7 +216,7 @@ export function Infografia() {
                   {esPlan && (
                     <a
                       href={href("consultar", "figura-3")}
-                      className="chip min-h-9 border-transparent text-xs text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-8"
+                      className="chip border-transparent text-xs text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                       style={{ background: hex.strong }}
                     >
                       Figura 3 paso a paso <ArrowRight size={12} aria-hidden="true" />

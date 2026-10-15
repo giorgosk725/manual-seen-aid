@@ -3,7 +3,7 @@
    cuatro sistemas (ficha, parámetros, iniciación y sus preguntas); después iniciación y
    seguimiento, la lectura del capítulo y el material para el paciente; al final, las situaciones
    clínicas (hiperglucemia, hipoglucemia e interrupción, con su color, entre ellas). Sin
-   entradillas: cada tarjeta, su título y sus accesos. 0.76.0 (sistema visual): una sola anatomía
+   entradillas: cada tarjeta, su título y sus accesos. sistema visual (docs/DISENO_VISUAL.md): una sola anatomía
    de tarjeta, filas sin icono ni flecha, un icono por bloque en el color del área. */
 import { BookOpen, HeartHandshake, LifeBuoy, PlayCircle, SlidersHorizontal } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
