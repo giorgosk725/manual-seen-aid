@@ -437,7 +437,7 @@ export function CalculadoraInicio({
           <button
             type="button"
             onClick={() => resultados.current?.scrollIntoView({ block: "start" })}
-            className="no-imprimir fixed inset-x-3 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-20 flex min-h-11 items-center gap-2 rounded-xl px-3 py-2 text-left text-xs font-bold tabular-nums text-white shadow-xl lg:bottom-4 lg:left-[17rem] xl:hidden"
+            className="resumen-calc no-imprimir fixed inset-x-3 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-20 flex min-h-11 items-center gap-2 rounded-xl px-3 py-2 text-left text-xs font-bold tabular-nums text-white shadow-xl lg:bottom-4 lg:left-[17rem] xl:hidden"
             style={{ background: "#8E254E" }}
           >
             <span className="min-w-0 flex-1">{resumen.join(" · ")}</span>
@@ -1018,6 +1018,8 @@ export function CalculadoraInicio({
         </p>
       </div>
       <FuentePie fuentes={fuentes} />
+      {/* Sitio para la barra de cifras: la última línea no queda debajo de ella. */}
+      {resumen.length > 0 && <div aria-hidden="true" className="h-14 xl:hidden" />}
     </div>
   );
 }

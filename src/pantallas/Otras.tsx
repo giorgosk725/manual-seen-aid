@@ -656,7 +656,7 @@ function Pregunta({
             </div>
             <a
               href={href("capitulo", p.apartado, p.ancla)}
-              className="inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
             >
               Leer en el apartado {ap?.n}: {ap?.titulo} (p. {p.pagina}){" "}
               <ArrowRight size={14} aria-hidden="true" />

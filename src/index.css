@@ -1022,6 +1022,14 @@ html.night [style*="rgb(230, 230, 230) rgb(230, 230, 230)"] {
   border-bottom-color: #334155 !important;
   border-left-color: #334155 !important;
 }
+/* La raya de la línea de tiempo de los momentos (Situaciones), de noche. */
+html.night [style*="background: rgb(230, 223, 227)"] {
+  background: #334155 !important;
+}
+/* Con la barra de cifras de la calculadora abajo, lo enfocado no queda debajo de ella. */
+html:has(.resumen-calc) {
+  scroll-padding-bottom: calc(8.5rem + env(safe-area-inset-bottom));
+}
 /* Separación blanca entre casillas tintadas de la comparación; de noche, el color del fondo. */
 html.night [style*="rgb(255, 255, 255) 0px 0px 0px 2px inset"] {
   box-shadow: inset 0 0 0 2px #0f172a !important;

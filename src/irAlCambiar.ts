@@ -64,7 +64,12 @@ export function useSubirAlElegir(clave: string, id: string) {
     if (!el) return;
     const arriba = el.getBoundingClientRect().top;
     // Arriba de la vista, o tan abajo que apenas se ve el principio: se sube a él.
-    if (arriba < 56 || arriba > window.innerHeight * 0.7) el.scrollIntoView({ block: "start" });
+    if (arriba < 56 || arriba > window.innerHeight * 0.7) {
+      el.scrollIntoView({ block: "start" });
+      // Si eso deja la página casi arriba del todo (el título partido bajo la cabecera), arriba
+      // del todo (0.72.0).
+      if (window.scrollY > 0 && window.scrollY < 120) window.scrollTo({ top: 0 });
+    }
     // El foco, al título de lo elegido (2.4.3): no se queda en el botón ni cae al principio, y
     // el lector lee el título en vez de todo el bloque (0.72.0).
     if (!clave) return;

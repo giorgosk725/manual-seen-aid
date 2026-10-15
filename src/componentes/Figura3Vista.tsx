@@ -356,6 +356,16 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
     return () => cancelAnimationFrame(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // Con la pantalla ya abierta, un enlace a otra rama (otra pestaña de la app, el buscador)
+  // también lleva a ella (0.72.0).
+  const ramaPrevia = useRef(valido);
+  useEffect(() => {
+    if (ramaPrevia.current === valido) return;
+    ramaPrevia.current = valido;
+    if (!valido) return;
+    const id = requestAnimationFrame(irARama);
+    return () => cancelAnimationFrame(id);
+  }, [valido]);
   /* Atajo: con la cetonemia ya medida, ir directo a su rama. */
   const irATramo = (t: Tramo) => {
     elegir(t);

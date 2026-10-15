@@ -5,7 +5,7 @@
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
 import { ponerConsulta } from "../consultaBuscar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Activity,
   AlertTriangle,
@@ -1125,6 +1125,16 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
   const patrones = parrafosConLead(PATRON_DEL_PASO[n] || []);
   const ir = (k: number) => elegirRuta("consultar", "descarga", String(k));
   const alPaso = useIrAlCambiar(String(n), "paso-descarga");
+  // El paso actual, a la vista en la fila de botones (a 360 px, el 8 quedaba fuera; 0.72.0).
+  const filaPasos = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const fila = filaPasos.current?.querySelector("ol");
+    const b = fila?.querySelector<HTMLElement>('[aria-current="step"]');
+    if (!fila || !b) return;
+    const izq = b.offsetLeft - fila.offsetLeft;
+    if (izq < fila.scrollLeft || izq + b.offsetWidth > fila.scrollLeft + fila.clientWidth)
+      fila.scrollLeft = izq - (fila.clientWidth - b.offsetWidth) / 2;
+  }, [n]);
   // En el ordenador, los patrones del paso abiertos (hay sitio).
   const [ancha] = useState(() => window.matchMedia?.("(min-width: 1024px)").matches ?? false);
   return (
@@ -1132,7 +1142,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
       <CabeceraEditorial titulo="Revisar la descarga" hex={hex} level={1} />
       {/* 0.72.0: los ocho pasos a la vista. Hasta el ordenador ancho, ocho botones numerados
           con el avance; en él, la lista con sus títulos a la izquierda. */}
-      <nav aria-label="Pasos de la descarga" className="no-imprimir mb-3 lg:hidden">
+      <nav ref={filaPasos} aria-label="Pasos de la descarga" className="no-imprimir mb-3 lg:hidden">
         <div className="mb-1.5 text-sm font-semibold text-slate-900">
           Paso {n} de {t.filas.length}
         </div>
@@ -1281,7 +1291,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           {n === 8 && (
             <a
               href={href("consultar", "figura-3")}
-              className="mt-4 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-white"
+              className="mt-4 inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-white"
               style={{ background: hex.strong }}
             >
               Aplicar la Figura 3 paso a paso <ArrowRight size={14} aria-hidden="true" />
