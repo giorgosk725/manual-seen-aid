@@ -66,6 +66,7 @@ import {
 import { FRECUENTES, type Frecuente } from "./frecuentes";
 import { HOJAS_EXTRA } from "./hojas";
 import { CON_AMPLIACION, CON_CASOS, retirado } from "./edicion";
+import { diagramaEnEdicion } from "./diagramasRetirados";
 
 const sinMarcado = (s: string) => plano(s);
 
@@ -169,14 +170,15 @@ export function indice(): Entrada[] {
     pagina: FIGURA3.pagina,
     ruta: href("consultar", "figura-3"),
   });
-  for (const d of DIAGRAMAS) {
+  // Solo los de esta edición (0.72.2: los retirados se indexaban y llevaban a la galería).
+  for (const d of DIAGRAMAS.filter((x) => diagramaEnEdicion(x.id))) {
     out.push({
       id: `diagrama/${d.id}`,
       tipo: "diagrama",
       titulo: `Diagrama: ${d.titulo}`,
       texto: `${d.titulo}. ${d.resumen}`,
       pagina: d.paginas[0],
-      ruta: href("visual", d.id),
+      ruta: d.id === "interrupcion" ? href("consultar", "interrupcion") : href("visual", d.id),
     });
   }
   for (const r of BIBLIOGRAFIA) {

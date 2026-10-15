@@ -119,7 +119,9 @@ test.describe("Sistemas (M61-01/02/03)", () => {
     );
     await page.goto("/#/sistemas");
     await expect(page.getByText(/no actúa en modo Sueño/).first()).toBeVisible();
-    await page.goto("/#/sistemas/camaps/funciona");
+    // 0.72.2: la nota de Liberty, plegada junto a la casilla de indicación de la Tabla 1.
+    await page.goto("/#/sistemas/camaps/esencial");
+    await page.locator("summary", { hasText: "Nota complementaria" }).first().click();
     await expect(
       page.getByText(/Nota complementaria \(no es texto del capítulo\)/).first(),
     ).toBeVisible();

@@ -543,6 +543,19 @@ function ColumnaTabla({
                 {/* La insignia, dentro del dd: en un <dl> solo caben dt y dd. */}
                 {insignia?.(j) && <span className="-mt-0.5 mb-1 block">{insignia(j)}</span>}
                 <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
+                {/* 0.72.2: la nota complementaria de esa casilla (edad de Liberty), plegada
+                    junto a ella. La de Omnipod 5 va en «Cómo funciona». */}
+                {t.id === "T1" &&
+                  j === 7 &&
+                  COLUMNA_DE_NOTA[`T1/${j}`] === c &&
+                  NOTAS_POR_PASAJE[`T1/${j}`] && (
+                    <details className="mt-1.5 text-xs text-slate-600">
+                      <summary className="min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-6">
+                        Nota complementaria
+                      </summary>
+                      <p className="mt-1">{NOTAS_POR_PASAJE[`T1/${j}`]}</p>
+                    </details>
+                  )}
               </dd>
             </div>
           );

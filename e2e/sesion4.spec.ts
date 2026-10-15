@@ -98,7 +98,7 @@ test.describe("Nocturno en lo nuevo", () => {
       ["/#/pacientes/plan/op5", "Plan de seguridad"],
       ["/#/test", "Autoevaluación"],
       ["/#/visual/gestacion-sistemas", "Gestación por sistema"],
-      ["/#/visual/hospital", "Hospital"],
+      ["/#/visual/objetivos-mcg", "Objetivos de MCG"],
       ["/#/visual/interrupcion", "Interrupción"],
     ] as const) {
       await page.goto(ruta);

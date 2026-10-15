@@ -12,6 +12,10 @@ export const CON_REPASO: boolean = false;
 export const CON_AMPLIACION: boolean = false;
 /* La pantalla administrativa de consultas sin respuesta (V54-12), fuera del build público. */
 export const CON_CONSULTAS_ADMIN: boolean = false;
+/* «Cómo interpretar este hallazgo» (aprobado el 11-10): texto de la app que vuelve a explicar las
+   tablas. Fuera de esta edición (0.72.2, revisión editorial, por delegación del responsable); sus
+   datos se conservan en src/interpretaciones. */
+export const CON_INTERPRETACIONES: boolean = false;
 export const RETIRADOS = new Set<string>([
   ...(CON_CASOS ? [] : ["casos"]),
   ...(CON_REPASO ? [] : ["repaso"]),

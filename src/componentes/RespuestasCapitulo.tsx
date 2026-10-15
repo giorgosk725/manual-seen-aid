@@ -11,6 +11,7 @@ import type { RespuestaFrecuente } from "../respuestas";
 import type { Frecuente } from "../frecuentes";
 import { FIGURA3, LISTA_TABLAS, type TablaId } from "../contenido";
 import { ComoInterpretar } from "./ComoInterpretar";
+import { CON_INTERPRETACIONES } from "../edicion";
 import { ESCALA_CETONEMIA } from "../contenido/diagramas";
 import { href } from "../rutas";
 import { Texto } from "../texto";
@@ -684,7 +685,7 @@ export function RespuestasCapitulo({
           sistemaConsulta={sistema}
         />
         {/* La explicación aprobada de esa tabla y una continuación, junto al dato. */}
-        {!compacta && tablaDe(r.id) && (
+        {CON_INTERPRETACIONES && !compacta && tablaDe(r.id) && (
           <ComoInterpretar tabla={tablaDe(r.id)!} fila={filaDe(r.id)} />
         )}
         {!compacta && continuacion && (

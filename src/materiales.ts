@@ -101,7 +101,8 @@ export const MATERIALES: Material[] = [
   {
     id: "como-interpretar",
     estado: "aprobado",
-    nombre: "«Cómo leer esta tabla» y «Cómo interpretar este hallazgo»",
+    nombre:
+      "«Cómo leer esta tabla» y «Cómo interpretar este hallazgo» (fuera de esta edición desde la 0.72.2)",
     tipo: "explicacion",
     fecha: "2026-10-11",
     version: "0.37.0",

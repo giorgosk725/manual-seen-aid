@@ -35,17 +35,13 @@ const AXE = {
 };
 
 describe("App", () => {
-  it("la portada: título del capítulo tal cual, qué es esta versión y el autor, sin la Sociedad", () => {
+  it("la portada: título del capítulo tal cual y el autor, sin subtítulo ni la Sociedad", () => {
     render(<App />);
-    // El título del capítulo tal cual y, debajo, qué es esta versión (13-10-2026).
+    // El título del capítulo tal cual (0.72.2: sin subtítulo; la cabecera ya dice qué es).
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       /Tratamiento insulínico del paciente con diabetes mellitus tipo 1: automatización de la insulinoterapia/i,
     );
-    expect(
-      screen.getByText(
-        "Complemento interactivo del capítulo. Facilita su lectura, comprensión y consulta.",
-      ),
-    ).toBeInTheDocument();
+    expect(screen.queryByText(/Facilita su lectura, comprensión y consulta/)).toBeNull();
     expect(screen.queryByText(/evaluación editorial/)).toBeNull();
     // Sin las dos puertas (decisión del 13-10-2026).
     expect(screen.queryByRole("navigation", { name: "Dos formas de uso" })).toBeNull();
@@ -215,18 +211,25 @@ describe("App", () => {
     );
   });
 
-  it("Figuras y diagramas, en una pantalla, sin tablas ni sistemas ni los tres retirados", async () => {
+  it("Figuras y diagramas, en una pantalla, sin tablas ni sistemas ni los retirados", async () => {
     render(<App />);
     await ir("#/visual");
     expect(
       screen.getByRole("heading", { level: 1, name: "Figuras y diagramas" }),
     ).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: /^Ampliar/ }).length).toBe(4);
-    expect(screen.getByRole("link", { name: /Escala de cetonemia/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Glucemia y ejercicio/ })).toHaveAttribute(
       "href",
-      "#/visual/cetonemia",
+      "#/visual/ejercicio",
     );
-    for (const fuera of [/Elección compartida/, /Transición desde MDI/, /Exploraciones/])
+    for (const fuera of [
+      /Elección compartida/,
+      /Transición desde MDI/,
+      /Exploraciones/,
+      /Escala de cetonemia/,
+      /Algoritmos de control/,
+      /criterios para no continuar/,
+    ])
       expect(screen.queryByRole("link", { name: fuera })).toBeNull();
     expect(screen.queryByRole("region", { name: "Tablas" })).toBeNull();
     expect(screen.queryByRole("region", { name: "Sistemas" })).toBeNull();

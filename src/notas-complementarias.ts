@@ -9,11 +9,12 @@ export const NOTA_EDAD_LIBERTY =
 export const NOTA_ADAPTA_OMNIPOD =
   "Corrección posterior a la publicación (14-10-2026): el capítulo publicado dice «Posee autoaprendizaje por pod». Lo que hace SmartAdjust es adaptar la basal con cada cambio de pod a partir de la insulina total administrada (Brown SA et al. Diabetes Care 2021;44(7):1630-40): una adaptación de ese parámetro, no un aprendizaje en sentido estricto.";
 
-/* Pasajes donde se enseña: la fila de indicación de la Tabla 1 y la frase del apartado 3
-   (Liberty); la fila «Lógica del algoritmo y aprendizaje» (Omnipod 5). */
+/* Pasajes donde se enseña: la fila de indicación de la Tabla 1 (Liberty) y la fila «Lógica del
+   algoritmo y aprendizaje» (Omnipod 5). 0.72.2 (revisión editorial): la de Liberty, solo junto a
+   la casilla de la Tabla 1; ni en la frase del apartado 3 ni en la lectura, que enseña solo el
+   capítulo publicado. */
 export const NOTAS_POR_PASAJE: Record<string, string> = {
   "T1/7": NOTA_EDAD_LIBERTY,
-  "t/03-algoritmos/b3/2": NOTA_EDAD_LIBERTY,
   "T1/3": NOTA_ADAPTA_OMNIPOD,
 };
 
@@ -26,7 +27,5 @@ export const NOTAS_POR_TABLA: Record<string, string[]> = {
   T1: [NOTA_EDAD_LIBERTY, NOTA_ADAPTA_OMNIPOD],
 };
 
-/* En la lectura, junto al párrafo del apartado 3 que dice «menores de 13 años». */
-export const NOTAS_POR_BLOQUE: Record<string, string> = {
-  "03-algoritmos/b3": NOTA_EDAD_LIBERTY,
-};
+/* En la lectura, junto a un párrafo (ninguna desde 0.72.2). */
+export const NOTAS_POR_BLOQUE: Record<string, string> = {};

@@ -105,3 +105,14 @@ aprobado o una decisión suya):
    la infusión…») sin las que la cantidad no vale.
 8. **Cómo funciona de cada sistema**: el fragmento con puntos suspensivos del apartado 4 bajo la
    cabecera hace de entradilla (pendiente de revisión en `materiales.ts`).
+
+### Resuelto el 15-10-2026 (delegación del responsable: «haz todo lo que consideres para mejorar a esa dirección»)
+
+- 1: diagramas de algoritmos, escala de cetonemia y hospital retirados (`src/diagramasRetirados.ts`).
+- 2: nota de Liberty solo junto a la casilla de indicación de la Tabla 1, plegada.
+- 3: «Cómo interpretar este hallazgo» fuera de esta edición (`CON_INTERPRETACIONES` en `src/edicion.ts`).
+- 4: f05, f10, f59, f79 y f80 con título de manual; el anterior, como variante; revisión registrada.
+- 5: portada sin subtítulo y rehecha como panel de consulta.
+- 6: la barra de la bandera roja no se repite en el paso 8 (se mantiene en los demás, A09).
+- 7: hipoglucemia sin cambios (la frase trae las condiciones de la cantidad).
+- 8: sigue pendiente (fragmento de «Cómo funciona» de cada sistema, `materiales.ts`).

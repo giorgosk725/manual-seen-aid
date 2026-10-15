@@ -70,8 +70,9 @@ export const TODAS: Frecuente[] = [
   {
     id: "f05",
     tema: "Sistemas y parámetros",
-    pregunta: "¿Qué sistemas AID hay en España?",
+    pregunta: "¿Qué sistemas AID están comercializados en España?",
     variantes: [
+      "qué sistemas AID hay en España",
       "sistemas comercializados en España",
       "qué bombas de asa cerrada hay",
       "qué sistemas automáticos existen",
@@ -125,8 +126,9 @@ export const TODAS: Frecuente[] = [
   {
     id: "f10",
     tema: "Sistemas y parámetros",
-    pregunta: "¿Por qué hay que seguir anunciando las comidas en un sistema híbrido?",
+    pregunta: "¿Por qué los sistemas híbridos requieren anunciar las comidas?",
     variantes: [
+      "por qué hay que seguir anunciando las comidas en un sistema híbrido",
       "hace falta el bolo de la comida en asa cerrada",
       "por qué el sistema no lo hace todo solo",
       "anuncio de comidas en sistemas híbridos",
@@ -653,8 +655,13 @@ export const TODAS: Frecuente[] = [
   {
     id: "f59",
     tema: "Incidencias y cetonemia",
-    pregunta: "Demasiadas alarmas: ¿qué hacer con la fatiga por alarmas?",
-    variantes: ["fatiga por alarmas", "el paciente apaga las alarmas", "sobrecarga de alertas"],
+    pregunta: "¿Cómo se aborda la fatiga por alarmas?",
+    variantes: [
+      "fatiga por alarmas",
+      "demasiadas alarmas",
+      "el paciente apaga las alarmas",
+      "sobrecarga de alertas",
+    ],
     pasajes: ["t/09-descarga/b26/1"],
   },
   {
@@ -830,16 +837,24 @@ export const TODAS: Frecuente[] = [
   {
     id: "f79",
     tema: "MiniMed 780G",
-    pregunta: "MiniMed 780G: ¿qué ajustes mueven de verdad el modo automático?",
-    variantes: ["qué se puede tocar en la 780G", "insulina activa en la 780G"],
+    pregunta: "MiniMed 780G: ¿qué parámetros influyen en el modo automático?",
+    variantes: [
+      "qué ajustes mueven de verdad el modo automático de la 780G",
+      "qué se puede tocar en la 780G",
+      "insulina activa en la 780G",
+    ],
     pasajes: ["T1/10", "T3/4", "T3/1", "T3/3"],
     sistema: 0,
   },
   {
     id: "f80",
     tema: "MiniMed 780G",
-    pregunta: "MiniMed 780G: muchas autocorrecciones, ¿es buena señal?",
-    variantes: ["la 780G pone muchos bolos automáticos", "autocorrecciones 780G"],
+    pregunta: "MiniMed 780G: ¿cómo se interpreta un número elevado de autocorrecciones?",
+    variantes: [
+      "muchas autocorrecciones en la 780G, es buena señal",
+      "la 780G pone muchos bolos automáticos",
+      "autocorrecciones 780G",
+    ],
     pasajes: ["T1/5", "t/09-descarga/b11/0", "t/09-descarga/b11/1"],
     sistema: 0,
   },

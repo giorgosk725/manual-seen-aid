@@ -1,5 +1,6 @@
-/* Portada: el título del capítulo tal cual, en negrita, y debajo qué es esta versión;
-   el mapa de consulta (componentes/MapaConsulta),
+/* Portada: el título del capítulo tal cual, en negrita, con la firma (0.72.2: sin subtítulo, la
+   cabecera compacta para que la consulta empiece en la primera pantalla); el mapa de consulta
+   (componentes/MapaConsulta),
    «Leer y comprender» con la misma forma (14-10-2026) y el capítulo publicado
    (decisiones del autor del 13-10-2026: sin las dos puertas). El buscador vive en la barra lateral
    (escritorio) y en la barra de abajo (móvil): la portada no lo repite. */
@@ -97,14 +98,14 @@ function LeerYComprender() {
 
 export function Portada() {
   return (
-    <div className="space-y-4 sm:space-y-7">
+    <div className="space-y-3 sm:space-y-5">
       <section
         className="cabecera-manual relative overflow-hidden rounded-[4px] border bg-white"
         style={{ borderColor: "#e6e6e6" }}
         aria-labelledby="titulo-capitulo"
       >
         <Franja />
-        <div className="px-4 py-3 sm:px-8 sm:py-7 lg:px-10">
+        <div className="px-4 py-3 sm:px-6 sm:py-4 lg:px-7">
           <div className="min-w-0">
             <div
               className="etiqueta-area flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] sm:text-xs"
@@ -121,15 +122,12 @@ export function Portada() {
             </div>
             <h1
               id="titulo-capitulo"
-              className="titulo-manual titulo-portada mt-1.5 text-balance text-[1.05rem] leading-[1.15] sm:mt-3 sm:text-[2rem] md:text-[1.55rem] lg:text-[1.95rem] xl:text-[2.3rem]"
+              className="titulo-manual titulo-portada mt-1.5 text-balance text-[1.05rem] leading-[1.15] sm:mt-2 sm:text-[1.35rem] lg:text-[1.5rem] xl:text-[1.7rem]"
             >
               {CAPITULO.titulo}
             </h1>
-            <p className="mt-1.5 text-[13px] font-semibold leading-snug text-slate-800 sm:mt-2 sm:text-base">
-              Complemento interactivo del capítulo. Facilita su lectura, comprensión y consulta.
-            </p>
             {/* Firma como en el Manual: nombre y afiliación, en letra discreta. */}
-            <p className="mt-1.5 text-[13px] font-semibold leading-snug text-slate-700 sm:text-sm">
+            <p className="mt-1.5 text-[13px] font-semibold leading-snug text-slate-700 sm:mt-2 sm:text-sm">
               {CAPITULO.autor}
             </p>
             <p className="mt-0.5 text-xs leading-snug text-slate-500">{CAPITULO.filiacion}</p>

@@ -275,7 +275,8 @@ export const MAPA_CONSULTA: {
   {
     id: "situaciones",
     titulo: "Situaciones clínicas",
-    ids: ["figura-3", "hipoglucemia", "interrupcion", "situacion"],
+    // 0.72.2: las urgencias van arriba en la portada; aquí, el acceso a todas.
+    ids: ["situacion"],
     etiquetas: { situacion: "Todas las situaciones" },
   },
   { id: "en-consulta", titulo: "Iniciación y seguimiento", ids: ["inicio", "descarga"] },
