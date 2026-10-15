@@ -42,11 +42,7 @@ export function Autocompletar({
   const fila =
     "flex min-h-11 w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-slate-800 transition hover:bg-slate-50 focus:outline-none focus-visible:bg-slate-100";
   return (
-    <ul
-      className="mt-2 divide-y rounded-lg border bg-white"
-      style={{ borderColor: "#e6e6e6" }}
-      aria-label="Sugerencias"
-    >
+    <ul className="mt-2 divide-y tarjeta" aria-label="Sugerencias">
       {items.map((s) => {
         const I = ICONO[s.tipo];
         const dentro = (

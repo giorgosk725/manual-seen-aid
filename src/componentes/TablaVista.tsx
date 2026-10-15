@@ -57,10 +57,7 @@ export function CabeceraTabla({
   return (
     <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
       <div>
-        <div
-          className="text-xs font-bold uppercase tracking-wide"
-          style={{ color: BRAND_ACCENT.ink }}
-        >
+        <div className="rotulo" style={{ color: BRAND_ACCENT.ink }}>
           Tabla {tabla.numero}
         </div>
         <TituloBloque className="text-sm font-semibold text-slate-800">{tabla.titulo}</TituloBloque>
@@ -70,7 +67,7 @@ export function CabeceraTabla({
         {enlaceConsultar && (
           <Enlace
             href={href("consultar", "tablas", tabla.id)}
-            className="no-imprimir tap-44 inline-flex items-center gap-1 rounded-full border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            className="chip no-imprimir tap-44 min-h-9 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-8"
           >
             <ExternalLink size={12} aria-hidden="true" />
             {tabla.porSistema ? "Ver por sistema" : "Abrir la tabla"}
@@ -79,7 +76,7 @@ export function CabeceraTabla({
         {enlaceConsultar && HERRAMIENTA_DE_TABLA[tabla.id] && (
           <Enlace
             href={HERRAMIENTA_DE_TABLA[tabla.id].ruta}
-            className="no-imprimir inline-flex items-center gap-1 rounded-full border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            className="chip no-imprimir min-h-9 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-8"
           >
             <ExternalLink size={12} aria-hidden="true" />
             {HERRAMIENTA_DE_TABLA[tabla.id].texto}
@@ -132,8 +129,7 @@ function TablaHTML({
   return (
     <div
       ref={caja}
-      className={`tabla-scroll fade-right-scroll rounded-xl border focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${cabe ? "cabe" : ""}`}
-      style={{ borderColor: "#e6e6e6" }}
+      className={`tabla-scroll fade-right-scroll tarjeta focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${cabe ? "cabe" : ""}`}
       tabIndex={0}
       role="region"
       aria-label={`Tabla ${tabla.numero}, desplazable`}
@@ -144,17 +140,14 @@ function TablaHTML({
         </caption>
         <thead>
           <tr>
-            <th
-              scope="col"
-              className="px-3 py-2 text-left text-xs font-bold uppercase tracking-wide"
-            >
+            <th scope="col" className="rotulo px-3 py-2 text-left text-white">
               {tabla.cabeceraEtiqueta}
             </th>
             {columnas.map((c) => (
               <th
                 key={c}
                 scope="col"
-                className="px-3 py-2 text-left text-xs font-bold uppercase tracking-wide"
+                className="rotulo px-3 py-2 text-left text-white"
                 style={
                   tabla.porSistema
                     ? { boxShadow: `inset 0 -3px 0 0 ${SISTEMA_HEX[c].strong}` }
@@ -182,8 +175,8 @@ function TablaHTML({
             <tr key={i} className="align-top">
               <th
                 scope="row"
-                className="border-t px-3 py-2 text-left text-xs font-bold text-slate-800"
-                style={{ borderColor: "#e6e6e6", minWidth: "9rem" }}
+                className="separador border-t px-3 py-2 text-left text-xs font-bold text-slate-800"
+                style={{ minWidth: "9rem" }}
               >
                 <span className="flex items-start gap-1.5">
                   {iconoFila?.(i)}
@@ -197,7 +190,7 @@ function TablaHTML({
                           className={
                             k === 0
                               ? "block"
-                              : "mt-1 block text-[11px] font-normal leading-snug text-slate-600"
+                              : "mt-1 block text-xs font-normal leading-snug text-slate-600"
                           }
                         >
                           <Texto>{l}</Texto>
@@ -214,8 +207,7 @@ function TablaHTML({
               {f.unida ? (
                 <td
                   colSpan={columnas.length}
-                  className="border-t px-3 py-2 text-slate-700"
-                  style={{ borderColor: "#e6e6e6" }}
+                  className="separador border-t px-3 py-2 text-slate-700"
                 >
                   <Lineas>{f.celdas[0]}</Lineas>
                 </td>
@@ -223,9 +215,8 @@ function TablaHTML({
                 columnas.map((c) => (
                   <td
                     key={c}
-                    className="border-t px-3 py-2 text-slate-700"
+                    className="separador border-t px-3 py-2 text-slate-700"
                     style={{
-                      borderColor: "#e6e6e6",
                       minWidth: tabla.porSistema ? "11rem" : "10rem",
                       ...(herramienta && tabla.porSistema
                         ? { background: SISTEMA_HEX[c].soft, boxShadow: "inset 0 0 0 2px #fff" }
@@ -260,8 +251,8 @@ function Fichas({
       {idx.map((i) => {
         const f = tabla.filas[i];
         return (
-          <li key={i} className="rounded-xl border bg-white p-3" style={{ borderColor: "#e6e6e6" }}>
-            <div className="mb-2 text-[15px] font-bold text-slate-900">
+          <li key={i} className="tarjeta p-3">
+            <div className="titulo-tarjeta mb-2">
               <Lineas>
                 {/^\d+$/.test(f.etiqueta) ? `${tabla.cabeceraEtiqueta} ${f.etiqueta}` : f.etiqueta}
               </Lineas>
@@ -274,8 +265,8 @@ function Fichas({
                   style={{ borderColor: tabla.porSistema ? SISTEMA_HEX[c].strong : "#cbd5e1" }}
                 >
                   <dt
-                    className="text-xs font-bold uppercase tracking-wide"
-                    style={{ color: tabla.porSistema ? SISTEMA_HEX[c].ink : "#334155" }}
+                    className="rotulo"
+                    style={tabla.porSistema ? { color: SISTEMA_HEX[c].ink } : undefined}
                   >
                     {f.unida ? "Todos los sistemas" : tabla.columnas[c]}
                   </dt>
@@ -296,14 +287,11 @@ function Fichas({
 function FichaSistema({ tabla, c }: { tabla: Tabla; c: number }) {
   const hex = SISTEMA_HEX[c];
   return (
-    <div
-      className="rounded-2xl border bg-white"
-      style={{ borderColor: "#e6e6e6", boxShadow: `inset 0 3px 0 0 ${hex.strong}` }}
-    >
-      <div className="px-4 pt-4 text-base font-extrabold" style={{ color: hex.ink }}>
+    <div className="tarjeta tarjeta-sistema" style={{ ["--sis" as string]: hex.strong }}>
+      <div className="titulo-seccion px-4 pt-4" style={{ color: hex.ink }}>
         {tabla.columnas[c]}
       </div>
-      <dl className="divide-y px-4 pb-2" style={{ borderColor: "#e6e6e6" }}>
+      <dl className="divide-y px-4 pb-2">
         {tabla.filas.map((f, i) => (
           <div key={i} className="grid gap-1 py-3 sm:grid-cols-[13rem_1fr] sm:gap-4">
             {/* 0.72.0: el nombre de la fila en minúscula y negrita (en versalitas de 11 px costaba
@@ -408,7 +396,7 @@ export function TablaVista({
                 <button
                   type="button"
                   onClick={() => setSel(() => [])}
-                  className="tap-44 shrink-0 whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-semibold text-slate-600 underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                  className="chip tap-44 shrink-0 whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                 >
                   Los cuatro
                 </button>
@@ -436,7 +424,7 @@ export function TablaVista({
               setFila(n);
               onSeleccion?.(n == null ? undefined : String(n));
             }}
-            className="w-full max-w-md rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            className="w-full max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             <option value="">Todas las filas</option>
             {tabla.filas.map((f, i) => (

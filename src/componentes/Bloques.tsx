@@ -34,8 +34,7 @@ const Diagrama = ({ id }: { id: DiagramaId; enApartado?: boolean }) => {
   return (
     <a
       href={href("visual", id)}
-      className="no-imprimir inline-flex min-h-11 items-center gap-1.5 rounded-lg border bg-white px-3 text-sm font-semibold text-slate-800 transition hover:border-slate-500"
-      style={{ borderColor: "#e6e6e6" }}
+      className="no-imprimir inline-flex min-h-11 items-center gap-1.5 tarjeta px-3 text-sm font-semibold text-slate-800 transition hover:border-slate-500"
     >
       <Workflow size={15} aria-hidden="true" style={{ color: "#3f6e9f" }} />
       Ver diagrama: {d.titulo} <ArrowRight size={14} aria-hidden="true" />

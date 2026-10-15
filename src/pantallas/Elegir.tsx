@@ -106,20 +106,14 @@ function PorCaracteristicas() {
         ? `Comparar los ${reunen.length}`
         : "Comparación de sistemas";
   return (
-    <section
-      aria-labelledby="por-caracteristicas"
-      className="no-imprimir rounded-2xl border bg-white p-4"
-      style={{ borderColor: "#e6e6e6" }}
-    >
-      <h2 id="por-caracteristicas" className="text-base font-extrabold text-slate-900">
+    <section aria-labelledby="por-caracteristicas" className="no-imprimir tarjeta p-4">
+      <h2 id="por-caracteristicas" className="titulo-seccion">
         Por las características del sistema
       </h2>
       <div className="mt-3 grid gap-3 md:grid-cols-2">
         {CRITERIOS.map((cr) => (
           <div key={cr.id} role="group" aria-label={T1.filas[cr.fila].etiqueta}>
-            <div className="mb-1 text-[11px] font-bold uppercase tracking-wide text-slate-500">
-              {T1.filas[cr.fila].etiqueta}
-            </div>
+            <div className="mb-1 rotulo text-slate-500">{T1.filas[cr.fila].etiqueta}</div>
             <div className="flex flex-wrap gap-1.5">
               {cr.opciones.map((o) => {
                 const on = (marcado[cr.id] ?? []).includes(o.t);
@@ -129,12 +123,7 @@ function PorCaracteristicas() {
                     type="button"
                     aria-pressed={on}
                     onClick={() => alternar(cr.id, o.t)}
-                    className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
-                    style={
-                      on
-                        ? { background: hex.strong, borderColor: hex.strong }
-                        : { borderColor: "#d4d4d4" }
-                    }
+                    className="chip min-w-11 justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                   >
                     {o.t}
                   </button>
@@ -151,8 +140,8 @@ function PorCaracteristicas() {
           return (
             <li
               key={id}
-              className={`flex min-w-0 flex-col rounded-xl border p-3 transition ${fuera ? "border-dashed bg-slate-50" : "bg-white"}`}
-              style={{ borderColor: "#e6e6e6", borderTop: `4px solid ${h.strong}` }}
+              className={`tarjeta flex min-w-0 flex-col p-3 transition ${fuera ? "border-dashed opacity-80" : "tarjeta-sistema"}`}
+              style={{ ["--sis" as string]: h.strong }}
             >
               <a
                 href={href("sistemas", id)}
@@ -164,13 +153,12 @@ function PorCaracteristicas() {
                   alt=""
                   width={32}
                   height={32}
-                  className="h-8 w-8 shrink-0 rounded-md border bg-white object-cover"
-                  style={{ borderColor: "#e6e6e6" }}
+                  className="h-8 w-8 shrink-0 rounded-md bg-white object-cover"
                 />
                 {CATALOGO_SISTEMAS[c].name}
               </a>
               {fuera && (
-                <span className="mt-0.5 inline-flex w-fit items-center gap-1 rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-bold text-slate-700">
+                <span className="insignia mt-0.5 inline-flex w-fit items-center gap-1">
                   <X size={12} aria-hidden="true" /> No reúne lo marcado
                 </span>
               )}
@@ -179,7 +167,7 @@ function PorCaracteristicas() {
                   const r = casa(cr, c);
                   return (
                     <div key={cr.id}>
-                      <dt className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                      <dt className="rotulo text-slate-500">
                         {T1.filas[cr.fila].etiqueta}
                         <span className="sr-only">
                           {r === true ? " (coincide)" : r === false ? " (no coincide)" : ""}
@@ -201,9 +189,7 @@ function PorCaracteristicas() {
                     Control-IQ+ y Liberty, a la vista en cada tarjeta. */}
                 {[7, 8].map((fila) => (
                   <div key={fila}>
-                    <dt className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
-                      {T1.filas[fila].etiqueta}
-                    </dt>
+                    <dt className="rotulo text-slate-500">{T1.filas[fila].etiqueta}</dt>
                     <dd className="whitespace-pre-line pl-5 text-slate-700">
                       {T1.filas[fila].celdas[c]}
                     </dd>
@@ -223,7 +209,7 @@ function PorCaracteristicas() {
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
         <a
           href={destino}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-4 text-sm font-bold text-white"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-md px-4 text-sm font-bold text-white"
           style={{ background: hex.strong }}
         >
           {rotulo}
@@ -273,8 +259,7 @@ export function Elegir({ antigua = false }: { antigua?: boolean }) {
 
       <section
         aria-label="Elección compartida: texto del capítulo"
-        className="prosa mt-4 rounded-2xl border bg-white p-4"
-        style={{ borderColor: "#e6e6e6" }}
+        className="prosa mt-4 tarjeta p-4"
       >
         <p className="literal text-sm">{b5.t === "p" && <Texto>{b5.texto}</Texto>}</p>
         <a href={href("capitulo", a6.slug, "b5")} className={enlace}>
@@ -283,17 +268,13 @@ export function Elegir({ antigua = false }: { antigua?: boolean }) {
       </section>
 
       <section aria-labelledby="factores-f2" className="mt-4">
-        <h2 id="factores-f2" className="font-display text-lg font-semibold text-slate-900">
+        <h2 id="factores-f2" className="titulo-seccion">
           Factores de la Figura 2
         </h2>
         <div className="mt-2 grid gap-3 md:grid-cols-2">
           {[perfil, sistema].map((caja) => (
-            <div
-              key={caja.titulo}
-              className="rounded-xl border bg-white p-3"
-              style={{ borderColor: "#e6e6e6" }}
-            >
-              <h3 className="text-sm font-bold text-slate-900">{caja.titulo}</h3>
+            <div key={caja.titulo} className="tarjeta p-3">
+              <h3 className="titulo-tarjeta">{caja.titulo}</h3>
               <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-slate-800">
                 {caja.items.map((it) => (
                   <li key={it}>

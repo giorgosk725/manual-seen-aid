@@ -60,22 +60,14 @@ function Citas({ citas, asterisco }: { citas: CitaCaso[]; asterisco?: boolean })
   if (!citas.length) return null;
   return (
     <div>
-      <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
-        Lo que dice el capítulo
-      </p>
+      <p className="rotulo text-slate-500">Lo que dice el capítulo</p>
       <ul className="mt-1 space-y-1.5">
         {citas.map((c, i) => {
           const destino = destinoCita(c);
           return (
-            <li
-              key={i}
-              className="rounded-lg border bg-white px-3 py-2 text-sm text-slate-800"
-              style={{ borderColor: "#e6e6e6" }}
-            >
-              <span className="mr-1 text-[11px] font-bold uppercase tracking-wide text-slate-500">
-                {c.f}
-              </span>
-              «{c.t}» <PaginaBadge p={c.p} />
+            <li key={i} className="tarjeta px-3 py-2 text-sm text-slate-800">
+              <span className="mr-1 rotulo text-slate-500">{c.f}</span>«{c.t}»{" "}
+              <PaginaBadge p={c.p} />
               {destino && (
                 <a
                   href={destino}
@@ -109,9 +101,7 @@ function Respuesta({ o, id }: { o: OpcionCaso; id?: string }) {
       {/* Con el comentario desglosado en cuatro partes, el párrafo general sobra. */}
       {!o.desglose && (
         <p className="mt-1 text-sm text-slate-800">
-          <span className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
-            Comentario ·{" "}
-          </span>
+          <span className="rotulo text-slate-500">Comentario · </span>
           {o.comentario}
         </p>
       )}
@@ -126,9 +116,7 @@ function Respuesta({ o, id }: { o: OpcionCaso; id?: string }) {
             ] as const
           ).map(([rotulo, texto]) => (
             <div key={rotulo}>
-              <dt className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
-                {rotulo}
-              </dt>
+              <dt className="rotulo text-slate-500">{rotulo}</dt>
               <dd>{texto}</dd>
             </div>
           ))}
@@ -143,16 +131,8 @@ function Respuesta({ o, id }: { o: OpcionCaso; id?: string }) {
 
 function Escenario({ caso }: { caso: Caso }) {
   return (
-    <section
-      aria-labelledby="escenario"
-      className="rounded-xl border bg-white p-4"
-      style={{ borderColor: "#e6e6e6" }}
-    >
-      <h2
-        id="escenario"
-        className="text-[11px] font-bold uppercase tracking-wide"
-        style={{ color: hex.ink }}
-      >
+    <section aria-labelledby="escenario" className="tarjeta p-4">
+      <h2 id="escenario" className="rotulo" style={{ color: hex.ink }}>
         Escenario
       </h2>
       <p className="mt-1 text-[15px] leading-relaxed text-slate-800">{caso.escenario}</p>
@@ -221,11 +201,7 @@ export function CasoVista({ caso, inicial = 0 }: { caso: Caso; inicial?: number 
       {modo === "todo" ? (
         <ol className="space-y-4">
           {caso.pasos.map((x, k) => (
-            <li
-              key={k}
-              className="rounded-xl border bg-white p-4"
-              style={{ borderColor: "#e6e6e6" }}
-            >
+            <li key={k} className="tarjeta p-4">
               <p className="text-xs font-bold tabular-nums text-slate-500">
                 Paso {k + 1} de {n}
               </p>
@@ -291,11 +267,7 @@ export function CasoVista({ caso, inicial = 0 }: { caso: Caso; inicial?: number 
           </div>
         </section>
       ) : (
-        <section
-          aria-labelledby="pregunta-caso"
-          className="rounded-xl border bg-white p-4"
-          style={{ borderColor: "#e6e6e6" }}
-        >
+        <section aria-labelledby="pregunta-caso" className="tarjeta p-4">
           <p className="text-xs font-bold tabular-nums text-slate-500">
             Paso {paso + 1} de {n}
           </p>
@@ -404,8 +376,8 @@ export function CasoVista({ caso, inicial = 0 }: { caso: Caso; inicial?: number 
 
 function Cierre({ caso }: { caso: Caso }) {
   return (
-    <div className="rounded-xl border bg-white p-3" style={{ borderColor: "#e6e6e6" }}>
-      <p className="text-[11px] font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
+    <div className="tarjeta p-3">
+      <p className="rotulo" style={{ color: hex.ink }}>
         Para recordar
       </p>
       <p className="mt-1 text-sm text-slate-800">{caso.cierre.texto}</p>
@@ -475,8 +447,7 @@ export function Casos({ id, paso }: { id?: string; paso?: string }) {
             <li key={c.id}>
               <a
                 href={aMedias ? href("casos", c.id, String(pr.paso + 1)) : href("casos", c.id)}
-                className="hover-lift ease-brand flex h-full flex-col rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{ borderColor: "#e6e6e6" }}
+                className="linea hover-lift ease-brand flex h-full flex-col rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
               >
                 <span className="text-[15px] font-bold leading-snug text-slate-900">
                   {c.titulo}

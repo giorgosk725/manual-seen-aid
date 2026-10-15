@@ -2,23 +2,7 @@
 import { Anuncio } from "../componentes/Anuncio";
 import { guardarReciente } from "../prefs";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  ArrowRight,
-  CheckCircle2,
-  ExternalLink,
-  CalendarClock,
-  CirclePlay,
-  ClipboardCheck,
-  Droplets,
-  GraduationCap,
-  ListChecks,
-  MessageCircleQuestion,
-  Route,
-  SlidersHorizontal,
-  Unplug,
-  XCircle,
-  type LucideIcon,
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, ExternalLink, XCircle } from "lucide-react";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { FRECUENTES } from "../frecuentes";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
@@ -70,8 +54,7 @@ function ListaResultados({ res, q, fuera }: { res: Resultado[]; q: string; fuera
         <li key={r.entrada.id}>
           <a
             href={r.entrada.ruta}
-            className={`block rounded-xl border p-3 shadow-soft transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 ${!fuera ? "bg-white" : r.entrada.tipo === "ampliacion" ? "border-violet-200 bg-violet-50" : r.entrada.tipo === "extendida" ? "border-amber-200 bg-amber-50" : "border-slate-200 bg-slate-50"}`}
-            style={fuera ? undefined : { borderColor: "#e6e6e6" }}
+            className={`tarjeta block p-3 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 ${!fuera ? "" : r.entrada.tipo === "ampliacion" ? "border-violet-200 bg-violet-50" : r.entrada.tipo === "extendida" ? "border-amber-200 bg-amber-50" : "border-slate-200 bg-slate-50"}`}
           >
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
               <span className="flex items-center gap-2">
@@ -245,7 +228,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder="Buscar: cetonas, modo sueño, TBR…"
-        className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-soft placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        className="w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
         autoComplete="off"
       />
       {/* 0.72.0 (4.1.3): lo que ha encontrado, dicho al lector cuando se deja de escribir. */}
@@ -288,8 +271,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
         {noCubierto && (
           <div
             role="status"
-            className="mt-3 rounded-lg border-2 px-3 py-2 text-sm text-slate-900"
-            style={{ borderColor: "#8E254E", background: "#fff" }}
+            className="tarjeta mt-3 border-2 px-3 py-2 text-sm text-slate-900"
+            style={{ borderColor: "#8E254E" }}
           >
             <p className="font-semibold">El capítulo no trata {noCubierto}.</p>
             <p className="mt-1 text-slate-700">
@@ -299,21 +282,13 @@ export function Buscar({ inicial }: { inicial?: string }) {
           </div>
         )}
         {ajenas.length > 0 && !noCubierto && (
-          <p
-            role="status"
-            className="mt-3 rounded-lg border px-3 py-2 text-sm text-slate-800"
-            style={{ borderColor: "#e3c7d3", background: "#fff" }}
-          >
+          <p role="status" className="tarjeta mt-3 px-3 py-2 text-sm text-slate-800">
             El capítulo no trata {ajenas.map((a) => `«${a}»`).join(", ")}. Lo que sigue responde al
             resto de la consulta.
           </p>
         )}
         {dato && (
-          <p
-            role="status"
-            className="mt-3 rounded-lg border px-3 py-2 text-sm text-slate-900"
-            style={{ borderColor: "#e3c7d3", background: "#f7eff3" }}
-          >
+          <p role="status" className="casilla mt-3 px-3 py-2 text-sm text-slate-900">
             <span className="font-semibold">
               {dato.sistema} · {dato.titulo}:
             </span>{" "}
@@ -337,9 +312,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
         </AvisosBusqueda>
         {extras.map((x) => (
           <section key={x.parte} className="mt-3" aria-label={`También sobre ${x.parte}`}>
-            <h2 className="text-xs font-bold uppercase tracking-wide text-slate-600">
-              También sobre «{x.parte}»
-            </h2>
+            <h2 className="rotulo">También sobre «{x.parte}»</h2>
             <RespuestasCapitulo
               respuestas={x.respuestas}
               q={x.parte}
@@ -414,7 +387,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
               <button
                 type="button"
                 onClick={() => setTope((t) => t + 48)}
-                className="mt-4 min-h-11 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                className="chip mt-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
                 Ver más resultados
               </button>
@@ -441,7 +414,7 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
             as="li"
             key={r.n}
             id={`ref-${r.n}`}
-            className={`scroll-mt-4 rounded-xl border bg-white p-3 shadow-soft ${destacada === `ref-${r.n}` ? "ring-2 ring-sky-300" : ""}`}
+            className={`tarjeta scroll-mt-4 p-3 ${destacada === `ref-${r.n}` ? "ring-2 ring-sky-300" : ""}`}
           >
             <div className="flex gap-3">
               <span
@@ -492,10 +465,7 @@ export function Sobre() {
   return (
     <div className="space-y-4">
       <CabeceraEditorial titulo="Sobre este complemento" hex={CATEGORIA_HEX.confiar} level={1} />
-      <div
-        className="prosa rounded-2xl border bg-white p-4 shadow-soft"
-        style={{ borderColor: "#e6e6e6" }}
-      >
+      <div className="prosa tarjeta p-4">
         {/* 13-10-2026 (0.64.0): más operativo, a petición del responsable: qué se puede hacer,
             con un enlace a cada tarea, y cómo está hecho en cuatro frases. El responsable, con su
             afiliación, en «Fuentes y revisión» (en la portada ya van su nombre y su afiliación). */}
@@ -580,7 +550,7 @@ function Pregunta({
   // Al responder, la explicación a la vista (0.72.0: en el móvil quedaba debajo, fuera).
   const explicacion = useRef<HTMLDivElement>(null);
   return (
-    <li className="rounded-2xl border bg-white p-4 shadow-soft" style={{ borderColor: "#e6e6e6" }}>
+    <li className="tarjeta p-4">
       <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
         <span className="font-bold">Pregunta {n}</span>
         {!p.validada && <Badge tone="amber">Pendiente de validación</Badge>}
@@ -609,7 +579,7 @@ function Pregunta({
                 // aria-disabled (no «disabled»): el botón pulsado conserva el foco al responder.
                 aria-disabled={resuelta || undefined}
                 aria-pressed={marcada}
-                className={`flex min-h-11 w-full items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm text-slate-800 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 aria-disabled:cursor-default ${estilo}`}
+                className={`flex min-h-11 w-full items-center gap-2 rounded-md border px-3 py-2 text-left text-sm text-slate-800 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 aria-disabled:cursor-default ${estilo}`}
               >
                 <span className="w-5 shrink-0 font-bold text-slate-500">
                   {String.fromCharCode(97 + i)})
@@ -630,16 +600,14 @@ function Pregunta({
       <div aria-live="polite" ref={explicacion} className="scroll-mb-24">
         {elegida != null && (
           <div className="animate-in mt-3 space-y-2">
-            <div className="rounded-xl p-3 text-sm" style={{ background: "#eef3f8" }}>
+            <div className="casilla p-3 text-sm">
               <p className="font-bold text-slate-900">
                 {elegida === p.correcta ? "Correcto." : "Respuesta incorrecta."} Explicación:
               </p>
               <p className="mt-1 text-slate-800">{p.explicacion}</p>
             </div>
-            <div className="rounded-xl border p-3 text-sm" style={{ borderColor: "#e6e6e6" }}>
-              <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                Lo que dice el capítulo
-              </p>
+            <div className="tarjeta p-3 text-sm">
+              <p className="rotulo text-slate-500">Lo que dice el capítulo</p>
               <ul className="mt-1.5 space-y-1.5">
                 {p.citas.map((c, i) => (
                   <li key={i} className="text-slate-800">
@@ -696,10 +664,7 @@ export function Test() {
         </ToneCard>
       )}
       {/* 0.72.0: el avance, pegado bajo la cabecera mientras se baja por las preguntas. */}
-      <div
-        className="barra-pegada sticky top-14 z-10 -mx-3 mb-3 border-b px-3 py-2 sm:mx-0 sm:rounded-lg sm:border"
-        style={{ borderColor: "#e6e6e6" }}
-      >
+      <div className="separador barra-pegada sticky top-14 z-10 -mx-3 mb-3 border-b px-3 py-2 sm:mx-0 sm:rounded-lg sm:border">
         <p className="text-xs font-semibold text-slate-700" aria-live="polite">
           Respondidas {n} de {PREGUNTAS.length}
           {n > 0 ? ` · ${aciertos} ${aciertos === 1 ? "acierto" : "aciertos"}` : ""}
@@ -727,10 +692,10 @@ export function Test() {
       {n === PREGUNTAS.length && (
         <section
           aria-labelledby="test-resultado"
-          className="mt-4 rounded-2xl border-2 bg-white p-4"
+          className="tarjeta mt-4 border-2 p-4"
           style={{ borderColor: CATEGORIA_HEX.aprender.strong }}
         >
-          <h2 id="test-resultado" className="text-base font-extrabold text-slate-900">
+          <h2 id="test-resultado" className="titulo-seccion">
             Resultado: {aciertos} de {PREGUNTAS.length}
           </h2>
           <p className="mt-1 text-sm text-slate-700">
@@ -739,7 +704,7 @@ export function Test() {
           <button
             type="button"
             onClick={empezarDeNuevo}
-            className="mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-lg px-4 text-sm font-bold text-white"
+            className="mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-md px-4 text-sm font-bold text-white"
             style={{ background: CATEGORIA_HEX.aprender.strong }}
           >
             Volver a empezar
@@ -770,17 +735,6 @@ const TEMAS = [
 ].filter((t) => FRECUENTES.some((f) => f.tema === t));
 const PRIMER_TEMA_SISTEMA = TEMAS.find((t) => TEMAS_SISTEMA.includes(t));
 
-const ICONO_TEMA_FRECUENTE: Record<string, LucideIcon> = {
-  "Selección e indicación": ClipboardCheck,
-  "Sistemas y parámetros": SlidersHorizontal,
-  "Inicio del sistema": CirclePlay,
-  "Educación y plan de seguridad": GraduationCap,
-  "Descarga y seguimiento": ListChecks,
-  "Incidencias y cetonemia": Droplets,
-  "Interrupción del sistema": Unplug,
-  "Situaciones especiales": Route,
-  "Uso habitual": CalendarClock,
-};
 function IconoTema({ tema }: { tema: string }) {
   const k = TEMAS_SISTEMA.indexOf(tema);
   if (k >= 0)
@@ -790,21 +744,10 @@ function IconoTema({ tema }: { tema: string }) {
         alt=""
         width={32}
         height={32}
-        className="my-1.5 h-8 w-8 shrink-0 rounded-lg border bg-white object-cover"
-        style={{ borderColor: "#e6e6e6" }}
+        className="my-1.5 h-8 w-8 shrink-0 tarjeta object-cover"
       />
     );
-  const I = ICONO_TEMA_FRECUENTE[tema] ?? MessageCircleQuestion;
-  const h = CATEGORIA_HEX.consultar;
-  return (
-    <span
-      aria-hidden="true"
-      className="my-1.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-      style={{ background: h.soft, color: h.strong }}
-    >
-      <I size={16} />
-    </span>
-  );
+  return null;
 }
 
 export function Preguntas({ id }: { id?: string }) {
@@ -840,11 +783,7 @@ export function Preguntas({ id }: { id?: string }) {
         {estado === "error" && (
           <p className="flex flex-wrap items-center gap-2 text-sm text-slate-700">
             No se han podido cargar los pasajes.
-            <button
-              type="button"
-              onClick={reintentar}
-              className="inline-flex min-h-9 items-center rounded-md border border-slate-300 px-2 text-xs font-semibold hover:border-slate-500"
-            >
+            <button type="button" onClick={reintentar} className="chip min-h-9 text-xs sm:min-h-8">
               Reintentar
             </button>
           </p>
@@ -853,11 +792,7 @@ export function Preguntas({ id }: { id?: string }) {
         {r && <RespuestasCapitulo respuestas={[]} q="" frecuente={r} sinPregunta />}
         {hermanas.length > 0 && (
           <section aria-labelledby="mismo-tema" className="mt-6">
-            <h2
-              id="mismo-tema"
-              className="mb-2 text-sm font-bold uppercase tracking-wide"
-              style={{ color: hex.ink }}
-            >
+            <h2 id="mismo-tema" className="rotulo mb-2" style={{ color: hex.ink }}>
               Del mismo tema
             </h2>
             <ul className="space-y-1">
@@ -892,23 +827,19 @@ export function Preguntas({ id }: { id?: string }) {
           placeholder="Filtrar: cetonas, gestación, descarga…"
           value={filtro}
           onChange={(e) => setFiltro(e.target.value)}
-          className="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10 sm:max-w-md"
+          className="min-h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10 sm:max-w-md"
         />
         <button
           type="button"
           onClick={() => setTodas((v) => !v)}
           aria-pressed={todas}
-          className="inline-flex min-h-11 items-center rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 hover:border-slate-500 sm:min-h-9"
+          className="chip"
         >
           {todas ? "Plegar los temas" : "Ver todas las preguntas"}
         </button>
       </div>
       {filtradas && (
-        <ul
-          className="divide-y rounded-xl border bg-white"
-          style={{ borderColor: "#e6e6e6" }}
-          aria-label="Preguntas que coinciden"
-        >
+        <ul className="tarjeta filas" aria-label="Preguntas que coinciden">
           {filtradas.length === 0 && (
             <li className="px-3 py-2 text-sm text-slate-600">Ninguna pregunta contiene eso.</li>
           )}
@@ -916,11 +847,10 @@ export function Preguntas({ id }: { id?: string }) {
             <li key={x.id}>
               <a
                 href={href("preguntas", x.id)}
-                className="flex min-h-11 items-center gap-2 px-3 py-2 text-sm text-slate-800 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                className="fila font-normal focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
                 <span className="flex-1">{x.pregunta}</span>
                 <span className="shrink-0 text-xs text-slate-500">{x.tema}</span>
-                <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
               </a>
             </li>
           ))}
@@ -937,19 +867,13 @@ export function Preguntas({ id }: { id?: string }) {
         {TEMAS.map((tema) => (
           <div key={tema}>
             {tema === PRIMER_TEMA_SISTEMA && (
-              <h2 className="mb-1 mt-4 text-xs font-bold uppercase tracking-wide text-slate-500 lg:mt-0">
-                Preguntas por sistema
-              </h2>
+              <h2 className="rotulo mb-1.5 mt-4 lg:mt-0">Preguntas por sistema</h2>
             )}
-            <details
-              open={todas || undefined}
-              className="group rounded-xl border bg-white"
-              style={{ borderColor: "#e6e6e6" }}
-            >
+            <details open={todas || undefined} className="tarjeta group">
               <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 text-sm font-bold text-slate-900 [&::-webkit-details-marker]:hidden">
                 <IconoTema tema={tema} />
                 <span className="flex-1">{tema}</span>
-                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold tabular-nums text-slate-600">
+                <span className="insignia tabular-nums">
                   {FRECUENTES.filter((x) => x.tema === tema).length}
                 </span>
                 <ArrowRight
@@ -958,19 +882,14 @@ export function Preguntas({ id }: { id?: string }) {
                   aria-hidden="true"
                 />
               </summary>
-              <ul className="divide-y border-t" style={{ borderColor: "#e6e6e6" }}>
+              <ul className="filas separador border-t">
                 {FRECUENTES.filter((x) => x.tema === tema).map((x) => (
                   <li key={x.id}>
                     <a
                       href={href("preguntas", x.id)}
-                      className="flex min-h-11 items-center gap-2 px-3 py-2 text-sm text-slate-800 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                      className="fila font-normal focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                     >
                       <span className="flex-1">{x.pregunta}</span>
-                      <ArrowRight
-                        size={14}
-                        className="shrink-0 text-slate-400"
-                        aria-hidden="true"
-                      />
                     </a>
                   </li>
                 ))}

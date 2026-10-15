@@ -91,7 +91,7 @@ export function ConsultasSinRespuesta() {
           </thead>
           <tbody>
             {filas.map((f) => (
-              <tr key={f.q} className="border-t" style={{ borderColor: "#e6e6e6" }}>
+              <tr key={f.q} className="separador border-t">
                 <td className="py-1.5 pr-2">
                   <a
                     href={href("buscar")}

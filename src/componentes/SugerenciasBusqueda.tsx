@@ -11,7 +11,7 @@ function Chip({ texto, onElegir }: { texto: string; onElegir: (q: string) => voi
       <button
         type="button"
         onClick={() => onElegir(texto)}
-        className="inline-flex min-h-11 items-center rounded-full border border-slate-300 bg-white px-3 text-left text-sm text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9"
+        className="chip font-normal focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
         {texto}
       </button>
@@ -26,7 +26,7 @@ export function SugerenciasBusqueda({ onElegir }: { onElegir: (q: string) => voi
       {recientes.length > 0 && (
         <div>
           <div className="flex items-center justify-between gap-2">
-            <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">
+            <p className="flex items-center gap-1.5 rotulo text-slate-500">
               <Clock3 size={13} aria-hidden="true" /> Tus búsquedas recientes
             </p>
             <button
@@ -45,7 +45,7 @@ export function SugerenciasBusqueda({ onElegir }: { onElegir: (q: string) => voi
         </div>
       )}
       <div>
-        <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">
+        <p className="flex items-center gap-1.5 rotulo text-slate-500">
           <Sparkles size={13} aria-hidden="true" /> Ejemplos
         </p>
         <ul className="mt-1 flex flex-wrap gap-1.5">

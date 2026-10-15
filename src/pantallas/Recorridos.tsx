@@ -6,47 +6,7 @@
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
 import { ponerConsulta } from "../consultaBuscar";
 import { useEffect, useRef, useState } from "react";
-import {
-  Activity,
-  AlertTriangle,
-  ArrowRight,
-  Baby,
-  BedDouble,
-  Bike,
-  Box,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Droplet,
-  Eye,
-  Lightbulb,
-  Wrench,
-  Dumbbell,
-  HeartHandshake,
-  Hospital,
-  Magnet,
-  Moon,
-  Pill,
-  Plane,
-  Radiation,
-  Radio,
-  Scan,
-  ScanLine,
-  Scissors,
-  ShieldCheck,
-  Siren,
-  Syringe,
-  Thermometer,
-  TrendingDown,
-  TrendingUp,
-  Table2,
-  Unplug,
-  Users,
-  UtensilsCrossed,
-  WifiOff,
-  Zap,
-  type LucideIcon,
-} from "lucide-react";
+import { AlertTriangle, ArrowRight, Check, ChevronLeft, ChevronRight, Siren } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, rutaDeTabla } from "../contenido";
 import { INTERRUPCION_LINEA } from "../contenido/diagramas";
 import { InterrupcionPantalla, ObjetivosDePoblacion } from "../componentes/Diagramas";
@@ -218,74 +178,6 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
   },
 ];
 
-/* Un icono por tema y por situación (13-10-2026): la lista se recorre de un vistazo. */
-const ICONO_TEMA: Record<string, LucideIcon> = {
-  "Ejercicio y comidas": Dumbbell,
-  "Noche, enfermedad e hiperglucemia": Moon,
-  "Exploraciones, cirugía e ingreso": Hospital,
-  "Interrupción del sistema": Unplug,
-  "Resolución de incidencias": AlertTriangle,
-  "Poblaciones y situaciones especiales": Users,
-};
-const ICONO_SITUACION: Record<string, LucideIcon> = {
-  "ejercicio-aerobico": Bike,
-  "ejercicio-anaerobico": Dumbbell,
-  "comida-grasa": UtensilsCrossed,
-  sueno: Moon,
-  "necesidad-transitoria": Thermometer,
-  "hiperglucemia-puntual": TrendingUp,
-  "hiperglucemia-persistente": AlertTriangle,
-  rm: Magnet,
-  tc: ScanLine,
-  rx: Scan,
-  pet: Radiation,
-  diatermia: Zap,
-  eco: Activity,
-  "cirugia-corta": Scissors,
-  "cirugia-larga": Scissors,
-  "ingreso-hospitalario": BedDouble,
-  gestacion: Baby,
-  "enfermedad-intercurrente": Thermometer,
-  glucocorticoides: Pill,
-  dialisis: Activity,
-  mayores: Users,
-  adolescencia: Users,
-};
-const iconoDeTexto = (t: string): LucideIcon =>
-  /^hipoglucemia nocturna/i.test(t)
-    ? Moon
-    : /^hipoglucemia/i.test(t)
-      ? TrendingDown
-      : /catéter/i.test(t)
-        ? Syringe
-        : /cutáneos/i.test(t)
-          ? ShieldCheck
-          : /alarmas/i.test(t)
-            ? Siren
-            : /bolo omitido/i.test(t)
-              ? Syringe
-              : /compresión/i.test(t)
-                ? BedDouble
-                : /señal/i.test(t)
-                  ? WifiOff
-                  : /viajes/i.test(t)
-                    ? Plane
-                    : /cetonemia/i.test(t)
-                      ? Droplet
-                      : /enfermedad intercurrente/i.test(t)
-                        ? Thermometer
-                        : /glucocorticoide/i.test(t)
-                          ? Pill
-                          : /diálisis/i.test(t)
-                            ? Activity
-                            : /interrupción/i.test(t)
-                              ? Unplug
-                              : /adolescencia/i.test(t)
-                                ? Users
-                                : /mayor/i.test(t)
-                                  ? Users
-                                  : ArrowRight;
-
 type SituacionLista = Situacion | SituacionGuia;
 /* Situaciones con comprobaciones previas (su primer momento) antes de la conducta. */
 const ANTES_DE_ACTUAR = ["ejercicio-aerobico", "ejercicio-anaerobico"];
@@ -379,11 +271,7 @@ function GuionVista({
     marcarEnRuta(abrir ? i : null);
   };
   return (
-    <section
-      aria-label={rotulo}
-      className="rounded-2xl border bg-white p-4"
-      style={{ borderColor: "#e6e6e6" }}
-    >
+    <section aria-label={rotulo} className="tarjeta p-4">
       {/* 0.72.2: sin rótulo visible encima (los títulos numerados ya dicen qué es). 0.74.2:
           sin «Desplegar todo» (ya van abiertos). */}
       <h2 className="sr-only">{rotulo}</h2>
@@ -406,12 +294,7 @@ function GuionVista({
               )}
               <span
                 aria-hidden="true"
-                className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold tabular-nums"
-                style={
-                  abierto(i)
-                    ? { background: hex.strong, color: "#fff" }
-                    : { background: hex.soft, color: hex.ink }
-                }
+                className={`num absolute left-0 top-2.5 ${abierto(i) ? "num-on" : ""}`}
               >
                 {i - desde + 1}
               </span>
@@ -420,7 +303,7 @@ function GuionVista({
                   type="button"
                   aria-expanded={abierto(i)}
                   onClick={() => alternar(i)}
-                  className="flex min-h-11 w-full items-center justify-between gap-3 py-1 text-left text-sm font-bold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                  className="titulo-tarjeta flex min-h-11 w-full items-center justify-between gap-3 py-1 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                 >
                   <span>
                     <span className="sr-only">{i - desde + 1}. </span>
@@ -447,7 +330,7 @@ function GuionVista({
                     })()}
                   </div>
                   {/* Una sola línea de fuente por momento, al párrafo exacto. */}
-                  <p className="text-[13px] text-slate-500">
+                  <p className="fuente-pie">
                     Fuente:{" "}
                     {fuentesDeMomento(m).map((f, k) => (
                       <span key={f.texto}>
@@ -455,7 +338,7 @@ function GuionVista({
                         <a
                           href={f.ruta}
                           onClick={() => marcarEnRuta(i)}
-                          className="tap-44 inline-block py-1 font-semibold text-slate-600 hover:underline"
+                          className="tap-44 inline-block py-1"
                         >
                           {f.texto}
                         </a>
@@ -482,29 +365,13 @@ function CabeceraSituacion({
   etiqueta: string;
   onCambiar: () => void;
 }) {
-  const I = ICONO_SITUACION[id] ?? iconoDeTexto(etiqueta);
+  void id;
   return (
-    <div
-      className="flex items-start gap-3 rounded-2xl border bg-white p-3"
-      style={{ borderColor: "#e6e6e6", boxShadow: `inset 4px 0 0 0 ${hex.strong}` }}
-    >
-      <span
-        aria-hidden="true"
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
-        style={{ background: hex.soft }}
-      >
-        <I size={22} style={{ color: hex.strong }} />
-      </span>
+    <div className="tarjeta tarjeta-sistema flex items-center gap-3 p-3 pl-4">
       <div className="min-w-0 flex-1">
-        <h2 className="text-base font-extrabold leading-snug text-slate-900 sm:text-lg">
-          {etiqueta}
-        </h2>
+        <h2 className="titulo-seccion">{etiqueta}</h2>
       </div>
-      <button
-        type="button"
-        onClick={onCambiar}
-        className="min-h-11 shrink-0 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-700 hover:border-slate-500 lg:hidden"
-      >
+      <button type="button" onClick={onCambiar} className="chip shrink-0 lg:hidden">
         Cambiar
       </button>
     </div>
@@ -513,39 +380,21 @@ function CabeceraSituacion({
 
 /* «Para seguir»: la hoja para el paciente, los apartados y la tabla entera, en filas como las
    del mapa de la portada. */
-function ParaSeguir({
-  filas,
-}: {
-  filas: { href: string; t: string; I: LucideIcon; color?: string }[];
-}) {
+function ParaSeguir({ filas }: { filas: { href: string; t: string; color?: string }[] }) {
   if (!filas.length) return null;
   return (
-    <section
-      aria-label="Véase también"
-      className="overflow-hidden rounded-md border bg-white"
-      style={{ borderColor: "#e6e6e6" }}
-    >
-      <h2
-        className="px-3 pb-0.5 pt-2 text-xs font-bold uppercase tracking-wide"
-        style={{ color: hex.ink }}
-      >
+    <section aria-label="Véase también" className="tarjeta overflow-hidden">
+      <h2 className="rotulo px-3 pb-1 pt-2.5" style={{ color: hex.ink }}>
         Véase también
       </h2>
-      <ul className="divide-y" style={{ borderColor: "#eeeeee" }}>
+      <ul className="filas">
         {filas.map((f) => (
           <li key={f.href}>
             <a
               href={f.href}
-              className="flex min-h-11 items-center gap-3 px-3 py-1.5 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
+              className="fila focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
             >
-              <f.I
-                size={16}
-                className="shrink-0"
-                style={{ color: f.color ?? hex.strong }}
-                aria-hidden="true"
-              />
-              <span className="min-w-0 flex-1 font-semibold text-slate-900">{f.t}</span>
-              <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+              <span className="min-w-0 flex-1">{f.t}</span>
             </a>
           </li>
         ))}
@@ -581,17 +430,13 @@ function ListaSituaciones({
   }));
   const total = visibles.reduce((n, v) => n + v.sits.length + v.extras.length, 0);
   const fila =
-    "flex min-h-12 w-full items-center gap-3 px-3 py-2 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500";
+    "fila w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500";
   /* 0.73.0 (auditoría de uso): la fila, solo el nombre y la flecha (sin icono por fila ni los
      cuatro puntos de «conducta distinta»: el icono del tema basta). */
   const Fila = ({ texto, on }: { texto: string; on?: boolean }) => (
     <>
-      <span className="min-w-0 flex-1 font-semibold leading-snug">{texto}</span>
-      {on ? (
-        <Check size={15} className="shrink-0" aria-hidden="true" />
-      ) : (
-        <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
-      )}
+      <span className="min-w-0 flex-1 leading-snug">{texto}</span>
+      {on && <Check size={15} className="shrink-0" aria-hidden="true" />}
     </>
   );
   return (
@@ -599,8 +444,8 @@ function ListaSituaciones({
       id="lista-situaciones"
       className={
         ancha
-          ? "scroll-mt-4 gap-3 lg:columns-2 2xl:columns-3 [&>*]:mb-2 [&>*]:break-inside-avoid"
-          : "scroll-mt-4 space-y-2"
+          ? "scroll-mt-4 gap-3 lg:columns-2 2xl:columns-3 [&>*]:mb-3 [&>*]:break-inside-avoid"
+          : "scroll-mt-4 space-y-3"
       }
     >
       {f && (
@@ -609,10 +454,7 @@ function ListaSituaciones({
         </p>
       )}
       {f && total === 0 && (
-        <div
-          className="rounded-md border border-dashed px-3 py-3 text-sm text-slate-700"
-          style={{ borderColor: "#d4d4d4" }}
-        >
+        <div className="rounded-md border border-dashed border-slate-300 px-3 py-3 text-sm text-slate-700">
           Ninguna situación coincide con «{f}».{" "}
           {/* La consulta pasa en memoria (A03: no va en la URL). */}
           <a
@@ -635,22 +477,12 @@ function ListaSituaciones({
       )}
       {visibles.map(({ tema, sits, extras }) => {
         if (!sits.length && !extras.length) return null;
-        const IT = ICONO_TEMA[tema.t] ?? ArrowRight;
         return (
-          <section
-            key={tema.t}
-            aria-label={tema.t}
-            className="overflow-hidden rounded-md border bg-white"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            <h2
-              className="flex items-center gap-1.5 px-3 pb-1 pt-2 text-xs font-bold uppercase tracking-wide"
-              style={{ color: hex.ink }}
-            >
-              <IT size={14} aria-hidden="true" />
+          <section key={tema.t} aria-label={tema.t} className="tarjeta overflow-hidden">
+            <h2 className="rotulo px-3 pb-1 pt-2.5" style={{ color: hex.ink }}>
               {tema.t}
             </h2>
-            <ul className="divide-y" style={{ borderColor: "#eeeeee" }} role="list">
+            <ul className="filas" role="list">
               {sits.map((s) => {
                 const on = sit?.id === s.id;
                 return (
@@ -665,7 +497,7 @@ function ListaSituaciones({
                           on ? undefined : s.id + (sistema ? ":" + sistema : ""),
                         )
                       }
-                      className={`${fila} ${on ? "text-white" : "text-slate-900 hover:bg-slate-50"}`}
+                      className={`${fila} ${on ? "text-white hover:!bg-[var(--acento)]" : ""}`}
                       style={on ? { background: hex.strong } : undefined}
                     >
                       <Fila texto={s.etiqueta} on={on} />
@@ -675,7 +507,7 @@ function ListaSituaciones({
               })}
               {extras.map((x) => (
                 <li key={x.ruta}>
-                  <a href={x.ruta} className={`${fila} text-slate-900 hover:bg-slate-50`}>
+                  <a href={x.ruta} className={fila}>
                     <Fila texto={x.t} />
                   </a>
                 </li>
@@ -738,7 +570,7 @@ export function SituacionSistema({
             placeholder="Filtrar: resonancia, ejercicio, sueño…"
             value={filtro}
             onChange={(e) => setFiltro(e.target.value)}
-            className={`mb-2 min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10 ${!sit && !guia ? "lg:max-w-md" : ""}`}
+            className={`mb-3 min-h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10 ${!sit && !guia ? "lg:max-w-md" : ""}`}
           />
           <ListaSituaciones
             sit={sit}
@@ -760,11 +592,7 @@ export function SituacionSistema({
               {/* 0.73.0: primero lo de cada sistema (frases literales, src/porSistema.ts);
                   después los objetivos y lo común. */}
               {GUIA_POR_SISTEMA[guia.id] && (
-                <section
-                  aria-label="Sistema a sistema"
-                  className="rounded-2xl border bg-white p-4 shadow-soft"
-                  style={{ borderColor: "#e6e6e6" }}
-                >
+                <section aria-label="Sistema a sistema" className="tarjeta p-4">
                   <BloquesPorSistema
                     key={guia.id}
                     bloques={GUIA_POR_SISTEMA[guia.id].bloques}
@@ -778,12 +606,7 @@ export function SituacionSistema({
                 .map((l) => /^#\/visual\/objetivos-mcg\/([a-z-]+)$/.exec(l.ruta)?.[1])
                 .filter((x): x is string => !!x)
                 .map((pob) => (
-                  <section
-                    key={pob}
-                    aria-label="Objetivos de MCG"
-                    className="rounded-2xl border bg-white p-4 shadow-soft"
-                    style={{ borderColor: "#e6e6e6" }}
-                  >
+                  <section key={pob} aria-label="Objetivos de MCG" className="tarjeta p-4">
                     <ObjetivosDePoblacion id={pob} />
                   </section>
                 ))}
@@ -794,19 +617,13 @@ export function SituacionSistema({
                 inicial={MOMENTO_INICIAL[guia.id] ?? [0]}
               />
               <div>
-                <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-                  Véase también
-                </div>
-                <ul className="flex flex-wrap gap-1.5">
+                <div className="rotulo mb-1.5">Véase también</div>
+                <ul className="flex flex-wrap gap-2">
                   {guia.enlaces
                     .filter((l) => !l.ruta.startsWith("#/visual/objetivos-mcg/"))
                     .map((l) => (
                       <li key={l.ruta}>
-                        <a
-                          href={l.ruta}
-                          className="inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-8"
-                          style={{ borderColor: "#d4d4d4" }}
-                        >
+                        <a href={l.ruta} className="chip">
                           {l.texto} <ArrowRight size={12} aria-hidden="true" />
                         </a>
                       </li>
@@ -828,12 +645,12 @@ export function SituacionSistema({
                 <section
                   id="antes-situacion"
                   aria-labelledby="antes-situacion-titulo"
-                  className="scroll-mt-4 rounded-2xl border-2 px-4 py-3"
+                  className="scroll-mt-4 rounded-xl border-2 px-4 py-3"
                   style={{ borderColor: "#f3d38a", background: "#fffbeb" }}
                 >
                   <h2
                     id="antes-situacion-titulo"
-                    className="flex items-center gap-1.5 text-sm font-bold text-amber-900"
+                    className="titulo-tarjeta flex items-center gap-1.5 text-amber-900"
                   >
                     <AlertTriangle size={15} aria-hidden="true" className="shrink-0" />
                     {GUION[sit.id][0].rotulo.replace(
@@ -851,8 +668,7 @@ export function SituacionSistema({
               )}
               <section
                 id="conducta-situacion"
-                className="scroll-mb-28 scroll-mt-4 space-y-3 rounded-2xl border bg-white p-4 shadow-soft"
-                style={{ borderColor: "#e6e6e6" }}
+                className="tarjeta scroll-mb-28 scroll-mt-4 space-y-3 p-4"
                 aria-label="Conducta recomendada"
               >
                 {/* El rótulo de la fila ya está en la cabecera; aquí, lo común a los cuatro si lo trae. */}
@@ -861,14 +677,8 @@ export function SituacionSistema({
                   return (
                     <>
                       {(comun.length > 0 || fila.unida) && (
-                        <div
-                          className="rounded-xl border-l-4 px-3 py-2.5"
-                          style={{ borderColor: hex.strong, background: hex.soft }}
-                        >
-                          <span
-                            className="mb-0.5 block text-[11px] font-bold uppercase tracking-wide"
-                            style={{ color: hex.ink }}
-                          >
+                        <div className="casilla casilla-sistema px-3 py-2.5">
+                          <span className="rotulo mb-0.5 block" style={{ color: hex.ink }}>
                             Todos los sistemas
                           </span>
                           <span className="block text-[15px] font-semibold leading-snug text-slate-900">
@@ -881,9 +691,7 @@ export function SituacionSistema({
                 })()}
                 {porSistema && (
                   <div>
-                    <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-                      Sistema
-                    </div>
+                    <div className="rotulo mb-1">Sistema</div>
                     <CasillasSistema
                       seleccion={sisIdx >= 0 ? [sisIdx] : []}
                       onToggle={(c) => {
@@ -898,32 +706,26 @@ export function SituacionSistema({
                   </div>
                 )}
                 {porSistema && (
-                  <div className={sisIdx >= 0 ? "" : "grid gap-2 sm:grid-cols-2"}>
+                  <div className={sisIdx >= 0 ? "" : "grid gap-3 sm:grid-cols-2"}>
                     {tabla.columnas.map((nombre, c) =>
                       sisIdx >= 0 && c !== sisIdx ? null : (
                         <div
                           key={c}
-                          className="overflow-hidden rounded-xl border border-t-4 bg-white"
-                          style={{ borderColor: "#e6e6e6", borderTopColor: SISTEMA_HEX[c].strong }}
+                          className="tarjeta tarjeta-sistema overflow-hidden"
+                          style={{ ["--sis" as string]: SISTEMA_HEX[c].strong }}
                         >
-                          <div
-                            className="flex items-center gap-2 px-3 py-1.5"
-                            style={{ background: SISTEMA_HEX[c].soft }}
-                          >
+                          <div className="separador flex items-center gap-2 border-b px-3 py-1.5 pl-4">
                             <img
                               src={FOTO_SISTEMA[ORDEN_SISTEMAS[c]]}
                               alt=""
                               className="h-7 w-7 shrink-0 rounded-md bg-white object-cover"
                             />
-                            <span
-                              className="text-sm font-extrabold"
-                              style={{ color: SISTEMA_HEX[c].ink }}
-                            >
+                            <span className="titulo-tarjeta" style={{ color: SISTEMA_HEX[c].ink }}>
                               {CATALOGO_SISTEMAS[c]?.name ?? nombre}
                             </span>
                           </div>
                           <p
-                            className={`px-3 py-2 text-slate-800 ${sisIdx >= 0 ? "text-base" : "text-[15px]"}`}
+                            className={`px-4 py-2.5 text-slate-800 ${sisIdx >= 0 ? "text-base" : "text-[15px]"}`}
                           >
                             <Lineas>{fila.celdas[c]}</Lineas>
                           </p>
@@ -951,20 +753,11 @@ export function SituacionSistema({
                 )}
                 {!porSistema && !fila.unida && (
                   <>
-                    <dl className="grid gap-2 sm:grid-cols-2">
+                    <dl className="ultima-ancha grid gap-3 sm:grid-cols-2">
                       {tabla.columnas.map((nombre, c) => {
-                        const I = c === 0 ? Box : Radio;
                         return (
-                          <div
-                            key={c}
-                            className="rounded-xl border bg-white p-3"
-                            style={{ borderColor: "#e6e6e6" }}
-                          >
-                            <dt
-                              className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"
-                              style={{ color: hex.ink }}
-                            >
-                              <I size={15} aria-hidden="true" style={{ color: hex.strong }} />
+                          <div key={c} className="tarjeta p-3">
+                            <dt className="rotulo mb-1" style={{ color: hex.ink }}>
                               {nombre}
                             </dt>
                             <dd className="text-base text-slate-800">
@@ -991,14 +784,14 @@ export function SituacionSistema({
                   ]}
                 />
                 {sit.leer.length > 0 && (
-                  <p className="text-[13px] text-slate-500">
+                  <p className="fuente-pie">
                     Leer en el capítulo:{" "}
                     {sit.leer.map((l, k) => (
                       <span key={l.slug + (l.ancla ?? "")}>
                         {k > 0 && " · "}
                         <a
                           href={href("capitulo", l.slug, l.ancla)}
-                          className="tap-44 inline-block py-1 font-semibold text-slate-600 hover:underline"
+                          className="tap-44 inline-block py-1"
                         >
                           {l.titulo}
                         </a>
@@ -1035,7 +828,6 @@ export function SituacionSistema({
                             sit.tabla === "T6"
                               ? "Hoja para el paciente: antes de una prueba o una cirugía"
                               : "Plan de seguridad y hoja de cetonas para el paciente",
-                          I: HeartHandshake,
                           color: CATEGORIA_HEX.pacientes.strong,
                         },
                       ]
@@ -1049,23 +841,19 @@ export function SituacionSistema({
                             sisIdx >= 0 ? ORDEN_SISTEMAS[sisIdx] : undefined,
                           ),
                           t: `Plan de seguridad${sisIdx >= 0 ? ` · ${CORTO_SISTEMA[sisIdx]}` : ""}`,
-                          I: ShieldCheck,
                         },
                         // 0.74.2 (auditoría): el diagrama, la interrupción y la Tabla 4.
                         {
                           href: href("visual", "ejercicio"),
                           t: "Glucemia y ejercicio",
-                          I: Activity,
                         },
                         {
                           href: href("consultar", "interrupcion"),
                           t: "Interrupción del sistema y pauta alternativa",
-                          I: Unplug,
                         },
                         {
                           href: href("consultar", "tablas", "T4"),
                           t: "Herramientas del sistema ante situaciones clínicas",
-                          I: Table2,
                         },
                       ]
                     : []),
@@ -1142,12 +930,8 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                   aria-label={`Paso ${i + 1}: ${f.celdas[0]}`}
                   title={f.celdas[0]}
                   onClick={() => ir(i + 1)}
-                  className={`flex h-11 w-full items-center justify-center rounded-lg border text-sm font-bold tabular-nums transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : i + 1 < n ? "bg-white text-slate-900" : "bg-white text-slate-500"}`}
-                  style={
-                    on
-                      ? { background: "#8E254E", borderColor: "#8E254E" }
-                      : { borderColor: i + 1 < n ? "#8E254E" : "#d4d4d4" }
-                  }
+                  className={`chip h-11 w-full justify-center px-0 tabular-nums focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "" : i + 1 < n ? "text-slate-900" : "text-slate-500"}`}
+                  style={!on && i + 1 < n ? { borderColor: "#8E254E" } : undefined}
                 >
                   {i + 1}
                 </button>
@@ -1170,14 +954,9 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                     type="button"
                     aria-current={on ? "step" : undefined}
                     onClick={() => ir(i + 1)}
-                    className={`flex w-full items-start gap-2 rounded-lg px-2 py-1.5 text-left text-[13px] leading-snug transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-white font-semibold text-slate-900 shadow-soft" : "text-slate-700 hover:bg-white"}`}
+                    className={`flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-[13px] leading-snug transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "tarjeta font-semibold text-slate-900" : "text-slate-700 hover:bg-white"}`}
                   >
-                    <span
-                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold tabular-nums ${on ? "text-white" : "bg-slate-100 text-slate-700"}`}
-                      style={on ? { background: "#8E254E" } : undefined}
-                    >
-                      {i + 1}
-                    </span>
+                    <span className={`num ${on ? "num-on" : ""}`}>{i + 1}</span>
                     <span className="min-w-0 pt-0.5">{f.celdas[0]}</span>
                   </button>
                 </li>
@@ -1189,26 +968,17 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           key={n}
           id="paso-descarga"
           tabIndex={-1}
-          className="pantalla-in scroll-mt-4 rounded-2xl border bg-white p-4 shadow-soft focus:outline-none"
-          style={{ borderColor: "#e6e6e6" }}
+          className="pantalla-in tarjeta scroll-mt-4 p-4 focus:outline-none"
           aria-live="polite"
         >
           <div className="flex items-start justify-between gap-2">
-            <h2 className="text-lg font-extrabold text-slate-900">{fila.celdas[0]}</h2>
+            <h2 className="titulo-seccion">{fila.celdas[0]}</h2>
           </div>
-          <dl
-            className="mt-3 divide-y md:grid md:grid-cols-3 md:gap-4 md:divide-y-0"
-            style={{ borderColor: "#e6e6e6" }}
-          >
+          <dl className="mt-3 divide-y md:grid md:grid-cols-3 md:gap-4 md:divide-y-0">
             {t.columnas.slice(1).map((col, j) => {
-              const I = [Eye, Lightbulb, Wrench][j] ?? Eye;
               return (
                 <div key={col} className="py-2.5 md:py-0">
-                  <dt
-                    className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"
-                    style={{ color: j === 2 ? hex.ink : "#475569" }}
-                  >
-                    <I size={14} aria-hidden="true" />
+                  <dt className="rotulo mb-1" style={j === 2 ? { color: hex.ink } : undefined}>
                     {col}
                   </dt>
                   <dd className="text-[15px] text-slate-800">
@@ -1245,11 +1015,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
               </summary>
               <ul className="mt-2 space-y-2">
                 {patrones.map((p) => (
-                  <li
-                    key={p.ancla}
-                    className="rounded-xl border p-3 text-sm text-slate-800"
-                    style={{ borderColor: "#e6e6e6" }}
-                  >
+                  <li key={p.ancla} className="literal py-1 text-sm text-slate-800">
                     <strong>{p.b.lead} </strong>
                     <Texto>{p.b.texto}</Texto>
                   </li>
@@ -1295,16 +1061,13 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           {n === 8 && (
             <a
               href={href("consultar", "figura-3")}
-              className="mt-4 inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-white"
+              className="mt-4 inline-flex min-h-11 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold text-white"
               style={{ background: hex.strong }}
             >
               Algoritmo de la Figura 3 <ArrowRight size={14} aria-hidden="true" />
             </a>
           )}
-          <div
-            className="mt-4 flex items-center justify-between border-t pt-3"
-            style={{ borderColor: "#e6e6e6" }}
-          >
+          <div className="separador mt-4 flex items-center justify-between border-t pt-3">
             {/* 0.72.0: en el primer y el último paso, sin el botón que no lleva a ningún sitio. */}
             <button
               type="button"
@@ -1314,7 +1077,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                 alPaso();
                 ir(n - 1);
               }}
-              className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 disabled:opacity-40"
+              className="chip disabled:opacity-40"
             >
               <ChevronLeft size={14} aria-hidden="true" /> Paso {n - 1 || 1}
             </button>
@@ -1327,7 +1090,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                 alPaso();
                 ir(n + 1);
               }}
-              className="inline-flex min-h-11 items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-40"
+              className="inline-flex min-h-11 items-center gap-1 rounded-md px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-40"
               style={{ background: hex.strong }}
             >
               Paso {Math.min(8, n + 1)} <ChevronRight size={14} aria-hidden="true" />
@@ -1368,14 +1131,8 @@ export function Interrupcion(_props: { tramo?: string }) {
       />
       {/* 0.72.0: «¿le quito la bomba?» en el hospital está en el ingreso (apartado 10). */}
       <div className="no-imprimir mt-4">
-        <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-          Véase también
-        </div>
-        <a
-          href={href("consultar", "situacion", "ingreso-hospitalario::m4")}
-          className="inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-8"
-          style={{ borderColor: "#d4d4d4" }}
-        >
+        <div className="rotulo mb-1.5">Véase también</div>
+        <a href={href("consultar", "situacion", "ingreso-hospitalario::m4")} className="chip">
           Ingreso hospitalario: criterios para no continuar y paso a pauta subcutánea{" "}
           <ArrowRight size={12} aria-hidden="true" />
         </a>

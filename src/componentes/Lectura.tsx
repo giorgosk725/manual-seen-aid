@@ -83,10 +83,7 @@ export function ComoCitar({ apartado }: { apartado: Apartado }) {
         <Quote size={14} aria-hidden="true" /> Cómo citar
       </button>
       {abierto && (
-        <div
-          className="mt-2 w-full rounded-xl border bg-white p-3 text-sm"
-          style={{ borderColor: "#e6e6e6" }}
-        >
+        <div className="mt-2 w-full tarjeta p-3 text-sm">
           <p className="select-all text-slate-800">{texto}</p>
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <button

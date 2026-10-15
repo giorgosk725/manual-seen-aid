@@ -70,7 +70,7 @@ export function SinResultados({
             <a
               href={p.ruta}
               onClick={onIr}
-              className="inline-flex min-h-11 items-center rounded-full border border-slate-300 bg-white px-3 text-sm text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9"
+              className="chip font-normal focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
             >
               {p.t}
             </a>

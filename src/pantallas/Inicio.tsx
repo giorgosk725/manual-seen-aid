@@ -5,11 +5,9 @@
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
-  Calculator,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  ListOrdered,
   Printer,
   RotateCcw,
 } from "lucide-react";
@@ -120,15 +118,12 @@ function Hoja({ sis }: { sis?: number }) {
         <button
           type="button"
           onClick={() => imprimirRegion(() => ref.current)}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-slate-800 px-3 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-md bg-slate-800 px-3 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
         >
           <Printer size={15} aria-hidden="true" /> Imprimir la hoja
         </button>
         {sis !== undefined && (
-          <a
-            href={href("pacientes", "plan", ORDEN_SISTEMAS[sis])}
-            className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 hover:border-slate-500"
-          >
+          <a href={href("pacientes", "plan", ORDEN_SISTEMAS[sis])} className="chip">
             Plan de seguridad (hoja para el paciente) <ArrowRight size={13} aria-hidden="true" />
           </a>
         )}
@@ -142,13 +137,9 @@ function Hoja({ sis }: { sis?: number }) {
           </button>
         )}
       </div>
-      <div
-        ref={ref}
-        className="hoja-inicio imprimible rounded-2xl border bg-white p-4 shadow-soft sm:p-6"
-        style={{ borderColor: "#e6e6e6" }}
-      >
-        <h2 className="text-base font-extrabold text-slate-900">{titulo}</h2>
-        <h3 className="mt-3 text-sm font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
+      <div ref={ref} className="hoja-inicio imprimible tarjeta p-4 sm:p-6">
+        <h2 className="titulo-seccion">{titulo}</h2>
+        <h3 className="rotulo mt-4" style={{ color: hex.ink }}>
           Antes de activar el modo automático
         </h3>
         <ul className="mt-1 space-y-1">
@@ -168,16 +159,13 @@ function Hoja({ sis }: { sis?: number }) {
         </ul>
         {h.sistema && (
           <>
-            <h3
-              className="mt-3 text-sm font-bold uppercase tracking-wide"
-              style={{ color: hex.ink }}
-            >
+            <h3 className="rotulo mt-4" style={{ color: hex.ink }}>
               Qué se programa en {sistema}
             </h3>
             <dl className="mt-1 grid gap-2 sm:grid-cols-2">
               {[h.sistema.objetivo, h.sistema.parametros].map((x) => (
-                <div key={x.etiqueta} className="rounded-lg bg-slate-50 p-2">
-                  <dt className="text-xs font-bold text-slate-600">{x.etiqueta}</dt>
+                <div key={x.etiqueta} className="casilla p-2">
+                  <dt className="text-xs font-semibold text-slate-600">{x.etiqueta}</dt>
                   <dd className="text-sm text-slate-800">
                     <Lineas>{x.texto}</Lineas>
                   </dd>
@@ -189,13 +177,13 @@ function Hoja({ sis }: { sis?: number }) {
             )}
           </>
         )}
-        <h3 className="mt-3 text-sm font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
+        <h3 className="rotulo mt-4" style={{ color: hex.ink }}>
           Parámetros iniciales
         </h3>
         <dl className="mt-1 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {partida.map(([k, v]) => (
-            <div key={k} className="rounded-lg bg-slate-50 p-2">
-              <dt className="text-xs font-bold text-slate-600">{k}</dt>
+            <div key={k} className="casilla p-2">
+              <dt className="text-xs font-semibold text-slate-600">{k}</dt>
               <dd className="mt-0.5 min-h-6 text-sm font-bold tabular-nums text-slate-900">
                 {v ?? (
                   <span className="block h-5 border-b border-dashed border-slate-400">
@@ -206,7 +194,7 @@ function Hoja({ sis }: { sis?: number }) {
             </div>
           ))}
         </dl>
-        <h3 className="mt-3 text-sm font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
+        <h3 className="rotulo mt-4" style={{ color: hex.ink }}>
           Seguimiento de los primeros 3 meses
         </h3>
         <p className="mt-1 text-sm text-slate-800">{h.seguimiento.texto}</p>
@@ -225,10 +213,7 @@ function Hoja({ sis }: { sis?: number }) {
             </li>
           ))}
         </ul>
-        <p
-          className="mt-3 border-t pt-2 text-[11px] text-slate-500"
-          style={{ borderColor: "#e6e6e6" }}
-        >
+        <p className="fuente-pie separador mt-4 border-t pt-2">
           Hoja de comprobación del complemento interactivo del capítulo {CAPITULO.numero} (versión{" "}
           {VERSION_APP}); no es una publicación del Manual SEEN. Fuente: capítulo publicado el{" "}
           {CAPITULO.fechaFuente}, pp.{" "}
@@ -271,14 +256,14 @@ function TareaVista({
   );
   const siguiente = tarea.siguiente?.(sis) ?? null;
   return (
-    <section className="border-t" style={{ borderColor: "#e6e6e6" }} aria-labelledby={`${id}-t`}>
+    <section className="separador border-t" aria-labelledby={`${id}-t`}>
       <h3 id={`${id}-t`}>
         <button
           type="button"
           aria-expanded={abierta}
           aria-controls={id}
           onClick={onToggle}
-          className="flex min-h-12 w-full items-center justify-between gap-3 py-2 text-left text-[15px] font-bold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+          className="titulo-tarjeta flex min-h-12 w-full items-center justify-between gap-3 py-2 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
         >
           <span>{tarea.titulo}</span>
           <ChevronDown
@@ -290,7 +275,7 @@ function TareaVista({
       </h3>
       {abierta && (
         <div id={id} className="pb-4">
-          <div className="divide-y" style={{ borderColor: "#eeeeee" }}>
+          <div className="divide-y">
             {tarea.piezas.map((i, k) => (
               <div key={i} id={`pieza-${i}`} className="py-2.5 first:pt-0">
                 <PiezaVista pieza={fase.piezas[i]} sis={sis} compacta siglas={siglasDe[k]} />
@@ -360,8 +345,6 @@ function PasosInicio({
       else s.add(k);
       return s;
     });
-  const boton = (on: boolean) =>
-    `inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`;
   return (
     <div id="paso-guia" className="scroll-mt-4">
       <ol className="mb-3 grid gap-1.5 sm:grid-cols-5" aria-label="Pasos de la fase">
@@ -377,18 +360,9 @@ function PasosInicio({
                   alPaso();
                   ir(i + 1);
                 }}
-                className={`flex h-full min-h-11 w-full items-start gap-2 rounded-lg border px-2.5 py-1.5 text-left text-[13px] font-semibold leading-snug transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"} ${on ? "" : "max-sm:hidden"}`}
-                style={
-                  on
-                    ? { background: hex.strong, borderColor: hex.strong }
-                    : { borderColor: "#e6e6e6" }
-                }
+                className={`chip h-full w-full items-start px-2.5 py-1.5 text-[13px] leading-snug focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "" : "max-sm:hidden"}`}
               >
-                <span
-                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold tabular-nums ${on ? "bg-white/20" : "bg-slate-100 text-slate-600"}`}
-                >
-                  {i + 1}
-                </span>
+                <span className={`num ${on ? "bg-white/20 text-white" : ""}`}>{i + 1}</span>
                 <span className="min-w-0">{x.titulo}</span>
               </button>
             </li>
@@ -404,7 +378,7 @@ function PasosInicio({
             alPaso();
             ir(Number(e.target.value));
           }}
-          className="min-h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-2 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+          className="min-h-11 min-w-0 flex-1 rounded-md border border-slate-300 bg-white px-2 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
         >
           {PASOS_GUIA.map((x, i) => (
             <option key={x.id} value={i + 1}>
@@ -414,7 +388,7 @@ function PasosInicio({
         </select>
       </label>
       {/* 0.73.0: sin «Paso n de N» (lo dicen el selector y el número del título). */}
-      <h3 id="guia-titulo" className="text-lg font-extrabold text-slate-900">
+      <h3 id="guia-titulo" className="titulo-seccion">
         <span className="mr-2 tabular-nums" style={{ color: hex.strong }}>
           {n}.
         </span>
@@ -433,12 +407,7 @@ function PasosInicio({
                   type="button"
                   aria-pressed={on}
                   onClick={() => setResp({ ...resp, [q.id]: on ? "" : o.id })}
-                  className={boton(on)}
-                  style={
-                    on
-                      ? { background: "#334155", borderColor: "#334155" }
-                      : { borderColor: "#d4d4d4" }
-                  }
+                  className="chip focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                 >
                   {o.texto}
                 </button>
@@ -448,7 +417,7 @@ function PasosInicio({
         </div>
       ))}
       {piezas.length > 0 && (
-        <div className="mt-3 divide-y" style={{ borderColor: "#eeeeee" }}>
+        <div className="mt-3 divide-y">
           {piezas.map((pz, k) => (
             <div key={k} className="py-3 first:pt-0">
               <PiezaVista pieza={pz} sis={sis} compacta siglas={siglas[k]} />
@@ -457,11 +426,7 @@ function PasosInicio({
         </div>
       )}
       {lista.length > 0 && (
-        <ul
-          className="mt-3 space-y-1.5 rounded-xl border bg-slate-50 p-3"
-          style={{ borderColor: "#e6e6e6" }}
-          aria-label="Para marcar en la consulta"
-        >
+        <ul className="casilla mt-3 space-y-1.5 p-3" aria-label="Para marcar en la consulta">
           {lista.map((x) => (
             <li key={x}>
               <label className="flex gap-2 text-sm text-slate-800">
@@ -505,7 +470,7 @@ function PasosInicio({
             if (n === 1) onAntesDelPrimero();
             else ir(n - 1);
           }}
-          className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700"
+          className="chip focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
         >
           <ChevronLeft size={14} aria-hidden="true" />
           {n === 1 ? "Fase anterior" : "Paso anterior"}
@@ -517,7 +482,7 @@ function PasosInicio({
             if (n === PASOS_GUIA.length) onTrasElUltimo();
             else ir(n + 1);
           }}
-          className="inline-flex min-h-11 items-center gap-1 rounded-lg px-3 text-sm font-semibold text-white"
+          className="inline-flex min-h-11 items-center gap-1 rounded-md px-3 text-sm font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           style={{ background: hex.strong }}
         >
           {n === PASOS_GUIA.length ? "Siguiente fase: 3 primeros meses" : "Siguiente paso"}{" "}
@@ -604,9 +569,9 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
       <div role="group" aria-label="Herramienta" className="mb-2 grid grid-cols-3 gap-1.5">
         {(
           [
-            { id: CALC, t: "Cálculo", I: Calculator, on: actual === CALC },
-            { id: FASES[0].id, t: "Fases", I: ListOrdered, on: enFases },
-            { id: HOJA, t: "Hoja", I: Printer, on: actual === HOJA },
+            { id: CALC, t: "Cálculo", on: actual === CALC },
+            { id: FASES[0].id, t: "Fases", on: enFases },
+            { id: HOJA, t: "Hoja", on: actual === HOJA },
           ] as const
         ).map((x) => (
           <button
@@ -615,14 +580,8 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
             aria-pressed={x.on}
             aria-label={x.id === HOJA ? "Hoja de comprobación para imprimir" : undefined}
             onClick={() => (x.id === FASES[0].id && enFases ? undefined : ir(x.id))}
-            className={`flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 text-center text-[13px] font-bold leading-tight transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:flex-row sm:gap-2 sm:text-sm ${x.on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
-            style={
-              x.on
-                ? { background: hex.strong, borderColor: hex.strong }
-                : { borderColor: "#e2e8f0" }
-            }
+            className="chip justify-center text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
-            <x.I size={18} aria-hidden="true" />
             {x.t}
           </button>
         ))}
@@ -634,7 +593,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
           <button
             type="button"
             onClick={nuevoTrabajo}
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-semibold text-slate-700 hover:underline"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-md px-2 text-sm font-semibold text-slate-700 hover:underline"
           >
             <RotateCcw size={14} aria-hidden="true" /> Nuevo inicio (vaciar datos)
           </button>
@@ -643,9 +602,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
 
       {actual !== CALC && (
         <>
-          <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-            Sistema
-          </div>
+          <div className="rotulo mb-1">Sistema</div>
           <div className="mb-4">
             <CasillasSistema
               seleccion={sis !== undefined ? [sis] : []}
@@ -677,18 +634,9 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                     type="button"
                     aria-current={on ? "step" : undefined}
                     onClick={() => ir(f.id)}
-                    className={`flex min-h-11 w-full items-center gap-2 rounded-lg border px-2.5 py-1.5 text-left text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
-                    style={
-                      on
-                        ? { background: hex.strong, borderColor: hex.strong }
-                        : { borderColor: "#e6e6e6" }
-                    }
+                    className="chip w-full px-2.5 py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                   >
-                    <span
-                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${on ? "bg-white/20" : "bg-slate-100 text-slate-600"}`}
-                    >
-                      {i + 1}
-                    </span>
+                    <span className={`num ${on ? "bg-white/20 text-white" : ""}`}>{i + 1}</span>
                     <span className="min-w-0">{f.corto}</span>
                   </button>
                 </li>
@@ -704,12 +652,11 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
         ) : fase ? (
           <section
             key={actual}
-            className="pantalla-in rounded-2xl border bg-white px-4 pb-3 pt-4"
-            style={{ borderColor: "#e6e6e6" }}
+            className="pantalla-in tarjeta px-4 pb-3 pt-4"
             aria-labelledby="fase-titulo"
           >
             <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
-              <h2 id="fase-titulo" className="text-lg font-extrabold text-slate-900">
+              <h2 id="fase-titulo" className="titulo-seccion">
                 <span className="mr-2 tabular-nums" style={{ color: hex.strong }}>
                   {n + 1}.
                 </span>
@@ -752,10 +699,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
               </div>
             )}
             {fase.id !== "inicio" && piezasSueltas(fase).length > 0 && (
-              <p
-                className="mt-2 flex flex-wrap gap-x-4 border-t pt-2 text-sm"
-                style={{ borderColor: "#e6e6e6" }}
-              >
+              <p className="separador mt-2 flex flex-wrap gap-x-4 border-t pt-2 text-sm">
                 {piezasSueltas(fase).map((i) => (
                   <PiezaVista key={i} pieza={fase.piezas[i]} sis={sis} compacta />
                 ))}
@@ -776,7 +720,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
               alPaso();
               ir(FASES[n - 1].id);
             }}
-            className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-slate-700 disabled:opacity-40"
+            className="chip disabled:opacity-40"
           >
             <ChevronLeft size={14} aria-hidden="true" /> Fase anterior
           </button>
@@ -786,7 +730,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
               alPaso();
               ir(n === FASES.length - 1 ? HOJA : FASES[n + 1].id);
             }}
-            className="inline-flex min-h-11 items-center gap-1 rounded-lg px-3 text-sm font-semibold text-white"
+            className="inline-flex min-h-11 items-center gap-1 rounded-md px-3 text-sm font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
             style={{ background: hex.strong }}
           >
             {n === FASES.length - 1 ? "Hoja de comprobación" : "Siguiente"}{" "}

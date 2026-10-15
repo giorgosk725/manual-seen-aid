@@ -31,17 +31,16 @@ function Franja() {
 
 export function Portada() {
   return (
-    <div className="space-y-3 sm:space-y-5">
+    <div className="space-y-3 sm:space-y-4">
       <section
-        className="cabecera-manual relative overflow-hidden rounded-[4px] border bg-white"
-        style={{ borderColor: "#e6e6e6" }}
+        className="cabecera-manual tarjeta relative overflow-hidden rounded-[4px]"
         aria-labelledby="titulo-capitulo"
       >
         <Franja />
         <div className="px-4 py-3 sm:px-6 sm:py-4 lg:px-7">
           <div className="min-w-0">
             <div
-              className="etiqueta-area flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] sm:text-xs"
+              className="etiqueta-area flex flex-wrap items-center gap-x-2 gap-y-1 text-xs"
               style={{ color: SEEN.diabetesOsc }}
             >
               <span
@@ -73,10 +72,7 @@ export function Portada() {
         <MapaConsulta />
       </div>
 
-      <footer
-        className="flex flex-col gap-1 border-t pt-4 text-sm text-slate-600 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5"
-        style={{ borderColor: "#e6e6e6" }}
-      >
+      <footer className="separador flex flex-col gap-1 border-t pt-4 text-sm text-slate-600 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5">
         <a
           href={CAPITULO.url}
           target="_blank"

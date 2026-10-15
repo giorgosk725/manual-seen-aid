@@ -27,12 +27,8 @@ const NODOS = [
 
 export function Figura1Animada() {
   return (
-    <figure
-      className="rounded-2xl border bg-white p-4 shadow-soft"
-      style={{ borderColor: "#e6e6e6" }}
-      aria-label="Figura 1 como diagrama animado"
-    >
-      <div className="mb-2 text-xs font-bold uppercase tracking-wide" style={{ color: "#15324f" }}>
+    <figure className="tarjeta p-4" aria-label="Figura 1 como diagrama animado">
+      <div className="mb-2 rotulo" style={{ color: "#15324f" }}>
         Figura 1 · diagrama
       </div>
       <div className="relative mx-auto max-w-md">
