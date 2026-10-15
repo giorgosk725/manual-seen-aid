@@ -66,7 +66,7 @@ import {
 import { FRECUENTES, type Frecuente } from "./frecuentes";
 import { HOJAS_EXTRA } from "./hojas";
 import { CON_AMPLIACION, CON_CASOS, retirado } from "./edicion";
-import { diagramaEnEdicion } from "./diagramasRetirados";
+import { diagramaEnEdicion, rutaDeDiagrama } from "./diagramasRetirados";
 
 const sinMarcado = (s: string) => plano(s);
 
@@ -178,7 +178,7 @@ export function indice(): Entrada[] {
       titulo: `Diagrama: ${d.titulo}`,
       texto: `${d.titulo}. ${d.resumen}`,
       pagina: d.paginas[0],
-      ruta: d.id === "interrupcion" ? href("consultar", "interrupcion") : href("visual", d.id),
+      ruta: rutaDeDiagrama(d.id),
     });
   }
   for (const r of BIBLIOGRAFIA) {

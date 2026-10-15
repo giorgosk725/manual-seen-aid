@@ -106,8 +106,8 @@ export const FASES: Fase[] = [
       { t: "frase", apartado: "10-situaciones", bloque: "b6", k: [0, 2] },
       {
         t: "enlace",
-        texto: "Gestación, sistema a sistema (diagrama)",
-        ruta: href("visual", "gestacion-sistemas"),
+        texto: "Gestación, sistema a sistema",
+        ruta: href("consultar", "situacion", "gestacion"),
       },
       { t: "frase", apartado: "08-iniciacion", bloque: "b6", k: [2] },
     ],

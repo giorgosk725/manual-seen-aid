@@ -286,11 +286,11 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
     fuente: "pp. 17-18",
     pagina: 17,
     guion: [
-      { rotulo: "Autorización y evidencia por sistema", apartado: S, bloque: "b3" },
+      // 0.73.0: lo de cada sistema va arriba (GestacionSistema); aquí, lo común a los cuatro.
+      { rotulo: "Elección del sistema", apartado: S, bloque: "b3", k: [0, 1] },
       { rotulo: "Objetivos de HbA1c y de MCG", apartado: S, bloque: "b4" },
-      { rotulo: "Evidencia: AiDAPT, CRISTAL y CIRCUIT", apartado: S, bloque: "b5" },
-      { rotulo: "Seguimiento y objetivo del algoritmo", apartado: S, bloque: "b6" },
-      { rotulo: "Control-IQ+", apartado: S, bloque: "b9" },
+      { rotulo: "Comparación de los ensayos", apartado: S, bloque: "b5", k: [3] },
+      { rotulo: "Inicio y seguimiento", apartado: S, bloque: "b6", k: [0, 1] },
       { rotulo: "Cetoacidosis: vigilancia", apartado: S, bloque: "b10" },
       { rotulo: "Parto y posparto", apartado: S, bloque: "b11" },
     ],

@@ -2,7 +2,7 @@
    zoom arriba y los diagramas hechos con el texto del capítulo debajo, por temas. Sin los tres que
    redibujaban una tabla o una figura (diagramasRetirados.ts). */
 import { ArrowRight, Images, Maximize2 } from "lucide-react";
-import { diagramaEnEdicion } from "../diagramasRetirados";
+import { diagramaEnEdicion, rutaDeDiagrama } from "../diagramasRetirados";
 import { ICONO_DIAGRAMA } from "../nav";
 import { DIAGRAMAS, type DiagramaId } from "../contenido/diagramas";
 import { F1, F2, INFO, apartadoDeFigura, rutaDeFigura } from "../contenido";
@@ -72,12 +72,8 @@ function GaleriaDiagramas() {
               return (
                 <li key={d.id}>
                   <a
-                    // La interrupción tiene un solo hogar: la pantalla de consulta (0.72.2).
-                    href={
-                      d.id === "interrupcion"
-                        ? href("consultar", "interrupcion")
-                        : href("visual", d.id)
-                    }
+                    // Con un solo hogar en consulta, la galería lleva allí (0.72.2-0.73.0).
+                    href={rutaDeDiagrama(d.id)}
                     className="group flex h-full gap-3 rounded-lg border bg-white p-3 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
                     style={{ borderColor: "#e6e6e6", borderLeft: `4px solid ${g.color}` }}
                   >

@@ -48,11 +48,7 @@ import {
 } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, rutaDeTabla } from "../contenido";
 import { INTERRUPCION_LINEA } from "../contenido/diagramas";
-import {
-  GestacionPorSistema,
-  InterrupcionPantalla,
-  ObjetivosDePoblacion,
-} from "../componentes/Diagramas";
+import { InterrupcionPantalla, ObjetivosDePoblacion } from "../componentes/Diagramas";
 import {
   GUION,
   SIS_IDS,
@@ -65,6 +61,7 @@ import {
   type SituacionGuia,
 } from "../situaciones";
 import { PiezaVista } from "../componentes/Piezas";
+import { GestacionSistema } from "../componentes/GestacionSistema";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { kDe, siglasPorPiezas, type Pieza } from "../inicio";
 
@@ -818,6 +815,17 @@ export function SituacionSistema({
               <CabeceraSituacion id={guia.id} etiqueta={guia.etiqueta} onCambiar={cambiar} />
               {/* 0.72.0: sin la frase de entrada (la regla de la 0.70.0; queda en la búsqueda). */}
               <div id="conducta-situacion" className="scroll-mb-28 scroll-mt-4" />
+              {/* 0.73.0: en la gestación, primero lo de cada sistema (frases literales del
+                  apartado 10); después los objetivos y lo común. */}
+              {guia.id === "gestacion" && (
+                <section
+                  aria-label="Gestación, sistema a sistema"
+                  className="rounded-2xl border bg-white p-4 shadow-soft"
+                  style={{ borderColor: "#e6e6e6" }}
+                >
+                  <GestacionSistema inicial={sistema ? SIS_IDS.indexOf(sistema) : undefined} />
+                </section>
+              )}
               {/* Los objetivos de MCG de esa población, a la vista (antes, un enlace al pie). */}
               {guia.enlaces
                 .map((l) => /^#\/visual\/objetivos-mcg\/([a-z-]+)$/.exec(l.ruta)?.[1])
@@ -832,15 +840,6 @@ export function SituacionSistema({
                     <ObjetivosDePoblacion id={pob} />
                   </section>
                 ))}
-              {guia.id === "gestacion" && (
-                <section
-                  aria-label="Gestación, sistema a sistema"
-                  className="rounded-2xl border bg-white p-4 shadow-soft"
-                  style={{ borderColor: "#e6e6e6" }}
-                >
-                  <GestacionPorSistema />
-                </section>
-              )}
               <GuionVista
                 momentos={guia.guion}
                 clave={guia.id}

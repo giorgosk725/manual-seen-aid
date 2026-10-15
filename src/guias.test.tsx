@@ -75,3 +75,15 @@ describe("Guías por referencias: «Cómo funciona»", () => {
     expect(await axe(container, AXE)).toHaveNoViolations();
   });
 });
+
+describe("Gestación por sistema (0.73.0)", () => {
+  it("cada pieza existe en el capítulo y cada sistema tiene su autorización", async () => {
+    const { GESTACION_POR_SISTEMA } = await import("./gestacion");
+    const { textosDePieza } = await import("./inicio");
+    GESTACION_POR_SISTEMA.forEach((bloques, c) => {
+      expect(bloques[0].rotulo).toMatch(/^Autorización/);
+      for (const b of bloques)
+        for (const p of b.piezas) expect(textosDePieza(p, c).join(" ").length).toBeGreaterThan(20);
+    });
+  });
+});
