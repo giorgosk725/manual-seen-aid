@@ -22,7 +22,7 @@ export function FuentePie({
   const unicas = fuentes.filter((f) => !vistas.has(f.texto) && !!vistas.add(f.texto));
   if (!unicas.length) return null;
   return (
-    <p className={`${className} text-[13px] text-slate-500`}>
+    <p className={`fuente-pie ${className}`}>
       Fuente:{" "}
       {unicas.map((f, k) => (
         <span key={f.texto}>
@@ -33,7 +33,7 @@ export function FuentePie({
               href={f.ruta}
               // 0.75.1 (auditoría): en línea, con el área táctil de 44 px por `tap-44` (antes,
               // inline-flex de 44 px de alto: en el móvil cada fuente caía a su propia línea).
-              className="tap-44 inline-block py-1 font-semibold text-slate-600 hover:underline"
+              className="tap-44 inline-block py-1"
             >
               {f.texto}
             </a>

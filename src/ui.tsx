@@ -163,18 +163,14 @@ export function Badge({
   children: ReactNode;
 }) {
   const m = {
-    slate: "bg-slate-100 text-slate-800",
+    slate: "",
     emerald: "bg-emerald-100 text-emerald-800",
     amber: "bg-amber-100 text-amber-800",
     red: "bg-red-100 text-red-800",
     sky: "bg-sky-100 text-sky-800",
     violet: "bg-violet-50 text-violet-900",
   };
-  return (
-    <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${m[tone]}`}>
-      {children}
-    </span>
-  );
+  return <span className={`insignia ${m[tone]}`}>{children}</span>;
 }
 
 /* Aviso semántico (receta 9): squircle degradado + lavado tinte→blanco. El tono es
@@ -270,8 +266,7 @@ export function Segmented<T extends string>({
     <div
       role="group"
       aria-label={label}
-      className={`${wrap ? "flex flex-wrap" : "flex overflow-x-auto"} gap-1 rounded-xl border p-1 shadow-soft`}
-      style={{ borderColor: "#e6e6e6", background: "#ffffff" }}
+      className={`${wrap ? "flex flex-wrap" : "flex overflow-x-auto"} gap-1.5`}
     >
       {options.map((o) => {
         const on = value === o.id;
@@ -282,8 +277,8 @@ export function Segmented<T extends string>({
             type="button"
             onClick={() => onChange(o.id)}
             aria-pressed={on}
-            className={`flex min-h-11 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-semibold transition sm:min-h-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 ${wrap ? "" : "flex-1"} ${on ? "text-white shadow-sm" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
-            style={on ? { background: o.gradient || "#8E254E" } : undefined}
+            className={`chip justify-center whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 ${wrap ? "" : "flex-1"}`}
+            style={on && o.gradient ? { background: o.gradient } : undefined}
           >
             {I && <I size={15} aria-hidden="true" />}
             {o.shortLabel ? (
@@ -322,29 +317,15 @@ export function Foldable({
   className?: string;
 }) {
   return (
-    <details
-      id={id}
-      open={open || undefined}
-      className={`group scroll-mt-4 rounded-xl border border-slate-200 bg-white shadow-soft ${className}`}
-    >
+    <details id={id} open={open || undefined} className={`tarjeta group scroll-mt-4 ${className}`}>
       <summary className="flex cursor-pointer list-none items-center gap-2.5 rounded-xl px-4 py-3 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600">
         {Icon && (
-          <span
-            aria-hidden="true"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-            style={{ background: "var(--cat-soft, #f1f5f9)", color: "var(--cat-ink, #334155)" }}
-          >
-            <Icon size={16} />
-          </span>
+          <Icon size={16} aria-hidden="true" className="shrink-0" style={{ color: "var(--cat)" }} />
         )}
         <span className="min-w-0 flex-1">
           <span className="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-800">
             {title}
-            {count != null && (
-              <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-xs font-semibold text-slate-600">
-                {count}
-              </span>
-            )}
+            {count != null && <span className="insignia">{count}</span>}
           </span>
           {subtitle && <span className="block text-xs text-slate-500">{subtitle}</span>}
         </span>
@@ -435,8 +416,8 @@ export function BotonImprimir({
       onClick={() => imprimirRegion(() => objetivo.current || null)}
       className={
         compacto
-          ? "tap-44 inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-          : "flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg bg-slate-800 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+          ? "chip tap-44 shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+          : "flex min-h-11 shrink-0 items-center gap-1.5 rounded-md bg-slate-800 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
       }
     >
       <Printer size={compacto ? 14 : 15} aria-hidden="true" />
@@ -497,7 +478,7 @@ export function PaginaBadge({ p, p2 }: { p: number; p2?: number }) {
   const txt = p2 && p2 !== p ? `pp. ${p}–${p2}` : `p. ${p}`;
   return (
     <span
-      className="pagina-badge"
+      className="pagina-badge tabular-nums"
       title={`Página ${p2 && p2 !== p ? `${p} a ${p2}` : p} del capítulo`}
     >
       {txt}
