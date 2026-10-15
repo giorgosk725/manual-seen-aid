@@ -1308,15 +1308,18 @@ function InterrupcionLinea() {
       {cetonemia && (
         <a
           href={href("consultar", "figura-3")}
-          className="no-imprimir flex min-h-11 items-center gap-2 rounded-xl border px-3 py-2 text-sm text-slate-900 transition hover:border-slate-500"
+          className="no-imprimir flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border px-3 py-2 text-sm text-slate-900 transition hover:border-slate-500"
           style={{ borderColor: TRAMO_HEX.rojo.border, background: TRAMO_HEX.rojo.soft }}
         >
           <Droplets size={16} aria-hidden="true" style={{ color: TRAMO_HEX.rojo.strong }} />
-          <span className="min-w-0 flex-1">
+          {/* 0.75.1: en el móvil, el enlace baja debajo del texto (no lo estrecha). */}
+          <span className="min-w-0 flex-1 basis-[calc(100%-2rem)] sm:basis-0">
             <span className="font-bold">{cetonemia.cuando}: </span>
             <TS>{cetonemia.texto}</TS>
           </span>
-          <span className="shrink-0 text-xs font-semibold underline">Ver la Figura 3</span>
+          <span className="shrink-0 pl-6 text-xs font-semibold underline sm:pl-0">
+            Ver la Figura 3
+          </span>
           <ArrowRight size={14} aria-hidden="true" className="shrink-0 text-slate-500" />
         </a>
       )}

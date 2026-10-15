@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-15",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — todo a la vista, Control-IQ+ y Liberty`,
+    titulo: `Complemento interactivo ${VERSION_APP} — fuentes en una línea y comparación filtrada`,
+    detalle: [
+      "La línea de fuente, en una sola línea también en el móvil (antes cada fuente caía a su propio renglón); en Situaciones, una sola fuente por tarjeta y los párrafos que la desarrollan aparte («Leer en el capítulo»).",
+      "Comparación: «Parámetros configurables en modo automático», abierto; el Resumen enseña solo los sistemas marcados.",
+      "Interrupción en el móvil: el enlace a la Figura 3, debajo del texto. Las direcciones de Sistemas aceptan también el identificador de Situaciones e Iniciar.",
+    ],
+  },
+  {
+    fecha: "2026-10-15",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.75.0 — todo a la vista, Control-IQ+ y Liberty",
     detalle: [
       "Nada útil plegado (petición del responsable): los apartados de cada situación, las comprobaciones previas del ejercicio, las tareas de cada fase de la iniciación, el paso «Sospechar y comprobar» de la Figura 3 en el móvil, las notas (edad de Liberty; corrección de Omnipod 5) y «Fuentes y revisión», abiertos; en la búsqueda, hasta tres pasajes más, abiertos.",
       "Control-IQ+: Tandem se nombra «Control-IQ / Control-IQ+» (el capítulo: según el dispositivo y la versión de software; Mobi, con Control-IQ+). En las tarjetas del resumen, Control-IQ+ (indicación, gestación, basal temporal) y Liberty en CamAPS FX (la frase que la define, indicación y gestación). Elección del sistema con la indicación y la gestación de cada uno.",

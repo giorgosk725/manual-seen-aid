@@ -455,7 +455,7 @@ function GuionVista({
                         <a
                           href={f.ruta}
                           onClick={() => marcarEnRuta(i)}
-                          className="inline-flex min-h-11 items-center font-semibold text-slate-600 hover:underline sm:min-h-6"
+                          className="tap-44 inline-block py-1 font-semibold text-slate-600 hover:underline"
                         >
                           {f.texto}
                         </a>
@@ -934,7 +934,11 @@ export function SituacionSistema({
                 )}
                 {/* 0.73.0: lo que los apartados 9 y 10 añaden para ese sistema. */}
                 {porSistema && sisIdx >= 0 && TABLA4_POR_SISTEMA[sit.id] && (
-                  <AnadidoDelSistema c={sisIdx} bloques={TABLA4_POR_SISTEMA[sit.id][sisIdx]} />
+                  <AnadidoDelSistema
+                    c={sisIdx}
+                    bloques={TABLA4_POR_SISTEMA[sit.id][sisIdx]}
+                    sinFuente
+                  />
                 )}
                 {porSistema && sisIdx >= 0 && (
                   <button
@@ -972,6 +976,8 @@ export function SituacionSistema({
                     </dl>
                   </>
                 )}
+                {/* 0.75.1 (auditoría): una sola línea de fuente (la tabla y lo añadido para el
+                    sistema); los párrafos que la desarrollan, aparte, como lectura. */}
                 <FuentePie
                   className="mt-0"
                   fuentes={[
@@ -979,12 +985,27 @@ export function SituacionSistema({
                       texto: `Tabla ${tabla.numero}, ${paginasDe(tabla.paginas[0], tabla.paginas[1])}`,
                       ruta: rutaDeTabla(sit.tabla),
                     },
-                    ...sit.leer.map((l) => ({
-                      texto: l.titulo,
-                      ruta: href("capitulo", l.slug, l.ancla),
-                    })),
+                    ...(porSistema && sisIdx >= 0 && TABLA4_POR_SISTEMA[sit.id]
+                      ? fuentesDePiezas(TABLA4_POR_SISTEMA[sit.id][sisIdx].flatMap((b) => b.piezas))
+                      : []),
                   ]}
                 />
+                {sit.leer.length > 0 && (
+                  <p className="text-[13px] text-slate-500">
+                    Leer en el capítulo:{" "}
+                    {sit.leer.map((l, k) => (
+                      <span key={l.slug + (l.ancla ?? "")}>
+                        {k > 0 && " · "}
+                        <a
+                          href={href("capitulo", l.slug, l.ancla)}
+                          className="tap-44 inline-block py-1 font-semibold text-slate-600 hover:underline"
+                        >
+                          {l.titulo}
+                        </a>
+                      </span>
+                    ))}
+                  </p>
+                )}
               </section>
               {GUION[sit.id] && (
                 <GuionVista

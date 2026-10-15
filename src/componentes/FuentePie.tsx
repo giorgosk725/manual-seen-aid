@@ -31,7 +31,9 @@ export function FuentePie({
           {f.ruta ? (
             <a
               href={f.ruta}
-              className="inline-flex min-h-11 items-center font-semibold text-slate-600 hover:underline sm:min-h-6"
+              // 0.75.1 (auditoría): en línea, con el área táctil de 44 px por `tap-44` (antes,
+              // inline-flex de 44 px de alto: en el móvil cada fuente caía a su propia línea).
+              className="tap-44 inline-block py-1 font-semibold text-slate-600 hover:underline"
             >
               {f.texto}
             </a>

@@ -882,7 +882,12 @@ const IDS_SISTEMA = ORDEN_SISTEMAS as readonly string[];
 
 function leerSeleccion(sel?: string): string[] {
   if (!sel || sel === "todos") return [];
-  return IDS_SISTEMA.filter((id) => sel.split("+").includes(id));
+  // 0.75.1: también con el identificador de Situaciones e Iniciar («minimed-780g», «control-iq»…).
+  const partes = sel.split("+").map((x) => {
+    const i = SLUG_TABLA.indexOf(x);
+    return i >= 0 ? IDS_SISTEMA[i] : x;
+  });
+  return IDS_SISTEMA.filter((id) => partes.includes(id));
 }
 
 /* «Situaciones» ya no es una sección de Sistemas: la dirección antigua lleva a Situaciones,
@@ -1130,13 +1135,17 @@ const VARIANTE: Record<number, { rotulo: string; lineas: string[] }> = {
   },
 };
 
-function EntradaSistemas() {
+function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
+  // 0.75.1 (auditoría): con sistemas marcados, solo sus tarjetas (como las otras pestañas).
+  const visibles = CATALOGO_SISTEMAS.map((s, c) => ({ s, c })).filter(
+    ({ s }) => !ids.length || ids.includes(s.id),
+  );
   return (
     <div className="space-y-4">
       {/* 13-10-2026: cada tarjeta con lo esencial de la Tabla 1 (fragmentos literales,
           CLAVE_ALGORITMO) para distinguirlos antes de entrar. */}
       <ul className="grid gap-3 sm:grid-cols-2">
-        {CATALOGO_SISTEMAS.map((s, c) => {
+        {visibles.map(({ s, c }) => {
           const h = SISTEMA_HEX[c];
           const k = CLAVE_ALGORITMO[c];
           const [nombreAlg, tipo] = algoritmoDelCapitulo(c).split(": algoritmo de tipo ");
@@ -1628,7 +1637,7 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
       />
       <BarraSistemas ids={ids} seccion={seccion} />
       {!seccion ? (
-        <EntradaSistemas />
+        <EntradaSistemas ids={ids} />
       ) : (
         <section
           key={seccion}
@@ -1647,7 +1656,8 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
           )}
           {seccion === "parametros" && (
             <>
-              <details className="mb-3">
+              {/* 0.75.1 (nada útil plegado): abierto. */}
+              <details className="mb-3" open>
                 <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
                   Parámetros configurables en modo automático
                 </summary>

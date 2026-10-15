@@ -44,12 +44,21 @@ function Bloques({ c, bloques }: { c: number; bloques: BloqueSistema[] }) {
 }
 
 /* Debajo de una casilla de la Tabla 4, para el sistema ya elegido (sin selector). */
-export function AnadidoDelSistema({ c, bloques }: { c: number; bloques: BloqueSistema[] }) {
+export function AnadidoDelSistema({
+  c,
+  bloques,
+  sinFuente = false,
+}: {
+  c: number;
+  bloques: BloqueSistema[];
+  /* La fuente va en la línea de fuente del bloque que lo contiene (0.75.1). */
+  sinFuente?: boolean;
+}) {
   if (!bloques.length) return null;
   return (
     <div className="mt-3">
       <Bloques c={c} bloques={bloques} />
-      <FuentePie fuentes={fuentesDePiezas(bloques.flatMap((b) => b.piezas))} />
+      {!sinFuente && <FuentePie fuentes={fuentesDePiezas(bloques.flatMap((b) => b.piezas))} />}
     </div>
   );
 }
