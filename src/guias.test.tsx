@@ -76,14 +76,29 @@ describe("Guías por referencias: «Cómo funciona»", () => {
   });
 });
 
-describe("Gestación por sistema (0.73.0)", () => {
-  it("cada pieza existe en el capítulo y cada sistema tiene su autorización", async () => {
-    const { GESTACION_POR_SISTEMA } = await import("./gestacion");
+describe("Lo de cada sistema por situación (0.73.0)", () => {
+  it("cada pieza existe en el capítulo (los recortes casan) y hay cuatro sistemas", async () => {
+    const { GUIA_POR_SISTEMA, TABLA4_POR_SISTEMA, FICHA_PARAMETROS, FICHA_MODOS } =
+      await import("./porSistema");
     const { textosDePieza } = await import("./inicio");
-    GESTACION_POR_SISTEMA.forEach((bloques, c) => {
-      expect(bloques[0].rotulo).toMatch(/^Autorización/);
-      for (const b of bloques)
-        for (const p of b.piezas) expect(textosDePieza(p, c).join(" ").length).toBeGreaterThan(20);
-    });
+    const listas = [
+      ...Object.values(GUIA_POR_SISTEMA).map((g) => g.bloques),
+      ...Object.values(TABLA4_POR_SISTEMA),
+      FICHA_PARAMETROS,
+      FICHA_MODOS,
+    ];
+    for (const bloques of listas) {
+      expect(bloques).toHaveLength(4);
+      bloques.forEach((bs, c) => {
+        for (const b of bs)
+          for (const p of b.piezas)
+            expect(textosDePieza(p, c).join(" ").length, b.rotulo).toBeGreaterThan(15);
+      });
+    }
+    // Gestación con CamAPS FX: el objetivo por trimestres y que tras el parto se eleva.
+    const camaps = GUIA_POR_SISTEMA.gestacion.bloques[2].flatMap((b) => b.piezas);
+    const texto = camaps.map((p) => textosDePieza(p, 2).join(" ")).join(" ");
+    expect(texto).toMatch(/80–90 mg\/dl/);
+    expect(texto).toMatch(/Tras el parto debe elevarse nuevamente el objetivo/);
   });
 });

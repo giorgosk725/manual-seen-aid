@@ -61,7 +61,8 @@ import {
   type SituacionGuia,
 } from "../situaciones";
 import { PiezaVista } from "../componentes/Piezas";
-import { GestacionSistema } from "../componentes/GestacionSistema";
+import { AnadidoDelSistema, BloquesPorSistema } from "../componentes/BloquesPorSistema";
+import { GUIA_POR_SISTEMA, TABLA4_POR_SISTEMA } from "../porSistema";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { kDe, siglasPorPiezas, type Pieza } from "../inicio";
 
@@ -322,7 +323,7 @@ const indiceDeMomento = (m?: string) => {
 /* En el ingreso, de entrada «Mantenimiento de la MCG, la bomba o el AID» y «Criterios para no
    continuar» (el ámbito, plegado); en la gestación, todo plegado: las tarjetas por sistema van
    arriba. */
-const MOMENTO_INICIAL: Record<string, number[]> = { "ingreso-hospitalario": [1, 2], gestacion: [] };
+const MOMENTO_INICIAL: Record<string, number[]> = { "ingreso-hospitalario": [1, 2] };
 function GuionVista({
   momentos,
   rotulo = "Texto del capítulo",
@@ -815,15 +816,20 @@ export function SituacionSistema({
               <CabeceraSituacion id={guia.id} etiqueta={guia.etiqueta} onCambiar={cambiar} />
               {/* 0.72.0: sin la frase de entrada (la regla de la 0.70.0; queda en la búsqueda). */}
               <div id="conducta-situacion" className="scroll-mb-28 scroll-mt-4" />
-              {/* 0.73.0: en la gestación, primero lo de cada sistema (frases literales del
-                  apartado 10); después los objetivos y lo común. */}
-              {guia.id === "gestacion" && (
+              {/* 0.73.0: primero lo de cada sistema (frases literales, src/porSistema.ts);
+                  después los objetivos y lo común. */}
+              {GUIA_POR_SISTEMA[guia.id] && (
                 <section
-                  aria-label="Gestación, sistema a sistema"
+                  aria-label="Sistema a sistema"
                   className="rounded-2xl border bg-white p-4 shadow-soft"
                   style={{ borderColor: "#e6e6e6" }}
                 >
-                  <GestacionSistema inicial={sistema ? SIS_IDS.indexOf(sistema) : undefined} />
+                  <BloquesPorSistema
+                    key={guia.id}
+                    bloques={GUIA_POR_SISTEMA[guia.id].bloques}
+                    comun={GUIA_POR_SISTEMA[guia.id].comun}
+                    inicial={sisIdx >= 0 ? sisIdx : undefined}
+                  />
                 </section>
               )}
               {/* Los objetivos de MCG de esa población, a la vista (antes, un enlace al pie). */}
@@ -988,6 +994,10 @@ export function SituacionSistema({
                       ),
                     )}
                   </div>
+                )}
+                {/* 0.73.0: lo que los apartados 9 y 10 añaden para ese sistema. */}
+                {porSistema && sisIdx >= 0 && TABLA4_POR_SISTEMA[sit.id] && (
+                  <AnadidoDelSistema c={sisIdx} bloques={TABLA4_POR_SISTEMA[sit.id][sisIdx]} />
                 )}
                 {porSistema && sisIdx >= 0 && (
                   <button

@@ -3,6 +3,8 @@
 import { paginasPorApartado } from "../paginasApartado";
 import { NOTA_ADAPTA_OMNIPOD } from "../notas-complementarias";
 import { FuentePie } from "./FuentePie";
+import { BloquesPorSistema } from "./BloquesPorSistema";
+import { GUIA_POR_SISTEMA } from "../porSistema";
 import {
   createContext,
   useContext,
@@ -39,15 +41,11 @@ import {
   OBJETIVOS_MCG,
   SEGUIMIENTO,
   TRANSICION,
-  GESTACION_COMUN,
-  GESTACION_SISTEMAS,
   HOSPITAL,
   EXPLORACIONES_ESTADO,
   INTERRUPCION_LINEA,
   EXPLORACIONES_TEXTO,
   ELECCION_TEXTO,
-  GESTACION_ENSAYOS,
-  GESTACION_ROTULO_TANDEM,
   type DiagramaId,
   type EstadoExploracion,
   type TonoFranja,
@@ -236,6 +234,12 @@ function Escalera({ i }: { i: number }) {
 
 /* Los objetivos de una población, sueltos (0.72.0: arriba de su situación —gestación, hospital—,
    en vez de un enlace al pie). Subtítulos en h2 bajo el h1 de la pantalla. */
+const APARTADO_DE_POBLACION: Record<string, number> = {
+  general: 5,
+  gestacion: 10,
+  hospital: 10,
+  fragilidad: 10,
+};
 export function ObjetivosDePoblacion({ id }: { id: string }) {
   const i = OBJETIVOS_MCG.findIndex((p) => p.id === id);
   if (i < 0) return null;
@@ -244,7 +248,12 @@ export function ObjetivosDePoblacion({ id }: { id: string }) {
   return (
     <NivelDiagrama.Provider value={1}>
       <Escalera i={i} />
-      <FuentePie className="mt-3" fuentes={[{ texto: paginasPorApartado(ps) }]} />
+      {/* El apartado propio de cada población: las pp. 4, 17 y 20 son límite de dos apartados
+          (0.73.0: salía «Apartado 9, p. 17» en la gestación). */}
+      <FuentePie
+        className="mt-3"
+        fuentes={[{ texto: paginasPorApartado(ps, APARTADO_DE_POBLACION[o.id] ?? 10) }]}
+      />
     </NivelDiagrama.Provider>
   );
 }
@@ -860,139 +869,12 @@ function Transicion() {
   );
 }
 
-/* ---------- 8. Gestación, sistema a sistema ---------- */
-function TarjetaGestacion({ c }: { c: number }) {
-  const h = SISTEMA_HEX[c];
-  const id = ORDEN_SISTEMAS[c];
-  const autorizacion = TABLAS.T1.filas.find((f) => f.etiqueta.startsWith("Gestación"));
-  return (
-    <article
-      className="flex h-full flex-col rounded-xl border p-3"
-      style={{ borderColor: `${h.strong}40`, background: h.soft }}
-    >
-      <div className="mb-2 flex items-center gap-2">
-        <img src={FOTO_SISTEMA[id]} alt="" className="h-10 w-10 rounded-lg bg-white object-cover" />
-        <div className="text-sm font-extrabold" style={{ color: h.ink }}>
-          {c === 1 ? GESTACION_ROTULO_TANDEM : TABLAS.T1.columnas[c]}
-        </div>
-      </div>
-      {autorizacion && (
-        <div className="mb-2 rounded-lg bg-white px-2.5 py-2 text-xs">
-          <div className="font-bold text-slate-600">{autorizacion.etiqueta}</div>
-          <div className="mt-0.5 font-semibold text-slate-900">
-            <Lineas>{autorizacion.celdas[c]}</Lineas>
-          </div>
-        </div>
-      )}
-      <dl className="space-y-2 text-xs">
-        {GESTACION_SISTEMAS[c]
-          .filter((x) => x.texto !== "—")
-          .map((x) => (
-            <div key={`${x.tema}-${x.texto}`}>
-              <dt className="flex items-center justify-between gap-2 font-bold text-slate-600">
-                {x.tema}
-              </dt>
-              <dd className="mt-0.5 leading-snug text-slate-900">{x.texto}</dd>
-            </div>
-          ))}
-      </dl>
-    </article>
-  );
-}
-
-/* Las tarjetas por sistema de «Gestación, sistema a sistema», sueltas (0.72.0: arriba de la
-   situación de gestación, para que el objetivo de cada sistema no quede plegado al final). */
-export function GestacionPorSistema() {
-  const [sel, setSel] = useState<string>(ORDEN_SISTEMAS[0]);
-  const c = ORDEN_SISTEMAS.indexOf(sel as (typeof ORDEN_SISTEMAS)[number]);
-  return (
-    <NivelDiagrama.Provider value={1}>
-      <div className="no-imprimir mb-3 lg:hidden">
-        <Segmented
-          label="Sistema"
-          wrap
-          value={sel}
-          onChange={setSel}
-          options={ORDEN_SISTEMAS.map((id, k) => ({
-            id,
-            label: (k === 1 ? GESTACION_ROTULO_TANDEM : TABLAS.T1.columnas[k])
-              .replace("Tandem ", "")
-              .replace("myLoop ", ""),
-          }))}
-        />
-      </div>
-      <div className="lg:hidden">
-        <TarjetaGestacion c={c} />
-      </div>
-      <div className="hidden gap-3 lg:grid lg:grid-cols-2">
-        {ORDEN_SISTEMAS.map((id, k) => (
-          <TarjetaGestacion key={id} c={k} />
-        ))}
-      </div>
-      <FuentePie
-        className="mt-3"
-        fuentes={[
-          { texto: "Tabla 1", ruta: href("consultar", "tablas", "T1") },
-          {
-            texto: paginasPorApartado([17, 18], 10),
-            ruta: href("capitulo", "10-situaciones", "b3"),
-          },
-        ]}
-      />
-    </NivelDiagrama.Provider>
-  );
-}
-
+/* Gestación por sistema (0.73.0): los mismos bloques literales que la situación «Gestación»
+   (src/porSistema.ts), en vez de las tarjetas de fragmentos empalmados de antes. */
 function GestacionSistemas({ opcion }: { opcion?: string }) {
-  const [sel, setSel] = useState<string>(
-    ORDEN_SISTEMAS.find((x) => x === opcion) ?? ORDEN_SISTEMAS[0],
-  );
-  const c = ORDEN_SISTEMAS.indexOf(sel as (typeof ORDEN_SISTEMAS)[number]);
-  return (
-    <div>
-      <div className="no-imprimir mb-3 lg:hidden">
-        <Segmented
-          label="Sistema"
-          wrap
-          value={sel}
-          onChange={setSel}
-          options={ORDEN_SISTEMAS.map((id, k) => ({
-            id,
-            label: (k === 1 ? GESTACION_ROTULO_TANDEM : TABLAS.T1.columnas[k])
-              .replace("Tandem ", "")
-              .replace("myLoop ", ""),
-          }))}
-        />
-      </div>
-      {/* Antes de leer los ensayos lado a lado, lo que dice el capítulo de compararlos. */}
-      <p
-        className="mb-3 rounded-lg border-l-4 px-3 py-2 text-xs text-slate-800"
-        style={{ borderColor: "#94a3b8", background: "#f8fafc" }}
-      >
-        {GESTACION_ENSAYOS.texto}
-      </p>
-      <div className="lg:hidden">
-        <TarjetaGestacion c={c} />
-      </div>
-      <div className="hidden gap-3 lg:grid lg:grid-cols-2">
-        {ORDEN_SISTEMAS.map((id, k) => (
-          <TarjetaGestacion key={id} c={k} />
-        ))}
-      </div>
-      <Sub className="mb-1.5 mt-4 text-sm font-bold text-slate-900">En todos los sistemas</Sub>
-      <ul className="space-y-1.5 text-xs text-slate-800">
-        {GESTACION_COMUN.map((x) => (
-          <li key={x.texto} className="flex items-start gap-2">
-            <span
-              aria-hidden="true"
-              className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500"
-            />
-            <span className="min-w-0 flex-1">{x.texto}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+  const g = GUIA_POR_SISTEMA.gestacion;
+  const c = ORDEN_SISTEMAS.findIndex((x) => x === opcion);
+  return <BloquesPorSistema bloques={g.bloques} comun={g.comun} inicial={c >= 0 ? c : undefined} />;
 }
 
 /* ---------- 9. Hospital: cuándo no continuar el sistema ---------- */

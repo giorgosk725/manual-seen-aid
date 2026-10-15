@@ -80,6 +80,8 @@ import { comoFunciona } from "../guias";
 import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
 import { PiezaVista } from "../componentes/Piezas";
 import { FRECUENTES } from "../frecuentes";
+import { AnadidoDelSistema } from "../componentes/BloquesPorSistema";
+import { FICHA_MODOS, FICHA_PARAMETROS } from "../porSistema";
 import { FuentePie } from "../componentes/FuentePie";
 import { paginasDe } from "../paginas";
 import { fuentesDePiezas } from "../fuentesPiezas";
@@ -786,6 +788,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           // insignia); su fila de la Tabla 1, en la fuente.
           fuentesExtra={[fuenteT1(4)]}
         />
+        <AnadidoDelSistema c={c} bloques={FICHA_PARAMETROS[c]} />
       </section>
 
       <section aria-labelledby="modos" className="no-imprimir mt-7 scroll-mt-2">
@@ -793,6 +796,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           Modos y funciones
         </TituloSeccion>
         <ColumnaTabla t={TABLAS.T4} c={c} />
+        <AnadidoDelSistema c={c} bloques={FICHA_MODOS[c]} />
       </section>
 
       {preguntas.length > 0 && (

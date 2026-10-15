@@ -198,6 +198,9 @@ export function frasesDe(apartado: string, bloque: string, k: number[], trozo?: 
     lead: k[0] === 0 && b.lead ? plano(b.lead) : "",
     frases: elegidas,
     pagina: b.p,
+    // El bloque puede seguir en la página siguiente (0.73.0: la fuente decía «p. 17» de un
+    // párrafo de las pp. 17-18).
+    pagina2: b.p2,
     ruta,
   };
 }

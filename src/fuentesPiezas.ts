@@ -28,7 +28,12 @@ export function fuentesDePieza(p: Pieza): { texto: string; ruta: string }[] {
     case "frase":
     case "hito": {
       const f = frasesDe(p.apartado, p.bloque, p.k, p.t === "frase" ? p.trozo : undefined);
-      return [{ texto: `Apartado ${numeroApartado(p.apartado)}, p. ${f.pagina}`, ruta: f.ruta }];
+      return [
+        {
+          texto: `Apartado ${numeroApartado(p.apartado)}, ${paginasDe(f.pagina, f.pagina2)}`,
+          ruta: f.ruta,
+        },
+      ];
     }
     case "lista": {
       const l = listaDe(p.apartado, p.bloque);
