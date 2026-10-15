@@ -398,9 +398,7 @@ export function TablaVista({
       />
       {interactiva && tabla.porSistema && !columnasFijas && (
         <div className="no-imprimir mb-3">
-          <div className="mb-1 text-xs font-semibold text-slate-500">
-            {ayuda ?? "Seleccionar uno para consultarlo o varios para compararlos"}
-          </div>
+          {ayuda && <div className="mb-1 text-xs font-semibold text-slate-500">{ayuda}</div>}
           <CasillasSistema
             etiqueta="Filtrar por sistema"
             seleccion={sel}
@@ -418,9 +416,7 @@ export function TablaVista({
             }
           />
           <p className="mt-1.5 text-xs text-slate-600" aria-live="polite">
-            {sel.length
-              ? `Tabla ${tabla.numero} · viendo ${listaNombres(sel.map((c) => tabla.columnas[c]))}`
-              : `Tabla ${tabla.numero} · los cuatro sistemas`}
+            {sel.length ? `Viendo ${listaNombres(sel.map((c) => tabla.columnas[c]))}` : ""}
           </p>
         </div>
       )}

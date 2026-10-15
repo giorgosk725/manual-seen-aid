@@ -13,7 +13,6 @@ test.describe("Listas y tarjetas (0.29.0)", () => {
     const tipo = page.getByRole("group", { name: "Tipo de resultado" });
     await expect(tipo.getByRole("button", { name: /^Texto del capítulo \(\d+\)/ })).toBeVisible();
     await tipo.getByRole("button", { name: /^Otros recursos/ }).click();
-    await expect(page.getByText(/No es el texto del capítulo/)).toBeVisible();
   });
 
   test("Situaciones se filtra escribiendo", async ({ page }) => {

@@ -55,7 +55,6 @@ export interface Destino {
   icono: LucideIcon;
   /* Categoría (color por función; tokens.CATEGORIA_HEX). */
   cat: "leer" | "consultar" | "confiar" | "aprender" | "pacientes";
-  descripcion: string;
   /* De dónde sale (tabla, figura o apartado): lo único que acompaña al nombre en las tarjetas. */
   fuente?: string;
 }
@@ -68,7 +67,6 @@ export const DESTINOS: Destino[] = [
     href: href("visual"),
     icono: Workflow,
     cat: "consultar",
-    descripcion: "Diagramas hechos con el texto del capítulo, con su página.",
   },
   {
     id: "figuras",
@@ -77,7 +75,6 @@ export const DESTINOS: Destino[] = [
     href: href("visual", "figuras"),
     icono: Images,
     cat: "consultar",
-    descripcion: "Las figuras originales del capítulo y la infografía, con zoom.",
   },
   {
     id: "sistemas",
@@ -85,8 +82,6 @@ export const DESTINOS: Destino[] = [
     href: href("sistemas"),
     icono: Cpu,
     cat: "consultar",
-    descripcion:
-      "Los cuatro sistemas con foto: lo que dice el capítulo de cada uno (Tablas 1, 3 y 4).",
     fuente: "Tablas 1, 3 y 4",
   },
   {
@@ -96,8 +91,6 @@ export const DESTINOS: Destino[] = [
     href: href("sistemas", "elegir"),
     icono: Handshake,
     cat: "consultar",
-    descripcion:
-      "Los factores de la elección (apartado 6 y Figura 2) y las celdas de indicación, gestación, formato, sensores y algoritmo de la Tabla 1.",
     fuente: "Apartado 6, Figura 2 y Tabla 1",
   },
   {
@@ -107,8 +100,6 @@ export const DESTINOS: Destino[] = [
     href: href("sistemas", "todos", "esencial"),
     icono: Columns3,
     cat: "consultar",
-    descripcion:
-      "La Tabla 1 con los sistemas que elijas: cada característica con los sistemas uno junto a otro.",
     fuente: "Tabla 1",
   },
   {
@@ -118,8 +109,6 @@ export const DESTINOS: Destino[] = [
     href: href("sistemas", "todos", "parametros"),
     icono: SlidersHorizontal,
     cat: "consultar",
-    descripcion:
-      "Cómo se ajustan los parámetros clásicos en cada sistema (Tabla 3) y cuáles son configurables en automático.",
     fuente: "Tabla 3",
   },
   {
@@ -129,8 +118,6 @@ export const DESTINOS: Destino[] = [
     href: href("consultar", "situacion"),
     icono: Route,
     cat: "consultar",
-    descripcion:
-      "Elige la situación (ejercicio, enfermedad, exploración…) y el sistema: la conducta que da el capítulo.",
     fuente: "Tablas 4 y 6 · apartado 10",
   },
   {
@@ -140,8 +127,6 @@ export const DESTINOS: Destino[] = [
     href: href("consultar", "inicio"),
     icono: CirclePlay,
     cat: "consultar",
-    descripcion:
-      "El apartado 8 en sus cuatro fases, sistema a sistema, y la hoja de comprobación del inicio para imprimir.",
     fuente: "Apartado 8 y Tabla 2",
   },
   {
@@ -151,7 +136,6 @@ export const DESTINOS: Destino[] = [
     href: href("consultar", "descarga", "1"),
     icono: ListChecks,
     cat: "consultar",
-    descripcion: "La Tabla 5 en ocho pasos, con el patrón del capítulo que corresponde a cada uno.",
     fuente: "Tabla 5",
   },
   {
@@ -161,7 +145,6 @@ export const DESTINOS: Destino[] = [
     href: href("visual", "hipoglucemia"),
     icono: TrendingDown,
     cat: "consultar",
-    descripcion: "Cómo se trata la hipoglucemia leve en asa cerrada según el plan de seguridad.",
     fuente: "Apartado 7",
   },
   {
@@ -171,7 +154,6 @@ export const DESTINOS: Destino[] = [
     href: href("consultar", "interrupcion"),
     icono: Clock3,
     cat: "consultar",
-    descripcion: "Cuánto va a durar la interrupción y qué dice el capítulo para ese caso.",
     fuente: "Apartado 7",
   },
   {
@@ -181,7 +163,6 @@ export const DESTINOS: Destino[] = [
     href: href("capitulo"),
     icono: ListTree,
     cat: "leer",
-    descripcion: "Los 13 apartados del capítulo, cada uno en una pantalla con su texto íntegro.",
   },
   {
     id: "tablas",
@@ -189,7 +170,6 @@ export const DESTINOS: Destino[] = [
     href: href("consultar", "tablas"),
     icono: Table2,
     cat: "consultar",
-    descripcion: "Las seis tablas del capítulo; las de sistemas se filtran por sistema.",
   },
   {
     id: "figura-3",
@@ -198,8 +178,6 @@ export const DESTINOS: Destino[] = [
     href: href("consultar", "figura-3"),
     icono: Droplets,
     cat: "consultar",
-    descripcion:
-      "La Figura 3: la urgencia y los signos de gravedad delante; cada rama se abre a mano, con las notas comunes de la figura.",
     fuente: "Figura 3",
   },
   {
@@ -208,7 +186,6 @@ export const DESTINOS: Destino[] = [
     href: href("consultar", "infografia"),
     icono: LayoutGrid,
     cat: "consultar",
-    descripcion: "El mapa del capítulo en cuatro bloques, con enlace a cada apartado.",
   },
   {
     id: "buscar",
@@ -216,8 +193,6 @@ export const DESTINOS: Destino[] = [
     href: href("buscar"),
     icono: Search,
     cat: "consultar",
-    descripcion:
-      "En el texto del capítulo por palabras y, con conexión, también por el sentido; aparte, lo que no es del capítulo.",
   },
   {
     id: "preguntas",
@@ -226,8 +201,6 @@ export const DESTINOS: Destino[] = [
     href: href("preguntas"),
     icono: MessageCircleQuestion,
     cat: "consultar",
-    descripcion:
-      "Las preguntas revisadas, por temas, con los pasajes del capítulo que las responden: el camino cuando la búsqueda libre no da nada.",
   },
   // El PDF publicado de «Información para pacientes» (en el precache: también sin conexión).
   {
@@ -237,7 +210,6 @@ export const DESTINOS: Destino[] = [
     href: "pdf/manual-seen-aid-pacientes.pdf",
     icono: FileText,
     cat: "pacientes",
-    descripcion: "El PDF de la Información para pacientes publicado por el Manual SEEN.",
   },
   {
     id: "pacientes",
@@ -246,8 +218,6 @@ export const DESTINOS: Destino[] = [
     href: href("pacientes"),
     icono: HeartHandshake,
     cat: "pacientes",
-    descripcion:
-      "La Información para pacientes publicada por el Manual SEEN y material complementario: hojas breves y plantillas del plan de seguridad, con letra grande.",
     fuente: "Hojas para imprimir",
   },
   {
@@ -256,7 +226,6 @@ export const DESTINOS: Destino[] = [
     href: href("bibliografia"),
     icono: Library,
     cat: "confiar",
-    descripcion: "Las diez referencias del capítulo, con su enlace.",
   },
   {
     id: "sobre",
@@ -265,8 +234,6 @@ export const DESTINOS: Destino[] = [
     href: href("sobre"),
     icono: Info,
     cat: "confiar",
-    descripcion:
-      "Fuente, alcance, capa docente, estado de evaluación, qué se transmite y guarda, y uso sin conexión.",
   },
   {
     id: "casos",
@@ -275,8 +242,6 @@ export const DESTINOS: Destino[] = [
     href: href("casos"),
     icono: ClipboardCheck,
     cat: "aprender",
-    descripcion:
-      "Casos para practicar con el texto del capítulo, paso a paso: cada respuesta se apoya en frases literales con su página.",
   },
   {
     id: "test",
@@ -286,8 +251,6 @@ export const DESTINOS: Destino[] = [
     href: href("test"),
     icono: GraduationCap,
     cat: "aprender",
-    descripcion:
-      "Preguntas de repaso basadas en el capítulo, con la explicación y la página que la justifica.",
   },
   {
     id: "repaso",
@@ -296,8 +259,6 @@ export const DESTINOS: Destino[] = [
     href: href("repaso"),
     icono: Layers,
     cat: "aprender",
-    descripcion:
-      "Las cifras y las siglas del capítulo como tarjetas, con su página; repaso espaciado guardado en este dispositivo.",
   },
 ];
 
@@ -394,17 +355,6 @@ export function destinoActivo(
   if (seccion !== ruta.seccion) return false;
   return sub ? ruta.sub === sub : true;
 }
-
-/* Entrada a las tablas por la pregunta que responde cada una (texto de la app; el título y
-   el contenido son los del capítulo). Las tres por sistema se parecen: así se distinguen. */
-export const PREGUNTA_TABLA: Record<"T1" | "T2" | "T3" | "T4" | "T5" | "T6", string> = {
-  T1: "¿Qué características diferencian a los sistemas?",
-  T2: "¿Cómo se pasa de MDI a un sistema?",
-  T3: "¿Cómo se ajusta cada parámetro en cada sistema?",
-  T4: "¿Qué herramienta del sistema usar en cada situación?",
-  T5: "¿Cómo se revisa la descarga, paso a paso?",
-  T6: "¿Qué hacer con el sistema ante una exploración o una cirugía?",
-};
 
 export const ICONO_CAPITULO = BookOpen;
 /* Icono de cada apartado (índice en mosaico de la portada y cabecera del apartado). */

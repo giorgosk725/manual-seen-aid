@@ -72,7 +72,12 @@ function GaleriaDiagramas() {
               return (
                 <li key={d.id}>
                   <a
-                    href={href("visual", d.id)}
+                    // La interrupción tiene un solo hogar: la pantalla de consulta (0.72.2).
+                    href={
+                      d.id === "interrupcion"
+                        ? href("consultar", "interrupcion")
+                        : href("visual", d.id)
+                    }
                     className="group flex h-full gap-3 rounded-lg border bg-white p-3 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
                     style={{ borderColor: "#e6e6e6", borderLeft: `4px solid ${g.color}` }}
                   >
@@ -93,9 +98,6 @@ function GaleriaDiagramas() {
                           className="mt-0.5 shrink-0 text-slate-400 transition group-hover:translate-x-0.5"
                           aria-hidden="true"
                         />
-                      </span>
-                      <span className="mt-0.5 block text-sm leading-snug text-slate-600">
-                        {d.resumen}
                       </span>
                     </span>
                   </a>

@@ -605,7 +605,11 @@ function TituloSeccion({
 }) {
   return (
     <h2 id={id} className="mb-2 scroll-mt-2 text-base font-extrabold text-slate-900">
-      {children} <span style={{ color }}>· {sistema}</span>
+      {/* El sistema ya está en el título y en la barra: solo para el lector de pantalla. */}
+      {children}{" "}
+      <span className="sr-only" style={{ color }}>
+        · {sistema}
+      </span>
     </h2>
   );
 }
@@ -672,7 +676,6 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
               </BotonImprimir>
             </div>
           </div>
-          <p className="mt-1 text-sm text-slate-600">{algoritmoDelCapitulo(c)}</p>
         </div>
         {/* En el móvil, tres botones iguales en una fila; en pantalla ancha, enlaces (0.53.0). */}
         <div className="no-imprimir col-span-2 mt-2 grid grid-cols-3 gap-2 sm:col-span-1 sm:col-start-2 sm:flex sm:flex-wrap sm:gap-x-3 sm:gap-y-1">
@@ -1156,7 +1159,7 @@ function insigniaParametro(c: number, j: number): ReactNode {
         className="inline-block rounded-full px-2 py-0.5 text-[11px] font-bold text-white"
         style={{ background: h.ink }}
       >
-        Efecto directo sobre el algoritmo (*)
+        Efecto directo sobre el algoritmo
       </span>
     );
   if (resto.some((x) => re.test(x)))
@@ -1523,7 +1526,7 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
             <>
               <details className="mb-3">
                 <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
-                  Qué se configura en modo automático
+                  Parámetros configurables en modo automático
                 </summary>
                 <div className="mt-2 grid gap-2 sm:grid-cols-2">
                   {cols.map((c) => (

@@ -689,7 +689,7 @@ export function CalculadoraInicio({
                       href={href("sistemas", "todos", "parametros")}
                       className="font-semibold underline"
                     >
-                      compara los parámetros
+                      comparación de parámetros
                     </a>
                     .
                   </p>
@@ -879,7 +879,7 @@ export function CalculadoraInicio({
         }
       >
         {sis === undefined ? (
-          <p className="text-sm text-slate-600">Seleccionar el sistema en el paso 2.</p>
+          <p className="text-sm text-slate-600">Sin sistema seleccionado (paso 2).</p>
         ) : (
           <div
             className="overflow-hidden rounded-xl border bg-white"
@@ -900,13 +900,11 @@ export function CalculadoraInicio({
               >
                 {ev.indicacion.fuera.length
                   ? "Sin propuesta: hay un dato fuera de la indicación (paso 4)."
-                  : "Sin cifras hasta completar los datos del paso 3."}{" "}
-                Debajo, qué hace cada parámetro.
+                  : "Sin cifras hasta completar los datos del paso 3."}
               </p>
             )}
             <Lista
               titulo="Con efecto directo sobre el algoritmo o necesario para iniciar el modo automático"
-              nota="Efecto directo sobre el algoritmo, o lo que el sistema necesita para iniciar el modo automático"
               claves={gruposDeProgramar(sis).automatico}
               sis={sis}
               valorDe={valorDe}

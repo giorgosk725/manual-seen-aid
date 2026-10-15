@@ -321,12 +321,13 @@ const indiceDeMomento = (m?: string) => {
   const n = m && /^m\d+$/.test(m) ? Number(m.slice(1)) - 1 : NaN;
   return Number.isInteger(n) && n >= 0 ? n : null;
 };
-/* En el ingreso, de entrada «Mantener la MCG, la bomba o el AID» y «Cuándo no continuar» (el
-   marco, plegado). */
-const MOMENTO_INICIAL: Record<string, number[]> = { "ingreso-hospitalario": [1, 3] };
+/* En el ingreso, de entrada «Mantenimiento de la MCG, la bomba o el AID» y «Criterios para no
+   continuar» (el ámbito, plegado); en la gestación, todo plegado: las tarjetas por sistema van
+   arriba. */
+const MOMENTO_INICIAL: Record<string, number[]> = { "ingreso-hospitalario": [1, 2], gestacion: [] };
 function GuionVista({
   momentos,
-  rotulo = "Lo que dice el capítulo, por momentos",
+  rotulo = "Texto del capítulo",
   clave,
   sistema,
   momento,
@@ -390,10 +391,9 @@ function GuionVista({
       className="rounded-2xl border bg-white p-4"
       style={{ borderColor: "#e6e6e6" }}
     >
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <h2 className="text-xs font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
-          {rotulo}
-        </h2>
+      {/* 0.72.2: sin rótulo visible encima (los títulos numerados ya dicen qué es). */}
+      <div className="flex flex-wrap items-baseline justify-end gap-x-3 gap-y-1">
+        <h2 className="sr-only">{rotulo}</h2>
         <button
           type="button"
           onClick={() => guardar({ abiertos: estado.abiertos, todos: !estado.todos })}
@@ -654,17 +654,6 @@ function ListaSituaciones({
           {total === 1 ? "1 resultado" : `${total} resultados`}
         </p>
       )}
-      {/* La leyenda de los puntos (en el móvil no hay «title» al pasar el ratón). */}
-      {!f && (
-        <p aria-hidden="true" className="flex items-center gap-1.5 px-1 text-xs text-slate-600">
-          <span className="flex gap-0.5">
-            {SISTEMA_HEX.map((x, k) => (
-              <span key={k} className="h-2 w-2 rounded-full" style={{ background: x.strong }} />
-            ))}
-          </span>
-          Conducta distinta según el sistema
-        </p>
-      )}
       {f && total === 0 && (
         <div
           className="rounded-md border border-dashed px-3 py-3 text-sm text-slate-700"
@@ -853,7 +842,6 @@ export function SituacionSistema({
               )}
               <GuionVista
                 momentos={guia.guion}
-                rotulo={guia.rotuloGuion}
                 clave={guia.id}
                 momento={momento}
                 inicial={MOMENTO_INICIAL[guia.id] ?? [0]}

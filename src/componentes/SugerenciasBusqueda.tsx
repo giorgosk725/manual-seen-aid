@@ -46,7 +46,7 @@ export function SugerenciasBusqueda({ onElegir }: { onElegir: (q: string) => voi
       )}
       <div>
         <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">
-          <Sparkles size={13} aria-hidden="true" /> Prueba a preguntar
+          <Sparkles size={13} aria-hidden="true" /> Ejemplos
         </p>
         <ul className="mt-1 flex flex-wrap gap-1.5">
           {EJEMPLOS_PREGUNTA.map((e) => (

@@ -19,7 +19,6 @@ import {
   rutaDeTabla,
   type TablaId,
 } from "../contenido";
-import { PREGUNTA_TABLA } from "../nav";
 import { elegirRuta, href } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, PaginaBadge, Revelar, Segmented } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
@@ -74,9 +73,6 @@ function IndiceTablas() {
                     <PaginaBadge p={t.paginas[0]} p2={t.paginas[1]} />
                   </span>
                   <span className="mt-0.5 block text-[15px] font-bold leading-snug text-slate-900">
-                    {PREGUNTA_TABLA[t.id]}
-                  </span>
-                  <span className="mt-0.5 block text-xs leading-snug text-slate-600">
                     {t.titulo}
                   </span>
                 </span>

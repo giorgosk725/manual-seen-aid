@@ -77,9 +77,9 @@ export const EJEMPLOS_PREGUNTA = [
   "cetonas 1,2",
   "modo ejercicio en Control-IQ",
   "resonancia magnética con 780G",
-  "cuánto tiempo puedo estar desconectado",
+  "desconexión de la bomba más de 1 hora",
   "hipoglucemia leve cuántos hidratos",
-  "qué es el TBR",
+  "objetivos de MCG en el hospital",
 ];
 
 export interface Resultado {

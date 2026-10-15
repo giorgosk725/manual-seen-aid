@@ -30,14 +30,14 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     page,
   }) => {
     await page.goto("/#/consultar/situacion/ingreso-hospitalario");
-    const momentos = page.getByRole("region", { name: "Qué revisar durante el ingreso" });
+    const momentos = page.getByRole("region", { name: "Texto del capítulo" });
     await expect(momentos.getByRole("heading", { name: /Período perioperatorio/ })).toBeVisible();
     await momentos.getByRole("button", { name: "Abrir todos" }).click();
     await expect(momentos.getByText(/unas 22 h tras la última dosis/)).toBeVisible();
     await page.goto("/#/consultar/situacion/gestacion");
     await expect(
       page
-        .getByRole("region", { name: /Por temas/ })
+        .getByRole("region", { name: "Texto del capítulo" })
         .getByRole("heading", { name: /Parto y posparto/ }),
     ).toBeVisible();
     await page.goto("/#/consultar/situacion/ejercicio-aerobico");
@@ -99,7 +99,7 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     page,
   }) => {
     await page.goto("/#/consultar/situacion/ejercicio-aerobico");
-    const guion = page.getByRole("region", { name: "Lo que dice el capítulo, por momentos" });
+    const guion = page.getByRole("region", { name: "Texto del capítulo" });
     await expect(guion.getByRole("list", { name: "Momentos" })).toBeVisible();
     const hipo = guion.locator("h3 button", { hasText: /Hipoglucemia: hidratos/ });
     await expect(hipo).toHaveAttribute("aria-expanded", "false");
@@ -139,7 +139,7 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     page,
   }) => {
     await page.goto("/#/consultar/situacion/ejercicio-aerobico:omnipod-5");
-    const guion = page.getByRole("region", { name: "Lo que dice el capítulo, por momentos" });
+    const guion = page.getByRole("region", { name: "Texto del capítulo" });
     const despues = guion.locator("h3 button", { hasText: /Después del ejercicio/ });
     await despues.click();
     await expect(despues).toHaveAttribute("aria-expanded", "true");
@@ -153,14 +153,14 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     await expect(page).toHaveURL(/ejercicio-aerobico:omnipod-5:m6$/);
     await expect(
       page
-        .getByRole("region", { name: "Lo que dice el capítulo, por momentos" })
+        .getByRole("region", { name: "Texto del capítulo" })
         .locator("h3 button", { hasText: /Después del ejercicio/ }),
     ).toHaveAttribute("aria-expanded", "true");
     // Un enlace a un momento lo abre (ingreso, sin sistema).
-    await page.goto("/#/consultar/situacion/ingreso-hospitalario::m7");
+    await page.goto("/#/consultar/situacion/ingreso-hospitalario::m6");
     await expect(
       page
-        .getByRole("region", { name: "Qué revisar durante el ingreso" })
+        .getByRole("region", { name: "Texto del capítulo" })
         .locator("h3 button", { hasText: /Período perioperatorio/ }),
     ).toHaveAttribute("aria-expanded", "true");
   });
@@ -173,9 +173,6 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
       .first();
     await casilla.check();
     await page.getByRole("button", { name: "Hoja de comprobación" }).click();
-    await expect(
-      page.getByText(/Recoge lo que has marcado en el inicio paso a paso/),
-    ).toBeVisible();
     await expect(page.locator(".hoja-inicio").getByRole("checkbox", { checked: true })).toHaveCount(
       1,
     );

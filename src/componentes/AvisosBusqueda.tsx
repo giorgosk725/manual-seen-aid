@@ -66,7 +66,7 @@ export function AvisosBusqueda({
       {children}
       {parcial && !primera && (
         <p className="mt-2 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-900">
-          Ningún resultado tiene todas esas palabras: se muestran los que tienen alguna.
+          Resultados con alguna de las palabras.
         </p>
       )}
     </>

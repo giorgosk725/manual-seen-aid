@@ -82,6 +82,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
   const frecuente = motor && qEf.trim().length >= 2 ? motor.preguntaFrecuente(qEf) : null;
   const sugerencias = motor && q.trim().length >= 3 && !frecuente ? motor.sugerir(q) : [];
   if (motor && (respuestas.length || frecuente)) motor.recordarTema(qEf);
+  else if (motor && qEf === q && q.trim().length >= 3) motor.olvidarTema();
   // Abrir un resultado deja la búsqueda en «recientes».
   const cerrarYGuardar = () => {
     guardarReciente(q);

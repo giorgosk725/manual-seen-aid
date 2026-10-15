@@ -245,8 +245,6 @@ export interface SituacionGuia {
   intro: string;
   fuente: string;
   pagina: number;
-  /* Cómo se llama el bloque de momentos («Qué revisar durante el ingreso»). */
-  rotuloGuion: string;
   guion: Momento[];
   enlaces: { texto: string; ruta: string }[];
 }
@@ -258,11 +256,9 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
       "Qué mantener, cuándo no y cómo pasar a una pauta subcutánea: lo que recoge el capítulo del posicionamiento internacional de 2026.",
     fuente: "pp. 20-21",
     pagina: 20,
-    rotuloGuion: "Qué revisar durante el ingreso",
     guion: [
       { rotulo: "Ámbito de aplicación", apartado: S, bloque: "b33" },
       { rotulo: "Mantenimiento de la MCG, la bomba o el AID", apartado: S, bloque: "b34" },
-      { rotulo: "Objetivos de glucosa en el hospital", apartado: S, bloque: "b35" },
       {
         rotulo: "Criterios para no continuar y paso a pauta subcutánea",
         apartado: S,
@@ -289,14 +285,11 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
       "Qué sistemas tienen autorización y evidencia, los objetivos de la gestación y cómo se ajusta cada sistema.",
     fuente: "pp. 17-18",
     pagina: 17,
-    rotuloGuion: "Por temas",
     guion: [
       { rotulo: "Autorización y evidencia por sistema", apartado: S, bloque: "b3" },
       { rotulo: "Objetivos de HbA1c y de MCG", apartado: S, bloque: "b4" },
       { rotulo: "Evidencia: AiDAPT, CRISTAL y CIRCUIT", apartado: S, bloque: "b5" },
       { rotulo: "Seguimiento y objetivo del algoritmo", apartado: S, bloque: "b6" },
-      { rotulo: "CamAPS FX", apartado: S, bloque: "b7" },
-      { rotulo: "MiniMed 780G", apartado: S, bloque: "b8" },
       { rotulo: "Control-IQ+", apartado: S, bloque: "b9" },
       { rotulo: "Cetoacidosis: vigilancia", apartado: S, bloque: "b10" },
       { rotulo: "Parto y posparto", apartado: S, bloque: "b11" },
@@ -320,10 +313,9 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
       "Qué cambia con la enfermedad, qué hacer si hay cetosis con glucosa normal o baja y cuándo pasar a la Figura 3. La enfermedad leve sin sospecha de fallo, sistema a sistema, está en la Tabla 4.",
     fuente: "p. 20",
     pagina: 20,
-    rotuloGuion: "Por momentos",
     guion: [
-      { rotulo: "Qué cambia", apartado: S, bloque: "b27", k: [0] },
-      { rotulo: "Qué hacer: el plan de seguridad", apartado: S, bloque: "b27", k: [1] },
+      { rotulo: "Necesidades de insulina", apartado: S, bloque: "b27", k: [0] },
+      { rotulo: "Plan de seguridad", apartado: S, bloque: "b27", k: [1] },
       {
         rotulo: "Cetosis con glucosa normal o baja: no suspender la insulina",
         apartado: S,
@@ -353,10 +345,9 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
       "Qué cambian, cuándo puede mantenerse el sistema y cuándo usar las funciones que intensifican la administración.",
     fuente: "p. 20",
     pagina: 20,
-    rotuloGuion: "Por momentos",
     guion: [
-      { rotulo: "Qué cambian", apartado: S, bloque: "b29", k: [0] },
-      { rotulo: "Cuándo mantener el sistema", apartado: S, bloque: "b29", k: [1] },
+      { rotulo: "Efecto sobre la glucemia", apartado: S, bloque: "b29", k: [0] },
+      { rotulo: "Mantenimiento del sistema", apartado: S, bloque: "b29", k: [1] },
       {
         rotulo: "Funciones que intensifican la administración",
         apartado: S,
@@ -379,9 +370,8 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
       "Qué muestran los datos, a quién incluyó la evidencia, cómo se individualizan los objetivos y qué valorar al elegir y al seguir.",
     fuente: "p. 19",
     pagina: 19,
-    rotuloGuion: "Por momentos",
     guion: [
-      { rotulo: "Qué muestran los datos", apartado: S, bloque: "b17", k: [0] },
+      { rotulo: "Evidencia", apartado: S, bloque: "b17", k: [0] },
       {
         rotulo: "Deterioro cognitivo: a quién incluyó la evidencia",
         apartado: S,
@@ -389,7 +379,7 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
         k: [1],
       },
       { rotulo: "Objetivos según el estado funcional", apartado: S, bloque: "b17", k: [2] },
-      { rotulo: "Qué valorar al elegir", apartado: S, bloque: "b17", k: [3] },
+      { rotulo: "Elección del sistema", apartado: S, bloque: "b17", k: [3] },
       { rotulo: "Deterioro progresivo: reevaluar", apartado: S, bloque: "b17", k: [4] },
     ],
     enlaces: [
@@ -404,10 +394,9 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
       "Qué cambia, cuándo puede mantenerse el sistema y qué ocurre en hemodiálisis y en diálisis peritoneal. La evidencia específica es limitada.",
     fuente: "p. 20",
     pagina: 20,
-    rotuloGuion: "Por momentos",
     guion: [
-      { rotulo: "Qué cambia", apartado: S, bloque: "b31", k: [0] },
-      { rotulo: "Mantener el sistema", apartado: S, bloque: "b31", k: [1] },
+      { rotulo: "Necesidades de insulina", apartado: S, bloque: "b31", k: [0] },
+      { rotulo: "Mantenimiento del sistema", apartado: S, bloque: "b31", k: [1] },
       { rotulo: "Hemodiálisis", apartado: S, bloque: "b31", k: [2] },
       { rotulo: "Diálisis peritoneal", apartado: S, bloque: "b31", k: [3] },
       { rotulo: "Evidencia y seguridad", apartado: S, bloque: "b31", k: [4, 5] },
@@ -423,9 +412,8 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
       "Bolos omitidos, banderas rojas, alcohol, seguimiento compartido con la familia y el traspaso de pediatría a adultos.",
     fuente: "p. 18",
     pagina: 18,
-    rotuloGuion: "Por momentos",
     guion: [
-      { rotulo: "Una etapa de vulnerabilidad: los bolos", apartado: S, bloque: "b13" },
+      { rotulo: "Bolos omitidos", apartado: S, bloque: "b13" },
       {
         rotulo: "Banderas rojas: conducta alimentaria y diabulimia",
         apartado: S,
@@ -440,7 +428,7 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
         k: [0, 1],
       },
       { rotulo: "Transición a adultos: el traspaso", apartado: S, bloque: "b15", k: [2, 3] },
-      { rotulo: "En cada descarga", apartado: S, bloque: "b15", k: [4] },
+      { rotulo: "Revisión de la descarga", apartado: S, bloque: "b15", k: [4] },
     ],
     enlaces: [
       { texto: "Bolos omitidos o retrasados (apartado 9)", ruta: "#/capitulo/09-descarga/b20" },

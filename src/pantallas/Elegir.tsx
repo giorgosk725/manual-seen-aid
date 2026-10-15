@@ -255,7 +255,7 @@ export function Elegir({ antigua = false }: { antigua?: boolean }) {
       >
         <p className="text-sm">{b5.t === "p" && <Texto>{b5.texto}</Texto>}</p>
         <a href={href("capitulo", a6.slug, "b5")} className={enlace}>
-          Apartado 6, p. 6 · Leer en el capítulo <ArrowRight size={13} aria-hidden="true" />
+          Leer en el capítulo <ArrowRight size={13} aria-hidden="true" />
         </a>
       </section>
 

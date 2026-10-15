@@ -55,7 +55,7 @@ import {
 import { F2, FIGURA3, TABLAS, algoritmoDelCapitulo, ubicacionDeDiagrama } from "../contenido";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
-import { BotonImprimir, PaginaBadge, Segmented } from "../ui";
+import { BotonImprimir, Segmented } from "../ui";
 import { SISTEMA_HEX, TRAMO_HEX } from "../tokens";
 import { Lineas, Texto } from "../texto";
 import { siglasPorTexto } from "../siglas";
@@ -194,7 +194,6 @@ function Escalera({ i }: { i: number }) {
     <div>
       <div className="mb-2 flex items-baseline justify-between gap-2">
         <Sub className="text-sm font-bold text-slate-900">{p.nombre}</Sub>
-        <PaginaBadge p={p.pagina} />
       </div>
       <ol className="space-y-1">
         {/* Solo los objetivos del capítulo: el TAR > 180 de adultos va sin cifra (A07). */}
@@ -226,15 +225,7 @@ function Escalera({ i }: { i: number }) {
         {p.extras.map((e) => (
           <li key={e.texto} className="flex gap-1.5">
             <span aria-hidden="true">·</span>
-            <span>
-              {e.texto}
-              {e.p && e.p !== p.pagina && (
-                <>
-                  {" "}
-                  <PaginaBadge p={e.p} />
-                </>
-              )}
-            </span>
+            <span>{e.texto}</span>
           </li>
         ))}
         {p.aviso && <li className="font-semibold text-slate-800">{p.aviso}</li>}
@@ -248,9 +239,12 @@ function Escalera({ i }: { i: number }) {
 export function ObjetivosDePoblacion({ id }: { id: string }) {
   const i = OBJETIVOS_MCG.findIndex((p) => p.id === id);
   if (i < 0) return null;
+  const o = OBJETIVOS_MCG[i];
+  const ps = [o.pagina, ...o.extras.map((e) => e.p).filter((x): x is number => !!x)];
   return (
     <NivelDiagrama.Provider value={1}>
       <Escalera i={i} />
+      <FuentePie className="mt-3" fuentes={[{ texto: paginasPorApartado(ps) }]} />
     </NivelDiagrama.Provider>
   );
 }
@@ -573,9 +567,7 @@ function Seguimiento() {
       })}
       <ul className="space-y-1 text-xs text-slate-600">
         {SEGUIMIENTO.notas.map((n) => (
-          <li key={n.texto}>
-            {n.texto} <PaginaBadge p={n.p} />
-          </li>
+          <li key={n.texto}>{n.texto}</li>
         ))}
       </ul>
     </div>
@@ -814,12 +806,6 @@ function Hipoglucemia() {
               <span className="min-w-0">
                 {"tema" in d && d.tema && <strong>{d.tema}: </strong>}
                 <Texto>{d.texto}</Texto>
-                {d.p !== HIPOGLUCEMIA.pagina && (
-                  <>
-                    {" "}
-                    <PaginaBadge p={d.p} />
-                  </>
-                )}
               </span>
             </li>
           );
@@ -835,9 +821,7 @@ function Transicion() {
   const t = TABLAS.T2;
   return (
     <div>
-      <p className="mb-3 text-sm text-slate-700">
-        {TRANSICION.partida} <PaginaBadge p={TRANSICION.partidaP} />
-      </p>
+      <p className="mb-3 text-sm text-slate-700">{TRANSICION.partida}</p>
       <ul className="space-y-2">
         {t.filas.map((f) => (
           <li
@@ -894,22 +878,23 @@ function TarjetaGestacion({ c }: { c: number }) {
       </div>
       {autorizacion && (
         <div className="mb-2 rounded-lg bg-white px-2.5 py-2 text-xs">
-          <div className="font-bold text-slate-600">Tabla 1 · {autorizacion.etiqueta}</div>
+          <div className="font-bold text-slate-600">{autorizacion.etiqueta}</div>
           <div className="mt-0.5 font-semibold text-slate-900">
             <Lineas>{autorizacion.celdas[c]}</Lineas>
           </div>
         </div>
       )}
       <dl className="space-y-2 text-xs">
-        {GESTACION_SISTEMAS[c].map((x) => (
-          <div key={`${x.tema}-${x.texto}`}>
-            <dt className="flex items-center justify-between gap-2 font-bold text-slate-600">
-              {x.tema}
-              {x.texto !== "—" && <PaginaBadge p={x.p} />}
-            </dt>
-            <dd className="mt-0.5 leading-snug text-slate-900">{x.texto}</dd>
-          </div>
-        ))}
+        {GESTACION_SISTEMAS[c]
+          .filter((x) => x.texto !== "—")
+          .map((x) => (
+            <div key={`${x.tema}-${x.texto}`}>
+              <dt className="flex items-center justify-between gap-2 font-bold text-slate-600">
+                {x.tema}
+              </dt>
+              <dd className="mt-0.5 leading-snug text-slate-900">{x.texto}</dd>
+            </div>
+          ))}
       </dl>
     </article>
   );
@@ -944,6 +929,16 @@ export function GestacionPorSistema() {
           <TarjetaGestacion key={id} c={k} />
         ))}
       </div>
+      <FuentePie
+        className="mt-3"
+        fuentes={[
+          { texto: "Tabla 1", ruta: href("consultar", "tablas", "T1") },
+          {
+            texto: paginasPorApartado([17, 18], 10),
+            ruta: href("capitulo", "10-situaciones", "b3"),
+          },
+        ]}
+      />
     </NivelDiagrama.Provider>
   );
 }
@@ -974,7 +969,7 @@ function GestacionSistemas({ opcion }: { opcion?: string }) {
         className="mb-3 rounded-lg border-l-4 px-3 py-2 text-xs text-slate-800"
         style={{ borderColor: "#94a3b8", background: "#f8fafc" }}
       >
-        {GESTACION_ENSAYOS.texto} <PaginaBadge p={GESTACION_ENSAYOS.p} />
+        {GESTACION_ENSAYOS.texto}
       </p>
       <div className="lg:hidden">
         <TarjetaGestacion c={c} />
@@ -993,14 +988,9 @@ function GestacionSistemas({ opcion }: { opcion?: string }) {
               className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500"
             />
             <span className="min-w-0 flex-1">{x.texto}</span>
-            <PaginaBadge p={x.p} />
           </li>
         ))}
       </ul>
-      <p className="mt-3 text-xs text-slate-500">
-        «—»: el capítulo no lo da para ese sistema. Objetivos de MCG en la gestación: diagrama
-        «Objetivos de MCG».
-      </p>
     </div>
   );
 }
@@ -1026,7 +1016,6 @@ function Hospital() {
             <Sub className="text-sm font-bold" style={{ color: "#065f46" }}>
               Pueden mantenerse
             </Sub>
-            <PaginaBadge p={H.mantener.p} />
           </div>
           <p className="text-sm text-slate-800">{H.mantener.texto}</p>
           <ul className="mt-1.5 space-y-1 text-xs text-slate-700">
@@ -1046,7 +1035,6 @@ function Hospital() {
             <Sub className="text-sm font-bold" style={{ color: "#991b1b" }}>
               {H.noApropiada.intro}
             </Sub>
-            <PaginaBadge p={H.noApropiada.p} />
           </div>
           <ul className="list-disc space-y-0.5 pl-5 text-sm text-slate-800">
             {H.noApropiada.items.map((x) => (
@@ -1070,7 +1058,6 @@ function Hospital() {
           >
             <div className="mb-1 flex items-center justify-between gap-2">
               <span className="text-xs font-bold text-slate-900">{x.cuando}</span>
-              <PaginaBadge p={x.p} p2={"p2" in x ? x.p2 : undefined} />
             </div>
             <p className="text-xs leading-snug text-slate-800">{x.texto}</p>
           </li>
@@ -1085,12 +1072,10 @@ function Hospital() {
           <Sub className="mb-1 text-sm font-bold text-slate-900">
             Hacia la perfusión intravenosa
           </Sub>
-          <p>
-            {H.haciaIV.texto} <PaginaBadge p={H.haciaIV.p} />
-          </p>
+          <p>{H.haciaIV.texto}</p>
           {ivTabla6 && (
             <p className="mt-1">
-              Tabla 6 · {ivTabla6.etiqueta}: {ivTabla6.celdas[0]} <PaginaBadge p={22} />
+              Tabla 6 · {ivTabla6.etiqueta}: {ivTabla6.celdas[0]}
             </p>
           )}
         </div>
@@ -1099,9 +1084,7 @@ function Hospital() {
           style={{ background: "#f1f5f9" }}
         >
           <Sub className="mb-1 text-sm font-bold text-slate-900">Vuelta desde la perfusión</Sub>
-          <p>
-            Nota de la Tabla 6: {H.desdeIV.texto} <PaginaBadge p={H.desdeIV.p} />
-          </p>
+          <p>Nota de la Tabla 6: {H.desdeIV.texto}</p>
         </div>
       </div>
       <div className="grid gap-2 md:grid-cols-2">
@@ -1110,12 +1093,8 @@ function Hospital() {
           style={{ background: "#f1f5f9" }}
         >
           <Sub className="mb-1 text-sm font-bold text-slate-900">Mientras se mantiene</Sub>
-          <p>
-            {H.mientras.texto} <PaginaBadge p={H.mientras.p} />
-          </p>
-          <p className="mt-1">
-            {H.contingencia.texto} <PaginaBadge p={H.contingencia.p} />
-          </p>
+          <p>{H.mientras.texto}</p>
+          <p className="mt-1">{H.contingencia.texto}</p>
         </div>
         <div
           className="rounded-xl p-3 text-xs leading-snug text-slate-800"
@@ -1126,7 +1105,7 @@ function Hospital() {
           </Sub>
           {H.mcg.map((x) => (
             <p key={x.texto} className="mt-1 first:mt-0">
-              {x.texto} <PaginaBadge p={x.p} />
+              {x.texto}
             </p>
           ))}
         </div>

@@ -343,22 +343,22 @@ export const TAREAS: Record<string, Tarea[]> = {
     },
     {
       id: "respaldo",
-      titulo: "Plan de respaldo antes de activar el automático",
+      titulo: "Plan de respaldo antes de activar el modo automático",
       piezas: [0, 16],
       siguiente: planDeSeguridad,
     },
     {
       id: "arranque",
-      titulo: "Activar el modo automático y qué esperar del algoritmo",
+      titulo: "Activación del modo automático",
       piezas: [1, 18],
     },
   ],
   "primeros-meses": [
     { id: "calendario", titulo: "Calendario de revisiones", piezas: [0, 1, 2, 3] },
-    { id: "vigilar", titulo: "Qué vigilar en las primeras descargas", piezas: [6, 7] },
+    { id: "vigilar", titulo: "Vigilancia en las primeras descargas", piezas: [6, 7] },
     {
       id: "ajustes",
-      titulo: "Qué se ajusta en las primeras descargas",
+      titulo: "Ajustes en las primeras descargas",
       piezas: [4, 5],
       siguiente: () => ({
         texto: "Interpretación de la descarga, paso a paso",
@@ -367,8 +367,8 @@ export const TAREAS: Record<string, Tarea[]> = {
     },
   ],
   mantenido: [
-    { id: "visitas", titulo: "Qué incluye cada visita", piezas: [0] },
-    { id: "reconsiderar", titulo: "Cuándo reconsiderar el tratamiento", piezas: [1, 2] },
+    { id: "visitas", titulo: "Contenido de cada visita", piezas: [0] },
+    { id: "reconsiderar", titulo: "Reconsideración del tratamiento", piezas: [1, 2] },
   ],
 };
 export const tareasDe = (faseId: string): Tarea[] => TAREAS[faseId] ?? [];

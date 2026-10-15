@@ -79,3 +79,29 @@ Pruebas: 235 unitarias y 203 e2e (con `e2e/auditorias-072.spec.ts`, `src/cifras.
 
 La nota de urgencias de la ronda final es la de las tres tareas repetidas; con las siete de su
 ronda queda en 6,5. Lo que más resta ya es de decisión del autor (puntos 1, 2, 4 y 5).
+
+## Revisión editorial contra lo divulgativo (15-10-2026, 0.72.2)
+
+Aplicado: ver la entrada 0.72.2 de «Qué ha cambiado». Queda para el autor (toca material
+aprobado o una decisión suya):
+
+1. **Diagramas aprobados que repiten pantallas de consulta**: «Hospital: criterios para no
+   continuar» (repite Ingreso), «Algoritmos de control de los cuatro sistemas» (repite Sistemas ›
+   Resumen y Cómo funciona) y «Escala de cetonemia» (repite la Figura 3). ¿Retirarlos a
+   `diagramasRetirados.ts` o que la galería lleve a la pantalla de consulta?
+2. **Nota de Liberty** en cuatro sitios (ficha, Tabla 1, Iniciación, lectura del apartado 3; en la
+   lectura choca con la regla 26). ¿Solo junto a la casilla de la Tabla 1, plegada?
+3. **«Cómo interpretar este hallazgo»** (6 entradas, aprobadas el 11-10): texto de la app que
+   vuelve a explicar las tablas, en tono docente. ¿Retirarlo de esta edición?
+4. **Títulos de preguntas frecuentes coloquiales** (f-ids en `frecuentes.ts`: «muchas
+   autocorrecciones, ¿es buena señal?», «¿qué ajustes mueven de verdad…?», «Demasiadas
+   alarmas…», «¿Por qué hay que seguir anunciando…?», «¿Qué sistemas AID hay en España?»).
+   Cambiarlos invalida su aprobación: hace falta revisarlos y volver a aprobarlos.
+5. **Subtítulo de la portada** («Complemento interactivo del capítulo. Facilita su lectura,
+   comprensión y consulta.»), de la edición editorial (0.49–0.51). ¿Quitarlo?
+6. **Barra «Bandera roja» en Interpretación de la descarga** (A09): repite el paso 8.
+7. **Hipoglucemia**: las dos cantidades en tarjeta y, debajo, la frase literal que las contiene.
+   No se pliega: la frase trae las condiciones («cuando el algoritmo ya ha reducido o suspendido
+   la infusión…») sin las que la cantidad no vale.
+8. **Cómo funciona de cada sistema**: el fragmento con puntos suspensivos del apartado 4 bajo la
+   cabecera hace de entradilla (pendiente de revisión en `materiales.ts`).

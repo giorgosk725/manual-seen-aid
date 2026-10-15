@@ -132,13 +132,6 @@ function Hoja({ sis }: { sis?: number }) {
             Plan de seguridad para entregar <ArrowRight size={13} aria-hidden="true" />
           </a>
         )}
-        <span className="text-xs text-slate-600">
-          Una cara A4.{" "}
-          {hechos.size > 0
-            ? "Recoge lo que has marcado en el inicio paso a paso (no se guarda). "
-            : "Lo que marques en el inicio paso a paso sale marcado aquí. "}
-          {sistema ? "" : "Al seleccionar el sistema, la hoja muestra solo su línea de inicio."}
-        </span>
         {hechos.size > 0 && (
           <button
             type="button"
@@ -155,10 +148,6 @@ function Hoja({ sis }: { sis?: number }) {
         style={{ borderColor: "#e6e6e6" }}
       >
         <h2 className="text-base font-extrabold text-slate-900">{titulo}</h2>
-        <p className="text-xs text-slate-600">
-          Hoja de comprobación con el texto del capítulo del Manual SEEN sobre la automatización de
-          la insulinoterapia (pp. 7-12). No sustituye al juicio clínico.
-        </p>
         <h3 className="mt-3 text-sm font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
           Antes de activar el modo automático
         </h3>

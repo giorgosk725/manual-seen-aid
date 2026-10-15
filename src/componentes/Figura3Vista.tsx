@@ -215,7 +215,7 @@ function NotasComunes({ conAsterisco = true }: { conAsterisco?: boolean }) {
   );
 }
 
-function Pies({ sinNotas }: { sinNotas?: boolean }) {
+function Pies({ sinNotas, sinTitulo }: { sinNotas?: boolean; sinTitulo?: boolean }) {
   return (
     <div className="mt-4 space-y-3">
       {!sinNotas && <NotasDelPie />}
@@ -230,7 +230,8 @@ function Pies({ sinNotas }: { sinNotas?: boolean }) {
         <p className="text-xs leading-relaxed text-slate-600">{FIGURA3.notaAsterisco}</p>
       )}
       <p className="text-xs text-slate-500">Abreviaturas: {FIGURA3.abreviaturas}</p>
-      <p className="text-xs italic text-slate-500">{FIGURA3.titulo}</p>
+      {/* En la herramienta el título ya va arriba (0.72.2). */}
+      {!sinTitulo && <p className="text-xs italic text-slate-500">{FIGURA3.titulo}</p>}
     </div>
   );
 }
@@ -472,7 +473,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
           )}
         </li>
       </ol>
-      <Pies sinNotas={!!actual} />
+      <Pies sinNotas={!!actual} sinTitulo />
       <FuentePie
         fuentes={[{ texto: `Figura 3, p. ${FIGURA3.pagina}`, ruta: "#/capitulo/07-educacion/b5" }]}
       />

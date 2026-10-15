@@ -92,14 +92,14 @@ test.describe("Tablas y sistemas", () => {
     await grupo.getByRole("button", { name: /MiniMed 780G/ }).click();
     await grupo.getByRole("button", { name: /Omnipod 5/ }).click();
     await expect(page).toHaveURL(/#\/consultar\/tablas\/T1:minimed-780g\+omnipod-5$/);
-    await expect(page.getByText("Tabla 1 · viendo MiniMed 780G y Omnipod 5")).toBeVisible();
+    await expect(page.getByText("Viendo MiniMed 780G y Omnipod 5")).toBeVisible();
     // Abierto en otra pestaña (sin preferencias locales), el enlace trae la misma selección.
     const otra = await page.context().newPage();
     await otra.goto("/#/consultar/tablas/T1:minimed-780g+omnipod-5");
-    await expect(otra.getByText("Tabla 1 · viendo MiniMed 780G y Omnipod 5")).toBeVisible();
+    await expect(otra.getByText("Viendo MiniMed 780G y Omnipod 5")).toBeVisible();
     await grupo.getByRole("button", { name: "Los cuatro" }).click();
     await expect(page).toHaveURL(/#\/consultar\/tablas\/T1$/);
-    await expect(page.getByText("Tabla 1 · los cuatro sistemas")).toBeVisible();
+    await expect(page.getByText(/^Viendo /)).toHaveCount(0);
   });
 
   test("UX14: el enlace a los parámetros de un sistema abre esa sección", async ({ page }) => {

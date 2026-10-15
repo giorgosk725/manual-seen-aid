@@ -118,7 +118,6 @@ test.describe("Búsqueda y enlaces", () => {
       .getByRole("group", { name: "Tipo de resultado" })
       .getByRole("button", { name: /^Otros recursos \(\d+\)/ })
       .click();
-    await expect(page.getByText(/No es el texto del capítulo/)).toBeVisible();
     // 0.70.0: la Información para pacientes es el PDF publicado.
     await expect(
       page.getByRole("link", {

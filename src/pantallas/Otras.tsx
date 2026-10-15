@@ -92,17 +92,20 @@ function ListaResultados({ res, q, fuera }: { res: Resultado[]; q: string; fuera
               </span>
               {r.entrada.pagina > 0 && <span className="pagina-badge">{paginaDe(r.entrada)}</span>}
             </div>
-            <p className="mt-1 text-sm text-slate-800">
-              {marcar(r.fragmento, q).map((t, i) =>
-                t.hit ? (
-                  <mark key={i} className="resaltado">
-                    {t.t}
-                  </mark>
-                ) : (
-                  <span key={i}>{t.t}</span>
-                ),
-              )}
-            </p>
+            {/* En los accesos, solo el destino: su texto es el del índice (0.72.2). */}
+            {!(fuera && (r.entrada.tipo === "atajo" || r.entrada.tipo === "diagrama")) && (
+              <p className="mt-1 text-sm text-slate-800">
+                {marcar(r.fragmento, q).map((t, i) =>
+                  t.hit ? (
+                    <mark key={i} className="resaltado">
+                      {t.t}
+                    </mark>
+                  ) : (
+                    <span key={i}>{t.t}</span>
+                  ),
+                )}
+              </p>
+            )}
           </a>
         </li>
       ))}
@@ -155,7 +158,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
   );
   useEffect(() => {
     if (motor && (respuestas.length || frecuente)) motor.recordarTema(qEf);
-  }, [motor, qEf, respuestas, frecuente]);
+    else if (motor && qEf === q && q.trim().length >= 3) motor.olvidarTema();
+  }, [motor, q, qEf, respuestas, frecuente]);
   const todas = useMemo(
     () => [...(frecuente?.respuestas ?? []), ...respuestas],
     [frecuente, respuestas],
@@ -264,7 +268,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
           <button
             type="button"
             onClick={() => {
-              motor?.recordarTema("");
+              motor?.olvidarTema();
               setQ(q + " ");
             }}
             className="font-semibold underline underline-offset-2"
@@ -403,10 +407,6 @@ export function Buscar({ inicial }: { inicial?: string }) {
                 <h2 id="fuera" className="sr-only">
                   Otros recursos
                 </h2>
-                <p className="text-xs text-slate-600">
-                  No es el texto del capítulo: accesos a las herramientas, hojas para el paciente y
-                  autoevaluación, cada entrada con su rótulo.
-                </p>
                 <ListaResultados res={fueraRes} q={q} fuera />
               </section>
             )}
@@ -518,7 +518,7 @@ export function Sobre() {
               La ayuda de cálculo de «Iniciación del sistema» aplica las reglas de la Tabla 2 y del
               apartado 8 y unos puntos de partida del responsable de este complemento (no del Manual
               SEEN). Da un punto de partida para revisión profesional, no una pauta, y no guarda ni
-              envía las cifras. No escribas datos que identifiquen a una persona.
+              envía las cifras. No deben introducirse datos que identifiquen a una persona.
             </li>
             <li>
               No sustituye las instrucciones de cada sistema, los protocolos del centro ni el juicio

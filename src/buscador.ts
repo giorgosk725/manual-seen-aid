@@ -865,6 +865,12 @@ let temaAnterior: string | null = null;
 export function recordarTema(q: string) {
   if (q.trim().length >= 3 && !seguimiento(q)) temaAnterior = q;
 }
+/* Una búsqueda propia sin respuesta, o «Buscar solo …»: la siguiente no hereda un tema de dos
+   búsquedas atrás (0.72.2: «ejercicio control-iq», «precio del omnipod», «780G» daba
+   «ejercicio 780g»). */
+export function olvidarTema() {
+  temaAnterior = null;
+}
 /* «y en Omnipod 5» → la búsqueda anterior con ese sistema; null si no es un seguimiento. */
 export function consultaEfectiva(q: string): string | null {
   // Escribir letra a letra no es un seguimiento: si una consulta empieza por la otra, es la
