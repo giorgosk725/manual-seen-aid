@@ -320,6 +320,8 @@ export const TODAS: Frecuente[] = [
       "salidas repetidas del modo automático",
       "poco tiempo en automático",
       "se cae del automático",
+      "sale del modo automático",
+      "pasa a modo manual",
     ],
     pasajes: ["t/09-descarga/b12/0", "t/09-descarga/b22/1", "T5/0"],
   },
