@@ -32,6 +32,7 @@ import {
   X,
   Zap,
   type LucideIcon,
+  MessageCircleQuestion,
 } from "lucide-react";
 import { CLAVE_ALGORITMO } from "../contenido/diagramas";
 import {
@@ -78,6 +79,7 @@ export { Elegir };
 import { comoFunciona } from "../guias";
 import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
 import { PiezaVista } from "../componentes/Piezas";
+import { FRECUENTES } from "../frecuentes";
 import { FuentePie } from "../componentes/FuentePie";
 import { paginasDe } from "../paginas";
 import { fuentesDePiezas } from "../fuentesPiezas";
@@ -434,11 +436,21 @@ const fuenteT1 = (p?: number) => ({
 const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 const SLUG_CORTO = ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"];
 
+/* En la ficha, la pregunta sin el nombre del sistema delante («MiniMed 780G: ¿cómo…?» →
+   «¿Cómo…?»); si el nombre lleva algo más («… en la gestación: ¿…?»), se deja entera. */
+const sinNombreDelSistema = (q: string) =>
+  q.replace(
+    /^(MiniMed 780G|Control-IQ\+?|CamAPS FX|Omnipod 5): ¿(.)/,
+    (_m, _n, l: string) => `¿${l.toUpperCase()}`,
+  );
+
 /* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
 const TODAS_LAS_SECCIONES = [
   { id: "funciona", t: "Cómo funciona" },
   { id: "esencial", t: "Indicación y material" },
   { id: "parametros", t: "Parámetros" },
+  // 0.72.2: las dudas de cada sistema, con sus preguntas frecuentes revisadas.
+  { id: "preguntas", t: "Preguntas" },
   { id: "ampliacion", t: "Ampliación técnica" },
 ] as const;
 /* La comparación (0.70.0): la Tabla 1 y la Tabla 3, sin «Cómo funciona» comparado (repetía la
@@ -647,6 +659,8 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const c = columnaDeSistema(s.id);
   const h = SISTEMA_HEX[c];
   const slug = SLUG_TABLA[c];
+  // Las preguntas frecuentes revisadas sobre este sistema (columna de la Tabla 1).
+  const preguntas = FRECUENTES.filter((f) => f.sistema === c);
   // Una sola página (0.70.0): la sección de la ruta es solo adónde se salta.
   const sec = completa ? undefined : seccion;
   return (
@@ -662,10 +676,10 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         <span>{s.name}</span>
       </div>
       {/* En el móvil, los enlaces van a lo ancho debajo de la foto (dos filas en vez de tres). */}
-      <header className="mb-4 grid grid-cols-[auto_1fr] gap-x-3 sm:gap-x-4">
+      <header className="mb-3 grid grid-cols-[auto_1fr] items-center gap-x-3 sm:mb-4 sm:items-start sm:gap-x-4">
         <AbrirEnVisor
           imagen={{ src: FOTO_SISTEMA[s.id], alt: `Foto oficial de ${s.name}`, titulo: s.name }}
-          className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl border bg-white shadow-soft focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:row-span-2 sm:h-32 sm:w-32"
+          className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border bg-white shadow-soft focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:row-span-2 sm:h-32 sm:w-32 sm:rounded-2xl"
           etiqueta={`Ampliar la foto de ${s.name}`}
         >
           <img
@@ -678,7 +692,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           {/* Imprimir, junto al título (A09): la única acción secundaria de la cabecera. */}
           <div className="flex items-start justify-between gap-2">
             <h1
-              className="min-w-0 text-2xl font-black tracking-tight sm:text-3xl"
+              className="min-w-0 text-xl font-black tracking-tight sm:text-3xl"
               style={{ color: h.ink }}
             >
               {s.name}
@@ -767,6 +781,36 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           fuentesExtra={[fuenteT1(4)]}
         />
       </section>
+
+      {preguntas.length > 0 && (
+        <section aria-labelledby="preguntas" className="no-imprimir mt-7 scroll-mt-2">
+          <TituloSeccion id="preguntas" sistema={s.name} color={h.ink}>
+            Preguntas frecuentes
+          </TituloSeccion>
+          <ul
+            className="divide-y overflow-hidden rounded-xl border bg-white"
+            style={{ borderColor: "#e6e6e6", borderLeft: `3px solid ${h.strong}` }}
+          >
+            {preguntas.map((f) => (
+              <li key={f.id} style={{ borderColor: "#eef0f2" }}>
+                <a
+                  href={href("preguntas", f.id)}
+                  className="flex min-h-11 items-center gap-2 px-3 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
+                >
+                  <MessageCircleQuestion
+                    size={15}
+                    className="shrink-0"
+                    style={{ color: h.strong }}
+                    aria-hidden="true"
+                  />
+                  <span className="min-w-0 flex-1">{sinNombreDelSistema(f.pregunta)}</span>
+                  <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* En papel, sin los párrafos (0.72.0: la ficha impresa salía en cinco caras). */}
       <section aria-label="Más del capítulo sobre este sistema" className="no-imprimir mt-7">

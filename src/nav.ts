@@ -97,7 +97,9 @@ export const DESTINOS: Destino[] = [
     id: "comparar",
     etiqueta: "Comparar los cuatro",
     corto: "Comparar",
-    href: href("sistemas", "todos", "esencial"),
+    // 0.72.2: a las tarjetas lado a lado («Resumen»); la tabla entera, en su pestaña (en el
+    // móvil, la tabla de entrada era muy larga).
+    href: href("sistemas"),
     icono: Columns3,
     cat: "consultar",
     fuente: "Tabla 1",

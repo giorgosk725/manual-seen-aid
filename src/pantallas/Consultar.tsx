@@ -7,6 +7,7 @@ import {
   LayoutGrid,
   ScanLine,
   SlidersHorizontal,
+  Printer,
   Table2,
   Wrench,
   type LucideIcon,
@@ -154,6 +155,14 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
   return (
     <div>
       <CabeceraEditorial titulo="Hiperglucemia y cetonemia" hex={hex} level={1} />
+      {/* 0.72.2: lo que más se busca aquí es la hoja para entregar: arriba, a un toque. */}
+      <a
+        href={href("pacientes", "hoja", "cetonas")}
+        className="no-imprimir mb-3 inline-flex min-h-11 items-center gap-2 rounded-lg px-4 text-sm font-bold text-white"
+        style={{ background: hex.strong }}
+      >
+        <Printer size={16} aria-hidden="true" /> Hoja para entregar al paciente: cetonas
+      </a>
       <div
         className="rounded-2xl border bg-white p-4 shadow-soft"
         style={{ borderColor: "#e6e6e6" }}
@@ -168,12 +177,6 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
           >
             Leer en su apartado: 7. Educación terapéutica y plan de seguridad{" "}
             <ArrowRight size={14} aria-hidden="true" />
-          </a>
-          <a
-            href={href("pacientes", "hoja", "cetonas")}
-            className="ml-4 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
-          >
-            Hoja para entregar al paciente: cetonas <ArrowRight size={14} aria-hidden="true" />
           </a>
         </div>
       </div>

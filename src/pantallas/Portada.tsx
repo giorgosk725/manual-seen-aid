@@ -4,15 +4,12 @@
    «Leer y comprender» con la misma forma (14-10-2026) y el capítulo publicado
    (decisiones del autor del 13-10-2026: sin las dos puertas). El buscador vive en la barra lateral
    (escritorio) y en la barra de abajo (móvil): la portada no lo repite. */
-import { diagramaEnEdicion } from "../diagramasRetirados";
-import { ArrowRight, BookOpen, ExternalLink } from "lucide-react";
+import { ArrowRight, ExternalLink } from "lucide-react";
 import { CAPITULO } from "../contenido";
-import { MapaConsulta, TarjetaPortada } from "../componentes/MapaConsulta";
+import { MapaConsulta } from "../componentes/MapaConsulta";
 import { VERSION_APP } from "../version";
 import { href } from "../rutas";
-import { CATEGORIA_HEX, SEEN } from "../tokens";
-import { DESTINOS } from "../nav";
-import { APARTADOS, DIAGRAMAS, LISTA_TABLAS } from "../contenido";
+import { SEEN } from "../tokens";
 
 const fecha = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("es-ES", {
@@ -29,70 +26,6 @@ function Franja() {
         <span key={c} className="flex-1" style={{ background: c }} />
       ))}
     </div>
-  );
-}
-
-/* Leer y comprender (V54-07; 14-10-2026): una tarjeta con la misma forma que las del mapa, con
-   sus cuatro accesos en una fila desde la pantalla ancha y lo que contiene cada uno. */
-const LECTURA: { id: string; detalle: string }[] = [
-  { id: "capitulo", detalle: `${APARTADOS.length} apartados` },
-  { id: "tablas", detalle: `${LISTA_TABLAS.length} tablas` },
-  // 0.72.0: «Figuras» y «Figuras y diagramas» eran la misma pantalla; una entrada, y las
-  // preguntas frecuentes en su lugar.
-  {
-    id: "visual",
-    detalle: `Figuras originales · ${DIAGRAMAS.filter((d) => diagramaEnEdicion(d.id)).length} diagramas`,
-  },
-  { id: "preguntas", detalle: "Por temas y por sistema" },
-];
-function LeerYComprender() {
-  const hex = CATEGORIA_HEX.leer;
-  return (
-    <TarjetaPortada
-      id="portada-leer"
-      nivel={2}
-      titulo="Leer y comprender"
-      resumen=""
-      icono={BookOpen}
-      hex={hex}
-    >
-      <ul className="grid grid-cols-2 xl:grid-cols-4" style={{ borderColor: "#eef0f2" }}>
-        {LECTURA.map(({ id, detalle }) => {
-          const d = DESTINOS.find((x) => x.id === id)!;
-          const I = d.icono;
-          return (
-            <li
-              key={id}
-              className="border-t [&:nth-child(-n+2)]:border-t-0 [&:nth-child(even)]:border-l xl:border-l xl:border-t-0 xl:first:border-l-0"
-              style={{ borderColor: "#eef0f2" }}
-            >
-              <a
-                href={d.href}
-                className="group flex min-h-11 items-start gap-3 px-4 py-2.5 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
-              >
-                <I
-                  size={16}
-                  className="mt-0.5 shrink-0"
-                  style={{ color: hex.strong }}
-                  aria-hidden="true"
-                />
-                <span className="min-w-0 flex-1">
-                  <span className="block font-semibold text-slate-900">{d.etiqueta}</span>
-                  <span className="hidden text-xs leading-snug text-slate-600 sm:block">
-                    {detalle}
-                  </span>
-                </span>
-                <ArrowRight
-                  size={14}
-                  className="mt-0.5 shrink-0 text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-slate-600"
-                  aria-hidden="true"
-                />
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-    </TarjetaPortada>
   );
 }
 
@@ -138,7 +71,6 @@ export function Portada() {
       {/* Primero la consulta (cuatro preguntas) y, con la misma forma, la lectura. */}
       <div className="space-y-2 sm:space-y-3">
         <MapaConsulta />
-        <LeerYComprender />
       </div>
 
       <footer

@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-15",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — elegir por características y rótulos de manual`,
+    titulo: `Complemento interactivo ${VERSION_APP} — portada por lo que más se consulta`,
+    detalle: [
+      "Portada ordenada por el uso real (indicación del responsable): primero los cuatro sistemas, cada uno con su ficha y accesos a sus parámetros, su iniciación y sus dudas; «Comparar los cuatro», «Comparar los parámetros» y «Elección del sistema». Después, iniciación y seguimiento (cálculo de parámetros iniciales, iniciación paso a paso, calendario de revisiones, descarga), la lectura del capítulo y el material para el paciente (plan de seguridad, hoja de cetonas, hoja de pruebas y cirugía, PDF). Al final, las situaciones clínicas, con hiperglucemia y cetonemia, hipoglucemia e interrupción en su color.",
+      "Ficha de cada sistema con sus preguntas frecuentes revisadas («Preguntas»), para las dudas del sistema.",
+      "Hiperglucemia y cetonemia: la hoja de cetonas para entregar al paciente, arriba y a un toque.",
+      "«Comparar los cuatro» abre las tarjetas lado a lado; las tablas, en sus pestañas. Ficha de sistema más compacta en el móvil. Al volver atrás desde el capítulo, la ficha vuelve a su sitio (antes podía ir al final).",
+    ],
+  },
+  {
+    fecha: "2026-10-15",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.72.2 — elegir por características y rótulos de manual",
     detalle: [
       "Elección del sistema: por las características del dispositivo (formato, sensores compatibles, localización del algoritmo, bolos automáticos de corrección), con las casillas literales de la Tabla 1; sin datos de la persona ni puntuación, los cuatro en el orden de la tabla y lo que no coincide, en gris (petición del responsable).",
       "Cómo funciona: los rótulos de la Tabla 1 y en su orden («Sensores compatibles», «Localización del algoritmo», «Lógica del algoritmo y aprendizaje», «Estrategia de automatización», «Bolos automáticos de corrección», «Objetivo glucémico en modo automático») en lugar de «Mide · Decide · Administra · Hacia el objetivo».",

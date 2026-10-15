@@ -802,9 +802,11 @@ export function Shell({
     const guardada = posiciones.current.get(clavePantalla);
     // Enlace profundo: la pantalla hace su propio scroll; al volver atrás, se restaura.
     if (destinoProfundo && (nueva || guardada == null)) return;
-    // Al volver atrás, el navegador puede haber restaurado ya su propia posición: vale la mayor
-    // de las dos (la guardada aquí o la del navegador), porque solo se pierde por recorte.
-    const destino = !nueva && guardada != null ? Math.max(guardada, window.scrollY) : 0;
+    // Al volver atrás, la guardada aquí (la restauración del navegador está desactivada). 0.72.2:
+    // antes valía la mayor de esta y de `window.scrollY`, pero ese scrollY es aún el de la
+    // pantalla anterior (el capítulo, bajado hasta la tabla) y, con una ficha más larga, se
+    // volvía al final de la página.
+    const destino = !nueva && guardada != null ? guardada : 0;
     window.scrollTo({ top: destino });
     // Al volver atrás, la pantalla perezosa puede no haber crecido aún: se reintenta un momento
     // después, solo si la posición no ha llegado (el lector no ha tocado nada).
