@@ -1,17 +1,6 @@
 /* Consultar: tablas (filtrables), Figura 3 (recorrido) e infografía (mapa). El hub es la portada; «Comparar» y «Parámetros» viven en Sistemas. */
 import { useRef } from "react";
-import {
-  ArrowRight,
-  ArrowRightLeft,
-  ClipboardList,
-  LayoutGrid,
-  ScanLine,
-  SlidersHorizontal,
-  Printer,
-  Table2,
-  Wrench,
-  type LucideIcon,
-} from "lucide-react";
+import { ArrowRight, Printer } from "lucide-react";
 import {
   INFO,
   LISTA_TABLAS,
@@ -30,14 +19,6 @@ import { Texto } from "../texto";
 import { NivelTitulo } from "../nivel-contexto";
 
 const hex = CATEGORIA_HEX.consultar;
-const ICONO_TABLA: Record<string, LucideIcon> = {
-  T1: LayoutGrid,
-  T2: ArrowRightLeft,
-  T3: SlidersHorizontal,
-  T4: Wrench,
-  T5: ClipboardList,
-  T6: ScanLine,
-};
 
 /* Las seis tablas como filas: número, título y la pregunta que responde cada una. */
 function IndiceTablas() {
@@ -48,36 +29,21 @@ function IndiceTablas() {
           capítulo debajo, como referencia. Un icono por tabla. */}
       <ul className="grid gap-2 sm:grid-cols-2">
         {LISTA_TABLAS.map((t) => {
-          const I = ICONO_TABLA[t.id] ?? Table2;
           return (
             <li key={t.id}>
               <a
                 href={href("consultar", "tablas", t.id)}
-                className="hover-lift ease-brand flex h-full gap-3 rounded-xl border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                style={{ borderColor: "#e6e6e6" }}
+                className="hover-lift ease-brand flex h-full gap-3 tarjeta p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
-                <span
-                  aria-hidden="true"
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
-                  style={{ background: hex.soft }}
-                >
-                  <I size={20} style={{ color: hex.strong }} />
-                </span>
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center justify-between gap-2">
-                    <span
-                      className="text-[11px] font-bold uppercase tracking-wide"
-                      style={{ color: hex.ink }}
-                    >
+                    <span className="rotulo" style={{ color: hex.ink }}>
                       Tabla {t.numero}
                     </span>
                     <PaginaBadge p={t.paginas[0]} p2={t.paginas[1]} />
                   </span>
-                  <span className="mt-0.5 block text-[15px] font-bold leading-snug text-slate-900">
-                    {t.titulo}
-                  </span>
+                  <span className="titulo-tarjeta mt-0.5 block">{t.titulo}</span>
                 </span>
-                <ArrowRight size={14} className="mt-1 shrink-0 text-slate-400" aria-hidden="true" />
               </a>
             </li>
           );
@@ -116,12 +82,7 @@ function TablaPantalla({ tid, seleccion }: { tid: TablaId; seleccion?: string })
           }}
         />
       </div>
-      <div
-        ref={ref}
-        className="imprimible rounded-2xl border bg-white p-4 shadow-soft"
-        style={{ borderColor: "#e6e6e6" }}
-        key={tid}
-      >
+      <div ref={ref} className="imprimible tarjeta p-4" key={tid}>
         <NivelTitulo.Provider value={2}>
           <TablaVista
             tabla={tabla}
@@ -130,10 +91,7 @@ function TablaPantalla({ tid, seleccion }: { tid: TablaId; seleccion?: string })
             onSeleccion={(x) => elegirRuta("consultar", "tablas", x ? `${tid}:${x}` : tid)}
           />
         </NivelTitulo.Provider>
-        <div
-          className="no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3"
-          style={{ borderColor: "#e6e6e6" }}
-        >
+        <div className="separador no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3">
           <BotonImprimir objetivo={ref} compacto>
             Imprimir la tabla
           </BotonImprimir>
@@ -158,19 +116,16 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
       {/* 0.72.2: lo que más se busca aquí es la hoja para entregar: arriba, a un toque. */}
       <a
         href={href("pacientes", "hoja", "cetonas")}
-        className="no-imprimir mb-3 inline-flex min-h-11 items-center gap-2 rounded-lg px-4 text-sm font-bold text-white"
+        className="no-imprimir mb-3 inline-flex min-h-11 items-center gap-2 rounded-md px-4 text-sm font-bold text-white"
         style={{ background: hex.strong }}
       >
         <Printer size={16} aria-hidden="true" /> Hoja para el paciente: cetonas
       </a>
-      <div
-        className="rounded-2xl border bg-white p-4 shadow-soft"
-        style={{ borderColor: "#e6e6e6" }}
-      >
+      <div className="tarjeta p-4">
         <NivelTitulo.Provider value={2}>
           <Figura3Recorrido tramoInicial={tramo} />
         </NivelTitulo.Provider>
-        <div className="no-imprimir mt-4 border-t pt-3" style={{ borderColor: "#e6e6e6" }}>
+        <div className="separador no-imprimir mt-4 border-t pt-3">
           <a
             href={href("capitulo", "07-educacion", "b5")}
             className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
@@ -211,19 +166,11 @@ export function Infografia() {
           return (
             <Revelar as="li" key={i} className={i >= 4 ? "md:col-span-2" : ""}>
               <section
-                className="h-full rounded-2xl border p-4 shadow-soft"
-                style={{
-                  borderColor: "#e6e6e6",
-                  background: esPlan ? "linear-gradient(160deg, #eef3f8, #ffffff 60%)" : "#ffffff",
-                  boxShadow: `inset 0 3px 0 0 ${hex.strong}, 0 8px 24px rgba(15,23,42,0.05)`,
-                }}
+                className="h-full rounded-xl border p-4"
+                style={{ ["--sis" as string]: hex.strong }}
                 aria-labelledby={`info-${i}`}
               >
-                <h2
-                  id={`info-${i}`}
-                  className="text-base font-extrabold"
-                  style={{ color: hex.ink }}
-                >
+                <h2 id={`info-${i}`} className="titulo-seccion" style={{ color: hex.ink }}>
                   <Texto>{c.titulo || ""}</Texto>
                 </h2>
                 <ul
@@ -260,7 +207,7 @@ export function Infografia() {
                     <a
                       key={d.slug + (d.detalle || "")}
                       href={href("capitulo", d.slug, d.detalle)}
-                      className="inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                      className="chip text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                       style={{ borderColor: `${hex.strong}40`, color: hex.ink }}
                     >
                       {d.etiqueta} <ArrowRight size={12} aria-hidden="true" />
@@ -269,7 +216,7 @@ export function Infografia() {
                   {esPlan && (
                     <a
                       href={href("consultar", "figura-3")}
-                      className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                      className="chip border-transparent text-xs text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                       style={{ background: hex.strong }}
                     >
                       Figura 3 paso a paso <ArrowRight size={12} aria-hidden="true" />

@@ -166,7 +166,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
               {apartado.titulo}
             </h1>
             <div className="mt-2.5 flex flex-wrap items-center gap-2">
-              <span className="pagina-badge rounded-full bg-slate-100 px-2 py-0.5">
+              <span className="pagina-badge">
                 {apartado.paginas[0] === apartado.paginas[1]
                   ? `p. ${apartado.paginas[0]}`
                   : `pp. ${apartado.paginas[0]}–${apartado.paginas[1]}`}
@@ -195,7 +195,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
             open={localAbierto}
             onToggle={(e) => setLocalAbierto(e.currentTarget.open)}
           >
-            <summary className="flex min-h-11 cursor-pointer list-none items-center gap-1 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:min-h-8 [&::-webkit-details-marker]:hidden">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center gap-1 rotulo text-slate-500 sm:min-h-8 [&::-webkit-details-marker]:hidden">
               <ChevronDown
                 size={15}
                 aria-hidden="true"
@@ -226,7 +226,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                     <a
                       key={s.id}
                       href={href("capitulo", apartado.slug, s.id)}
-                      className="tap-44 inline-flex min-h-9 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                      className="chip tap-44 min-h-9 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:min-h-8"
                     >
                       {s.texto}
                     </a>
@@ -242,8 +242,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                         <li key={r.ancla}>
                           <a
                             href={href("capitulo", apartado.slug, r.ancla)}
-                            className="tap-44 inline-flex min-h-9 items-center gap-1.5 rounded-full border bg-white px-2.5 text-xs font-semibold text-slate-800 transition hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                            style={{ borderColor: "#e6e6e6" }}
+                            className="linea chip tap-44 min-h-9 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:min-h-8"
                           >
                             <I size={14} aria-hidden="true" style={{ color: SEEN.azulOsc }} />
                             <span className="text-slate-500">{r.tipo}</span> {r.texto}
@@ -283,10 +282,8 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         {subs.length > 0 && (
           <aside aria-label="Índice lateral del apartado" className="no-imprimir hidden xl:block">
             <nav aria-label="Índice del apartado" className="sticky top-20">
-              <div className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500">
-                En este apartado
-              </div>
-              <ol className="space-y-1 border-l-2 pl-3" style={{ borderColor: "#e6e6e6" }}>
+              <div className="mb-2 rotulo text-slate-500">En este apartado</div>
+              <ol className="linea space-y-1 border-l-2 pl-3">
                 {subs.map((s) => (
                   <li key={s.id}>
                     <a
@@ -306,14 +303,12 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
 
       <nav
         aria-label="Apartado anterior y siguiente"
-        className="no-imprimir mt-10 grid gap-2 border-t pt-4 sm:grid-cols-2"
-        style={{ borderColor: "#e6e6e6" }}
+        className="separador no-imprimir mt-10 grid gap-2 border-t pt-4 sm:grid-cols-2"
       >
         {prev ? (
           <a
             href={href("capitulo", prev.slug)}
-            className="hover-lift ease-brand flex min-w-0 items-center gap-2 overflow-hidden rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-            style={{ borderColor: "#e6e6e6" }}
+            className="linea hover-lift ease-brand flex min-w-0 items-center gap-2 overflow-hidden rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
           >
             <ArrowLeft size={16} className="shrink-0 text-slate-500" aria-hidden="true" />
             <span className="min-w-0">
@@ -329,8 +324,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         {next ? (
           <a
             href={href("capitulo", next.slug)}
-            className="hover-lift ease-brand flex min-w-0 items-center justify-end gap-2 overflow-hidden rounded-[4px] border bg-white p-3 text-right transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-            style={{ borderColor: "#e6e6e6" }}
+            className="linea hover-lift ease-brand flex min-w-0 items-center justify-end gap-2 overflow-hidden rounded-[4px] border bg-white p-3 text-right transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
           >
             <span className="min-w-0">
               <span className="block text-xs text-slate-500">Siguiente</span>
@@ -343,8 +337,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         ) : (
           <a
             href={href("bibliografia")}
-            className="hover-lift ease-brand flex min-w-0 items-center justify-end gap-2 overflow-hidden rounded-[4px] border bg-white p-3 text-right transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-            style={{ borderColor: "#e6e6e6" }}
+            className="linea hover-lift ease-brand flex min-w-0 items-center justify-end gap-2 overflow-hidden rounded-[4px] border bg-white p-3 text-right transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
           >
             <span className="min-w-0">
               <span className="block text-xs text-slate-500">Siguiente</span>

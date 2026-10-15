@@ -124,8 +124,7 @@ export function MarcoDiagrama({
       <section
         ref={ref}
         aria-labelledby={`diag-${id}`}
-        className="bloque-papel imprimible rounded-2xl border bg-white p-4 shadow-soft"
-        style={{ borderColor: "#e6e6e6" }}
+        className="bloque-papel imprimible tarjeta p-4"
       >
         <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
           <div className="min-w-0">
@@ -145,34 +144,24 @@ export function MarcoDiagrama({
             },
           ]}
         />
-        <div
-          className="no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3"
-          style={{ borderColor: "#e6e6e6" }}
-        >
+        <div className="separador no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3">
           {!enApartado && donde && (
             <a
               href={href("capitulo", donde.apartado.slug, donde.ancla)}
-              className="tap-44 inline-flex items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
+              className="chip tap-44 min-h-9 text-xs sm:min-h-8"
             >
               <BookOpen size={12} aria-hidden="true" /> Leer en el capítulo: {donde.apartado.n}.{" "}
               {donde.apartado.corto}
             </a>
           )}
           {enApartado && (
-            <a
-              href={href("visual", id)}
-              className="tap-44 inline-flex items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
-            >
+            <a href={href("visual", id)} className="chip tap-44 min-h-9 text-xs sm:min-h-8">
               <Images size={12} aria-hidden="true" /> Abrir a pantalla completa
             </a>
           )}
           {!enApartado &&
             (SEGUIR_DIAGRAMA[id] ?? []).map((l) => (
-              <a
-                key={l.ruta}
-                href={l.ruta}
-                className="tap-44 inline-flex items-center gap-1 rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400"
-              >
+              <a key={l.ruta} href={l.ruta} className="chip tap-44 min-h-9 text-xs sm:min-h-8">
                 {l.texto} <ArrowRight size={12} aria-hidden="true" />
               </a>
             ))}
@@ -198,11 +187,7 @@ function Escalera({ i }: { i: number }) {
         {p.franjas.map((f, j) => {
           const t = TONO[f.tono];
           return (
-            <li
-              key={j}
-              className="flex items-stretch overflow-hidden rounded-lg border"
-              style={{ borderColor: "#e6e6e6" }}
-            >
+            <li key={j} className="linea flex items-stretch overflow-hidden rounded-lg border">
               <span
                 className="flex w-28 shrink-0 items-center px-2 py-2 text-xs font-bold"
                 style={{ background: t.bg, color: t.fg }}
@@ -374,15 +359,13 @@ function EscalaCetonemia() {
       </p>
       <section className="mt-3 space-y-2 text-xs text-slate-700">
         <div>
-          <Sub className="text-xs font-bold uppercase tracking-wide text-slate-500">
-            Ejercicio y cetonemia
-          </Sub>
+          <Sub className="rotulo text-slate-500">Ejercicio y cetonemia</Sub>
           <p className="mt-0.5">
             <Texto>{ejercicio.texto}</Texto>
           </p>
         </div>
         <div>
-          <Sub className="text-xs font-bold uppercase tracking-wide text-slate-500">
+          <Sub className="rotulo text-slate-500">
             Insulina con pluma en la rama naranja (Figura 3)
           </Sub>
           <p className="mt-0.5">
@@ -457,8 +440,7 @@ function Ejercicio() {
         {EJERCICIO.zonas.map((z) => (
           <li
             key={z.etiqueta}
-            className="flex gap-2 rounded-xl border p-2.5 text-xs text-slate-700"
-            style={{ borderColor: "#e6e6e6" }}
+            className="linea flex gap-2 rounded-xl border p-2.5 text-xs text-slate-700"
           >
             <span
               aria-hidden="true"
@@ -505,10 +487,7 @@ function Ejercicio() {
           </div>
         ))}
       </div>
-      <div
-        className="mt-3 rounded-xl border p-3 text-xs text-slate-700"
-        style={{ borderColor: "#e6e6e6" }}
-      >
+      <div className="linea mt-3 rounded-xl border p-3 text-xs text-slate-700">
         <Sub className="mb-1 text-sm font-extrabold text-slate-900">Según el tipo de ejercicio</Sub>
         <ul className="space-y-1.5">
           {EJERCICIO.tipo.map((t) => (
@@ -609,12 +588,10 @@ function DatoAlgoritmo({
   children: ReactNode;
 }) {
   return (
-    <div className="flex gap-2.5 border-t px-3 py-2" style={{ borderColor: "#eceff3" }}>
+    <div className="separador flex gap-2.5 border-t px-3 py-2">
       <I size={16} className="mt-0.5 shrink-0" style={{ color: hex }} aria-hidden="true" />
       <div className="min-w-0">
-        <div className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
-          {etiqueta}
-        </div>
+        <div className="rotulo text-slate-500">{etiqueta}</div>
         <div className="text-sm font-semibold leading-snug text-slate-900">{children}</div>
       </div>
     </div>
@@ -649,7 +626,7 @@ function Algoritmos() {
               key={id}
               aria-labelledby={`alg-${id}`}
               className="row-span-9 grid grid-rows-subgrid gap-0 overflow-hidden rounded-xl border border-t-4 bg-white"
-              style={{ borderColor: "#e6e6e6", borderTopColor: h.strong }}
+              style={{ borderColor: "var(--linea)", borderTopColor: h.strong }}
             >
               <header
                 className="flex items-center gap-2.5 px-3 py-2.5"
@@ -742,7 +719,7 @@ function Algoritmos() {
                   })}
                 </ul>
               </DatoAlgoritmo>
-              <details className="border-t px-3 py-2 text-xs" style={{ borderColor: "#eceff3" }}>
+              <details className="separador border-t px-3 py-2 text-xs">
                 <summary className="tap-44 cursor-pointer font-semibold text-slate-700">
                   Celdas completas
                 </summary>
@@ -782,7 +759,7 @@ function Hipoglucemia() {
           <p
             key={r.cantidad}
             className="rounded-xl border bg-white px-3 py-2.5 text-sm text-slate-800"
-            style={{ borderColor: "#e6e6e6", borderTop: `4px solid ${TONO[r.tono].bg}` }}
+            style={{ borderColor: "var(--linea)", borderTop: `4px solid ${TONO[r.tono].bg}` }}
           >
             <span className="block text-2xl font-extrabold leading-tight tabular-nums text-slate-900 sm:text-3xl">
               {r.cantidad}
@@ -800,11 +777,7 @@ function Hipoglucemia() {
         {HIPOGLUCEMIA.despues.map((d) => {
           const I = /15 min/.test(d.texto) ? Timer : /comida/.test(d.texto) ? Utensils : RefreshCw;
           return (
-            <li
-              key={d.texto}
-              className="flex gap-2.5 rounded-xl border bg-white p-3"
-              style={{ borderColor: "#e6e6e6" }}
-            >
+            <li key={d.texto} className="flex gap-2.5 tarjeta p-3">
               <span
                 aria-hidden="true"
                 className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
@@ -833,11 +806,7 @@ function Transicion() {
       <p className="mb-3 text-sm text-slate-700">{TRANSICION.partida}</p>
       <ul className="space-y-2">
         {t.filas.map((f) => (
-          <li
-            key={f.etiqueta}
-            className="rounded-xl border p-2.5"
-            style={{ borderColor: "#e6e6e6" }}
-          >
+          <li key={f.etiqueta} className="linea rounded-xl border p-2.5">
             <div className="text-sm font-bold text-slate-900">{f.etiqueta}</div>
             <div className="mt-1 grid gap-1 text-xs sm:grid-cols-[1fr_1fr] sm:gap-3">
               <div>
@@ -933,11 +902,7 @@ function Hospital() {
       </p>
       <ul className="grid gap-2 md:grid-cols-3">
         {H.pasos.map((x) => (
-          <li
-            key={x.cuando}
-            className="rounded-xl border bg-white p-3"
-            style={{ borderColor: "#e6e6e6" }}
-          >
+          <li key={x.cuando} className="tarjeta p-3">
             <div className="mb-1 flex items-center justify-between gap-2">
               <span className="text-xs font-bold text-slate-900">{x.cuando}</span>
             </div>
@@ -1040,11 +1005,7 @@ function Exploraciones() {
       </p>
       <ul className="mb-3 flex flex-wrap gap-2 text-xs" aria-label="Leyenda">
         {(Object.keys(ESTADO_EXPLORACION) as EstadoExploracion[]).map((k) => (
-          <li
-            key={k}
-            className="inline-flex items-center gap-1.5 rounded-full border bg-white px-2 py-0.5"
-            style={{ borderColor: "#e6e6e6" }}
-          >
+          <li key={k} className="insignia inline-flex items-center gap-1.5 bg-white font-normal">
             <span
               aria-hidden="true"
               className="h-2.5 w-2.5 rounded-full"
@@ -1054,7 +1015,7 @@ function Exploraciones() {
           </li>
         ))}
       </ul>
-      <div className="hidden grid-cols-[12rem_1fr_1fr] gap-2 pb-1 text-xs font-bold uppercase tracking-wide text-slate-500 md:grid">
+      <div className="hidden grid-cols-[12rem_1fr_1fr] gap-2 pb-1 rotulo text-slate-500 md:grid">
         <span>{T6.cabeceraEtiqueta}</span>
         <span>{T6.columnas[0]}</span>
         <span>{T6.columnas[1]}</span>
@@ -1063,8 +1024,7 @@ function Exploraciones() {
         {T6.filas.map((f, i) => (
           <li
             key={f.etiqueta}
-            className="grid gap-1.5 rounded-xl border bg-white p-2 md:grid-cols-[12rem_1fr_1fr] md:gap-2"
-            style={{ borderColor: "#e6e6e6" }}
+            className="grid gap-1.5 tarjeta p-2 md:grid-cols-[12rem_1fr_1fr] md:gap-2"
           >
             <span className="text-sm font-bold text-slate-900">
               <Lineas>{f.etiqueta}</Lineas>
@@ -1084,10 +1044,7 @@ function Exploraciones() {
                     style={{ background: e.punto }}
                   />
                   <span className="min-w-0 flex-1">
-                    <span
-                      aria-hidden="true"
-                      className="block text-[11px] font-bold uppercase tracking-wide text-slate-600 md:hidden"
-                    >
+                    <span aria-hidden="true" className="block rotulo text-slate-600 md:hidden">
                       {T6.columnas[j]}
                     </span>
                     {/* El estado, también escrito (no solo color). */}
@@ -1180,17 +1137,11 @@ function Eleccion() {
         <CajaEleccion i={2} />
       </div>
       <div className="grid gap-2 md:grid-cols-[1fr_0.9fr_1fr]">
-        <p
-          className="rounded-xl border p-3 text-xs leading-snug text-slate-700"
-          style={{ borderColor: "#e6e6e6" }}
-        >
+        <p className="linea rounded-xl border p-3 text-xs leading-snug text-slate-700">
           <Texto>{F2.cajas[4].items[0]}</Texto>
         </p>
         <CajaEleccion i={3} tono="centro" />
-        <p
-          className="rounded-xl border p-3 text-xs leading-snug text-slate-700"
-          style={{ borderColor: "#e6e6e6" }}
-        >
+        <p className="linea rounded-xl border p-3 text-xs leading-snug text-slate-700">
           <Texto>{F2.cajas[4].items.slice(1).join(" ")}</Texto>
         </p>
       </div>
@@ -1201,7 +1152,7 @@ function Eleccion() {
         <p className="text-sm font-semibold text-slate-900">{F2.cajas[5].titulo}</p>
         <ul className="mt-1.5 flex flex-wrap gap-1.5 text-xs">
           {F2.cajas[5].items.map((x) => (
-            <li key={x} className="rounded-full bg-white px-2 py-0.5 text-slate-800">
+            <li key={x} className="insignia bg-white font-normal">
               {x}
             </li>
           ))}
@@ -1274,7 +1225,7 @@ function InterrupcionLinea() {
   }) => (
     <li
       className="flex min-w-0 flex-col overflow-hidden rounded-xl border bg-white"
-      style={{ borderColor: "#e6e6e6", borderTop: `4px solid ${tono.strong}` }}
+      style={{ borderColor: "var(--linea)", borderTop: `4px solid ${tono.strong}` }}
     >
       <span
         className="flex items-start gap-2 px-3 py-2 text-[15px] font-extrabold leading-snug"
@@ -1293,9 +1244,7 @@ function InterrupcionLinea() {
       className="mt-1 block rounded-lg px-2.5 py-2 text-[13px] leading-snug"
       style={{ background: "#f1f5f9" }}
     >
-      <span className="block text-xs font-bold uppercase tracking-wide text-slate-600">
-        {titulo}
-      </span>
+      <span className="block rotulo text-slate-600">{titulo}</span>
       <TS>{texto}</TS>
     </span>
   );
@@ -1326,19 +1275,13 @@ function InterrupcionLinea() {
       {/* 0.72.0: el formato, antes de los casos (qué se puede desconectar y qué no). */}
       <section className="grid gap-2 md:grid-cols-2">
         <Sub className="sr-only">Según el formato</Sub>
-        <p
-          className="rounded-xl border bg-white p-3 text-sm leading-snug text-slate-800"
-          style={{ borderColor: "#e6e6e6" }}
-        >
+        <p className="tarjeta p-3 text-sm leading-snug text-slate-800">
           <span className="mb-0.5 flex items-center gap-1.5 font-bold text-slate-900">
             <Package size={15} aria-hidden="true" className="text-slate-500" /> Pod
           </span>
           <TS>{L.formatos.pod}</TS>
         </p>
-        <p
-          className="rounded-xl border bg-white p-3 text-sm leading-snug text-slate-800"
-          style={{ borderColor: "#e6e6e6" }}
-        >
+        <p className="tarjeta p-3 text-sm leading-snug text-slate-800">
           <span className="mb-0.5 flex items-center gap-1.5 font-bold text-slate-900">
             <Cable size={15} aria-hidden="true" className="text-slate-500" /> Bomba con catéter
           </span>

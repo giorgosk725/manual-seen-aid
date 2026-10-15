@@ -31,10 +31,10 @@ function CabeceraTabla({ tabla, etiqueta }: { tabla: keyof typeof TABLAS; etique
   return (
     <div className="mb-1.5 flex flex-wrap items-start justify-between gap-2">
       <div>
-        <div className="text-[11px] font-bold uppercase tracking-wide" style={{ color: hex.ink }}>
+        <div className="rotulo" style={{ color: hex.ink }}>
           Tabla {t.numero}
         </div>
-        <h3 className="text-sm font-bold text-slate-900">
+        <h3 className="titulo-tarjeta">
           <Lineas>{etiqueta}</Lineas>
         </h3>
       </div>
@@ -56,14 +56,11 @@ function Casilla({
 }) {
   return (
     <div
-      className="rounded-xl p-3 text-sm text-slate-800"
-      style={{ background: SISTEMA_HEX[c].soft }}
+      className="casilla casilla-sistema p-3 text-sm text-slate-800"
+      style={{ ["--sis" as string]: SISTEMA_HEX[c].strong }}
     >
       {nombre && (
-        <span
-          className="mb-1 block text-xs font-bold uppercase tracking-wide"
-          style={{ color: SISTEMA_HEX[c].ink }}
-        >
+        <span className="rotulo mb-1 block" style={{ color: SISTEMA_HEX[c].ink }}>
           {nombre}
         </span>
       )}
@@ -130,15 +127,15 @@ function PiezaVistaBase({
     <Texto siglas={pend(children)}>{children}</Texto>
   );
   const sinTitulos = useContext(PiezasSinTitulos);
-  const caja = compacta ? "" : "rounded-xl border bg-white p-3";
-  const borde = compacta ? undefined : { borderColor: "#e6e6e6" };
+  const caja = compacta ? "" : "tarjeta p-3";
+  const borde = undefined;
   const Rotulo = ({ tabla, etiqueta }: { tabla: keyof typeof TABLAS; etiqueta: string }) =>
     compacta && sinTitulos ? (
-      <p className="mb-1 text-sm font-bold text-slate-900">
+      <p className="titulo-tarjeta mb-1">
         <Lineas siglas={pend(etiqueta)}>{etiqueta}</Lineas>
       </p>
     ) : compacta ? (
-      <h4 className="mb-1 text-sm font-bold text-slate-900">
+      <h4 className="titulo-tarjeta mb-1">
         <Lineas siglas={pend(etiqueta)}>{etiqueta}</Lineas>
       </h4>
     ) : (
@@ -185,11 +182,8 @@ function PiezaVistaBase({
         return (
           <div>
             <Rotulo tabla={pieza.tabla} etiqueta={f.etiqueta} />
-            <div className="rounded-lg p-3" style={{ background: hex.soft }}>
-              <div
-                className="mb-0.5 text-[11px] font-bold uppercase tracking-wide"
-                style={{ color: hex.ink }}
-              >
+            <div className="casilla casilla-sistema p-3">
+              <div className="rotulo mb-0.5" style={{ color: hex.ink }}>
                 {t.columnas[0]}
               </div>
               <div className="text-[15px] font-medium text-slate-900">
@@ -209,15 +203,8 @@ function PiezaVistaBase({
           <Rotulo tabla={pieza.tabla} etiqueta={f.etiqueta} />
           <dl className="grid gap-2 sm:grid-cols-2">
             {t.columnas.map((col, c) => (
-              <div
-                key={col}
-                className="rounded-lg p-2.5"
-                style={{ background: c === 0 ? hex.soft : "#f8fafc" }}
-              >
-                <dt
-                  className="mb-0.5 text-[11px] font-bold uppercase tracking-wide"
-                  style={{ color: c === 0 ? hex.ink : "#475569" }}
-                >
+              <div key={col} className={`casilla p-2.5 ${c === 0 ? "casilla-sistema" : ""}`}>
+                <dt className="rotulo mb-0.5" style={c === 0 ? { color: hex.ink } : undefined}>
                   {col}
                 </dt>
                 <dd className="text-sm text-slate-800">
@@ -272,15 +259,17 @@ function PiezaVistaBase({
             {lineasInicializacion(sis).map((l) => (
               <li
                 key={l}
-                className="rounded-lg p-2.5 text-sm text-slate-800"
-                style={{ background: sis !== undefined ? SISTEMA_HEX[sis].soft : hex.soft }}
+                className="casilla casilla-sistema p-2.5 text-sm text-slate-800"
+                style={{
+                  ["--sis" as string]: sis !== undefined ? SISTEMA_HEX[sis].strong : hex.strong,
+                }}
               >
                 {l}
               </li>
             ))}
           </ul>
           <p className="mt-1.5 text-xs text-slate-600">
-            <span className="font-bold uppercase tracking-wide">{TABLAS.T2.columnas[1]}: </span>
+            <span className="font-semibold">{TABLAS.T2.columnas[1]}: </span>
             {f.celdas[1]}
           </p>
         </div>
@@ -291,12 +280,12 @@ function PiezaVistaBase({
       return (
         <div className="flex gap-3">
           <span
-            className="mt-1 h-3 w-3 shrink-0 rounded-full"
+            className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full"
             style={{ background: hex.strong }}
             aria-hidden="true"
           />
           <div>
-            <h3 className="text-sm font-bold text-slate-900">{pieza.rotulo}</h3>
+            <h3 className="titulo-tarjeta">{pieza.rotulo}</h3>
             <p className="text-sm text-slate-800">
               <T>{f.frases.join(" ")}</T>
               {!compacta && <EnlacePagina ruta={f.ruta} p={f.pagina} />}

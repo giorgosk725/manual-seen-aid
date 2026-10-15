@@ -55,7 +55,7 @@ function GaleriaDiagramas() {
         <section key={g.id} aria-labelledby={`diag-${g.id}`}>
           <h2
             id={`diag-${g.id}`}
-            className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide"
+            className="mb-2 flex items-center gap-2 rotulo"
             style={{ color: g.color }}
           >
             <span
@@ -75,7 +75,7 @@ function GaleriaDiagramas() {
                     // Con un solo hogar en consulta, la galería lleva allí (0.72.2-0.73.0).
                     href={rutaDeDiagrama(d.id)}
                     className="group flex h-full gap-3 rounded-lg border bg-white p-3 transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                    style={{ borderColor: "#e6e6e6", borderLeft: `4px solid ${g.color}` }}
+                    style={{ borderColor: "var(--linea)", borderLeft: `4px solid ${g.color}` }}
                   >
                     <span
                       className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
@@ -112,10 +112,7 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
     <div>
       <CabeceraEditorial titulo="Figuras y diagramas" hex={hex} level={1} />
       <section aria-labelledby="figuras" className="mb-8">
-        <h2
-          id="figuras"
-          className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-600"
-        >
+        <h2 id="figuras" className="mb-2 flex items-center gap-2 rotulo text-slate-600">
           <Images size={14} aria-hidden="true" /> Figuras del capítulo
         </h2>
         <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -123,11 +120,7 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
             const ap = apartadoDeFigura(fig.id);
             const img = fig.imagen!;
             return (
-              <li
-                key={fig.id}
-                className="overflow-hidden rounded-2xl border bg-white shadow-soft"
-                style={{ borderColor: "#e6e6e6" }}
-              >
+              <li key={fig.id} className="overflow-hidden tarjeta">
                 <AbrirEnVisor
                   imagen={{
                     src: img.src,
@@ -148,7 +141,7 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                     <Maximize2 size={12} aria-hidden="true" /> Ampliar
                   </span>
                 </AbrirEnVisor>
-                <div className="border-t p-3" style={{ borderColor: "#e6e6e6" }}>
+                <div className="separador border-t p-3">
                   <div className="text-sm font-bold leading-snug text-slate-900">
                     {fig.titulo.replace(/\.$/, "")}
                   </div>
@@ -156,7 +149,7 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                     {ap && (
                       <a
                         href={rutaDeFigura(fig.id) ?? href("capitulo", ap.slug)}
-                        className="inline-flex min-h-11 items-center rounded-full border border-slate-300 px-2 py-0.5 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-6"
+                        className="chip text-xs"
                       >
                         Apartado {ap.n}, p. {fig.pagina}
                       </a>
@@ -164,7 +157,7 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                     {extra && (
                       <a
                         href={extra.href}
-                        className="inline-flex min-h-11 items-center rounded-full px-2 py-0.5 text-xs font-semibold text-white sm:min-h-6"
+                        className="chip border-transparent text-xs text-white"
                         style={{ background: hex.strong }}
                       >
                         {extra.texto}

@@ -5,15 +5,7 @@
    y lleva como segunda cara la hoja de cetonas. Las hojas se imprimen con letra grande (12 pt);
    la app no guarda nada: solo líneas en blanco para el papel. */
 import { useEffect, useRef, type ReactNode } from "react";
-import {
-  ArrowRight,
-  Droplets,
-  FileDown,
-  Printer,
-  ScanLine,
-  ShieldCheck,
-  type LucideIcon,
-} from "lucide-react";
+import { Printer } from "lucide-react";
 import { UrgenciaF3 } from "../componentes/UrgenciaF3";
 import { CAPITULO, FIGURA3, TABLAS, apartadoPorSlug, idDeBloque } from "../contenido";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
@@ -118,23 +110,19 @@ function Hoja({
   return (
     <div
       ref={hojaRef}
-      className={`hoja-a4 imprimible grande rounded-2xl border bg-white p-4 shadow-soft sm:p-6 ${holgada ? "holgada" : ""}`}
-      style={{ borderColor: "#e6e6e6" }}
+      className={`linea hoja-a4 imprimible grande tarjeta p-4 sm:p-6 ${holgada ? "holgada" : ""}`}
     >
       {materialId && !materialListo(materialId) && (
         <p className="mb-3 rounded-md border-2 border-amber-400 px-3 py-2 text-sm font-bold text-amber-900">
           Borrador en revisión: no entregar.
         </p>
       )}
-      <header className="hoja-cabecera mb-3 border-b pb-3" style={{ borderColor: "#e6e6e6" }}>
+      <header className="separador hoja-cabecera mb-3 border-b pb-3">
         <h1 className="text-balance text-xl font-black leading-tight text-slate-900">{titulo}</h1>
         {subtitulo && <div className="mt-1 text-sm text-slate-600">{subtitulo}</div>}
       </header>
       <div className="hoja-cuerpo">{children}</div>
-      <footer
-        className="hoja-pie mt-4 border-t pt-2 text-xs text-slate-600"
-        style={{ borderColor: "#e6e6e6" }}
-      >
+      <footer className="separador hoja-pie mt-4 border-t pt-2 text-xs text-slate-600">
         Fuente: {fuente}
         {complementaria
           ? ` · Complemento del capítulo ${CAPITULO.numero} (no es una publicación del Manual SEEN) · v${VERSION_APP}`
@@ -154,13 +142,11 @@ function Fila({
   href: destino,
   titulo,
   detalle,
-  icono: I,
   externo = false,
 }: {
   href: string;
   titulo: string;
   detalle: string;
-  icono: LucideIcon;
   externo?: boolean;
 }) {
   return (
@@ -168,24 +154,12 @@ function Fila({
       href={destino}
       target={externo ? "_blank" : undefined}
       rel={externo ? "noopener noreferrer" : undefined}
-      className="group flex min-h-11 items-center gap-3 px-4 py-3 text-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
+      className="fila px-4 py-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
     >
-      <span
-        aria-hidden="true"
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-        style={{ background: hex.soft, color: hex.strong }}
-      >
-        <I size={20} />
-      </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-base font-bold text-slate-900">{titulo}</span>
-        <span className="block text-xs text-slate-600">{detalle}</span>
+        <span className="titulo-tarjeta block">{titulo}</span>
+        <span className="block text-xs font-normal text-slate-600">{detalle}</span>
       </span>
-      <ArrowRight
-        size={15}
-        className="shrink-0 text-slate-400 transition group-hover:translate-x-0.5"
-        aria-hidden="true"
-      />
     </a>
   );
 }
@@ -197,30 +171,15 @@ export function HubPacientes() {
   return (
     <div>
       <CabeceraEditorial titulo="Material para el paciente" hex={hex} level={1} />
-      <div
-        className="overflow-hidden rounded-xl border bg-white"
-        style={{ borderColor: "#e6e6e6" }}
-      >
+      <div className="overflow-hidden tarjeta">
         <Fila
           href={PDF_PACIENTES}
           externo
-          icono={FileDown}
           titulo="Información para pacientes"
           detalle={`PDF del Manual SEEN · 3 páginas · ${CAPITULO.fechaPdfPacientes}`}
         />
-        <section
-          aria-labelledby="planes"
-          className="border-t px-4 py-3"
-          style={{ borderColor: "#eef0f2" }}
-        >
-          <h2 id="planes" className="flex items-center gap-3 text-base font-bold text-slate-900">
-            <span
-              aria-hidden="true"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-              style={{ background: hex.soft, color: hex.strong }}
-            >
-              <ShieldCheck size={20} />
-            </span>
+        <section aria-labelledby="planes" className="separador border-t px-4 py-3">
+          <h2 id="planes" className="titulo-tarjeta">
             Plan de seguridad
           </h2>
           {!materialListo("planes") && (
@@ -228,18 +187,18 @@ export function HubPacientes() {
               En revisión: todavía no están listos para entregar.
             </p>
           )}
-          <ul className="mt-2 grid grid-cols-2 gap-2 sm:pl-[3.25rem] lg:grid-cols-4">
+          <ul className="mt-2 grid grid-cols-2 gap-2 lg:grid-cols-4">
             {ORDEN_SISTEMAS.map((id, c) => (
               <li key={id}>
                 <a
                   href={href("pacientes", "plan", id)}
-                  className="hover-lift ease-brand flex h-full items-center gap-2 rounded-xl border bg-white p-2 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                  style={{ borderColor: "#e6e6e6" }}
+                  className="tarjeta tarjeta-sistema hover-lift ease-brand flex h-full items-center gap-2 p-2 pl-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  style={{ ["--sis" as string]: SISTEMA_HEX[c].strong }}
                 >
                   <img
                     src={FOTO_SISTEMA[id]}
                     alt=""
-                    className="h-9 w-9 shrink-0 rounded-lg object-cover"
+                    className="h-9 w-9 shrink-0 rounded-md object-cover"
                   />
                   <span className="text-sm font-bold" style={{ color: SISTEMA_HEX[c].ink }}>
                     {CORTO_SISTEMA[c]}
@@ -250,20 +209,18 @@ export function HubPacientes() {
           </ul>
         </section>
         {cetonas && (
-          <div className="border-t" style={{ borderColor: "#eef0f2" }}>
+          <div className="separador border-t">
             <Fila
               href={href("pacientes", "hoja", cetonas.id)}
-              icono={Droplets}
               titulo={cetonas.titulo}
               detalle="Incluida en el plan de seguridad; también en hoja aparte"
             />
           </div>
         )}
         {pruebas && (
-          <div className="border-t" style={{ borderColor: "#eef0f2" }}>
+          <div className="separador border-t">
             <Fila
               href={href("pacientes", "hoja", pruebas.id)}
-              icono={ScanLine}
               titulo={pruebas.titulo}
               detalle="Resonancia, TC, radiografía, ecografía y cirugía"
             />
@@ -599,7 +556,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
         </section>
         {/* Segunda cara: la hoja de cetonas (aprobada), entera. */}
         {cetonas && materialListo("hoja-cetonas") && (
-          <div className="cara-2 mt-5 border-t-2 pt-4" style={{ borderColor: "#e6e6e6" }}>
+          <div className="separador cara-2 mt-5 border-t-2 pt-4">
             <CuerpoHoja hoja={cetonas} titulo />
           </div>
         )}

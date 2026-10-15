@@ -8,32 +8,7 @@
 import { frasesDe, siglasPorPiezas, textosDePieza } from "../inicio";
 import { NotaCorreccion } from "../componentes/NotaCorreccion";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import {
-  Activity,
-  ArrowRight,
-  Baby,
-  BarChart3,
-  Box,
-  Brain,
-  Check,
-  Cpu,
-  ExternalLink,
-  Handshake,
-  Minus,
-  Radio,
-  SlidersHorizontal,
-  Syringe,
-  Target,
-  Timer,
-  TrendingDown,
-  Users,
-  Utensils,
-  X,
-  Zap,
-  type LucideIcon,
-  MessageCircleQuestion,
-  Fingerprint,
-} from "lucide-react";
+import { ArrowRight, Check, ExternalLink, Minus, X } from "lucide-react";
 import { CLAVE_ALGORITMO } from "../contenido/diagramas";
 import {
   APARTADOS,
@@ -131,7 +106,7 @@ function ParametrosConfigurables({ c, ink }: { c: number; ink: string }) {
     <span className="mt-1 block space-y-1">
       {grupos.map((g) => (
         <span key={g.rotulo} className="block">
-          <span className="block text-[11px] font-semibold" style={{ color: ink }}>
+          <span className="rotulo block" style={{ color: ink }}>
             {g.rotulo}
           </span>
           <span className="block text-slate-900">{g.items.join(" · ")}</span>
@@ -160,7 +135,7 @@ function Ampliacion({ s }: { s: Sistema }) {
   const fuentes = s.sources.map((id) => ({ id, f: FUENTES[id] })).filter((x) => x.f);
   return (
     <section aria-labelledby="ampliacion" className="mt-8">
-      <div className="mb-3 rounded-2xl border border-violet-200 bg-violet-50 p-3">
+      <div className="mb-3 rounded-xl border border-violet-200 bg-violet-50 p-3">
         <h2 id="ampliacion" className="text-base font-extrabold text-violet-900">
           Ampliación técnica · fuera del capítulo
         </h2>
@@ -173,7 +148,7 @@ function Ampliacion({ s }: { s: Sistema }) {
       <div className="space-y-3">
         {FICHA_FILAS.map((g) => (
           <Foldable key={g.g} title={g.g} open={g.g === "Indicación y objetivo"}>
-            <dl className="divide-y" style={{ borderColor: "#e6e6e6" }}>
+            <dl className="divide-y">
               {g.rows.map((r) => {
                 let valor: React.ReactNode = null;
                 // Donde la ampliación no coincide con el capítulo, se enseña la frase del capítulo.
@@ -204,9 +179,7 @@ function Ampliacion({ s }: { s: Sistema }) {
                 }
                 return (
                   <div key={r.k} className="grid gap-1 py-2.5 sm:grid-cols-[13rem_1fr] sm:gap-4">
-                    <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                      {r.k}
-                    </dt>
+                    <dt className="rotulo text-slate-500">{r.k}</dt>
                     <dd className="text-sm text-slate-800">{valor}</dd>
                   </div>
                 );
@@ -259,8 +232,7 @@ function Ampliacion({ s }: { s: Sistema }) {
             </p>
           ) : (
             <div
-              className="tabla-scroll rounded-xl border"
-              style={{ borderColor: "#e6e6e6" }}
+              className="linea tabla-scroll rounded-xl border"
               tabIndex={0}
               role="region"
               aria-label="Sets de infusión, desplazable"
@@ -277,11 +249,7 @@ function Ampliacion({ s }: { s: Sistema }) {
                       "Inserción",
                       "Cambio (días)",
                     ].map((c) => (
-                      <th
-                        key={c}
-                        scope="col"
-                        className="px-2 py-1.5 text-left text-xs font-bold uppercase tracking-wide"
-                      >
+                      <th key={c} scope="col" className="px-2 py-1.5 text-left rotulo">
                         {c}
                       </th>
                     ))}
@@ -292,47 +260,24 @@ function Ampliacion({ s }: { s: Sistema }) {
                     <tr key={x.name}>
                       <th
                         scope="row"
-                        className="border-t px-2 py-1.5 text-left text-xs font-bold text-slate-800"
-                        style={{ borderColor: "#e6e6e6" }}
+                        className="separador border-t px-2 py-1.5 text-left text-xs font-bold text-slate-800"
                       >
                         {x.name}
                       </th>
-                      <td
-                        className="border-t px-2 py-1.5 text-slate-700"
-                        style={{ borderColor: "#e6e6e6" }}
-                      >
+                      <td className="separador border-t px-2 py-1.5 text-slate-700">
                         {x.material}
                       </td>
-                      <td
-                        className="border-t px-2 py-1.5 text-slate-700"
-                        style={{ borderColor: "#e6e6e6" }}
-                      >
-                        {x.angle}
-                      </td>
-                      <td
-                        className="border-t px-2 py-1.5 text-slate-700"
-                        style={{ borderColor: "#e6e6e6" }}
-                      >
+                      <td className="separador border-t px-2 py-1.5 text-slate-700">{x.angle}</td>
+                      <td className="separador border-t px-2 py-1.5 text-slate-700">
                         {x.cannula.join(" / ")}
                       </td>
-                      <td
-                        className="border-t px-2 py-1.5 text-slate-700"
-                        style={{ borderColor: "#e6e6e6" }}
-                      >
+                      <td className="separador border-t px-2 py-1.5 text-slate-700">
                         {x.tubing.join(" / ")}
                       </td>
-                      <td
-                        className="border-t px-2 py-1.5 text-slate-700"
-                        style={{ borderColor: "#e6e6e6" }}
-                      >
+                      <td className="separador border-t px-2 py-1.5 text-slate-700">
                         {x.insertion}
                       </td>
-                      <td
-                        className="border-t px-2 py-1.5 text-slate-700"
-                        style={{ borderColor: "#e6e6e6" }}
-                      >
-                        {x.change}
-                      </td>
+                      <td className="separador border-t px-2 py-1.5 text-slate-700">{x.change}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -409,12 +354,10 @@ function ParametrosAutomatico({
   if (!fila) return null;
   return (
     <div
-      className="mt-3 rounded-xl border-l-4 bg-white p-3"
-      style={{ borderLeftColor: hexSistema.strong }}
+      className="tarjeta tarjeta-sistema mt-3 p-3"
+      style={{ ["--sis" as string]: hexSistema.strong }}
     >
-      <div className="text-xs font-bold uppercase tracking-wide text-slate-600">
-        Parámetros configurables en modo automático
-      </div>
+      <div className="rotulo">Parámetros configurables en modo automático</div>
       <div className="mt-1 text-sm font-semibold">
         <ParametrosConfigurables c={c} ink={hexSistema.ink} />
       </div>
@@ -446,6 +389,10 @@ const sinNombreDelSistema = (q: string) =>
     (_m, _n, l: string) => `¿${l.toUpperCase()}`,
   );
 
+/* Enlace de acceso en la cabecera de la ficha: texto con subrayado fino. */
+const accesoFicha =
+  "inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9";
+
 /* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
 const TODAS_LAS_SECCIONES = [
   { id: "funciona", t: "Cómo funciona" },
@@ -472,27 +419,6 @@ function rutaEnCapitulo(t: Tabla): string | null {
 }
 
 /* La columna de un sistema en una tabla del capítulo: filas literales, notas y página. */
-/* Iconos de las filas de las Tablas 1 y 3 (por índice de fila). */
-const ICONO_FILA: Record<string, Record<number, LucideIcon>> = {
-  T1: {
-    0: Box,
-    1: Radio,
-    2: Cpu,
-    3: Brain,
-    4: Syringe,
-    5: Zap,
-    6: Target,
-    7: Users,
-    8: Baby,
-    9: BarChart3,
-    10: SlidersHorizontal,
-  },
-  T3: { 0: Target, 1: Activity, 2: Utensils, 3: TrendingDown, 4: Timer },
-};
-const iconoDeFila = (tabla: string, i: number) => {
-  const I = ICONO_FILA[tabla]?.[i];
-  return I ? <I size={15} aria-hidden="true" className="shrink-0 text-slate-500" /> : null;
-};
 
 /* Las filas de una tabla para un sistema, como tarjetas con icono (rótulo de la fila y su
    casilla literal), con las notas que tocan y la fuente al pie. */
@@ -525,37 +451,40 @@ function ColumnaTabla({
   const notas = t.notas.filter((n) => (esAsterisco(n) ? hayAsterisco : !esSiglas(n)));
   const siglas = t.notas.filter(esSiglas);
   return (
-    // 0.72.0: sin la caja de fuera (tarjetas dentro de una tarjeta).
+    // 0.72.0: sin la caja de fuera (tarjetas dentro de una tarjeta). sistema visual: una tarjeta por
+    // fila con la pleca del sistema; la que cuenta en automático, con el borde del sistema.
     <div>
-      <dl className="grid gap-2 sm:grid-cols-2">
+      <dl className="ultima-ancha grid gap-3 sm:grid-cols-2">
         {t.filas.map((f, j) => {
           if (filas && !filas(f.etiqueta, j)) return null;
-          const I = ICONO_FILA[t.id]?.[j];
           return (
             <div
               key={j}
-              className="rounded-xl p-3"
-              style={{
-                background: hexS.soft,
-                boxShadow: destacar?.(j)
-                  ? `inset 0 0 0 2px ${hexS.strong}`
-                  : `inset 3px 0 0 0 ${hexS.strong}`,
-              }}
+              className={`tarjeta p-3 ${destacar?.(j) ? "tarjeta-realce" : "tarjeta-sistema"}`}
+              style={{ ["--sis" as string]: hexS.strong }}
             >
+              {/* En la Tabla 4, lo que sigue al nombre de la situación es la conducta común:
+                  debajo y en gris, como en la tabla. */}
               <dt
-                className={`flex items-center gap-2 ${t.id === "T4" ? "text-sm font-bold leading-snug" : "text-[11px] font-bold uppercase tracking-wide"}`}
+                className={t.id === "T4" ? "titulo-tarjeta" : "rotulo"}
                 style={{ color: hexS.ink }}
               >
-                {I && (
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white">
-                    <I size={15} aria-hidden="true" />
-                  </span>
-                )}
-                <span className="min-w-0">
+                {t.id === "T4" ? (
+                  f.etiqueta.split("\n").map((l, k) => (
+                    <span
+                      key={k}
+                      className={
+                        k === 0 ? "block" : "mt-1 block text-[13px] font-normal text-slate-600"
+                      }
+                    >
+                      <Texto>{l}</Texto>
+                    </span>
+                  ))
+                ) : (
                   <Lineas>{f.etiqueta}</Lineas>
-                </span>
+                )}
               </dt>
-              <dd className="mt-1.5 text-[15px] text-slate-800">
+              <dd className="mt-1 text-[15px] text-slate-800">
                 {/* La insignia, dentro del dd: en un <dl> solo caben dt y dd. */}
                 {insignia?.(j) && <span className="-mt-0.5 mb-1 block">{insignia(j)}</span>}
                 <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
@@ -575,10 +504,7 @@ function ColumnaTabla({
         })}
       </dl>
       {(notas.length > 0 || notaExtra) && (
-        <div
-          className="mt-2 space-y-1 border-t pt-2 text-xs text-slate-600"
-          style={{ borderColor: "#e6e6e6" }}
-        >
+        <div className="separador mt-2 space-y-1 border-t pt-2 text-xs text-slate-600">
           {[...(notaExtra ? [notaExtra] : []), ...notas].map((n, k) => (
             <p key={k}>
               <Texto>{n}</Texto>
@@ -630,7 +556,7 @@ function TituloSeccion({
   children: ReactNode;
 }) {
   return (
-    <h2 id={id} className="mb-2 scroll-mt-2 text-base font-extrabold text-slate-900">
+    <h2 id={id} className="titulo-seccion mb-2 scroll-mt-2">
       {/* El sistema ya está en el título y en la barra: solo para el lector de pantalla. */}
       {children}{" "}
       <span className="sr-only" style={{ color }}>
@@ -688,7 +614,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       <header className="mb-3 grid grid-cols-[auto_1fr] items-center gap-x-3 sm:mb-4 sm:items-start sm:gap-x-4">
         <AbrirEnVisor
           imagen={{ src: FOTO_SISTEMA[s.id], alt: `Foto oficial de ${s.name}`, titulo: s.name }}
-          className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border bg-white shadow-soft focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:row-span-2 sm:h-32 sm:w-32 sm:rounded-2xl"
+          className="tarjeta h-14 w-14 shrink-0 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:row-span-2 sm:h-28 sm:w-28"
           etiqueta={`Ampliar la foto de ${s.name}`}
         >
           <img
@@ -701,7 +627,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           {/* Imprimir, junto al título (A09): la única acción secundaria de la cabecera. */}
           <div className="flex items-start justify-between gap-2">
             <h1
-              className="min-w-0 text-xl font-black tracking-tight sm:text-3xl"
+              className="min-w-0 text-xl font-extrabold tracking-tight sm:text-3xl"
               style={{ color: h.ink }}
             >
               {s.name}
@@ -713,33 +639,23 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             </div>
           </div>
         </div>
-        {/* En el móvil, tres botones iguales en una fila; en pantalla ancha, enlaces (0.53.0). */}
-        <div className="no-imprimir col-span-2 mt-2 grid grid-cols-3 gap-2 sm:col-span-1 sm:col-start-2 sm:flex sm:flex-wrap sm:gap-x-3 sm:gap-y-1">
+        {/* Sistema visual: los tres accesos como enlaces de texto en una fila (en el móvil eran tres
+            botones apilados antes del contenido). */}
+        <div className="no-imprimir col-span-2 mt-1 flex flex-wrap gap-x-4 gap-y-0 sm:col-span-1 sm:col-start-2 sm:mt-0">
           <a
             // I61-04: al principio del recorrido (preparación), con el sistema; no al paso 5.
             href={href("consultar", "inicio", `preparacion:${slug}`)}
-            className="flex min-h-11 items-center justify-center gap-1 rounded-lg border border-slate-300 bg-white px-1.5 text-center text-sm font-semibold leading-tight hover:underline sm:inline-flex sm:min-h-8 sm:justify-start sm:border-0 sm:bg-transparent sm:px-0 sm:text-left"
-            style={{ color: h.ink }}
+            className={accesoFicha}
           >
             <span className="sm:hidden">Iniciación</span>
             <span className="hidden sm:inline">Iniciación del sistema</span>
-            <ArrowRight size={13} aria-hidden="true" className="hidden sm:block" />
           </a>
-          <a
-            href={href("pacientes", "plan", s.id)}
-            className="flex min-h-11 items-center justify-center gap-1 rounded-lg border border-slate-300 bg-white px-1.5 text-center text-sm font-semibold leading-tight hover:underline sm:inline-flex sm:min-h-8 sm:justify-start sm:border-0 sm:bg-transparent sm:px-0 sm:text-left"
-            style={{ color: h.ink }}
-          >
+          <a href={href("pacientes", "plan", s.id)} className={accesoFicha}>
             <span className="sm:hidden">Plan de seguridad</span>
             <span className="hidden sm:inline">Plan de seguridad (hoja para el paciente)</span>
-            <ArrowRight size={13} aria-hidden="true" className="hidden sm:block" />
           </a>
-          <a
-            href={href("consultar", "situacion", `:${slug}`)}
-            className="flex min-h-11 items-center justify-center gap-1 rounded-lg border border-slate-300 bg-white px-1.5 text-center text-sm font-semibold leading-tight hover:underline sm:inline-flex sm:min-h-8 sm:justify-start sm:border-0 sm:bg-transparent sm:px-0 sm:text-left"
-            style={{ color: h.ink }}
-          >
-            Situaciones <ArrowRight size={13} aria-hidden="true" className="hidden sm:block" />
+          <a href={href("consultar", "situacion", `:${slug}`)} className={accesoFicha}>
+            Situaciones
           </a>
         </div>
       </header>
@@ -769,7 +685,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
                 href={WEB_SISTEMA[s.id]}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="no-imprimir inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+                className="fuente-pie no-imprimir inline-flex min-h-11 items-center gap-1 font-semibold sm:min-h-8"
               >
                 Web oficial <ExternalLink size={12} aria-hidden="true" />
               </a>
@@ -815,23 +731,16 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             Preguntas frecuentes
           </TituloSeccion>
           <ul
-            className="divide-y overflow-hidden rounded-xl border bg-white"
-            style={{ borderColor: "#e6e6e6", borderLeft: `3px solid ${h.strong}` }}
+            className="filas tarjeta tarjeta-sistema overflow-hidden"
+            style={{ ["--sis" as string]: h.strong }}
           >
             {preguntas.map((f) => (
-              <li key={f.id} style={{ borderColor: "#eef0f2" }}>
+              <li key={f.id}>
                 <a
                   href={href("preguntas", f.id)}
-                  className="flex min-h-11 items-center gap-2 px-3 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
+                  className="fila pl-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
                 >
-                  <MessageCircleQuestion
-                    size={15}
-                    className="shrink-0"
-                    style={{ color: h.strong }}
-                    aria-hidden="true"
-                  />
                   <span className="min-w-0 flex-1">{sinNombreDelSistema(f.pregunta)}</span>
-                  <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
                 </a>
               </li>
             ))}
@@ -845,7 +754,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           <Foldable title="Menciones en el capítulo" count={parrafos.length}>
             {/* 0.73.0: enlaces a cada párrafo (antes, los párrafos enteros: repetían el
                 capítulo dentro de la ficha). */}
-            <ul className="divide-y" style={{ borderColor: "#eef0f2" }}>
+            <ul className="filas">
               {parrafos.map((p) => (
                 <li key={p.slug + p.ancla}>
                   <a
@@ -922,13 +831,8 @@ export function Sistemas({ sel, seccion }: { sel?: string; seccion?: string }) {
 function AmpliacionRetirada({ ids }: { ids: string[] }) {
   const destino = ids.length === 1 ? href("sistemas", ids[0], "esencial") : href("sistemas");
   return (
-    <div
-      className="rounded-xl border bg-white p-4 text-sm text-slate-700"
-      style={{ borderColor: "#e6e6e6" }}
-    >
-      <h1 className="text-lg font-extrabold text-slate-900">
-        La ampliación técnica no está en esta edición
-      </h1>
+    <div className="tarjeta p-4 text-sm text-slate-700">
+      <h1 className="titulo-seccion">La ampliación técnica no está en esta edición</h1>
       <p className="mt-1">
         Este complemento recoge solo lo que dice el capítulo 89. Los datos de ficha técnica de cada
         sistema quedan para una edición posterior.
@@ -1005,8 +909,7 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
       ref={barra}
       // En la comparación del ordenador, la barra no se pega: lo que queda arriba al bajar es la
       // cabecera de la tabla, con los nombres de los sistemas (0.72.0).
-      className={`barra-pegada no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 pt-2 sm:mx-0 sm:rounded-lg sm:border sm:px-3 ${ids.length === 1 ? "" : "lg:static"}`}
-      style={{ borderColor: "#e6e6e6" }}
+      className={`barra-pegada separador no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 pt-2 sm:mx-0 sm:rounded-lg sm:border sm:px-3 ${ids.length === 1 ? "" : "lg:static"}`}
     >
       {compacta ? (
         <button
@@ -1025,7 +928,7 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
           <span className="min-w-0 flex-1 truncate font-semibold text-slate-900">
             {ids.length === 1 ? "" : resumen}
           </span>
-          <span className="shrink-0 text-xs font-semibold" style={{ color: SEEN.burdeos }}>
+          <span className="shrink-0 text-sm font-semibold" style={{ color: SEEN.burdeos }}>
             {ids.length === 1
               ? "Otro sistema o comparación"
               : ids.length === 0 && !seccion
@@ -1044,7 +947,7 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
                 <a
                   href={rutaCon(marcados)}
                   onClick={() => window.scrollTo({ top: 0 })}
-                  className="tap-44 inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-md px-3 py-1 text-sm font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                  className="tap-44 inline-flex min-h-9 shrink-0 items-center gap-1 whitespace-nowrap rounded-md px-3 py-1 text-sm font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                   style={{ background: SEEN.burdeos }}
                 >
                   {marcados.length === 1 ? "Ver la ficha" : `Comparar (${marcados.length})`}
@@ -1056,12 +959,7 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
                 type="button"
                 aria-pressed={ids.length === 0}
                 onClick={() => window.location.replace(rutaCon([]))}
-                className="tap-44 inline-flex shrink-0 items-center whitespace-nowrap rounded-md border px-2.5 py-1 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                style={
-                  ids.length === 0
-                    ? { borderColor: SEEN.burdeos, background: "#f7eff3", color: "#1e293b" }
-                    : { borderColor: "#d4d4d4", background: "#fff", color: "#334155" }
-                }
+                className="chip tap-44 shrink-0 whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
                 Los cuatro
               </button>
@@ -1069,18 +967,14 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
           }
         />
       )}
-      <nav
-        aria-label="Sección"
-        className="-mx-3 mt-1 flex flex-wrap items-center gap-x-0.5 px-3 sm:mx-0 sm:gap-1 sm:px-0"
-      >
+      <nav aria-label="Sección" className="pestanas -mx-3 mt-1 px-3 sm:mx-0 sm:gap-1 sm:px-0">
         {/* 0.72.1: las tarjetas son una vista más, al lado de las dos tablas: así se vuelve a
             ellas desde la comparación (antes solo con «Sistemas» abajo o Atrás). */}
         {ids.length !== 1 && (
           <a
             href={href("sistemas")}
             aria-current={entrada ? "location" : undefined}
-            className={`inline-flex min-h-11 shrink-0 items-center border-b-2 px-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${entrada ? "font-bold" : "border-transparent font-semibold text-slate-600 hover:text-slate-900"}`}
-            style={entrada ? { borderColor: SEEN.burdeos, color: SEEN.burdeos } : undefined}
+            className="pestana focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             Resumen
           </a>
@@ -1090,8 +984,7 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
             key={x.id}
             href={href("sistemas", selStr, x.id)}
             aria-current={activa === x.id ? "location" : undefined}
-            className={`inline-flex min-h-11 shrink-0 items-center border-b-2 px-1.5 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-2 ${activa === x.id ? "font-bold" : "border-transparent font-semibold text-slate-600 hover:text-slate-900"}`}
-            style={activa === x.id ? { borderColor: SEEN.burdeos, color: SEEN.burdeos } : undefined}
+            className="pestana px-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-2"
           >
             {/* 0.73.0: en el móvil, el rótulo corto (las cinco pestañas caben a la vista). */}
             {"corto" in x && x.corto ? (
@@ -1154,29 +1047,25 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
           // El formato, hasta la primera pausa de su casilla («Bomba con catéter», «Pod
           // desechable, sin tubo externo»): fragmento literal de la Tabla 1.
           const formato = TABLAS.T1.filas[0].celdas[c].split(/;| \(/)[0].replace(/\.$/, "");
-          const datos: [typeof Cpu, string, string][] = [
-            [Box, "Formato", formato],
-            [Cpu, "Localización del algoritmo", k.donde.join(" · ")],
-            [Timer, "Estrategia de automatización", k.actua.join(" · ")],
-            [Target, "Objetivo", k.objetivo.join(" · ")],
-            [Radio, "Sensores", sensores],
+          const datos: [string, string][] = [
+            ["Formato", formato],
+            ["Localización del algoritmo", k.donde.join(" · ")],
+            ["Estrategia de automatización", k.actua.join(" · ")],
+            ["Objetivo", k.objetivo.join(" · ")],
+            ["Sensores", sensores],
           ];
           return (
             <li key={s.id}>
               <a
                 href={href("sistemas", s.id)}
-                className="hover-lift ease-brand block h-full overflow-hidden rounded-xl border border-t-4 bg-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-                style={{ borderColor: "#e6e6e6", borderTopColor: h.strong }}
+                className="tarjeta tarjeta-sistema hover-lift ease-brand block h-full overflow-hidden transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                style={{ ["--sis" as string]: h.strong }}
               >
-                <span
-                  className="flex items-center gap-3 px-3 py-2.5"
-                  style={{ background: h.soft }}
-                >
+                <span className="separador flex items-center gap-3 border-b px-4 py-3">
                   <img
                     src={FOTO_SISTEMA[s.id]}
                     alt=""
-                    className="h-14 w-14 shrink-0 rounded-lg border bg-white object-cover"
-                    style={{ borderColor: "#e6e6e6" }}
+                    className="h-12 w-12 shrink-0 rounded-md bg-white object-cover"
                     loading="lazy"
                   />
                   <span className="min-w-0 flex-1">
@@ -1186,79 +1075,37 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                     >
                       {s.name}
                     </span>
-                    <span className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-slate-700">
-                      <span className="font-semibold">{nombreAlg}</span>
-                      {tipo && (
-                        <span
-                          className="rounded-full px-2 py-0.5 text-[11px] font-bold text-white"
-                          style={{ background: h.ink }}
-                        >
-                          {tipo}
-                        </span>
-                      )}
+                    <span className="mt-0.5 block text-sm text-slate-600">
+                      <span className="font-semibold text-slate-800">{nombreAlg}</span>
+                      {tipo && ` · ${tipo}`}
                     </span>
                   </span>
-                  <ArrowRight
-                    size={16}
-                    className="shrink-0"
-                    style={{ color: h.ink }}
-                    aria-hidden="true"
-                  />
                 </span>
-                <div className="grid grid-cols-2 gap-x-3 gap-y-2 px-3 py-2.5">
-                  {datos.map(([I, t, v]) => (
-                    <span key={t} className="flex min-w-0 gap-1.5">
-                      <I
-                        size={14}
-                        className="mt-0.5 shrink-0"
-                        style={{ color: h.strong }}
-                        aria-hidden="true"
-                      />
-                      <span className="min-w-0">
-                        <span className="block text-[10px] font-bold uppercase tracking-wide text-slate-500">
-                          {t}
-                        </span>
-                        <span className="block text-xs font-semibold leading-snug text-slate-900">
-                          {v}
-                        </span>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 px-4 py-3">
+                  {datos.map(([t, v]) => (
+                    <span key={t} className="min-w-0">
+                      <span className="rotulo block">{t}</span>
+                      <span className="mt-0.5 block text-sm font-semibold leading-snug text-slate-900">
+                        {v}
                       </span>
                     </span>
                   ))}
-                  <span className="col-span-2 flex items-center gap-1.5 text-xs text-slate-700">
-                    <Syringe
-                      size={14}
-                      className="shrink-0"
-                      style={{ color: h.strong }}
-                      aria-hidden="true"
-                    />
-                    <span className="font-semibold">Bolos automáticos de corrección:</span>
-                    <span
-                      className="rounded px-1.5 text-[11px] font-extrabold"
-                      style={
-                        k.correccion.si
-                          ? { background: h.ink, color: "#fff" }
-                          : { background: "#e2e8f0", color: "#334155" }
-                      }
-                    >
-                      {k.correccion.si ? "Sí" : "No"}
+                  <span className="min-w-0">
+                    <span className="rotulo block">Bolos automáticos de corrección</span>
+                    <span className="mt-0.5 block text-sm leading-snug text-slate-900">
+                      <span className="font-semibold">{k.correccion.si ? "Sí" : "No"}</span>
+                      {/* M61-01: la condición, junto al Sí/No (fragmentos literales de la Tabla 1). */}
+                      {k.correccion.texto.length > 0 && (
+                        <span className="text-slate-600">; {k.correccion.texto.join(" · ")}</span>
+                      )}
                     </span>
-                  </span>
-                  {/* M61-01: la condición, junto al Sí/No (fragmentos literales de la Tabla 1). */}
-                  <span className="col-span-2 -mt-1 block pl-5 text-xs leading-snug text-slate-600">
-                    {k.correccion.texto.join(" · ")}
                   </span>
                   {/* 0.74.2 (petición del responsable): la variante de cada sistema a la vista,
                       con sus líneas literales de la Tabla 1 (y la frase del apartado 3 en
                       Liberty). */}
                   {VARIANTE[c] && (
-                    <span
-                      className="col-span-2 mt-0.5 block rounded-lg px-2.5 py-2 text-xs leading-snug text-slate-800"
-                      style={{ background: h.soft }}
-                    >
-                      <span
-                        className="block text-[10px] font-bold uppercase tracking-wide"
-                        style={{ color: h.ink }}
-                      >
+                    <span className="casilla casilla-sistema col-span-2 mt-1 block px-3 py-2 text-[13px] leading-snug text-slate-800">
+                      <span className="rotulo block" style={{ color: h.ink }}>
                         {VARIANTE[c]!.rotulo}
                       </span>
                       {VARIANTE[c]!.lineas.map((l) => (
@@ -1276,17 +1123,9 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
       </ul>
       <a
         href={href("sistemas", "elegir")}
-        className="flex min-h-11 items-center gap-3 rounded-xl border bg-white px-3 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
-        style={{ borderColor: "#e6e6e6" }}
+        className="tarjeta fila focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
       >
-        <Handshake
-          size={18}
-          className="shrink-0"
-          style={{ color: hex.strong }}
-          aria-hidden="true"
-        />
         <span className="min-w-0 flex-1">Elección del sistema</span>
-        <ArrowRight size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
       </a>
       <FuentePie
         fuentes={[
@@ -1318,19 +1157,12 @@ function insigniaParametro(c: number, j: number): ReactNode {
   const h = SISTEMA_HEX[c];
   if (directos.some((x) => re.test(x)))
     return (
-      <span
-        className="inline-block rounded-full px-2 py-0.5 text-[11px] font-bold text-white"
-        style={{ background: h.ink }}
-      >
+      <span className="insignia" style={{ background: h.soft, color: h.ink }}>
         Efecto directo sobre el algoritmo
       </span>
     );
   if (resto.some((x) => re.test(x)))
-    return (
-      <span className="inline-block rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600">
-        Efecto principal en bolos o modo manual
-      </span>
-    );
+    return <span className="insignia">Efecto principal en bolos o modo manual</span>;
   return null;
 }
 function parametrosDe(c: number) {
@@ -1349,27 +1181,15 @@ function ParametrosAuto({ c, compacto = false }: { c: number; compacto?: boolean
   const grupo = (titulo: string, xs: string[], directo: boolean) =>
     xs.length > 0 && (
       <div>
-        <div
-          className="mb-1 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide"
-          style={{ color: directo ? h.ink : "#64748b" }}
-        >
-          {directo ? (
-            <Zap size={12} aria-hidden="true" />
-          ) : (
-            <SlidersHorizontal size={12} aria-hidden="true" />
-          )}
+        <div className="rotulo mb-1" style={directo ? { color: h.ink } : undefined}>
           {titulo}
         </div>
         <ul className="flex flex-wrap gap-1">
           {xs.map((x) => (
             <li
               key={x}
-              className={`rounded-md border px-1.5 py-0.5 text-xs leading-snug ${directo ? "font-bold" : "text-slate-700"}`}
-              style={
-                directo
-                  ? { borderColor: h.strong, background: h.soft, color: h.ink }
-                  : { borderColor: "#e2e8f0", background: "#f8fafc" }
-              }
+              className="insignia whitespace-normal"
+              style={directo ? { background: h.soft, color: h.ink } : undefined}
             >
               {x}
             </li>
@@ -1416,14 +1236,7 @@ function CeldaFunciona({ fila, c }: { fila: number; c: number }) {
    generales de los apartados 2 y 3 (las mismas para los cuatro), plegadas al final. Las piezas
    salen de la guía comoFunciona (guias/index.ts), así que siguen comprobadas frase a frase. */
 /* Filas de la Tabla 1 que dicen cómo funciona, en el orden de la tabla. */
-const FICHA_TECNICA: { icono: LucideIcon; fila: number }[] = [
-  { icono: Radio, fila: 1 },
-  { icono: Cpu, fila: 2 },
-  { icono: Brain, fila: 3 },
-  { icono: Syringe, fila: 4 },
-  { icono: Activity, fila: 5 },
-  { icono: Target, fila: 6 },
-];
+const FICHA_TECNICA: { fila: number }[] = [1, 2, 3, 4, 5, 6].map((fila) => ({ fila }));
 function ClaveRecorrido({ fila, c }: { fila: number; c: number }) {
   const h = SISTEMA_HEX[c];
   const celda = TABLAS.T1.filas[fila].celdas[c];
@@ -1433,7 +1246,7 @@ function ClaveRecorrido({ fila, c }: { fila: number; c: number }) {
         {celda.split(";").map((x) => (
           <li
             key={x}
-            className="rounded-md px-1.5 py-0.5 text-sm font-bold"
+            className="insignia text-sm font-bold"
             style={{ background: h.soft, color: h.ink }}
           >
             {x.trim()}
@@ -1453,23 +1266,16 @@ function ClaveRecorrido({ fila, c }: { fila: number; c: number }) {
 }
 function TarjetaFunciona({
   titulo,
-  icono: Icono,
   color,
   children,
 }: {
   titulo: string;
-  icono: LucideIcon;
   color: string;
   children: ReactNode;
 }) {
   return (
-    <section
-      aria-label={titulo}
-      className="min-w-0 rounded-xl border bg-white p-3"
-      style={{ borderColor: "#e6e6e6" }}
-    >
-      <h3 className="mb-1.5 flex items-center gap-1.5 text-sm font-extrabold text-slate-900">
-        <Icono size={15} aria-hidden="true" style={{ color }} />
+    <section aria-label={titulo} className="tarjeta min-w-0 p-3">
+      <h3 className="rotulo mb-1" style={{ color }}>
         {titulo}
       </h3>
       <div className="space-y-2 text-sm text-slate-800">{children}</div>
@@ -1495,23 +1301,12 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
           la casilla entera, a un toque. */}
       <dl
         aria-label="Características del sistema (Tabla 1)"
-        className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3"
+        className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+        style={{ ["--sis" as string]: h.strong }}
       >
-        {FICHA_TECNICA.map(({ fila, icono: Icono }) => (
-          // En un <dl> solo caben dt y dd: el icono va dentro del dt, a la izquierda.
-          <div
-            key={fila}
-            className="relative min-w-0 rounded-xl border bg-white py-3 pl-[3.75rem] pr-3"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            <dt className="text-[11px] font-bold uppercase tracking-wide" style={{ color: h.ink }}>
-              <span
-                aria-hidden="true"
-                className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-lg"
-                style={{ background: h.soft, color: h.strong }}
-              >
-                <Icono size={18} />
-              </span>
+        {FICHA_TECNICA.map(({ fila }) => (
+          <div key={fila} className="tarjeta tarjeta-sistema min-w-0 p-3">
+            <dt className="rotulo" style={{ color: h.ink }}>
               {TABLAS.T1.filas[fila].etiqueta}
             </dt>
             <dd className="mt-1 text-[15px] leading-snug">
@@ -1526,18 +1321,8 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
         {/* 0.74.1 (a petición del responsable): lo que lo distingue (apartado 4), directamente
             como una tarjeta más, sin plegar y sin los puntos suspensivos del recorte. */}
         {distingue.length > 0 && (
-          <div
-            className="relative min-w-0 rounded-xl border bg-white py-3 pl-[3.75rem] pr-3"
-            style={{ borderColor: "#e6e6e6" }}
-          >
-            <dt className="text-[11px] font-bold uppercase tracking-wide" style={{ color: h.ink }}>
-              <span
-                aria-hidden="true"
-                className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-lg"
-                style={{ background: h.soft, color: h.strong }}
-              >
-                <Fingerprint size={18} />
-              </span>
+          <div className="tarjeta tarjeta-sistema min-w-0 p-3 sm:col-span-2 lg:col-span-3">
+            <dt className="rotulo" style={{ color: h.ink }}>
               Rasgos distintivos
             </dt>
             <dd className="mt-1 space-y-1 text-[15px] leading-snug text-slate-900">
@@ -1553,11 +1338,7 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
         )}
       </dl>
       {liberty.length > 0 && (
-        <TarjetaFunciona
-          titulo="Modalidad Liberty (asa cerrada completa)"
-          icono={Brain}
-          color={h.ink}
-        >
+        <TarjetaFunciona titulo="Modalidad Liberty (asa cerrada completa)" color={h.ink}>
           {liberty.map((p, j) => (
             <PiezaVista key={j} pieza={p} sis={c} compacta siglas={sg[distingue.length + j]} />
           ))}
@@ -1590,14 +1371,13 @@ function TarjetaSistema({
   const h = SISTEMA_HEX[c];
   return (
     <li
-      className="flex gap-3 rounded-xl border bg-white p-3"
-      style={{ borderColor: "#e6e6e6", boxShadow: `inset 0 3px 0 0 ${h.strong}` }}
+      className="tarjeta tarjeta-sistema flex gap-3 p-3"
+      style={{ ["--sis" as string]: h.strong }}
     >
       <img
         src={FOTO_SISTEMA[id]}
         alt=""
-        className="h-16 w-16 shrink-0 rounded-lg border object-cover"
-        style={{ borderColor: "#e6e6e6" }}
+        className="h-16 w-16 shrink-0 rounded-md object-cover"
         loading="lazy"
       />
       <div className="min-w-0 flex-1">
@@ -1646,12 +1426,7 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
         >
           {seccion === "esencial" && (
             <NivelTitulo.Provider value={2}>
-              <TablaVista
-                tabla={TABLAS.T1}
-                columnasFijas={cols}
-                herramienta
-                iconoFila={(i) => iconoDeFila("T1", i)}
-              />
+              <TablaVista tabla={TABLAS.T1} columnasFijas={cols} herramienta />
             </NivelTitulo.Provider>
           )}
           {seccion === "parametros" && (
@@ -1661,13 +1436,10 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
                 <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
                   Parámetros configurables en modo automático
                 </summary>
-                <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                <div className="ultima-ancha mt-2 grid gap-3 sm:grid-cols-2">
                   {cols.map((c) => (
                     <div key={c}>
-                      <div
-                        className="mb-1 text-sm font-extrabold"
-                        style={{ color: SISTEMA_HEX[c].ink }}
-                      >
+                      <div className="titulo-tarjeta mb-1" style={{ color: SISTEMA_HEX[c].ink }}>
                         {TABLAS.T1.columnas[c]}
                       </div>
                       <ParametrosAutomatico c={c} hexSistema={SISTEMA_HEX[c]} fuente={false} />
@@ -1677,12 +1449,7 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
                 <FuentePie fuentes={[fuenteT1(4)]} />
               </details>
               <NivelTitulo.Provider value={2}>
-                <TablaVista
-                  tabla={TABLAS.T3}
-                  columnasFijas={cols}
-                  herramienta
-                  iconoFila={(i) => iconoDeFila("T3", i)}
-                />
+                <TablaVista tabla={TABLAS.T3} columnasFijas={cols} herramienta />
               </NivelTitulo.Provider>
             </>
           )}

@@ -90,7 +90,7 @@ function Rama({
   return (
     <section
       aria-label={`${tramo.rango}: ${tramo.titulo}`}
-      className="rounded-2xl border p-4 shadow-soft"
+      className="rounded-xl border p-4"
       style={{
         borderColor: hex.border,
         background: `linear-gradient(160deg, ${hex.soft}, #ffffff 65%)`,
@@ -183,11 +183,7 @@ function NotasDelPie() {
   return (
     <div className="grid gap-3 sm:grid-cols-3">
       {FIGURA3.pie.map((p, i) => (
-        <div
-          key={i}
-          className="rounded-xl border bg-white p-3 text-sm text-slate-700"
-          style={{ borderColor: "#e6e6e6" }}
-        >
+        <div key={i} className="tarjeta p-3 text-sm text-slate-700">
           <span className="font-bold text-slate-900">{p.titulo}</span> <Texto>{p.texto}</Texto>
         </div>
       ))}
@@ -201,9 +197,7 @@ function NotasDelPie() {
 function NotasComunes({ conAsterisco = true }: { conAsterisco?: boolean }) {
   return (
     <section aria-label="Notas comunes de la Figura 3" className="mt-3 space-y-2">
-      <div className="text-xs font-bold uppercase tracking-wide text-slate-500">
-        Notas de la figura para todas las ramas
-      </div>
+      <div className="rotulo text-slate-500">Notas de la figura para todas las ramas</div>
       {/* Si la rama ya lleva la nota de las dosis con asterisco, no se repite aquí. */}
       {conAsterisco && (
         <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
@@ -248,7 +242,7 @@ function Cabecera({ herramienta = false }: { herramienta?: boolean }) {
   return (
     <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
       <div>
-        <div className="text-xs font-bold uppercase tracking-wide" style={{ color: "#15324f" }}>
+        <div className="rotulo" style={{ color: "#15324f" }}>
           Figura 3
         </div>
         <TituloBloque className="text-sm font-semibold text-slate-800">
@@ -263,7 +257,7 @@ function Cabecera({ herramienta = false }: { herramienta?: boolean }) {
 function SospecharComprobar() {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
-      <div className="rounded-xl border bg-white p-3" style={{ borderColor: "#e6e6e6" }}>
+      <div className="tarjeta p-3">
         <div
           className="mb-1.5 flex items-center gap-2 text-sm font-bold"
           style={{ color: "#15324f" }}
@@ -276,7 +270,7 @@ function SospecharComprobar() {
           ))}
         </ul>
       </div>
-      <div className="rounded-xl border bg-white p-3" style={{ borderColor: "#e6e6e6" }}>
+      <div className="tarjeta p-3">
         <div
           className="mb-1.5 flex items-center gap-2 text-sm font-bold"
           style={{ color: "#15324f" }}
@@ -302,7 +296,7 @@ export function Figura3Lectura() {
       <Cabecera />
       <SospecharComprobar />
       <div
-        className="my-3 rounded-xl px-4 py-2.5 text-center text-sm font-bold uppercase tracking-wide text-white"
+        className="my-3 rounded-xl px-4 py-2.5 text-center rotulo text-white"
         style={{ background: "#4b73b0" }}
       >
         <BetaMinuscula t={FIGURA3.confirmar} />
@@ -379,7 +373,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
       <ol className="space-y-4">
         <li>
           <details open={paso1Abierto} className="group">
-            <summary className="mb-2 flex min-h-11 cursor-pointer list-none items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-500 sm:min-h-0">
+            <summary className="mb-2 flex min-h-11 cursor-pointer list-none items-center gap-2 rotulo text-slate-500 sm:min-h-0">
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-white">
                 1
               </span>{" "}
@@ -394,7 +388,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
           </details>
         </li>
         <li>
-          <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-500">
+          <div className="mb-2 flex items-center gap-2 rotulo text-slate-500">
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-white">
               2
             </span>{" "}
@@ -427,7 +421,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
                   type="button"
                   aria-pressed={on}
                   onClick={() => (on ? elegir(null) : irATramo(t.clave))}
-                  className={`hover-lift ease-brand rounded-2xl border p-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 focus-visible:ring-offset-2 ${on ? "text-white" : ""}`}
+                  className={`hover-lift ease-brand rounded-xl border p-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 focus-visible:ring-offset-2 ${on ? "text-white" : ""}`}
                   style={
                     on
                       ? {
@@ -461,7 +455,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
               {actual.clave === "rojo" && (
                 <a
                   href={href("consultar", "situacion", "ingreso-hospitalario::m4")}
-                  className="no-imprimir mt-3 inline-flex min-h-11 items-center gap-1 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-400 sm:min-h-8"
+                  className="chip no-imprimir mt-3 text-xs"
                   style={{ borderColor: "#d4d4d4" }}
                 >
                   Ingreso hospitalario: criterios para no continuar el sistema{" "}

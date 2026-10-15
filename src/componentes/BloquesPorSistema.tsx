@@ -21,14 +21,14 @@ function Bloques({ c, bloques }: { c: number; bloques: BloqueSistema[] }) {
   const desde = bloques.map((_, i) => bloques.slice(0, i).reduce((n, x) => n + x.piezas.length, 0));
   return (
     <PiezasSinTitulos.Provider value={true}>
-      <dl className={`grid gap-2 ${bloques.length > 1 ? "lg:grid-cols-2" : ""}`} aria-live="polite">
+      <dl
+        className={`ultima-ancha grid gap-3 ${bloques.length > 1 ? "lg:grid-cols-2" : ""}`}
+        aria-live="polite"
+        style={{ ["--sis" as string]: h.strong }}
+      >
         {bloques.map((b, i) => (
-          <div
-            key={b.rotulo}
-            className="min-w-0 rounded-xl p-3"
-            style={{ background: h.soft, boxShadow: `inset 3px 0 0 0 ${h.strong}` }}
-          >
-            <dt className="text-[11px] font-bold uppercase tracking-wide" style={{ color: h.ink }}>
+          <div key={b.rotulo} className="tarjeta tarjeta-sistema min-w-0 p-3">
+            <dt className="rotulo" style={{ color: h.ink }}>
               {b.rotulo}
             </dt>
             <dd className="mt-1 space-y-1.5 text-[15px] leading-snug text-slate-900">
@@ -86,10 +86,10 @@ export function BloquesPorSistema({
               type="button"
               aria-pressed={on}
               onClick={() => setC(i)}
-              className="flex min-h-11 flex-col items-center gap-1 rounded-lg border-2 bg-white p-1.5 text-center text-[11px] font-extrabold leading-tight transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:flex-row sm:gap-2 sm:text-left sm:text-sm"
+              className="tarjeta flex min-h-11 flex-col items-center gap-1 p-1.5 text-center text-xs font-bold leading-tight transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:flex-row sm:gap-2 sm:text-left sm:text-sm"
               style={{
-                borderColor: on ? hi.strong : "#e6e6e6",
-                background: on ? hi.soft : "#fff",
+                borderColor: on ? hi.strong : undefined,
+                boxShadow: on ? `inset 0 0 0 1px ${hi.strong}` : undefined,
                 color: hi.ink,
               }}
             >

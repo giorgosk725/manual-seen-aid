@@ -124,8 +124,7 @@ function TarjetaVista({
   return (
     <article
       ref={tarjeta}
-      className="scroll-mt-4 overflow-hidden rounded-2xl border bg-white shadow-soft"
-      style={{ borderColor: "#e6e6e6" }}
+      className="scroll-mt-4 overflow-hidden tarjeta"
       aria-label={`Tarjeta ${posicion}`}
     >
       <div className="h-1.5" style={{ background: HEX.strong }} aria-hidden="true" />
@@ -146,7 +145,7 @@ function TarjetaVista({
             <span>Sigla del capítulo</span>
           )}
         </div>
-        <p className="mt-3 text-xs font-bold uppercase tracking-wide text-slate-500">
+        <p className="mt-3 rotulo text-slate-500">
           {t.mazo === "cifras" ? "¿Qué cifra da el capítulo?" : "¿Qué significa?"}
         </p>
         <p
@@ -174,7 +173,7 @@ function TarjetaVista({
               className="rounded-xl p-4 focus:outline-none"
               style={{ background: HEX.soft }}
             >
-              <p className="text-xs font-bold uppercase tracking-wide" style={{ color: HEX.ink }}>
+              <p className="rotulo" style={{ color: HEX.ink }}>
                 Lo que dice el capítulo
               </p>
               <p
@@ -282,10 +281,7 @@ function Ronda({
 
   if (!cola.length)
     return (
-      <div
-        className="rounded-2xl border bg-white p-5 text-sm text-slate-800 shadow-soft"
-        style={{ borderColor: "#e6e6e6" }}
-      >
+      <div className="tarjeta p-5 text-sm text-slate-800 shadow-soft">
         <p className="font-bold text-slate-900">Nada que repasar hoy en este mazo.</p>
         <p className="mt-1">Las tarjetas que ya has visto volverán en su día; prueba otro mazo.</p>
       </div>
@@ -294,11 +290,7 @@ function Ronda({
   if (!actual) {
     const vistas = cola.length - repetidas.size;
     return (
-      <div
-        className="animate-in rounded-2xl border bg-white p-5 shadow-soft"
-        style={{ borderColor: "#e6e6e6" }}
-        role="status"
-      >
+      <div className="animate-in tarjeta p-5" role="status">
         <p className="font-display text-xl font-medium uppercase" style={{ color: HEX.ink }}>
           Ronda terminada
         </p>

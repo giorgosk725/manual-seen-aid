@@ -266,9 +266,7 @@ function Tarjeta({
     >
       {casilla && (
         <p className="text-xs">
-          <span className="rounded-full border border-slate-300 px-1.5 font-semibold text-slate-700">
-            {casilla.nombre}
-          </span>
+          <span className="insignia">{casilla.nombre}</span>
         </p>
       )}
       {titulo && (
@@ -377,9 +375,7 @@ function Tarjeta({
         <dl className="mt-1 space-y-1 text-sm">
           {r.partes.map((p) => (
             <div key={p.etiqueta}>
-              <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                {p.etiqueta}
-              </dt>
+              <dt className="rotulo text-slate-500">{p.etiqueta}</dt>
               <dd className="whitespace-pre-line text-slate-900">
                 {sistemaConsulta !== undefined && sistemaConsulta >= 0 ? (
                   <LineasSistema texto={p.texto} q={q} sistema={sistemaConsulta} />
@@ -488,11 +484,7 @@ function BloqueFrecuente({
       {/* En la pantalla de la pregunta, el rótulo solo para lectores de pantalla (0.70.0). */}
       <H
         id={id}
-        className={
-          sinPregunta
-            ? "sr-only"
-            : "mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"
-        }
+        className={sinPregunta ? "sr-only" : "mb-1 flex items-center gap-1.5 rotulo"}
         style={{ color: "#8E254E" }}
       >
         <MessageCircleQuestion size={14} aria-hidden="true" /> Pregunta frecuente
@@ -590,9 +582,7 @@ export function RespuestasCapitulo({
   const Relacionadas =
     !compacta && relacionadas && relacionadas.length > 0 ? (
       <nav aria-label="Preguntas relacionadas" className="mt-3">
-        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-          Preguntas relacionadas
-        </p>
+        <p className="rotulo text-slate-500">Preguntas relacionadas</p>
         <ul className="mt-1 space-y-0.5">
           {relacionadas.map((f) => (
             <li key={f.id}>
@@ -669,7 +659,7 @@ export function RespuestasCapitulo({
       >
         <H
           id={id}
-          className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide"
+          className="mb-1 flex items-center gap-1.5 rotulo"
           style={{ color: cercana ? "#475569" : "#2f5680" }}
         >
           <Quote size={14} aria-hidden="true" /> {titulo}

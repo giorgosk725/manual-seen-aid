@@ -23,10 +23,7 @@ export function RecursosPedidos({ items, onIr }: { items: Resultado[]; onIr?: ()
               aria-hidden="true"
             />
             <span className="min-w-0 flex-1">
-              <span
-                className="block text-[11px] font-bold uppercase tracking-wide"
-                style={{ color: "#8E254E" }}
-              >
+              <span className="block rotulo" style={{ color: "#8E254E" }}>
                 Abrir
               </span>
               {r.entrada.titulo}

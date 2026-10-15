@@ -137,7 +137,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
             className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
             autoComplete="off"
           />
-          <kbd className="hidden rounded border border-slate-200 px-1.5 text-[11px] text-slate-500 sm:inline">
+          <kbd className="hidden rounded border border-slate-200 px-1.5 text-xs text-slate-500 sm:inline">
             Esc
           </kbd>
         </div>
@@ -169,11 +169,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
             </AvisosBusqueda>
           )}
           {q.trim().length >= 2 && (
-            <ul
-              className="mt-2 max-h-[60vh] divide-y overflow-y-auto"
-              style={{ borderColor: "#e6e6e6" }}
-              aria-label="Resultados"
-            >
+            <ul className="mt-2 max-h-[60vh] divide-y overflow-y-auto" aria-label="Resultados">
               {estado === "cargando" && (
                 <li className="px-2 py-3 text-sm text-slate-600">Cargando el índice…</li>
               )}
@@ -204,7 +200,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
                     <div className="flex items-center justify-between gap-2 text-xs text-slate-500">
                       <span className="truncate font-semibold">{r.entrada.titulo}</span>
                       {fueraDelCapitulo(r.entrada) ? (
-                        <span className="shrink-0 rounded-full bg-amber-100 px-1.5 text-[11px] font-semibold text-amber-900">
+                        <span className="insignia shrink-0 bg-amber-100 text-amber-900">
                           Fuera del capítulo
                         </span>
                       ) : (
@@ -468,7 +464,7 @@ function MenuNavegacion({
             : undefined,
         )}
         {id === "capitulo" && enCapitulo && indiceAbierto && (
-          <ol className="ml-4 mt-1 space-y-0.5 border-l pl-2" style={{ borderColor: "#e6e6e6" }}>
+          <ol className="linea ml-4 mt-1 space-y-0.5 border-l pl-2">
             {APARTADOS.map((a) => {
               const onA = ruta.sub === a.slug;
               return (
@@ -495,7 +491,7 @@ function MenuNavegacion({
     );
   };
   const titulo = (t: string) => (
-    <div className="etiqueta-area px-3 text-[11px] text-slate-500">{t}</div>
+    <div className="etiqueta-area px-3 text-xs text-slate-500">{t}</div>
   );
   return (
     <nav aria-label={etiqueta}>
@@ -644,7 +640,7 @@ function Inferior({ ruta, onMas }: { ruta: Ruta; onMas: () => void }) {
     <nav
       aria-label="Barra inferior"
       className="fixed inset-x-0 bottom-0 z-30 border-t bg-white lg:hidden"
-      style={{ borderColor: "#e6e6e6", paddingBottom: "env(safe-area-inset-bottom)" }}
+      style={{ borderColor: "var(--linea)", paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <ul className="grid grid-cols-5">
         {BOTONES.map((it) => {
@@ -865,10 +861,7 @@ export function Shell({
         Saltar al contenido
       </button>
       <Lateral ruta={ruta} />
-      <header
-        className="cabecera sticky top-0 z-20 border-b backdrop-blur lg:ml-64"
-        style={{ borderColor: "#e6e6e6" }}
-      >
+      <header className="separador cabecera sticky top-0 z-20 border-b backdrop-blur lg:ml-64">
         <div
           className={`mx-auto flex h-14 max-w-5xl items-center gap-2 px-3 sm:px-5 ${ruta.seccion === "capitulo" ? "" : "2xl:max-w-7xl"}`}
         >
@@ -941,8 +934,7 @@ export function Shell({
               <button
                 type="button"
                 onClick={() => window.history.back()}
-                className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border bg-white px-3 text-sm font-semibold text-slate-800 hover:border-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9"
-                style={{ borderColor: "#d4d4d4" }}
+                className="chip focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
                 <ChevronLeft size={15} aria-hidden="true" /> Volver a la consulta
                 <span className="font-normal text-slate-600">· {volver}</span>

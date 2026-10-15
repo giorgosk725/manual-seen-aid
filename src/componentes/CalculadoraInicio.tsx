@@ -8,22 +8,7 @@ import { Anuncio } from "./Anuncio";
 import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import {
-  Activity,
-  AlertTriangle,
-  ArrowDown,
-  Calculator,
-  Moon,
-  Pen,
-  RefreshCw,
-  Repeat,
-  ShieldCheck,
-  SlidersHorizontal,
-  Syringe,
-  Target,
-  Utensils,
-  Zap,
-} from "lucide-react";
+import { AlertTriangle, ArrowDown, Calculator } from "lucide-react";
 import { Lineas } from "../texto";
 import {
   CONTROLES,
@@ -78,15 +63,9 @@ function Paso({ n, titulo, children }: { n: number; titulo: string; children: Re
       {/* 0.72.0: cabecera de paso ligera (círculo burdeos); el foco visual, en los resultados. */}
       <h2
         id={`calc-paso-${n}`}
-        className="flex items-center gap-2 border-b pb-1.5 text-[15px] font-extrabold text-slate-900"
-        style={{ borderColor: "#e6e6e6" }}
+        className="titulo-seccion separador flex items-center gap-2 border-b pb-1.5"
       >
-        <span
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold tabular-nums text-white"
-          style={{ background: "#8E254E" }}
-        >
-          {n}
-        </span>
+        <span className="num num-on">{n}</span>
         {titulo}
       </h2>
       {children}
@@ -123,10 +102,7 @@ function Opciones<T extends string | number>({
               type="button"
               aria-pressed={on}
               onClick={() => onChange(o.v)}
-              className={`inline-flex min-h-11 items-center rounded-full border px-3 text-left text-sm font-semibold leading-tight transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-400"}`}
-              style={
-                on ? { background: "#8E254E", borderColor: "#8E254E" } : { borderColor: "#d4d4d4" }
-              }
+              className="chip focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
             >
               {o.t}
             </button>
@@ -193,7 +169,7 @@ function Campo({
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
           placeholder="—"
-          className="h-12 w-full min-w-0 rounded-lg border bg-white px-3 text-lg tabular-nums text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+          className="h-12 w-full min-w-0 rounded-md border bg-white px-3 text-lg tabular-nums text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           style={{ borderColor: error ? "#b91c1c" : "#cbd5e1" }}
         />
         <span className="shrink-0 text-sm text-slate-600">{unidad}</span>
@@ -223,8 +199,8 @@ function Cifra({
   color: string;
 }) {
   return (
-    <div className="rounded-xl border bg-white p-3" style={{ borderColor: "#e2e8f0" }}>
-      <div className="text-[11px] font-bold uppercase tracking-wide text-slate-500">{titulo}</div>
+    <div className="tarjeta p-3">
+      <div className="rotulo">{titulo}</div>
       <div className="mt-0.5 flex items-baseline gap-1.5">
         <span className="text-3xl font-extrabold tabular-nums" style={{ color }}>
           {valor}
@@ -257,7 +233,7 @@ function Estado({ ev, sis }: { ev: Evaluacion; sis?: number }) {
         <div
           role="group"
           aria-label="Fuera de la indicación"
-          className="rounded-xl border-2 px-3 py-2 text-sm text-red-900"
+          className="rounded-md border-2 px-3 py-2 text-sm text-red-900"
           style={{ borderColor: "#fca5a5", background: "#fef2f2" }}
         >
           <p className="flex items-center gap-1.5 font-bold">
@@ -275,7 +251,7 @@ function Estado({ ev, sis }: { ev: Evaluacion; sis?: number }) {
       )}
       {ev.errores.length > 0 && (
         <ul
-          className="list-disc rounded-lg border px-3 py-2 pl-7 text-sm font-semibold text-red-900"
+          className="list-disc rounded-md border px-3 py-2 pl-7 text-sm font-semibold text-red-900"
           style={{ borderColor: "#fca5a5", background: "#fef2f2" }}
         >
           {ev.errores.map((e) => (
@@ -285,7 +261,7 @@ function Estado({ ev, sis }: { ev: Evaluacion; sis?: number }) {
       )}
       {ev.faltan.length > 0 && (
         <p
-          className="rounded-lg border border-dashed px-3 py-3 text-center text-sm text-slate-700"
+          className="rounded-md border border-dashed px-3 py-3 text-center text-sm text-slate-700"
           style={{ borderColor: "#cbd5e1" }}
         >
           <Calculator size={18} className="mx-auto mb-1 text-slate-400" aria-hidden="true" />
@@ -295,7 +271,7 @@ function Estado({ ev, sis }: { ev: Evaluacion; sis?: number }) {
       {ev.indicacion.variante && (
         <p
           role="note"
-          className="flex gap-2 rounded-lg border px-3 py-2 text-sm text-amber-900"
+          className="flex gap-2 rounded-md border px-3 py-2 text-sm text-amber-900"
           style={{ borderColor: "#f3d38a", background: "#fffbeb" }}
         >
           <AlertTriangle size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
@@ -437,7 +413,7 @@ export function CalculadoraInicio({
           <button
             type="button"
             onClick={() => resultados.current?.scrollIntoView({ block: "start" })}
-            className="resumen-calc no-imprimir fixed inset-x-3 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-20 flex min-h-11 items-center gap-2 rounded-xl px-3 py-2 text-left text-xs font-bold tabular-nums text-white shadow-xl lg:bottom-4 lg:left-[17rem] xl:hidden"
+            className="resumen-calc no-imprimir fixed inset-x-3 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-20 flex min-h-11 items-center gap-2 rounded-md px-3 py-2 text-left text-xs font-bold tabular-nums text-white shadow-xl lg:bottom-4 lg:left-[17rem] xl:hidden"
             style={{ background: "#8E254E" }}
           >
             <span className="min-w-0 flex-1">{resumen.join(" · ")}</span>
@@ -453,9 +429,9 @@ export function CalculadoraInicio({
             <div className="grid grid-cols-3 gap-2">
               {(
                 [
-                  { v: "mdi", t: "MDI", dd: "Plumas: basal y rápida", I: Pen },
-                  { v: "isci", t: "Bomba de insulina", dd: "ISCI sin automatización", I: Syringe },
-                  { v: "aid", t: "Otro sistema AID", dd: "Cambio de sistema", I: Repeat },
+                  { v: "mdi", t: "MDI", dd: "Plumas: basal y rápida" },
+                  { v: "isci", t: "Bomba de insulina", dd: "ISCI sin automatización" },
+                  { v: "aid", t: "Otro sistema AID", dd: "Cambio de sistema" },
                 ] as const
               ).map((o) => {
                 const on = d.origen === o.v;
@@ -465,24 +441,17 @@ export function CalculadoraInicio({
                     type="button"
                     aria-pressed={on}
                     onClick={() => set({ origen: o.v })}
-                    className="flex min-h-20 flex-col items-center justify-center gap-1 rounded-xl border-2 px-1 py-3 text-center transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                    className="tarjeta flex min-h-16 flex-col items-center justify-center gap-0.5 px-1 py-2.5 text-center transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                     style={
                       on
-                        ? { borderColor: hex.strong, background: hex.soft }
-                        : { borderColor: "#e2e8f0", background: "#fff" }
+                        ? { borderColor: hex.strong, boxShadow: `inset 0 0 0 1px ${hex.strong}` }
+                        : undefined
                     }
                   >
-                    <o.I
-                      size={22}
-                      aria-hidden="true"
-                      style={{ color: on ? hex.strong : "#64748b" }}
-                    />
-                    <span className="text-sm font-extrabold leading-tight text-slate-900 sm:text-base">
+                    <span className="text-sm font-bold leading-tight text-slate-900 sm:text-base">
                       {o.t}
                     </span>
-                    <span className="text-[11px] leading-tight text-slate-600 sm:text-xs">
-                      {o.dd}
-                    </span>
+                    <span className="text-xs leading-tight text-slate-600">{o.dd}</span>
                   </button>
                 );
               })}
@@ -504,17 +473,17 @@ export function CalculadoraInicio({
                     type="button"
                     aria-pressed={on}
                     onClick={() => onSistema(c)}
-                    className="flex min-h-14 items-center gap-2 rounded-xl border-2 p-2 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                    className="tarjeta flex min-h-14 items-center gap-2 p-2 text-left transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                     style={
                       on
-                        ? { borderColor: hs.strong, background: hs.soft }
-                        : { borderColor: "#e2e8f0", background: "#fff" }
+                        ? { borderColor: hs.strong, boxShadow: `inset 0 0 0 1px ${hs.strong}` }
+                        : undefined
                     }
                   >
                     <img
                       src={FOTO_SISTEMA[id]}
                       alt=""
-                      className="h-10 w-10 shrink-0 rounded-lg bg-white object-cover"
+                      className="h-10 w-10 shrink-0 rounded-md bg-white object-cover"
                     />
                     {/* Sin color en línea si no está elegido: de noche, «#1e293b» era el fondo. */}
                     <span
@@ -673,10 +642,7 @@ export function CalculadoraInicio({
                   valor={d.referencia ? "si" : "no"}
                   onChange={(v) => set({ referencia: v === "si" })}
                 />
-                <p
-                  className="rounded-lg px-3 py-2 text-sm text-slate-800"
-                  style={{ background: "#f1f5f9" }}
-                >
+                <p className="casilla px-3 py-2 text-sm text-slate-800">
                   {d.referencia
                     ? `${DESDE_ISCI.trasladar.charAt(0).toUpperCase()}${DESDE_ISCI.trasladar.slice(1)}.`
                     : `${DESDE_ISCI.sinReferencia.charAt(0).toUpperCase()}${DESDE_ISCI.sinReferencia.slice(1)}. ${DESDE_ISCI.basalPlana}.`}
@@ -835,10 +801,7 @@ export function CalculadoraInicio({
               </div>
             )}
             {ev.lista && !ev.calcula.basal && !ev.calcula.ratioFactor && (
-              <p
-                className="rounded-lg px-3 py-2 text-sm text-slate-800"
-                style={{ background: "#f1f5f9" }}
-              >
+              <p className="casilla px-3 py-2 text-sm text-slate-800">
                 Se traslada la programación {previa}: no hay nada que calcular.
               </p>
             )}
@@ -860,7 +823,7 @@ export function CalculadoraInicio({
             {mdi && d.ultralarga && (
               <p
                 role="note"
-                className="flex gap-2 rounded-lg border px-3 py-2 text-sm text-amber-900"
+                className="flex gap-2 rounded-md border px-3 py-2 text-sm text-amber-900"
                 style={{ borderColor: "#f3d38a", background: "#fffbeb" }}
               >
                 <AlertTriangle size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
@@ -882,22 +845,16 @@ export function CalculadoraInicio({
           <p className="text-sm text-slate-600">Sistema no seleccionado (paso 2).</p>
         ) : (
           <div
-            className="overflow-hidden rounded-xl border bg-white"
-            style={{ borderColor: "#e2e8f0", borderTopColor: h!.strong, borderTopWidth: 4 }}
+            className="tarjeta tarjeta-sistema overflow-hidden"
+            style={{ ["--sis" as string]: h!.strong }}
           >
-            <p
-              className="px-3 py-2 text-sm font-semibold"
-              style={{ background: h!.soft, color: h!.ink }}
-            >
+            <p className="px-3 py-2 text-sm font-semibold" style={{ color: h!.ink }}>
               {INICIALIZACION[sis].previo.charAt(0).toUpperCase() +
                 INICIALIZACION[sis].previo.slice(1)}
               .
             </p>
             {!ev.lista && (
-              <p
-                className="border-t px-3 py-2 text-sm font-semibold text-slate-700"
-                style={{ borderColor: "#eceff3", background: "#f8fafc" }}
-              >
+              <p className="separador border-t px-3 py-2 text-sm font-semibold text-slate-700">
                 {ev.indicacion.fuera.length
                   ? "Sin propuesta: hay un dato fuera de la indicación (paso 4)."
                   : "Sin cifras hasta completar los datos del paso 3."}
@@ -911,24 +868,14 @@ export function CalculadoraInicio({
               color={h!.strong}
               destacado
             />
-            <div className="border-t" style={{ borderColor: "#eceff3" }}>
-              <div
-                className="flex items-center gap-1.5 px-3 pt-2 text-[11px] font-bold uppercase tracking-wide"
-                style={{ color: h!.ink }}
-              >
-                <Moon size={13} aria-hidden="true" /> Modos y funciones de {CORTOS[sis]}
+            <div className="separador border-t">
+              <div className="rotulo px-3 pt-2" style={{ color: h!.ink }}>
+                Modos y funciones de {CORTOS[sis]}
               </div>
-              <ul className="divide-y" style={{ borderColor: "#eceff3" }}>
-                {modosDe(sis).map((m, i) => {
-                  const I = [Target, Activity, Moon, Utensils][i] ?? Moon;
+              <ul className="divide-y">
+                {modosDe(sis).map((m) => {
                   return (
                     <li key={m.situacion} className="flex gap-2.5 px-3 py-2">
-                      <I
-                        size={16}
-                        className="mt-0.5 shrink-0"
-                        style={{ color: h!.strong }}
-                        aria-hidden="true"
-                      />
                       <div className="min-w-0">
                         <div className="text-xs font-semibold text-slate-600">{m.situacion}</div>
                         <div className="text-sm text-slate-900">
@@ -947,10 +894,8 @@ export function CalculadoraInicio({
               valorDe={valorDe}
               color="#94a3b8"
             />
-            <div className="border-t px-3 py-2" style={{ borderColor: "#eceff3" }}>
-              <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-500">
-                <RefreshCw size={13} aria-hidden="true" /> Adaptación posterior del algoritmo
-              </div>
+            <div className="separador border-t px-3 py-2">
+              <div className="rotulo">Adaptación posterior del algoritmo</div>
               <p className="mt-0.5 text-sm text-slate-800">{aprendizajeDe(sis)}</p>
               {sis === COLUMNA_DE_NOTA["T1/3"] && (
                 <p className="mt-1 rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs text-slate-600">
@@ -958,10 +903,7 @@ export function CalculadoraInicio({
                 </p>
               )}
             </div>
-            <p
-              className="border-t px-3 py-2 text-xs text-slate-600"
-              style={{ borderColor: "#eceff3" }}
-            >
+            <p className="separador border-t px-3 py-2 text-xs text-slate-600">
               {NUCLEO_COMUN.texto}.{" "}
               <a
                 href={href("sistemas", ORDEN_SISTEMAS[sis], "parametros")}
@@ -981,10 +923,7 @@ export function CalculadoraInicio({
             <summary className="inline-flex min-h-11 cursor-pointer items-center text-sm font-semibold text-slate-700 sm:min-h-8">
               Formato, sensores, plataforma y recambios
             </summary>
-            <dl
-              className="divide-y overflow-hidden rounded-xl border bg-white"
-              style={{ borderColor: "#e2e8f0" }}
-            >
+            <dl className="tarjeta divide-y overflow-hidden">
               {materialDe(sis).map((m) => (
                 <div key={m.rotulo} className="px-3 py-2">
                   <dt className="text-xs font-semibold text-slate-600">{m.rotulo}</dt>
@@ -1005,11 +944,7 @@ export function CalculadoraInicio({
         </Paso>
       )}
 
-      <div
-        className="flex gap-2 rounded-xl border px-3 py-2.5 text-sm text-slate-800"
-        style={{ borderColor: "#e2e8f0", background: "#f8fafc" }}
-      >
-        <ShieldCheck size={18} className="mt-0.5 shrink-0 text-slate-600" aria-hidden="true" />
+      <div className="casilla flex gap-2 px-3 py-2.5 text-sm text-slate-800">
         <span>
           <strong>Requisitos previos al inicio:</strong>{" "}
           {REGLAS.respaldo.texto.charAt(0).toLowerCase() + REGLAS.respaldo.texto.slice(1)}.{" "}
@@ -1052,28 +987,16 @@ function Lista({
   destacado?: boolean;
 }) {
   return (
-    <div className="border-t" style={{ borderColor: "#eceff3" }}>
-      <div
-        className="flex items-center gap-1.5 px-3 pt-2 text-[11px] font-bold uppercase tracking-wide"
-        style={{ color: destacado ? color : "#64748b" }}
-      >
-        {destacado ? (
-          <Zap size={13} aria-hidden="true" />
-        ) : (
-          <SlidersHorizontal size={13} aria-hidden="true" />
-        )}
+    <div className="separador border-t">
+      <div className="rotulo px-3 pt-2" style={destacado ? { color } : undefined}>
         {titulo}
       </div>
       {nota && <div className="px-3 text-xs text-slate-500">{nota}</div>}
-      <ul className="divide-y" style={{ borderColor: "#eceff3" }}>
+      <ul className="divide-y">
         {claves.map((k) => {
           const papel = k === "ia" || k === "objetivoAlg" ? null : papelEnAutomatico(k, sis);
           return (
-            <li
-              key={k}
-              className="flex gap-2.5 px-3 py-2"
-              style={destacado ? { boxShadow: `inset 3px 0 0 0 ${color}` } : undefined}
-            >
+            <li key={k} className="flex gap-2.5 px-3 py-2">
               <span
                 aria-hidden="true"
                 className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
@@ -1108,14 +1031,11 @@ function SetsDeInfusion({ sis }: { sis: number }) {
   const sets = SETS_INFUSION[ORDEN_SISTEMAS[sis]] ?? [];
   if (!sets.length) return null;
   return (
-    <details
-      className="mt-1.5 rounded-lg border bg-slate-50 font-normal"
-      style={{ borderColor: "#e2e8f0" }}
-    >
+    <details className="casilla mt-1.5 font-normal">
       <summary className="tap-44 flex cursor-pointer items-center gap-1.5 px-2.5 py-1.5 text-sm font-semibold text-slate-800">
         Sets de infusión ({sets.length})
       </summary>
-      <ul className="space-y-1.5 border-t px-2.5 py-2" style={{ borderColor: "#e2e8f0" }}>
+      <ul className="separador space-y-1.5 border-t px-2.5 py-2">
         {sets.map((x) => (
           <li key={x.name} className="text-sm">
             <span className="font-semibold text-slate-900">{x.name}</span>
@@ -1127,10 +1047,7 @@ function SetsDeInfusion({ sis }: { sis: number }) {
           </li>
         ))}
       </ul>
-      <p
-        className="border-t px-2.5 py-1.5 text-xs text-slate-600"
-        style={{ borderColor: "#e2e8f0" }}
-      >
+      <p className="separador border-t px-2.5 py-1.5 text-xs text-slate-600">
         Información complementaria (no es texto del capítulo): fichas técnicas de los fabricantes,
         recogidas el 2-10-2026. La oferta disponible depende del proveedor.
       </p>

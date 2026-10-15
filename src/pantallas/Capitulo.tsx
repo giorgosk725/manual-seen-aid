@@ -32,8 +32,7 @@ export function IndiceCapitulo() {
               <Revelar as="li" key={a.slug}>
                 <a
                   href={href("capitulo", a.slug)}
-                  className="hover-lift ease-brand flex items-start gap-3 rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:p-4"
-                  style={{ borderColor: "#e6e6e6" }}
+                  className="linea hover-lift ease-brand flex items-start gap-3 rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:p-4"
                 >
                   <span
                     aria-hidden="true"
