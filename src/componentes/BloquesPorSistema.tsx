@@ -5,6 +5,7 @@
    rótulos; la fuente, al pie. */
 import { useState } from "react";
 import { PiezaVista } from "./Piezas";
+import { PiezasSinTitulos } from "./piezasContexto";
 import { FuentePie } from "./FuentePie";
 import { siglasPorPiezas } from "../inicio";
 import type { BloqueSistema } from "../porSistema";
@@ -19,24 +20,26 @@ function Bloques({ c, bloques }: { c: number; bloques: BloqueSistema[] }) {
   // Índice de la primera pieza de cada bloque en `todas` (las siglas van por pieza).
   const desde = bloques.map((_, i) => bloques.slice(0, i).reduce((n, x) => n + x.piezas.length, 0));
   return (
-    <dl className="grid gap-2 lg:grid-cols-2" aria-live="polite">
-      {bloques.map((b, i) => (
-        <div
-          key={b.rotulo}
-          className="min-w-0 rounded-xl p-3"
-          style={{ background: h.soft, boxShadow: `inset 3px 0 0 0 ${h.strong}` }}
-        >
-          <dt className="text-[11px] font-bold uppercase tracking-wide" style={{ color: h.ink }}>
-            {b.rotulo}
-          </dt>
-          <dd className="mt-1 space-y-1.5 text-[15px] leading-snug text-slate-900">
-            {b.piezas.map((p, j) => (
-              <PiezaVista key={j} pieza={p} sis={c} compacta siglas={sg[desde[i] + j]} />
-            ))}
-          </dd>
-        </div>
-      ))}
-    </dl>
+    <PiezasSinTitulos.Provider value={true}>
+      <dl className="grid gap-2 lg:grid-cols-2" aria-live="polite">
+        {bloques.map((b, i) => (
+          <div
+            key={b.rotulo}
+            className="min-w-0 rounded-xl p-3"
+            style={{ background: h.soft, boxShadow: `inset 3px 0 0 0 ${h.strong}` }}
+          >
+            <dt className="text-[11px] font-bold uppercase tracking-wide" style={{ color: h.ink }}>
+              {b.rotulo}
+            </dt>
+            <dd className="mt-1 space-y-1.5 text-[15px] leading-snug text-slate-900">
+              {b.piezas.map((p, j) => (
+                <PiezaVista key={j} pieza={p} sis={c} compacta siglas={sg[desde[i] + j]} />
+              ))}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </PiezasSinTitulos.Provider>
   );
 }
 

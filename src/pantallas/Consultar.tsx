@@ -161,7 +161,7 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
         className="no-imprimir mb-3 inline-flex min-h-11 items-center gap-2 rounded-lg px-4 text-sm font-bold text-white"
         style={{ background: hex.strong }}
       >
-        <Printer size={16} aria-hidden="true" /> Hoja para entregar al paciente: cetonas
+        <Printer size={16} aria-hidden="true" /> Hoja para el paciente: cetonas
       </a>
       <div
         className="rounded-2xl border bg-white p-4 shadow-soft"

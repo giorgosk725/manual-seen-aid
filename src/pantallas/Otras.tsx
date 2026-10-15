@@ -293,8 +293,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
           >
             <p className="font-semibold">El capítulo no trata {noCubierto}.</p>
             <p className="mt-1 text-slate-700">
-              No hay información específica de ese sistema. Lo que sigue es lo general del capítulo
-              que puede servir; no lo apliques como específico de {noCubierto}.
+              Sin información específica del sistema; texto general del capítulo que puede servir;
+              no lo apliques como específico de {noCubierto}.
             </p>
           </div>
         )}
@@ -383,7 +383,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
             <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-9">
               Todos los resultados (
               {hayMas && res.length < busqueda.totalCapitulo + busqueda.totalFuera
-                ? `se muestran ${res.length} de ${busqueda.totalCapitulo + busqueda.totalFuera}`
+                ? `${res.length} de ${busqueda.totalCapitulo + busqueda.totalFuera}`
                 : res.length}
               )
             </summary>
@@ -502,7 +502,7 @@ export function Sobre() {
         <div className="space-y-3 text-[15px] leading-relaxed">
           <p>
             Complemento interactivo del capítulo {CAPITULO.numero} del Manual SEEN sobre
-            automatización de la insulinoterapia, para tenerlo a mano en la consulta.
+            automatización de la insulinoterapia, para su uso en consulta.
           </p>
           <ul className="list-disc space-y-1 pl-5 text-sm text-slate-700">
             <li>
@@ -753,14 +753,14 @@ export function Test() {
 /* ---------- Preguntas frecuentes por temas (#/preguntas[/<id>]) ----------
    El camino cuando la búsqueda libre no da nada: las preguntas revisadas, agrupadas por tema;
    cada una abre sus pasajes literales con el mismo bloque que en la búsqueda. */
-/* Los temas en su orden: los generales, «Uso en el día a día» y, al final, uno por sistema.
+/* Los temas en su orden: los generales, «Uso habitual» y, al final, uno por sistema.
    Solo las preguntas aprobadas (FRECUENTES); las pendientes no salen. */
 const TEMAS_SISTEMA = ["MiniMed 780G", "Tandem Control-IQ", "myLoop CamAPS", "Omnipod 5"];
 const TEMAS = [
   ...[...new Set(FRECUENTES.map((f) => f.tema))].filter(
-    (t) => t !== "Uso en el día a día" && !TEMAS_SISTEMA.includes(t),
+    (t) => t !== "Uso habitual" && !TEMAS_SISTEMA.includes(t),
   ),
-  "Uso en el día a día",
+  "Uso habitual",
   ...TEMAS_SISTEMA,
 ].filter((t) => FRECUENTES.some((f) => f.tema === t));
 const PRIMER_TEMA_SISTEMA = TEMAS.find((t) => TEMAS_SISTEMA.includes(t));
@@ -774,7 +774,7 @@ const ICONO_TEMA_FRECUENTE: Record<string, LucideIcon> = {
   "Incidencias y cetonemia": Droplets,
   "Interrupción del sistema": Unplug,
   "Situaciones especiales": Route,
-  "Uso en el día a día": CalendarClock,
+  "Uso habitual": CalendarClock,
 };
 function IconoTema({ tema }: { tema: string }) {
   const k = TEMAS_SISTEMA.indexOf(tema);

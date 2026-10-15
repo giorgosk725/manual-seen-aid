@@ -3,6 +3,8 @@ import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
    tabla, la casilla de un sistema, la línea de inicialización, un hito o un enlace. La usan «Iniciación del sistema» y las guías por referencias (guias/) de la ficha
    de cada sistema. Aquí no hay texto propio: todo sale del capítulo con su página. */
 import { ArrowRight } from "lucide-react";
+import { useContext } from "react";
+import { PiezasSinTitulos } from "./piezasContexto";
 import { TABLAS } from "../contenido";
 import { PaginaBadge } from "../ui";
 import { Lineas, Texto } from "../texto";
@@ -127,10 +129,15 @@ function PiezaVistaBase({
   const T = ({ children }: { children: string }) => (
     <Texto siglas={pend(children)}>{children}</Texto>
   );
+  const sinTitulos = useContext(PiezasSinTitulos);
   const caja = compacta ? "" : "rounded-xl border bg-white p-3";
   const borde = compacta ? undefined : { borderColor: "#e6e6e6" };
   const Rotulo = ({ tabla, etiqueta }: { tabla: keyof typeof TABLAS; etiqueta: string }) =>
-    compacta ? (
+    compacta && sinTitulos ? (
+      <p className="mb-1 text-sm font-bold text-slate-900">
+        <Lineas siglas={pend(etiqueta)}>{etiqueta}</Lineas>
+      </p>
+    ) : compacta ? (
       <h4 className="mb-1 text-sm font-bold text-slate-900">
         <Lineas siglas={pend(etiqueta)}>{etiqueta}</Lineas>
       </h4>

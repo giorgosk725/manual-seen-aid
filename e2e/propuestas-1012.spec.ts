@@ -32,7 +32,7 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     await page.goto("/#/consultar/situacion/ingreso-hospitalario");
     const momentos = page.getByRole("region", { name: "Texto del capítulo" });
     await expect(momentos.getByRole("heading", { name: /Período perioperatorio/ })).toBeVisible();
-    await momentos.getByRole("button", { name: "Abrir todos" }).click();
+    await momentos.getByRole("button", { name: "Desplegar todo" }).click();
     await expect(momentos.getByText(/unas 22 h tras la última dosis/)).toBeVisible();
     await page.goto("/#/consultar/situacion/gestacion");
     await expect(
@@ -51,14 +51,14 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
   }) => {
     await page.goto("/#/consultar/inicio/guia:omnipod-5");
     await expect(page).toHaveURL(/inicio:omnipod-5:transicion$/);
-    await expect(page.getByText(/Paso 1 de 5/)).toBeVisible();
+    await expect(page.locator("#guia-titulo", { hasText: /^1\./ })).toBeVisible();
     // Sin elegir, se enseña todo; con bomba, solo lo de bomba.
     await expect(page.getByText(/Reducción de la DTD/).first()).toBeVisible();
     await page.getByRole("button", { name: "Bomba sin automatización" }).click();
     await expect(page.getByText(/Reducción de la DTD/)).toHaveCount(0);
     await page.getByRole("button", { name: /^Siguiente paso/ }).click();
     await expect(page).toHaveURL(/inicio:omnipod-5:parametros$/);
-    await expect(page.getByText(/Paso 2 de 5/)).toBeVisible();
+    await expect(page.locator("#guia-titulo", { hasText: /^2./ })).toBeVisible();
     await expect(page.getByText(/Regla del 450/).first()).toBeVisible();
   });
   test("inicio paso a paso: la basal depende de MDI, el estado sobrevive a una fuente y se reinicia", async ({
@@ -176,7 +176,7 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     await expect(page.locator(".hoja-inicio").getByRole("checkbox", { checked: true })).toHaveCount(
       1,
     );
-    await page.getByRole("button", { name: /Vaciar las casillas/ }).click();
+    await page.getByRole("button", { name: /Hoja en blanco/ }).click();
     await expect(page.locator(".hoja-inicio").getByRole("checkbox", { checked: true })).toHaveCount(
       0,
     );

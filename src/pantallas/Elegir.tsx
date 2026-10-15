@@ -104,7 +104,7 @@ function PorCaracteristicas() {
       ? `Ver la ficha de ${T1.columnas[reunen[0]]}`
       : hayAlgo && reunen.length >= 2
         ? `Comparar los ${reunen.length}`
-        : "Comparar los cuatro";
+        : "Comparación de sistemas";
   return (
     <section
       aria-labelledby="por-caracteristicas"
@@ -260,11 +260,11 @@ export function Elegir({ antigua = false }: { antigua?: boolean }) {
       <PorCaracteristicas />
 
       <section
-        aria-label="Lo que dice el capítulo sobre la elección"
+        aria-label="Elección compartida: texto del capítulo"
         className="prosa mt-4 rounded-2xl border bg-white p-4"
         style={{ borderColor: "#e6e6e6" }}
       >
-        <p className="text-sm">{b5.t === "p" && <Texto>{b5.texto}</Texto>}</p>
+        <p className="literal text-sm">{b5.t === "p" && <Texto>{b5.texto}</Texto>}</p>
         <a href={href("capitulo", a6.slug, "b5")} className={enlace}>
           Leer en el capítulo <ArrowRight size={13} aria-hidden="true" />
         </a>

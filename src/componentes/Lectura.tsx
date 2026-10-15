@@ -109,7 +109,7 @@ export function ComoCitar({ apartado }: { apartado: Apartado }) {
               {copiado === "ok" ? "Copiada" : "Copiar"}
             </button>
             <span role="status" className="text-xs text-slate-600">
-              {copiado === "error" && "No se pudo copiar: selecciona el texto y cópialo a mano."}
+              {copiado === "error" && "Copia no disponible: seleccionar el texto manualmente."}
             </span>
             <a
               href={CAPITULO.url}

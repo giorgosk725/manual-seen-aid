@@ -141,8 +141,9 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
             Esc
           </kbd>
         </div>
-        <p id="paleta-ayuda" className="mt-1 hidden text-xs text-slate-600 sm:block">
-          Intro abre todos los resultados · ↓ ↑ eligen uno · Esc cierra
+        {/* 0.73.0: la ayuda del teclado, solo para el lector de pantalla (era un tutorial). */}
+        <p id="paleta-ayuda" className="sr-only">
+          Intro abre todos los resultados; flechas arriba y abajo eligen uno; Esc cierra.
         </p>
         <div ref={zona} onKeyDown={alMoverse}>
           {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}

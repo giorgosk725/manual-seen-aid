@@ -68,6 +68,12 @@
 }
 
 @layer utilities {
+  /* 0.73.0 (auditoría de uso): el texto literal del capítulo se reconoce por una pleca fina a
+     la izquierda; el borde discontinuo queda solo para las notas que no son del capítulo. */
+  .literal {
+    border-left: 2px solid #cbd5e1;
+    padding-left: 0.75rem;
+  }
   /* Sombra «flotante» suave del rediseño 2026. Utilidad propia (no es core Tailwind):
      en la app se compila desde index.css; si el artefacto se sirve en un host sin
      esta hoja, la tarjeta degrada con elegancia (conserva borde y fondo). */
@@ -258,6 +264,9 @@ main .note-soft {
    categoría, colores por sistema, botones de acción, fotos, ilustraciones y gráficos.
    Solo en pantalla: la impresión sigue en claro. */
 @media screen {
+  html.night .literal {
+    border-left-color: #475569;
+  }
   html.night {
     color-scheme: dark;
     background-color: #0b1220;

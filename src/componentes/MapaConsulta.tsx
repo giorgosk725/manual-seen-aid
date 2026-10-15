@@ -20,8 +20,6 @@ import {
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { DESTINOS, MAPA_CONSULTA } from "../nav";
-import { APARTADOS, DIAGRAMAS, LISTA_TABLAS } from "../contenido";
-import { diagramaEnEdicion } from "../diagramasRetirados";
 import { CATEGORIA_HEX, SISTEMA_HEX, TRAMO_HEX } from "../tokens";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
@@ -247,7 +245,7 @@ function Iniciacion() {
             ruta={href("consultar", "inicio", "preparacion")}
             icono={ListOrdered}
             color={color}
-            texto="Iniciación paso a paso"
+            texto="Fases de la iniciación"
           />
         </li>
         <li>
@@ -276,16 +274,13 @@ function Lectura() {
     >
       <Filas>
         <li>
-          <FilaDestino id="capitulo" dato={`${APARTADOS.length} apartados`} />
+          <FilaDestino id="capitulo" />
         </li>
         <li>
-          <FilaDestino id="tablas" dato={`${LISTA_TABLAS.length} tablas`} />
+          <FilaDestino id="tablas" />
         </li>
         <li>
-          <FilaDestino
-            id="visual"
-            dato={`${DIAGRAMAS.filter((d) => diagramaEnEdicion(d.id)).length} diagramas`}
-          />
+          <FilaDestino id="visual" />
         </li>
         <li>
           <FilaDestino id="preguntas" />

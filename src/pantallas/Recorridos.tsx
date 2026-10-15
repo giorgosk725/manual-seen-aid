@@ -73,7 +73,7 @@ import { CabeceraEditorial } from "../ui";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { useIrAlCambiar, useSubirAlElegir } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
-import { CATEGORIA_HEX, FICHA_AREA, SISTEMA_HEX } from "../tokens";
+import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { FuentePie } from "../componentes/FuentePie";
 import { paginasPorApartado } from "../paginasApartado";
 import { paginasDe } from "../paginas";
@@ -217,16 +217,6 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
   },
 ];
 
-/* Un tono por tema (0.72.0): el cuadrado del icono, en el color de área del Manual con el
-   icono blanco; así el color dice el tema. */
-const TONO_TEMA: Record<string, string> = {
-  "Ejercicio y comidas": FICHA_AREA.nutricion,
-  "Noche, enfermedad e hiperglucemia": FICHA_AREA.lipidos,
-  "Resolución de incidencias": FICHA_AREA.obesidad,
-  "Exploraciones, cirugía e ingreso": FICHA_AREA.pizarra,
-  "Interrupción del sistema": FICHA_AREA.mineral,
-  "Poblaciones y situaciones especiales": FICHA_AREA.diabetes,
-};
 /* Un icono por tema y por situación (13-10-2026): la lista se recorre de un vistazo. */
 const ICONO_TEMA: Record<string, LucideIcon> = {
   "Ejercicio y comidas": Dumbbell,
@@ -398,7 +388,7 @@ function GuionVista({
           onClick={() => guardar({ abiertos: estado.abiertos, todos: !estado.todos })}
           className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-6"
         >
-          {estado.todos ? "Plegar" : "Abrir todos"}
+          {estado.todos ? "Plegar" : "Desplegar todo"}
         </button>
       </div>
       {/* Los momentos en orden, como una línea de tiempo: el número en su círculo y una raya
@@ -449,14 +439,17 @@ function GuionVista({
               </h3>
               {abierto(i) && (
                 <div className="space-y-2 pb-2">
-                  {/* 0.72.0: las siglas, pulsables la primera vez que salen en el momento. */}
-                  {(() => {
-                    const pz = piezasDe(m);
-                    const sg = siglasPorPiezas(pz);
-                    return pz.map((x, k) => (
-                      <PiezaVista key={k} pieza={x} compacta siglas={sg[k]} />
-                    ));
-                  })()}
+                  {/* 0.72.0: las siglas, pulsables la primera vez que salen en el momento.
+                      0.73.0: con la pleca del texto literal. */}
+                  <div className="literal space-y-2">
+                    {(() => {
+                      const pz = piezasDe(m);
+                      const sg = siglasPorPiezas(pz);
+                      return pz.map((x, k) => (
+                        <PiezaVista key={k} pieza={x} compacta siglas={sg[k]} />
+                      ));
+                    })()}
+                  </div>
                   {/* Una sola línea de fuente por momento, al párrafo exacto. */}
                   <p className="text-[13px] text-slate-500">
                     Fuente:{" "}
@@ -593,45 +586,11 @@ function ListaSituaciones({
   const total = visibles.reduce((n, v) => n + v.sits.length + v.extras.length, 0);
   const fila =
     "flex min-h-12 w-full items-center gap-3 px-3 py-2 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500";
-  const Fila = ({
-    I,
-    texto,
-    chip,
-    on,
-    tono,
-  }: {
-    I: LucideIcon;
-    texto: string;
-    chip?: boolean;
-    on?: boolean;
-    tono: string;
-  }) => (
+  /* 0.73.0 (auditoría de uso): la fila, solo el nombre y la flecha (sin icono por fila ni los
+     cuatro puntos de «conducta distinta»: el icono del tema basta). */
+  const Fila = ({ texto, on }: { texto: string; on?: boolean }) => (
     <>
-      <span
-        aria-hidden="true"
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-        style={{ background: on ? "rgba(255,255,255,.18)" : tono }}
-      >
-        <I size={16} style={{ color: "#fff" }} />
-      </span>
       <span className="min-w-0 flex-1 font-semibold leading-snug">{texto}</span>
-      {/* «Cambia según el sistema»: cuatro puntos con el color de cada sistema. */}
-      {chip && (
-        <span
-          className="flex shrink-0 gap-0.5"
-          title="Conducta distinta según el sistema"
-          role="img"
-          aria-label="Conducta distinta según el sistema"
-        >
-          {SISTEMA_HEX.map((x, k) => (
-            <span
-              key={k}
-              className="h-2 w-2 rounded-full"
-              style={{ background: on ? "#fff" : x.strong, opacity: on ? 0.85 : 1 }}
-            />
-          ))}
-        </span>
-      )}
       {on ? (
         <Check size={15} className="shrink-0" aria-hidden="true" />
       ) : (
@@ -698,10 +657,6 @@ function ListaSituaciones({
             <ul className="divide-y" style={{ borderColor: "#eeeeee" }} role="list">
               {sits.map((s) => {
                 const on = sit?.id === s.id;
-                const porSis =
-                  "tabla" in s &&
-                  TABLAS[s.tabla].porSistema &&
-                  !TABLAS[s.tabla].filas[s.fila]?.unida;
                 return (
                   <li key={s.id}>
                     <button
@@ -717,13 +672,7 @@ function ListaSituaciones({
                       className={`${fila} ${on ? "text-white" : "text-slate-900 hover:bg-slate-50"}`}
                       style={on ? { background: hex.strong } : undefined}
                     >
-                      <Fila
-                        I={ICONO_SITUACION[s.id] ?? ArrowRight}
-                        texto={s.etiqueta}
-                        chip={porSis}
-                        on={on}
-                        tono={TONO_TEMA[tema.t] ?? hex.strong}
-                      />
+                      <Fila texto={s.etiqueta} on={on} />
                     </button>
                   </li>
                 );
@@ -731,11 +680,7 @@ function ListaSituaciones({
               {extras.map((x) => (
                 <li key={x.ruta}>
                   <a href={x.ruta} className={`${fila} text-slate-900 hover:bg-slate-50`}>
-                    <Fila
-                      I={iconoDeTexto(x.t)}
-                      texto={x.t}
-                      tono={TONO_TEMA[tema.t] ?? hex.strong}
-                    />
+                    <Fila texto={x.t} />
                   </a>
                 </li>
               ))}
@@ -1005,7 +950,7 @@ export function SituacionSistema({
                     onClick={() => elegirRuta("consultar", "situacion", sit.id)}
                     className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
                   >
-                    Ver los cuatro sistemas
+                    Todos los sistemas
                   </button>
                 )}
                 {!porSistema && !fila.unida && (
@@ -1269,7 +1214,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           {patrones.length > 0 && (
             <details className="mt-4" open={ancha}>
               <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
-                Patrones relacionados del capítulo ({patrones.length})
+                Patrones relacionados ({patrones.length})
               </summary>
               <ul className="mt-2 space-y-2">
                 {patrones.map((p) => (
@@ -1315,7 +1260,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
               className="mt-4 inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-white"
               style={{ background: hex.strong }}
             >
-              Aplicar la Figura 3 paso a paso <ArrowRight size={14} aria-hidden="true" />
+              Algoritmo de la Figura 3 <ArrowRight size={14} aria-hidden="true" />
             </a>
           )}
           <div
@@ -1386,7 +1331,7 @@ export function Interrupcion(_props: { tramo?: string }) {
       {/* 0.72.0: «¿le quito la bomba?» en el hospital está en el ingreso (apartado 10). */}
       <div className="no-imprimir mt-4">
         <div className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
-          Seguir en
+          Véase también
         </div>
         <a
           href={href("consultar", "situacion", "ingreso-hospitalario::m4")}

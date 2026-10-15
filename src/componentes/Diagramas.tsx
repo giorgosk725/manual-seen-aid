@@ -98,7 +98,7 @@ function Sub({
 /* Por dónde seguir desde un diagrama que se consulta (0.72.0, auditoría de urgencias). */
 const SEGUIR_DIAGRAMA: Partial<Record<DiagramaId, { texto: string; ruta: string }[]>> = {
   hipoglucemia: [
-    { texto: "Plan de seguridad para entregar", ruta: href("pacientes") },
+    { texto: "Plan de seguridad (hoja para el paciente)", ruta: href("pacientes") },
     { texto: "Hipoglucemia nocturna", ruta: href("capitulo", "09-descarga", "b7") },
     { texto: "Tiempo por debajo del rango elevado", ruta: href("capitulo", "09-descarga", "b10") },
   ],

@@ -17,7 +17,7 @@ test.describe("Explorar criterios de elección", () => {
     await expect(main.getByRole("heading", { name: "Factores de la Figura 2" })).toBeVisible();
     // 0.72.2 (A02 revisada por el autor): por las características del dispositivo (Tabla 1),
     // sin datos de la persona ni puntuación; los cuatro en el orden de la tabla.
-    await expect(main.getByRole("link", { name: /Comparar los cuatro/ })).toBeVisible();
+    await expect(main.getByRole("link", { name: /Comparación de sistemas/ })).toBeVisible();
     await main
       .getByRole("group", { name: "Formato" })
       .getByRole("button", { name: "Bomba con catéter" })

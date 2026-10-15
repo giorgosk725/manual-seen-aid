@@ -691,7 +691,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f62",
-    tema: "Uso en el día a día",
+    tema: "Uso habitual",
     pregunta: "En el ejercicio, ¿se anuncian al sistema los hidratos para evitar la bajada?",
     variantes: [
       "hidratos durante el ejercicio sin anunciar",
@@ -701,7 +701,7 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f63",
-    tema: "Uso en el día a día",
+    tema: "Uso habitual",
     // Revisada el 13-10-2026 (sigue pendiente): el bolo prandial, en las modalidades que lo
     // requieren (híbridas); las de asa cerrada completa, aparte.
     pregunta: "En los sistemas híbridos, ¿cuándo hay que poner el bolo de la comida?",
@@ -714,42 +714,42 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f64",
-    tema: "Uso en el día a día",
+    tema: "Uso habitual",
     pregunta: "La glucosa sube en la primera hora después de comer: ¿qué revisar?",
     variantes: ["pico posprandial precoz", "sube mucho después de comer"],
     pasajes: ["t/09-descarga/b5/0", "t/09-descarga/b5/1"],
   },
   {
     id: "f65",
-    tema: "Uso en el día a día",
+    tema: "Uso habitual",
     pregunta: "Glucosa alta al despertar: ¿qué revisar?",
     variantes: ["hiperglucemia matutina", "fenómeno del alba con asa cerrada"],
     pasajes: ["t/09-descarga/b8/0", "t/09-descarga/b8/1"],
   },
   {
     id: "f66",
-    tema: "Uso en el día a día",
+    tema: "Uso habitual",
     pregunta: "El TIR está bien pero la glucosa oscila mucho: ¿qué mirar?",
     variantes: ["mucha variabilidad con buen tiempo en rango", "coeficiente de variación alto"],
     pasajes: ["t/09-descarga/b9/0", "t/09-descarga/b9/1"],
   },
   {
     id: "f67",
-    tema: "Uso en el día a día",
+    tema: "Uso habitual",
     pregunta: "Ejercicio de fuerza o muy intenso: ¿se sube el objetivo?",
     variantes: ["pesas o sprint con asa cerrada", "ejercicio anaeróbico sube la glucosa"],
     pasajes: ["T4/1", "t/10-situaciones/b23/1"],
   },
   {
     id: "f68",
-    tema: "Uso en el día a día",
+    tema: "Uso habitual",
     pregunta: "Después del ejercicio, ¿hasta cuándo mantener el objetivo alto?",
     variantes: ["hipoglucemia diferida tras el deporte", "cuándo quitar el modo ejercicio"],
     pasajes: ["t/10-situaciones/b25/0", "t/10-situaciones/b25/1"],
   },
   {
     id: "f69",
-    tema: "Uso en el día a día",
+    tema: "Uso habitual",
     pregunta: "Desconexión breve (ducha, deporte, una prueba): ¿qué hacer con la insulina?",
     variantes: ["desconectar la bomba un rato", "bolo antes de desconectar la bomba"],
     // Revisada el 13-10-2026 (sigue pendiente): con el umbral de aproximadamente 1 h sin
@@ -766,14 +766,14 @@ export const TODAS: Frecuente[] = [
   },
   {
     id: "f70",
-    tema: "Uso en el día a día",
+    tema: "Uso habitual",
     pregunta: "Tras una resonancia con el sensor puesto, ¿son fiables las lecturas?",
     variantes: ["lecturas del sensor después de una resonancia", "sensor tras RM"],
     pasajes: ["t/10-situaciones/b42/0", "t/10-situaciones/b42/1"],
   },
   {
     id: "f71",
-    tema: "Uso en el día a día",
+    tema: "Uso habitual",
     pregunta: "¿Qué errores conviene evitar al revisar una descarga?",
     variantes: ["errores frecuentes en la consulta de descarga", "qué no hacer con la descarga"],
     pasajes: ["l/09-descarga/b28/0", "l/09-descarga/b28/1", "l/09-descarga/b28/2"],

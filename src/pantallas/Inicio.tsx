@@ -129,7 +129,7 @@ function Hoja({ sis }: { sis?: number }) {
             href={href("pacientes", "plan", ORDEN_SISTEMAS[sis])}
             className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 hover:border-slate-500"
           >
-            Plan de seguridad para entregar <ArrowRight size={13} aria-hidden="true" />
+            Plan de seguridad (hoja para el paciente) <ArrowRight size={13} aria-hidden="true" />
           </a>
         )}
         {hechos.size > 0 && (
@@ -138,7 +138,7 @@ function Hoja({ sis }: { sis?: number }) {
             onClick={vaciar}
             className="inline-flex min-h-11 items-center text-xs font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
           >
-            Vaciar las casillas (hoja en blanco)
+            Hoja en blanco
           </button>
         )}
       </div>
@@ -397,9 +397,6 @@ function PasosInicio({
       </ol>
       {/* En el móvil solo se ve el paso activo: un selector lleva a cualquier otro. */}
       <label className="no-imprimir mb-2 flex items-center gap-2 sm:hidden">
-        <span className="shrink-0 text-xs font-semibold" style={{ color: hex.strong }}>
-          Ir al paso
-        </span>
         <select
           aria-label="Ir al paso"
           value={n}
@@ -416,12 +413,7 @@ function PasosInicio({
           ))}
         </select>
       </label>
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-          Paso {n} de {PASOS_GUIA.length}
-          {sis !== undefined ? ` · ${CORTOS[sis]}` : ""}
-        </p>
-      </div>
+      {/* 0.73.0: sin «Paso n de N» (lo dicen el selector y el número del título). */}
       <h3 id="guia-titulo" className="text-lg font-extrabold text-slate-900">
         <span className="mr-2 tabular-nums" style={{ color: hex.strong }}>
           {n}.
@@ -609,7 +601,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
       <div role="group" aria-label="Herramienta" className="mb-2 grid grid-cols-3 gap-1.5">
         {(
           [
-            { id: CALC, t: "Calcular", I: Calculator, on: actual === CALC },
+            { id: CALC, t: "Cálculo", I: Calculator, on: actual === CALC },
             { id: FASES[0].id, t: "Fases", I: ListOrdered, on: enFases },
             { id: HOJA, t: "Hoja", I: Printer, on: actual === HOJA },
           ] as const
@@ -730,7 +722,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                   }}
                   className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
                 >
-                  {completa ? "Plegar las tareas" : "Ver la fase entera"}
+                  {completa ? "Plegar" : "Fase completa"}
                 </button>
               )}
             </div>

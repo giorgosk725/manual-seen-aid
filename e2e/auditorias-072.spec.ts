@@ -12,7 +12,7 @@ test.describe("Auditorías 0.72.0", () => {
     page,
   }) => {
     await page.goto("/#/sistemas");
-    const elegir = page.getByRole("button", { name: /Elegir para comparar/ });
+    const elegir = page.getByRole("button", { name: /Comparar$/ });
     if (await elegir.isVisible()) await elegir.click();
     const grupo = page.getByRole("group", { name: "Sistemas", exact: true });
     await grupo.getByRole("button").nth(0).click();

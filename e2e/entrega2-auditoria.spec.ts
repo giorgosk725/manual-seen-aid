@@ -25,7 +25,7 @@ test.describe("Entrega 2 (0.33.0)", () => {
     page,
   }) => {
     await page.goto("/#/consultar/inicio/inicio:omnipod-5");
-    await expect(page.getByText(/Paso 1 de 5/)).toBeVisible();
+    await expect(page.locator("#guia-titulo", { hasText: /^1\./ })).toBeVisible();
     await page
       .getByRole("list", { name: "Pasos de la fase" })
       .getByRole("button", { name: /^2\. Programación inicial/ })
@@ -33,7 +33,7 @@ test.describe("Entrega 2 (0.33.0)", () => {
     await expect(page).toHaveURL(/:parametros$/);
     await expect(page.getByText(/Regla del 450/)).toBeVisible();
     await page.goto("/#/consultar/inicio/primeros-meses:omnipod-5");
-    await page.getByRole("button", { name: "Ver la fase entera" }).click();
+    await page.getByRole("button", { name: "Fase completa" }).click();
     // Tres tareas desde la 0.62.0 (calendario, ajustes y qué vigilar).
     await expect.poll(() => page.locator("h3 button[aria-expanded='true']").count()).toBe(3);
   });

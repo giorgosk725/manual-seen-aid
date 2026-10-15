@@ -15,7 +15,22 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-15",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — portada por lo que más se consulta`,
+    titulo: `Complemento interactivo ${VERSION_APP} — lo de cada sistema, a la vista`,
+    detalle: [
+      "Hecha a partir de dos auditorías profundas (contenido por sistema; uso, ruido y registro).",
+      "Lo que el capítulo dice de cada sistema, donde se busca y con su texto literal: gestación (con CamAPS FX, el objetivo por trimestres y tras el parto, qué parámetros cuentan en automático, Boost y Ease-off; con MiniMed 780G, el objetivo mínimo y la estrategia; con Control-IQ+, la intensificación y el modo sueño continuado), enfermedad intercurrente, glucocorticoides e ingreso hospitalario, con un selector de sistema arriba y lo común debajo.",
+      "Situaciones de la Tabla 4 con un sistema elegido: debajo de su casilla, lo que añaden los apartados 9 y 10 (hipoglucemia nocturna, hiperglucemia tardía tras comidas grasas, Ease-off, actividad acuática con Omnipod 5, Boost, basal temporal de Control-IQ+).",
+      "Ficha de cada sistema: las pestañas enseñan solo su sección; «Cómo funciona» con la casilla literal entera de la Tabla 1; Parámetros y Modos con lo que el texto añade a las tablas (peso de la basal programada, en CamAPS FX el factor de sensibilidad y la insulina activa, Boost y Ease-off, alcohol, desconexión); las menciones del capítulo, como enlaces.",
+      "El texto literal del capítulo se reconoce por una pleca fina a la izquierda; el borde discontinuo queda para las notas que no son del capítulo.",
+      "Menos ruido: situaciones sin iconos por fila ni puntos de color, menú sin las tres entradas repetidas, portada sin contadores, Fases sin «Paso n de N», rótulos de la Tabla 4 sin mayúsculas, sin instrucciones de uso.",
+      "Registro de manual en los rótulos: «Comparación de sistemas», «Fases de la iniciación», «Algoritmo por tramos», «Plan de seguridad (hoja para el paciente)», «Hoja en blanco», «Cálculo», «Desplegar todo», «Uso habitual», entre otros.",
+      "Fuentes corregidas: los objetivos de MCG de la gestación y del hospital citaban el apartado 9 (son del 10) y los de adultos el 4 (son del 5); un párrafo de dos páginas cita las dos.",
+    ],
+  },
+  {
+    fecha: "2026-10-15",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.73.0 — portada por lo que más se consulta",
     detalle: [
       "Portada ordenada por el uso real (indicación del responsable): primero los cuatro sistemas, cada uno con su ficha y accesos a sus parámetros, su iniciación y sus dudas; «Comparar los cuatro», «Comparar los parámetros» y «Elección del sistema». Después, iniciación y seguimiento (cálculo de parámetros iniciales, iniciación paso a paso, calendario de revisiones, descarga), la lectura del capítulo y el material para el paciente (plan de seguridad, hoja de cetonas, hoja de pruebas y cirugía, PDF). Al final, las situaciones clínicas, con hiperglucemia y cetonemia, hipoglucemia e interrupción en su color.",
       "Ficha de cada sistema con sus preguntas frecuentes revisadas («Preguntas»), para las dudas del sistema.",

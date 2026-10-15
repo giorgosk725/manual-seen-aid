@@ -319,13 +319,13 @@ function Tarjeta({
         </p>
       )}
       {casilla ? (
-        <p className="mt-1 whitespace-pre-line text-[15px] leading-relaxed text-slate-900">
+        <p className="literal mt-1 whitespace-pre-line text-[15px] leading-relaxed text-slate-900">
           <Marcado texto={casilla.texto} q={q} />
         </p>
       ) : (
         r.texto && (
           <p
-            className={`mt-1 whitespace-pre-line text-slate-900 ${principal ? "text-[15px] leading-relaxed" : "text-sm"}`}
+            className={`literal mt-1 whitespace-pre-line text-slate-900 ${principal ? "text-[15px] leading-relaxed" : "text-sm"}`}
           >
             {sistemaConsulta !== undefined && sistemaConsulta >= 0 ? (
               <LineasSistema texto={r.texto} q={q} sistema={sistemaConsulta} />
@@ -527,7 +527,7 @@ function BloqueFrecuente({
             {ampliacion.length > 0 && (
               <details className="mt-2">
                 <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
-                  Ver los cuatro sistemas
+                  Todos los sistemas
                 </summary>
                 <div className="mt-2 space-y-2">{ampliacion.map(tarjeta)}</div>
               </details>
@@ -658,13 +658,13 @@ export function RespuestasCapitulo({
   const titulo = !cercana
     ? "Pasajes relacionados"
     : varias
-      ? "Pasajes posibles en el capítulo"
+      ? "Pasajes del capítulo"
       : "Coincidencia parcial en el capítulo";
   return (
     <>
       <section
         aria-labelledby={id}
-        className={`mt-3 rounded-xl bg-white p-3 sm:p-4 ${cercana ? "border border-dashed" : "border-2"}`}
+        className={`mt-3 rounded-xl bg-white p-3 sm:p-4 ${cercana ? "border" : "border-2"}`}
         style={{ borderColor: cercana ? "#94a3b8" : "#3f6e9f" }}
       >
         <H

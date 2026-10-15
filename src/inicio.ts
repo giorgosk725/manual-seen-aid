@@ -20,7 +20,7 @@ import { materialListo } from "./materiales";
 import { siglasEn } from "./siglas";
 /* Solo «para entregar» si las plantillas del plan están aprobadas (V50-02). */
 const TEXTO_PLAN = materialListo("planes")
-  ? "Plan de seguridad para entregar"
+  ? "Plan de seguridad (hoja para el paciente)"
   : "Plantilla del plan de seguridad (en revisión)";
 
 export type Pieza =
@@ -364,7 +364,7 @@ export const TAREAS: Record<string, Tarea[]> = {
       titulo: "Ajustes en las primeras descargas",
       piezas: [4, 5],
       siguiente: () => ({
-        texto: "Interpretación de la descarga, paso a paso",
+        texto: "Interpretación de la descarga por pasos",
         ruta: href("consultar", "descarga", "1"),
       }),
     },

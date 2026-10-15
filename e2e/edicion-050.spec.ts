@@ -26,11 +26,7 @@ test.describe("Portada y navegación (0.50)", () => {
     );
     await barra.getByRole("button", { name: "Más" }).click();
     const menu = page.getByRole("dialog", { name: "Menú" });
-    for (const n of [
-      "Hiperglucemia y cetonemia",
-      "Índice del capítulo",
-      "Material para el paciente",
-    ])
+    for (const n of ["Situaciones", "Índice del capítulo", "Material para el paciente"])
       await expect(menu.getByRole("link", { name: n, exact: true })).toBeVisible();
   });
 

@@ -49,7 +49,8 @@ test.describe("Tablas y sistemas", () => {
 
   // 0.70.0: la ficha es una sola página; la sección de la ruta es adónde se salta.
   // 0.70.0: la ficha es una sola página; la sección de la ruta es adónde se salta.
-  test("la ficha es una página; el selector añade otro (comparación) o lo quita", async ({
+  // 0.73.0 (auditoría de uso): cada pestaña enseña solo su sección.
+  test("la ficha va por pestañas; el selector añade otro (comparación) o lo quita", async ({
     page,
   }) => {
     await page.goto("/#/sistemas/op5/parametros");
@@ -58,7 +59,7 @@ test.describe("Tablas y sistemas", () => {
     ).toBeInViewport();
     await expect(
       page.getByRole("heading", { level: 2, name: /^Cómo funciona · Omnipod 5/ }),
-    ).toHaveCount(1);
+    ).toHaveCount(0);
     // Arriba de la ficha, el selector está abierto.
     await page.goto("/#/sistemas/op5");
     await page.evaluate(() => window.scrollTo(0, 0));
@@ -76,11 +77,15 @@ test.describe("Tablas y sistemas", () => {
     ).toBeVisible();
   });
 
-  test("la ficha abre por «Cómo funciona», con todo en la misma página", async ({ page }) => {
+  test("la ficha abre por «Cómo funciona»; «completa» enseña todo", async ({ page }) => {
     await page.goto("/#/sistemas/op5");
     await expect(
       page.getByRole("heading", { level: 2, name: /^Cómo funciona · Omnipod 5/ }),
     ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { level: 2, name: /^Parámetros · Omnipod 5/ }),
+    ).toHaveCount(0);
+    await page.goto("/#/sistemas/op5/completa");
     await expect(
       page.getByRole("heading", { level: 2, name: /^Parámetros · Omnipod 5/ }),
     ).toHaveCount(1);

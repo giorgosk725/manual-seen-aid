@@ -46,7 +46,7 @@ function Acciones({
         role="status"
         className="no-imprimir mb-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900"
       >
-        Material en revisión: todavía no está listo para entregar ni imprimir.
+        Material en revisión; no disponible para impresión.
       </p>
     );
   return (
@@ -255,7 +255,7 @@ export function HubPacientes() {
               href={href("pacientes", "hoja", cetonas.id)}
               icono={Droplets}
               titulo={cetonas.titulo}
-              detalle="Va también con el plan de seguridad, en hoja aparte"
+              detalle="Incluida en el plan de seguridad; también en hoja aparte"
             />
           </div>
         )}

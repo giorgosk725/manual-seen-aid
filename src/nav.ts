@@ -95,7 +95,7 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "comparar",
-    etiqueta: "Comparar los cuatro",
+    etiqueta: "Comparación de sistemas",
     corto: "Comparar",
     // 0.72.2: a las tarjetas lado a lado («Resumen»); la tabla entera, en su pestaña (en el
     // móvil, la tabla de entrada era muy larga).
@@ -322,16 +322,7 @@ export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
     titulo: "Consultar",
     // 0.73.0: en el orden de uso (sistemas, iniciación, descarga, situaciones; las tres de
     // urgencia después) y el material para el paciente dentro, a la vista sin desplazar.
-    ids: [
-      "sistemas",
-      "inicio",
-      "descarga",
-      "situacion",
-      "figura-3",
-      "hipoglucemia",
-      "interrupcion",
-      "pacientes",
-    ],
+    ids: ["sistemas", "inicio", "descarga", "situacion", "pacientes"],
   },
   {
     area: "leer",

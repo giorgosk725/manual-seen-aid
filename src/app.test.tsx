@@ -205,7 +205,7 @@ describe("App", () => {
     render(<App />);
     await ir("#/consultar/descarga/8");
     expect(screen.getByRole("heading", { level: 2, name: /Bandera roja/ })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Aplicar la Figura 3/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Algoritmo de la Figura 3/ })).toHaveAttribute(
       "href",
       "#/consultar/figura-3",
     );

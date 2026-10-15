@@ -15,7 +15,6 @@ import {
   BarChart3,
   Box,
   Brain,
-  ChevronDown,
   Check,
   Cpu,
   ExternalLink,
@@ -62,7 +61,7 @@ import {
   type Sistema,
 } from "../ampliacion";
 import { elegirRuta, href, fueNavegacionNueva } from "../rutas";
-import { BotonImprimir, CabeceraEditorial, Foldable, PaginaBadge } from "../ui";
+import { BotonImprimir, CabeceraEditorial, Foldable } from "../ui";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SEEN, SISTEMA_HEX } from "../tokens";
@@ -123,7 +122,7 @@ function ParametrosConfigurables({ c, ink }: { c: number; ink: string }) {
       items: lineas.filter((l) => l.endsWith("*")),
     },
     {
-      rotulo: "Sobre todo en los bolos o el modo manual",
+      rotulo: "Efecto principal en bolos o modo manual",
       items: lineas.filter((l) => l && !l.endsWith("*")),
     },
   ].filter((g) => g.items.length);
@@ -543,7 +542,7 @@ function ColumnaTabla({
               }}
             >
               <dt
-                className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wide"
+                className={`flex items-center gap-2 ${t.id === "T4" ? "text-sm font-bold leading-snug" : "text-[11px] font-bold uppercase tracking-wide"}`}
                 style={{ color: hexS.ink }}
               >
                 {I && (
@@ -670,6 +669,11 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   );
   // Una sola página (0.70.0): la sección de la ruta es solo adónde se salta.
   const sec = completa ? undefined : seccion;
+  // 0.73.0 (auditoría de uso): cada pestaña enseña solo su sección (la ficha entera medía casi
+  // cinco pantallas en el móvil); «completa» las enseña todas.
+  const vista = sec && SECCIONES_FICHA.some((x) => x.id === sec) ? sec : "funciona";
+  const ver = (id: string) => completa || vista === id;
+  const mt = completa ? "mt-7" : "";
   return (
     <div ref={ref} className="imprimible">
       <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
@@ -719,8 +723,8 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             className="flex min-h-11 items-center justify-center gap-1 rounded-lg border border-slate-300 bg-white px-1.5 text-center text-sm font-semibold leading-tight hover:underline sm:inline-flex sm:min-h-8 sm:justify-start sm:border-0 sm:bg-transparent sm:px-0 sm:text-left"
             style={{ color: h.ink }}
           >
-            <span className="sm:hidden">Preparar e iniciar</span>
-            <span className="hidden sm:inline">Preparar e iniciar este sistema</span>
+            <span className="sm:hidden">Iniciación</span>
+            <span className="hidden sm:inline">Iniciación del sistema</span>
             <ArrowRight size={13} aria-hidden="true" className="hidden sm:block" />
           </a>
           <a
@@ -729,7 +733,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             style={{ color: h.ink }}
           >
             <span className="sm:hidden">Plan de seguridad</span>
-            <span className="hidden sm:inline">Plan de seguridad para entregar</span>
+            <span className="hidden sm:inline">Plan de seguridad (hoja para el paciente)</span>
             <ArrowRight size={13} aria-hidden="true" className="hidden sm:block" />
           </a>
           <a
@@ -744,63 +748,71 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
 
       <BarraSistemas ids={[s.id]} seccion={sec} />
       {/* 0.70.0: la ficha es una sola página; las pestañas llevan a cada sección. */}
-      <section aria-labelledby="funciona" className="scroll-mt-2">
-        <TituloSeccion id="funciona" sistema={s.name} color={h.ink}>
-          Cómo funciona
-        </TituloSeccion>
-        <ComoFuncionaSistema c={c} id={s.id as SistemaId} />
-      </section>
+      {ver("funciona") && (
+        <section aria-labelledby="funciona" className="scroll-mt-2">
+          <TituloSeccion id="funciona" sistema={s.name} color={h.ink}>
+            Cómo funciona
+          </TituloSeccion>
+          <ComoFuncionaSistema c={c} id={s.id as SistemaId} />
+        </section>
+      )}
 
-      <section aria-labelledby="esencial" className="mt-7 scroll-mt-2">
-        <TituloSeccion id="esencial" sistema={s.name} color={h.ink}>
-          Indicación y material
-        </TituloSeccion>
-        <ColumnaTabla
-          t={TABLAS.T1}
-          c={c}
-          filas={(_e, j) => [0, 7, 8, 9].includes(j)}
-          pie={
-            <a
-              href={WEB_SISTEMA[s.id]}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="no-imprimir inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
-            >
-              Web oficial <ExternalLink size={12} aria-hidden="true" />
-            </a>
-          }
-        />
-      </section>
+      {ver("esencial") && (
+        <section aria-labelledby="esencial" className={`${mt} scroll-mt-2`}>
+          <TituloSeccion id="esencial" sistema={s.name} color={h.ink}>
+            Indicación y material
+          </TituloSeccion>
+          <ColumnaTabla
+            t={TABLAS.T1}
+            c={c}
+            filas={(_e, j) => [0, 7, 8, 9].includes(j)}
+            pie={
+              <a
+                href={WEB_SISTEMA[s.id]}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="no-imprimir inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+              >
+                Web oficial <ExternalLink size={12} aria-hidden="true" />
+              </a>
+            }
+          />
+        </section>
+      )}
 
-      <section aria-labelledby="parametros" className="mt-7 scroll-mt-2">
-        <TituloSeccion id="parametros" sistema={s.name} color={h.ink}>
-          Parámetros
-        </TituloSeccion>
-        {/* 0.72.0: lo que cuenta en automático, como insignia en cada tarjeta de la Tabla 3
+      {ver("parametros") && (
+        <section aria-labelledby="parametros" className={`${mt} scroll-mt-2`}>
+          <TituloSeccion id="parametros" sistema={s.name} color={h.ink}>
+            Parámetros
+          </TituloSeccion>
+          {/* 0.72.0: lo que cuenta en automático, como insignia en cada tarjeta de la Tabla 3
             (según la fila «Parámetros configurables en modo automático» de la Tabla 1 y su nota),
             en vez de un recuadro aparte que repetía los nombres. */}
-        <ColumnaTabla
-          t={TABLAS.T3}
-          c={c}
-          insignia={(j) => insigniaParametro(c, j)}
-          destacar={(j) => esDirecto(c, j)}
-          // 0.73.0: sin la nota del asterisco (en las tarjetas ya no hay asteriscos: lo dice la
-          // insignia); su fila de la Tabla 1, en la fuente.
-          fuentesExtra={[fuenteT1(4)]}
-        />
-        <AnadidoDelSistema c={c} bloques={FICHA_PARAMETROS[c]} />
-      </section>
+          <ColumnaTabla
+            t={TABLAS.T3}
+            c={c}
+            insignia={(j) => insigniaParametro(c, j)}
+            destacar={(j) => esDirecto(c, j)}
+            // 0.73.0: sin la nota del asterisco (en las tarjetas ya no hay asteriscos: lo dice la
+            // insignia); su fila de la Tabla 1, en la fuente.
+            fuentesExtra={[fuenteT1(4)]}
+          />
+          <AnadidoDelSistema c={c} bloques={FICHA_PARAMETROS[c]} />
+        </section>
+      )}
 
-      <section aria-labelledby="modos" className="no-imprimir mt-7 scroll-mt-2">
-        <TituloSeccion id="modos" sistema={s.name} color={h.ink}>
-          Modos y funciones
-        </TituloSeccion>
-        <ColumnaTabla t={TABLAS.T4} c={c} />
-        <AnadidoDelSistema c={c} bloques={FICHA_MODOS[c]} />
-      </section>
+      {ver("modos") && (
+        <section aria-labelledby="modos" className={`no-imprimir ${mt} scroll-mt-2`}>
+          <TituloSeccion id="modos" sistema={s.name} color={h.ink}>
+            Modos y funciones
+          </TituloSeccion>
+          <ColumnaTabla t={TABLAS.T4} c={c} />
+          <AnadidoDelSistema c={c} bloques={FICHA_MODOS[c]} />
+        </section>
+      )}
 
-      {preguntas.length > 0 && (
-        <section aria-labelledby="preguntas" className="no-imprimir mt-7 scroll-mt-2">
+      {ver("preguntas") && preguntas.length > 0 && (
+        <section aria-labelledby="preguntas" className={`no-imprimir ${mt} scroll-mt-2`}>
           <TituloSeccion id="preguntas" sistema={s.name} color={h.ink}>
             Preguntas frecuentes
           </TituloSeccion>
@@ -830,27 +842,32 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       )}
 
       {/* En papel, sin los párrafos (0.72.0: la ficha impresa salía en cinco caras). */}
-      <section aria-label="Más del capítulo sobre este sistema" className="no-imprimir mt-7">
-        <Foldable title="Párrafos del capítulo que lo nombran" count={parrafos.length}>
-          <ol className="space-y-3">
-            {parrafos.map((p) => (
-              <li key={p.slug + p.ancla} className="text-sm text-slate-800">
-                <p>
-                  {p.b.lead && <strong>{p.b.lead} </strong>}
-                  <Texto>{p.b.texto}</Texto>
-                </p>
-                <a
-                  href={href("capitulo", p.slug, p.ancla)}
-                  className="mt-1 inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-slate-600 hover:underline sm:min-h-6"
-                >
-                  {p.titulo} · <PaginaBadge p={p.b.p} p2={p.b.p2} />{" "}
-                  <ArrowRight size={11} aria-hidden="true" />
-                </a>
-              </li>
-            ))}
-          </ol>
-        </Foldable>
-      </section>
+      {ver("funciona") && (
+        <section aria-label="Más del capítulo sobre este sistema" className="no-imprimir mt-7">
+          <Foldable title="Menciones en el capítulo" count={parrafos.length}>
+            {/* 0.73.0: enlaces a cada párrafo (antes, los párrafos enteros: repetían el
+                capítulo dentro de la ficha). */}
+            <ul className="divide-y" style={{ borderColor: "#eef0f2" }}>
+              {parrafos.map((p) => (
+                <li key={p.slug + p.ancla}>
+                  <a
+                    href={href("capitulo", p.slug, p.ancla)}
+                    className="flex min-h-11 items-center gap-2 py-1.5 text-sm text-slate-800 hover:underline"
+                  >
+                    <span className="min-w-0 flex-1">
+                      <span className="font-semibold">{p.titulo}</span>
+                      {p.b.lead && <span className="text-slate-600"> · {p.b.lead}</span>}
+                    </span>
+                    <span className="shrink-0 text-xs text-slate-500">
+                      {paginasDe(p.b.p, p.b.p2)}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </Foldable>
+        </section>
+      )}
 
       {CON_AMPLIACION && <Ampliacion s={sistemaPorId(s.id)!} />}
     </div>
@@ -925,6 +942,9 @@ function AmpliacionRetirada({ ids }: { ids: string[] }) {
 function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
   const sec = seccion;
   const secciones = ids.length === 1 ? SECCIONES_FICHA : SECCIONES_COMPARACION;
+  // En la ficha, sin sección en la ruta se ve «Cómo funciona» (0.73.0).
+  const activa =
+    ids.length === 1 && !(sec && secciones.some((x) => x.id === sec)) ? "funciona" : sec;
   const selStr = ids.length ? ids.join("+") : "todos";
   const rutaCon = (nuevos: string[]) =>
     nuevos.length === 1
@@ -1004,9 +1024,9 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
           </span>
           <span className="shrink-0 text-xs font-semibold" style={{ color: SEEN.burdeos }}>
             {ids.length === 1
-              ? "Cambiar o comparar"
+              ? "Otro sistema o comparación"
               : ids.length === 0 && !seccion
-                ? "Elegir para comparar"
+                ? "Comparar"
                 : "Cambiar"}
           </span>
         </button>
@@ -1066,9 +1086,9 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
           <a
             key={x.id}
             href={href("sistemas", selStr, x.id)}
-            aria-current={sec === x.id ? "location" : undefined}
-            className={`inline-flex min-h-11 shrink-0 items-center border-b-2 px-1.5 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-2 ${sec === x.id ? "font-bold" : "border-transparent font-semibold text-slate-600 hover:text-slate-900"}`}
-            style={sec === x.id ? { borderColor: SEEN.burdeos, color: SEEN.burdeos } : undefined}
+            aria-current={activa === x.id ? "location" : undefined}
+            className={`inline-flex min-h-11 shrink-0 items-center border-b-2 px-1.5 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-2 ${activa === x.id ? "font-bold" : "border-transparent font-semibold text-slate-600 hover:text-slate-900"}`}
+            style={activa === x.id ? { borderColor: SEEN.burdeos, color: SEEN.burdeos } : undefined}
           >
             {/* 0.73.0: en el móvil, el rótulo corto (las cinco pestañas caben a la vista). */}
             {"corto" in x && x.corto ? (
@@ -1247,7 +1267,7 @@ function insigniaParametro(c: number, j: number): ReactNode {
   if (resto.some((x) => re.test(x)))
     return (
       <span className="inline-block rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600">
-        Sobre todo en los bolos o el modo manual
+        Efecto principal en bolos o modo manual
       </span>
     );
   return null;
@@ -1299,7 +1319,7 @@ function ParametrosAuto({ c, compacto = false }: { c: number; compacto?: boolean
   return (
     <div className={compacto ? "space-y-1.5" : "space-y-2"}>
       {grupo("Efecto directo sobre el algoritmo", directos, true)}
-      {grupo("Sobre todo en los bolos o el modo manual", resto, false)}
+      {grupo("Efecto principal en bolos o modo manual", resto, false)}
       {/* M61-04: el papel de la basal programada en cada sistema (Tabla 3, celda entera): en
           Omnipod 5, por ejemplo, cuenta para el primer pod y luego no. */}
       <p className="text-xs leading-snug text-slate-600">
@@ -1310,73 +1330,21 @@ function ParametrosAuto({ c, compacto = false }: { c: number; compacto?: boolean
   );
 }
 
-/* Características de cada celda de «Cómo funciona», arriba y en negrita (fragmentos literales de
-   CLAVE_ALGORITMO); la celda entera, debajo. */
-function claveDeCelda(fila: number, c: number): ReactNode {
-  const k = CLAVE_ALGORITMO[c];
-  const h = SISTEMA_HEX[c];
-  if (fila === 3) {
-    const tipo = algoritmoDelCapitulo(c).split(": algoritmo de tipo ")[1];
-    return (
-      <>
-        {tipo && (
-          <span
-            className="mr-1.5 inline-block rounded-full px-2 text-[11px] font-bold text-white"
-            style={{ background: h.ink }}
-          >
-            {tipo}
-          </span>
-        )}
-        {k.aprendizaje.join(" · ")}
-      </>
-    );
-  }
-  if (fila === 4) return [...k.actua, ...k.prediccion.map((x) => `predicción ${x}`)].join(" · ");
-  if (fila === 5)
-    return (
-      <>
-        <span
-          className="mb-0.5 block w-fit rounded px-1.5 text-[11px] font-extrabold"
-          style={
-            k.correccion.si
-              ? { background: h.ink, color: "#fff" }
-              : { background: "#e2e8f0", color: "#334155" }
-          }
-        >
-          {k.correccion.si ? "Sí" : "No"}
-        </span>
-        <span className="block">{k.correccion.texto.join(" · ")}</span>
-      </>
-    );
-  return null;
-}
-
 /* Una celda de «Cómo funciona»: la clave arriba (si la hay) y la celda entera debajo; la de los
    parámetros, en sus dos grupos. */
 function CeldaFunciona({ fila, c }: { fila: number; c: number }) {
   if (fila === FILA_PARAMETROS) return <ParametrosAuto c={c} compacto />;
-  const clave = claveDeCelda(fila, c);
+  // 0.73.0 (auditoría de uso): la casilla literal entera, a la vista (antes, un extracto en
+  // negrita y la casilla tras «Ver casilla completa»: no se veía el texto del capítulo).
   const celda = TABLAS.T1.filas[fila].celdas[c];
   const nota = COLUMNA_DE_NOTA[`T1/${fila}`] === c ? NOTAS_POR_PASAJE[`T1/${fila}`] : null;
-  return clave ? (
+  return (
     <>
-      <span className="block font-bold leading-snug text-slate-900">{clave}</span>
-      {/* 0.72.0: la casilla entera, a un toque (repetía la clave de encima). */}
-      <details className="group mt-1 text-[13px] leading-snug text-slate-600">
-        <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-1 sm:min-h-8 text-xs font-semibold text-slate-500 hover:text-slate-800 [&::-webkit-details-marker]:hidden">
-          <ChevronDown size={12} aria-hidden="true" className="transition group-open:rotate-180" />
-          Ver casilla completa
-        </summary>
-        <span className="mt-0.5 block">
-          <Lineas>{celda}</Lineas>
-        </span>
-      </details>
+      <span className="block text-slate-900">
+        <Lineas>{celda}</Lineas>
+      </span>
       {nota && fila === 3 && <NotaCorreccion nota={nota} />}
     </>
-  ) : (
-    <span className="font-semibold text-slate-900">
-      <Lineas>{celda}</Lineas>
-    </span>
   );
 }
 /* «Cómo funciona» de un sistema (14-10-2026): de un vistazo. Arriba, el recorrido de la
@@ -1514,7 +1482,7 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
           style={{ borderColor: "#e6e6e6" }}
         >
           <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8 sm:py-1.5">
-            Lo que lo distingue, en el apartado 4
+            Rasgos distintivos (apartado 4)
           </summary>
           <div className="space-y-2 pb-2 text-[15px] leading-snug text-slate-800">
             {distingue.map((p, j) => (

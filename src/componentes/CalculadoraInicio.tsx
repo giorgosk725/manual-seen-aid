@@ -562,7 +562,7 @@ export function CalculadoraInicio({
                     ayuda={
                       pidePesoYDtd(sis)
                         ? `${CORTOS[sis!]} lo pide para iniciar el automático`
-                        : "Para comprobar la indicación"
+                        : "Comprobación de la indicación"
                     }
                     unidad="kg"
                     valor={d.peso}
@@ -703,7 +703,7 @@ export function CalculadoraInicio({
                         ? "Para las reglas del 450 y del 1700"
                         : pidePesoYDtd(sis)
                           ? `${CORTOS[sis!]} la pide para iniciar el automático`
-                          : "Para comprobar la indicación"
+                          : "Comprobación de la indicación"
                     }
                     unidad="UI/día"
                     valor={d.dtd}
@@ -716,7 +716,7 @@ export function CalculadoraInicio({
                     ayuda={
                       pidePesoYDtd(sis)
                         ? `${CORTOS[sis!]} lo pide para iniciar el automático`
-                        : "Para comprobar la indicación"
+                        : "Comprobación de la indicación"
                     }
                     unidad="kg"
                     valor={d.peso}
@@ -879,7 +879,7 @@ export function CalculadoraInicio({
         }
       >
         {sis === undefined ? (
-          <p className="text-sm text-slate-600">Sin sistema seleccionado (paso 2).</p>
+          <p className="text-sm text-slate-600">Sistema no seleccionado (paso 2).</p>
         ) : (
           <div
             className="overflow-hidden rounded-xl border bg-white"
@@ -941,7 +941,7 @@ export function CalculadoraInicio({
               </ul>
             </div>
             <Lista
-              titulo="Sobre todo en los bolos o el modo manual"
+              titulo="Efecto principal en bolos o modo manual"
               claves={gruposDeProgramar(sis).manual}
               sis={sis}
               valorDe={valorDe}
@@ -1011,7 +1011,7 @@ export function CalculadoraInicio({
       >
         <ShieldCheck size={18} className="mt-0.5 shrink-0 text-slate-600" aria-hidden="true" />
         <span>
-          <strong>Antes del inicio:</strong>{" "}
+          <strong>Requisitos previos al inicio:</strong>{" "}
           {REGLAS.respaldo.texto.charAt(0).toLowerCase() + REGLAS.respaldo.texto.slice(1)}.{" "}
           <a href={ruta("inicio", "respaldo")} className="font-semibold underline">
             Plan de respaldo

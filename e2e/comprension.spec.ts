@@ -49,7 +49,7 @@ test.describe("Comprensión", () => {
   }) => {
     test.skip(retirado("casos"), "Los casos guiados no van en esta edición (src/edicion.ts).");
     await page.goto("/#/casos/hiperglucemia-pod");
-    await expect(page.getByText("Paso 1 de 5")).toBeVisible();
+    await expect(page.locator("#guia-titulo", { hasText: /^1\./ })).toBeVisible();
     await page.getByRole("button", { name: /Otro bolo de corrección/ }).click();
     const respuesta = page.locator("#respuesta-caso");
     await expect(respuesta).toContainText("No es lo que indica el capítulo.");

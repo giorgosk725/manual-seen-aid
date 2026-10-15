@@ -18,7 +18,7 @@ const hex = CATEGORIA_HEX.consultar;
 const FIGURAS_GALERIA = [
   { fig: F1, extra: null as null | { href: string; texto: string } },
   { fig: F2, extra: null },
-  { fig: INFO_F3, extra: { href: href("consultar", "figura-3"), texto: "Recorrido paso a paso" } },
+  { fig: INFO_F3, extra: { href: href("consultar", "figura-3"), texto: "Algoritmo por tramos" } },
   { fig: INFO, extra: null },
 ];
 
@@ -34,7 +34,7 @@ const GRUPOS: { id: string; titulo: string; color: string; tinte: string; ids: D
   },
   {
     id: "seguridad",
-    titulo: "Seguridad en el día a día",
+    titulo: "Seguridad en el uso habitual",
     color: SEEN.burdeos,
     tinte: "#f7eff3",
     ids: ["cetonemia", "hipoglucemia", "interrupcion"],

@@ -6,7 +6,7 @@ test.describe("Calculadora de parámetros iniciales", () => {
     page,
   }) => {
     await page.goto("/#/consultar/inicio");
-    await expect(page.getByRole("button", { name: "Calcular" })).toHaveAttribute(
+    await expect(page.getByRole("button", { name: "Cálculo" })).toHaveAttribute(
       "aria-pressed",
       "true",
     );

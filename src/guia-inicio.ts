@@ -10,7 +10,7 @@ import { ORDEN_SISTEMAS } from "./ampliacion/ids";
 import { materialListo } from "./materiales";
 /* Solo «para entregar» si las plantillas del plan están aprobadas (V50-02). */
 const TEXTO_PLAN = materialListo("planes")
-  ? "Plan de seguridad para entregar"
+  ? "Plan de seguridad (hoja para el paciente)"
   : "Plantilla del plan de seguridad (en revisión)";
 
 export interface OpcionGuia {
@@ -43,7 +43,7 @@ export const PASOS_GUIA: PasoGuia[] = [
   {
     id: "transicion",
     titulo: titulo("transicion"),
-    intro: "Elige la pauta previa para ver solo lo que le corresponde.",
+    intro: "",
     preguntas: [
       {
         id: "pauta",
@@ -137,7 +137,7 @@ export const PASOS_GUIA: PasoGuia[] = [
   {
     id: "respaldo",
     titulo: titulo("respaldo"),
-    intro: "Marca lo que ya está hecho o entregado.",
+    intro: "",
     piezas: [
       { t: "fila", tabla: "T2", fila: 0 },
       // La dosis basal de la pauta de respaldo (p. 9).
@@ -150,7 +150,7 @@ export const PASOS_GUIA: PasoGuia[] = [
             texto: TEXTO_PLAN,
             ruta: href("pacientes", "plan", ORDEN_SISTEMAS[sis]),
           }
-        : { texto: "Planes de seguridad para entregar", ruta: href("pacientes") },
+        : { texto: "Planes de seguridad (hojas para el paciente)", ruta: href("pacientes") },
   },
   {
     id: "arranque",

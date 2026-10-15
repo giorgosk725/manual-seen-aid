@@ -159,7 +159,11 @@ test.describe("Iniciación del sistema", () => {
   }) => {
     await page.goto("/#/sistemas/op5");
     // 0.63.0: la ficha lleva al principio del recorrido (preparación), con el sistema.
-    await page.getByRole("link", { name: /Preparar e iniciar este sistema/ }).click();
+    await page
+      .locator("main header")
+      .getByRole("link", { name: /Iniciación/ })
+      .first()
+      .click();
     await expect(page).toHaveURL(/preparacion:omnipod-5$/);
     await page.goto("/#/consultar/inicio/inicio:omnipod-5:arranque");
     await expect(page.getByRole("heading", { name: /Inicio del sistema/ })).toBeVisible();

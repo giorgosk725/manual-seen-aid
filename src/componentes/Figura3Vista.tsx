@@ -370,7 +370,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
   };
   const [paso1Abierto] = useState(() => window.matchMedia?.("(min-width: 640px)").matches ?? true);
   return (
-    <section aria-label="Figura 3, recorrido paso a paso">
+    <section aria-label="Figura 3 por tramos">
       <Cabecera herramienta />
       {/* Decisión del responsable (15-10-2026): sin el recuadro de urgencia encima del selector;
           lo repetía la tarjeta «≥3,0 o signos de gravedad», que lleva a la rama roja (la app es

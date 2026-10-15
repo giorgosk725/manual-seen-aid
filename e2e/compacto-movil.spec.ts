@@ -64,7 +64,7 @@ test.describe("Móvil compacto (360 px)", () => {
     const im = (await imprimir.boundingBox())!;
     expect(im.y).toBeLessThan(t.y + t.height);
     expect(im.y + im.height).toBeGreaterThan(t.y);
-    const iniciar = cab.getByRole("link", { name: "Preparar e iniciar" });
+    const iniciar = cab.getByRole("link", { name: "Iniciación", exact: true });
     await expect(iniciar).toHaveAttribute("href", "#/consultar/inicio/preparacion:minimed-780g");
     const plan = cab.getByRole("link", { name: "Plan de seguridad" });
     const situaciones = cab.getByRole("link", { name: "Situaciones" });
@@ -80,7 +80,7 @@ test.describe("Móvil compacto (360 px)", () => {
     await page.goto("/#/consultar/inicio/inicio:omnipod-5");
     await expect(page.getByRole("button", { name: /Hoja de comprobación/ })).toBeVisible();
     await expect(page.getByRole("button", { name: "Guía paso a paso" })).toHaveCount(0);
-    await expect(page.getByText(/Paso 1 de 5/)).toBeVisible();
+    await expect(page.locator("#guia-titulo", { hasText: /^1\./ })).toBeVisible();
   });
   test("el navegador no invita a instalar la app", async ({ page }) => {
     await page.goto("/#/");
@@ -105,8 +105,7 @@ test.describe("Móvil compacto, segunda tanda (360 px)", () => {
     ] as const) {
       await page.goto(ruta);
       // 0.71.0: en la lista de sistemas, la barra empieza en una línea.
-      if (ruta === "/#/sistemas")
-        await page.getByRole("button", { name: /Elegir para comparar/ }).click();
+      if (ruta === "/#/sistemas") await page.getByRole("button", { name: /Comparar$/ }).click();
       const b = page.getByRole("group", { name: grupo, exact: true }).getByRole("button");
       await expect(b.first(), ruta).toBeVisible();
       for (const i of [1, 2, 3]) await mismaFila(b.nth(0), b.nth(i));
