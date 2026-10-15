@@ -78,19 +78,13 @@ describe("App", () => {
     // Al elegir, va a la rama (en el siguiente fotograma): se espera, no queda suelto (V54-04).
     await waitFor(() => expect(desplazar).toHaveBeenCalledWith({ block: "start" }));
     desplazar.mockRestore();
-    // La rama roja no se abre, pero su urgencia y sus signos de gravedad van junto a la rama
-    // abierta (A01); una sola vez, no también encima del selector (V50-06).
+    // La rama roja no se abre. 0.72.1 (decisión del responsable, A01 revisada): sin el recuadro
+    // de urgencia junto a la rama abierta; la rama roja, a un toque en el selector.
     expect(screen.queryByText("Hidratación según glucemia, si la tolera.")).not.toBeInTheDocument();
-    const urgencias = screen.getAllByRole("region", {
-      name: /^Urgencia y signos de gravedad \(Figura 3\)/,
-    });
-    expect(urgencias.length).toBe(1);
-    for (const u of urgencias) {
-      expect(
-        within(u).getByText(/URGENCIAS \/ VALORACIÓN HOSPITALARIA INMEDIATA/),
-      ).toBeInTheDocument();
-      expect(within(u).getByText("Somnolencia o confusión.")).toBeInTheDocument();
-    }
+    expect(
+      screen.queryAllByRole("region", { name: /^Urgencia y signos de gravedad \(Figura 3\)/ }),
+    ).toHaveLength(0);
+    expect(screen.getByRole("button", { name: /^β-OHB ≥3,0 mmol\/l/ })).toBeInTheDocument();
     expect(window.location.hash).toBe("#/consultar/figura-3/naranja");
   });
 

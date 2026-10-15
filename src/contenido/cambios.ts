@@ -18,7 +18,7 @@ export const CAMBIOS: Cambio[] = [
     titulo: `Complemento interactivo ${VERSION_APP} — volver a las tarjetas y Figura 3 más directa`,
     detalle: [
       "Sistemas: «De un vistazo» (las tarjetas), «Lo esencial» y «Parámetros» como tres pestañas: desde la comparación se vuelve a las tarjetas con un toque.",
-      "Figura 3: sin el recuadro de urgencia encima del selector; lo repetía la tarjeta «≥3,0 o signos de gravedad», que lleva a la rama roja (decisión del responsable).",
+      "Figura 3: sin el recuadro de urgencia repetido (encima del selector, junto a las ramas que no son la roja y en la búsqueda con una cifra de cetonas): la tarjeta «≥3,0 o signos de gravedad» lleva a la rama roja, a un toque (decisión del responsable). El plan de seguridad del paciente lo conserva.",
     ],
   },
   {

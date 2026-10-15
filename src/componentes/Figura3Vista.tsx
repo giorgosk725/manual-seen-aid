@@ -30,7 +30,6 @@ import { ImagenFigura } from "./FiguraVista";
 import { INFO_F3 } from "./figura3-imagen";
 import { TituloBloque } from "../nivel";
 import { FuentePie } from "./FuentePie";
-import { UrgenciaF3 } from "./UrgenciaF3";
 
 const ICONOS: Record<PasoTramo["icono"], LucideIcon> = {
   pluma: Syringe,
@@ -80,12 +79,10 @@ function Paso({ paso, hex, i }: { paso: PasoTramo; hex: (typeof TRAMO_HEX)[Tramo
 function Rama({
   tramo,
   completa,
-  aviso,
   nota = true,
 }: {
   tramo: TramoFigura3;
   completa?: boolean;
-  aviso?: boolean;
   /* La nota de las dosis con asterisco en la rama (en la lectura, una sola vez al pie). */
   nota?: boolean;
 }) {
@@ -126,12 +123,9 @@ function Rama({
           <Paso key={i} paso={p} hex={hex} i={i} />
         ))}
       </ol>
-      {/* Junto a una rama no roja abierta sola, la urgencia y los signos de gravedad de la
-          figura. Decisión del responsable (15-10-2026, A01 revisada): después de los pasos de la
-          rama, para que la conducta del tramo quede en la primera pantalla; sigue junto a ella. */}
-      {aviso && tramo.clave !== "rojo" && (
-        <UrgenciaF3 className="mt-3" donde={`junto a la rama ${tramo.rango}`} />
-      )}
+      {/* Decisión del responsable (15-10-2026, A01 revisada): sin el recuadro de urgencia junto
+          a las ramas no rojas; la rama roja está a un toque en el selector y la app es para
+          residentes y adjuntos que leen el capítulo. */}
     </section>
   );
 }
@@ -342,7 +336,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
   };
   const actual = tramo ? FIGURA3.tramos.find((t) => t.clave === tramo)! : null;
   const actuar = useRef<HTMLLIElement>(null);
-  // A la rama («Rama de la figura»), con su aviso y la nota de población antes de las dosis; y
+  // A la rama («Rama de la figura»), con la nota de población antes de las dosis; y
   // se mantiene arriba mientras termina de cargar lo de encima (la página crece y la empujaría).
   const irARama = () => {
     const el = actuar.current;
@@ -461,7 +455,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
           {/* La rama, solo cuando hay un tramo elegido (0.70.0: sin el recuadro vacío). */}
           {actual && (
             <div key={actual.clave} className="pantalla-in">
-              <Rama tramo={actual} aviso />
+              <Rama tramo={actual} />
               {/* En urgencias, lo siguiente: qué hacer con el sistema en el hospital (0.72.0). */}
               {actual.clave === "rojo" && (
                 <a

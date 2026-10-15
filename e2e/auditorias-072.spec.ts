@@ -40,13 +40,14 @@ test.describe("Auditorías 0.72.0", () => {
     await expect(abrir.getByRole("link").first()).toHaveAttribute("href", "#/consultar/figura-3");
   });
 
-  test("con una cifra de cetonas: los cuatro tramos, ninguno marcado, y la urgencia una vez (A01)", async ({
+  test("con una cifra de cetonas: los cuatro tramos, ninguno marcado, sin el recuadro de urgencia (A01)", async ({
     page,
   }) => {
     await buscar(page, "cetonas 2,1");
     const tramos = page.getByRole("list", { name: "Tramos de la Figura 3" }).getByRole("link");
     await expect(tramos).toHaveCount(4);
-    await expect(page.getByText("URGENCIAS / VALORACIÓN HOSPITALARIA INMEDIATA.")).toHaveCount(1);
+    // 0.72.1 (decisión del responsable): sin el recuadro de urgencia (está en el tramo ≥3,0).
+    await expect(page.getByText("URGENCIAS / VALORACIÓN HOSPITALARIA INMEDIATA.")).toHaveCount(0);
   });
 
   test("descarga: los ocho pasos a la vista, el actual marcado", async ({ page }) => {

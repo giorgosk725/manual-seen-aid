@@ -9,7 +9,7 @@ import { FIGURA3 } from "../contenido";
 import { href } from "../rutas";
 import { TRAMO_HEX } from "../tokens";
 import { tramoDeConsulta, type Respuesta } from "../busqueda";
-import { UrgenciaF3 } from "./UrgenciaF3";
+import { ArrowRight } from "lucide-react";
 
 /* 0.72.0: los cuatro tramos de la figura, iguales y sin ninguno marcado: la rama la elige quien
    consulta (A01), a un toque. */
@@ -49,7 +49,19 @@ export function AvisosBusqueda({
   const conCifra = !!tramoDeConsulta(q);
   return (
     <>
-      {conCifra && <UrgenciaF3 enlace className="mt-2" />}
+      {/* 0.72.1 (decisión del responsable): sin el recuadro de urgencia; los cuatro tramos (con
+          el de ≥3,0 o signos de gravedad) y la figura completa, sin elegir ninguno (A01). */}
+      {conCifra && (
+        <p className="mt-2 text-sm">
+          <a
+            href={href("consultar", "figura-3")}
+            className="inline-flex min-h-11 items-center gap-1 font-semibold text-slate-800 underline focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-6"
+          >
+            Hiperglucemia y cetonemia: la figura completa
+            <ArrowRight size={13} aria-hidden="true" />
+          </a>
+        </p>
+      )}
       {conCifra && <TramosF3 />}
       {children}
       {parcial && !primera && (

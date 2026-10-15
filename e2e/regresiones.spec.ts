@@ -194,9 +194,11 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
     page,
   }) => {
     await page.goto("/#/buscar/cetonas%201%2C2");
-    const urgencia = page.getByRole("region", { name: "Urgencia y signos de gravedad (Figura 3)" });
-    await expect(urgencia.first()).toContainText("URGENCIAS / VALORACIÓN HOSPITALARIA INMEDIATA");
-    await expect(urgencia.first()).toContainText("Somnolencia o confusión.");
+    // 0.72.1 (decisión del responsable): sin el recuadro de urgencia; los cuatro tramos, con el
+    // de ≥3,0 o signos de gravedad, sin ninguno elegido.
+    const tramos = page.getByRole("list", { name: "Tramos de la Figura 3" });
+    await expect(tramos.getByRole("link")).toHaveCount(4);
+    await expect(tramos).toContainText("o signos de gravedad");
     await expect(
       page.getByRole("link", { name: /Hiperglucemia y cetonemia: la figura completa/ }),
     ).toHaveAttribute("href", "#/consultar/figura-3");

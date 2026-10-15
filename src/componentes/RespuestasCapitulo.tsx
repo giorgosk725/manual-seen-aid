@@ -6,7 +6,7 @@ import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
 import { TABLAS } from "../contenido";
 import { useId, useState, type ReactNode } from "react";
 import { ArrowRight, MessageCircleQuestion, Quote } from "lucide-react";
-import { marcar, tramoDeConsulta, type Respuesta } from "../busqueda";
+import { marcar, type Respuesta } from "../busqueda";
 import type { RespuestaFrecuente } from "../respuestas";
 import type { Frecuente } from "../frecuentes";
 import { FIGURA3, LISTA_TABLAS, type TablaId } from "../contenido";
@@ -14,7 +14,6 @@ import { ComoInterpretar } from "./ComoInterpretar";
 import { ESCALA_CETONEMIA } from "../contenido/diagramas";
 import { href } from "../rutas";
 import { Texto } from "../texto";
-import { UrgenciaF3 } from "./UrgenciaF3";
 import { ponerConsulta } from "../consultaBuscar";
 
 function Marcado({ texto, q }: { texto: string; q: string }) {
@@ -371,11 +370,8 @@ function Tarjeta({
           </ul>
         )
       )}
-      {/* Con una cifra de β-OHB en la consulta, la urgencia ya va arriba (AvisosBusqueda): una
-          sola vez (0.72.0). */}
-      {/^F3\/(inicio|verde|amarillo|naranja)$/.test(r.id) && !tramoDeConsulta(q) && (
-        <UrgenciaF3 className="mt-2" donde={`junto a «${r.titulo}»`} />
-      )}
+      {/* 0.72.1 (decisión del responsable): sin el recuadro de urgencia junto a los pasajes de la
+          Figura 3; los tramos del pasaje llevan a la rama roja. */}
       {r.partes && (
         <dl className="mt-1 space-y-1 text-sm">
           {r.partes.map((p) => (
