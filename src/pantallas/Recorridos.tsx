@@ -77,6 +77,7 @@ import { useIrAlCambiar, useSubirAlElegir } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, FICHA_AREA, SISTEMA_HEX } from "../tokens";
 import { FuentePie } from "../componentes/FuentePie";
+import { paginasPorApartado } from "../paginasApartado";
 import { paginasDe } from "../paginas";
 import { fuentesDePiezas } from "../fuentesPiezas";
 import { CON_CASOS, CON_INTERPRETACIONES } from "../edicion";
@@ -1174,18 +1175,6 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           })}
         </ol>
       </nav>
-      {/* La bandera roja (paso 8) a mano desde cualquier paso, sin terminar los anteriores (A09);
-          en el paso 8 no se repite (0.72.2). */}
-      {n !== 8 && (
-        <a
-          href={href("consultar", "figura-3")}
-          className="no-imprimir mb-3 flex min-h-11 items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-semibold text-red-900 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-red-700"
-        >
-          <Siren size={15} className="shrink-0" aria-hidden="true" />
-          <span className="min-w-0 flex-1">{TABLAS.T5.filas[7].celdas[0]}</span>
-          <ArrowRight size={14} className="shrink-0" aria-hidden="true" />
-        </a>
-      )}
       <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-4">
         <nav
           aria-label="Pasos de la descarga"
@@ -1282,16 +1271,34 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                   >
                     <strong>{p.b.lead} </strong>
                     <Texto>{p.b.texto}</Texto>
-                    <a
-                      href={href("capitulo", "09-descarga", p.ancla)}
-                      className="tap-44 ml-1 inline-flex items-center gap-0.5 text-xs font-semibold text-slate-600 hover:underline"
-                    >
-                      p. {p.b.p} <ArrowRight size={11} aria-hidden="true" />
-                    </a>
                   </li>
                 ))}
               </ul>
+              {/* 0.73.0: la página, al pie (antes, «p. 14 →» dentro de cada patrón). */}
+              <FuentePie
+                fuentes={[
+                  {
+                    texto: paginasPorApartado(
+                      patrones.map((p) => p.b.p),
+                      9,
+                    ),
+                    ruta: href("capitulo", "09-descarga", patrones[0].ancla),
+                  },
+                ]}
+              />
             </details>
+          )}
+          {/* La bandera roja (paso 8) a mano desde cualquier paso (A09); 0.73.0: al pie del paso,
+              discreta, en vez de una banda encima de cada uno. */}
+          {n !== 8 && (
+            <a
+              href={href("consultar", "figura-3")}
+              className="no-imprimir mt-3 inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-red-800 hover:underline sm:min-h-8"
+            >
+              <Siren size={14} className="shrink-0" aria-hidden="true" />
+              {TABLAS.T5.filas[7].celdas[0]}
+              <ArrowRight size={13} className="shrink-0" aria-hidden="true" />
+            </a>
           )}
           {n === 8 && (
             <a

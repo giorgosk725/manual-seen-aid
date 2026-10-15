@@ -21,6 +21,10 @@ export const CAMBIOS: Cambio[] = [
       "Ficha de cada sistema con sus preguntas frecuentes revisadas («Preguntas»), para las dudas del sistema.",
       "Hiperglucemia y cetonemia: la hoja de cetonas para entregar al paciente, arriba y a un toque.",
       "«Comparar los cuatro» abre las tarjetas lado a lado; las tablas, en sus pestañas. Ficha de sistema más compacta en el móvil. Al volver atrás desde el capítulo, la ficha vuelve a su sitio (antes podía ir al final).",
+      "Tras una auditoría de uso: la ficha de cada sistema añade «Modos y funciones» (su columna de la Tabla 4) y empieza por las tarjetas (la frase del apartado 4, plegada debajo); sus preguntas son solo las que añaden algo a la ficha; pestañas cortas en el móvil; sin la nota del asterisco en Parámetros; «Ver casilla completa».",
+      "Portada: cada sistema con «Parámetros · Iniciar · Preguntas» («Iniciar» abre el cálculo con el sistema elegido). Menú en el orden de uso, con el material para el paciente a la vista.",
+      "Elección del sistema: si ninguno reúne lo marcado, se dice, y cada tarjeta que no coincide lo indica; «Comparar los cuatro» lleva siempre al mismo sitio.",
+      "Iniciación: el material del sistema, plegado (repetía la ficha). Descarga: la bandera roja, al pie de cada paso en vez de una banda encima; las páginas de los patrones, en la línea de fuente.",
     ],
   },
   {

@@ -976,26 +976,32 @@ export function CalculadoraInicio({
 
       {sis !== undefined && (
         <Paso n={6} titulo={`Material de ${CORTOS[sis]}`}>
-          <dl
-            className="divide-y overflow-hidden rounded-xl border bg-white"
-            style={{ borderColor: "#e2e8f0" }}
-          >
-            {materialDe(sis).map((m) => (
-              <div key={m.rotulo} className="px-3 py-2">
-                <dt className="text-xs font-semibold text-slate-600">{m.rotulo}</dt>
-                <dd className="text-sm font-semibold text-slate-900">
-                  <Lineas>{m.texto}</Lineas>
-                  {m.rotulo === "Formato" && <SetsDeInfusion sis={sis} />}
-                </dd>
+          {/* 0.73.0: plegado (repetía la ficha del sistema y alargaba la pantalla). */}
+          <details className="group">
+            <summary className="inline-flex min-h-11 cursor-pointer items-center text-sm font-semibold text-slate-700 sm:min-h-8">
+              Formato, sensores, plataforma y recambios
+            </summary>
+            <dl
+              className="divide-y overflow-hidden rounded-xl border bg-white"
+              style={{ borderColor: "#e2e8f0" }}
+            >
+              {materialDe(sis).map((m) => (
+                <div key={m.rotulo} className="px-3 py-2">
+                  <dt className="text-xs font-semibold text-slate-600">{m.rotulo}</dt>
+                  <dd className="text-sm font-semibold text-slate-900">
+                    <Lineas>{m.texto}</Lineas>
+                    {m.rotulo === "Formato" && <SetsDeInfusion sis={sis} />}
+                  </dd>
+                </div>
+              ))}
+              <div className="px-3 py-2">
+                <dt className="text-xs font-semibold text-slate-600">
+                  Recambios que hay que tener siempre (plan de seguridad)
+                </dt>
+                <dd className="text-sm text-slate-900">{RECAMBIOS.plan}</dd>
               </div>
-            ))}
-            <div className="px-3 py-2">
-              <dt className="text-xs font-semibold text-slate-600">
-                Recambios que hay que tener siempre (plan de seguridad)
-              </dt>
-              <dd className="text-sm text-slate-900">{RECAMBIOS.plan}</dd>
-            </div>
-          </dl>
+            </dl>
+          </details>
         </Paso>
       )}
 

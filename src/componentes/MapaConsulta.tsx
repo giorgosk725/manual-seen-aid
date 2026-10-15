@@ -131,7 +131,7 @@ function Filas({ children }: { children: ReactNode }) {
 
 /* ---------- Sistemas ---------- */
 
-/* El inicio de cada sistema (la fase de preparación, con el sistema ya elegido). */
+/* El inicio de cada sistema: la calculadora con el sistema ya elegido (0.73.0). */
 const SLUG_INICIO = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 
 function Sistemas() {
@@ -173,9 +173,9 @@ function Sistemas() {
                 </span>
               </a>
               {/* Desde la tablet, los accesos más usados de cada ficha (en el móvil, la ficha
-                  los tiene en sus pestañas). */}
+                  los tiene en sus pestañas): en columna y, en pantalla ancha, en una fila. */}
               <div
-                className="hidden divide-x border-t text-[13px] font-semibold sm:grid sm:grid-cols-3"
+                className="hidden border-t text-[13px] font-semibold sm:grid sm:grid-cols-1 sm:divide-y xl:grid-cols-3 xl:divide-x xl:divide-y-0"
                 style={{ borderColor: "#eef0f2" }}
               >
                 <a
@@ -187,12 +187,12 @@ function Sistemas() {
                   Parámetros
                 </a>
                 <a
-                  href={href("consultar", "inicio", `preparacion:${SLUG_INICIO[c]}`)}
+                  href={href("consultar", "inicio", `calculadora:${SLUG_INICIO[c]}`)}
                   aria-label={`Iniciación de ${CORTO_SISTEMA[c]}`}
                   className={enlace}
                   style={{ borderColor: "#eef0f2" }}
                 >
-                  Inicio
+                  Iniciar
                 </a>
                 <a
                   href={href("sistemas", id, "preguntas")}
@@ -200,7 +200,7 @@ function Sistemas() {
                   className={enlace}
                   style={{ borderColor: "#eef0f2" }}
                 >
-                  Dudas
+                  Preguntas
                 </a>
               </div>
             </li>

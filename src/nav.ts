@@ -320,14 +320,17 @@ export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
   {
     area: "inicio",
     titulo: "Consultar",
+    // 0.73.0: en el orden de uso (sistemas, iniciación, descarga, situaciones; las tres de
+    // urgencia después) y el material para el paciente dentro, a la vista sin desplazar.
     ids: [
       "sistemas",
+      "inicio",
+      "descarga",
+      "situacion",
       "figura-3",
       "hipoglucemia",
       "interrupcion",
-      "situacion",
-      "inicio",
-      "descarga",
+      "pacientes",
     ],
   },
   {
@@ -337,7 +340,7 @@ export const MENU: { area: Area; titulo: string; ids: string[] }[] = [
       (id) => !retirado(id),
     ),
   },
-  { area: "pacientes", titulo: "Recursos", ids: ["pacientes", "bibliografia", "sobre"] },
+  { area: "pacientes", titulo: "Recursos", ids: ["bibliografia", "sobre"] },
 ];
 
 /* ¿Está activo este destino en esta ruta? (un único criterio para lateral, menú y hubs).

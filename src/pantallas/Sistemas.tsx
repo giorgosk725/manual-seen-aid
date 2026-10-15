@@ -447,8 +447,10 @@ const sinNombreDelSistema = (q: string) =>
 /* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
 const TODAS_LAS_SECCIONES = [
   { id: "funciona", t: "Cómo funciona" },
-  { id: "esencial", t: "Indicación y material" },
+  { id: "esencial", t: "Indicación y material", corto: "Indicación" },
   { id: "parametros", t: "Parámetros" },
+  // 0.73.0: las herramientas del sistema ante cada situación (Tabla 4), en la ficha.
+  { id: "modos", t: "Modos y funciones", corto: "Modos" },
   // 0.72.2: las dudas de cada sistema, con sus preguntas frecuentes revisadas.
   { id: "preguntas", t: "Preguntas" },
   { id: "ampliacion", t: "Ampliación técnica" },
@@ -659,8 +661,11 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const c = columnaDeSistema(s.id);
   const h = SISTEMA_HEX[c];
   const slug = SLUG_TABLA[c];
-  // Las preguntas frecuentes revisadas sobre este sistema (columna de la Tabla 1).
-  const preguntas = FRECUENTES.filter((f) => f.sistema === c);
+  // Las preguntas frecuentes revisadas sobre este sistema (columna de la Tabla 1), salvo las que
+  // solo responden con casillas que la ficha ya enseña (Tablas 1, 3 y 4): repetían la tarjeta.
+  const preguntas = FRECUENTES.filter(
+    (f) => f.sistema === c && f.pasajes.some((x) => !/^T[134]\//.test(x)),
+  );
   // Una sola página (0.70.0): la sección de la ruta es solo adónde se salta.
   const sec = completa ? undefined : seccion;
   return (
@@ -777,9 +782,17 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           c={c}
           insignia={(j) => insigniaParametro(c, j)}
           destacar={(j) => esDirecto(c, j)}
-          notaExtra={TABLAS.T1.notas[0]}
+          // 0.73.0: sin la nota del asterisco (en las tarjetas ya no hay asteriscos: lo dice la
+          // insignia); su fila de la Tabla 1, en la fuente.
           fuentesExtra={[fuenteT1(4)]}
         />
+      </section>
+
+      <section aria-labelledby="modos" className="no-imprimir mt-7 scroll-mt-2">
+        <TituloSeccion id="modos" sistema={s.name} color={h.ink}>
+          Modos y funciones
+        </TituloSeccion>
+        <ColumnaTabla t={TABLAS.T4} c={c} />
       </section>
 
       {preguntas.length > 0 && (
@@ -1031,7 +1044,7 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
       )}
       <nav
         aria-label="Sección"
-        className="-mx-3 mt-1 flex items-center gap-1 overflow-x-auto px-3 sm:mx-0 sm:flex-wrap sm:px-0"
+        className="-mx-3 mt-1 flex flex-wrap items-center gap-x-0.5 px-3 sm:mx-0 sm:gap-1 sm:px-0"
       >
         {/* 0.72.1: las tarjetas son una vista más, al lado de las dos tablas: así se vuelve a
             ellas desde la comparación (antes solo con «Sistemas» abajo o Atrás). */}
@@ -1050,10 +1063,18 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
             key={x.id}
             href={href("sistemas", selStr, x.id)}
             aria-current={sec === x.id ? "location" : undefined}
-            className={`inline-flex min-h-11 shrink-0 items-center border-b-2 px-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${sec === x.id ? "font-bold" : "border-transparent font-semibold text-slate-600 hover:text-slate-900"}`}
+            className={`inline-flex min-h-11 shrink-0 items-center border-b-2 px-1.5 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-2 ${sec === x.id ? "font-bold" : "border-transparent font-semibold text-slate-600 hover:text-slate-900"}`}
             style={sec === x.id ? { borderColor: SEEN.burdeos, color: SEEN.burdeos } : undefined}
           >
-            {x.t}
+            {/* 0.73.0: en el móvil, el rótulo corto (las cinco pestañas caben a la vista). */}
+            {"corto" in x && x.corto ? (
+              <>
+                <span className="sm:hidden">{x.corto}</span>
+                <span className="hidden sm:inline">{x.t}</span>
+              </>
+            ) : (
+              x.t
+            )}
           </a>
         ))}
       </nav>
@@ -1340,7 +1361,7 @@ function CeldaFunciona({ fila, c }: { fila: number; c: number }) {
       <details className="group mt-1 text-[13px] leading-snug text-slate-600">
         <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-1 sm:min-h-8 text-xs font-semibold text-slate-500 hover:text-slate-800 [&::-webkit-details-marker]:hidden">
           <ChevronDown size={12} aria-hidden="true" className="transition group-open:rotate-180" />
-          Casilla completa (Tabla 1)
+          Ver casilla completa
         </summary>
         <span className="mt-0.5 block">
           <Lineas>{celda}</Lineas>
@@ -1436,15 +1457,6 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
   const sg = siglasPorPiezas([...distingue, ...liberty], c);
   return (
     <div className="space-y-3">
-      {distingue.map((p, j) => (
-        <div
-          key={j}
-          className="border-l-4 pl-3 text-[15px] leading-snug text-slate-800"
-          style={{ borderColor: h.strong }}
-        >
-          <PiezaVista pieza={p} sis={c} compacta siglas={sg[j]} />
-        </div>
-      ))}
       {/* 0.72.2: una ficha técnica con los rótulos de la Tabla 1 y en su orden (antes «Mide ·
           Decide · Administra», términos de divulgación). Cada casilla, con su icono y su clave;
           la casilla entera, a un toque. */}
@@ -1489,6 +1501,23 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
             <PiezaVista key={j} pieza={p} sis={c} compacta siglas={sg[distingue.length + j]} />
           ))}
         </TarjetaFunciona>
+      )}
+      {/* 0.73.0: la frase del apartado 4 que lo distingue, plegada debajo (antes, arriba, como
+          entradilla con puntos suspensivos): la primera pantalla son las tarjetas. */}
+      {distingue.length > 0 && (
+        <details
+          className="group rounded-xl border bg-white px-3 py-1"
+          style={{ borderColor: "#e6e6e6" }}
+        >
+          <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8 sm:py-1.5">
+            Lo que lo distingue, en el apartado 4
+          </summary>
+          <div className="space-y-2 pb-2 text-[15px] leading-snug text-slate-800">
+            {distingue.map((p, j) => (
+              <PiezaVista key={j} pieza={p} sis={c} compacta siglas={sg[j]} />
+            ))}
+          </div>
+        </details>
       )}
       <FuentePie fuentes={[fuenteT1(), ...fuentesDePiezas([...distingue, ...liberty])]} />
     </div>

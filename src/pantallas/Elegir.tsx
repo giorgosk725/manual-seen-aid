@@ -98,7 +98,7 @@ function PorCaracteristicas() {
       ? href("sistemas", ORDEN_SISTEMAS[reunen[0]])
       : hayAlgo && reunen.length >= 2
         ? href("sistemas", reunen.map((c) => ORDEN_SISTEMAS[c]).join("+"), "esencial")
-        : href("sistemas", "todos", "esencial");
+        : href("sistemas");
   const rotulo =
     hayAlgo && reunen.length === 1
       ? `Ver la ficha de ${T1.columnas[reunen[0]]}`
@@ -169,6 +169,11 @@ function PorCaracteristicas() {
                 />
                 {T1.columnas[c]}
               </a>
+              {fuera && (
+                <span className="mt-0.5 inline-flex w-fit items-center gap-1 rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-bold text-slate-700">
+                  <X size={12} aria-hidden="true" /> No reúne lo marcado
+                </span>
+              )}
               <dl className="mt-1 space-y-1.5 text-[13px]">
                 {CRITERIOS.map((cr) => {
                   const r = casa(cr, c);
@@ -197,6 +202,12 @@ function PorCaracteristicas() {
           );
         })}
       </ul>
+      {/* 0.73.0: si ninguno reúne lo marcado, se dice (antes el botón volvía a los cuatro). */}
+      {hayAlgo && reunen.length === 0 && (
+        <p role="status" className="mt-3 text-sm font-semibold text-slate-700">
+          Ningún sistema reúne todo lo marcado.
+        </p>
+      )}
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
         <a
           href={destino}
