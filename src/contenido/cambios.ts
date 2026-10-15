@@ -13,9 +13,18 @@ export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-15",
+    ambito: "app",
+    titulo: `Complemento interactivo ${VERSION_APP} — volver a las tarjetas y Figura 3 más directa`,
+    detalle: [
+      "Sistemas: «De un vistazo» (las tarjetas), «Lo esencial» y «Parámetros» como tres pestañas: desde la comparación se vuelve a las tarjetas con un toque.",
+      "Figura 3: sin el recuadro de urgencia encima del selector; lo repetía la tarjeta «≥3,0 o signos de gravedad», que lleva a la rama roja (decisión del responsable).",
+    ],
+  },
+  {
     fecha: "2026-10-14",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — más operativa y más visual`,
+    titulo: "Complemento interactivo 0.72.0 — más operativa y más visual",
     detalle: [
       "Hecha a partir de cuatro auditorías de uso (residente de guardia en el móvil, adjunto en consulta en el ordenador, enfermera educadora y residente de primer año en la tablet, y diseño) y de una segunda ronda sobre lo cambiado.",
       "Urgencias: en la portada, hiperglucemia y cetonemia, hipoglucemia e interrupción en tres tarjetas con su color. Figura 3 con la cifra de cada tramo en grande y la escala de colores. Interrupción del sistema en tarjetas por caso, con el tiempo arriba y la basal de respaldo dentro del fallo definitivo. Hipoglucemia con las dos cantidades primero.",

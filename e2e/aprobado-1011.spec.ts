@@ -11,8 +11,15 @@ test.describe("Aprobado el 11-10 (0.37.0)", () => {
   }) => {
     await page.goto("/#/sistemas/ciq+op5/funciona");
     const secciones = page.getByRole("navigation", { name: "Sección" });
-    await expect(secciones.getByRole("link")).toHaveText(["Lo esencial", "Parámetros"]);
+    // 0.72.1: y «De un vistazo» delante, para volver a las tarjetas.
+    await expect(secciones.getByRole("link")).toHaveText([
+      "De un vistazo",
+      "Lo esencial",
+      "Parámetros",
+    ]);
     await expect(page.getByRole("region", { name: "Lo esencial" })).toBeVisible();
+    await secciones.getByRole("link", { name: "De un vistazo" }).click();
+    await expect(page).toHaveURL(/#\/sistemas$/);
   });
 
   test("paso 7 del ejemplo: contexto plegable antes de las opciones y comentario en cuatro partes", async ({

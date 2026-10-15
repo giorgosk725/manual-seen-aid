@@ -973,10 +973,17 @@ function BarraSistemas({ ids, seccion }: { ids: string[]; seccion?: string }) {
         aria-label="Sección"
         className="-mx-3 mt-1 flex items-center gap-1 overflow-x-auto px-3 sm:mx-0 sm:flex-wrap sm:px-0"
       >
-        {ids.length === 0 && !sec && (
-          <span className="shrink-0 pl-1 pr-1 text-xs font-semibold text-slate-500">
-            Comparar los cuatro:
-          </span>
+        {/* 0.72.1: las tarjetas son una vista más, al lado de las dos tablas: así se vuelve a
+            ellas desde la comparación (antes solo con «Sistemas» abajo o Atrás). */}
+        {ids.length !== 1 && (
+          <a
+            href={href("sistemas")}
+            aria-current={entrada ? "location" : undefined}
+            className={`inline-flex min-h-11 shrink-0 items-center border-b-2 px-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${entrada ? "font-bold" : "border-transparent font-semibold text-slate-600 hover:text-slate-900"}`}
+            style={entrada ? { borderColor: SEEN.burdeos, color: SEEN.burdeos } : undefined}
+          >
+            De un vistazo
+          </a>
         )}
         {secciones.map((x) => (
           <a
