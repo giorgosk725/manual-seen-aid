@@ -377,9 +377,9 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
   return (
     <section aria-label="Figura 3, recorrido paso a paso">
       <Cabecera herramienta />
-      {/* Sin rama elegida: la urgencia y los signos de gravedad, tal cual en la figura, antes del
-          selector. Con una rama abierta van pegados a ella (o son la rama roja): no se repiten. */}
-      {!actual && <UrgenciaF3 className="mb-3" />}
+      {/* Decisión del responsable (15-10-2026): sin el recuadro de urgencia encima del selector;
+          lo repetía la tarjeta «≥3,0 o signos de gravedad», que lleva a la rama roja (la app es
+          para residentes y adjuntos que leen el capítulo). Junto a las ramas no rojas, sigue. */}
       <ol className="space-y-4">
         <li>
           {/* En el móvil, plegado (0.70.0): así los tramos de β-OHB quedan en la primera pantalla. */}

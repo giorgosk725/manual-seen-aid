@@ -41,6 +41,9 @@ Pruebas: 235 unitarias y 203 e2e (con `e2e/auditorias-072.spec.ts`, `src/cifras.
 
 - **Figura 3 (A01 revisada):** en las ramas que no son la roja, el recuadro de urgencia va después
   de los pasos de la rama (sigue junto a ella); la nota de las dosis con asterisco, antes.
+- **Figura 3, sin rama elegida (15-10-2026):** sin el recuadro de urgencia encima del
+  selector: lo repetía la tarjeta «≥3,0 o signos de gravedad» (la app es para residentes y
+  adjuntos que leen el capítulo).
 - **Ejercicio (S61-01 revisada):** «Antes de actuar» sigue antes de la conducta, plegado con su
   título a la vista.
 - **Preguntas frecuentes:** variantes «el sensor falla» (f53), «le quito la bomba» (f38) y «le
