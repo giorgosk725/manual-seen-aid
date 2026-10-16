@@ -49,7 +49,7 @@ import {
 } from "../contenido/diagramas";
 import { F2, FIGURA3, TABLAS, algoritmoDelCapitulo, ubicacionDeDiagrama } from "../contenido";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
-import { href } from "../rutas";
+import { elegirRuta, href } from "../rutas";
 import { BotonImprimir, Segmented } from "../ui";
 import { SISTEMA_HEX, TRAMO_HEX } from "../tokens";
 import { Lineas, Texto } from "../texto";
@@ -839,7 +839,14 @@ function Transicion() {
 function GestacionSistemas({ opcion }: { opcion?: string }) {
   const g = GUIA_POR_SISTEMA.gestacion;
   const c = ORDEN_SISTEMAS.findIndex((x) => x === opcion);
-  return <BloquesPorSistema bloques={g.bloques} comun={g.comun} inicial={c >= 0 ? c : undefined} />;
+  return (
+    <BloquesPorSistema
+      bloques={g.bloques}
+      comun={g.comun}
+      seleccion={c >= 0 ? c : 0}
+      onElegir={(i) => elegirRuta("visual", "gestacion-sistemas", ORDEN_SISTEMAS[i])}
+    />
+  );
 }
 
 /* ---------- 9. Hospital: cuándo no continuar el sistema ---------- */
@@ -1282,7 +1289,7 @@ function InterrupcionLinea() {
           desconectar; lo no programado se actúa a partir de aproximadamente 1 h sin insulina. */}
       <section>
         <Sub className="titulo-tarjeta mb-1.5">Si no estaba programada</Sub>
-        <ol className="grid gap-3 md:grid-cols-3">
+        <ol className="grid items-start gap-3 md:grid-cols-3">
           <Tramo cuando={L.tramos[0].cuando} tono={TRAMO_HEX.verde}>
             <span className="block">
               <TS>{L.tramos[0].texto + "."}</TS>
@@ -1308,7 +1315,7 @@ function InterrupcionLinea() {
         <Sub className="titulo-tarjeta mb-1.5">
           Si está programada: se decide antes de desconectar
         </Sub>
-        <ul className="grid gap-3 md:grid-cols-2">
+        <ul className="grid items-start gap-3 md:grid-cols-2">
           {L.programadas.map((x, k) => (
             <Tramo key={x.cuando} cuando={x.cuando} tono={PROGRAMADA}>
               <span className="block">

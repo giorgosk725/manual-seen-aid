@@ -3,13 +3,16 @@
    nombre accesible y la búsqueda siguen viendo la misma cadena). */
 import { Fragment } from "react";
 
-export function NombreSistema({ n }: { n: string }) {
-  const partes = n.split(" / ");
+export function NombreSistema({ n, porPalabra = false }: { n: string; porPalabra?: boolean }) {
+  // Por palabra (cabeceras de tabla estrechas): la línea puede cambiar en cualquier espacio,
+  // pero nunca dentro de «Control-IQ».
+  const partes = porPalabra ? n.split(" ") : n.split(" / ");
+  const sep = porPalabra ? " " : " / ";
   return (
     <span className="min-w-0">
       {partes.map((p, i) => (
         <Fragment key={i}>
-          {i > 0 && " / "}
+          {i > 0 && sep}
           <span className="whitespace-nowrap">{p}</span>
         </Fragment>
       ))}

@@ -83,7 +83,7 @@ const SLUG_INICIO = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 
 function Sistemas() {
   const b = MAPA_CONSULTA.find((x) => x.id === "sistemas")!;
-  const enlace = `flex min-h-9 items-center justify-center px-2 text-[12px] xl:flex-auto font-semibold text-slate-700 transition hover:bg-slate-50 hover:underline ${foco}`;
+  const enlace = `foco-dentro flex min-h-9 items-center justify-center px-2 text-[12px] xl:flex-auto font-semibold text-slate-700 transition hover:bg-slate-50 hover:underline ${foco}`;
   return (
     <TarjetaPortada
       id="mapa-sistemas"
@@ -105,7 +105,7 @@ function Sistemas() {
             >
               <a
                 href={href("sistemas", id)}
-                className={`flex min-h-11 flex-1 items-center gap-2 p-1.5 pl-2.5 text-left transition hover:bg-slate-50 sm:gap-2.5 sm:p-2 sm:pl-3 ${foco}`}
+                className={`foco-dentro flex min-h-11 flex-1 items-center gap-2 p-1.5 pl-2.5 text-left transition hover:bg-slate-50 sm:gap-2.5 sm:p-2 sm:pl-3 ${foco}`}
               >
                 <img
                   src={FOTO_SISTEMA[id]}

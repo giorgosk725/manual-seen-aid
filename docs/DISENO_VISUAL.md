@@ -214,3 +214,38 @@ las tarjetas se imprimen con borde y sin sombra; la pleca de sistema se imprime 
   vertical de antes.
 - **DosColumnas** admite `etiqueta` (`dl`/`div`), `desde` (`sm`/`lg`) y `orden`
   (`contiguo`/`libre`); la medición busca `:scope > * > [data-i]`.
+
+## 13. Séptima vuelta (auditoría 8,9 → objetivo ≥ 9)
+
+- **Ficha en papel sin repeticiones**: `RespuestaImpresa` resuelve cada identificador de pasaje
+  a su frase exacta (`t/apartado/bloque/frase`, con `frases(plano(texto))`, como el buscador),
+  a su punto de lista (`l/…/punto`) o a su fila o nota de tabla; las frases seguidas de un mismo
+  párrafo se juntan y nada se imprime dos veces.
+- **Sistema a sistema (Situaciones y diagrama de gestación)**: el sistema elegido es el de la
+  ruta (`BloquesPorSistema` es controlado: `seleccion` + `onElegir`); la casilla escribe la ruta
+  con `elegirRuta` (reemplaza, como las situaciones de la Tabla 4), así Atrás/Adelante y los
+  enlaces compartidos enseñan siempre el sistema de la URL. Lo común a los cuatro («Objetivos de
+  inicio») va a todo lo ancho debajo de las dos columnas del sistema.
+- **DosColumnas, tarjetas a lo ancho**: hasta dos tarjetas pueden ir a todo lo ancho, de una
+  en una: la última o la más alta de las que quedan, solo si cada paso iguala las columnas en
+  más de una línea (24 px) y quedan al menos dos en columnas. Conservan su sitio en la lectura:
+  las que preceden a todo lo que queda en columnas van encima (gestación con CamAPS:
+  «Autorización» y «Objetivo» a lo ancho y después dos columnas); las demás, debajo, cerrando la
+  sección. Lo que la
+  contigüidad no deja igualar (Características de CamAPS: 97 px; Modos de Control-IQ: 56 px) se
+  queda, antes que alterar el orden de la tabla.
+- **Foco dentro de las tarjetas** (`.foco-dentro`, junto a `.pestana` y `.fila`): contorno por
+  dentro (`outline-offset: -2px`) en los enlaces de las casillas de sistema de la portada, que
+  viven en una tarjeta con `overflow-hidden`.
+- **Situación por sistema sin sistema elegido**: las dos tarjetas de cada fila a la misma altura
+  (sin `items-start`).
+- **Tabla 1 impresa**: la cabecera de cada sistema con `NombreSistema porPalabra` (la línea solo
+  cambia en los espacios; «Control-IQ» nunca se parte). El texto literal no cambia.
+- **Situaciones, un solo orden**: los grupos van en el orden que, partido en dos tramos contiguos
+  (reparto por defecto de DosColumnas), llena dos columnas parejas (39 px); así la lista se lee
+  igual en el móvil, en el lateral y en las dos columnas. Se eligió reordenar la fuente antes que
+  el reparto libre (que daba el mismo resultado visual pero otro orden en el móvil).
+- **Interrupción, regla**: en filas de tarjetas narrativas de longitud muy distinta
+  (Interrupción), la banda de cabecera queda alineada (`md:min-h-[3.6rem]`) y cada tarjeta acaba
+  con su texto (`items-start`): sin aire vacío dentro. En filas de tarjetas de datos de longitud
+  parecida (Figura 3, Parámetros, Elección) las alturas se comparten.

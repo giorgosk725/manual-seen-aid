@@ -15,6 +15,7 @@ import { BRAND_ACCENT, SISTEMA_HEX } from "../tokens";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
 import { CasillasSistema } from "./CasillasSistema";
+import { NombreSistema } from "./NombreSistema";
 import { TituloBloque } from "../nivel";
 import { FuentePie } from "./FuentePie";
 import { paginasDe } from "../paginas";
@@ -158,10 +159,10 @@ function TablaHTML({
                       alt=""
                       className="foto-sistema h-7 w-7 rounded-md bg-white object-cover"
                     />
-                    {tabla.columnas[c]}
+                    <NombreSistema n={tabla.columnas[c]} porPalabra />
                   </span>
                 ) : (
-                  tabla.columnas[c]
+                  <NombreSistema n={tabla.columnas[c]} porPalabra />
                 )}
               </th>
             ))}

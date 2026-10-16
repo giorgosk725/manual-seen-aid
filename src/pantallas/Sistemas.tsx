@@ -44,6 +44,7 @@ import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SEEN, SISTEMA_HEX } from "../tokens";
 import { plano } from "../marcado";
+import { frases } from "../frases";
 import type { SistemaId } from "../ampliacion/tipos";
 import { TablaVista } from "../componentes/TablaVista";
 import { CasillasSistema } from "../componentes/CasillasSistema";
@@ -596,58 +597,76 @@ function SiglasTabla({ t }: { t: Tabla }) {
   );
 }
 
-/* Solo en papel: los pasajes literales de una pregunta frecuente (párrafos, listas y filas de
-   tabla del capítulo, resueltos desde `contenido` sin el motor de búsqueda), bajo la pregunta. */
+/* Solo en papel: los pasajes literales de una pregunta frecuente, bajo la pregunta. Cada
+   identificador se resuelve a su frase exacta (t/apartado/bloque/frase, como en el buscador:
+   `frases(plano(texto))`), a su punto de lista (l/…/punto) o a su fila o nota de tabla; las
+   frases contiguas de un mismo párrafo se juntan en un párrafo y nada se imprime dos veces
+   (séptima vuelta: un mismo párrafo citado por cuatro frases salía cuatro veces). */
 function RespuestaImpresa({ f, c }: { f: (typeof FRECUENTES)[number]; c: number }) {
-  const trozos: ReactNode[] = [];
-  for (const id of f.pasajes.slice(0, 4)) {
-    const partes = id.split("/");
-    if (partes[0] === "t" || partes[0] === "l") {
-      const a = APARTADOS.find((x) => x.slug === partes[1]);
-      const i = a?.bloques.findIndex((b, k) => idDeBloque(b, k) === partes[2]) ?? -1;
+  const trozos: { bloque: string; tipo: "p" | "li"; texto: string }[] = [];
+  const vistos = new Set<string>();
+  const poner = (bloque: string, tipo: "p" | "li", texto: string) => {
+    if (!texto || vistos.has(texto)) return;
+    vistos.add(texto);
+    trozos.push({ bloque, tipo, texto });
+  };
+  for (const id of f.pasajes) {
+    const p = id.split("/");
+    if (p[0] === "t" || p[0] === "l") {
+      const a = APARTADOS.find((x) => x.slug === p[1]);
+      const i = a?.bloques.findIndex((b, k) => idDeBloque(b, k) === p[2]) ?? -1;
       const b = i >= 0 ? a!.bloques[i] : undefined;
-      if (b?.t === "p")
-        trozos.push(
-          <p key={id}>
-            {b.lead && <strong>{b.lead} </strong>}
-            <Texto>{b.texto}</Texto>
-          </p>,
-        );
-      else if (b?.t === "lista")
-        trozos.push(
-          <div key={id}>
-            {b.intro && (
-              <p>
-                <Texto>{b.intro}</Texto>
-              </p>
-            )}
-            <ul className="list-disc pl-5">
-              {b.items.map((x) => (
-                <li key={x}>
-                  <Texto>{x}</Texto>
-                </li>
-              ))}
-            </ul>
-          </div>,
-        );
-    } else if (/^T\d+$/.test(partes[0]) && /^\d+$/.test(partes[1] ?? "")) {
-      const t = TABLAS[partes[0] as keyof typeof TABLAS];
-      const fila = t?.filas[Number(partes[1])];
-      if (fila)
-        trozos.push(
-          <p key={id}>
-            <strong>{fila.etiqueta.split("\n")[0]}: </strong>
-            <Lineas>
-              {fila.unida || !t.porSistema ? fila.celdas.join(" · ") : fila.celdas[c]}
-            </Lineas>
-          </p>,
-        );
+      const k = p[3] !== undefined ? Number(p[3]) : -1;
+      const bloque = `${p[1]}/${p[2]}`;
+      if (b?.t === "p") {
+        const todo = plano(b.texto);
+        poner(bloque, "p", k >= 0 ? (frases(todo)[k] ?? todo) : todo);
+      } else if (b?.t === "lista") {
+        if (k >= 0) poner(bloque, "li", plano(b.items[k] ?? ""));
+        else b.items.forEach((x) => poner(bloque, "li", plano(x)));
+      }
+    } else if (/^T\d+$/.test(p[0])) {
+      const t = TABLAS[p[0] as keyof typeof TABLAS];
+      if (!t) continue;
+      if (p[1] === "nota") poner(id, "p", plano(t.notas[Number(p[2])] ?? ""));
+      else {
+        const fila = t.filas[Number(p[1])];
+        if (fila)
+          poner(
+            `${p[0]}/${p[1]}`,
+            "p",
+            `${fila.etiqueta.split("\n")[0]}: ${plano(
+              fila.unida || !t.porSistema ? fila.celdas.join(" · ") : fila.celdas[c],
+            )}`,
+          );
+      }
     }
   }
   if (!trozos.length) return null;
+  // Trozos seguidos del mismo bloque y tipo, juntos (un párrafo; una lista).
+  const grupos: (typeof trozos)[] = [];
+  for (const t of trozos) {
+    const g = grupos[grupos.length - 1];
+    if (g && g[0].bloque === t.bloque && g[0].tipo === t.tipo) g.push(t);
+    else grupos.push([t]);
+  }
   return (
     <div className="hidden space-y-1 px-4 pb-3 text-[13px] leading-snug text-slate-700 print:block">
-      {trozos}
+      {grupos.map((g, n) =>
+        g[0].tipo === "li" ? (
+          <ul key={n} className="list-disc pl-5">
+            {g.map((t) => (
+              <li key={t.texto}>
+                <Texto>{t.texto}</Texto>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p key={n}>
+            <Texto>{g.map((t) => t.texto).join(" ")}</Texto>
+          </p>
+        ),
+      )}
     </div>
   );
 }

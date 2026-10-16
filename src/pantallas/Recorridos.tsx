@@ -53,10 +53,31 @@ const hex = CATEGORIA_HEX.consultar;
 type Extra = { t: string; fuente: string; ruta: string; alias?: string[] };
 /* 0.63.0: cada entrada va en su tema por su id (no por palabras de su título: «Diálisis y
    enfermedad renal» caía en «enfermedad»); los subapartados del apartado 10 tienen ya su guía. */
+/* Séptima vuelta: el orden de los grupos es el que, partido en dos tramos contiguos, llena dos
+   columnas parejas en pantalla ancha; así la lista se lee igual en el móvil, en el lateral y en
+   las dos columnas. */
 const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
   {
     t: "Ejercicio y comidas",
     ids: ["ejercicio-aerobico", "ejercicio-anaerobico", "comida-grasa"],
+  },
+  {
+    t: "Exploraciones, cirugía e ingreso",
+    ids: [
+      "rm",
+      "tc",
+      "rx",
+      "pet",
+      "diatermia",
+      "eco",
+      "cirugia-corta",
+      "cirugia-larga",
+      "ingreso-hospitalario",
+    ],
+  },
+  {
+    t: "Poblaciones y situaciones especiales",
+    ids: ["gestacion", "adolescencia", "mayores", "dialisis"],
   },
   {
     t: "Noche, enfermedad e hiperglucemia",
@@ -138,20 +159,6 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
     ],
   },
   {
-    t: "Exploraciones, cirugía e ingreso",
-    ids: [
-      "rm",
-      "tc",
-      "rx",
-      "pet",
-      "diatermia",
-      "eco",
-      "cirugia-corta",
-      "cirugia-larga",
-      "ingreso-hospitalario",
-    ],
-  },
-  {
     t: "Interrupción del sistema",
     ids: [],
     extras: [
@@ -173,10 +180,6 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
         ],
       },
     ],
-  },
-  {
-    t: "Poblaciones y situaciones especiales",
-    ids: ["gestacion", "adolescencia", "mayores", "dialisis"],
   },
 ];
 
@@ -480,7 +483,6 @@ function ListaSituaciones({
         <DosColumnas
           etiqueta="div"
           desde="lg"
-          orden="libre"
           items={conFilas}
           peso={({ sits, extras }) => 2 + sits.length + extras.length}
           render={grupo}
@@ -610,7 +612,10 @@ export function SituacionSistema({
                     key={guia.id}
                     bloques={GUIA_POR_SISTEMA[guia.id].bloques}
                     comun={GUIA_POR_SISTEMA[guia.id].comun}
-                    inicial={sisIdx >= 0 ? sisIdx : undefined}
+                    seleccion={sisIdx >= 0 ? sisIdx : 0}
+                    onElegir={(i) =>
+                      elegirRuta("consultar", "situacion", `${guia.id}:${SIS_IDS[i]}`)
+                    }
                   />
                 </section>
               )}
@@ -719,7 +724,7 @@ export function SituacionSistema({
                   </div>
                 )}
                 {porSistema && (
-                  <div className={sisIdx >= 0 ? "" : "grid items-start gap-3 sm:grid-cols-2"}>
+                  <div className={sisIdx >= 0 ? "" : "grid gap-3 sm:grid-cols-2"}>
                     {tabla.columnas.map((nombre, c) =>
                       sisIdx >= 0 && c !== sisIdx ? null : (
                         <div

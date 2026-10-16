@@ -71,7 +71,13 @@ describe("Guías por referencias: «Cómo funciona»", () => {
     expect(screen.getByLabelText("Características del sistema (Tabla 1)")).toHaveTextContent(
       /Dexcom G7.*FreeStyle Libre 3 Plus.*En la app del smartphone/,
     );
-    expect(screen.getAllByText(/^CamAPS Liberty es una función de CamAPS FX/).length).toBe(1);
+    // En pantalla, una sola vez (la respuesta impresa bajo la pregunta frecuente es solo de papel:
+    // `hidden print:block`, séptima vuelta del sistema visual).
+    expect(
+      screen
+        .getAllByText(/^CamAPS Liberty es una función de CamAPS FX/)
+        .filter((el) => !el.closest(".print\\:block")).length,
+    ).toBe(1);
     expect(await axe(container, AXE)).toHaveNoViolations();
   });
 });

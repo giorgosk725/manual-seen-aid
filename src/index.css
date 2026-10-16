@@ -1834,9 +1834,11 @@ html.night .text-orange-900 {
 html.night *:focus-visible {
   outline-color: var(--acento-texto) !important;
 }
-/* Pestañas y filas: el contorno por dentro (fuera de @layer para ganar a la regla global). */
+/* Pestañas, filas y enlaces dentro de tarjetas con overflow-hidden: el contorno por dentro
+   (fuera de @layer para ganar a la regla global). */
 .pestana:focus-visible,
-.fila:focus-visible {
+.fila:focus-visible,
+.foco-dentro:focus-visible {
   outline-offset: -2px !important;
 }
 .pestanas {

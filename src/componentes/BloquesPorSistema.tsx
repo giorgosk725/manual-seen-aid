@@ -3,7 +3,6 @@
    (src/porSistema.ts). Con selector en las situaciones-guía (gestación, enfermedad, ingreso);
    sin él, debajo de la casilla de la Tabla 4 del sistema ya elegido. Sin texto propio salvo los
    rótulos; la fuente, al pie. */
-import { useState } from "react";
 import { FuentePie } from "./FuentePie";
 import type { BloqueSistema } from "../porSistema";
 import { fuentesDePiezas } from "../fuentesPiezas";
@@ -53,24 +52,35 @@ export function AnadidoDelSistema({
   );
 }
 
+/* Séptima vuelta: el sistema elegido viene de la ruta (`seleccion`) y la casilla lo escribe en
+   ella (`onElegir`), así Atrás/Adelante y los enlaces compartidos enseñan el sistema de la URL. */
 export function BloquesPorSistema({
   bloques,
   comun = [],
-  inicial,
+  seleccion,
+  onElegir,
 }: {
   bloques: BloqueSistema[][];
   comun?: BloqueSistema[];
-  inicial?: number;
+  seleccion: number;
+  onElegir: (c: number) => void;
 }) {
-  const [c, setC] = useState(inicial !== undefined && inicial >= 0 ? inicial : 0);
+  const c = seleccion;
   const todas = [...bloques[c], ...comun].flatMap((b) => b.piezas);
   return (
     <div>
       {/* 0.76: el mismo selector de sistema de toda la app (uno marcado). */}
       <div className="mb-3">
-        <CasillasSistema seleccion={[c]} onToggle={(i) => setC(i)} nombres={CORTO_SISTEMA} />
+        <CasillasSistema seleccion={[c]} onToggle={onElegir} nombres={CORTO_SISTEMA} />
       </div>
-      <Bloques c={c} bloques={[...bloques[c], ...comun]} />
+      <Bloques c={c} bloques={bloques[c]} />
+      {/* Lo común a los cuatro (objetivos de inicio), a todo lo ancho tras lo del sistema: es la
+          tarjeta más alta y, en las columnas, dejaba un pie desigual. */}
+      {comun.length > 0 && (
+        <div className="mt-3">
+          <Bloques c={c} bloques={comun} />
+        </div>
+      )}
       <FuentePie className="mt-3" fuentes={fuentesDePiezas(todas)} />
     </div>
   );
