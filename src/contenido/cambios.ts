@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-16",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — sistema visual único`,
+    titulo: `Complemento interactivo ${VERSION_APP} — rejillas sin huecos y ficha impresa completa`,
+    detalle: [
+      "Tarjetas de una misma fila a la misma altura (Interrupción, Figura 3); en Parámetros y Modos, una sola rejilla en el orden de la tabla con lo añadido para cada sistema; la lista de Situaciones, en dos columnas equilibradas.",
+      "«Control-IQ / Control-IQ+» solo se parte por la barra; Elección del sistema con las filas alineadas como una tabla; accesos de la portada con más aire; figuras apaisadas en el móvil.",
+      "La ficha impresa lleva también las respuestas de sus preguntas frecuentes.",
+    ],
+  },
+  {
+    fecha: "2026-10-16",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.76.0 — sistema visual único",
     detalle: [
       "Rediseño visual en cinco vueltas con auditorías independientes (diseño 8,0 → 8,8): una sola tarjeta (blanca con borde fino; la de cada sistema con su pleca de color), una escala de títulos y rótulos (nada por debajo de 12 px), el burdeos solo para lo que se pulsa y el color de cada sistema solo para identificarlo, sin iconos ni flechas por fila.",
       "Un solo selector de sistema y un solo estilo de pestañas en toda la app; un único foco de teclado en burdeos, también de noche; la barra lateral cabe en portátiles de 768 px de alto, con Bibliografía y Sobre al pie junto al modo nocturno; sin cabecera vacía en el ordenador.",
