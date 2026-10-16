@@ -845,6 +845,7 @@ function GestacionSistemas({ opcion }: { opcion?: string }) {
       comun={g.comun}
       seleccion={c >= 0 ? c : 0}
       onElegir={(i) => elegirRuta("visual", "gestacion-sistemas", ORDEN_SISTEMAS[i])}
+      sinFuente
     />
   );
 }

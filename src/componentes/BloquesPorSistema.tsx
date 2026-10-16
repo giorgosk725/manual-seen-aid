@@ -59,11 +59,14 @@ export function BloquesPorSistema({
   comun = [],
   seleccion,
   onElegir,
+  sinFuente = false,
 }: {
   bloques: BloqueSistema[][];
   comun?: BloqueSistema[];
   seleccion: number;
   onElegir: (c: number) => void;
+  /* Dentro de un diagrama, la fuente va en la línea del marco (una sola). */
+  sinFuente?: boolean;
 }) {
   const c = seleccion;
   const todas = [...bloques[c], ...comun].flatMap((b) => b.piezas);
@@ -81,7 +84,7 @@ export function BloquesPorSistema({
           <Bloques c={c} bloques={comun} />
         </div>
       )}
-      <FuentePie className="mt-3" fuentes={fuentesDePiezas(todas)} />
+      {!sinFuente && <FuentePie className="mt-3" fuentes={fuentesDePiezas(todas)} />}
     </div>
   );
 }
