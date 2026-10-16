@@ -13,9 +13,20 @@ export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-16",
+    ambito: "app",
+    titulo: `Complemento interactivo ${VERSION_APP} — sistema visual único`,
+    detalle: [
+      "Rediseño visual en cinco vueltas con auditorías independientes (diseño 8,0 → 8,8): una sola tarjeta (blanca con borde fino; la de cada sistema con su pleca de color), una escala de títulos y rótulos (nada por debajo de 12 px), el burdeos solo para lo que se pulsa y el color de cada sistema solo para identificarlo, sin iconos ni flechas por fila.",
+      "Un solo selector de sistema y un solo estilo de pestañas en toda la app; un único foco de teclado en burdeos, también de noche; la barra lateral cabe en portátiles de 768 px de alto, con Bibliografía y Sobre al pie junto al modo nocturno; sin cabecera vacía en el ordenador.",
+      "Fichas de sistema más compactas en el móvil (el contenido empieza antes), tarjetas repartidas en dos columnas sin huecos y en el orden de la tabla, la ficha entera en papel y la Tabla 1 en A4.",
+      "Modo nocturno por variables: tintes de cada sistema, fotos atenuadas y contraste comprobado. Búsqueda: «sale del modo automático» lleva a su pregunta frecuente.",
+    ],
+  },
+  {
     fecha: "2026-10-15",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — fuentes en una línea y comparación filtrada`,
+    titulo: "Complemento interactivo 0.75.1 — fuentes en una línea y comparación filtrada",
     detalle: [
       "La línea de fuente, en una sola línea también en el móvil (antes cada fuente caía a su propio renglón); en Situaciones, una sola fuente por tarjeta y los párrafos que la desarrollan aparte («Leer en el capítulo»).",
       "Comparación: «Parámetros configurables en modo automático», abierto; el Resumen enseña solo los sistemas marcados.",

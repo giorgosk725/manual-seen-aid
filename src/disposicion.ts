@@ -26,37 +26,13 @@ export function dosColumnas<T>(items: T[], peso: (x: T) => number): [T[], T[]] {
   return [items.slice(0, k), items.slice(k)];
 }
 
-/* Reparto en dos columnas que más iguala sus alturas: cada elemento va a una u otra conservando
-   el orden dentro de cada columna (se lee la izquierda de arriba abajo y luego la derecha).
-   Hasta 12 elementos se prueban todos los repartos; con más, el siguiente va a la más corta.
-   Devuelve, por elemento, si va a la segunda columna. */
+/* Reparto en dos columnas (0.76.0, tras la quinta auditoría): en dos tramos CONTIGUOS por donde
+   las alturas quedan más igualadas, para que el orden sea siempre el de la tabla (izquierda y
+   luego derecha) y cada parámetro esté en la misma secuencia en las cuatro fichas; el reparto no
+   contiguo los colocaba distinto en cada sistema. Devuelve, por elemento, si va a la segunda. */
 export function repartoEquilibrado(pesos: number[]): boolean[] {
-  const n = pesos.length;
-  if (n < 2) return pesos.map(() => false);
-  if (n > 12) {
-    let a = 0;
-    let b = 0;
-    return pesos.map((p) => {
-      const segunda = b < a;
-      if (segunda) b += p;
-      else a += p;
-      return segunda;
-    });
-  }
-  const total = pesos.reduce((x, y) => x + y, 0);
-  let mejor = 0;
-  let dif = Infinity;
-  // El primero siempre en la primera columna (bit 0 a cero): la mitad de las combinaciones.
-  for (let m = 0; m < 1 << n; m += 2) {
-    let s = 0;
-    for (let i = 0; i < n; i++) if (m & (1 << i)) s += pesos[i];
-    const d = Math.abs(total - 2 * s);
-    if (d < dif) {
-      dif = d;
-      mejor = m;
-    }
-  }
-  return pesos.map((_, i) => !!(mejor & (1 << i)));
+  const k = corteEquilibrado(pesos);
+  return pesos.map((_, i) => i >= k);
 }
 
 /* Líneas que ocupa un texto en una tarjeta de media anchura (unos 45 caracteres por línea). */
