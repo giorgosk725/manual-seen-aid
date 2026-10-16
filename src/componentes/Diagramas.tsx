@@ -1282,7 +1282,7 @@ function InterrupcionLinea() {
           desconectar; lo no programado se actúa a partir de aproximadamente 1 h sin insulina. */}
       <section>
         <Sub className="titulo-tarjeta mb-1.5">Si no estaba programada</Sub>
-        <ol className="grid items-start gap-3 md:grid-cols-3">
+        <ol className="grid gap-3 md:grid-cols-3">
           <Tramo cuando={L.tramos[0].cuando} tono={TRAMO_HEX.verde}>
             <span className="block">
               <TS>{L.tramos[0].texto + "."}</TS>
@@ -1308,7 +1308,7 @@ function InterrupcionLinea() {
         <Sub className="titulo-tarjeta mb-1.5">
           Si está programada: se decide antes de desconectar
         </Sub>
-        <ul className="grid items-start gap-3 md:grid-cols-2">
+        <ul className="grid gap-3 md:grid-cols-2">
           {L.programadas.map((x, k) => (
             <Tramo key={x.cuando} cuando={x.cuando} tono={PROGRAMADA}>
               <span className="block">

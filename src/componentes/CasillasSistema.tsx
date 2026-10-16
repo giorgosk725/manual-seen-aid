@@ -8,6 +8,7 @@ import { Check } from "lucide-react";
 import { TABLAS } from "../contenido";
 import { SEEN, SISTEMA_HEX } from "../tokens";
 import { CATALOGO_SISTEMAS, CORTO_CASILLA as CORTO_SISTEMA } from "../ampliacion/ids";
+import { NombreSistema } from "./NombreSistema";
 
 /* En la casilla estrecha del móvil, el nombre puede ir en dos líneas, pero un final corto
    («Omnipod 5», «CamAPS FX») no se queda solo: espacio duro antes de él. */
@@ -74,11 +75,15 @@ export function CasillasSistema({
                 />
               </span>
               {nombres ? (
-                <span>{pegarFinal(nombres[c])}</span>
+                <span>
+                  <NombreSistema n={pegarFinal(nombres[c])} />
+                </span>
               ) : (
                 <>
                   <span className="sm:hidden">{pegarFinal(CORTO_SISTEMA[c])}</span>
-                  <span className="hidden sm:inline">{CATALOGO_SISTEMAS[c].name}</span>
+                  <span className="hidden sm:inline">
+                    <NombreSistema n={CATALOGO_SISTEMAS[c].name} />
+                  </span>
                 </>
               )}
             </button>

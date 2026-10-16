@@ -181,7 +181,7 @@ function BetaMinuscula({ t }: { t: string }) {
 
 function NotasDelPie() {
   return (
-    <div className="grid items-start gap-3 sm:grid-cols-3">
+    <div className="grid gap-3 sm:grid-cols-3">
       {FIGURA3.pie.map((p, i) => (
         <div key={i} className="tarjeta p-3 text-sm text-slate-700">
           <span className="font-bold text-slate-900">{p.titulo}</span> <Texto>{p.texto}</Texto>
@@ -256,7 +256,7 @@ function Cabecera({ herramienta = false }: { herramienta?: boolean }) {
 
 function SospecharComprobar() {
   return (
-    <div className="grid items-start gap-3 sm:grid-cols-2">
+    <div className="grid gap-3 sm:grid-cols-2">
       <div className="tarjeta p-3">
         <div
           className="mb-1.5 flex items-center gap-2 text-sm font-bold"
@@ -301,7 +301,7 @@ export function Figura3Lectura() {
       >
         <BetaMinuscula t={FIGURA3.confirmar} />
       </div>
-      <div className="grid items-start gap-3 lg:grid-cols-2">
+      <div className="grid gap-3 lg:grid-cols-2">
         {FIGURA3.tramos.map((t) => (
           <Rama key={t.clave} tramo={t} completa nota={false} />
         ))}

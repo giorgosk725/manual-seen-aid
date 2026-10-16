@@ -83,7 +83,7 @@ const SLUG_INICIO = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 
 function Sistemas() {
   const b = MAPA_CONSULTA.find((x) => x.id === "sistemas")!;
-  const enlace = `flex min-h-9 items-center justify-center px-1.5 text-[12px] font-semibold text-slate-700 transition hover:bg-slate-50 hover:underline ${foco}`;
+  const enlace = `flex min-h-9 items-center justify-center px-2 text-[12px] xl:flex-auto font-semibold text-slate-700 transition hover:bg-slate-50 hover:underline ${foco}`;
   return (
     <TarjetaPortada
       id="mapa-sistemas"
@@ -124,7 +124,7 @@ function Sistemas() {
               </a>
               {/* Desde la tablet, los accesos más usados de cada ficha (en el móvil, la ficha
                   los tiene en sus pestañas): en columna y, en pantalla ancha, en una fila. */}
-              <div className="separador hidden border-t sm:grid sm:grid-cols-1 sm:divide-y xl:grid-cols-3 xl:divide-x xl:divide-y-0">
+              <div className="separador hidden border-t sm:flex sm:flex-col sm:divide-y xl:flex-row xl:divide-x xl:divide-y-0">
                 <a
                   href={href("sistemas", id, "parametros")}
                   aria-label={`Parámetros de ${CORTO_SISTEMA[c]}`}

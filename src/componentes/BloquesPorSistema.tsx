@@ -4,52 +4,32 @@
    sin él, debajo de la casilla de la Tabla 4 del sistema ya elegido. Sin texto propio salvo los
    rótulos; la fuente, al pie. */
 import { useState } from "react";
-import { PiezaVista } from "./Piezas";
-import { PiezasSinTitulos } from "./piezasContexto";
 import { FuentePie } from "./FuentePie";
-import { siglasPorPiezas } from "../inicio";
 import type { BloqueSistema } from "../porSistema";
 import { fuentesDePiezas } from "../fuentesPiezas";
 import { CORTO_SISTEMA } from "../ampliacion/ids";
 import { SISTEMA_HEX } from "../tokens";
-import { lineasDe } from "../disposicion";
 import { DosColumnas } from "./DosColumnas";
-import { textosDePieza } from "../inicio";
 import { CasillasSistema } from "./CasillasSistema";
+import { tarjetasDeBloques } from "./tarjetasDeBloques";
 
 function Bloques({ c, bloques }: { c: number; bloques: BloqueSistema[] }) {
   const h = SISTEMA_HEX[c];
-  const todas = bloques.flatMap((b) => b.piezas);
-  const sg = siglasPorPiezas(todas, c);
-  // Índice de la primera pieza de cada bloque en `todas` (las siglas van por pieza).
-  const desde = bloques.map((_, i) => bloques.slice(0, i).reduce((n, x) => n + x.piezas.length, 0));
+  const tarjetas = tarjetasDeBloques(c, bloques);
   return (
-    <PiezasSinTitulos.Provider value={true}>
-      <div
-        className={`grid gap-3 print:grid-cols-1 ${bloques.length > 1 ? "lg:grid-cols-2 lg:items-start" : ""}`}
-        aria-live="polite"
-        style={{ ["--sis" as string]: h.strong }}
-      >
-        <DosColumnas
-          items={bloques.map((b, i) => ({ b, i }))}
-          peso={({ b }) =>
-            1.5 + b.piezas.reduce((n, p) => n + lineasDe(textosDePieza(p, c).join(" "), 62), 0)
-          }
-          render={({ b, i }) => (
-            <div key={b.rotulo} className="tarjeta tarjeta-sistema min-w-0 p-3">
-              <dt className="rotulo" style={{ color: h.ink }}>
-                {b.rotulo}
-              </dt>
-              <dd className="mt-1 space-y-1.5 text-[15px] leading-snug text-slate-900">
-                {b.piezas.map((p, j) => (
-                  <PiezaVista key={j} pieza={p} sis={c} compacta siglas={sg[desde[i] + j]} />
-                ))}
-              </dd>
-            </div>
-          )}
-        />
-      </div>
-    </PiezasSinTitulos.Provider>
+    <div
+      className={`grid gap-3 print:grid-cols-1 ${bloques.length > 1 ? "lg:grid-cols-2 lg:items-start" : ""}`}
+      aria-live="polite"
+      style={{ ["--sis" as string]: h.strong }}
+    >
+      <DosColumnas
+        key={c}
+        desde="lg"
+        items={tarjetas}
+        peso={(t) => t.peso}
+        render={(t) => t.nodo}
+      />
+    </div>
   );
 }
 

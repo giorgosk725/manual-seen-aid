@@ -180,3 +180,37 @@ las tarjetas se imprimen con borde y sin sombra; la pleca de sistema se imprime 
 - **Pulido**: las tres tarjetas de «Cómo funciona» a la misma altura; accesos de la portada a
   12 px; en Elección, «Sensores compatibles» a lo ancho; nombres cortos en los planes del
   paciente.
+
+## 12. Sexta vuelta (auditoría 8,8 → objetivo ≥ 9)
+
+- **Rejillas sin vacíos**: las tarjetas de una misma fila (Interrupción, Figura 3) se estiran a
+  la misma altura (sin `items-start`); el aire sobrante queda dentro de la tarjeta, no como un
+  hueco entre filas.
+- **Una sola rejilla por sección**: en Parámetros y Modos, las filas de la tabla y los bloques
+  del sistema (`porSistema.ts`) entran en el mismo `DosColumnas` (`ColumnaTabla` con
+  `anadidos`; tarjetas en `componentes/tarjetasDeBloques.tsx`): reparto contiguo, en el orden de
+  la tabla y después los bloques (izquierda y luego derecha), igual en las cuatro fichas. Si
+  aun así el pie de las columnas queda desigual, la última tarjeta pasa a todo lo ancho,
+  cerrando la sección (solo cuando iguala las columnas en más de una línea; se decide una vez
+  con las alturas medidas y no se revisa, para que no oscile; `key` por tabla y sistema).
+- **Situaciones**: los grupos van en dos columnas desde `lg` con `DosColumnas`
+  (`etiqueta="div"`, `desde="lg"`) y reparto `libre` (`repartoLibre`): son grupos independientes
+  sin un orden de tabla que mantener, así que cada uno va a la columna más corta (el primero,
+  siempre arriba a la izquierda); en el móvil, la lista en su orden.
+- **Nombres de sistema** (`componentes/NombreSistema.tsx`): «Tandem Control-IQ / Control-IQ+»
+  solo puede partirse en la barra; cada parte va en un tramo `whitespace-nowrap` dentro de un
+  solo `span` (en un contenedor flex, las partes sueltas no se partían). El texto no cambia.
+- **Portada**: los accesos de cada ficha (Parámetros · Iniciar · Preguntas) en una fila flexible
+  (`xl:flex-auto`, `px-2`), con el ancho que pide cada palabra y no a tercios.
+- **Ficha en papel**: bajo cada pregunta frecuente se imprimen sus pasajes literales
+  (`RespuestaImpresa`: párrafos, listas y filas de tabla resueltos desde `contenido`, sin el
+  motor de búsqueda; `hidden print:block`).
+- **Elección**: las cuatro tarjetas comparten filas (`sm:grid-rows-subgrid`,
+  `grid-row: span 15`; título + 5 criterios + 2 filas de la Tabla 1 como pares dt/dd), así cada
+  rótulo queda a la misma altura en las cuatro, aunque el título de Tandem ocupe dos líneas.
+  Tailwind 3.4 no genera `row-span-[15]`: se usa `row-[span_15/span_15]`.
+- **Figuras en el móvil**: tarjeta apaisada (miniatura de 120 px con su proporción real y el
+  chip «Ampliar» debajo; título y fuente a la derecha), una por fila; desde `sm`, la tarjeta
+  vertical de antes.
+- **DosColumnas** admite `etiqueta` (`dl`/`div`), `desde` (`sm`/`lg`) y `orden`
+  (`contiguo`/`libre`); la medición busca `:scope > * > [data-i]`.

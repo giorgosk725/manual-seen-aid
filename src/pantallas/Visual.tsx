@@ -94,12 +94,12 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
         <h2 id="figuras" className="titulo-seccion mb-2">
           Figuras del capítulo
         </h2>
-        <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {FIGURAS_GALERIA.map(({ fig, extra }) => {
             const ap = apartadoDeFigura(fig.id);
             const img = fig.imagen!;
             return (
-              <li key={fig.id} className="tarjeta flex flex-col overflow-hidden">
+              <li key={fig.id} className="tarjeta flex overflow-hidden max-sm:flex-row sm:flex-col">
                 <AbrirEnVisor
                   imagen={{
                     src: img.src,
@@ -107,10 +107,10 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                     titulo: fig.titulo,
                     nota: `p. ${fig.pagina}`,
                   }}
-                  className="group flex w-full flex-1 flex-col bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  className="group flex flex-col bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 max-sm:w-[7.5rem] max-sm:shrink-0 max-sm:justify-center sm:w-full sm:flex-1"
                   etiqueta={`Ampliar ${fig.titulo}`}
                 >
-                  <span className="chip m-2 min-h-8 self-end text-xs">
+                  <span className="chip m-1.5 min-h-8 self-end text-xs max-sm:order-2 max-sm:self-center sm:m-2">
                     <Maximize2 size={12} aria-hidden="true" /> Ampliar
                   </span>
                   <span className="flex flex-1 items-center">
@@ -118,11 +118,11 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                       src={img.src}
                       alt={img.alt}
                       loading="lazy"
-                      className="foto-figura block aspect-[4/3] w-full object-contain px-2 pb-2"
+                      className="foto-figura block w-full object-contain px-2 pb-2 max-sm:pt-2 sm:aspect-[4/3]"
                     />
                   </span>
                 </AbrirEnVisor>
-                <div className="separador border-t p-3">
+                <div className="separador p-3 max-sm:min-w-0 max-sm:flex-1 max-sm:border-l sm:border-t">
                   <div className="text-sm font-bold leading-snug text-slate-900">
                     {fig.titulo.replace(/\.$/, "")}
                   </div>

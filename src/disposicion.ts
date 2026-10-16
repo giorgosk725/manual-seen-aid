@@ -35,6 +35,23 @@ export function repartoEquilibrado(pesos: number[]): boolean[] {
   return pesos.map((_, i) => i >= k);
 }
 
+/* Reparto LIBRE (sexta vuelta): solo para listas de grupos independientes (Situaciones), donde
+   no hay un orden de tabla que mantener entre pantallas: cada grupo, del más alto al más bajo, a
+   la columna más corta; dentro de cada columna, en el orden original. Devuelve lo mismo que
+   repartoEquilibrado (por elemento, si va a la segunda). */
+export function repartoLibre(pesos: number[]): boolean[] {
+  const orden = pesos.map((p, i) => ({ p, i })).sort((a, b) => b.p - a.p || a.i - b.i);
+  const alto = [0, 0];
+  const segunda = pesos.map(() => false);
+  for (const { p, i } of orden) {
+    const k = alto[1] < alto[0] ? 1 : 0;
+    alto[k] += p;
+    segunda[i] = k === 1;
+  }
+  // El primero de la lista, arriba a la izquierda: si cayó en la segunda, se intercambian.
+  return segunda[0] ? segunda.map((s) => !s) : segunda;
+}
+
 /* Líneas que ocupa un texto en una tarjeta de media anchura (unos 45 caracteres por línea). */
 export const lineasDe = (texto: string, porLinea = 45) =>
   texto.split("\n").reduce((n, l) => n + Math.max(1, Math.ceil(l.length / porLinea)), 0);

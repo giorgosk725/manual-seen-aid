@@ -23,6 +23,8 @@ import {
 } from "../situaciones";
 import { PiezaVista } from "../componentes/Piezas";
 import { AnadidoDelSistema, BloquesPorSistema } from "../componentes/BloquesPorSistema";
+import { DosColumnas } from "../componentes/DosColumnas";
+import { NombreSistema } from "../componentes/NombreSistema";
 import { GUIA_POR_SISTEMA, TABLA4_POR_SISTEMA } from "../porSistema";
 import { CATALOGO_SISTEMAS, CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { kDe, siglasPorPiezas, type Pieza } from "../inicio";
@@ -439,22 +441,21 @@ function ListaSituaciones({
       {on && <Check size={15} className="shrink-0" aria-hidden="true" />}
     </>
   );
+  const conFilas = visibles.filter((g) => g.sits.length || g.extras.length);
   return (
     <div
       id="lista-situaciones"
       className={
-        ancha
-          ? "scroll-mt-4 gap-3 lg:columns-2 2xl:columns-3 [&>*]:mb-3 [&>*]:break-inside-avoid"
-          : "scroll-mt-4 space-y-3"
+        ancha ? "scroll-mt-4 grid gap-3 lg:grid-cols-2 lg:items-start" : "scroll-mt-4 space-y-3"
       }
     >
       {f && (
-        <p className="text-xs text-slate-600" aria-live="polite">
+        <p className="text-xs text-slate-600 lg:col-span-2" aria-live="polite">
           {total === 1 ? "1 resultado" : `${total} resultados`}
         </p>
       )}
       {f && total === 0 && (
-        <div className="rounded-md border border-dashed border-slate-300 px-3 py-3 text-sm text-slate-700">
+        <div className="rounded-md border border-dashed border-slate-300 px-3 py-3 text-sm text-slate-700 lg:col-span-2">
           Ninguna situación coincide con «{f}».{" "}
           {/* La consulta pasa en memoria (A03: no va en la URL). */}
           <a
@@ -475,49 +476,61 @@ function ListaSituaciones({
           )}
         </div>
       )}
-      {visibles.map(({ tema, sits, extras }) => {
-        if (!sits.length && !extras.length) return null;
-        return (
-          <section key={tema.t} aria-label={tema.t} className="tarjeta overflow-hidden">
-            <h2 className="titulo-tarjeta px-3 pb-1.5 pt-3" style={{ color: hex.ink }}>
-              {tema.t}
-            </h2>
-            <ul className="filas" role="list">
-              {sits.map((s) => {
-                const on = sit?.id === s.id;
-                return (
-                  <li key={s.id}>
-                    <button
-                      type="button"
-                      aria-pressed={on}
-                      onClick={() =>
-                        elegirRuta(
-                          "consultar",
-                          "situacion",
-                          on ? undefined : s.id + (sistema ? ":" + sistema : ""),
-                        )
-                      }
-                      className={`${fila} ${on ? "text-white hover:!bg-[var(--acento)]" : ""}`}
-                      style={on ? { background: hex.strong } : undefined}
-                    >
-                      <Fila texto={s.etiqueta} on={on} />
-                    </button>
-                  </li>
-                );
-              })}
-              {extras.map((x) => (
-                <li key={x.ruta}>
-                  <a href={x.ruta} className={fila}>
-                    <Fila texto={x.t} />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        );
-      })}
+      {ancha ? (
+        <DosColumnas
+          etiqueta="div"
+          desde="lg"
+          orden="libre"
+          items={conFilas}
+          peso={({ sits, extras }) => 2 + sits.length + extras.length}
+          render={grupo}
+        />
+      ) : (
+        conFilas.map(grupo)
+      )}
     </div>
   );
+  /* Un grupo de situaciones (tarjeta con sus filas). */
+  function grupo({ tema, sits, extras }: (typeof visibles)[number]) {
+    return (
+      <section key={tema.t} aria-label={tema.t} className="tarjeta overflow-hidden">
+        <h2 className="titulo-tarjeta px-3 pb-1.5 pt-3" style={{ color: hex.ink }}>
+          {tema.t}
+        </h2>
+        <ul className="filas" role="list">
+          {sits.map((s) => {
+            const on = sit?.id === s.id;
+            return (
+              <li key={s.id}>
+                <button
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() =>
+                    elegirRuta(
+                      "consultar",
+                      "situacion",
+                      on ? undefined : s.id + (sistema ? ":" + sistema : ""),
+                    )
+                  }
+                  className={`${fila} ${on ? "text-white hover:!bg-[var(--acento)]" : ""}`}
+                  style={on ? { background: hex.strong } : undefined}
+                >
+                  <Fila texto={s.etiqueta} on={on} />
+                </button>
+              </li>
+            );
+          })}
+          {extras.map((x) => (
+            <li key={x.ruta}>
+              <a href={x.ruta} className={fila}>
+                <Fila texto={x.t} />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    );
+  }
 }
 
 export function SituacionSistema({
@@ -721,7 +734,7 @@ export function SituacionSistema({
                               className="foto-sistema h-7 w-7 shrink-0 rounded-md bg-white object-cover"
                             />
                             <span className="titulo-tarjeta" style={{ color: SISTEMA_HEX[c].ink }}>
-                              {CATALOGO_SISTEMAS[c]?.name ?? nombre}
+                              <NombreSistema n={CATALOGO_SISTEMAS[c]?.name ?? nombre} />
                             </span>
                           </div>
                           <p

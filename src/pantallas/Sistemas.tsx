@@ -57,7 +57,9 @@ import { comoFunciona } from "../guias";
 import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
 import { PiezaVista } from "../componentes/Piezas";
 import { FRECUENTES } from "../frecuentes";
-import { AnadidoDelSistema } from "../componentes/BloquesPorSistema";
+import { tarjetasDeBloques } from "../componentes/tarjetasDeBloques";
+import { NombreSistema } from "../componentes/NombreSistema";
+import type { BloqueSistema } from "../porSistema";
 import { FICHA_MODOS, FICHA_PARAMETROS } from "../porSistema";
 import { FuentePie } from "../componentes/FuentePie";
 import { paginasDe } from "../paginas";
@@ -440,6 +442,7 @@ function ColumnaTabla({
   notaExtra,
   fuentesExtra = [],
   sinFuente = false,
+  anadidos = [],
 }: {
   t: Tabla;
   c: number;
@@ -452,6 +455,8 @@ function ColumnaTabla({
   fuentesExtra?: { texto: string; ruta?: string }[];
   /* La línea de fuente la pone quien la usa, al pie de toda la sección (0.76: una por sección). */
   sinFuente?: boolean;
+  /* Los bloques de ese sistema (porSistema.ts): en la misma rejilla, tras las filas de la tabla. */
+  anadidos?: BloqueSistema[];
 }) {
   const hexS = SISTEMA_HEX[c];
   // La nota del asterisco solo si alguna celda mostrada lo lleva; la lista de siglas, plegada.
@@ -465,14 +470,29 @@ function ColumnaTabla({
     // fila con la pleca del sistema; la que cuenta en automático, con el borde del sistema.
     <div>
       <div className="grid gap-3 sm:grid-cols-2 sm:items-start print:grid-cols-1">
+        {/* Sexta vuelta: las filas de la tabla y los bloques del sistema (`anadidos`) en una sola
+            rejilla equilibrada, contigua y en el orden de la tabla (primero las filas). */}
         <DosColumnas
-          items={t.filas
-            .map((f, j) => ({ f, j }))
-            .filter(({ f, j }) => !filas || filas(f.etiqueta, j))}
-          peso={({ f }) =>
-            1.5 + lineasDe(f.etiqueta, 60) + lineasDe(f.unida ? f.celdas[0] : f.celdas[c], 62)
-          }
-          render={({ f, j }) => {
+          key={`${t.id}-${c}`}
+          items={[
+            ...t.filas
+              .map((f, j) => ({ f, j }))
+              .filter(({ f, j }) => !filas || filas(f.etiqueta, j))
+              .map(({ f, j }) => ({
+                peso:
+                  1.5 +
+                  lineasDe(f.etiqueta, 60) +
+                  lineasDe(f.unida ? f.celdas[0] : f.celdas[c], 62),
+                f: f as typeof f | null,
+                j,
+                nodo: null as ReactNode,
+              })),
+            ...tarjetasDeBloques(c, anadidos).map((b) => ({ ...b, f: null, j: -1 })),
+          ]}
+          peso={(it) => it.peso}
+          render={(it) => {
+            if (!it.f) return it.nodo;
+            const { f, j } = it;
             return (
               <div
                 key={j}
@@ -573,6 +593,62 @@ function SiglasTabla({ t }: { t: Tabla }) {
         ))}
       </div>
     </>
+  );
+}
+
+/* Solo en papel: los pasajes literales de una pregunta frecuente (párrafos, listas y filas de
+   tabla del capítulo, resueltos desde `contenido` sin el motor de búsqueda), bajo la pregunta. */
+function RespuestaImpresa({ f, c }: { f: (typeof FRECUENTES)[number]; c: number }) {
+  const trozos: ReactNode[] = [];
+  for (const id of f.pasajes.slice(0, 4)) {
+    const partes = id.split("/");
+    if (partes[0] === "t" || partes[0] === "l") {
+      const a = APARTADOS.find((x) => x.slug === partes[1]);
+      const i = a?.bloques.findIndex((b, k) => idDeBloque(b, k) === partes[2]) ?? -1;
+      const b = i >= 0 ? a!.bloques[i] : undefined;
+      if (b?.t === "p")
+        trozos.push(
+          <p key={id}>
+            {b.lead && <strong>{b.lead} </strong>}
+            <Texto>{b.texto}</Texto>
+          </p>,
+        );
+      else if (b?.t === "lista")
+        trozos.push(
+          <div key={id}>
+            {b.intro && (
+              <p>
+                <Texto>{b.intro}</Texto>
+              </p>
+            )}
+            <ul className="list-disc pl-5">
+              {b.items.map((x) => (
+                <li key={x}>
+                  <Texto>{x}</Texto>
+                </li>
+              ))}
+            </ul>
+          </div>,
+        );
+    } else if (/^T\d+$/.test(partes[0]) && /^\d+$/.test(partes[1] ?? "")) {
+      const t = TABLAS[partes[0] as keyof typeof TABLAS];
+      const fila = t?.filas[Number(partes[1])];
+      if (fila)
+        trozos.push(
+          <p key={id}>
+            <strong>{fila.etiqueta.split("\n")[0]}: </strong>
+            <Lineas>
+              {fila.unida || !t.porSistema ? fila.celdas.join(" · ") : fila.celdas[c]}
+            </Lineas>
+          </p>,
+        );
+    }
+  }
+  if (!trozos.length) return null;
+  return (
+    <div className="hidden space-y-1 px-4 pb-3 text-[13px] leading-snug text-slate-700 print:block">
+      {trozos}
+    </div>
   );
 }
 
@@ -768,8 +844,8 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             // insignia); su fila de la Tabla 1, en la fuente.
             fuentesExtra={[fuenteT1(4)]}
             sinFuente
+            anadidos={FICHA_PARAMETROS[c]}
           />
-          <AnadidoDelSistema c={c} bloques={FICHA_PARAMETROS[c]} sinFuente />
           <FuentePie
             fuentes={[
               fuenteTabla(TABLAS.T3),
@@ -786,8 +862,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           <TituloSeccion id="modos" sistema={s.name} color={h.ink}>
             Modos y funciones
           </TituloSeccion>
-          <ColumnaTabla t={TABLAS.T4} c={c} sinFuente />
-          <AnadidoDelSistema c={c} bloques={FICHA_MODOS[c]} sinFuente />
+          <ColumnaTabla t={TABLAS.T4} c={c} sinFuente anadidos={FICHA_MODOS[c]} />
           <FuentePie
             fuentes={[
               fuenteTabla(TABLAS.T4),
@@ -815,6 +890,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
                 >
                   <span className="min-w-0 flex-1">{sinNombreDelSistema(f.pregunta)}</span>
                 </a>
+                <RespuestaImpresa f={f} c={c} />
               </li>
             ))}
           </ul>
@@ -1183,7 +1259,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                       className="block text-lg font-extrabold leading-tight"
                       style={{ color: h.ink }}
                     >
-                      {s.name}
+                      <NombreSistema n={s.name} />
                     </span>
                     <span className="mt-0.5 block text-sm text-slate-600">
                       <span className="font-semibold text-slate-800">{nombreAlg}</span>

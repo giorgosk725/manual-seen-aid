@@ -13,6 +13,7 @@ import { SISTEMA_HEX } from "../tokens";
 import { APARTADOS, F2, TABLAS, rutaDeTabla } from "../contenido";
 import { elegirRuta, href } from "../rutas";
 import { CabeceraEditorial } from "../ui";
+import { NombreSistema } from "../componentes/NombreSistema";
 import { Texto } from "../texto";
 import { CATEGORIA_HEX } from "../tokens";
 import { FuentePie } from "../componentes/FuentePie";
@@ -145,34 +146,36 @@ function PorCaracteristicas() {
           return (
             <li
               key={id}
-              className={`tarjeta flex min-w-0 flex-col p-3 transition ${fuera ? "border-dashed opacity-80" : "tarjeta-sistema"}`}
+              className={`tarjeta flex min-w-0 flex-col p-3 transition sm:row-[span_15/span_15] sm:grid sm:grid-rows-subgrid ${fuera ? "border-dashed opacity-80" : "tarjeta-sistema"}`}
               style={{ ["--sis" as string]: h.strong }}
             >
-              <a
-                href={href("sistemas", id)}
-                className="flex min-h-11 items-center gap-2 font-extrabold hover:underline"
-                style={{ color: h.ink }}
-              >
-                <img
-                  src={FOTO_SISTEMA[id]}
-                  alt=""
-                  width={32}
-                  height={32}
-                  className="foto-sistema h-8 w-8 shrink-0 rounded-md bg-white object-cover"
-                />
-                {CATALOGO_SISTEMAS[c].name}
-              </a>
-              {fuera && (
-                <span className="insignia mt-0.5 inline-flex w-fit items-center gap-1">
-                  <X size={12} aria-hidden="true" /> No reúne lo marcado
-                </span>
-              )}
-              <dl className="mt-1 space-y-1.5 text-[13px]">
+              <div>
+                <a
+                  href={href("sistemas", id)}
+                  className="flex min-h-11 items-center gap-2 font-extrabold hover:underline"
+                  style={{ color: h.ink }}
+                >
+                  <img
+                    src={FOTO_SISTEMA[id]}
+                    alt=""
+                    width={32}
+                    height={32}
+                    className="foto-sistema h-8 w-8 shrink-0 rounded-md bg-white object-cover"
+                  />
+                  <NombreSistema n={CATALOGO_SISTEMAS[c].name} />
+                </a>
+                {fuera && (
+                  <span className="insignia mt-0.5 inline-flex w-fit items-center gap-1">
+                    <X size={12} aria-hidden="true" /> No reúne lo marcado
+                  </span>
+                )}
+              </div>
+              <dl className="mt-1 space-y-1.5 text-[13px] sm:contents">
                 {CRITERIOS.map((cr) => {
                   const r = casa(cr, c);
                   return (
-                    <div key={cr.id}>
-                      <dt className="rotulo text-slate-500">
+                    <div key={cr.id} className="sm:contents">
+                      <dt className="rotulo text-slate-500 sm:mt-1.5">
                         {T1.filas[cr.fila].etiqueta}
                         <span className="sr-only">
                           {r === true ? " (coincide)" : r === false ? " (no coincide)" : ""}
@@ -203,8 +206,8 @@ function PorCaracteristicas() {
                 {/* 0.74.2 (auditoría): la indicación y la gestación (Tabla 1), con las variantes
                     Control-IQ+ y Liberty, a la vista en cada tarjeta. */}
                 {[7, 8].map((fila) => (
-                  <div key={fila}>
-                    <dt className="rotulo text-slate-500">{T1.filas[fila].etiqueta}</dt>
+                  <div key={fila} className="sm:contents">
+                    <dt className="rotulo text-slate-500 sm:mt-1.5">{T1.filas[fila].etiqueta}</dt>
                     <dd className="whitespace-pre-line text-slate-700">
                       {T1.filas[fila].celdas[c]}
                     </dd>
