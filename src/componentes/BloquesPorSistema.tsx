@@ -23,7 +23,7 @@ function Bloques({ c, bloques }: { c: number; bloques: BloqueSistema[] }) {
   return (
     <PiezasSinTitulos.Provider value={true}>
       <dl
-        className={`ultima-ancha grid items-start gap-3 ${bloques.length > 1 ? "lg:grid-cols-2" : ""}`}
+        className={`[&>div]:mb-3 [&>div]:break-inside-avoid ${bloques.length > 1 ? "lg:columns-2 lg:gap-3" : ""}`}
         aria-live="polite"
         style={{ ["--sis" as string]: h.strong }}
       >

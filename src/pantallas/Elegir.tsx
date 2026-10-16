@@ -133,7 +133,7 @@ function PorCaracteristicas() {
           </div>
         ))}
       </div>
-      <ul className="mt-4 grid items-start gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-live="polite">
+      <ul className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-live="polite">
         {ORDEN_SISTEMAS.map((id, c) => {
           const h = SISTEMA_HEX[c];
           const fuera = hayAlgo && !reunen.includes(c);

@@ -276,6 +276,13 @@
     gap: 0.125rem;
     overflow-x: auto;
     scrollbar-width: none;
+    /* Sitio para el contorno de foco (overflow-x: auto recorta también en vertical). */
+    padding-block: 4px;
+    margin-block: -4px;
+  }
+  .pestana:focus-visible,
+  .fila:focus-visible {
+    outline-offset: -2px;
   }
   @media (max-width: 639px) {
     .pestana {
@@ -300,6 +307,10 @@
   html.night .foto-sistema,
   html.night .foto-figura {
     filter: brightness(0.8) contrast(1.05);
+  }
+  html.night .cabecera-tramo {
+    background: color-mix(in srgb, var(--tono) 26%, #1e293b) !important;
+    color: #f1f5f9 !important;
   }
   /* Rejilla de dos columnas sin hueco: la última tarjeta, si queda sola, a lo ancho. */
   .ultima-ancha > :last-child:nth-child(odd) {
@@ -1159,11 +1170,6 @@ html:has(.barra-pegada) {
     scroll-padding-top: 1rem;
   }
 }
-html.night .focus-visible\:ring-slate-500:focus-visible,
-html.night .focus-visible\:ring-slate-600:focus-visible,
-html.night .focus-visible\:ring-slate-700:focus-visible {
-  --tw-ring-color: #cbd5e1;
-}
 
 /* Tarjetas con filete superior de color y el resto del borde gris claro en línea (se serializa
    «border-color: <color> rgb(230, 230, 230) rgb(230, 230, 230)»): de noche, los tres lados grises
@@ -1189,8 +1195,12 @@ html.night [style*="rgb(255, 255, 255) 0px 0px 0px 2px inset"] {
 /* Los títulos que reciben el foco al elegir algo (irAlCambiar.ts) no son controles: sin anillo. */
 h1[tabindex="-1"]:focus,
 h2[tabindex="-1"]:focus,
-h3[tabindex="-1"]:focus {
-  outline: none;
+h3[tabindex="-1"]:focus,
+h1[tabindex="-1"]:focus-visible,
+h2[tabindex="-1"]:focus-visible,
+h3[tabindex="-1"]:focus-visible,
+[tabindex="-1"]:is(main, div, section):focus-visible {
+  outline: none !important;
   box-shadow: none;
 }
 
@@ -1816,11 +1826,16 @@ html.night .text-orange-900 {
 
 /* Foco visible en modo nocturno (edición 0.50): un contorno claro de 2 px sobre el fondo oscuro
    (contraste ≥ 3:1 con el fondo), aunque el control use focus:outline-none con un anillo gris. */
-html.night *:focus-visible {
-  outline: 2px solid var(--acento-texto) !important;
+/* Sistema visual (cuarta vuelta): un solo foco en toda la app, un contorno burdeos de 2 px
+   (≥ 3:1 sobre papel y sobre las superficies), también en casillas, summary y enlaces; los
+   anillos de Tailwind quedan apagados. De noche, el rosa del burdeos sobre el fondo oscuro. */
+*:focus-visible {
+  outline: 2px solid var(--acento) !important;
   outline-offset: 2px;
-  /* Un solo anillo: el de Tailwind (gris) se apaga de noche; queda el contorno. */
-  --tw-ring-color: transparent;
+  --tw-ring-shadow: 0 0 #0000 !important;
+}
+html.night *:focus-visible {
+  outline-color: var(--acento-texto) !important;
 }
 
 /* Plan de seguridad impreso: la Figura 3 (ramas, dosis y su nota de población) no se parte entre

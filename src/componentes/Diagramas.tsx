@@ -1226,8 +1226,8 @@ function InterrupcionLinea() {
       {/* Cabecera con alto fijo en la rejilla (hasta tres líneas): las bandas de color quedan a la
           misma altura sin estirar las tarjetas. */}
       <span
-        className="flex items-start px-3 py-2 text-[15px] font-bold leading-snug md:min-h-[4.75rem]"
-        style={{ background: tono.soft, color: tono.ink }}
+        className="cabecera-tramo flex items-start px-3 py-2 text-[15px] font-bold leading-snug md:min-h-[3.6rem]"
+        style={{ background: tono.soft, color: tono.ink, ["--tono" as string]: tono.strong }}
       >
         {cuando}
       </span>

@@ -131,10 +131,14 @@ test.describe("Búsqueda y enlaces", () => {
   }) => {
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Navegación principal" });
-    for (const g of ["Consultar", "Leer y comprender", "Recursos"])
+    for (const g of ["Consultar", "Leer y comprender"])
       await expect(nav.getByText(g, { exact: true }).first()).toBeVisible();
     await expect(nav.getByRole("link", { name: "Sistemas AID", exact: true })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Sobre este complemento" })).toBeVisible();
+    // Sistema visual (cuarta vuelta): «Recursos» va al pie de la barra lateral, siempre a la
+    // vista, para que el menú quepa en 768 px de alto.
+    const recursos = page.getByRole("navigation", { name: "Recursos" });
+    await expect(recursos.getByRole("link", { name: "Bibliografía" })).toBeVisible();
+    await expect(recursos.getByRole("link", { name: "Sobre este complemento" })).toBeVisible();
     await expect(nav.getByRole("link", { name: "Material para el paciente" })).toBeVisible();
     await page.goto("/#/pacientes");
     await expect(nav.getByRole("link", { name: "Material para el paciente" })).toHaveAttribute(

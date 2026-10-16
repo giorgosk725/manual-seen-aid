@@ -387,10 +387,13 @@ function MenuNavegacion({
   ruta,
   etiqueta,
   onIr,
+  sinGrupo,
 }: {
   ruta: Ruta;
   etiqueta: string;
   onIr?: () => void;
+  /* Un grupo que se pinta en otro sitio (en la barra lateral, «Recursos» va al pie). */
+  sinGrupo?: string;
 }) {
   // Dentro de un apartado (0.71.0): en el propio índice, la lista del lateral lo repetía.
   const enCapitulo = ruta.seccion === "capitulo" && !!ruta.sub;
@@ -497,7 +500,7 @@ function MenuNavegacion({
           )}
         </li>
       </ul>
-      {MENU.map((g) =>
+      {MENU.filter((g) => g.area !== sinGrupo).map((g) =>
         g.area === "mas" ? (
           <details key={g.area} className="group mt-3" open={area === "mas" || undefined}>
             <summary className="flex min-h-9 cursor-pointer list-none items-center justify-between rounded-md pr-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 [&::-webkit-details-marker]:hidden">
@@ -522,13 +525,17 @@ function MenuNavegacion({
 }
 
 /* ---------- Barra lateral (escritorio) ---------- */
+/* El grupo «Recursos» del menú (bibliografía y sobre): en la barra lateral va al pie, para que
+   el menú quepa también en 768 px de alto. */
+const RECURSOS = MENU.find((g) => g.ids.includes("sobre"));
+
 function Lateral({ ruta, pie }: { ruta: Ruta; pie: ReactNode }) {
   return (
     <aside
       aria-label="Menú del capítulo"
       className="barra-lateral fixed inset-y-0 left-0 z-30 hidden w-64 flex-col lg:flex"
     >
-      <div className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
+      <div className="min-h-0 flex-1 overflow-y-auto px-3 py-2">
         <a
           href="#/"
           aria-label={`Manual de Endocrinología y Nutrición, complemento interactivo. Capítulo ${CAPITULO.numero} · ${CAPITULO.tituloCorto}: inicio`}
@@ -543,15 +550,41 @@ function Lateral({ ruta, pie }: { ruta: Ruta; pie: ReactNode }) {
         {/* En la propia pantalla de búsqueda, una sola caja (0.72.0: había dos con la misma
           consulta); la caja deja su sitio para que el menú no salte al entrar y salir. */}
         {ruta.seccion === "buscar" ? (
-          <div aria-hidden="true" className="my-2 h-[34px]" />
+          <button
+            type="button"
+            onClick={() => document.getElementById("buscar-q")?.focus()}
+            className="my-2 flex h-[34px] w-full items-center gap-2 rounded-md border border-dashed border-slate-300 px-2.5 text-sm text-slate-500"
+          >
+            <Search size={14} className="shrink-0" aria-hidden="true" />
+            Buscar en el capítulo
+          </button>
         ) : (
           <BuscadorLateral />
         )}
-        <MenuNavegacion ruta={ruta} etiqueta="Navegación principal" />
+        <MenuNavegacion ruta={ruta} etiqueta="Navegación principal" sinGrupo={RECURSOS?.area} />
       </div>
-      {/* Sistema visual: sin cabecera fija en el ordenador; sus mandos, al pie del menú, siempre
-          a la vista (fuera de la zona que se desplaza). */}
-      <div className="separador flex shrink-0 items-center gap-1 border-t px-3 py-1">{pie}</div>
+      {/* Sistema visual: sin cabecera fija en el ordenador; al pie del menú, siempre a la vista:
+          los mandos y, en letra pequeña, los recursos (bibliografía, sobre). */}
+      <div className="separador flex shrink-0 items-center gap-1 border-t px-3 py-1">
+        {pie}
+        <nav aria-label="Recursos" className="ml-auto flex items-center gap-x-3 text-xs">
+          {RECURSOS?.ids.map((id) => {
+            const d = DESTINOS.find((x) => x.id === id)!;
+            const on = destinoActivo(id, ruta);
+            return (
+              <a
+                key={id}
+                href={d.href}
+                aria-current={on ? "page" : undefined}
+                aria-label={d.etiqueta}
+                className={`inline-flex min-h-10 items-center rounded-md ${on ? "font-semibold text-slate-900" : "text-slate-600 hover:text-slate-900 hover:underline"}`}
+              >
+                {id === "sobre" ? "Sobre" : d.etiqueta}
+              </a>
+            );
+          })}
+        </nav>
+      </div>
     </aside>
   );
 }

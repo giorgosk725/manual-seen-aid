@@ -753,7 +753,7 @@ export function SituacionSistema({
                 )}
                 {!porSistema && !fila.unida && (
                   <>
-                    <dl className="ultima-ancha grid items-start gap-3 sm:grid-cols-2">
+                    <dl className="sm:columns-2 sm:gap-3 [&>div]:mb-3 [&>div]:break-inside-avoid">
                       {tabla.columnas.map((nombre, c) => {
                         return (
                           <div key={c} className="tarjeta p-3">

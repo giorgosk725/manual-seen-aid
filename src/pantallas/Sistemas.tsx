@@ -397,7 +397,7 @@ const sinNombreDelSistema = (q: string) =>
 
 /* Enlace de acceso en la cabecera de la ficha: texto con subrayado fino. */
 const accesoFicha =
-  "inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9";
+  "tap-44 inline-flex min-h-11 items-center px-0.5 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9";
 
 /* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
 const TODAS_LAS_SECCIONES = [
@@ -462,7 +462,7 @@ function ColumnaTabla({
     // 0.72.0: sin la caja de fuera (tarjetas dentro de una tarjeta). sistema visual: una tarjeta por
     // fila con la pleca del sistema; la que cuenta en automático, con el borde del sistema.
     <div>
-      <dl className="ultima-ancha grid items-start gap-3 sm:grid-cols-2">
+      <dl className="sm:columns-2 sm:gap-3 [&>div]:mb-3 [&>div]:break-inside-avoid">
         {t.filas.map((f, j) => {
           if (filas && !filas(f.etiqueta, j)) return null;
           return (
@@ -632,7 +632,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const mt = completa ? "mt-7" : "";
   return (
     <div ref={ref} className="imprimible">
-      <div className="no-imprimir mb-2 flex items-center gap-2 text-xs text-slate-500">
+      <div className="no-imprimir mb-2 hidden items-center gap-2 text-xs text-slate-500 sm:flex">
         <a
           href={href("sistemas")}
           className="inline-flex min-h-11 items-center font-semibold hover:underline"
@@ -643,7 +643,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         <span>{s.name}</span>
       </div>
       {/* En el móvil, los enlaces van a lo ancho debajo de la foto (dos filas en vez de tres). */}
-      <header className="mb-3 grid grid-cols-[auto_1fr] items-center gap-x-3 sm:mb-4 sm:items-start sm:gap-x-4">
+      <header className="mb-2 grid grid-cols-[auto_1fr] items-center gap-x-3 sm:mb-4 sm:items-start sm:gap-x-4">
         <AbrirEnVisor
           imagen={{ src: FOTO_SISTEMA[s.id], alt: `Foto oficial de ${s.name}`, titulo: s.name }}
           className="tarjeta h-14 w-14 shrink-0 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:row-span-2 sm:h-16 sm:w-16"
@@ -673,7 +673,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         </div>
         {/* Sistema visual: los tres accesos como enlaces de texto en una fila (en el móvil eran tres
             botones apilados antes del contenido). */}
-        <div className="no-imprimir col-span-2 mt-1 flex flex-wrap gap-x-4 gap-y-0 sm:col-span-1 sm:col-start-2 sm:mt-0">
+        <div className="no-imprimir col-span-2 mt-0.5 flex flex-wrap gap-x-3 gap-y-0 sm:col-span-1 sm:col-start-2 sm:mt-0 sm:gap-x-4">
           <a
             // I61-04: al principio del recorrido (preparación), con el sistema; no al paso 5.
             href={href("consultar", "inicio", `preparacion:${slug}`)}
@@ -683,8 +683,13 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             <span className="hidden sm:inline">Iniciación del sistema</span>
           </a>
           <a href={href("pacientes", "plan", s.id)} className={accesoFicha}>
-            <span className="sm:hidden">Plan de seguridad</span>
-            <span className="hidden sm:inline">Plan de seguridad (hoja para el paciente)</span>
+            {/* Rótulo corto en el móvil; el nombre accesible, siempre el completo. */}
+            <span className="sm:hidden" aria-hidden="true">
+              Plan
+            </span>
+            <span className="sr-only sm:not-sr-only">
+              Plan de seguridad (hoja para el paciente)
+            </span>
           </a>
           <a href={href("consultar", "situacion", `:${slug}`)} className={accesoFicha}>
             Situaciones
@@ -697,7 +702,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             }}
             className={`${accesoFicha} sm:hidden`}
           >
-            Otro sistema o comparación
+            Otro sistema
           </button>
         </div>
       </header>
@@ -768,7 +773,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       }
 
       {ver("modos") && (
-        <section aria-labelledby="modos" className={`no-imprimir ${mt} scroll-mt-2`}>
+        <section aria-labelledby="modos" className={`${mt} scroll-mt-2 ${papel("modos")}`}>
           <TituloSeccion id="modos" sistema={s.name} color={h.ink}>
             Modos y funciones
           </TituloSeccion>
@@ -785,7 +790,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       )}
 
       {ver("preguntas") && preguntas.length > 0 && (
-        <section aria-labelledby="preguntas" className={`no-imprimir ${mt} scroll-mt-2`}>
+        <section aria-labelledby="preguntas" className={`${mt} scroll-mt-2 ${papel("preguntas")}`}>
           <TituloSeccion id="preguntas" sistema={s.name} color={h.ink}>
             Preguntas frecuentes
           </TituloSeccion>
@@ -1131,7 +1136,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
     <div className="space-y-4">
       {/* 13-10-2026: cada tarjeta con lo esencial de la Tabla 1 (fragmentos literales,
           CLAVE_ALGORITMO) para distinguirlos antes de entrar. */}
-      <ul className="sm:columns-2 sm:gap-3">
+      <ul className="space-y-3">
         {visibles.map(({ s, c }) => {
           const h = SISTEMA_HEX[c];
           const k = CLAVE_ALGORITMO[c];
@@ -1149,7 +1154,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
             ["Sensores", sensores],
           ];
           return (
-            <li key={s.id} className="mb-3 break-inside-avoid">
+            <li key={s.id}>
               <a
                 href={href("sistemas", s.id)}
                 className="tarjeta tarjeta-sistema hover-lift ease-brand block overflow-hidden transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
@@ -1175,7 +1180,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                     </span>
                   </span>
                 </span>
-                <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 px-4 py-3">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 px-4 py-3 md:grid-cols-3">
                   {datos.map(([t, v]) => (
                     <span key={t} className="min-w-0">
                       <span className="rotulo block">{t}</span>
@@ -1198,7 +1203,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                       con sus líneas literales de la Tabla 1 (y la frase del apartado 3 en
                       Liberty). */}
                   {VARIANTE[c] && (
-                    <span className="casilla casilla-sistema col-span-2 mt-1 block px-3 py-2 text-[13px] leading-snug text-slate-800">
+                    <span className="casilla casilla-sistema col-span-2 mt-1 block px-3 py-2 text-[13px] leading-snug text-slate-800 md:col-span-3">
                       <span className="rotulo block" style={{ color: h.ink }}>
                         {VARIANTE[c]!.rotulo}
                       </span>
@@ -1539,7 +1544,7 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
                 <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
                   Parámetros configurables en modo automático
                 </summary>
-                <div className="ultima-ancha mt-2 grid items-start gap-3 sm:grid-cols-2">
+                <div className="mt-2 sm:columns-2 sm:gap-3 [&>div]:mb-3 [&>div]:break-inside-avoid">
                   {cols.map((c) => (
                     <div key={c}>
                       <div className="titulo-tarjeta mb-1" style={{ color: SISTEMA_HEX[c].ink }}>

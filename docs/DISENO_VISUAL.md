@@ -139,3 +139,25 @@ las tarjetas se imprimen con borde y sin sombra; la pleca de sistema se imprime 
 - **Pulido**: casillas de sistema a 2 × 2 en el móvil; rótulos de la descarga todos en gris;
   «Ampliar» como chip; h1 a 20 px; en una tarea, una fila numerada de la Tabla 5 lleva de
   título su elemento (sin «1» suelto).
+
+## 10. Cuarta vuelta (auditoría 8,5 → objetivo ≥ 9)
+
+- **Un solo foco en toda la app**: `*:focus-visible` = contorno burdeos de 2 px (rosa del
+  burdeos de noche), con los anillos de Tailwind apagados (`--tw-ring-shadow: 0 0 #0000`);
+  pestañas y filas con el contorno por dentro (`outline-offset: -2px`); la tira de pestañas
+  deja 4 px (`padding-block`/`margin-block` negativos) para que el contorno no se recorte.
+- **Barra lateral**: cabe en 768 px de alto sin desplazar (719 px): el grupo «Recursos»
+  (bibliografía, sobre) va al pie, en letra pequeña junto al modo nocturno; por debajo de 768
+  el menú se desplaza. En Buscar, la caja es un acceso discreto (borde discontinuo) a la caja
+  de la pantalla, con su mismo alto.
+- **Interrupción**: cabeceras de dos líneas como máximo (`md:min-h-[3.6rem]`), con tinte de su
+  color también de noche (`.cabecera-tramo`, `color-mix` con `--tono`).
+- **Sin escalera**: las rejillas de tarjetas de datos (Parámetros, Modos, bloques por sistema,
+  Situación por sistema) fluyen en columnas (`sm:columns-2`, `break-inside-avoid`); Elección
+  vuelve a alinear sus cuatro tarjetas como una tabla; el resumen de Sistemas es una tarjeta por
+  fila en el orden de la Tabla 1 con los datos en tres columnas.
+- **Figuras**: tarjetas de igual alto, el espacio sobrante en el área de la imagen (centrada
+  sobre blanco), no entre el título y la fuente.
+- **Ficha**: en el móvil, sin migas (la barra inferior ya lleva a Sistemas) y los accesos en una
+  fila con nombres cortos (el contenido empieza a 244 px); en papel se imprimen todas las
+  secciones, también Modos y Preguntas.
