@@ -107,17 +107,19 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                     titulo: fig.titulo,
                     nota: `p. ${fig.pagina}`,
                   }}
-                  className="group relative flex w-full flex-1 items-center justify-center bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  className="group flex w-full flex-1 flex-col bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
                   etiqueta={`Ampliar ${fig.titulo}`}
                 >
-                  <img
-                    src={img.src}
-                    alt={img.alt}
-                    loading="lazy"
-                    className="foto-figura block aspect-[4/3] w-full object-contain p-2"
-                  />
-                  <span className="chip absolute right-2 top-2 min-h-8 text-xs">
+                  <span className="chip m-2 min-h-8 self-end text-xs">
                     <Maximize2 size={12} aria-hidden="true" /> Ampliar
+                  </span>
+                  <span className="flex flex-1 items-center">
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      loading="lazy"
+                      className="foto-figura block aspect-[4/3] w-full object-contain px-2 pb-2"
+                    />
                   </span>
                 </AbrirEnVisor>
                 <div className="separador border-t p-3">

@@ -8,7 +8,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { Printer } from "lucide-react";
 import { UrgenciaF3 } from "../componentes/UrgenciaF3";
 import { CAPITULO, FIGURA3, TABLAS, apartadoPorSlug, idDeBloque } from "../contenido";
-import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CORTO_CASILLA, CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import type { SistemaId } from "../ampliacion/tipos";
 import { AUTOR_PACIENTES, RESUMEN_CAPITULO, TITULO_CAPITULO_PACIENTES } from "../pacientes/textos";
 import { elegirRuta, href } from "../rutas";
@@ -201,7 +201,7 @@ export function HubPacientes() {
                     className="foto-sistema h-9 w-9 shrink-0 rounded-md object-cover"
                   />
                   <span className="text-sm font-bold" style={{ color: SISTEMA_HEX[c].ink }}>
-                    {CORTO_SISTEMA[c]}
+                    {CORTO_CASILLA[c]}
                   </span>
                 </a>
               </li>

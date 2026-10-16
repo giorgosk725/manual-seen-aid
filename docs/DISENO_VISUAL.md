@@ -161,3 +161,22 @@ las tarjetas se imprimen con borde y sin sombra; la pleca de sistema se imprime 
 - **Ficha**: en el móvil, sin migas (la barra inferior ya lleva a Sistemas) y los accesos en una
   fila con nombres cortos (el contenido empieza a 244 px); en papel se imprimen todas las
   secciones, también Modos y Preguntas.
+
+## 11. Quinta vuelta (auditoría 8,7 → objetivo ≥ 9)
+
+- **Dos columnas equilibradas** (`componentes/DosColumnas.tsx`, `repartoEquilibrado` en
+  `src/disposicion.ts`): las tarjetas de datos (Parámetros, Modos, Indicación, bloques por
+  sistema) se reparten entre dos `<dl>` por el reparto que más iguala sus alturas REALES (se
+  miden tras pintar; primero por estimación con `lineasDe`), conservando el orden dentro de
+  cada columna (se lee la izquierda y luego la derecha). En una columna —móvil y papel— se
+  enseña la lista en su orden original.
+- **Ficha**: las cinco secciones se montan siempre; en pantalla se ve la de la pestaña, en papel
+  todas (comprobado con emulación de impresión).
+- **Pestañas**: la que recibe el foco se trae a la vista (`pestanaALaVista`,
+  `scroll-padding-inline: 12px`); el contorno por dentro (`outline-offset: -2px`) vive fuera de
+  `@layer` para ganar a la regla global.
+- **Figuras**: «Ampliar» en su propia fila sobre la imagen, nunca encima del dibujo.
+- **Interrupción**: el cuerpo de cada caso es un bloque (mismo aire arriba y abajo).
+- **Pulido**: las tres tarjetas de «Cómo funciona» a la misma altura; accesos de la portada a
+  12 px; en Elección, «Sensores compatibles» a lo ancho; nombres cortos en los planes del
+  paciente.

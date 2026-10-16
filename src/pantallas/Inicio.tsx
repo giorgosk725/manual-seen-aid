@@ -32,6 +32,7 @@ import { SIS_IDS } from "../situaciones";
 import { elegirRuta, href } from "../rutas";
 import { imprimirRegion } from "../imprimir";
 import { CabeceraEditorial } from "../ui";
+import { pestanaALaVista } from "../disposicion";
 import { useIrAlCambiar } from "../irAlCambiar";
 import { CAPITULO } from "../contenido";
 import { VERSION_APP } from "../version";
@@ -581,6 +582,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
               aria-pressed={x.on}
               aria-label={x.id === HOJA ? "Hoja de comprobación para imprimir" : undefined}
               onClick={() => (x.id === FASES[0].id && enFases ? undefined : ir(x.id))}
+              onFocus={pestanaALaVista}
               className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
             >
               {x.t}

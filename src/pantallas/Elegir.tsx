@@ -112,7 +112,12 @@ function PorCaracteristicas() {
       </h2>
       <div className="mt-3 grid gap-3 md:grid-cols-2">
         {CRITERIOS.map((cr) => (
-          <div key={cr.id} role="group" aria-label={T1.filas[cr.fila].etiqueta}>
+          <div
+            key={cr.id}
+            role="group"
+            aria-label={T1.filas[cr.fila].etiqueta}
+            className={cr.id === "sensor" ? "md:col-span-2" : undefined}
+          >
             <div className="mb-1 rotulo text-slate-500">{T1.filas[cr.fila].etiqueta}</div>
             <div className="flex flex-wrap gap-1.5">
               {cr.opciones.map((o) => {

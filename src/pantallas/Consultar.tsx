@@ -11,6 +11,7 @@ import {
 } from "../contenido";
 import { elegirRuta, href } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, PaginaBadge, Revelar } from "../ui";
+import { pestanaALaVista } from "../disposicion";
 import { CATEGORIA_HEX } from "../tokens";
 import { TablaVista } from "../componentes/TablaVista";
 import { Figura3Recorrido } from "../componentes/Figura3Vista";
@@ -84,6 +85,7 @@ function TablaPantalla({ tid, seleccion }: { tid: TablaId; seleccion?: string })
             key={t.id}
             href={href("consultar", "tablas", t.id)}
             aria-current={t.id === tid ? "page" : undefined}
+            onFocus={pestanaALaVista}
             className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             Tabla {t.numero}

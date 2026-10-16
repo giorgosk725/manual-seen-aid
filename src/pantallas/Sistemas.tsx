@@ -38,6 +38,8 @@ import {
 } from "../ampliacion";
 import { elegirRuta, href, fueNavegacionNueva } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Foldable } from "../ui";
+import { lineasDe, pestanaALaVista } from "../disposicion";
+import { DosColumnas } from "../componentes/DosColumnas";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SEEN, SISTEMA_HEX } from "../tokens";
@@ -462,54 +464,61 @@ function ColumnaTabla({
     // 0.72.0: sin la caja de fuera (tarjetas dentro de una tarjeta). sistema visual: una tarjeta por
     // fila con la pleca del sistema; la que cuenta en automático, con el borde del sistema.
     <div>
-      <dl className="sm:columns-2 sm:gap-3 [&>div]:mb-3 [&>div]:break-inside-avoid">
-        {t.filas.map((f, j) => {
-          if (filas && !filas(f.etiqueta, j)) return null;
-          return (
-            <div
-              key={j}
-              className={`tarjeta p-3 ${destacar?.(j) ? "tarjeta-realce" : "tarjeta-sistema"}`}
-              style={{ ["--sis" as string]: hexS.strong }}
-            >
-              {/* En la Tabla 4, lo que sigue al nombre de la situación es la conducta común:
+      <div className="grid gap-3 sm:grid-cols-2 sm:items-start print:grid-cols-1">
+        <DosColumnas
+          items={t.filas
+            .map((f, j) => ({ f, j }))
+            .filter(({ f, j }) => !filas || filas(f.etiqueta, j))}
+          peso={({ f }) =>
+            1.5 + lineasDe(f.etiqueta, 60) + lineasDe(f.unida ? f.celdas[0] : f.celdas[c], 62)
+          }
+          render={({ f, j }) => {
+            return (
+              <div
+                key={j}
+                className={`tarjeta p-3 ${destacar?.(j) ? "tarjeta-realce" : "tarjeta-sistema"}`}
+                style={{ ["--sis" as string]: hexS.strong }}
+              >
+                {/* En la Tabla 4, lo que sigue al nombre de la situación es la conducta común:
                   debajo y en gris, como en la tabla. */}
-              <dt className="rotulo" style={{ color: hexS.ink }}>
-                {t.id === "T4" ? (
-                  f.etiqueta.split("\n").map((l, k) => (
-                    <span
-                      key={k}
-                      className={
-                        k === 0
-                          ? "block"
-                          : "mt-1 block text-[13px] font-normal normal-case tracking-normal text-slate-600"
-                      }
-                    >
-                      <Texto>{l}</Texto>
-                    </span>
-                  ))
-                ) : (
-                  <Lineas>{f.etiqueta}</Lineas>
-                )}
-              </dt>
-              <dd className="mt-1 text-[15px] text-slate-800">
-                {/* La insignia, dentro del dd: en un <dl> solo caben dt y dd. */}
-                {insignia?.(j) && <span className="-mt-0.5 mb-1 block">{insignia(j)}</span>}
-                <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
-                {/* 0.72.2: la nota complementaria de esa casilla (edad de Liberty), plegada
-                    junto a ella. La de Omnipod 5 va en «Cómo funciona». */}
-                {t.id === "T1" &&
-                  j === 7 &&
-                  COLUMNA_DE_NOTA[`T1/${j}`] === c &&
-                  NOTAS_POR_PASAJE[`T1/${j}`] && (
-                    <p className="mt-1.5 rounded-md border border-dashed border-slate-300 px-2 py-1.5 text-xs text-slate-600">
-                      {NOTAS_POR_PASAJE[`T1/${j}`]}
-                    </p>
+                <dt className="rotulo" style={{ color: hexS.ink }}>
+                  {t.id === "T4" ? (
+                    f.etiqueta.split("\n").map((l, k) => (
+                      <span
+                        key={k}
+                        className={
+                          k === 0
+                            ? "block"
+                            : "mt-1 block text-[13px] font-normal normal-case tracking-normal text-slate-600"
+                        }
+                      >
+                        <Texto>{l}</Texto>
+                      </span>
+                    ))
+                  ) : (
+                    <Lineas>{f.etiqueta}</Lineas>
                   )}
-              </dd>
-            </div>
-          );
-        })}
-      </dl>
+                </dt>
+                <dd className="mt-1 text-[15px] text-slate-800">
+                  {/* La insignia, dentro del dd: en un <dl> solo caben dt y dd. */}
+                  {insignia?.(j) && <span className="-mt-0.5 mb-1 block">{insignia(j)}</span>}
+                  <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
+                  {/* 0.72.2: la nota complementaria de esa casilla (edad de Liberty), plegada
+                    junto a ella. La de Omnipod 5 va en «Cómo funciona». */}
+                  {t.id === "T1" &&
+                    j === 7 &&
+                    COLUMNA_DE_NOTA[`T1/${j}`] === c &&
+                    NOTAS_POR_PASAJE[`T1/${j}`] && (
+                      <p className="mt-1.5 rounded-md border border-dashed border-slate-300 px-2 py-1.5 text-xs text-slate-600">
+                        {NOTAS_POR_PASAJE[`T1/${j}`]}
+                      </p>
+                    )}
+                </dd>
+              </div>
+            );
+          }}
+        />
+      </div>
       {(notas.length > 0 || notaExtra) && (
         <div className="separador mt-2 space-y-1 border-t pt-2 text-xs text-slate-600">
           {[...(notaExtra ? [notaExtra] : []), ...notas].map((n, k) => (
@@ -772,7 +781,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         </section>
       }
 
-      {ver("modos") && (
+      {
         <section aria-labelledby="modos" className={`${mt} scroll-mt-2 ${papel("modos")}`}>
           <TituloSeccion id="modos" sistema={s.name} color={h.ink}>
             Modos y funciones
@@ -787,9 +796,9 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           />
           <SiglasTabla t={TABLAS.T4} />
         </section>
-      )}
+      }
 
-      {ver("preguntas") && preguntas.length > 0 && (
+      {preguntas.length > 0 && (
         <section aria-labelledby="preguntas" className={`${mt} scroll-mt-2 ${papel("preguntas")}`}>
           <TituloSeccion id="preguntas" sistema={s.name} color={h.ink}>
             Preguntas frecuentes
@@ -1073,6 +1082,7 @@ function BarraSistemas({
           <a
             href={href("sistemas")}
             aria-current={entrada ? "location" : undefined}
+            onFocus={pestanaALaVista}
             className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             Resumen
@@ -1083,6 +1093,7 @@ function BarraSistemas({
             key={x.id}
             href={href("sistemas", selStr, x.id)}
             aria-current={activa === x.id ? "location" : undefined}
+            onFocus={pestanaALaVista}
             className="pestana tap-44 px-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-2"
           >
             {/* 0.73.0: en el móvil, el rótulo corto (las cinco pestañas caben a la vista). */}
@@ -1402,7 +1413,7 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
           la casilla entera, a un toque. */}
       <dl
         aria-label="Características del sistema (Tabla 1)"
-        className="grid items-start gap-3 lg:grid-cols-3"
+        className="grid gap-3 lg:grid-cols-3"
         style={{ ["--sis" as string]: h.strong }}
       >
         {/* Tres tarjetas con las filas agrupadas (las cortas juntas): sin huecos en la rejilla. */}

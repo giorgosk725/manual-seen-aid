@@ -280,10 +280,7 @@
     padding-block: 4px;
     margin-block: -4px;
   }
-  .pestana:focus-visible,
-  .fila:focus-visible {
-    outline-offset: -2px;
-  }
+
   @media (max-width: 639px) {
     .pestana {
       font-size: 0.8125rem;
@@ -1836,6 +1833,14 @@ html.night .text-orange-900 {
 }
 html.night *:focus-visible {
   outline-color: var(--acento-texto) !important;
+}
+/* Pestañas y filas: el contorno por dentro (fuera de @layer para ganar a la regla global). */
+.pestana:focus-visible,
+.fila:focus-visible {
+  outline-offset: -2px !important;
+}
+.pestanas {
+  scroll-padding-inline: 12px;
 }
 
 /* Plan de seguridad impreso: la Figura 3 (ramas, dosis y su nota de población) no se parte entre

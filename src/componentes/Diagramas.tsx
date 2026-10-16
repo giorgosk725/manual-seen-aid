@@ -1231,7 +1231,7 @@ function InterrupcionLinea() {
       >
         {cuando}
       </span>
-      <span className="space-y-1.5 px-3 py-2.5 text-sm leading-snug text-slate-800">
+      <span className="block space-y-1.5 px-3 py-2.5 text-sm leading-snug text-slate-800">
         {children}
       </span>
     </li>

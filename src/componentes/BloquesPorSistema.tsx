@@ -12,6 +12,9 @@ import type { BloqueSistema } from "../porSistema";
 import { fuentesDePiezas } from "../fuentesPiezas";
 import { CORTO_SISTEMA } from "../ampliacion/ids";
 import { SISTEMA_HEX } from "../tokens";
+import { lineasDe } from "../disposicion";
+import { DosColumnas } from "./DosColumnas";
+import { textosDePieza } from "../inicio";
 import { CasillasSistema } from "./CasillasSistema";
 
 function Bloques({ c, bloques }: { c: number; bloques: BloqueSistema[] }) {
@@ -22,24 +25,30 @@ function Bloques({ c, bloques }: { c: number; bloques: BloqueSistema[] }) {
   const desde = bloques.map((_, i) => bloques.slice(0, i).reduce((n, x) => n + x.piezas.length, 0));
   return (
     <PiezasSinTitulos.Provider value={true}>
-      <dl
-        className={`[&>div]:mb-3 [&>div]:break-inside-avoid ${bloques.length > 1 ? "lg:columns-2 lg:gap-3" : ""}`}
+      <div
+        className={`grid gap-3 print:grid-cols-1 ${bloques.length > 1 ? "lg:grid-cols-2 lg:items-start" : ""}`}
         aria-live="polite"
         style={{ ["--sis" as string]: h.strong }}
       >
-        {bloques.map((b, i) => (
-          <div key={b.rotulo} className="tarjeta tarjeta-sistema min-w-0 p-3">
-            <dt className="rotulo" style={{ color: h.ink }}>
-              {b.rotulo}
-            </dt>
-            <dd className="mt-1 space-y-1.5 text-[15px] leading-snug text-slate-900">
-              {b.piezas.map((p, j) => (
-                <PiezaVista key={j} pieza={p} sis={c} compacta siglas={sg[desde[i] + j]} />
-              ))}
-            </dd>
-          </div>
-        ))}
-      </dl>
+        <DosColumnas
+          items={bloques.map((b, i) => ({ b, i }))}
+          peso={({ b }) =>
+            1.5 + b.piezas.reduce((n, p) => n + lineasDe(textosDePieza(p, c).join(" "), 62), 0)
+          }
+          render={({ b, i }) => (
+            <div key={b.rotulo} className="tarjeta tarjeta-sistema min-w-0 p-3">
+              <dt className="rotulo" style={{ color: h.ink }}>
+                {b.rotulo}
+              </dt>
+              <dd className="mt-1 space-y-1.5 text-[15px] leading-snug text-slate-900">
+                {b.piezas.map((p, j) => (
+                  <PiezaVista key={j} pieza={p} sis={c} compacta siglas={sg[desde[i] + j]} />
+                ))}
+              </dd>
+            </div>
+          )}
+        />
+      </div>
     </PiezasSinTitulos.Provider>
   );
 }

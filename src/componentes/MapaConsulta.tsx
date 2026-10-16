@@ -83,7 +83,7 @@ const SLUG_INICIO = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 
 function Sistemas() {
   const b = MAPA_CONSULTA.find((x) => x.id === "sistemas")!;
-  const enlace = `flex min-h-9 items-center justify-center px-2 text-[13px] font-semibold text-slate-700 transition hover:bg-slate-50 hover:underline ${foco}`;
+  const enlace = `flex min-h-9 items-center justify-center px-1.5 text-[12px] font-semibold text-slate-700 transition hover:bg-slate-50 hover:underline ${foco}`;
   return (
     <TarjetaPortada
       id="mapa-sistemas"
