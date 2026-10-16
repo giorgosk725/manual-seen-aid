@@ -11,6 +11,8 @@ import { SISTEMA_HEX } from "../tokens";
 import { DosColumnas } from "./DosColumnas";
 import { CasillasSistema } from "./CasillasSistema";
 import { tarjetasDeBloques } from "./tarjetasDeBloques";
+import { ComplementoVista } from "./Complemento";
+import type { Complemento } from "../notas-complementarias";
 
 function Bloques({ c, bloques }: { c: number; bloques: BloqueSistema[] }) {
   const h = SISTEMA_HEX[c];
@@ -60,9 +62,11 @@ export function BloquesPorSistema({
   seleccion,
   onElegir,
   sinFuente = false,
+  complementos = {},
 }: {
   bloques: BloqueSistema[][];
   comun?: BloqueSistema[];
+  complementos?: Record<number, Complemento>;
   seleccion: number;
   onElegir: (c: number) => void;
   /* Dentro de un diagrama, la fuente va en la línea del marco (una sola). */
@@ -85,6 +89,8 @@ export function BloquesPorSistema({
         </div>
       )}
       {!sinFuente && <FuentePie className="mt-3" fuentes={fuentesDePiezas(todas)} />}
+      {/* Lo complementario del sistema (no es del capítulo), al final y con su propia fuente. */}
+      {complementos[c] && <ComplementoVista complemento={complementos[c]} />}
     </div>
   );
 }

@@ -612,6 +612,7 @@ export function SituacionSistema({
                     key={guia.id}
                     bloques={GUIA_POR_SISTEMA[guia.id].bloques}
                     comun={GUIA_POR_SISTEMA[guia.id].comun}
+                    complementos={GUIA_POR_SISTEMA[guia.id].complementos}
                     seleccion={sisIdx >= 0 ? sisIdx : 0}
                     onElegir={(i) =>
                       elegirRuta("consultar", "situacion", `${guia.id}:${SIS_IDS[i]}`)

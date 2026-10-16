@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-16",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — sistema en la dirección y ficha impresa sin repeticiones`,
+    titulo: `Complemento interactivo ${VERSION_APP} — recomendaciones de Tandem para la gestación`,
+    detalle: [
+      "Gestación con Control-IQ: debajo de lo que dice el capítulo, las recomendaciones de Tandem para la gestación a las que remite el apartado 10 (Actividad Sueño las 24 horas, ajustes por etapas y posparto, bolo), con el texto literal del folleto para profesionales, rotuladas como complementarias y con su fuente.",
+      "Gestación sistema a sistema (Figuras y diagramas) con una sola línea de fuente del capítulo.",
+    ],
+  },
+  {
+    fecha: "2026-10-16",
+    ambito: "app",
+    titulo:
+      "Complemento interactivo 0.76.2 — sistema en la dirección y ficha impresa sin repeticiones",
     detalle: [
       "Situaciones con selector de sistema (gestación y las demás): el sistema de la dirección manda y la casilla elegida pasa a la dirección; un enlace compartido, Atrás y Adelante enseñan el sistema escrito.",
       "Ficha impresa: bajo cada pregunta frecuente, cada pasaje una sola vez (antes, algunos párrafos salían repetidos).",

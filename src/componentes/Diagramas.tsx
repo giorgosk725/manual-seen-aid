@@ -846,6 +846,7 @@ function GestacionSistemas({ opcion }: { opcion?: string }) {
       seleccion={c >= 0 ? c : 0}
       onElegir={(i) => elegirRuta("visual", "gestacion-sistemas", ORDEN_SISTEMAS[i])}
       sinFuente
+      complementos={g.complementos}
     />
   );
 }

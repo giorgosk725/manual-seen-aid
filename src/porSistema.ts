@@ -4,6 +4,7 @@
    capítulo (inicio.ts). Los rótulos son de la app. Orden de los sistemas: el de la Tabla 1
    (MiniMed 780G, Control-IQ, CamAPS FX, Omnipod 5). */
 import type { Pieza } from "./inicio";
+import { TANDEM_GESTACION, type Complemento } from "./notas-complementarias";
 
 export interface BloqueSistema {
   rotulo: string;
@@ -100,9 +101,14 @@ const INGRESO: BloqueSistema[][] = [
 /* Situaciones-guía con selector de sistema (arriba de sus párrafos). */
 export const GUIA_POR_SISTEMA: Record<
   string,
-  { bloques: BloqueSistema[][]; comun?: BloqueSistema[] }
+  {
+    bloques: BloqueSistema[][];
+    comun?: BloqueSistema[];
+    /* Lo complementario de un sistema (no es del capítulo), tras lo suyo: índice → texto. */
+    complementos?: Record<number, Complemento>;
+  }
 > = {
-  gestacion: { bloques: GESTACION, comun: GESTACION_COMUN },
+  gestacion: { bloques: GESTACION, comun: GESTACION_COMUN, complementos: { 1: TANDEM_GESTACION } },
   "enfermedad-intercurrente": { bloques: NECESIDAD },
   glucocorticoides: { bloques: NECESIDAD },
   "ingreso-hospitalario": { bloques: INGRESO },

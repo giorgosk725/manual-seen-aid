@@ -106,5 +106,10 @@ describe("Lo de cada sistema por situación (0.73.0)", () => {
     const texto = camaps.map((p) => textosDePieza(p, 2).join(" ")).join(" ");
     expect(texto).toMatch(/80–90 mg\/dl/);
     expect(texto).toMatch(/Tras el parto debe elevarse nuevamente el objetivo/);
+    // Lo complementario (folleto de Tandem), solo con Control-IQ, rotulado y con su fuente.
+    const k = GUIA_POR_SISTEMA.gestacion.complementos ?? {};
+    expect(Object.keys(k)).toEqual(["1"]);
+    expect(k[1].aviso).toMatch(/no es texto del capítulo/);
+    expect(k[1].fuente).toMatch(/MAT-2075_1/);
   });
 });
