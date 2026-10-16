@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-16",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — rejillas sin huecos y ficha impresa completa`,
+    titulo: `Complemento interactivo ${VERSION_APP} — sistema en la dirección y ficha impresa sin repeticiones`,
+    detalle: [
+      "Situaciones con selector de sistema (gestación y las demás): el sistema de la dirección manda y la casilla elegida pasa a la dirección; un enlace compartido, Atrás y Adelante enseñan el sistema escrito.",
+      "Ficha impresa: bajo cada pregunta frecuente, cada pasaje una sola vez (antes, algunos párrafos salían repetidos).",
+      "Gestación sistema a sistema con los objetivos de inicio a todo lo ancho; columnas de la ficha más igualadas; Situaciones en el mismo orden en el móvil, el lateral y las dos columnas; foco de teclado visible en las tarjetas de la portada; cabecera de la Tabla 1 impresa sin partir los nombres.",
+    ],
+  },
+  {
+    fecha: "2026-10-16",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.76.1 — rejillas sin huecos y ficha impresa completa",
     detalle: [
       "Tarjetas de una misma fila a la misma altura (Interrupción, Figura 3); en Parámetros y Modos, una sola rejilla en el orden de la tabla con lo añadido para cada sistema; la lista de Situaciones, en dos columnas equilibradas.",
       "«Control-IQ / Control-IQ+» solo se parte por la barra; Elección del sistema con las filas alineadas como una tabla; accesos de la portada con más aire; figuras apaisadas en el móvil.",
