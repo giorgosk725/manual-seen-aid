@@ -602,9 +602,47 @@ function SiglasTabla({ t }: { t: Tabla }) {
    `frases(plano(texto))`), a su punto de lista (l/…/punto) o a su fila o nota de tabla; las
    frases contiguas de un mismo párrafo se juntan en un párrafo y nada se imprime dos veces
    (séptima vuelta: un mismo párrafo citado por cuatro frases salía cuatro veces). */
-function RespuestaImpresa({ f, c }: { f: (typeof FRECUENTES)[number]; c: number }) {
-  const trozos: { bloque: string; tipo: "p" | "li"; texto: string }[] = [];
-  const vistos = new Set<string>();
+/* El texto de una fila de tabla tal como se imprime: las líneas de cada casilla separadas por «; »
+   (antes se fundían en un párrafo) y las casillas de una fila unida, por « · ». */
+const textoDeFila = (t: Tabla, fila: number, c: number) => {
+  const f = t.filas[fila];
+  if (!f) return "";
+  const casilla = (x: string) =>
+    x
+      .split("\n")
+      .map((l) => plano(l).trim())
+      .filter(Boolean)
+      .join("; ");
+  return `${f.etiqueta.split("\n")[0]}: ${
+    f.unida || !t.porSistema ? f.celdas.map(casilla).join(" · ") : casilla(f.celdas[c])
+  }`;
+};
+/* 0.76.3 (séptima auditoría): lo que la ficha ya imprime en sus secciones (las filas del sistema
+   en las Tablas 1, 3 y 4) no se repite bajo las preguntas; y un pasaje ya impreso bajo una
+   pregunta no se repite bajo la siguiente (un conjunto por lista de preguntas). */
+const yaImpreso = (c: number) => {
+  const s = new Set<string>();
+  for (const id of ["T1", "T3", "T4"] as const)
+    TABLAS[id].filas.forEach((_, i) => s.add(textoDeFila(TABLAS[id], i, c)));
+  // Y las frases enteras que Parámetros y Modos añaden para el sistema (src/porSistema.ts).
+  for (const b of [...FICHA_PARAMETROS[c], ...FICHA_MODOS[c]])
+    for (const p of b.piezas)
+      if (p.t === "frase" && !p.trozo)
+        frasesDe(p.apartado, p.bloque, p.k).frases.forEach((x) => s.add(x));
+  return s;
+};
+type TrozoImpreso = { bloque: string; tipo: "p" | "li"; texto: string };
+/* Cálculo puro (sin efectos al pintar): los pasajes de cada pregunta, sin repetir lo ya impreso
+   en la ficha ni lo de las preguntas anteriores. */
+function respuestasImpresas(
+  preguntas: (typeof FRECUENTES)[number][],
+  c: number,
+): Map<string, TrozoImpreso[]> {
+  const vistos = yaImpreso(c);
+  return new Map(preguntas.map((f) => [f.id, trozosDe(f, c, vistos)]));
+}
+function trozosDe(f: (typeof FRECUENTES)[number], c: number, vistos: Set<string>): TrozoImpreso[] {
+  const trozos: TrozoImpreso[] = [];
   const poner = (bloque: string, tipo: "p" | "li", texto: string) => {
     if (!texto || vistos.has(texto)) return;
     vistos.add(texto);
@@ -629,20 +667,18 @@ function RespuestaImpresa({ f, c }: { f: (typeof FRECUENTES)[number]; c: number 
       const t = TABLAS[p[0] as keyof typeof TABLAS];
       if (!t) continue;
       if (p[1] === "nota") poner(id, "p", plano(t.notas[Number(p[2])] ?? ""));
-      else {
-        const fila = t.filas[Number(p[1])];
-        if (fila)
-          poner(
-            `${p[0]}/${p[1]}`,
-            "p",
-            `${fila.etiqueta.split("\n")[0]}: ${plano(
-              fila.unida || !t.porSistema ? fila.celdas.join(" · ") : fila.celdas[c],
-            )}`,
-          );
-      }
+      else poner(`${p[0]}/${p[1]}`, "p", textoDeFila(t, Number(p[1]), c));
     }
   }
-  if (!trozos.length) return null;
+  return trozos;
+}
+function RespuestaImpresa({ trozos }: { trozos: TrozoImpreso[] }) {
+  if (!trozos.length)
+    return (
+      <p className="hidden px-4 pb-3 text-[13px] text-slate-600 print:block">
+        En las secciones anteriores de esta ficha.
+      </p>
+    );
   // Trozos seguidos del mismo bloque y tipo, juntos (un párrafo; una lista).
   const grupos: (typeof trozos)[] = [];
   for (const t of trozos) {
@@ -725,6 +761,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const preguntas = FRECUENTES.filter(
     (f) => f.sistema === c && f.pasajes.some((x) => !/^T[134]\//.test(x)),
   );
+  const impresas = respuestasImpresas(preguntas, c);
   // Una sola página (0.70.0): la sección de la ruta es solo adónde se salta.
   const sec = completa ? undefined : seccion;
   // 0.73.0 (auditoría de uso): cada pestaña enseña solo su sección (la ficha entera medía casi
@@ -893,7 +930,10 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       }
 
       {preguntas.length > 0 && (
-        <section aria-labelledby="preguntas" className={`${mt} scroll-mt-2 ${papel("preguntas")}`}>
+        <section
+          aria-labelledby="preguntas"
+          className={`${mt} scroll-mt-2 print:mt-8 ${papel("preguntas")}`}
+        >
           <TituloSeccion id="preguntas" sistema={s.name} color={h.ink}>
             Preguntas frecuentes
           </TituloSeccion>
@@ -909,7 +949,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
                 >
                   <span className="min-w-0 flex-1">{sinNombreDelSistema(f.pregunta)}</span>
                 </a>
-                <RespuestaImpresa f={f} c={c} />
+                <RespuestaImpresa trozos={impresas.get(f.id) ?? []} />
               </li>
             ))}
           </ul>
