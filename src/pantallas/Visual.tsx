@@ -94,12 +94,12 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
         <h2 id="figuras" className="titulo-seccion mb-2">
           Figuras del capítulo
         </h2>
-        <ul className="grid grid-cols-2 items-start gap-3 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           {FIGURAS_GALERIA.map(({ fig, extra }) => {
             const ap = apartadoDeFigura(fig.id);
             const img = fig.imagen!;
             return (
-              <li key={fig.id} className="overflow-hidden tarjeta">
+              <li key={fig.id} className="tarjeta flex flex-col overflow-hidden">
                 <AbrirEnVisor
                   imagen={{
                     src: img.src,
@@ -114,13 +114,13 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                     src={img.src}
                     alt={img.alt}
                     loading="lazy"
-                    className="block aspect-[4/3] w-full bg-white object-contain p-2"
+                    className="foto-figura block aspect-[4/3] w-full bg-white object-contain p-2"
                   />
-                  <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-slate-900/80 px-2 py-1 text-xs font-semibold text-white">
+                  <span className="chip absolute right-2 top-2 min-h-8 text-xs">
                     <Maximize2 size={12} aria-hidden="true" /> Ampliar
                   </span>
                 </AbrirEnVisor>
-                <div className="separador border-t p-3">
+                <div className="separador flex flex-1 flex-col border-t p-3">
                   <div className="text-sm font-bold leading-snug text-slate-900">
                     {fig.titulo.replace(/\.$/, "")}
                   </div>
@@ -133,7 +133,7 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                     </a>
                   )}
                   {ap && (
-                    <p className="fuente-pie mt-1">
+                    <p className="fuente-pie mt-auto pt-1">
                       Fuente:{" "}
                       <a
                         href={rutaDeFigura(fig.id) ?? href("capitulo", ap.slug)}

@@ -115,3 +115,27 @@ las tarjetas se imprimen con borde y sin sombra; la pleca de sistema se imprime 
 - **Papel**: la ficha imprime todas sus secciones (`hidden print:block`); la Tabla 1 cabe en A4
   vertical (`table-layout: fixed`); los controles de Iniciación no se imprimen; sin chevrones.
 - **Hover**: sin sombra; el borde se oscurece (`.hover-lift`).
+
+## 9. Tercera vuelta (auditoría 8,4 → objetivo ≥ 9)
+
+- **Rejillas sin escalera**: en «Cómo funciona» las filas cortas de la Tabla 1 se agrupan en
+  tres tarjetas (sensores + localización + objetivo · lógica · estrategia + bolos); el resumen
+  de Sistemas fluye en dos columnas (`columns-2`, `break-inside-avoid`); Figuras con la fuente
+  al pie de cada tarjeta (`flex-col`, `mt-auto`); en Interrupción, pod y bomba en una tarjeta y
+  las cabeceras de color con alto fijo (`md:min-h-[4.75rem]`) sin subrejilla.
+- **Un botón principal** (`.boton-primario`, burdeos) en Imprimir la hoja, hojas del paciente,
+  Actualizar y Recargar.
+- **Iniciación**: «Nuevo inicio» en la fila de las pestañas (sin banda vacía; no salta nada al
+  escribir el primer dato).
+- **Barra lateral**: cabe en 900 px sin desplazar (filas de 40 px, márgenes cortos; medido
+  857/857 px); en Buscar, la caja de búsqueda deja su sitio (invisible) para que el menú no
+  salte.
+- **Ficha**: el h2 de cada sección es solo para el lector de pantalla (la pestaña activa ya lo
+  dice) y visible en papel; «Siglas de la tabla» tras la línea de fuente, plegado en pantalla y
+  abierto en papel.
+- **Nocturno**: miniaturas de figuras y fotos de sistema con `brightness(0.8) contrast(1.05)`;
+  casillas con acento burdeos; un solo anillo de foco (contorno burdeos, el anillo gris apagado).
+- **Figura 3 móvil**: la barra de cuatro colores solo con las cuatro tarjetas en fila (`lg`).
+- **Pulido**: casillas de sistema a 2 × 2 en el móvil; rótulos de la descarga todos en gris;
+  «Ampliar» como chip; h1 a 20 px; en una tarea, una fila numerada de la Tabla 5 lleva de
+  título su elemento (sin «1» suelto).

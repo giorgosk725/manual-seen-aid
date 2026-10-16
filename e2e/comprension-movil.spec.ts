@@ -19,7 +19,7 @@ test.describe("Comprensión en el móvil", () => {
   test("Cómo funciona de un sistema cabe en el móvil", async ({ page }) => {
     await page.goto("/#/sistemas/camaps/funciona");
     await expect(
-      page.getByRole("heading", { level: 2, name: /^Cómo funciona · myLoop CamAPS/ }),
+      page.getByRole("region", { name: /^Cómo funciona · myLoop CamAPS/ }),
     ).toBeInViewport();
     const ancho = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

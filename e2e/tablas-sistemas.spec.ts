@@ -54,9 +54,7 @@ test.describe("Tablas y sistemas", () => {
     page,
   }) => {
     await page.goto("/#/sistemas/op5/parametros");
-    await expect(
-      page.getByRole("heading", { level: 2, name: /^Parámetros · Omnipod 5/ }),
-    ).toBeInViewport();
+    await expect(page.getByRole("region", { name: /^Parámetros · Omnipod 5/ })).toBeInViewport();
     await expect(
       page.getByRole("heading", { level: 2, name: /^Cómo funciona · Omnipod 5/ }),
     ).toHaveCount(0);
@@ -109,8 +107,13 @@ test.describe("Tablas y sistemas", () => {
 
   test("UX14: el enlace a los parámetros de un sistema abre esa sección", async ({ page }) => {
     await page.goto("/#/sistemas/ciq/parametros");
-    const titulo = page.getByRole("heading", { level: 2, name: /^Parámetros · Tandem Control-IQ/ });
-    await expect(titulo).toBeInViewport();
+    // El título es solo para el lector de pantalla; a la vista queda su sección.
+    await expect(
+      page.getByRole("heading", { level: 2, name: /^Parámetros · Tandem Control-IQ/ }),
+    ).toHaveCount(1);
+    await expect(
+      page.getByRole("region", { name: /^Parámetros · Tandem Control-IQ/ }),
+    ).toBeInViewport();
     await expect(page.getByRole("link", { name: "Parámetros", exact: true })).toHaveAttribute(
       "aria-current",
       "location",

@@ -26,9 +26,12 @@ test.describe("Comprensión", () => {
     page,
   }) => {
     await page.goto("/#/sistemas/op5/funciona");
+    // El título de sección es solo para el lector de pantalla (la pestaña lo dice): lo que
+    // queda a la vista es la sección que nombra.
     await expect(
       page.getByRole("heading", { level: 2, name: /^Cómo funciona · Omnipod 5/ }),
-    ).toBeInViewport();
+    ).toHaveCount(1);
+    await expect(page.getByRole("region", { name: /^Cómo funciona · Omnipod 5/ })).toBeInViewport();
     // 0.72.2: la ficha técnica con las casillas del sistema.
     await expect(page.getByLabel("Características del sistema (Tabla 1)")).toContainText(
       "FreeStyle Libre 2 Plus",
@@ -39,9 +42,7 @@ test.describe("Comprensión", () => {
       .getByRole("link", { name: "Parámetros" })
       .click();
     await expect(page).toHaveURL(/#\/sistemas\/op5\/parametros$/);
-    await expect(
-      page.getByRole("heading", { level: 2, name: /^Parámetros · Omnipod 5/ }),
-    ).toBeInViewport();
+    await expect(page.getByRole("region", { name: /^Parámetros · Omnipod 5/ })).toBeInViewport();
   });
 
   test("un caso guiado: elegir enseña el veredicto, el comentario y las citas con enlace", async ({
@@ -96,9 +97,7 @@ test.describe("Comprensión", () => {
     await expect(page.getByRole("heading", { level: 1 })).not.toContainText("Omnipod 5");
     await page.goBack();
     await expect(page).toHaveURL(/#\/sistemas\/op5\/parametros$/);
-    await expect(
-      page.getByRole("heading", { level: 2, name: /^Parámetros · Omnipod 5/ }),
-    ).toBeInViewport();
+    await expect(page.getByRole("region", { name: /^Parámetros · Omnipod 5/ })).toBeInViewport();
   });
 
   test("Buscar encuentra el ejemplo de descarga y los casos", async ({ page }) => {

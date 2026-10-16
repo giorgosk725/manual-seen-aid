@@ -118,7 +118,7 @@ function Hoja({ sis }: { sis?: number }) {
         <button
           type="button"
           onClick={() => imprimirRegion(() => ref.current)}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-md bg-slate-800 px-3 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+          className="boton-primario focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
         >
           <Printer size={15} aria-hidden="true" /> Imprimir la hoja
         </button>
@@ -150,7 +150,7 @@ function Hoja({ sis }: { sis?: number }) {
                   type="checkbox"
                   checked={hechos.has(it.texto)}
                   onChange={() => marcar(it.texto)}
-                  className="h-7 w-7 shrink-0 accent-slate-700"
+                  className="h-7 w-7 shrink-0 accent-[#8E254E]"
                 />
                 <span>{it.texto}</span>
               </label>
@@ -206,7 +206,7 @@ function Hoja({ sis }: { sis?: number }) {
                   type="checkbox"
                   checked={hechos.has(c)}
                   onChange={() => marcar(c)}
-                  className="h-7 w-7 shrink-0 accent-slate-700"
+                  className="h-7 w-7 shrink-0 accent-[#8E254E]"
                 />
                 <span>{c}</span>
               </label>
@@ -434,7 +434,7 @@ function PasosInicio({
                   type="checkbox"
                   checked={hechos.has(x)}
                   onChange={() => marcar(x)}
-                  className="h-6 w-6 shrink-0 accent-slate-700"
+                  className="h-6 w-6 shrink-0 accent-[#8E254E]"
                 />
                 <span>{x}</span>
               </label>
@@ -566,36 +566,37 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
 
       {/* 0.72.0: las tres vistas en un solo control (la calculadora, las fases y la hoja para
           imprimir). */}
-      <div role="group" aria-label="Herramienta" className="pestanas no-imprimir mb-3 gap-1">
-        {(
-          [
-            { id: CALC, t: "Cálculo", on: actual === CALC },
-            { id: FASES[0].id, t: "Fases", on: enFases },
-            { id: HOJA, t: "Hoja", on: actual === HOJA },
-          ] as const
-        ).map((x) => (
-          <button
-            key={x.id}
-            type="button"
-            aria-pressed={x.on}
-            aria-label={x.id === HOJA ? "Hoja de comprobación para imprimir" : undefined}
-            onClick={() => (x.id === FASES[0].id && enFases ? undefined : ir(x.id))}
-            className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-          >
-            {x.t}
-          </button>
-        ))}
-      </div>
-
-      {/* «Nuevo inicio», con su sitio guardado: al escribir el primer dato la pantalla no salta. */}
-      <div className="no-imprimir mb-3 flex min-h-11 justify-end">
+      <div className="no-imprimir mb-3 flex items-center justify-between gap-3">
+        <div role="group" aria-label="Herramienta" className="pestanas gap-1">
+          {(
+            [
+              { id: CALC, t: "Cálculo", on: actual === CALC },
+              { id: FASES[0].id, t: "Fases", on: enFases },
+              { id: HOJA, t: "Hoja", on: actual === HOJA },
+            ] as const
+          ).map((x) => (
+            <button
+              key={x.id}
+              type="button"
+              aria-pressed={x.on}
+              aria-label={x.id === HOJA ? "Hoja de comprobación para imprimir" : undefined}
+              onClick={() => (x.id === FASES[0].id && enFases ? undefined : ir(x.id))}
+              className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            >
+              {x.t}
+            </button>
+          ))}
+        </div>
+        {/* «Nuevo inicio» en la misma fila: aparece al escribir el primer dato sin mover nada. */}
         {hayTrabajo() && (
           <button
             type="button"
             onClick={nuevoTrabajo}
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-md px-2 text-sm font-semibold text-slate-700 hover:underline"
+            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2 text-sm font-semibold text-slate-700 hover:underline"
           >
-            <RotateCcw size={14} aria-hidden="true" /> Nuevo inicio (vaciar datos)
+            <RotateCcw size={14} aria-hidden="true" />
+            <span className="hidden sm:inline">Nuevo inicio (vaciar datos)</span>
+            <span className="sm:hidden">Nuevo inicio</span>
           </button>
         )}
       </div>

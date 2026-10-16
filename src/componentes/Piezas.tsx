@@ -178,18 +178,22 @@ function PiezaVistaBase({
       const t = TABLAS[pieza.tabla];
       const f = t.filas[pieza.fila];
       // En una tarea o un paso: la recomendación, a la vista; las demás columnas, como matiz.
+      // Una fila numerada (Tabla 5: «1», «2»…): el título es su primera casilla (el elemento).
+      const numerada = /^\d+$/.test(f.etiqueta.trim());
       if (compacta)
         return (
           <div>
-            <Rotulo tabla={pieza.tabla} etiqueta={f.etiqueta} />
-            <div className="casilla casilla-sistema p-3">
-              <div className="rotulo mb-0.5" style={{ color: hex.ink }}>
-                {t.columnas[0]}
+            <Rotulo tabla={pieza.tabla} etiqueta={numerada ? f.celdas[0] : f.etiqueta} />
+            {!numerada && (
+              <div className="casilla casilla-sistema p-3">
+                <div className="rotulo mb-0.5" style={{ color: hex.ink }}>
+                  {t.columnas[0]}
+                </div>
+                <div className="text-[15px] font-medium text-slate-900">
+                  <Lineas siglas={pend(f.celdas[0])}>{f.celdas[0]}</Lineas>
+                </div>
               </div>
-              <div className="text-[15px] font-medium text-slate-900">
-                <Lineas siglas={pend(f.celdas[0])}>{f.celdas[0]}</Lineas>
-              </div>
-            </div>
+            )}
             {t.columnas.slice(1).map((col, k) => (
               <p key={col} className="mt-1.5 text-sm text-slate-600">
                 <span className="font-semibold text-slate-700">{col}: </span>

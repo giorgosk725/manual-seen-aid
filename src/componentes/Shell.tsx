@@ -306,11 +306,7 @@ function AvisoVersion() {
         «Actualizar»; con «Más tarde» sigues con esta.
       </p>
       <div className="mt-2 flex gap-2">
-        <button
-          type="button"
-          onClick={update}
-          className="min-h-11 rounded-lg bg-slate-800 px-3 py-1.5 text-sm font-semibold text-white"
-        >
+        <button type="button" onClick={update} className="boton-primario">
           Actualizar
         </button>
         <button
@@ -344,7 +340,7 @@ export function Rotulo({
       <span className="flex flex-col gap-1 leading-none" aria-hidden="true">
         <span className="flex items-center gap-1.5">
           <span
-            className="font-display text-[1.5rem] font-semibold uppercase tracking-tight"
+            className="font-display text-[1.4rem] font-semibold uppercase tracking-tight"
             style={{ color: SEEN.azulOsc }}
           >
             Manual
@@ -416,7 +412,7 @@ function MenuNavegacion({
         if (!e.defaultPrevented) onIr?.();
       }}
       aria-current={on ? "page" : undefined}
-      className={`relative flex min-h-11 items-center gap-2.5 rounded-md px-3 py-1.5 text-[13.5px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"}`}
+      className={`relative flex min-h-11 items-center gap-2.5 rounded-md px-3 py-1 text-[13.5px] lg:min-h-10 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"}`}
     >
       {on && (
         <span
@@ -488,7 +484,7 @@ function MenuNavegacion({
   );
   return (
     <nav aria-label={etiqueta}>
-      <ul className="mt-3">
+      <ul className="mt-2">
         <li>
           {enlace(
             ruta.seccion === "",
@@ -503,7 +499,7 @@ function MenuNavegacion({
       </ul>
       {MENU.map((g) =>
         g.area === "mas" ? (
-          <details key={g.area} className="group mt-4" open={area === "mas" || undefined}>
+          <details key={g.area} className="group mt-3" open={area === "mas" || undefined}>
             <summary className="flex min-h-9 cursor-pointer list-none items-center justify-between rounded-md pr-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 [&::-webkit-details-marker]:hidden">
               {titulo(g.titulo)}
               <ChevronDown
@@ -512,12 +508,12 @@ function MenuNavegacion({
                 className="text-slate-500 transition group-open:rotate-180"
               />
             </summary>
-            <ul className="mt-1 space-y-0.5">{g.ids.map(item)}</ul>
+            <ul className="mt-0.5">{g.ids.map(item)}</ul>
           </details>
         ) : (
-          <div key={g.area} className="mt-4">
+          <div key={g.area} className="mt-3">
             {titulo(g.titulo)}
-            <ul className="mt-1 space-y-0.5">{g.ids.map(item)}</ul>
+            <ul className="mt-0.5">{g.ids.map(item)}</ul>
           </div>
         ),
       )}
@@ -532,7 +528,7 @@ function Lateral({ ruta, pie }: { ruta: Ruta; pie: ReactNode }) {
       aria-label="Menú del capítulo"
       className="barra-lateral fixed inset-y-0 left-0 z-30 hidden w-64 flex-col lg:flex"
     >
-      <div className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
+      <div className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
         <a
           href="#/"
           aria-label={`Manual de Endocrinología y Nutrición, complemento interactivo. Capítulo ${CAPITULO.numero} · ${CAPITULO.tituloCorto}: inicio`}
@@ -540,18 +536,22 @@ function Lateral({ ruta, pie }: { ruta: Ruta; pie: ReactNode }) {
         >
           <Rotulo />
           {/* El rótulo ya dice «Complemento interactivo»: aquí, de qué capítulo (V54-08). */}
-          <span className="mt-1.5 block text-xs font-semibold leading-snug text-slate-700">
+          <span className="mt-1 block text-xs font-semibold leading-snug text-slate-700">
             Capítulo {CAPITULO.numero} · {CAPITULO.tituloCorto}
           </span>
         </a>
         {/* En la propia pantalla de búsqueda, una sola caja (0.72.0: había dos con la misma
-          consulta). */}
-        {ruta.seccion !== "buscar" && <BuscadorLateral />}
+          consulta); la caja deja su sitio para que el menú no salte al entrar y salir. */}
+        {ruta.seccion === "buscar" ? (
+          <div aria-hidden="true" className="my-2 h-[34px]" />
+        ) : (
+          <BuscadorLateral />
+        )}
         <MenuNavegacion ruta={ruta} etiqueta="Navegación principal" />
       </div>
       {/* Sistema visual: sin cabecera fija en el ordenador; sus mandos, al pie del menú, siempre
           a la vista (fuera de la zona que se desplaza). */}
-      <div className="separador flex shrink-0 items-center gap-1 border-t px-3 py-2">{pie}</div>
+      <div className="separador flex shrink-0 items-center gap-1 border-t px-3 py-1">{pie}</div>
     </aside>
   );
 }
@@ -563,7 +563,7 @@ function BuscadorLateral() {
   return (
     <form
       role="search"
-      className="mb-3 mt-3 px-1"
+      className="my-2 px-1"
       onSubmit={(e) => {
         e.preventDefault();
         if (q.trim()) irABuscar(q);

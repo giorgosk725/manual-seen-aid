@@ -458,7 +458,6 @@ function ColumnaTabla({
   const esAsterisco = (n: string) => n.trimStart().startsWith("*");
   const esSiglas = (n: string) => /^[A-ZÁÉÍÓÚ/]{2,}: /.test(n.trim());
   const notas = t.notas.filter((n) => (esAsterisco(n) ? hayAsterisco : !esSiglas(n)));
-  const siglas = t.notas.filter(esSiglas);
   return (
     // 0.72.0: sin la caja de fuera (tarjetas dentro de una tarjeta). sistema visual: una tarjeta por
     // fila con la pleca del sistema; la que cuenta en automático, con el borde del sistema.
@@ -520,18 +519,6 @@ function ColumnaTabla({
           ))}
         </div>
       )}
-      {siglas.length > 0 && (
-        <details className="mt-2 text-xs text-slate-600">
-          <summary className="min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-6">
-            Siglas de la tabla
-          </summary>
-          {siglas.map((n, k) => (
-            <p key={k} className="mt-1">
-              <Texto>{n}</Texto>
-            </p>
-          ))}
-        </details>
-      )}
       <div
         className={`mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 ${sinFuente ? "hidden" : ""}`}
       >
@@ -548,7 +535,35 @@ function ColumnaTabla({
         />
         {pie}
       </div>
+      {!sinFuente && <SiglasTabla t={t} />}
     </div>
+  );
+}
+
+/* Las siglas de una tabla, tras la línea de fuente: plegadas en pantalla y abiertas en papel. */
+function SiglasTabla({ t }: { t: Tabla }) {
+  const siglas = t.notas.filter((n) => /^[A-ZÁÉÍÓÚ/]{2,}: /.test(n.trim()));
+  if (!siglas.length) return null;
+  return (
+    <>
+      <details className="mt-1 text-xs text-slate-600 print:hidden">
+        <summary className="min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-6">
+          Siglas de la tabla
+        </summary>
+        {siglas.map((n, k) => (
+          <p key={k} className="mt-1">
+            <Texto>{n}</Texto>
+          </p>
+        ))}
+      </details>
+      <div className="hidden text-xs text-slate-600 print:block">
+        {siglas.map((n, k) => (
+          <p key={k} className="mt-1">
+            <Texto>{n}</Texto>
+          </p>
+        ))}
+      </div>
+    </>
   );
 }
 
@@ -566,7 +581,9 @@ function TituloSeccion({
   children: ReactNode;
 }) {
   return (
-    <h2 id={id} className="titulo-seccion mb-2 scroll-mt-2">
+    // En pantalla, la pestaña activa ya lo dice (sería un título repetido): solo para el lector
+    // de pantalla; en papel, visible.
+    <h2 id={id} className="titulo-seccion sr-only mb-2 scroll-mt-2 print:not-sr-only">
       {/* El sistema ya está en el título y en la barra: solo para el lector de pantalla. */}
       {children}{" "}
       <span className="sr-only" style={{ color }}>
@@ -746,6 +763,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
               ...fuentesDePiezas(FICHA_PARAMETROS[c].flatMap((b) => b.piezas)),
             ]}
           />
+          <SiglasTabla t={TABLAS.T3} />
         </section>
       }
 
@@ -762,6 +780,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
               ...fuentesDePiezas(FICHA_MODOS[c].flatMap((b) => b.piezas)),
             ]}
           />
+          <SiglasTabla t={TABLAS.T4} />
         </section>
       )}
 
@@ -1112,7 +1131,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
     <div className="space-y-4">
       {/* 13-10-2026: cada tarjeta con lo esencial de la Tabla 1 (fragmentos literales,
           CLAVE_ALGORITMO) para distinguirlos antes de entrar. */}
-      <ul className="grid items-start gap-3 sm:grid-cols-2">
+      <ul className="sm:columns-2 sm:gap-3">
         {visibles.map(({ s, c }) => {
           const h = SISTEMA_HEX[c];
           const k = CLAVE_ALGORITMO[c];
@@ -1130,10 +1149,10 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
             ["Sensores", sensores],
           ];
           return (
-            <li key={s.id}>
+            <li key={s.id} className="mb-3 break-inside-avoid">
               <a
                 href={href("sistemas", s.id)}
-                className="tarjeta tarjeta-sistema hover-lift ease-brand block h-full overflow-hidden transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                className="tarjeta tarjeta-sistema hover-lift ease-brand block overflow-hidden transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
                 style={{ ["--sis" as string]: h.strong }}
               >
                 <span className="separador flex items-center gap-3 border-b px-4 py-3">
@@ -1311,7 +1330,9 @@ function CeldaFunciona({ fila, c }: { fila: number; c: number }) {
    generales de los apartados 2 y 3 (las mismas para los cuatro), plegadas al final. Las piezas
    salen de la guía comoFunciona (guias/index.ts), así que siguen comprobadas frase a frase. */
 /* Filas de la Tabla 1 que dicen cómo funciona, en el orden de la tabla. */
-const FICHA_TECNICA: { fila: number }[] = [1, 2, 3, 4, 5, 6].map((fila) => ({ fila }));
+/* Filas de la Tabla 1 de «Cómo funciona», agrupadas en tres tarjetas: las casillas cortas
+   (sensores, localización, objetivo) juntas; la lógica sola; estrategia y bolos juntos. */
+const GRUPOS_FUNCIONA: number[][] = [[1, 2, 6], [3], [4, 5]];
 function ClaveRecorrido({ fila, c }: { fila: number; c: number }) {
   const h = SISTEMA_HEX[c];
   const celda = TABLAS.T1.filas[fila].celdas[c];
@@ -1376,27 +1397,34 @@ function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
           la casilla entera, a un toque. */}
       <dl
         aria-label="Características del sistema (Tabla 1)"
-        className="grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-3"
+        className="grid items-start gap-3 lg:grid-cols-3"
         style={{ ["--sis" as string]: h.strong }}
       >
-        {FICHA_TECNICA.map(({ fila }) => (
-          <div key={fila} className="tarjeta tarjeta-sistema min-w-0 p-3">
-            <dt className="rotulo" style={{ color: h.ink }}>
-              {TABLAS.T1.filas[fila].etiqueta}
-            </dt>
-            <dd className="mt-1 text-[15px] leading-snug">
-              {fila === 3 || fila === 5 ? (
-                <CeldaFunciona fila={fila} c={c} />
-              ) : (
-                <ClaveRecorrido fila={fila} c={c} />
-              )}
-            </dd>
+        {/* Tres tarjetas con las filas agrupadas (las cortas juntas): sin huecos en la rejilla. */}
+        {GRUPOS_FUNCIONA.map((grupo) => (
+          // En un <dl>, cada tarjeta es un <div> con sus pares dt/dd seguidos (sin otro nivel).
+          <div
+            key={grupo.join()}
+            className="tarjeta tarjeta-sistema min-w-0 p-3 [&>dt:not(:first-child)]:mt-3"
+          >
+            {grupo.flatMap((fila) => [
+              <dt key={`t${fila}`} className="rotulo" style={{ color: h.ink }}>
+                {TABLAS.T1.filas[fila].etiqueta}
+              </dt>,
+              <dd key={`d${fila}`} className="mt-1 text-[15px] leading-snug">
+                {fila === 3 || fila === 5 ? (
+                  <CeldaFunciona fila={fila} c={c} />
+                ) : (
+                  <ClaveRecorrido fila={fila} c={c} />
+                )}
+              </dd>,
+            ])}
           </div>
         ))}
         {/* 0.74.1 (a petición del responsable): lo que lo distingue (apartado 4), directamente
             como una tarjeta más, sin plegar y sin los puntos suspensivos del recorte. */}
         {distingue.length > 0 && (
-          <div className="tarjeta tarjeta-sistema min-w-0 p-3 sm:col-span-2 lg:col-span-3">
+          <div className="tarjeta tarjeta-sistema min-w-0 p-3 lg:col-span-3">
             <dt className="rotulo" style={{ color: h.ink }}>
               Rasgos distintivos
             </dt>

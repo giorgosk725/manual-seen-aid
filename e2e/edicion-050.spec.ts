@@ -112,6 +112,8 @@ test.describe("Portada y navegación (0.50)", () => {
     });
     expect(contorno.estilo).toBe("solid");
     expect(contorno.ancho).toBe("2px");
-    expect(contorno.color).toBe("rgb(147, 197, 253)");
+    // Sistema visual (tercera vuelta): un solo anillo, en el rosa del burdeos nocturno
+    // (--acento-texto, #f0a8c4: contraste ≈ 9:1 sobre #0b1220).
+    expect(contorno.color).toBe("rgb(240, 168, 196)");
   });
 });

@@ -95,7 +95,7 @@ test.describe("Móvil compacto (360 px)", () => {
 
 /* 0.45.0: segunda tanda («haz todo lo que consideres en esa dirección»). */
 test.describe("Móvil compacto, segunda tanda (360 px)", () => {
-  test("el selector de sistemas: las cuatro casillas en una fila (Sistemas, Iniciar, Tabla 4)", async ({
+  test("el selector de sistemas: las cuatro casillas en dos filas de dos (Sistemas, Iniciar, Tabla 4)", async ({
     page,
   }) => {
     for (const [ruta, grupo] of [
@@ -108,7 +108,10 @@ test.describe("Móvil compacto, segunda tanda (360 px)", () => {
       if (ruta === "/#/sistemas") await page.getByRole("button", { name: /Comparar$/ }).click();
       const b = page.getByRole("group", { name: grupo, exact: true }).getByRole("button");
       await expect(b.first(), ruta).toBeVisible();
-      for (const i of [1, 2, 3]) await mismaFila(b.nth(0), b.nth(i));
+      // Sistema visual (tercera vuelta): 2 × 2 en el móvil (los nombres no se parten).
+      await mismaFila(b.nth(0), b.nth(1));
+      await mismaFila(b.nth(2), b.nth(3));
+      expect(Math.abs((await centro(b.nth(0))) - (await centro(b.nth(2))))).toBeGreaterThan(20);
       // Ningún nombre se sale de su casilla.
       const fuera = await b.evaluateAll((bs) =>
         bs.slice(0, 4).some((x) => {

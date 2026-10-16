@@ -38,7 +38,7 @@ export function CasillasSistema({
       aria-label={etiqueta}
       className="sm:flex sm:flex-wrap sm:items-center sm:gap-1.5"
     >
-      <div className="grid grid-cols-4 gap-1 sm:contents">
+      <div className="grid grid-cols-2 gap-1.5 sm:contents">
         {TABLAS.T1.columnas.map((nombre, c) => {
           const on = seleccion.includes(c);
           const h = SISTEMA_HEX[c];
@@ -48,14 +48,14 @@ export function CasillasSistema({
               type="button"
               aria-pressed={on}
               onClick={() => onToggle(c)}
-              className="tap-44 flex min-h-11 flex-col items-start justify-center gap-1 rounded-md border px-0.5 py-1 text-left text-xs font-semibold leading-tight tracking-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-0 sm:flex-row sm:items-center sm:gap-1.5 sm:px-2.5 sm:text-sm sm:leading-normal sm:tracking-normal"
+              className="tap-44 flex min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[13px] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-0 sm:px-2.5 sm:text-sm sm:leading-normal"
               style={
                 on
                   ? { borderColor: SEEN.burdeos, background: "#f7eff3" }
                   : { borderColor: "#d4d4d4", background: "#fff" }
               }
             >
-              <span className="flex items-center gap-1 sm:contents">
+              <span className="flex shrink-0 items-center gap-1 sm:contents">
                 <span
                   aria-hidden="true"
                   className="grid h-4 w-4 shrink-0 place-items-center rounded-sm border"

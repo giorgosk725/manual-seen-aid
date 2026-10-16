@@ -228,7 +228,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder="Buscar: cetonas, modo sueño, TBR…"
-        className="w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        className="w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8E254E]"
         autoComplete="off"
       />
       {/* 0.72.0 (4.1.3): lo que ha encontrado, dicho al lector cuando se deja de escribir. */}
@@ -827,7 +827,7 @@ export function Preguntas({ id }: { id?: string }) {
           placeholder="Filtrar: cetonas, gestación, descarga…"
           value={filtro}
           onChange={(e) => setFiltro(e.target.value)}
-          className="min-h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10 sm:max-w-md"
+          className="min-h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8E254E] sm:min-h-10 sm:max-w-md"
         />
         <button
           type="button"

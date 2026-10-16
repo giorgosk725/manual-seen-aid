@@ -596,7 +596,7 @@ export function CalculadoraInicio({
                           : {}),
                       })
                     }
-                    className="h-6 w-6 shrink-0 accent-slate-700"
+                    className="h-6 w-6 shrink-0 accent-[#8E254E]"
                   />
                   La basal previa es glargina U-300 o degludec
                 </label>

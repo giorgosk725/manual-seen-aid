@@ -389,7 +389,10 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
             <span className="num num-on">2</span> <BetaMinuscula t={FIGURA3.confirmar} />
           </div>
           {/* La escala de la figura, de menos a más (decorativa: los botones la dicen). */}
-          <div aria-hidden="true" className="mb-2 flex h-1.5 gap-0.5 overflow-hidden rounded-full">
+          <div
+            aria-hidden="true"
+            className="mb-2 hidden h-1.5 gap-0.5 overflow-hidden rounded-full lg:flex"
+          >
             {TRAMOS.map((k) => (
               <span
                 key={k}

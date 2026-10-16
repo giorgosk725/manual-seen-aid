@@ -376,7 +376,7 @@ export class ErrorBoundary extends React.Component<{ children: ReactNode }, { ha
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="rounded-md bg-slate-800 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+              className="boton-primario focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
             >
               Recargar la página
             </button>
@@ -417,7 +417,7 @@ export function BotonImprimir({
       className={
         compacto
           ? "chip tap-44 shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-          : "flex min-h-11 shrink-0 items-center gap-1.5 rounded-md bg-slate-800 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+          : "boton-primario shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
       }
     >
       <Printer size={compacto ? 14 : 15} aria-hidden="true" />
@@ -519,7 +519,7 @@ export function CabeceraEditorial({
           </span>
         )}
         <H
-          className="font-display text-lg font-medium uppercase leading-tight tracking-[0.04em]"
+          className="font-display text-xl font-medium uppercase leading-tight tracking-[0.04em]"
           style={{ color: hex.ink }}
         >
           {titulo}

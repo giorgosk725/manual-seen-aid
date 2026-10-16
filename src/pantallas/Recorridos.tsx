@@ -570,7 +570,7 @@ export function SituacionSistema({
             placeholder="Filtrar: resonancia, ejercicio, sueño…"
             value={filtro}
             onChange={(e) => setFiltro(e.target.value)}
-            className="mb-3 min-h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-10"
+            className="mb-3 min-h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8E254E] sm:min-h-10"
           />
           <ListaSituaciones
             sit={sit}
@@ -978,9 +978,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
             {t.columnas.slice(1).map((col, j) => {
               return (
                 <div key={col} className="py-2.5 md:py-0">
-                  <dt className="rotulo mb-1" style={j === 2 ? { color: hex.ink } : undefined}>
-                    {col}
-                  </dt>
+                  <dt className="rotulo mb-1">{col}</dt>
                   <dd className="text-[15px] text-slate-800">
                     <Lineas>{fila.celdas[j + 1]}</Lineas>
                   </dd>

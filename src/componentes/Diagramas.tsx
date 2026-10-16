@@ -1220,11 +1220,13 @@ function InterrupcionLinea() {
     children: ReactNode;
   }) => (
     <li
-      className="tarjeta grid min-w-0 grid-rows-[auto_1fr] overflow-hidden md:row-span-2 md:grid-rows-subgrid"
+      className="tarjeta min-w-0 overflow-hidden"
       style={{ borderTop: `4px solid ${tono.strong}` }}
     >
+      {/* Cabecera con alto fijo en la rejilla (hasta tres líneas): las bandas de color quedan a la
+          misma altura sin estirar las tarjetas. */}
       <span
-        className="flex items-start px-3 py-2 text-[15px] font-bold leading-snug"
+        className="flex items-start px-3 py-2 text-[15px] font-bold leading-snug md:min-h-[4.75rem]"
         style={{ background: tono.soft, color: tono.ink }}
       >
         {cuando}
@@ -1265,13 +1267,13 @@ function InterrupcionLinea() {
         </a>
       )}
       {/* 0.72.0: el formato, antes de los casos (qué se puede desconectar y qué no). */}
-      <section className="grid items-start gap-3 md:grid-cols-2">
+      <section className="tarjeta grid gap-3 p-3 md:grid-cols-2">
         <Sub className="sr-only">Según el formato</Sub>
-        <p className="tarjeta p-3 text-sm leading-snug text-slate-800">
+        <p className="text-sm leading-snug text-slate-800">
           <span className="rotulo mb-1 block">Pod</span>
           <TS>{L.formatos.pod}</TS>
         </p>
-        <p className="tarjeta p-3 text-sm leading-snug text-slate-800">
+        <p className="text-sm leading-snug text-slate-800">
           <span className="rotulo mb-1 block">Bomba con catéter</span>
           <TS>{`${L.formatos.bomba}. ${L.formatos.pausa}`}</TS>
         </p>
@@ -1280,7 +1282,7 @@ function InterrupcionLinea() {
           desconectar; lo no programado se actúa a partir de aproximadamente 1 h sin insulina. */}
       <section>
         <Sub className="titulo-tarjeta mb-1.5">Si no estaba programada</Sub>
-        <ol className="grid gap-3 md:grid-cols-3">
+        <ol className="grid items-start gap-3 md:grid-cols-3">
           <Tramo cuando={L.tramos[0].cuando} tono={TRAMO_HEX.verde}>
             <span className="block">
               <TS>{L.tramos[0].texto + "."}</TS>
@@ -1306,7 +1308,7 @@ function InterrupcionLinea() {
         <Sub className="titulo-tarjeta mb-1.5">
           Si está programada: se decide antes de desconectar
         </Sub>
-        <ul className="grid gap-3 md:grid-cols-2">
+        <ul className="grid items-start gap-3 md:grid-cols-2">
           {L.programadas.map((x, k) => (
             <Tramo key={x.cuando} cuando={x.cuando} tono={PROGRAMADA}>
               <span className="block">
