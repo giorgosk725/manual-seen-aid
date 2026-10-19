@@ -109,6 +109,7 @@ function Sistemas() {
               >
                 <img
                   src={FOTO_SISTEMA[id]}
+                  decoding="async"
                   alt=""
                   width={48}
                   height={48}

@@ -45,7 +45,7 @@ export interface Complemento {
 export const TANDEM_GESTACION: Complemento = {
   titulo: "Recomendaciones de Tandem para la gestación",
   aviso:
-    "Complementario: no es texto del capítulo. Texto literal del folleto de Tandem para profesionales al que remite el apartado 10.",
+    "Complementario: no es texto del capítulo. Texto literal del folleto de Tandem para profesionales al que remite el apartado 10, basado en el ensayo CIRCUIT y en el consenso internacional de 2026 (ref. 3 del capítulo).",
   grupos: [
     {
       rotulo: "Paso 1 · Actividad Sueño las 24 horas del día",
@@ -125,5 +125,5 @@ export const TANDEM_GESTACION: Complemento = {
     },
   ],
   fuente:
-    "Novalab (distribuidor de Tandem en España) · «Recomendaciones en el manejo de Control-IQ durante el embarazo», folleto para profesionales MAT-2075_1, V4 (NO-E-PP-1026-001A); se apoya en CIRCUIT (Donovan LE et al. JAMA 2025;334(24):2176-85), en su análisis preespecificado del parto y el posparto, y en el consenso de Benhalima K et al. (Lancet Diabetes Endocrinol 2026;14(2):157-77; ref. 3 del capítulo). Estudio con t:slim X2, Control-IQ y Dexcom G6.",
+    "Novalab (distribuidor de Tandem) · «Recomendaciones en el manejo de Control-IQ durante el embarazo», folleto MAT-2075_1, V4",
 };

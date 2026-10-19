@@ -112,16 +112,12 @@ test.describe("Sistemas (M61-01/02/03)", () => {
   }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/#/sistemas/ciq/funciona");
-    // 0.72.2: rótulos de la Tabla 1 (antes «Hacia el objetivo»).
-    await expect(page.getByLabel("Características del sistema (Tabla 1)")).toContainText(
-      "Objetivo glucémico en modo automático",
-    );
+    // 0.77.0: tarjetas operativas; el objetivo, en la del algoritmo.
+    await expect(page.getByLabel("Algoritmo")).toContainText("112,5–160 mg/dl, fijo");
     await page.goto("/#/sistemas");
-    await expect(page.getByText(/no actúa en modo Sueño/).first()).toBeVisible();
-    // 0.72.2: la nota de Liberty, plegada junto a la casilla de indicación de la Tabla 1.
+    await expect(page.getByText(/no en modo sueño/).first()).toBeVisible();
+    // La edad de Liberty, como variante junto a la indicación (Tabla 1, «> 13 años»).
     await page.goto("/#/sistemas/camaps/esencial");
-    await expect(
-      page.getByText(/Nota complementaria \(no es texto del capítulo\)/).first(),
-    ).toBeVisible();
+    await expect(page.getByLabel("Indicación", { exact: true })).toContainText("> 13 años");
   });
 });

@@ -13,9 +13,20 @@ export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
-    fecha: "2026-10-16",
+    fecha: "2026-10-19",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — recomendaciones de Tandem para la gestación`,
+    titulo: `Complemento interactivo ${VERSION_APP} — tarjetas operativas de los sistemas`,
+    detalle: [
+      "Las tarjetas de cada sistema (Sistemas AID y su ficha: Cómo funciona, Indicación y material, Parámetros, Modos) dejan de copiar las casillas del capítulo: datos cortos, las mismas filas y en el mismo orden en los cuatro, con el detalle debajo y lo de Control-IQ+ o Liberty junto al dato. El texto literal sigue a un toque, en la línea de fuente al pie.",
+      "Parámetros: cada uno con si actúa en automático y cómo se usa. Modos: cada situación con su herramienta. Comparación de parámetros: una tarjeta por sistema con lo que actúa en automático.",
+      "En el móvil, filas con el rótulo a la izquierda y los accesos de cada sistema en una rejilla de botones.",
+      "Gestación sistema a sistema (diagrama): las recomendaciones de Tandem, con un enlace a Situaciones; su fuente, en una línea.",
+    ],
+  },
+  {
+    fecha: "2026-10-19",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.76.3 — recomendaciones de Tandem para la gestación",
     detalle: [
       "Gestación con Control-IQ: debajo de lo que dice el capítulo, las recomendaciones de Tandem para la gestación a las que remite el apartado 10 (Actividad Sueño las 24 horas, ajustes por etapas y posparto, bolo), con el texto literal del folleto para profesionales, rotuladas como complementarias y con su fuente.",
       "Gestación sistema a sistema (Figuras y diagramas) con una sola línea de fuente del capítulo.",

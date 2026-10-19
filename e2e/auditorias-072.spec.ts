@@ -61,9 +61,7 @@ test.describe("Auditorías 0.72.0", () => {
 
   test("ficha: la Tabla 3 dice qué tiene efecto directo en automático", async ({ page }) => {
     await page.goto("/#/sistemas/ciq/parametros");
-    await expect(
-      page.getByText("Efecto directo sobre el algoritmo", { exact: true }).first(),
-    ).toBeVisible();
+    await expect(page.getByText("Actúa en automático", { exact: true }).first()).toBeVisible();
   });
 
   test("Iniciar: «Calcular · Fases · Hoja» y la hoja con los valores de partida", async ({

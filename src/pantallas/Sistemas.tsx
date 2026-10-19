@@ -5,20 +5,9 @@
    aparte la Ampliación técnica, fuera del capítulo y con sus fuentes. Varios o todos
    (#/sistemas/<a+b|todos>/<seccion>) = la misma sección, un sistema junto a otro: eso son
    «Comparar sistemas» y «Parámetros por sistema». */
-import { frasesDe, siglasPorPiezas, textosDePieza } from "../inicio";
-import { NotaCorreccion } from "../componentes/NotaCorreccion";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ArrowRight, Check, ExternalLink, Minus, X } from "lucide-react";
-import { CLAVE_ALGORITMO } from "../contenido/diagramas";
-import {
-  APARTADOS,
-  TABLAS,
-  algoritmoDelCapitulo,
-  rutaDeTabla,
-  idDeBloque,
-  type Bloque,
-  type Tabla,
-} from "../contenido";
+import { APARTADOS, TABLAS, idDeBloque, type Bloque, type Tabla } from "../contenido";
 import {
   COMPAT_INSULINA,
   CRITERIOS,
@@ -38,8 +27,7 @@ import {
 } from "../ampliacion";
 import { elegirRuta, href, fueNavegacionNueva } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, Foldable } from "../ui";
-import { lineasDe, pestanaALaVista } from "../disposicion";
-import { DosColumnas } from "../componentes/DosColumnas";
+import { pestanaALaVista } from "../disposicion";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SEEN, SISTEMA_HEX } from "../tokens";
@@ -54,17 +42,21 @@ import { CATALOGO_SISTEMAS, sistemaDelCatalogo } from "../ampliacion/ids";
 import { Elegir } from "./Elegir";
 
 export { Elegir };
-import { comoFunciona } from "../guias";
-import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
-import { PiezaVista } from "../componentes/Piezas";
 import { FRECUENTES } from "../frecuentes";
-import { tarjetasDeBloques } from "../componentes/tarjetasDeBloques";
 import { NombreSistema } from "../componentes/NombreSistema";
-import type { BloqueSistema } from "../porSistema";
-import { FICHA_MODOS, FICHA_PARAMETROS } from "../porSistema";
+import {
+  ALGORITMO,
+  INDICACION,
+  MODOS,
+  PARAMETROS,
+  RESUMEN,
+  VARIANTE_RESUMEN,
+  fuentesDeDatos,
+} from "../fichaOperativa";
+import { CasillasDatos, FilasDatos, GruposDatos } from "../componentes/FichaOperativa";
+import { ComoFuncionaOperativo } from "../componentes/ComoFuncionaOperativo";
 import { FuentePie } from "../componentes/FuentePie";
 import { paginasDe } from "../paginas";
-import { fuentesDePiezas } from "../fuentesPiezas";
 
 const hex = CATEGORIA_HEX.consultar;
 
@@ -85,40 +77,6 @@ function parrafosDelSistema(id: string) {
         out.push({ slug: a.slug, titulo: a.titulo, ancla: idDeBloque(b, i), b });
     });
   return out;
-}
-
-const PARAMETROS_AUTO = TABLAS.T1.filas.find(
-  (f) => f.etiqueta === "Parámetros configurables en modo automático",
-);
-
-/* La casilla del sistema en «Parámetros configurables en modo automático» (Tabla 1, p. 4),
-   separada como dice su nota: los marcados con asterisco tienen efecto directo sobre el
-   algoritmo; el resto interviene sobre todo en los bolos o en el modo manual. Los nombres son
-   literales; la agrupación y sus rótulos son de la app. */
-function ParametrosConfigurables({ c, ink }: { c: number; ink: string }) {
-  const lineas = (PARAMETROS_AUTO?.celdas[c] ?? "").split("\n").map((l) => l.trim());
-  const grupos = [
-    {
-      rotulo: "Efecto directo sobre el algoritmo (*)",
-      items: lineas.filter((l) => l.endsWith("*")),
-    },
-    {
-      rotulo: "Efecto principal en bolos o modo manual",
-      items: lineas.filter((l) => l && !l.endsWith("*")),
-    },
-  ].filter((g) => g.items.length);
-  return (
-    <span className="mt-1 block space-y-1">
-      {grupos.map((g) => (
-        <span key={g.rotulo} className="block">
-          <span className="rotulo block" style={{ color: ink }}>
-            {g.rotulo}
-          </span>
-          <span className="block text-slate-900">{g.items.join(" · ")}</span>
-        </span>
-      ))}
-    </span>
-  );
 }
 
 function Estado({ v }: { v: "yes" | "partial" | "no" }) {
@@ -340,53 +298,6 @@ function Ampliacion({ s }: { s: Sistema }) {
   );
 }
 
-/* «Parámetros configurables en modo automático»: la fila literal de la Tabla 1 para este
-   sistema, agrupada según la nota del asterisco y con la nota al lado. Arriba de la ficha, porque
-   es la consulta más frecuente sobre un sistema. */
-function ParametrosAutomatico({
-  c,
-  hexSistema,
-  fuente = true,
-}: {
-  c: number;
-  hexSistema: { soft: string; ink: string; strong: string };
-  /* La línea de fuente al pie (en la comparación va una sola, debajo de todos). */
-  fuente?: boolean;
-}) {
-  const fila = TABLAS.T1.filas.find(
-    (f) => f.etiqueta === "Parámetros configurables en modo automático",
-  );
-  if (!fila) return null;
-  return (
-    <div
-      className="tarjeta tarjeta-sistema mt-3 p-3"
-      style={{ ["--sis" as string]: hexSistema.strong }}
-    >
-      <div className="rotulo">Parámetros configurables en modo automático</div>
-      <div className="mt-1 text-sm font-semibold">
-        <ParametrosConfigurables c={c} ink={hexSistema.ink} />
-      </div>
-      <p className="mt-1 text-xs text-slate-600">
-        <Texto>{TABLAS.T1.notas[0]}</Texto>
-      </p>
-      {fuente && <FuentePie fuentes={[fuenteT1(4)]} className="mt-1" />}
-    </div>
-  );
-}
-
-/* Una tabla como fuente, con su intervalo de páginas. */
-const fuenteTabla = (t: Tabla) => ({
-  texto: `Tabla ${t.numero}, ${paginasDe(t.paginas[0], t.paginas[1])}`,
-  ruta: rutaEnCapitulo(t) ?? undefined,
-});
-
-/* La Tabla 1 como fuente: con una página dada si la fila está en ella; si no, el intervalo
-   entero de la tabla (A11). */
-const fuenteT1 = (p?: number) => ({
-  texto: `Tabla 1, ${p ? `p. ${p}` : paginasDe(TABLAS.T1.paginas[0], TABLAS.T1.paginas[1])}`,
-  ruta: rutaDeTabla("T1"),
-});
-
 /* Identificador de cada sistema en las rutas de tablas, situaciones e inicio (orden de la
    Tabla 1). */
 const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
@@ -403,6 +314,10 @@ const sinNombreDelSistema = (q: string) =>
 /* Enlace de acceso en la cabecera de la ficha: texto con subrayado fino. */
 const accesoFicha =
   "tap-44 inline-flex min-h-11 items-center px-0.5 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9";
+
+/* Los accesos de cada tarjeta de la entrada: botones en el móvil, enlaces de texto desde sm. */
+const accesoTarjeta =
+  "flex min-h-11 items-center justify-center rounded-md bg-[var(--papel)] px-1 text-center text-[13px] font-semibold text-slate-700 hover:text-slate-900 sm:inline-flex sm:min-h-9 sm:justify-start sm:rounded-none sm:bg-transparent sm:px-0.5 sm:text-sm sm:text-slate-700 sm:underline sm:decoration-slate-300 sm:underline-offset-4 sm:hover:text-slate-900 sm:hover:decoration-slate-700";
 
 /* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
 const TODAS_LAS_SECCIONES = [
@@ -424,178 +339,7 @@ const SECCIONES_COMPARACION = [
 /* La ampliación técnica no va en la edición editorial (A06): ni pestaña ni sección. */
 const SECCIONES_FICHA = TODAS_LAS_SECCIONES.filter((x) => !retirado(x.id));
 
-/* La tabla en su sitio del capítulo (para comprobar la fuente y volver). */
-function rutaEnCapitulo(t: Tabla): string | null {
-  return rutaDeTabla(t.id) ?? null;
-}
-
 /* La columna de un sistema en una tabla del capítulo: filas literales, notas y página. */
-
-/* Las filas de una tabla para un sistema, como tarjetas con icono (rótulo de la fila y su
-   casilla literal), con las notas que tocan y la fuente al pie. */
-function ColumnaTabla({
-  t,
-  c,
-  filas,
-  pie,
-  insignia,
-  destacar,
-  notaExtra,
-  fuentesExtra = [],
-  sinFuente = false,
-  anadidos = [],
-}: {
-  t: Tabla;
-  c: number;
-  filas?: (etiqueta: string, j: number) => boolean;
-  pie?: ReactNode;
-  insignia?: (j: number) => ReactNode;
-  /* Tarjetas que se destacan con el borde del sistema (efecto directo en automático). */
-  destacar?: (j: number) => boolean;
-  notaExtra?: string;
-  fuentesExtra?: { texto: string; ruta?: string }[];
-  /* La línea de fuente la pone quien la usa, al pie de toda la sección (0.76: una por sección). */
-  sinFuente?: boolean;
-  /* Los bloques de ese sistema (porSistema.ts): en la misma rejilla, tras las filas de la tabla. */
-  anadidos?: BloqueSistema[];
-}) {
-  const hexS = SISTEMA_HEX[c];
-  // La nota del asterisco solo si alguna celda mostrada lo lleva; la lista de siglas, plegada.
-  const vistas = t.filas.filter((f, j) => !filas || filas(f.etiqueta, j));
-  const hayAsterisco = vistas.some((f) => (f.unida ? f.celdas[0] : f.celdas[c]).includes("*"));
-  const esAsterisco = (n: string) => n.trimStart().startsWith("*");
-  const esSiglas = (n: string) => /^[A-ZÁÉÍÓÚ/]{2,}: /.test(n.trim());
-  const notas = t.notas.filter((n) => (esAsterisco(n) ? hayAsterisco : !esSiglas(n)));
-  return (
-    // 0.72.0: sin la caja de fuera (tarjetas dentro de una tarjeta). sistema visual: una tarjeta por
-    // fila con la pleca del sistema; la que cuenta en automático, con el borde del sistema.
-    <div>
-      <div className="grid gap-3 sm:grid-cols-2 sm:items-start print:grid-cols-1">
-        {/* Sexta vuelta: las filas de la tabla y los bloques del sistema (`anadidos`) en una sola
-            rejilla equilibrada, contigua y en el orden de la tabla (primero las filas). */}
-        <DosColumnas
-          key={`${t.id}-${c}`}
-          items={[
-            ...t.filas
-              .map((f, j) => ({ f, j }))
-              .filter(({ f, j }) => !filas || filas(f.etiqueta, j))
-              .map(({ f, j }) => ({
-                peso:
-                  1.5 +
-                  lineasDe(f.etiqueta, 60) +
-                  lineasDe(f.unida ? f.celdas[0] : f.celdas[c], 62),
-                f: f as typeof f | null,
-                j,
-                nodo: null as ReactNode,
-              })),
-            ...tarjetasDeBloques(c, anadidos).map((b) => ({ ...b, f: null, j: -1 })),
-          ]}
-          peso={(it) => it.peso}
-          render={(it) => {
-            if (!it.f) return it.nodo;
-            const { f, j } = it;
-            return (
-              <div
-                key={j}
-                className={`tarjeta p-3 ${destacar?.(j) ? "tarjeta-realce" : "tarjeta-sistema"}`}
-                style={{ ["--sis" as string]: hexS.strong }}
-              >
-                {/* En la Tabla 4, lo que sigue al nombre de la situación es la conducta común:
-                  debajo y en gris, como en la tabla. */}
-                <dt className="rotulo" style={{ color: hexS.ink }}>
-                  {t.id === "T4" ? (
-                    f.etiqueta.split("\n").map((l, k) => (
-                      <span
-                        key={k}
-                        className={
-                          k === 0
-                            ? "block"
-                            : "mt-1 block text-[13px] font-normal normal-case tracking-normal text-slate-600"
-                        }
-                      >
-                        <Texto>{l}</Texto>
-                      </span>
-                    ))
-                  ) : (
-                    <Lineas>{f.etiqueta}</Lineas>
-                  )}
-                </dt>
-                <dd className="mt-1 text-[15px] text-slate-800">
-                  {/* La insignia, dentro del dd: en un <dl> solo caben dt y dd. */}
-                  {insignia?.(j) && <span className="-mt-0.5 mb-1 block">{insignia(j)}</span>}
-                  <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
-                  {/* 0.72.2: la nota complementaria de esa casilla (edad de Liberty), plegada
-                    junto a ella. La de Omnipod 5 va en «Cómo funciona». */}
-                  {t.id === "T1" &&
-                    j === 7 &&
-                    COLUMNA_DE_NOTA[`T1/${j}`] === c &&
-                    NOTAS_POR_PASAJE[`T1/${j}`] && (
-                      <p className="mt-1.5 rounded-md border border-dashed border-slate-300 px-2 py-1.5 text-xs text-slate-600">
-                        {NOTAS_POR_PASAJE[`T1/${j}`]}
-                      </p>
-                    )}
-                </dd>
-              </div>
-            );
-          }}
-        />
-      </div>
-      {(notas.length > 0 || notaExtra) && (
-        <div className="separador mt-2 space-y-1 border-t pt-2 text-xs text-slate-600">
-          {[...(notaExtra ? [notaExtra] : []), ...notas].map((n, k) => (
-            <p key={k}>
-              <Texto>{n}</Texto>
-            </p>
-          ))}
-        </div>
-      )}
-      <div
-        className={`mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 ${sinFuente ? "hidden" : ""}`}
-      >
-        <FuentePie
-          className=""
-          nota=""
-          fuentes={[
-            {
-              texto: `Tabla ${t.numero}, ${paginasDe(t.paginas[0], t.paginas[1])}`,
-              ruta: rutaEnCapitulo(t) ?? undefined,
-            },
-            ...fuentesExtra,
-          ]}
-        />
-        {pie}
-      </div>
-      {!sinFuente && <SiglasTabla t={t} />}
-    </div>
-  );
-}
-
-/* Las siglas de una tabla, tras la línea de fuente: plegadas en pantalla y abiertas en papel. */
-function SiglasTabla({ t }: { t: Tabla }) {
-  const siglas = t.notas.filter((n) => /^[A-ZÁÉÍÓÚ/]{2,}: /.test(n.trim()));
-  if (!siglas.length) return null;
-  return (
-    <>
-      <details className="mt-1 text-xs text-slate-600 print:hidden">
-        <summary className="min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-6">
-          Siglas de la tabla
-        </summary>
-        {siglas.map((n, k) => (
-          <p key={k} className="mt-1">
-            <Texto>{n}</Texto>
-          </p>
-        ))}
-      </details>
-      <div className="hidden text-xs text-slate-600 print:block">
-        {siglas.map((n, k) => (
-          <p key={k} className="mt-1">
-            <Texto>{n}</Texto>
-          </p>
-        ))}
-      </div>
-    </>
-  );
-}
 
 /* Solo en papel: los pasajes literales de una pregunta frecuente, bajo la pregunta. Cada
    identificador se resuelve a su frase exacta (t/apartado/bloque/frase, como en el buscador:
@@ -617,20 +361,8 @@ const textoDeFila = (t: Tabla, fila: number, c: number) => {
     f.unida || !t.porSistema ? f.celdas.map(casilla).join(" · ") : casilla(f.celdas[c])
   }`;
 };
-/* 0.76.3 (séptima auditoría): lo que la ficha ya imprime en sus secciones (las filas del sistema
-   en las Tablas 1, 3 y 4) no se repite bajo las preguntas; y un pasaje ya impreso bajo una
-   pregunta no se repite bajo la siguiente (un conjunto por lista de preguntas). */
-const yaImpreso = (c: number) => {
-  const s = new Set<string>();
-  for (const id of ["T1", "T3", "T4"] as const)
-    TABLAS[id].filas.forEach((_, i) => s.add(textoDeFila(TABLAS[id], i, c)));
-  // Y las frases enteras que Parámetros y Modos añaden para el sistema (src/porSistema.ts).
-  for (const b of [...FICHA_PARAMETROS[c], ...FICHA_MODOS[c]])
-    for (const p of b.piezas)
-      if (p.t === "frase" && !p.trozo)
-        frasesDe(p.apartado, p.bloque, p.k).frases.forEach((x) => s.add(x));
-  return s;
-};
+/* 0.77.0: las secciones de la ficha ya no imprimen casillas literales (son datos operativos):
+   bajo las preguntas solo se evita repetir un pasaje ya impreso bajo una pregunta anterior. */
 type TrozoImpreso = { bloque: string; tipo: "p" | "li"; texto: string };
 /* Cálculo puro (sin efectos al pintar): los pasajes de cada pregunta, sin repetir lo ya impreso
    en la ficha ni lo de las preguntas anteriores. */
@@ -638,7 +370,7 @@ function respuestasImpresas(
   preguntas: (typeof FRECUENTES)[number][],
   c: number,
 ): Map<string, TrozoImpreso[]> {
-  const vistos = yaImpreso(c);
+  const vistos = new Set<string>();
   return new Map(preguntas.map((f) => [f.id, trozosDe(f, c, vistos)]));
 }
 function trozosDe(f: (typeof FRECUENTES)[number], c: number, vistos: Set<string>): TrozoImpreso[] {
@@ -687,7 +419,7 @@ function RespuestaImpresa({ trozos }: { trozos: TrozoImpreso[] }) {
     else grupos.push([t]);
   }
   return (
-    <div className="hidden space-y-1 px-4 pb-3 text-[13px] leading-snug text-slate-700 print:block">
+    <div className="hidden space-y-1 px-4 pb-3 text-[14px] leading-snug text-slate-800 print:block">
       {grupos.map((g, n) =>
         g[0].tipo === "li" ? (
           <ul key={n} className="list-disc pl-5">
@@ -854,7 +586,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         <TituloSeccion id="funciona" sistema={s.name} color={h.ink}>
           Cómo funciona
         </TituloSeccion>
-        <ComoFuncionaSistema c={c} id={s.id as SistemaId} />
+        <ComoFuncionaOperativo c={c} />
       </section>
 
       {
@@ -862,21 +594,16 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           <TituloSeccion id="esencial" sistema={s.name} color={h.ink}>
             Indicación y material
           </TituloSeccion>
-          <ColumnaTabla
-            t={TABLAS.T1}
-            c={c}
-            filas={(_e, j) => [0, 7, 8, 9].includes(j)}
-            pie={
-              <a
-                href={WEB_SISTEMA[s.id]}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="fuente-pie no-imprimir inline-flex min-h-11 items-center gap-1 font-semibold sm:min-h-8"
-              >
-                Web oficial <ExternalLink size={12} aria-hidden="true" />
-              </a>
-            }
-          />
+          {/* 0.77.0: datos operativos (src/fichaOperativa.ts); el texto literal, en la fuente. */}
+          <GruposDatos c={c} grupos={INDICACION[c]} />
+          <a
+            href={WEB_SISTEMA[s.id]}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fuente-pie no-imprimir inline-flex min-h-11 items-center gap-1 font-semibold sm:min-h-8"
+          >
+            Web oficial <ExternalLink size={12} aria-hidden="true" />
+          </a>
         </section>
       }
 
@@ -888,28 +615,9 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           <TituloSeccion id="parametros" sistema={s.name} color={h.ink}>
             Parámetros
           </TituloSeccion>
-          {/* 0.72.0: lo que cuenta en automático, como insignia en cada tarjeta de la Tabla 3
-            (según la fila «Parámetros configurables en modo automático» de la Tabla 1 y su nota),
-            en vez de un recuadro aparte que repetía los nombres. */}
-          <ColumnaTabla
-            t={TABLAS.T3}
-            c={c}
-            insignia={(j) => insigniaParametro(c, j)}
-            destacar={(j) => esDirecto(c, j)}
-            // 0.73.0: sin la nota del asterisco (en las tarjetas ya no hay asteriscos: lo dice la
-            // insignia); su fila de la Tabla 1, en la fuente.
-            fuentesExtra={[fuenteT1(4)]}
-            sinFuente
-            anadidos={FICHA_PARAMETROS[c]}
-          />
-          <FuentePie
-            fuentes={[
-              fuenteTabla(TABLAS.T3),
-              fuenteT1(4),
-              ...fuentesDePiezas(FICHA_PARAMETROS[c].flatMap((b) => b.piezas)),
-            ]}
-          />
-          <SiglasTabla t={TABLAS.T3} />
+          {/* 0.77.0: cada parámetro con lo que hace en automático y cómo se usa, en una fila
+              (Tablas 1 y 3; src/fichaOperativa.ts). */}
+          <FilasDatos c={c} datos={PARAMETROS[c]} titulo="Parámetros" />
         </section>
       }
 
@@ -918,14 +626,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           <TituloSeccion id="modos" sistema={s.name} color={h.ink}>
             Modos y funciones
           </TituloSeccion>
-          <ColumnaTabla t={TABLAS.T4} c={c} sinFuente anadidos={FICHA_MODOS[c]} />
-          <FuentePie
-            fuentes={[
-              fuenteTabla(TABLAS.T4),
-              ...fuentesDePiezas(FICHA_MODOS[c].flatMap((b) => b.piezas)),
-            ]}
-          />
-          <SiglasTabla t={TABLAS.T4} />
+          <FilasDatos c={c} datos={MODOS[c]} titulo="Modos y funciones" />
         </section>
       }
 
@@ -1249,119 +950,95 @@ function BarraSistemas({
 
 /* Entrada de Sistemas (#/sistemas): los cuatro con su foto y su algoritmo (Tabla 1), los
    criterios de elección y la comparación de los cuatro por sección. */
-/* La variante de Tandem (Control-IQ+) y la de CamAPS FX (Liberty), en las tarjetas del resumen:
-   líneas literales de la Tabla 1 (indicación, gestación; basal temporal en la Tabla 3) y, en
-   Liberty, la frase que la define (apartado 3). */
-const lineaDe = (tabla: "T1" | "T3", fila: number, c: number, re: RegExp) =>
-  TABLAS[tabla].filas[fila].celdas[c].split("\n").find((l) => re.test(l)) ?? "";
-const VARIANTE: Record<number, { rotulo: string; lineas: string[] }> = {
-  1: {
-    rotulo: "Control-IQ+",
-    lineas: [
-      `Indicación: ${lineaDe("T1", 7, 1, /^Control-IQ\+/)}`,
-      `Gestación: ${lineaDe("T1", 8, 1, /^Control-IQ\+/)}`,
-      (TABLAS.T3.filas[1].celdas[1].match(/Control-IQ\+ añade además[^.]*/) ?? [""])[0],
-    ].filter((x) => !/: $/.test(x) && x),
-  },
-  2: {
-    rotulo: "Liberty (asa cerrada completa)",
-    lineas: [
-      frasesDe("03-algoritmos", "b3", [1]).frases[0],
-      `Indicación: ${lineaDe("T1", 7, 2, /^Liberty/)}`,
-      `Gestación: ${lineaDe("T1", 8, 2, /^Liberty/)}`,
-    ].filter((x) => !/: $/.test(x) && x),
-  },
-};
-
+/* 0.77.0: cada sistema en una tarjeta operativa (src/fichaOperativa.ts): el algoritmo en la
+   cabecera, tres datos, lo que añade su variante y los accesos a cada sección de su ficha. El
+   texto literal, en la fuente al pie. */
 function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
   // 0.75.1 (auditoría): con sistemas marcados, solo sus tarjetas (como las otras pestañas).
   const visibles = CATALOGO_SISTEMAS.map((s, c) => ({ s, c })).filter(
     ({ s }) => !ids.length || ids.includes(s.id),
   );
+  const datosDe = (c: number) =>
+    RESUMEN.map((r) => ALGORITMO[c].find((d) => d.r === r)!).filter(Boolean);
+  const todos = visibles.flatMap(({ c }) => [
+    ALGORITMO[c][0],
+    ...datosDe(c),
+    ...(VARIANTE_RESUMEN[c] ? [VARIANTE_RESUMEN[c]!] : []),
+  ]);
   return (
     <div className="space-y-4">
-      {/* 13-10-2026: cada tarjeta con lo esencial de la Tabla 1 (fragmentos literales,
-          CLAVE_ALGORITMO) para distinguirlos antes de entrar. */}
       <ul className="space-y-3">
         {visibles.map(({ s, c }) => {
           const h = SISTEMA_HEX[c];
-          const k = CLAVE_ALGORITMO[c];
-          const [nombreAlg, tipo] = algoritmoDelCapitulo(c).split(": algoritmo de tipo ");
-          const sensores = TABLAS.T1.filas.find((f) => f.etiqueta === "Sensores compatibles")!
-            .celdas[c];
-          // El formato, hasta la primera pausa de su casilla («Bomba con catéter», «Pod
-          // desechable, sin tubo externo»): fragmento literal de la Tabla 1.
-          const formato = TABLAS.T1.filas[0].celdas[c].split(/;| \(/)[0].replace(/\.$/, "");
-          const datos: [string, string][] = [
-            ["Formato", formato],
-            ["Localización del algoritmo", k.donde.join(" · ")],
-            ["Estrategia de automatización", k.actua.join(" · ")],
-            ["Objetivo", k.objetivo.join(" · ")],
-            ["Sensores", sensores],
+          const variante = VARIANTE_RESUMEN[c];
+          const slug = SLUG_TABLA[c];
+          // [rótulo, rótulo corto del móvil, ruta]
+          const accesos: [string, string, string][] = [
+            ["Cómo funciona", "Funciona", href("sistemas", s.id, "funciona")],
+            ["Indicación y material", "Indicación", href("sistemas", s.id, "esencial")],
+            ["Parámetros", "Parámetros", href("sistemas", s.id, "parametros")],
+            ["Modos", "Modos", href("sistemas", s.id, "modos")],
+            ["Iniciación", "Iniciación", href("consultar", "inicio", `preparacion:${slug}`)],
+            ["Plan del paciente", "Plan", href("pacientes", "plan", s.id)],
           ];
           return (
             <li key={s.id}>
-              <a
-                href={href("sistemas", s.id)}
-                className="tarjeta tarjeta-sistema hover-lift ease-brand block overflow-hidden transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+              <article
+                aria-label={s.name}
+                className="tarjeta tarjeta-sistema overflow-hidden"
                 style={{ ["--sis" as string]: h.strong }}
               >
-                <span className="separador flex items-center gap-3 border-b px-4 py-3">
+                <a
+                  href={href("sistemas", s.id)}
+                  className="separador group flex items-center gap-3 border-b px-4 py-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-600"
+                >
                   <img
                     src={FOTO_SISTEMA[s.id]}
                     alt=""
-                    className="foto-sistema h-12 w-12 shrink-0 rounded-md bg-white object-cover"
+                    className="foto-sistema h-14 w-14 shrink-0 rounded-md bg-white object-cover"
                     loading="lazy"
+                    decoding="async"
                   />
                   <span className="min-w-0 flex-1">
                     <span
-                      className="block text-lg font-extrabold leading-tight"
+                      className="block text-lg font-extrabold leading-tight group-hover:underline"
                       style={{ color: h.ink }}
                     >
                       <NombreSistema n={s.name} />
                     </span>
-                    <span className="mt-0.5 block text-sm text-slate-600">
-                      <span className="font-semibold text-slate-800">{nombreAlg}</span>
-                      {tipo && ` · ${tipo}`}
+                    <span className="mt-0.5 block text-sm font-semibold text-slate-700">
+                      {ALGORITMO[c][0].v}
                     </span>
                   </span>
-                </span>
-                <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 px-4 py-3 md:grid-cols-3">
-                  {datos.map(([t, v]) => (
-                    <span key={t} className="min-w-0">
-                      <span className="rotulo block">{t}</span>
-                      <span className="mt-0.5 block text-sm font-semibold leading-snug text-slate-900">
-                        {v}
+                  <ArrowRight size={18} aria-hidden="true" className="shrink-0 text-slate-500" />
+                </a>
+                <div className="px-4 py-3">
+                  <CasillasDatos c={c} datos={datosDe(c)} />
+                  {variante && (
+                    <p className="mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-sm leading-snug text-slate-800">
+                      <span className="insignia" style={{ background: h.soft, color: h.ink }}>
+                        {variante.r}
                       </span>
-                    </span>
-                  ))}
-                  <span className="min-w-0">
-                    <span className="rotulo block">Bolos automáticos de corrección</span>
-                    <span className="mt-0.5 block text-sm leading-snug text-slate-900">
-                      <span className="font-semibold">{k.correccion.si ? "Sí" : "No"}</span>
-                      {/* M61-01: la condición, junto al Sí/No (fragmentos literales de la Tabla 1). */}
-                      {k.correccion.texto.length > 0 && (
-                        <span className="text-slate-600">; {k.correccion.texto.join(" · ")}</span>
-                      )}
-                    </span>
-                  </span>
-                  {/* 0.74.2 (petición del responsable): la variante de cada sistema a la vista,
-                      con sus líneas literales de la Tabla 1 (y la frase del apartado 3 en
-                      Liberty). */}
-                  {VARIANTE[c] && (
-                    <span className="casilla casilla-sistema col-span-2 mt-1 block px-3 py-2 text-[13px] leading-snug text-slate-800 md:col-span-3">
-                      <span className="rotulo block" style={{ color: h.ink }}>
-                        {VARIANTE[c]!.rotulo}
-                      </span>
-                      {VARIANTE[c]!.lineas.map((l) => (
-                        <span key={l} className="mt-0.5 block">
-                          {l}
-                        </span>
-                      ))}
-                    </span>
+                      <span>{variante.v}</span>
+                    </p>
                   )}
                 </div>
-              </a>
+                {/* En el móvil, los accesos en una rejilla de 3 × 2 (antes, tres filas de enlaces
+                    sueltos); desde sm, en una fila de enlaces de texto. */}
+                <nav
+                  aria-label={`Ficha de ${s.name}`}
+                  className="separador grid grid-cols-3 gap-1.5 border-t p-3 sm:flex sm:flex-wrap sm:gap-x-4 sm:gap-y-0 sm:px-4 sm:py-1"
+                >
+                  {accesos.map(([t, corto, ruta]) => (
+                    <a key={t} href={ruta} className={accesoTarjeta}>
+                      <span className="sm:hidden" aria-hidden="true">
+                        {corto}
+                      </span>
+                      <span className="sr-only sm:not-sr-only">{t}</span>
+                    </a>
+                  ))}
+                </nav>
+              </article>
             </li>
           );
         })}
@@ -1372,235 +1049,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
       >
         <span className="min-w-0 flex-1">Elección del sistema</span>
       </a>
-      <FuentePie
-        fuentes={[
-          fuenteT1(),
-          {
-            texto: `Tabla 3, ${paginasDe(TABLAS.T3.paginas[0], TABLAS.T3.paginas[1])}`,
-            ruta: rutaDeTabla("T3"),
-          },
-          ...fuentesDePiezas([{ t: "frase", apartado: "03-algoritmos", bloque: "b3", k: [1] }]),
-        ]}
-      />
-    </div>
-  );
-}
-
-/* Los parámetros de la Tabla 1 en dos grupos, como dice su nota: los de efecto directo en el
-   modo automático (con asterisco) y el resto, que interviene sobre todo en los bolos o en el
-   modo manual (13-10-2026). */
-const FILA_PARAMETROS = 10;
-/* Insignia de una fila de la Tabla 3 según la Tabla 1 (fila «Parámetros configurables en modo
-   automático»): con asterisco, efecto directo en automático; sin él, sobre todo en bolos. */
-const CLAVE_FILA_T3 = [/objetivo/i, /basal/i, /ratio/i, /sensibilidad/i, /insulina activa/i];
-const esDirecto = (c: number, j: number) =>
-  !!CLAVE_FILA_T3[j] && parametrosDe(c).directos.some((x) => CLAVE_FILA_T3[j].test(x));
-function insigniaParametro(c: number, j: number): ReactNode {
-  const { directos, resto } = parametrosDe(c);
-  const re = CLAVE_FILA_T3[j];
-  if (!re) return null;
-  const h = SISTEMA_HEX[c];
-  if (directos.some((x) => re.test(x)))
-    return (
-      <span className="insignia" style={{ background: h.soft, color: h.ink }}>
-        Efecto directo sobre el algoritmo
-      </span>
-    );
-  if (resto.some((x) => re.test(x)))
-    return <span className="insignia">Efecto principal en bolos o modo manual</span>;
-  return null;
-}
-function parametrosDe(c: number) {
-  const xs = TABLAS.T1.filas[FILA_PARAMETROS].celdas[c]
-    .split("\n")
-    .map((x) => x.trim())
-    .filter(Boolean);
-  return {
-    directos: xs.filter((x) => x.endsWith("*")).map((x) => x.replace(/\*$/, "")),
-    resto: xs.filter((x) => !x.endsWith("*")),
-  };
-}
-function ParametrosAuto({ c, compacto = false }: { c: number; compacto?: boolean }) {
-  const h = SISTEMA_HEX[c];
-  const { directos, resto } = parametrosDe(c);
-  const grupo = (titulo: string, xs: string[], directo: boolean) =>
-    xs.length > 0 && (
-      <div>
-        <div className="rotulo mb-1" style={directo ? { color: h.ink } : undefined}>
-          {titulo}
-        </div>
-        <ul className="flex flex-wrap gap-1">
-          {xs.map((x) => (
-            <li
-              key={x}
-              className="insignia whitespace-normal"
-              style={directo ? { background: h.soft, color: h.ink } : undefined}
-            >
-              {x}
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  return (
-    <div className={compacto ? "space-y-1.5" : "space-y-2"}>
-      {grupo("Efecto directo sobre el algoritmo", directos, true)}
-      {grupo("Efecto principal en bolos o modo manual", resto, false)}
-      {/* M61-04: el papel de la basal programada en cada sistema (Tabla 3, celda entera): en
-          Omnipod 5, por ejemplo, cuenta para el primer pod y luego no. */}
-      <p className="text-xs leading-snug text-slate-600">
-        <span className="block font-semibold text-slate-700">Tasa basal programada</span>
-        {TABLAS.T3.filas.find((f) => f.etiqueta === "Tasa basal programada")!.celdas[c]}
-      </p>
-    </div>
-  );
-}
-
-/* Una celda de «Cómo funciona»: la clave arriba (si la hay) y la celda entera debajo; la de los
-   parámetros, en sus dos grupos. */
-function CeldaFunciona({ fila, c }: { fila: number; c: number }) {
-  if (fila === FILA_PARAMETROS) return <ParametrosAuto c={c} compacto />;
-  // 0.73.0 (auditoría de uso): la casilla literal entera, a la vista (antes, un extracto en
-  // negrita y la casilla tras «Ver casilla completa»: no se veía el texto del capítulo).
-  const celda = TABLAS.T1.filas[fila].celdas[c];
-  const nota = COLUMNA_DE_NOTA[`T1/${fila}`] === c ? NOTAS_POR_PASAJE[`T1/${fila}`] : null;
-  return (
-    <>
-      <span className="block text-slate-900">
-        <Lineas>{celda}</Lineas>
-      </span>
-      {nota && fila === 3 && <NotaCorreccion nota={nota} />}
-    </>
-  );
-}
-/* «Cómo funciona» de un sistema (14-10-2026): de un vistazo. Arriba, el recorrido de la
-   decisión (mide → decide → administra → hacia qué objetivo) con lo esencial de este sistema en
-   negrita (casillas literales de la Tabla 1 y CLAVE_ALGORITMO); debajo, cómo se adapta, los bolos
-   de corrección y los parámetros que cuentan en automático; luego, en tarjetas, lo que queda en
-   manos de la persona y del profesional, lo que lo distingue y lo que devuelve. Las frases
-   generales de los apartados 2 y 3 (las mismas para los cuatro), plegadas al final. Las piezas
-   salen de la guía comoFunciona (guias/index.ts), así que siguen comprobadas frase a frase. */
-/* Filas de la Tabla 1 que dicen cómo funciona, en el orden de la tabla. */
-/* Filas de la Tabla 1 de «Cómo funciona», agrupadas en tres tarjetas: las casillas cortas
-   (sensores, localización, objetivo) juntas; la lógica sola; estrategia y bolos juntos. */
-const GRUPOS_FUNCIONA: number[][] = [[1, 2, 6], [3], [4, 5]];
-function ClaveRecorrido({ fila, c }: { fila: number; c: number }) {
-  const h = SISTEMA_HEX[c];
-  const celda = TABLAS.T1.filas[fila].celdas[c];
-  if (fila === 1)
-    return (
-      <ul className="flex flex-wrap gap-1">
-        {celda.split(";").map((x) => (
-          <li
-            key={x}
-            className="insignia text-sm font-bold"
-            style={{ background: h.soft, color: h.ink }}
-          >
-            {x.trim()}
-          </li>
-        ))}
-      </ul>
-    );
-  // 0.72.2: el tipo de algoritmo, solo en «Lógica del algoritmo y aprendizaje» (salía dos veces).
-  if (fila === 2)
-    return <span className="block font-bold leading-snug text-slate-900">{celda}</span>;
-  if (fila === 4) return <CeldaFunciona fila={4} c={c} />;
-  return (
-    <span className="block font-bold leading-snug text-slate-900">
-      <Lineas>{celda}</Lineas>
-    </span>
-  );
-}
-function TarjetaFunciona({
-  titulo,
-  color,
-  children,
-}: {
-  titulo: string;
-  color: string;
-  children: ReactNode;
-}) {
-  return (
-    <section aria-label={titulo} className="tarjeta min-w-0 p-3">
-      <h3 className="rotulo mb-1" style={{ color }}>
-        {titulo}
-      </h3>
-      <div className="space-y-2 text-sm text-slate-800">{children}</div>
-    </section>
-  );
-}
-function ComoFuncionaSistema({ c, id }: { c: number; id: SistemaId }) {
-  const h = SISTEMA_HEX[c];
-  const guia = comoFunciona(c, id);
-  const distingue = (
-    guia.pasos.find((x) => x.rotulo === "Qué lo distingue en la práctica")?.piezas ?? []
-  ).filter((p) => p.t === "frase");
-  // CamAPS FX: la modalidad Liberty de asa cerrada completa (apartado 3), propia de este sistema.
-  const liberty = (
-    guia.pasos.find((x) => x.rotulo === "Qué sigue haciendo la persona")?.piezas ?? []
-  ).filter((p) => p.t === "frase" && p.apartado === "03-algoritmos" && p.bloque === "b3");
-  // Las siglas, pulsables la primera vez que salen (0.72.0).
-  const sg = siglasPorPiezas([...distingue, ...liberty], c);
-  return (
-    <div className="space-y-3">
-      {/* 0.72.2: una ficha técnica con los rótulos de la Tabla 1 y en su orden (antes «Mide ·
-          Decide · Administra», términos de divulgación). Cada casilla, con su icono y su clave;
-          la casilla entera, a un toque. */}
-      <dl
-        aria-label="Características del sistema (Tabla 1)"
-        className="grid gap-3 lg:grid-cols-3"
-        style={{ ["--sis" as string]: h.strong }}
-      >
-        {/* Tres tarjetas con las filas agrupadas (las cortas juntas): sin huecos en la rejilla. */}
-        {GRUPOS_FUNCIONA.map((grupo) => (
-          // En un <dl>, cada tarjeta es un <div> con sus pares dt/dd seguidos (sin otro nivel).
-          <div
-            key={grupo.join()}
-            className="tarjeta tarjeta-sistema min-w-0 p-3 [&>dt:not(:first-child)]:mt-3"
-          >
-            {grupo.flatMap((fila) => [
-              <dt key={`t${fila}`} className="rotulo" style={{ color: h.ink }}>
-                {TABLAS.T1.filas[fila].etiqueta}
-              </dt>,
-              <dd key={`d${fila}`} className="mt-1 text-[15px] leading-snug">
-                {fila === 3 || fila === 5 ? (
-                  <CeldaFunciona fila={fila} c={c} />
-                ) : (
-                  <ClaveRecorrido fila={fila} c={c} />
-                )}
-              </dd>,
-            ])}
-          </div>
-        ))}
-        {/* 0.74.1 (a petición del responsable): lo que lo distingue (apartado 4), directamente
-            como una tarjeta más, sin plegar y sin los puntos suspensivos del recorte. */}
-        {distingue.length > 0 && (
-          <div className="tarjeta tarjeta-sistema min-w-0 p-3 lg:col-span-3">
-            <dt className="rotulo" style={{ color: h.ink }}>
-              Rasgos distintivos
-            </dt>
-            <dd className="mt-1 space-y-1 text-[15px] leading-snug text-slate-900">
-              {distingue.map((p, j) => (
-                <p key={j}>
-                  <Texto siglas={sg[j]}>
-                    {textosDePieza(p, c).join(" ").replace(/^…\s*/, "").replace(/\s*…$/, "")}
-                  </Texto>
-                </p>
-              ))}
-            </dd>
-          </div>
-        )}
-      </dl>
-      {liberty.length > 0 && (
-        <TarjetaFunciona titulo="Modalidad Liberty (asa cerrada completa)" color={h.ink}>
-          {liberty.map((p, j) => (
-            <PiezaVista key={j} pieza={p} sis={c} compacta siglas={sg[distingue.length + j]} />
-          ))}
-        </TarjetaFunciona>
-      )}
-      {/* 0.73.0: la frase del apartado 4 que lo distingue, plegada debajo (antes, arriba, como
-          entradilla con puntos suspensivos): la primera pantalla son las tarjetas. */}
-      <FuentePie fuentes={[fuenteT1(), ...fuentesDePiezas([...distingue, ...liberty])]} />
+      <FuentePie fuentes={fuentesDeDatos(todos)} />
     </div>
   );
 }
@@ -1685,23 +1134,48 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
           )}
           {seccion === "parametros" && (
             <>
-              {/* 0.75.1 (nada útil plegado): abierto. */}
-              <details className="mb-3" open>
-                <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
-                  Parámetros configurables en modo automático
-                </summary>
-                <div className="mt-2 sm:columns-2 sm:gap-3 [&>div]:mb-3 [&>div]:break-inside-avoid">
-                  {cols.map((c) => (
-                    <div key={c}>
-                      <div className="titulo-tarjeta mb-1" style={{ color: SISTEMA_HEX[c].ink }}>
-                        {TABLAS.T1.columnas[c]}
-                      </div>
-                      <ParametrosAutomatico c={c} hexSistema={SISTEMA_HEX[c]} fuente={false} />
-                    </div>
-                  ))}
-                </div>
-                <FuentePie fuentes={[fuenteT1(4)]} />
-              </details>
+              {/* 0.77.0: qué parámetros actúan en automático en cada sistema, en una tarjeta
+                  por sistema (Tablas 1 y 3; src/fichaOperativa.ts); debajo, la Tabla 3. */}
+              <ul className="mb-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {cols.map((c) => {
+                  const h = SISTEMA_HEX[c];
+                  const de = (a: boolean) =>
+                    PARAMETROS[c]
+                      .filter((d) => (a ? d.auto === "si" : d.auto === "no" || d.auto === "inicio"))
+                      .map((d) => d.r);
+                  return (
+                    <li
+                      key={c}
+                      className="tarjeta tarjeta-sistema min-w-0 p-3"
+                      style={{ ["--sis" as string]: h.strong }}
+                    >
+                      <a
+                        href={href("sistemas", ORDEN_SISTEMAS[c], "parametros")}
+                        className="titulo-tarjeta hover:underline"
+                        style={{ color: h.ink }}
+                      >
+                        <NombreSistema n={CATALOGO_SISTEMAS[c].name} />
+                      </a>
+                      <dl className="mt-2 space-y-2 text-sm leading-snug">
+                        <div>
+                          <dt className="rotulo">Actúan en automático</dt>
+                          <dd className="mt-0.5 font-semibold text-slate-900">
+                            {de(true).join(" · ")}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="rotulo">Bolos o modo manual</dt>
+                          <dd className="mt-0.5 text-slate-800">{de(false).join(" · ")}</dd>
+                        </div>
+                      </dl>
+                    </li>
+                  );
+                })}
+              </ul>
+              <FuentePie
+                className="-mt-2 mb-4"
+                fuentes={fuentesDeDatos(cols.flatMap((c) => PARAMETROS[c]))}
+              />
               <NivelTitulo.Provider value={2}>
                 <TablaVista tabla={TABLAS.T3} columnasFijas={cols} herramienta />
               </NivelTitulo.Provider>

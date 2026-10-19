@@ -5,6 +5,9 @@ import { expect, test } from "@playwright/test";
 
 test.describe("Entrega 1 (0.32.0)", () => {
   test("Ver en el capítulo y Atrás devuelven al mismo punto de la ficha", async ({ page }) => {
+    // 0.77.0: con los parámetros en filas la sección es corta; a 480 px de alto sigue habiendo
+    // recorrido.
+    await page.setViewportSize({ width: 1280, height: 480 });
     await page.goto("/#/sistemas/op5/parametros");
     await expect(page.locator("#parametros")).toBeVisible();
     await page.waitForTimeout(600);

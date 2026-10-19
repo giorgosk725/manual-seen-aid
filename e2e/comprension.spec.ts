@@ -32,10 +32,8 @@ test.describe("Comprensión", () => {
       page.getByRole("heading", { level: 2, name: /^Cómo funciona · Omnipod 5/ }),
     ).toHaveCount(1);
     await expect(page.getByRole("region", { name: /^Cómo funciona · Omnipod 5/ })).toBeInViewport();
-    // 0.72.2: la ficha técnica con las casillas del sistema.
-    await expect(page.getByLabel("Características del sistema (Tabla 1)")).toContainText(
-      "FreeStyle Libre 2 Plus",
-    );
+    // 0.77.0: la tarjeta operativa del algoritmo.
+    await expect(page.getByLabel("Algoritmo")).toContainText("SmartAdjust");
     // 0.70.0: la ficha es una página; la pestaña lleva a su sección.
     await page
       .getByRole("navigation", { name: "Sección" })

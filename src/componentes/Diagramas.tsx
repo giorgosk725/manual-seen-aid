@@ -836,18 +836,32 @@ function Transicion() {
 
 /* Gestación por sistema (0.73.0): los mismos bloques literales que la situación «Gestación»
    (src/porSistema.ts), en vez de las tarjetas de fragmentos empalmados de antes. */
+/* Identificador del sistema en las rutas de Situaciones (orden de la Tabla 1). */
+const SLUG_SITUACION = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 function GestacionSistemas({ opcion }: { opcion?: string }) {
   const g = GUIA_POR_SISTEMA.gestacion;
   const c = ORDEN_SISTEMAS.findIndex((x) => x === opcion);
+  const sel = c >= 0 ? c : 0;
   return (
-    <BloquesPorSistema
-      bloques={g.bloques}
-      comun={g.comun}
-      seleccion={c >= 0 ? c : 0}
-      onElegir={(i) => elegirRuta("visual", "gestacion-sistemas", ORDEN_SISTEMAS[i])}
-      sinFuente
-      complementos={g.complementos}
-    />
+    <>
+      <BloquesPorSistema
+        bloques={g.bloques}
+        comun={g.comun}
+        seleccion={sel}
+        onElegir={(i) => elegirRuta("visual", "gestacion-sistemas", ORDEN_SISTEMAS[i])}
+        sinFuente
+      />
+      {/* 0.77.0 (auditoría): lo complementario (no es del capítulo), en Situaciones; aquí, un
+          enlace, para que la fuente del marco siga siendo la del capítulo y la única. */}
+      {g.complementos?.[sel] && (
+        <a
+          href={href("consultar", "situacion", `gestacion:${SLUG_SITUACION[sel]}`)}
+          className="mt-3 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 sm:min-h-9"
+        >
+          {g.complementos[sel].titulo} (complementarias)
+        </a>
+      )}
+    </>
   );
 }
 

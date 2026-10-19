@@ -67,18 +67,44 @@ describe("Guías por referencias: «Cómo funciona»", () => {
     expect(
       screen.getByRole("heading", { level: 2, name: /^Cómo funciona · myLoop CamAPS/ }),
     ).toBeInTheDocument();
-    // 0.72.2: la ficha técnica con los rótulos de la Tabla 1 y las casillas del sistema.
-    expect(screen.getByLabelText("Características del sistema (Tabla 1)")).toHaveTextContent(
-      /Dexcom G7.*FreeStyle Libre 3 Plus.*En la app del smartphone/,
+    // 0.77.0: datos operativos (src/fichaOperativa.ts), no casillas literales.
+    expect(screen.getByLabelText("Algoritmo")).toHaveTextContent(
+      /CamAPS FX · MPC adaptativo.*La app del smartphone.*80–198 mg\/dl/,
     );
-    // En pantalla, una sola vez (la respuesta impresa bajo la pregunta frecuente es solo de papel:
-    // `hidden print:block`, séptima vuelta del sistema visual).
-    expect(
-      screen
-        .getAllByText(/^CamAPS Liberty es una función de CamAPS FX/)
-        .filter((el) => !el.closest(".print\\:block")).length,
-    ).toBe(1);
+    expect(screen.getByLabelText("CamAPS Liberty")).toHaveTextContent(/Asa cerrada completa/);
     expect(await axe(container, AXE)).toHaveNoViolations();
+  });
+});
+
+describe("Fichas operativas (0.77.0)", () => {
+  it("cada cifra de una tarjeta está en el texto del capítulo del que sale", async () => {
+    const F = await import("./fichaOperativa");
+    const { textosDePieza } = await import("./inicio");
+    const { plano } = await import("./marcado");
+    const porSistema = [
+      F.ALGORITMO,
+      F.INDICACION.map((g) => g.flatMap((x) => x.datos)),
+      F.PARAMETROS,
+      F.MODOS,
+    ];
+    const fallos: string[] = [];
+    const cifras = (x: string) => x.match(/\d+(?:,\d+)?/g) ?? [];
+    for (const lista of porSistema)
+      lista.forEach((datos, c) => {
+        for (const d of [
+          ...datos,
+          ...(F.VARIANTE_OPERATIVA[c]?.datos ?? []),
+          ...(F.VARIANTE_RESUMEN[c] ? [F.VARIANTE_RESUMEN[c]!] : []),
+        ]) {
+          expect(d.f.length, d.r).toBeGreaterThan(0);
+          const fuente = plano(d.f.flatMap((p) => textosDePieza(p, c)).join(" "));
+          for (const n of cifras([d.v, d.n ?? "", d.variante?.v ?? ""].join(" ")))
+            // La cifra entera: ni pegada a otros dígitos ni a una coma decimal («112,5»).
+            if (!new RegExp(`(?<!\\d|\\d,)${n}(?!\\d|,\\d)`).test(fuente))
+              fallos.push(`${c} ${d.r}: ${n}`);
+        }
+      });
+    expect(fallos).toEqual([]);
   });
 });
 
