@@ -249,3 +249,28 @@ las tarjetas se imprimen con borde y sin sombra; la pleca de sistema se imprime 
   (Interrupción), la banda de cabecera queda alineada (`md:min-h-[3.6rem]`) y cada tarjeta acaba
   con su texto (`items-start`): sin aire vacío dentro. En filas de tarjetas de datos de longitud
   parecida (Figura 3, Parámetros, Elección) las alturas se comparten.
+
+## 14. Fichas operativas (0.77.0–0.77.1; auditorías de cinco perfiles y visual, 19-10-2026)
+
+- **Sin texto literal en las tarjetas de sistemas** (decisión del responsable): datos cortos en
+  `src/fichaOperativa.ts`, las mismas filas y en el mismo orden en los cuatro sistemas. Cada dato:
+  `v` (en negrita), `n` (detalle, 13 px, gris), `cond` (condición de la fila de la Tabla 4, como
+  primera línea de la columna del dato), `variante` (Control-IQ+, Liberty: insignia a la
+  izquierda y texto al lado, en rejilla `auto 1fr`) y `f` (piezas del capítulo → línea de fuente).
+  Una prueba exige que cada cifra esté en el texto citado.
+- **Dos formas**: `CasillasDatos` (datos cortos: filas en el móvil, rejilla desde sm; modo
+  `resumen` en la entrada, filas otra vez a dos tarjetas por fila) y `FilasDatos` (Parámetros y
+  Modos: rótulo a la izquierda, pulsable, que lleva al literal —la tabla con la columna del
+  sistema o el párrafo resaltado—; insignia «Actúa en automático / Bolos o modo manual / Solo al
+  inicio y en manual / No configurable»).
+- **Sin cortes**: `SinCortes` pone espacio duro entre cifra y unidad, tras < > ≤ ≥ y en «EE. UU.»,
+  «tipo 2», «ratio I/HC», y no parte los intervalos con raya.
+- **Selector de sistema**: casillas (varios) en Sistemas; botones de opción (`unico`, uno) en
+  Situaciones y en el diagrama de gestación.
+- **Entrada de Sistemas AID**: 2 × 2 desde xl, misma altura por fila, accesos al pie; sin flecha.
+  En el móvil, accesos en rejilla 3 × 2 con borde fino en los dos temas.
+- **Ficha**: título a 20 px como el resto; en el móvil, con la barra plegada, el nombre corto del
+  sistema encima de las pestañas; en «completa», ninguna pestaña marcada y los títulos a la vista.
+- **Papel**: `.tarjeta-datos` y las filas de `.filas-datos` no se parten; los títulos no se
+  quedan solos al pie; bajo cada pregunta frecuente, solo los párrafos (las filas de las Tablas
+  1–4 ya las resumen las tarjetas).

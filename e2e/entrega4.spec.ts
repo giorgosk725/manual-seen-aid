@@ -33,17 +33,18 @@ test.describe("Listas y tarjetas (0.29.0)", () => {
 
   test("el selector de sistema es el mismo en Situaciones e Iniciar", async ({ page }) => {
     await page.goto("/#/consultar/situacion/ejercicio-aerobico");
-    const grupo = page.getByRole("group", { name: "Sistema" });
-    await grupo.getByRole("button", { name: /Omnipod 5/ }).click();
+    // 0.77.1: elección única, con botones de opción, en los dos sitios.
+    const grupo = page.getByRole("radiogroup", { name: "Sistema" });
+    await grupo.getByRole("radio", { name: /Omnipod 5/ }).click();
     await expect(page).toHaveURL(/ejercicio-aerobico:omnipod-5$/);
-    await expect(grupo.getByRole("button", { name: /Omnipod 5/ })).toHaveAttribute(
-      "aria-pressed",
+    await expect(grupo.getByRole("radio", { name: /Omnipod 5/ })).toHaveAttribute(
+      "aria-checked",
       "true",
     );
     await page.goto("/#/consultar/inicio");
     await page
-      .getByRole("group", { name: "Sistema" })
-      .getByRole("button", { name: "CamAPS FX" })
+      .getByRole("radiogroup", { name: "Sistema" })
+      .getByRole("radio", { name: "CamAPS FX" })
       .click();
     await expect(page).toHaveURL(/:camaps$/);
   });

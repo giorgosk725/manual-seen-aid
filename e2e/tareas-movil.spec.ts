@@ -29,8 +29,8 @@ test.describe("Tareas en dos toques (393 px)", () => {
     await page.getByRole("link", { name: /^Situaciones/ }).tap();
     await page.getByRole("button", { name: /^Ejercicio aeróbico/ }).tap();
     await page
-      .getByRole("group", { name: "Sistema" })
-      .getByRole("button", { name: /Omnipod 5/ })
+      .getByRole("radiogroup", { name: "Sistema" })
+      .getByRole("radio", { name: /Omnipod 5/ })
       .tap();
     await expect(
       page.getByText(/Función Actividad, objetivo 150 mg\/dl; reduce la administración automática/),

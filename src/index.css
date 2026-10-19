@@ -1871,3 +1871,16 @@ html.night *:focus-visible {
   font-size: 0.875rem;
   line-height: 1.35rem;
 }
+
+/* 0.77.1 (auditoría R3): en la ficha impresa, las tarjetas operativas y las filas de Parámetros y
+   Modos no se parten entre caras, y un título no se queda solo al pie. */
+@media print {
+  .imprimible .tarjeta-datos,
+  .imprimible .filas-datos > div {
+    break-inside: avoid;
+  }
+  .imprimible .titulo-seccion,
+  .imprimible .titulo-tarjeta {
+    break-after: avoid;
+  }
+}

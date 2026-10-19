@@ -37,7 +37,7 @@ import { useIrAlCambiar } from "../irAlCambiar";
 import { CAPITULO } from "../contenido";
 import { VERSION_APP } from "../version";
 import { Lineas } from "../texto";
-import { coma, evaluar, redondea } from "../calculadora";
+import { NOMBRE_CLAVE, coma, evaluar, gruposDeProgramar, redondea } from "../calculadora";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { PiezaVista } from "../componentes/Piezas";
 import { CATEGORIA_HEX } from "../tokens";
@@ -92,6 +92,34 @@ function Hoja({ sis }: { sis?: number }) {
   });
   const cifra = (v: number | null, d: number, unidad: string, previo = "") =>
     ev.lista && v !== null ? `${previo}${coma(redondea(v, d))} ${unidad}` : null;
+  // 19-10-2026: también los datos de partida que ya están en la calculadora (pauta previa con la
+  // reducción aplicada, peso y objetivo del calculador de bolos), con las mismas condiciones que
+  // las cifras: solo con la propuesta lista.
+  const mdi = calc.origen === "mdi";
+  const pauta = !ev.lista
+    ? null
+    : mdi
+      ? `MDI, ${coma(redondea(ev.dtdPrevia!, 1))} UI/día; reducción del ${calc.reduccion} %`
+      : [
+          calc.origen === "isci"
+            ? "Bomba de insulina"
+            : `Otro sistema AID${calc.sistemaPrevio !== null ? ` (${CORTOS[calc.sistemaPrevio]})` : ""}`,
+          ev.dtdPrevia !== null ? `, ${coma(redondea(ev.dtdPrevia, 1))} UI/día` : "",
+          calc.referencia ? "; se traslada su programación" : "; programación no adecuada",
+        ].join("");
+  const peso = ev.lista && calc.peso.trim() ? `${calc.peso.trim().replace(".", ",")} kg` : null;
+  const objetivo = !ev.lista
+    ? null
+    : mdi || calc.referencia === false
+      ? `${calc.objetivo} mg/dl`
+      : calc.origen === "isci"
+        ? "El de la bomba actual"
+        : "El del sistema actual";
+  const datosPartida: [string, string | null][] = [
+    ["Pauta previa", pauta],
+    ["Peso", peso],
+    ["Objetivo del calculador de bolos manual", objetivo],
+  ];
   const partida: [string, string | null][] = [
     ["DTD de inicio", cifra(ev.dtdInicio, 1, "UI/día")],
     ["Tasa basal", ev.calcula.basal ? cifra(ev.basalHora, 2, "UI/h", "≈ ") : null],
@@ -163,25 +191,54 @@ function Hoja({ sis }: { sis?: number }) {
             <h3 className="rotulo mt-4" style={{ color: hex.ink }}>
               Qué se programa en {sistema}
             </h3>
-            <dl className="mt-1 grid gap-2 sm:grid-cols-2">
-              {[h.sistema.objetivo, h.sistema.parametros].map((x) => (
-                <div key={x.etiqueta} className="casilla p-2">
-                  <dt className="text-xs font-semibold text-slate-600">{x.etiqueta}</dt>
+            {/* 19-10-2026: los parámetros, con la misma separación que la calculadora (efecto
+                directo / bolos o manual) en vez de la celda de la Tabla 1 con asteriscos. */}
+            <dl className="mt-1 grid gap-2 sm:grid-cols-3">
+              <div className="casilla p-2">
+                <dt className="text-xs font-semibold text-slate-600">
+                  {h.sistema.objetivo.etiqueta}
+                </dt>
+                <dd className="text-sm text-slate-800">
+                  <Lineas>{h.sistema.objetivo.texto}</Lineas>
+                </dd>
+              </div>
+              {(
+                [
+                  [
+                    "Con efecto directo sobre el algoritmo o necesario para iniciar el modo automático",
+                    gruposDeProgramar(sis!).automatico,
+                  ],
+                  ["Efecto principal en bolos o modo manual", gruposDeProgramar(sis!).manual],
+                ] as const
+              ).map(([etiqueta, claves]) => (
+                <div key={etiqueta} className="casilla p-2">
+                  <dt className="text-xs font-semibold text-slate-600">{etiqueta}</dt>
                   <dd className="text-sm text-slate-800">
-                    <Lineas>{x.texto}</Lineas>
+                    {claves.map((k) => NOMBRE_CLAVE[k]).join(" · ")}
                   </dd>
                 </div>
               ))}
             </dl>
-            {h.sistema.parametros.texto.includes("*") && (
-              <p className="mt-1 text-xs text-slate-600">{h.sistema.nota}</p>
-            )}
           </>
         )}
         <h3 className="rotulo mt-4" style={{ color: hex.ink }}>
           Parámetros iniciales
         </h3>
-        <dl className="mt-1 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <dl className="mt-1 grid gap-2 sm:grid-cols-3">
+          {datosPartida.map(([k, v]) => (
+            <div key={k} className="casilla p-2">
+              <dt className="text-xs font-semibold text-slate-600">{k}</dt>
+              <dd className="mt-0.5 min-h-6 text-sm font-bold tabular-nums text-slate-900">
+                {v ?? (
+                  <span className="block h-5 border-b border-dashed border-slate-400">
+                    <span className="sr-only">por rellenar</span>
+                  </span>
+                )}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <dl className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {partida.map(([k, v]) => (
             <div key={k} className="casilla p-2">
               <dt className="text-xs font-semibold text-slate-600">{k}</dt>
@@ -221,7 +278,7 @@ function Hoja({ sis }: { sis?: number }) {
           {[...new Set([...h.antes.map((x) => x.pagina), h.seguimiento.pagina])]
             .sort((a, b) => a - b)
             .join(", ")}
-          {h.sistema ? " y Tabla 1, pp. 3-4" : ""}.
+          {h.sistema ? ", Tabla 1, pp. 3-4, y Tabla 3, p. 11" : ""}.
         </p>
       </div>
     </div>
@@ -608,6 +665,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
           <div className="rotulo mb-1">Sistema</div>
           <div className="mb-4">
             <CasillasSistema
+              unico
               seleccion={sis !== undefined ? [sis] : []}
               onToggle={(c) =>
                 ir(

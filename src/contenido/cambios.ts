@@ -13,9 +13,22 @@ export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-20",
+    ambito: "app",
+    titulo: `Complemento interactivo ${VERSION_APP} — auditoría de cinco perfiles de uso`,
+    detalle: [
+      "Modos y funciones: cada situación con su condición de la Tabla 4 («sin sospecha de fallo de infusión», «activar 1–2 h antes»); la hipoglucemia nocturna aparte, con lo que el apartado 9 manda revisar antes; alcohol, agua y comidas grasas en los cuatro sistemas.",
+      "Del dato al texto del capítulo en un toque: el rótulo de cada fila de Parámetros y Modos lleva a la tabla con la columna del sistema o al párrafo.",
+      "Sistemas AID en 2 × 2 en pantallas anchas; cifras que no se separan de su unidad; en el móvil, el nombre del sistema sobre las pestañas; selector de un solo sistema como botones de opción; tablas del capítulo enteras en la lectura.",
+      "Buscador: la hiperglucemia con el set o el pod en duda abre la sospecha de fallo y la Figura 3; «pasar de un sistema a otro» compara sus parámetros; «descarga» abre el análisis desde el primer paso; sin resultados repetidos; «/» abre la búsqueda.",
+      "Calculadora: sistema actual al venir de otro sistema AID, con los parámetros que actúan en automático en cada uno; sin respuesta preseleccionada; sets de infusión a la vista; hoja de inicio con peso, objetivo del calculador y pauta previa.",
+      "Situaciones: la sospecha de fallo lleva a la Figura 3 interactiva; las pruebas con un sistema elegido dicen su formato y sus sensores; las entradas que abren el capítulo o una figura lo indican.",
+    ],
+  },
+  {
     fecha: "2026-10-19",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — tarjetas operativas de los sistemas`,
+    titulo: "Complemento interactivo 0.77.0 — tarjetas operativas de los sistemas",
     detalle: [
       "Las tarjetas de cada sistema (Sistemas AID y su ficha: Cómo funciona, Indicación y material, Parámetros, Modos) dejan de copiar las casillas del capítulo: datos cortos, las mismas filas y en el mismo orden en los cuatro, con el detalle debajo y lo de Control-IQ+ o Liberty junto al dato. El texto literal sigue a un toque, en la línea de fuente al pie.",
       "Parámetros: cada uno con si actúa en automático y cómo se usa. Modos: cada situación con su herramienta. Comparación de parámetros: una tarjeta por sistema con lo que actúa en automático.",

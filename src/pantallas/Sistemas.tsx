@@ -70,12 +70,23 @@ const ALIAS: Record<string, RegExp> = {
 
 function parrafosDelSistema(id: string) {
   const re = ALIAS[id];
-  const out: { slug: string; titulo: string; ancla: string; b: Extract<Bloque, { t: "p" }> }[] = [];
-  for (const a of APARTADOS)
+  const out: {
+    slug: string;
+    titulo: string;
+    sub: string;
+    ancla: string;
+    b: Extract<Bloque, { t: "p" }>;
+  }[] = [];
+  // 0.77.1 (auditoría R3): con su subapartado, para distinguir las menciones de un mismo apartado
+  // («Situaciones especiales · Gestación», «… · Ejercicio físico»).
+  for (const a of APARTADOS) {
+    let sub = "";
     a.bloques.forEach((b, i) => {
+      if (b.t === "h3") sub = b.texto;
       if (b.t === "p" && re.test(plano(b.texto)))
-        out.push({ slug: a.slug, titulo: a.titulo, ancla: idDeBloque(b, i), b });
+        out.push({ slug: a.slug, titulo: a.titulo, sub, ancla: idDeBloque(b, i), b });
     });
+  }
   return out;
 }
 
@@ -317,11 +328,11 @@ const accesoFicha =
 
 /* Los accesos de cada tarjeta de la entrada: botones en el móvil, enlaces de texto desde sm. */
 const accesoTarjeta =
-  "flex min-h-11 items-center justify-center rounded-md bg-[var(--papel)] px-1 text-center text-[13px] font-semibold text-slate-700 hover:text-slate-900 sm:inline-flex sm:min-h-9 sm:justify-start sm:rounded-none sm:bg-transparent sm:px-0.5 sm:text-sm sm:text-slate-700 sm:underline sm:decoration-slate-300 sm:underline-offset-4 sm:hover:text-slate-900 sm:hover:decoration-slate-700";
+  "flex min-h-11 items-center justify-center rounded-md border border-[var(--linea)] px-1 text-center text-[13px] font-semibold text-slate-700 hover:border-slate-400 hover:text-slate-900 sm:border-0 sm:inline-flex sm:min-h-9 sm:justify-start sm:rounded-none sm:bg-transparent sm:px-0.5 sm:text-sm sm:text-slate-700 sm:underline sm:decoration-slate-300 sm:underline-offset-4 sm:hover:text-slate-900 sm:hover:decoration-slate-700";
 
 /* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
 const TODAS_LAS_SECCIONES = [
-  { id: "funciona", t: "Cómo funciona" },
+  { id: "funciona", t: "Cómo funciona", corto: "Funciona" },
   { id: "esencial", t: "Indicación y material", corto: "Indicación" },
   { id: "parametros", t: "Parámetros" },
   // 0.73.0: las herramientas del sistema ante cada situación (Tabla 4), en la ficha.
@@ -395,6 +406,10 @@ function trozosDe(f: (typeof FRECUENTES)[number], c: number, vistos: Set<string>
         if (k >= 0) poner(bloque, "li", plano(b.items[k] ?? ""));
         else b.items.forEach((x) => poner(bloque, "li", plano(x)));
       }
+    } else if (/^T[1-4]$/.test(p[0])) {
+      // 0.77.1 (auditoría R3): las filas de las Tablas 1–4 ya las resumen las tarjetas de la ficha
+      // impresa; en papel, bajo la pregunta, solo los párrafos y las demás tablas.
+      continue;
     } else if (/^T\d+$/.test(p[0])) {
       const t = TABLAS[p[0] as keyof typeof TABLAS];
       if (!t) continue;
@@ -445,17 +460,23 @@ function TituloSeccion({
   id,
   sistema,
   color,
+  visible = false,
   children,
 }: {
   id: string;
   sistema: string;
   color: string;
+  /* En la ficha entera no hay pestaña que lo diga: a la vista (0.77.1, auditoría R3). */
+  visible?: boolean;
   children: ReactNode;
 }) {
   return (
     // En pantalla, la pestaña activa ya lo dice (sería un título repetido): solo para el lector
     // de pantalla; en papel, visible.
-    <h2 id={id} className="titulo-seccion sr-only mb-2 scroll-mt-2 print:not-sr-only">
+    <h2
+      id={id}
+      className={`titulo-seccion mb-2 scroll-mt-2 ${visible ? "" : "sr-only print:not-sr-only"}`}
+    >
       {/* El sistema ya está en el título y en la barra: solo para el lector de pantalla. */}
       {children}{" "}
       <span className="sr-only" style={{ color }}>
@@ -488,11 +509,9 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   const c = columnaDeSistema(s.id);
   const h = SISTEMA_HEX[c];
   const slug = SLUG_TABLA[c];
-  // Las preguntas frecuentes revisadas sobre este sistema (columna de la Tabla 1), salvo las que
-  // solo responden con casillas que la ficha ya enseña (Tablas 1, 3 y 4): repetían la tarjeta.
-  const preguntas = FRECUENTES.filter(
-    (f) => f.sistema === c && f.pasajes.some((x) => !/^T[134]\//.test(x)),
-  );
+  // Las preguntas frecuentes del sistema (columna de la Tabla 1). 0.77.1 (auditorías senior y R3):
+  // todas, como en Preguntas frecuentes (antes se quitaban las que solo citaban casillas).
+  const preguntas = FRECUENTES.filter((f) => f.sistema === c);
   const impresas = respuestasImpresas(preguntas, c);
   // Una sola página (0.70.0): la sección de la ruta es solo adónde se salta.
   const sec = completa ? undefined : seccion;
@@ -532,14 +551,14 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           {/* Imprimir, junto al título (A09): la única acción secundaria de la cabecera. */}
           <div className="flex items-start justify-between gap-2">
             <h1
-              className="min-w-0 font-display text-xl font-medium uppercase leading-tight tracking-[0.04em] sm:text-2xl"
+              className="min-w-0 font-display text-xl font-medium uppercase leading-tight tracking-[0.04em]"
               style={{ color: h.ink }}
             >
               {s.name}
             </h1>
             <div className="no-imprimir shrink-0">
               <BotonImprimir objetivo={ref} compacto>
-                Imprimir
+                Imprimir la ficha
               </BotonImprimir>
             </div>
           </div>
@@ -560,12 +579,16 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             <span className="sm:hidden" aria-hidden="true">
               Plan
             </span>
-            <span className="sr-only sm:not-sr-only">
-              Plan de seguridad (hoja para el paciente)
-            </span>
+            <span className="sr-only sm:not-sr-only">Plan de seguridad</span>
           </a>
           <a href={href("consultar", "situacion", `:${slug}`)} className={accesoFicha}>
             Situaciones
+          </a>
+          <a
+            href={href("consultar", "descarga")}
+            className={`${accesoFicha} hidden sm:inline-flex`}
+          >
+            Descarga
           </a>
           <button
             type="button"
@@ -580,10 +603,10 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
         </div>
       </header>
 
-      <BarraSistemas ids={[s.id]} seccion={sec} abrir={abrirSelector} />
+      <BarraSistemas ids={[s.id]} seccion={sec} abrir={abrirSelector} completa={completa} />
       {/* 0.70.0: la ficha es una sola página; las pestañas llevan a cada sección. */}
       <section aria-labelledby="funciona" className={`scroll-mt-2 ${papel("funciona")}`}>
-        <TituloSeccion id="funciona" sistema={s.name} color={h.ink}>
+        <TituloSeccion id="funciona" sistema={s.name} color={h.ink} visible={completa}>
           Cómo funciona
         </TituloSeccion>
         <ComoFuncionaOperativo c={c} />
@@ -591,7 +614,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
 
       {
         <section aria-labelledby="esencial" className={`${mt} scroll-mt-2 ${papel("esencial")}`}>
-          <TituloSeccion id="esencial" sistema={s.name} color={h.ink}>
+          <TituloSeccion id="esencial" sistema={s.name} color={h.ink} visible={completa}>
             Indicación y material
           </TituloSeccion>
           {/* 0.77.0: datos operativos (src/fichaOperativa.ts); el texto literal, en la fuente. */}
@@ -612,7 +635,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           aria-labelledby="parametros"
           className={`${mt} scroll-mt-2 ${papel("parametros")}`}
         >
-          <TituloSeccion id="parametros" sistema={s.name} color={h.ink}>
+          <TituloSeccion id="parametros" sistema={s.name} color={h.ink} visible={completa}>
             Parámetros
           </TituloSeccion>
           {/* 0.77.0: cada parámetro con lo que hace en automático y cómo se usa, en una fila
@@ -623,7 +646,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
 
       {
         <section aria-labelledby="modos" className={`${mt} scroll-mt-2 ${papel("modos")}`}>
-          <TituloSeccion id="modos" sistema={s.name} color={h.ink}>
+          <TituloSeccion id="modos" sistema={s.name} color={h.ink} visible={completa}>
             Modos y funciones
           </TituloSeccion>
           <FilasDatos c={c} datos={MODOS[c]} titulo="Modos y funciones" />
@@ -635,7 +658,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
           aria-labelledby="preguntas"
           className={`${mt} scroll-mt-2 print:mt-8 ${papel("preguntas")}`}
         >
-          <TituloSeccion id="preguntas" sistema={s.name} color={h.ink}>
+          <TituloSeccion id="preguntas" sistema={s.name} color={h.ink} visible={completa}>
             Preguntas frecuentes
           </TituloSeccion>
           <ul
@@ -672,6 +695,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
                   >
                     <span className="min-w-0 flex-1">
                       <span className="font-semibold">{p.titulo}</span>
+                      {p.sub && <span className="font-semibold"> · {p.sub}</span>}
                       {p.b.lead && <span className="text-slate-600"> · {p.b.lead}</span>}
                     </span>
                     <span className="shrink-0 text-xs text-slate-500">
@@ -759,17 +783,23 @@ function BarraSistemas({
   ids,
   seccion,
   abrir = 0,
+  completa = false,
 }: {
   ids: string[];
   seccion?: string;
+  /* La ficha entera (#/sistemas/<id>/completa): ninguna pestaña marcada. */
+  completa?: boolean;
   /* Cada cambio abre el selector (desde «Otro sistema o comparación» de la cabecera). */
   abrir?: number;
 }) {
   const sec = seccion;
   const secciones = ids.length === 1 ? SECCIONES_FICHA : SECCIONES_COMPARACION;
   // En la ficha, sin sección en la ruta se ve «Cómo funciona» (0.73.0).
-  const activa =
-    ids.length === 1 && !(sec && secciones.some((x) => x.id === sec)) ? "funciona" : sec;
+  const activa = completa
+    ? undefined
+    : ids.length === 1 && !(sec && secciones.some((x) => x.id === sec))
+      ? "funciona"
+      : sec;
   const selStr = ids.length ? ids.join("+") : "todos";
   const rutaCon = (nuevos: string[]) =>
     nuevos.length === 1
@@ -907,6 +937,16 @@ function BarraSistemas({
           }
         />
       )}
+      {/* 0.77.1 (auditoría visual): en el móvil, con la barra plegada en la ficha, el nombre del
+          sistema encima de las pestañas (la cabecera con el título queda fuera de la vista). */}
+      {compacta && ids.length === 1 && (
+        <p
+          className="pt-1.5 text-[13px] font-bold leading-tight sm:hidden"
+          style={{ color: SISTEMA_HEX[columnaDeSistema(ids[0] as SistemaId)].ink }}
+        >
+          {SLUG_CORTO[columnaDeSistema(ids[0] as SistemaId)]}
+        </p>
+      )}
       <nav
         ref={pestanas}
         aria-label="Sección"
@@ -967,7 +1007,9 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
   ]);
   return (
     <div className="space-y-4">
-      <ul className="space-y-3">
+      {/* 0.77.1 (auditoría del adjunto): en pantallas anchas, 2 × 2, para ver los cuatro
+          objetivos sin desplazarse. */}
+      <ul className="grid gap-3 xl:grid-cols-2">
         {visibles.map(({ s, c }) => {
           const h = SISTEMA_HEX[c];
           const variante = VARIANTE_RESUMEN[c];
@@ -977,15 +1019,15 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
             ["Cómo funciona", "Funciona", href("sistemas", s.id, "funciona")],
             ["Indicación y material", "Indicación", href("sistemas", s.id, "esencial")],
             ["Parámetros", "Parámetros", href("sistemas", s.id, "parametros")],
-            ["Modos", "Modos", href("sistemas", s.id, "modos")],
+            ["Modos y funciones", "Modos", href("sistemas", s.id, "modos")],
             ["Iniciación", "Iniciación", href("consultar", "inicio", `preparacion:${slug}`)],
-            ["Plan del paciente", "Plan", href("pacientes", "plan", s.id)],
+            ["Plan de seguridad", "Plan", href("pacientes", "plan", s.id)],
           ];
           return (
-            <li key={s.id}>
+            <li key={s.id} className="min-w-0">
               <article
                 aria-label={s.name}
-                className="tarjeta tarjeta-sistema overflow-hidden"
+                className="tarjeta tarjeta-sistema flex h-full flex-col overflow-hidden"
                 style={{ ["--sis" as string]: h.strong }}
               >
                 <a
@@ -1010,16 +1052,15 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                       {ALGORITMO[c][0].v}
                     </span>
                   </span>
-                  <ArrowRight size={18} aria-hidden="true" className="shrink-0 text-slate-500" />
                 </a>
-                <div className="px-4 py-3">
-                  <CasillasDatos c={c} datos={datosDe(c)} />
+                <div className="flex-1 px-4 py-3">
+                  <CasillasDatos c={c} datos={datosDe(c)} modo="resumen" />
                   {variante && (
-                    <p className="mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-sm leading-snug text-slate-800">
+                    <p className="mt-3 grid grid-cols-[auto_1fr] items-baseline gap-x-2 text-sm leading-snug text-slate-800">
                       <span className="insignia" style={{ background: h.soft, color: h.ink }}>
                         {variante.r}
                       </span>
-                      <span>{variante.v}</span>
+                      <span className="min-w-0">{variante.v}</span>
                     </p>
                   )}
                 </div>
@@ -1103,7 +1144,10 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
   const ref = useRef<HTMLDivElement>(null);
   const cols = ids.length ? ids.map((id) => columnaDeSistema(id as SistemaId)) : [0, 1, 2, 3];
   // «Cómo funciona» comparado ya no está (0.70.0): esa dirección lleva a la Tabla 1.
-  const seccion = pedida === "funciona" ? "esencial" : pedida;
+  // «Cómo funciona» comparado lleva a la Tabla 1; una sección sin vista de varios (Modos,
+  // Preguntas) vuelve al Resumen (0.77.1: antes, la pantalla quedaba vacía).
+  const enComparacion = (x?: string) => SECCIONES_COMPARACION.some((y) => y.id === x);
+  const seccion = pedida === "funciona" ? "esencial" : enComparacion(pedida) ? pedida : undefined;
   return (
     <div ref={ref} className="imprimible">
       <CabeceraEditorial

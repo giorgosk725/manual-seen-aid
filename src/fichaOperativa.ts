@@ -16,6 +16,8 @@ export interface Dato {
   v: string;
   /* El detalle, en una segunda línea más discreta. */
   n?: string;
+  /* La condición de la fila (Tabla 4), bajo el rótulo. */
+  cond?: string;
   /* Lo que cambia con la variante del sistema (Control-IQ+, Liberty). */
   variante?: { nombre: string; v: string };
   auto?: EnAutomatico;
@@ -38,13 +40,21 @@ const fr = (apartado: string, bloque: string, k: number[]): Pieza => ({
 });
 const NOCHE = fr("09-descarga", "b7", [1]);
 const TARDIA = fr("09-descarga", "b6", [1]);
+/* El ascenso tardío tras comidas grasas o proteicas (apartado 9) y, en los sistemas sin función
+   específica, la individualización. */
+const TARDIA_INICIO = fr("09-descarga", "b6", [0]);
+const TARDIA_RESTO = fr("09-descarga", "b6", [2]);
+const C_GRASA =
+  "Si el ascenso aparece 3–5 h después: valorar grasa y proteínas, bolo insuficiente o estrategia prandial";
+const N_INDIVIDUALIZAR =
+  "Individualizar la estrategia según las herramientas disponibles, la respuesta previa y el riesgo de hipoglucemia";
 const BASAL_PESO = fr("08-iniciacion", "b8", [2]);
 const DESCONEXION = fr("07-educacion", "b11", [1, 2]);
 
 /* ---------- Cómo funciona: el algoritmo ---------- */
 export const ALGORITMO: Dato[][] = [
   [
-    { r: "Algoritmo", v: "SmartGuard · PID + lógica difusa", f: [t1(3)] },
+    { r: "Tipo", v: "SmartGuard · PID + lógica difusa", f: [t1(3)] },
     { r: "Funciona en", v: "La bomba", f: [t1(2)] },
     { r: "Administra", v: "Microbolos cada 5 min", f: [t1(4)] },
     { r: "Objetivo", v: "100, 110 o 120 mg/dl", f: [t1(6)] },
@@ -62,7 +72,7 @@ export const ALGORITMO: Dato[][] = [
     },
   ],
   [
-    { r: "Algoritmo", v: "Control-IQ · MPC, predicción a 30 min", f: [t1(3)] },
+    { r: "Tipo", v: "Control-IQ · MPC, predicción a 30 min", f: [t1(3)] },
     { r: "Funciona en", v: "La bomba", f: [t1(2)] },
     {
       r: "Administra",
@@ -85,12 +95,12 @@ export const ALGORITMO: Dato[][] = [
     {
       r: "Aprendizaje",
       v: "No aprende",
-      n: "Rinde según lo ajustados que estén la basal y el factor de sensibilidad",
+      n: "Su rendimiento depende de mantener optimizados la basal y el factor de sensibilidad",
       f: [t1(3)],
     },
   ],
   [
-    { r: "Algoritmo", v: "CamAPS FX · MPC adaptativo, predicción a 2,5–4 h", f: [t1(3), t1(4)] },
+    { r: "Tipo", v: "CamAPS FX · MPC adaptativo, predicción a 2,5–4 h", f: [t1(3), t1(4)] },
     { r: "Funciona en", v: "La app del smartphone", f: [t1(2)] },
     { r: "Administra", v: "Bolos extendidos cada 8–12 min", f: [t1(4)] },
     {
@@ -113,7 +123,7 @@ export const ALGORITMO: Dato[][] = [
     },
   ],
   [
-    { r: "Algoritmo", v: "SmartAdjust · MPC, predicción a 60 min", f: [t1(3), t1(4)] },
+    { r: "Tipo", v: "SmartAdjust · MPC, predicción a 60 min", f: [t1(3), t1(4)] },
     {
       r: "Funciona en",
       v: "El pod",
@@ -135,13 +145,13 @@ export const ALGORITMO: Dato[][] = [
     {
       r: "Corrección automática",
       v: "No, sin bolos automáticos",
-      n: "Sube la basal adaptativa hasta un 400 %",
+      n: "Incrementa la basal adaptativa hasta un 400 %",
       f: [t1(5)],
     },
     {
       r: "Aprendizaje",
       v: "Basal adaptativa con cada pod",
-      n: "Pesa más los pods recientes",
+      n: "Pondera los pods más recientes",
       f: [t1(3)],
     },
   ],
@@ -164,6 +174,11 @@ export const VARIANTE_OPERATIVA: (GrupoFicha | null)[] = [
         f: [t3(1)],
       },
       { r: "Bolo extendido", v: "De 15 min a 8 h (Control-IQ: hasta 2 h)", f: [t4(5)] },
+      {
+        r: "Indicación",
+        v: "≥ 2 años; diabetes tipo 2 y gestación autorizadas (FDA y marcado CE)",
+        f: [t1(7), t1(8)],
+      },
     ],
   },
   {
@@ -204,7 +219,7 @@ export const INDICACION: GrupoFicha[][] = [
       ],
     },
     {
-      titulo: "Inicio del modo automático",
+      titulo: "Paso a modo automático",
       datos: [
         { r: "Cuándo", v: "Tras 48 h de insulina en modo manual", f: [INICIALIZACION] },
         {
@@ -227,7 +242,8 @@ export const INDICACION: GrupoFicha[][] = [
         },
         {
           r: "Diabetes tipo 2",
-          v: "Control-IQ+: autorizado (FDA y marcado CE)",
+          v: "Control-IQ: no consta en el capítulo",
+          variante: { nombre: "Control-IQ+", v: "Autorizado (FDA y marcado CE)" },
           f: [t1(7)],
         },
         {
@@ -251,7 +267,7 @@ export const INDICACION: GrupoFicha[][] = [
       ],
     },
     {
-      titulo: "Inicio del modo automático",
+      titulo: "Paso a modo automático",
       datos: [
         { r: "Cuándo", v: "Al introducir peso y DTD", f: [INICIALIZACION] },
         {
@@ -272,6 +288,7 @@ export const INDICACION: GrupoFicha[][] = [
           variante: { nombre: "Liberty", v: "> 13 años" },
           f: [t1(7)],
         },
+        { r: "Diabetes tipo 2", v: "No consta en el capítulo", f: [t1(7)] },
         {
           r: "Gestación",
           v: "Autorizado (CE); ensayo AiDAPT",
@@ -289,7 +306,7 @@ export const INDICACION: GrupoFicha[][] = [
       ],
     },
     {
-      titulo: "Inicio del modo automático",
+      titulo: "Paso a modo automático",
       datos: [
         { r: "Cuándo", v: "Al introducir peso y DTD", f: [INICIALIZACION] },
         { r: "Programar", v: "Objetivo personal · ratios I/HC", f: [INICIALIZACION] },
@@ -314,7 +331,7 @@ export const INDICACION: GrupoFicha[][] = [
       ],
     },
     {
-      titulo: "Inicio del modo automático",
+      titulo: "Paso a modo automático",
       datos: [
         { r: "Cuándo", v: "Desde el primer pod", f: [INICIALIZACION] },
         {
@@ -386,7 +403,7 @@ export const PARAMETROS: Dato[][] = [
     {
       r: P_DIA,
       auto: "no",
-      v: "No modificable en automático; solo cuenta fuera de él",
+      v: "No modificable en automático; solo se usa fuera de él",
       f: [t3(4)],
     },
   ],
@@ -406,7 +423,7 @@ export const PARAMETROS: Dato[][] = [
     {
       r: P_FS,
       auto: "no",
-      v: "El algoritmo adapta su propia sensibilidad; el factor solo cuenta en el calculador",
+      v: "El algoritmo adapta su propia sensibilidad; el factor configurado se usa solo en el calculador",
       f: [t3(3), fr("10-situaciones", "b7", [0])],
     },
     {
@@ -456,135 +473,215 @@ export const PARAMETROS: Dato[][] = [
   ],
 ];
 
-/* ---------- Modos y funciones (Tabla 4 y apartados 7, 9 y 10) ---------- */
+/* ---------- Modos y funciones (Tabla 4 y apartados 7, 9 y 10) ----------
+   0.77.1 (auditoría del perfil senior): cada fila con la condición de la Tabla 4 bajo el rótulo
+   («sin sospecha de fallo de infusión»…); la hipoglucemia nocturna aparte, con lo que el
+   apartado 9 manda revisar antes; alcohol y agua en los cuatro sistemas. */
 const ANAEROBICO_COMUN = "Sin modo temporal: mantener el objetivo estándar";
 const PUNTUAL = "Mantener el automático y bolo corrector según el calculador";
 const NECESIDAD = "Más monitorización, vigilar cetonemia y mantener el automático";
 const FALLO = "Cetonemia, corrección con pluma y cambio de set según el plan de seguridad";
 const PAUSAR = "Suspender o pausar la administración al desconectar la bomba";
+const R_AEROBICO = "Ejercicio aeróbico o riesgo previsible de hipoglucemia";
+const C_AEROBICO = "Activar 1–2 h antes; duración según la respuesta previa";
+const R_NECESIDAD = "Más necesidad transitoria leve";
+const C_NECESIDAD = "Enfermedad leve, menstruación o estrés, sin sospecha de fallo de infusión";
+const C_SIN_FALLO = "Sin sospecha de fallo de infusión";
+const C_NOCTURNA =
+  "Antes, revisar ejercicio vespertino, alcohol, bolo tardío de cena, correcciones, objetivo y ratios, y si el patrón se concentra en una franja";
+const ALCOHOL = fr("10-situaciones", "b14", [2]);
+const N_ALCOHOL = "Prudencia con los bolos de las comidas con alcohol";
+const AGUA_CATETER: Dato = {
+  r: "Agua y deportes de contacto",
+  v: "Puede ser necesario retirar la bomba, según el dispositivo y el fabricante",
+  n: "Evitar desconexiones de más de 1 h: riesgo de hiperglucemia y cetosis",
+  f: [fr("10-situaciones", "b24", [0, 3])],
+};
+const ANAEROBICO: Dato = {
+  r: "Ejercicio anaeróbico o de alta intensidad",
+  v: ANAEROBICO_COMUN,
+  f: [t4(1)],
+};
 export const MODOS: Dato[][] = [
   [
     {
-      r: "Ejercicio aeróbico",
-      v: "Objetivo temporal 150 mg/dl, 1–2 h antes",
+      r: R_AEROBICO,
+      cond: C_AEROBICO,
+      v: "Objetivo temporal 150 mg/dl",
       n: "Suspende las autocorrecciones mientras está activo",
       f: [t4(0)],
     },
-    { r: "Ejercicio anaeróbico", v: ANAEROBICO_COMUN, f: [t4(1)] },
+    ANAEROBICO,
+    { r: "Noche", v: "Sin modo nocturno específico", f: [t4(2)] },
     {
-      r: "Noche",
-      v: "Sin modo nocturno; si hay hipoglucemia nocturna, objetivo más alto o temporal",
-      f: [t4(2), NOCHE],
+      r: "Hipoglucemia nocturna",
+      cond: C_NOCTURNA,
+      v: "Un objetivo más alto o temporal puede ayudar",
+      f: [NOCHE],
     },
     {
-      r: "Más necesidad de insulina",
+      r: R_NECESIDAD,
+      cond: C_NECESIDAD,
       v: `${NECESIDAD}; ajustar objetivo o duración de la insulina activa`,
       f: [t4(3)],
     },
     {
       r: "Hiperglucemia puntual",
+      cond: C_SIN_FALLO,
       v: "Mantener SmartGuard; si se mantiene, confirmar con glucemia capilar y bolo corrector del sistema",
       f: [t4(4)],
     },
-    { r: "Comida grasa o proteica", v: "Sin función específica", f: [t4(5)] },
+    {
+      r: "Comida grasa o proteica",
+      cond: C_GRASA,
+      v: "Sin función específica",
+      n: N_INDIVIDUALIZAR,
+      f: [t4(5), TARDIA_INICIO, TARDIA_RESTO],
+    },
+    {
+      r: "Alcohol",
+      v: "Hipoglucemia diferida hasta 12–24 h: objetivo más conservador esa noche y la mañana siguiente",
+      n: N_ALCOHOL,
+      f: [ALCOHOL],
+    },
+    AGUA_CATETER,
     { r: "Sospecha de fallo de infusión", v: FALLO, f: [t4(6)] },
     { r: "Desconexión", v: PAUSAR, f: [DESCONEXION] },
   ],
   [
     {
-      r: "Ejercicio aeróbico",
-      v: "Modo ejercicio (140–160 mg/dl), 1–2 h antes",
+      r: R_AEROBICO,
+      cond: C_AEROBICO,
+      v: "Modo ejercicio (140–160 mg/dl)",
       n: "Reduce o suspende la insulina si predice descenso; mantiene las autocorrecciones si se superan los umbrales",
       f: [t4(0)],
     },
-    { r: "Ejercicio anaeróbico", v: ANAEROBICO_COMUN, f: [t4(1)] },
+    ANAEROBICO,
     {
       r: "Noche",
-      v: "Modo sueño (112,5–120 mg/dl) en una franja configurable: modula la basal, sin autocorrecciones",
-      f: [t4(2), NOCHE],
+      v: "Modo sueño (112,5–120 mg/dl) en una franja configurable",
+      n: "Modula la basal, sin bolos de autocorrección",
+      f: [t4(2)],
     },
     {
-      r: "Más necesidad de insulina",
+      r: "Hipoglucemia nocturna",
+      cond: C_NOCTURNA,
+      v: "El modo sueño no autocorrige, pero ajusta la basal",
+      f: [NOCHE],
+    },
+    {
+      r: R_NECESIDAD,
+      cond: C_NECESIDAD,
       v: `${NECESIDAD}; ajustar tasa basal y factor de sensibilidad`,
-      variante: { nombre: "Control-IQ+", v: "Basal temporal 0–250 %" },
+      variante: { nombre: "Control-IQ+", v: "Dispone además de basal temporal del 0 al 250 %" },
       f: [t4(3), t3(1)],
     },
-    { r: "Hiperglucemia puntual", v: PUNTUAL, f: [t4(4)] },
+    { r: "Hiperglucemia puntual", cond: C_SIN_FALLO, v: PUNTUAL, f: [t4(4)] },
     {
       r: "Comida grasa o proteica",
+      cond: C_GRASA,
       v: "Bolo extendido hasta 2 h",
       variante: { nombre: "Control-IQ+", v: "De 15 min a 8 h" },
-      f: [t4(5), TARDIA],
+      f: [t4(5), TARDIA_INICIO, TARDIA],
     },
+    {
+      r: "Alcohol",
+      v: "Hipoglucemia diferida hasta 12–24 h: objetivo más conservador esa noche y la mañana siguiente",
+      n: N_ALCOHOL,
+      f: [ALCOHOL],
+    },
+    AGUA_CATETER,
     { r: "Sospecha de fallo de infusión", v: FALLO, f: [t4(6)] },
     { r: "Desconexión", v: PAUSAR, f: [DESCONEXION] },
   ],
   [
     {
-      r: "Ejercicio aeróbico",
-      v: "Ease-off, 1–2 h antes: eleva el objetivo y reduce la insulina; inicio inmediato o diferido",
+      r: R_AEROBICO,
+      cond: C_AEROBICO,
+      v: "Ease-off: eleva el objetivo y reduce la insulina",
+      n: "Inicio inmediato o diferido y duración configurable; si la hipoglucemia se repite en un tramo horario, valorar un objetivo más alto en ese periodo",
       f: [t4(0)],
     },
     {
-      r: "Ejercicio anaeróbico",
+      ...ANAEROBICO,
       v: `${ANAEROBICO_COMUN}; no usar Boost de rutina (hipoglucemia diferida)`,
-      f: [t4(1)],
+    },
+    { r: "Noche", v: "Sin modo nocturno específico: objetivo por tramos", f: [t4(2)] },
+    {
+      r: "Hipoglucemia nocturna",
+      cond: C_NOCTURNA,
+      v: "Ease-off o un objetivo más alto",
+      f: [NOCHE],
     },
     {
-      r: "Noche",
-      v: "Sin modo nocturno: objetivo por tramos; si hay hipoglucemia nocturna, Ease-off u objetivo más alto",
-      f: [t4(2), NOCHE],
-    },
-    {
-      r: "Más necesidad de insulina",
+      r: R_NECESIDAD,
+      cond: C_NECESIDAD,
       v: `${NECESIDAD}; valorar Boost y, si se mantiene, ajustar el objetivo`,
       f: [t4(3)],
     },
     {
       r: "Hiperglucemia puntual",
+      cond: C_SIN_FALLO,
       v: "Mantener el automático; Boost o bolo corrector según el calculador",
       f: [t4(4)],
     },
     {
       r: "Comida grasa o proteica",
+      cond: C_GRASA,
       v: "Función de comida de absorción lenta",
-      f: [t4(5), TARDIA],
+      f: [t4(5), TARDIA_INICIO, TARDIA],
     },
     {
       r: "Alcohol",
       v: "Hipoglucemia diferida hasta 12–24 h: Ease-off u objetivo más conservador esa noche y la mañana siguiente",
-      f: [fr("10-situaciones", "b14", [2])],
+      n: N_ALCOHOL,
+      f: [ALCOHOL],
     },
+    AGUA_CATETER,
     { r: "Sospecha de fallo de infusión", v: FALLO, f: [t4(6)] },
     { r: "Desconexión", v: PAUSAR, f: [DESCONEXION] },
   ],
   [
     {
-      r: "Ejercicio aeróbico",
-      v: "Función Actividad (150 mg/dl), 1–2 h antes; dura de 1 a 24 h",
+      r: R_AEROBICO,
+      cond: C_AEROBICO,
+      v: "Función Actividad (150 mg/dl)",
+      n: "Reduce la insulina automática; duración programable de 1 a 24 h",
       f: [t4(0)],
     },
-    { r: "Ejercicio anaeróbico", v: ANAEROBICO_COMUN, f: [t4(1)] },
+    ANAEROBICO,
+    { r: "Noche", v: "Sin modo nocturno específico: objetivo por tramos", f: [t4(2)] },
     {
-      r: "Noche",
-      v: "Sin modo nocturno: objetivo por tramos; si hay hipoglucemia nocturna, Función Actividad u objetivo más alto",
-      f: [t4(2), NOCHE],
+      r: "Hipoglucemia nocturna",
+      cond: C_NOCTURNA,
+      v: "Función Actividad (objetivo 150 mg/dl) o un objetivo configurado más alto",
+      f: [NOCHE],
     },
     {
-      r: "Más necesidad de insulina",
+      r: R_NECESIDAD,
+      cond: C_NECESIDAD,
       v: `${NECESIDAD}; ajustar el objetivo`,
       f: [t4(3)],
     },
-    { r: "Hiperglucemia puntual", v: PUNTUAL, f: [t4(4)] },
+    { r: "Hiperglucemia puntual", cond: C_SIN_FALLO, v: PUNTUAL, f: [t4(4)] },
     {
       r: "Comida grasa o proteica",
+      cond: C_GRASA,
       v: "Bolo extendido solo en modo manual",
-      f: [t4(5)],
+      n: N_INDIVIDUALIZAR,
+      f: [t4(5), TARDIA_INICIO, TARDIA_RESTO],
+    },
+    {
+      r: "Alcohol",
+      v: "Hipoglucemia diferida hasta 12–24 h: objetivo más conservador esa noche y la mañana siguiente",
+      n: N_ALCOHOL,
+      f: [ALCOHOL],
     },
     {
       r: "Agua",
-      v: "Puede llevarse en actividades acuáticas, dentro de los límites de inmersión del fabricante",
-      f: [fr("10-situaciones", "b24", [1])],
+      v: "Puede mantenerse en actividades acuáticas, dentro de los límites de inmersión del fabricante",
+      n: "La inmersión puede limitar la comunicación entre el sensor y el sistema",
+      f: [fr("10-situaciones", "b24", [1, 2])],
     },
     {
       r: "Sospecha de fallo de infusión",

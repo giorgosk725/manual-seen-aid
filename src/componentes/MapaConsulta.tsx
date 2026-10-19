@@ -138,7 +138,7 @@ function Sistemas() {
                   aria-label={`Iniciación de ${CORTO_SISTEMA[c]}`}
                   className={enlace}
                 >
-                  Iniciar
+                  Iniciación
                 </a>
                 <a
                   href={href("sistemas", id, "preguntas")}
@@ -264,10 +264,11 @@ const CON_COLOR: [string, { strong: string; soft: string; border: string; ink: s
     ["hipoglucemia", null],
     ["interrupcion", null],
   ];
+/* 0.77.1 (auditoría del perfil senior): sin «Sospecha de fallo de infusión», que es la misma
+   decisión que «Hiperglucemia y cetonemia» (Figura 3); la situación sigue en Situaciones. */
 const SITUACIONES_PORTADA: [string, string][] = [
   ["ejercicio-aerobico", "Ejercicio"],
   ["enfermedad-intercurrente", "Enfermedad intercurrente"],
-  ["hiperglucemia-persistente", "Sospecha de fallo de infusión"],
   ["rm", "Resonancia magnética"],
   ["cirugia-corta", "Cirugía"],
   ["ingreso-hospitalario", "Ingreso hospitalario"],

@@ -11,8 +11,8 @@ test.describe("Calculadora de parámetros iniciales", () => {
       "true",
     );
     await page
-      .getByRole("group", { name: "Sistema" })
-      .getByRole("button", { name: "Control-IQ" })
+      .getByRole("radiogroup", { name: "Sistema" })
+      .getByRole("radio", { name: "Control-IQ" })
       .click();
     await expect(page).toHaveURL(/calculadora:control-iq$/);
     await page.getByLabel("Insulina basal").fill("22");

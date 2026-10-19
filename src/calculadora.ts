@@ -152,24 +152,55 @@ export function gruposDeProgramar(c: number): { automatico: Clave[]; manual: Cla
   if (c === 3) automatico.push("basal");
   else if (!automatico.includes("basal") && !manual.includes("basal")) manual.unshift("basal");
   if (!automatico.includes("factor") && !manual.includes("factor")) manual.push("factor");
+  // 19-10-2026: la duración de la insulina activa también donde la Tabla 1 no la nombra
+  // (Control-IQ y CamAPS FX), con la celda de la Tabla 3 de ese sistema.
+  if (!automatico.includes("ia") && !manual.includes("ia")) manual.push("ia");
   manual.push("objetivo");
   return { automatico, manual };
 }
 
+/* Lo que repite el objetivo configurable del sistema («Objetivo seleccionable (100, 110 o 120
+   mg/dl)», «Objetivo configurable por tramos…»): si el objetivo ya figura entre lo que tiene
+   efecto directo, esos trozos de la celda sobran (19-10-2026). Se quitan trozos enteros (líneas
+   o tramos separados por «;»); lo que queda, literal. Sin nada que quitar, la celda tal cual. */
+const REPITE_OBJETIVO = /^Objetivo (seleccionable|configurable)/;
+export function sinObjetivoRepetido(texto: string): string {
+  const trozos = texto
+    .split("\n")
+    .flatMap((l) => l.split(/;\s*/))
+    .map((x) => x.trim())
+    .filter(Boolean);
+  if (!trozos.some((x) => REPITE_OBJETIVO.test(x))) return texto;
+  return trozos.filter((x) => !REPITE_OBJETIVO.test(x)).join("\n");
+}
+
 /* Modos y funciones de cada sistema, celda a celda (Tabla 3, fila del objetivo; Tabla 4, filas
-   de ejercicio aeróbico, sueño y comida grasa o proteica). */
-export function modosDe(c: number): { situacion: string; texto: string; tabla: "T3" | "T4" }[] {
+   de ejercicio aeróbico, sueño y comida grasa o proteica). Si el objetivo del algoritmo va ya en
+   «efecto directo» (paso 5 de la calculadora), sin repetirlo aquí: la fila del objetivo queda en
+   «Funciones temporales» y el sueño, sin la línea del objetivo por tramos. */
+export function modosDe(
+  c: number,
+  quitarObjetivo = gruposDeProgramar(c).automatico.includes("objetivoAlg"),
+): { situacion: string; texto: string; tabla: "T3" | "T4" }[] {
   const t4 = (i: number) => TABLAS.T4.filas[i].celdas[c];
+  const limpia = (t: string) => (quitarObjetivo ? sinObjetivoRepetido(t) : t);
+  const objetivo = celda(
+    "T3",
+    "Objetivo glucémico y funciones temporales con impacto en automático",
+    c,
+  );
+  const temporales = limpia(objetivo);
   return [
     {
-      situacion: "Objetivo y funciones temporales",
-      texto: celda("T3", "Objetivo glucémico y funciones temporales con impacto en automático", c),
+      situacion:
+        temporales === objetivo ? "Objetivo y funciones temporales" : "Funciones temporales",
+      texto: temporales,
       tabla: "T3" as const,
     },
     { situacion: "Ejercicio aeróbico planificado", texto: t4(0), tabla: "T4" as const },
-    { situacion: "Sueño / período nocturno", texto: t4(2), tabla: "T4" as const },
+    { situacion: "Sueño / período nocturno", texto: limpia(t4(2)), tabla: "T4" as const },
     { situacion: "Comida rica en grasa/proteína", texto: t4(5), tabla: "T4" as const },
-  ];
+  ].filter((m) => m.texto);
 }
 /* Qué esperar del algoritmo (Tabla 1, «Lógica del algoritmo y aprendizaje»). */
 export const aprendizajeDe = (c: number) => celda("T1", "Lógica del algoritmo y aprendizaje", c);
@@ -201,6 +232,17 @@ export const objetivoAlgoritmoDe = (c: number) =>
      pendiente confirmarla. */
 export type Lectura =
   { estado: "vacio" } | { estado: "valido"; v: number } | { estado: "invalido"; motivo: string };
+/* Nombres de lo que se programa (calculadora y hoja de inicio). */
+export const NOMBRE_CLAVE: Record<Clave, string> = {
+  peso: "Peso",
+  dtd: "DTD",
+  basal: "Tasa basal",
+  factor: "Factor de sensibilidad",
+  ratio: "Ratio I/HC",
+  objetivo: "Objetivo del calculador de bolos manual",
+  objetivoAlg: "Objetivo glucémico del algoritmo",
+  ia: "Duración de la insulina activa",
+};
 export const LIMITES = { dosis: 400, peso: 250, dtdMin: 1, dtdMax: 400 };
 export function leerCifra(s: string, max: number): Lectura {
   const t = s.trim();
@@ -215,10 +257,11 @@ export function leerCifra(s: string, max: number): Lectura {
 
 /* Origen: plumas, bomba sin automatización u otro sistema de asa cerrada (apartado 8 y paso 1
    de la fase Inicio). «referencia»: en MDI, una ratio y un factor propios que funcionan; en
-   bomba u otro AID, una programación que funcionaba. */
+   bomba u otro AID, una programación que funcionaba. 19-10-2026: «null» = sin contestar (no se
+   preselecciona); en MDI equivale a «no», y en bomba u otro AID falta la respuesta. */
 export type Caso = {
   origen: Origen;
-  referencia: boolean;
+  referencia: boolean | null;
   basal: string;
   rapida: string;
   dtd: string;
@@ -255,11 +298,15 @@ export function evaluar(c: number | undefined, k: Caso): Evaluacion {
     return l.estado === "valido" ? l.v : null;
   };
   const mdi = k.origen === "mdi";
+  if (!mdi && k.referencia === null) faltan.push("Valorar si la programación previa es adecuada");
+  // Con la respuesta pendiente, la DTD se pide (hará falta salvo que se traslade y el sistema no
+  // la pida); lo que se calcula, nada hasta contestar.
+  const traslada = k.referencia === true;
   const basal = mdi ? lee(k.basal, LIMITES.dosis, "Insulina basal", true) : null;
   const rapida = mdi ? lee(k.rapida, LIMITES.dosis, "Insulina rápida", true) : null;
   const dtdEscrita = mdi
     ? null
-    : lee(k.dtd, LIMITES.dosis, "DTD actual", !k.referencia || pidePesoYDtd(c));
+    : lee(k.dtd, LIMITES.dosis, "DTD actual", !traslada || pidePesoYDtd(c));
   const peso = lee(k.peso, LIMITES.peso, "Peso", pidePesoYDtd(c));
   let dtdPrevia = mdi ? (basal !== null && rapida !== null ? basal + rapida : null) : dtdEscrita;
   if (dtdPrevia !== null && (dtdPrevia < LIMITES.dtdMin || dtdPrevia > LIMITES.dtdMax)) {
@@ -270,9 +317,10 @@ export function evaluar(c: number | undefined, k: Caso): Evaluacion {
   }
   const dtdInicio =
     dtdPrevia === null ? null : mdi ? dtdPrevia * (1 - k.reduccion / 100) : dtdPrevia;
-  const calcula = { basal: mdi || !k.referencia, ratioFactor: !k.referencia };
+  const noAdecuada = mdi ? !traslada : k.referencia === false;
+  const calcula = { basal: mdi || noAdecuada, ratioFactor: noAdecuada };
   // Al trasladar una programación, la DTD solo hace falta si el sistema la pide para arrancar.
-  const necesitaDtd = mdi || !k.referencia || pidePesoYDtd(c);
+  const necesitaDtd = mdi || !traslada || pidePesoYDtd(c);
   const completo = !faltan.length && !errores.length && (dtdInicio !== null || !necesitaDtd);
   const basalDia =
     completo && calcula.basal && dtdInicio !== null ? (dtdInicio * k.basalPct) / 100 : null;

@@ -388,10 +388,14 @@ function MenuNavegacion({
   etiqueta,
   onIr,
   sinGrupo,
+  sinBarra = false,
 }: {
   ruta: Ruta;
   etiqueta: string;
   onIr?: () => void;
+  /* «Más» del móvil (0.77.1, auditoría del perfil senior): sin lo que ya está en la barra de
+     abajo (Inicio, Sistemas AID, Situaciones). */
+  sinBarra?: boolean;
   /* Un grupo que se pinta en otro sitio (en la barra lateral, «Recursos» va al pie). */
   sinGrupo?: string;
 }) {
@@ -428,6 +432,7 @@ function MenuNavegacion({
     </a>
   );
   const item = (id: string) => {
+    if (sinBarra && (id === "sistemas" || id === "situacion")) return null;
     const d = DESTINOS.find((x) => x.id === id)!;
     const I = d.icono;
     const cat = CATEGORIA_HEX[d.cat];
@@ -487,7 +492,7 @@ function MenuNavegacion({
   );
   return (
     <nav aria-label={etiqueta}>
-      <ul className="mt-2">
+      <ul className={`mt-2 ${sinBarra ? "hidden" : ""}`}>
         <li>
           {enlace(
             ruta.seccion === "",
@@ -617,14 +622,17 @@ function BuscadorLateral() {
           autoComplete="off"
           className="w-full min-w-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none"
         />
-        {/* 0.72.0: que se vea que Intro (o este botón) abre los resultados. */}
+        {/* 0.72.0: que se vea que Intro (o este botón) abre los resultados. 0.77.1 (auditoría
+            R3): solo la flecha, para que el campo no encoja al escribir. */}
         {q.trim() && (
           <button
             type="submit"
-            className="tap-44 inline-flex shrink-0 items-center gap-0.5 rounded px-1.5 text-xs font-bold text-white"
+            aria-label="Buscar"
+            title="Buscar"
+            className="tap-44 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-white"
             style={{ background: "#8E254E" }}
           >
-            Buscar <ArrowRight size={12} aria-hidden="true" />
+            <ArrowRight size={14} aria-hidden="true" />
           </button>
         )}
       </div>
@@ -726,7 +734,7 @@ function Cajon({ open, onClose, ruta }: { open: boolean; onClose: () => void; ru
             <X size={18} />
           </button>
         </div>
-        <MenuNavegacion ruta={ruta} etiqueta="Menú de navegación" onIr={onClose} />
+        <MenuNavegacion ruta={ruta} etiqueta="Menú de navegación" onIr={onClose} sinBarra />
       </div>
     </Modal>
   );
@@ -758,6 +766,16 @@ export function Shell({
         e.preventDefault();
         // Con otro diálogo abierto (el índice) no se apila un segundo modal.
         setPaleta((p) => (!p && document.querySelector('[role="dialog"]') ? p : !p));
+        return;
+      }
+      // 0.77.1 (auditoría del adjunto): «/» abre la búsqueda, salvo escribiendo en un campo.
+      const t = e.target as HTMLElement | null;
+      const escribiendo =
+        !!t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+      if (e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey && !escribiendo) {
+        if (document.querySelector('[role="dialog"]')) return;
+        e.preventDefault();
+        setPaleta(true);
       }
     };
     window.addEventListener("keydown", onKey);

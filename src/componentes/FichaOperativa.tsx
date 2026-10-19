@@ -4,46 +4,81 @@
    modos, con el rótulo a la izquierda). */
 import type { ReactNode } from "react";
 import { FuentePie } from "./FuentePie";
+import { SinCortes } from "./SinCortes";
 import { fuentesDeDatos, type Dato, type EnAutomatico, type GrupoFicha } from "../fichaOperativa";
 import { SISTEMA_HEX } from "../tokens";
+import { fuentesDePieza } from "../fuentesPiezas";
+import { href } from "../rutas";
+import type { Pieza } from "../inicio";
 
+/* Identificador del sistema en la vista de tablas (orden de la Tabla 1). */
+const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
+/* Adónde lleva el rótulo de una fila: la tabla con la columna del sistema (casilla literal) o el
+   párrafo del capítulo, resaltado (0.77.1, auditoría R3: del dato al literal en un toque). */
+function literalDe(p: Pieza | undefined, c: number): string | undefined {
+  if (!p) return undefined;
+  if (p.t === "casilla") return href("consultar", "tablas", `${p.tabla}:${SLUG_TABLA[c]}`);
+  return fuentesDePieza(p)[0]?.ruta;
+}
+
+/* La variante, siempre igual: la insignia a la izquierda y su texto al lado, aunque ocupe dos
+   líneas (0.77.1, auditoría visual: con flex-wrap la insignia quedaba sola en su línea). */
 function Variante({ c, d }: { c: number; d: Dato }) {
   if (!d.variante) return null;
   const h = SISTEMA_HEX[c];
   return (
-    <span className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+    <span className="mt-1 grid grid-cols-[auto_1fr] items-baseline gap-x-2">
       <span className="insignia" style={{ background: h.soft, color: h.ink }}>
         {d.variante.nombre}
       </span>
-      <span>{d.variante.v}</span>
+      <span className="min-w-0">
+        <SinCortes texto={d.variante.v} />
+      </span>
     </span>
   );
 }
 
 /* Datos cortos: en el móvil, filas con el rótulo a la izquierda; desde sm, casillas en rejilla
    con el rótulo encima. El dato, en negrita; su detalle, debajo y más discreto. */
+/* `resumen` (tarjetas de la entrada de Sistemas AID): filas en el móvil, tres casillas en una
+   fila desde sm y, a dos tarjetas por fila (xl), otra vez filas. */
+const MODO = {
+  rejilla: {
+    dl: "grid gap-y-2.5 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-3 lg:grid-cols-3",
+    fila: "grid min-w-0 grid-cols-[6.5rem_1fr] gap-x-3 sm:block",
+    dt: "sm:pt-0",
+    dd: "sm:mt-0.5",
+  },
+  resumen: {
+    dl: "grid gap-y-2.5 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-3 xl:grid-cols-1 xl:gap-y-2.5",
+    fila: "grid min-w-0 grid-cols-[6.5rem_1fr] gap-x-3 sm:block xl:grid xl:grid-cols-[8.5rem_1fr]",
+    dt: "sm:pt-0 xl:pt-0.5",
+    dd: "sm:mt-0.5 xl:mt-0",
+  },
+};
 export function CasillasDatos({
   c,
   datos,
-  className = "",
+  modo = "rejilla",
 }: {
   c: number;
   datos: Dato[];
-  className?: string;
+  modo?: keyof typeof MODO;
 }) {
+  const m = MODO[modo];
   return (
-    <dl
-      className={`grid gap-y-2.5 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-3 lg:grid-cols-3 ${className}`}
-    >
+    <dl className={m.dl}>
       {datos.map((d) => (
-        <div key={d.r} className="grid min-w-0 grid-cols-[6.5rem_1fr] gap-x-3 sm:block">
-          <dt className="rotulo pt-0.5 leading-tight sm:pt-0">{d.r}</dt>
-          <dd className="min-w-0 sm:mt-0.5">
+        <div key={d.r} className={m.fila}>
+          <dt className={`rotulo pt-0.5 leading-tight ${m.dt}`}>{d.r}</dt>
+          <dd className={`min-w-0 ${m.dd}`}>
             <span className="block text-[15px] font-semibold leading-snug text-slate-900">
-              {d.v}
+              <SinCortes texto={d.v} />
             </span>
             {d.n && (
-              <span className="mt-0.5 block text-[13px] leading-snug text-slate-600">{d.n}</span>
+              <span className="mt-0.5 block text-[13px] leading-snug text-slate-600">
+                <SinCortes texto={d.n} />
+              </span>
             )}
             <span className="block text-[13px] leading-snug text-slate-800">
               <Variante c={c} d={d} />
@@ -68,7 +103,7 @@ export function TarjetaDatos({
   return (
     <section
       aria-label={titulo}
-      className="tarjeta tarjeta-sistema min-w-0 p-4"
+      className="tarjeta tarjeta-sistema tarjeta-datos min-w-0 p-4"
       style={{ ["--sis" as string]: h.strong }}
     >
       <h3 className="titulo-tarjeta mb-2.5" style={{ color: h.ink }}>
@@ -100,7 +135,9 @@ const EN_AUTOMATICO: Record<EnAutomatico, string> = {
   fijo: "No configurable",
 };
 
-/* Filas con el rótulo a la izquierda (parámetros, modos): una tarjeta, una fila por dato. */
+/* Filas con el rótulo a la izquierda (parámetros, modos): una tarjeta, una fila por dato. El
+   rótulo lleva al texto literal; la condición de la fila (Tabla 4), en la columna del dato, como
+   primera línea (0.77.1, auditoría visual: en la del rótulo dejaba huecos de 200 px). */
 export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; titulo: string }) {
   const h = SISTEMA_HEX[c];
   return (
@@ -110,32 +147,54 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
         className="tarjeta tarjeta-sistema overflow-hidden"
         style={{ ["--sis" as string]: h.strong }}
       >
-        <dl className="divide-y divide-[var(--linea-suave)]">
-          {datos.map((d) => (
-            <div
-              key={d.r}
-              className="grid gap-x-5 gap-y-1 px-4 py-3 sm:grid-cols-[minmax(10rem,14rem)_1fr]"
-            >
-              <dt className="min-w-0">
-                <span className="block text-[15px] font-bold leading-snug text-slate-900">
-                  {d.r}
-                </span>
-                {d.auto && (
-                  <span
-                    className="insignia mt-1"
-                    style={d.auto === "si" ? { background: h.soft, color: h.ink } : undefined}
-                  >
-                    {EN_AUTOMATICO[d.auto]}
+        <dl className="filas-datos divide-y divide-[var(--linea-suave)]">
+          {datos.map((d) => {
+            const ruta = literalDe(d.f[0], c);
+            return (
+              <div
+                key={d.r}
+                className="grid gap-x-5 gap-y-1 px-4 py-3 sm:grid-cols-[minmax(11rem,16rem)_1fr]"
+              >
+                <dt className="min-w-0">
+                  {ruta ? (
+                    <a
+                      href={ruta}
+                      className="text-[15px] font-bold leading-snug text-slate-900 underline decoration-slate-300 decoration-1 underline-offset-4 hover:decoration-slate-700"
+                      title="Texto del capítulo"
+                    >
+                      {d.r}
+                    </a>
+                  ) : (
+                    <span className="text-[15px] font-bold leading-snug text-slate-900">{d.r}</span>
+                  )}
+                  {d.auto && (
+                    <span
+                      className="insignia mt-1 block w-fit"
+                      style={d.auto === "si" ? { background: h.soft, color: h.ink } : undefined}
+                    >
+                      {EN_AUTOMATICO[d.auto]}
+                    </span>
+                  )}
+                </dt>
+                <dd className="min-w-0 text-[15px] leading-snug text-slate-800">
+                  {d.cond && (
+                    <span className="mb-0.5 block text-[13px] leading-snug text-slate-600">
+                      <SinCortes texto={d.cond} />
+                    </span>
+                  )}
+                  <SinCortes texto={d.v} />
+                  {d.n && (
+                    <span className="mt-0.5 block text-[13px] text-slate-600">
+                      <SinCortes texto={d.n} />
+                    </span>
+                  )}
+                  <span className="block text-[14px]">
+                    <Variante c={c} d={d} />
                   </span>
-                )}
-              </dt>
-              <dd className="min-w-0 text-[15px] leading-snug text-slate-800">
-                {d.v}
-                {d.n && <span className="mt-0.5 block text-[13px] text-slate-600">{d.n}</span>}
-                <Variante c={c} d={d} />
-              </dd>
-            </div>
-          ))}
+                </dd>
+              </div>
+            );
+          })}
         </dl>
       </section>
       <FuentePie fuentes={fuentesDeDatos(datos)} />

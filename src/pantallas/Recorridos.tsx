@@ -438,12 +438,20 @@ function ListaSituaciones({
     "fila w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500";
   /* 0.73.0 (auditoría de uso): la fila, solo el nombre y la flecha (sin icono por fila ni los
      cuatro puntos de «conducta distinta»: el icono del tema basta). */
-  const Fila = ({ texto, on }: { texto: string; on?: boolean }) => (
+  const Fila = ({ texto, on, destino }: { texto: string; on?: boolean; destino?: string }) => (
     <>
       <span className="min-w-0 flex-1 leading-snug">{texto}</span>
+      {/* 0.77.1 (auditoría R3): las que abren otra pantalla lo dicen (el capítulo, una figura). */}
+      {destino && <span className="shrink-0 text-xs font-normal text-slate-500">{destino}</span>}
       {on && <Check size={15} className="shrink-0" aria-hidden="true" />}
     </>
   );
+  const destinoDe = (ruta: string) =>
+    ruta.startsWith("#/capitulo")
+      ? "Capítulo"
+      : ruta.startsWith("#/consultar/figura-3") || ruta.startsWith("#/visual")
+        ? "Figura"
+        : undefined;
   const conFilas = visibles.filter((g) => g.sits.length || g.extras.length);
   return (
     <div
@@ -525,7 +533,7 @@ function ListaSituaciones({
           {extras.map((x) => (
             <li key={x.ruta}>
               <a href={x.ruta} className={fila}>
-                <Fila texto={x.t} />
+                <Fila texto={x.t} destino={destinoDe(x.ruta)} />
               </a>
             </li>
           ))}
@@ -712,6 +720,8 @@ export function SituacionSistema({
                   <div>
                     <div className="rotulo mb-1">Sistema</div>
                     <CasillasSistema
+                      unico
+                      nombres={CORTO_SISTEMA}
                       seleccion={sisIdx >= 0 ? [sisIdx] : []}
                       onToggle={(c) => {
                         aLaCasilla();
@@ -770,6 +780,25 @@ export function SituacionSistema({
                     Quitar la selección
                   </button>
                 )}
+                {/* 0.77.1 (auditoría R5): en las pruebas y cirugías (Tabla 6), con un sistema en la
+                    ruta, el sistema con su formato y sus sensores (Tabla 1): «retirar, salvo
+                    autorización del modelo» se lee con el material que lleva. */}
+                {sit.tabla === "T6" && sisIdx >= 0 && (
+                  <div
+                    className="tarjeta tarjeta-sistema p-3"
+                    style={{ ["--sis" as string]: SISTEMA_HEX[sisIdx].strong }}
+                  >
+                    <div className="titulo-tarjeta" style={{ color: SISTEMA_HEX[sisIdx].ink }}>
+                      <NombreSistema n={CATALOGO_SISTEMAS[sisIdx].name} />
+                    </div>
+                    <dl className="mt-1.5 grid gap-y-1 text-[15px] sm:grid-cols-[8rem_1fr]">
+                      <dt className="rotulo pt-0.5">Formato</dt>
+                      <dd>{TABLAS.T1.filas[0].celdas[sisIdx].split(/;| \(/)[0]}</dd>
+                      <dt className="rotulo pt-0.5">Sensores</dt>
+                      <dd>{TABLAS.T1.filas[1].celdas[sisIdx].replace(/;/g, " ·")}</dd>
+                    </dl>
+                  </div>
+                )}
                 {!porSistema && !fila.unida && (
                   <>
                     <dl className="sm:columns-2 sm:gap-3 [&>div]:mb-3 [&>div]:break-inside-avoid">
@@ -788,6 +817,13 @@ export function SituacionSistema({
                     </dl>
                   </>
                 )}
+                {/* 0.77.1 (auditoría de guardia): la sospecha de fallo se resuelve con la Figura 3;
+                    su algoritmo, a un toque (antes, «Figura 3» llevaba a la lectura). */}
+                {sit.id === "hiperglucemia-persistente" && (
+                  <a href={href("consultar", "figura-3")} className="boton-primario">
+                    Hiperglucemia y cetonemia (Figura 3)
+                  </a>
+                )}
                 {/* 0.75.1 (auditoría): una sola línea de fuente (la tabla y lo añadido para el
                     sistema); los párrafos que la desarrollan, aparte, como lectura. */}
                 <FuentePie
@@ -799,6 +835,9 @@ export function SituacionSistema({
                     },
                     ...(porSistema && sisIdx >= 0 && TABLA4_POR_SISTEMA[sit.id]
                       ? fuentesDePiezas(TABLA4_POR_SISTEMA[sit.id][sisIdx].flatMap((b) => b.piezas))
+                      : []),
+                    ...(sit.tabla === "T6" && sisIdx >= 0
+                      ? fuentesDePiezas([{ t: "casilla", tabla: "T1", fila: 1 }])
                       : []),
                   ]}
                 />

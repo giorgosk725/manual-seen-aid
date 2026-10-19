@@ -187,9 +187,10 @@ describe("App", () => {
     expect(screen.getByRole("heading", { name: /^Parámetros · Omnipod 5/ })).toBeInTheDocument();
     expect(screen.queryByText(/Ampliación técnica · fuera del capítulo/)).toBeNull();
     expect(screen.queryByText(/Insulinas rápidas compatibles/)).toBeNull();
-    expect(screen.getAllByText(enTexto(/sin peso mínimo; DTD ≥ 5 UI\/día/)).length).toBeGreaterThan(
-      0,
-    );
+    // 0.77.1: en las tarjetas, espacio duro entre la cifra y su unidad (\s también lo casa).
+    expect(
+      screen.getAllByText(enTexto(/sin peso mínimo; DTD ≥\s5\sUI\/día/)).length,
+    ).toBeGreaterThan(0);
   });
 
   it("Situación y sistema muestra la celda literal de la Tabla 4", async () => {

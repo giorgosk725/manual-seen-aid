@@ -11,13 +11,14 @@ import { createPortal } from "react-dom";
 import { AlertTriangle, ArrowDown, Calculator } from "lucide-react";
 import { Lineas } from "../texto";
 import {
+  RECAMBIOS,
   CONTROLES,
   DESDE_ISCI,
   INICIALIZACION,
   LIMITES,
+  NOMBRE_CLAVE,
   NUCLEO_COMUN,
   OBJETIVOS_CALCULADOR,
-  RECAMBIOS,
   REGLAS,
   aprendizajeDe,
   coma,
@@ -25,7 +26,6 @@ import {
   gruposDeProgramar,
   indicacionDe,
   leerCifra,
-  materialDe,
   modosDe,
   objetivoAlgoritmoDe,
   papelEnAutomatico,
@@ -39,6 +39,7 @@ import {
 } from "../calculadora";
 import { TABLAS, rutaDeTabla } from "../contenido";
 import { ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { PARAMETROS, fuentesDeDatos } from "../fichaOperativa";
 import { SETS_INFUSION } from "../ampliacion/datos";
 import { SIS_IDS } from "../situaciones";
 import { href } from "../rutas";
@@ -83,7 +84,8 @@ function Opciones<T extends string | number>({
 }: {
   etiqueta: string;
   opciones: { v: T; t: ReactNode }[];
-  valor: T;
+  /* null: ninguna elegida. */
+  valor: T | null;
   onChange: (v: T) => void;
   /* «punto de partida» / «modificado», junto al rótulo. */
   marca?: ReactNode;
@@ -214,17 +216,6 @@ function Cifra({
   );
 }
 
-const NOMBRE_CLAVE: Record<Clave, string> = {
-  peso: "Peso",
-  dtd: "DTD",
-  basal: "Tasa basal",
-  factor: "Factor de sensibilidad",
-  ratio: "Ratio I/HC",
-  objetivo: "Objetivo del calculador de bolos manual",
-  objetivoAlg: "Objetivo glucémico del algoritmo",
-  ia: "Duración de la insulina activa",
-};
-
 /* Lo que bloquea o deja pendiente la propuesta, siempre antes de las cifras (I61-03). */
 function Estado({ ev, sis }: { ev: Evaluacion; sis?: number }) {
   return (
@@ -332,7 +323,13 @@ export function CalculadoraInicio({
     return () => io.disconnect();
   }, []);
   const peso = leerCifra(d.peso, LIMITES.peso);
-  const pideObjetivo = mdi || !d.referencia;
+  const pideObjetivo = mdi || d.referencia === false;
+  // Bomba u otro AID sin contestar si la programación previa es adecuada: nada se traslada ni se
+  // calcula todavía.
+  const pendiente = !mdi && d.referencia === null;
+  // 19-10-2026: con un campo del formulario en uso, sin la barra flotante (en el móvil, con el
+  // teclado abierto, tapaba el campo que se estaba escribiendo).
+  const [editando, setEditando] = useState(false);
   const ruta = (fase: string, tarea = "") =>
     href(
       "consultar",
@@ -347,6 +344,8 @@ export function CalculadoraInicio({
       </span>
     );
     const sinPropuesta = <span className="font-normal text-slate-500">—</span>;
+    if (pendiente && (k === "basal" || k === "factor" || k === "ratio" || k === "objetivo"))
+      return sinPropuesta;
     switch (k) {
       case "peso":
         return peso.estado === "valido" ? (
@@ -387,6 +386,11 @@ export function CalculadoraInicio({
     { texto: "Apartado 8, p. 12", ruta: href("capitulo", "08-iniciacion") },
     { texto: "Tabla 1, pp. 3-4", ruta: rutaDeTabla("T1") },
     { texto: `Tabla 3, p. ${TABLAS.T3.paginas[0]}`, ruta: rutaDeTabla("T3") },
+    // Los modos y funciones del paso 5 salen de la Tabla 4.
+    {
+      texto: `Tabla 4, pp. ${TABLAS.T4.paginas[0]}-${TABLAS.T4.paginas[1]}`,
+      ruta: rutaDeTabla("T4"),
+    },
   ].map((f) => ({ texto: f.texto, ruta: f.ruta ?? undefined }));
 
   const resumen = [
@@ -403,13 +407,18 @@ export function CalculadoraInicio({
   ].filter((x): x is string => !!x);
 
   return (
-    <div className="space-y-5">
+    <div
+      className="space-y-5"
+      onFocus={(e) => setEditando(e.target.matches("input, select, textarea"))}
+      onBlur={() => setEditando(false)}
+    >
       {/* 0.72.0: hasta la pantalla ancha, mientras los parámetros de partida no están a la
           vista, una barra con sus cifras (las mismas); al tocarla, se va a ellos. */}
       {/* En un portal: la animación de entrada de la pantalla (transform) haría que «fixed» se
           quedara dentro de ella. */}
       {resumen.length > 0 &&
         !resultadosVisibles &&
+        !editando &&
         createPortal(
           <button
             type="button"
@@ -462,6 +471,7 @@ export function CalculadoraInicio({
           <Paso n={2} titulo="Sistema">
             {/* 0.76: el mismo selector de sistema de toda la app. */}
             <CasillasSistema
+              unico
               seleccion={sis !== undefined ? [sis] : []}
               onToggle={onSistema}
               nombres={CORTOS}
@@ -603,31 +613,45 @@ export function CalculadoraInicio({
               </div>
             ) : (
               <div className="space-y-4">
+                {d.origen === "aid" && (
+                  <>
+                    <Opciones
+                      etiqueta="Sistema actual"
+                      opciones={CORTOS.map((t, v) => ({ v, t }))}
+                      valor={d.sistemaPrevio}
+                      onChange={(v) => set({ sistemaPrevio: v })}
+                    />
+                    {d.sistemaPrevio !== null && sis !== undefined && d.sistemaPrevio !== sis ? (
+                      <CambioDeSistema actual={d.sistemaPrevio} destino={sis} />
+                    ) : (
+                      <p className="text-xs text-slate-600">
+                        Al cambiar de sistema, los parámetros que cuentan en automático no son los
+                        mismos:{" "}
+                        <a
+                          href={href("sistemas", "todos", "parametros")}
+                          className="font-semibold underline"
+                        >
+                          comparación de parámetros
+                        </a>
+                        .
+                      </p>
+                    )}
+                  </>
+                )}
                 <Opciones
                   etiqueta={`¿Es adecuada la programación ${previa}?`}
                   opciones={[
                     { v: "si", t: "Sí: se traslada tal cual" },
                     { v: "no", t: "No es adecuada o no hay programación previa" },
                   ]}
-                  valor={d.referencia ? "si" : "no"}
+                  valor={d.referencia === null ? null : d.referencia ? "si" : "no"}
                   onChange={(v) => set({ referencia: v === "si" })}
                 />
-                <p className="casilla px-3 py-2 text-sm text-slate-800">
-                  {d.referencia
-                    ? `${DESDE_ISCI.trasladar.charAt(0).toUpperCase()}${DESDE_ISCI.trasladar.slice(1)}.`
-                    : `${DESDE_ISCI.sinReferencia.charAt(0).toUpperCase()}${DESDE_ISCI.sinReferencia.slice(1)}. ${DESDE_ISCI.basalPlana}.`}
-                </p>
-                {d.origen === "aid" && (
-                  <p className="text-xs text-slate-600">
-                    Al cambiar de sistema, los parámetros que cuentan en automático no son los
-                    mismos:{" "}
-                    <a
-                      href={href("sistemas", "todos", "parametros")}
-                      className="font-semibold underline"
-                    >
-                      comparación de parámetros
-                    </a>
-                    .
+                {d.referencia !== null && (
+                  <p className="casilla px-3 py-2 text-sm text-slate-800">
+                    {d.referencia
+                      ? `${DESDE_ISCI.trasladar.charAt(0).toUpperCase()}${DESDE_ISCI.trasladar.slice(1)}.`
+                      : `${DESDE_ISCI.sinReferencia.charAt(0).toUpperCase()}${DESDE_ISCI.sinReferencia.slice(1)}. ${DESDE_ISCI.basalPlana}.`}
                   </p>
                 )}
                 <div className="grid gap-3 sm:grid-cols-3">
@@ -635,7 +659,7 @@ export function CalculadoraInicio({
                     id="calc-dtd"
                     etiqueta="DTD actual"
                     ayuda={
-                      !d.referencia
+                      d.referencia === false
                         ? "Para las reglas del 450 y del 1700"
                         : pidePesoYDtd(sis)
                           ? `${CORTOS[sis!]} la pide para iniciar el automático`
@@ -884,34 +908,20 @@ export function CalculadoraInicio({
         )}
       </Paso>
 
+      {/* 0.77.1: el formato, los sensores y la plataforma ya están en Fases → Preparación; aquí,
+          a la vista, solo los sets de infusión (petición del responsable del 14-10-2026) y los
+          recambios del plan de seguridad. */}
       {sis !== undefined && (
-        <Paso n={6} titulo={`Material de ${CORTOS[sis]}`}>
-          {/* 0.73.0: plegado (repetía la ficha del sistema y alargaba la pantalla). */}
-          <details className="group">
-            <summary className="inline-flex min-h-11 cursor-pointer items-center text-sm font-semibold text-slate-700 sm:min-h-8">
-              Formato, sensores, plataforma y recambios
-            </summary>
-            <dl className="tarjeta divide-y overflow-hidden">
-              {materialDe(sis).map((m) => (
-                <div key={m.rotulo} className="px-3 py-2">
-                  <dt className="text-xs font-semibold text-slate-600">{m.rotulo}</dt>
-                  <dd className="text-sm font-semibold text-slate-900">
-                    <Lineas>{m.texto}</Lineas>
-                    {m.rotulo === "Formato" && <SetsDeInfusion sis={sis} />}
-                  </dd>
-                </div>
-              ))}
-              <div className="px-3 py-2">
-                <dt className="text-xs font-semibold text-slate-600">
-                  Recambios que hay que tener siempre (plan de seguridad)
-                </dt>
-                <dd className="text-sm text-slate-900">{RECAMBIOS.plan}</dd>
-              </div>
-            </dl>
-          </details>
+        <Paso n={6} titulo={`Sets de infusión y recambios de ${CORTOS[sis]}`}>
+          <div className="space-y-2">
+            <SetsDeInfusion sis={sis} />
+            <p className="text-sm text-slate-900">
+              <span className="font-semibold">Recambios que hay que tener siempre: </span>
+              {RECAMBIOS.plan}
+            </p>
+          </div>
         </Paso>
       )}
-
       <div className="casilla flex gap-2 px-3 py-2.5 text-sm text-slate-800">
         <span>
           <strong>Requisitos previos al inicio:</strong>{" "}
@@ -987,9 +997,47 @@ function Lista({
 const enMinuscula = (x: string) =>
   /^[A-ZÁÉÍÓÚ]{2}/.test(x) ? x : x.charAt(0).toLowerCase() + x.slice(1);
 
-/* Sets de infusión de cada sistema (14-10-2026, a petición del responsable): plegados bajo el
-   formato. NO es texto del capítulo: datos de ficha técnica de los fabricantes recogidos en el
-   proyecto asistente-aid (ampliacion/datos.ts, 2-10-2026), rotulados como complementarios. */
+/* Cambio de sistema (19-10-2026): qué parámetros actúan en el modo automático en el sistema
+   actual y en el de destino, de las fichas operativas (fichaOperativa.ts, Tablas 1 y 3). */
+function CambioDeSistema({ actual, destino }: { actual: number; destino: number }) {
+  const columnas = [
+    { c: actual, rotulo: "Sistema actual" },
+    { c: destino, rotulo: "Sistema de destino" },
+  ].map((x) => ({ ...x, datos: PARAMETROS[x.c].filter((d) => d.auto === "si") }));
+  return (
+    <section aria-labelledby="calc-cambio" className="tarjeta overflow-hidden">
+      <h3 id="calc-cambio" className="rotulo px-3 pt-2">
+        Parámetros que actúan en el modo automático
+      </h3>
+      <div className="grid grid-cols-2">
+        {columnas.map(({ c, rotulo, datos }, i) => (
+          <div key={rotulo} className={`min-w-0 px-3 py-2 ${i ? "separador border-l" : ""}`}>
+            <div className="text-xs text-slate-600">{rotulo}</div>
+            <div className="text-sm font-bold" style={{ color: SISTEMA_HEX[c].ink }}>
+              {CORTOS[c]}
+            </div>
+            <ul className="mt-1 space-y-1.5">
+              {datos.map((d) => (
+                <li key={d.r} className="text-sm">
+                  <span className="block font-semibold text-slate-900">{d.r}</span>
+                  <span className="block text-xs text-slate-600">{d.v}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <FuentePie
+        fuentes={fuentesDeDatos(columnas.flatMap((x) => x.datos))}
+        className="separador border-t px-3 py-1.5"
+      />
+    </section>
+  );
+}
+
+/* Sets de infusión de cada sistema (14-10-2026, a petición del responsable). NO es texto del
+   capítulo: datos de ficha técnica de los fabricantes recogidos en el proyecto asistente-aid
+   (ampliacion/datos.ts, 2-10-2026), rotulados como complementarios. 0.77.1: a la vista. */
 const cifras = (xs: number[], u: string) =>
   `${xs
     .map((x) => String(x).replace(".", ","))
@@ -999,11 +1047,8 @@ function SetsDeInfusion({ sis }: { sis: number }) {
   const sets = SETS_INFUSION[ORDEN_SISTEMAS[sis]] ?? [];
   if (!sets.length) return null;
   return (
-    <details className="casilla mt-1.5 font-normal">
-      <summary className="tap-44 flex cursor-pointer items-center gap-1.5 px-2.5 py-1.5 text-sm font-semibold text-slate-800">
-        Sets de infusión ({sets.length})
-      </summary>
-      <ul className="separador space-y-1.5 border-t px-2.5 py-2">
+    <div className="casilla font-normal">
+      <ul className="space-y-1.5 px-2.5 py-2">
         {sets.map((x) => (
           <li key={x.name} className="text-sm">
             <span className="font-semibold text-slate-900">{x.name}</span>
@@ -1019,6 +1064,6 @@ function SetsDeInfusion({ sis }: { sis: number }) {
         Información complementaria (no es texto del capítulo): fichas técnicas de los fabricantes,
         recogidas el 2-10-2026. La oferta disponible depende del proveedor.
       </p>
-    </details>
+    </div>
   );
 }

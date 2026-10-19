@@ -484,6 +484,59 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
       : [];
   }
   const out: Resultado[] = [];
+  const n = normalizar(consulta);
+  const atajo = (id: string, titulo: string, ruta: string, pagina: number): Resultado => ({
+    entrada: { id, tipo: "atajo", titulo, texto: "", pagina, ruta },
+    fragmento: "",
+    puntos: 0,
+  });
+  // 0.77.1 (auditoría de guardia): hiperglucemia con el set, el catéter o el pod en duda es la
+  // sospecha de fallo de infusión (Tabla 4 y Figura 3), no la hiperglucemia puntual.
+  if (
+    /hiperglu|glucosa alta|glucemia alta|cetona|cetonemia/.test(n) &&
+    /\b(set|cateter|canula|pod|reservorio|fallo|falla|no funciona|obstru|infusion)\b/.test(n)
+  )
+    out.push(
+      atajo(
+        "recurso/sospecha-fallo",
+        "Hiperglucemia persistente o inexplicada (sospecha de fallo)",
+        href(
+          "consultar",
+          "situacion",
+          sis >= 0 ? `hiperglucemia-persistente:${SIS_IDS[sis]}` : "hiperglucemia-persistente",
+        ),
+        TABLAS.T4.paginas[0],
+      ),
+      atajo(
+        "recurso/figura-3",
+        "Hiperglucemia y cetonemia (Figura 3)",
+        href("consultar", "figura-3"),
+        9,
+      ),
+    );
+  // 0.77.1 (auditoría R5): «pasar de 780G a Control-IQ»: los parámetros de los dos, comparados.
+  {
+    const dos = sistemasDeConsulta(consulta);
+    if (dos.length >= 2 && /\b(cambi|pasar|paso de|pase de|migr|sustitu|de .+ a )/.test(n))
+      out.push(
+        atajo(
+          `recurso/cambio/${dos.join("+")}`,
+          `Parámetros de ${dos.map((i) => TABLAS.T1.columnas[i]).join(" y ")}`,
+          href("sistemas", dos.map((i) => ORDEN_SISTEMAS[i]).join("+"), "parametros"),
+          TABLAS.T3.paginas[0],
+        ),
+      );
+  }
+  // 0.77.1 (auditoría R3): «descarga CamAPS» abre el análisis desde el primer paso.
+  if (/\bdescarga|\bdescargar|analisis de la descarga/.test(n) && !pasoPedido(consulta))
+    out.push(
+      atajo(
+        "recurso/descarga",
+        "Interpretación de la descarga",
+        href("consultar", "descarga"),
+        TABLAS.T5.paginas[0],
+      ),
+    );
   // «Iniciar Omnipod 5 desde MDI»: el recorrido de inicio para ese sistema, el primero.
   // «Diferencia entre 780G y Omnipod 5»: la comparación de los dos (Tabla 1), la primera.
   const varios = sistemasDeConsulta(consulta);
@@ -686,10 +739,16 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     .filter((x) => x.f >= 0.6)
     .sort((a, b) => b.f - a.f || b.r.puntos - a.r.puntos)
     .map((x) => x.r);
-  // Un solo «Abrir» por destino.
+  // Un solo «Abrir» por destino y por título (0.77.1, auditoría R5: «Resonancia magnética»
+  // salía dos veces, con y sin el sistema en la ruta).
   const vistos = new Set<string>();
+  const nuevo = (k: string) => !vistos.has(k) && !!vistos.add(k);
   return [...out, ...nombrados]
-    .filter((r) => !vistos.has(r.entrada.ruta) && !!vistos.add(r.entrada.ruta))
+    .filter((r) => {
+      const a = nuevo(r.entrada.ruta);
+      const b = nuevo(`t:${normalizar(r.entrada.titulo)}`);
+      return a && b;
+    })
     .slice(0, 2);
 }
 

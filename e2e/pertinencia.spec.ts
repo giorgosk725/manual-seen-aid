@@ -26,8 +26,9 @@ test.describe("Pertinencia y continuación (0.42.0)", () => {
   }) => {
     await page.goto("/#/preguntas/f61");
     await expect(page.getByText(/Control-IQ\+: ≥ 2 años/).first()).toBeVisible();
-    await expect(page.getByText("Ver otros sistemas").first()).toBeVisible();
-    await expect(page.getByRole("group", { name: "Sistema" })).toHaveCount(0);
+    // 0.77.1 (nada útil plegado): los sistemas, a la vista, sin «Ver otros sistemas».
+    await expect(page.getByText("Ver otros sistemas")).toHaveCount(0);
+    await expect(page.getByRole("group", { name: "Sistema" }).first()).toBeVisible();
     await expect(page.getByText("Todos los sistemas")).toBeVisible();
   });
 

@@ -98,7 +98,7 @@ describe("Fichas operativas (0.77.0)", () => {
         ]) {
           expect(d.f.length, d.r).toBeGreaterThan(0);
           const fuente = plano(d.f.flatMap((p) => textosDePieza(p, c)).join(" "));
-          for (const n of cifras([d.v, d.n ?? "", d.variante?.v ?? ""].join(" ")))
+          for (const n of cifras([d.v, d.n ?? "", d.cond ?? "", d.variante?.v ?? ""].join(" ")))
             // La cifra entera: ni pegada a otros dígitos ni a una coma decimal («112,5»).
             if (!new RegExp(`(?<!\\d|\\d,)${n}(?!\\d|,\\d)`).test(fuente))
               fallos.push(`${c} ${d.r}: ${n}`);

@@ -78,7 +78,7 @@ export function BloquesPorSistema({
     <div>
       {/* 0.76: el mismo selector de sistema de toda la app (uno marcado). */}
       <div className="mb-3">
-        <CasillasSistema seleccion={[c]} onToggle={onElegir} nombres={CORTO_SISTEMA} />
+        <CasillasSistema seleccion={[c]} onToggle={onElegir} nombres={CORTO_SISTEMA} unico />
       </div>
       <Bloques c={c} bloques={bloques[c]} />
       {/* Lo común a los cuatro (objetivos de inicio), a todo lo ancho tras lo del sistema: es la

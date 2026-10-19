@@ -68,10 +68,11 @@ describe("calculadora de inicio: qué programar, por importancia", () => {
   it("lo que cuenta en automático es lo marcado con asterisco en la Tabla 1 (y lo de arrancar)", () => {
     expect([0, 1, 2, 3].map((c) => gruposDeProgramar(c))).toEqual([
       { automatico: ["objetivoAlg", "ia"], manual: ["basal", "ratio", "factor", "objetivo"] },
-      { automatico: ["peso", "dtd", "factor", "basal"], manual: ["ratio", "objetivo"] },
+      // 19-10-2026: la insulina activa también en Control-IQ y CamAPS FX (Tabla 3).
+      { automatico: ["peso", "dtd", "factor", "basal"], manual: ["ratio", "ia", "objetivo"] },
       {
         automatico: ["peso", "dtd", "objetivoAlg"],
-        manual: ["basal", "ratio", "factor", "objetivo"],
+        manual: ["basal", "ratio", "factor", "ia", "objetivo"],
       },
       { automatico: ["objetivoAlg", "basal"], manual: ["factor", "ia", "ratio", "objetivo"] },
     ]);
@@ -207,5 +208,43 @@ describe("calculadora de inicio: las cuentas (contrato de la 0.63)", () => {
     ).toEqual([10, 20, 0]);
     expect(reduccionDePartida("bueno", true)).toBe(20);
     expect(reduccionDePartida("deficiente", true)).toBe(0);
+  });
+});
+
+describe("calculadora de inicio: auditoría de usuarios (19-10-2026)", () => {
+  const caso = {
+    origen: "aid" as const,
+    referencia: null,
+    basal: "",
+    rapida: "",
+    dtd: "40",
+    peso: "70",
+    reduccion: 10,
+    basalPct: 45,
+    regla: 1700 as const,
+  };
+  it("sin contestar si la programación previa es adecuada, no hay cifras y se dice qué falta", () => {
+    const e = evaluar(3, caso);
+    expect(e.lista).toBe(false);
+    expect(e.faltan).toContain("Valorar si la programación previa es adecuada");
+    expect(e.calcula).toEqual({ basal: false, ratioFactor: false });
+    expect(evaluar(3, { ...caso, referencia: false }).lista).toBe(true);
+    // En MDI, sin contestar equivale a «sin ratio ni factor propios».
+    expect(evaluar(1, { ...caso, origen: "mdi", basal: "22", rapida: "20" }).lista).toBe(true);
+  });
+  it("con el objetivo ya en «efecto directo», los modos no lo repiten (CamAPS FX)", () => {
+    const m = modosDe(2);
+    expect(m[0].situacion).toBe("Funciones temporales");
+    expect(m.map((x) => x.texto).join(" ")).not.toMatch(/80–198|Objetivo configurable/);
+    expect(m[0].texto).toBe("Boost intensifica la administración\nEase-off eleva el objetivo");
+    expect(m.find((x) => x.situacion.startsWith("Sueño"))!.texto).toBe(
+      "Sin modo nocturno específico",
+    );
+    // Control-IQ no lleva el objetivo entre lo directo: la celda, tal cual.
+    expect(modosDe(1)[0].situacion).toBe("Objetivo y funciones temporales");
+  });
+  it("Control-IQ: la duración de la insulina activa, con la celda de la Tabla 3", () => {
+    expect(gruposDeProgramar(1).manual).toContain("ia");
+    expect(papelEnAutomatico("ia", 1)).toBe(TABLAS.T3.filas[4].celdas[1]);
   });
 });

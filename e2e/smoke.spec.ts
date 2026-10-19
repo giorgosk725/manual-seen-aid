@@ -100,8 +100,8 @@ test.describe("Recorrido básico (escritorio)", () => {
     await expect(page.getByText(/retirar también el set si la cánula es metálica/)).toBeVisible();
     await page.getByRole("button", { name: /Ejercicio aeróbico planificado/ }).click();
     await page
-      .getByRole("group", { name: "Sistema" })
-      .getByRole("button", { name: /Omnipod 5/ })
+      .getByRole("radiogroup", { name: "Sistema" })
+      .getByRole("radio", { name: /Omnipod 5/ })
       .click();
     await expect(page).toHaveURL(/situacion\/ejercicio-aerobico:omnipod-5/);
     await expect(page.getByText(/Función Actividad, objetivo 150 mg\/dl/)).toBeVisible();

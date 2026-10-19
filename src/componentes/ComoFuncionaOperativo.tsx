@@ -4,6 +4,8 @@
 import { ALGORITMO, VARIANTE_OPERATIVA, fuentesDeDatos } from "../fichaOperativa";
 import { CasillasDatos, TarjetaDatos } from "./FichaOperativa";
 import { FuentePie } from "./FuentePie";
+import { NotaCorreccion } from "./NotaCorreccion";
+import { NOTA_ADAPTA_OMNIPOD } from "../notas-complementarias";
 
 export function ComoFuncionaOperativo({ c }: { c: number }) {
   const variante = VARIANTE_OPERATIVA[c];
@@ -18,6 +20,8 @@ export function ComoFuncionaOperativo({ c }: { c: number }) {
         </TarjetaDatos>
       )}
       <FuentePie fuentes={fuentesDeDatos([...ALGORITMO[c], ...(variante?.datos ?? [])])} />
+      {/* Omnipod 5: el aprendizaje sigue la corrección posterior a la publicación (Tabla 1). */}
+      {c === 3 && <NotaCorreccion nota={NOTA_ADAPTA_OMNIPOD} />}
     </div>
   );
 }

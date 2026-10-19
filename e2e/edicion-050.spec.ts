@@ -26,8 +26,10 @@ test.describe("Portada y navegación (0.50)", () => {
     );
     await barra.getByRole("button", { name: "Más" }).click();
     const menu = page.getByRole("dialog", { name: "Menú" });
-    for (const n of ["Situaciones", "Índice del capítulo", "Material para el paciente"])
+    // 0.77.1: «Más» lleva lo que no está en la barra (sin Inicio, Sistemas ni Situaciones).
+    for (const n of ["Índice del capítulo", "Material para el paciente"])
       await expect(menu.getByRole("link", { name: n, exact: true })).toBeVisible();
+    await expect(menu.getByRole("link", { name: "Situaciones", exact: true })).toHaveCount(0);
   });
 
   test("la lectura: «Índice del capítulo», en el menú «Leer y comprender»", async ({ page }) => {

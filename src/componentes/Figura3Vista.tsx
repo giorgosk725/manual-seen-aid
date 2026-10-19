@@ -418,7 +418,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
                   type="button"
                   aria-pressed={on}
                   onClick={() => (on ? elegir(null) : irATramo(t.clave))}
-                  className={`hover-lift ease-brand rounded-xl border p-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 focus-visible:ring-offset-2 ${on ? "text-white" : ""}`}
+                  className={`hover-lift ease-brand flex flex-col justify-start rounded-xl border p-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 focus-visible:ring-offset-2 ${on ? "text-white" : ""}`}
                   style={
                     on
                       ? {

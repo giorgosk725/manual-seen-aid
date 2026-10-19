@@ -107,22 +107,24 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                     titulo: fig.titulo,
                     nota: `p. ${fig.pagina}`,
                   }}
-                  className="group flex flex-col bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 max-sm:w-[7.5rem] max-sm:shrink-0 max-sm:justify-center sm:w-full sm:flex-1"
+                  className="group flex flex-col bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 max-sm:w-[7.5rem] max-sm:shrink-0 max-sm:justify-center sm:w-full"
                   etiqueta={`Ampliar ${fig.titulo}`}
                 >
                   <span className="chip m-1.5 min-h-8 self-end text-xs max-sm:order-2 max-sm:self-center sm:m-2">
                     <Maximize2 size={12} aria-hidden="true" /> Ampliar
                   </span>
-                  <span className="flex flex-1 items-center">
+                  {/* Marco de alto fijo (4:3) y la imagen centrada dentro: las cuatro empiezan a
+                      la misma altura y los títulos, debajo, quedan alineados. */}
+                  <span className="flex items-center justify-center max-sm:flex-1 max-sm:px-2 max-sm:pb-2 max-sm:pt-2 sm:relative sm:aspect-[4/3]">
                     <img
                       src={img.src}
                       alt={img.alt}
                       loading="lazy"
-                      className="foto-figura block w-full object-contain px-2 pb-2 max-sm:pt-2 sm:aspect-[4/3]"
+                      className="foto-figura block w-full object-contain sm:absolute sm:inset-0 sm:h-full sm:px-2 sm:pb-2"
                     />
                   </span>
                 </AbrirEnVisor>
-                <div className="separador p-3 max-sm:min-w-0 max-sm:flex-1 max-sm:border-l sm:border-t">
+                <div className="separador p-3 max-sm:min-w-0 max-sm:flex-1 max-sm:border-l sm:flex-1 sm:border-t">
                   <div className="text-sm font-bold leading-snug text-slate-900">
                     {fig.titulo.replace(/\.$/, "")}
                   </div>

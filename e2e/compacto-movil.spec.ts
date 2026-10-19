@@ -106,7 +106,11 @@ test.describe("Móvil compacto, segunda tanda (360 px)", () => {
       await page.goto(ruta);
       // 0.71.0: en la lista de sistemas, la barra empieza en una línea.
       if (ruta === "/#/sistemas") await page.getByRole("button", { name: /Comparar$/ }).click();
-      const b = page.getByRole("group", { name: grupo, exact: true }).getByRole("button");
+      // 0.77.1: en Iniciar, elección única (botones de opción).
+      const unico = ruta.startsWith("/#/consultar/inicio");
+      const b = page
+        .getByRole(unico ? "radiogroup" : "group", { name: grupo, exact: true })
+        .getByRole(unico ? "radio" : "button");
       await expect(b.first(), ruta).toBeVisible();
       // Sistema visual (tercera vuelta): 2 × 2 en el móvil (los nombres no se parten).
       await mismaFila(b.nth(0), b.nth(1));

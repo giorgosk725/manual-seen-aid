@@ -868,7 +868,9 @@ export const INTERRUPCION_LINEA = {
     {
       cuando: "A partir de aproximadamente 1 h",
       texto:
-        "a partir de aproximadamente 1 h sin administración de insulina debe actuarse —glucemia capilar, valoración de cetonemia según el contexto y reposición de la insulina no administrada— por el riesgo de hiperglucemia y cetosis",
+        // 0.77.1 (auditoría del perfil senior): la frase desde su principio (antes empezaba en
+        // minúscula, a media frase).
+        "Como umbral operativo, a partir de aproximadamente 1 h sin administración de insulina debe actuarse —glucemia capilar, valoración de cetonemia según el contexto y reposición de la insulina no administrada— por el riesgo de hiperglucemia y cetosis.",
     },
     {
       cuando: "Prolongadas, con el sistema indisponible o ante un fallo definitivo",

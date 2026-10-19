@@ -25,8 +25,8 @@ test.describe("Uso 0.10.0 en el móvil", () => {
   }) => {
     await page.goto("/#/consultar/situacion/ejercicio-aerobico");
     await page
-      .getByRole("group", { name: "Sistema" })
-      .getByRole("button", { name: /Omnipod 5/ })
+      .getByRole("radiogroup", { name: "Sistema" })
+      .getByRole("radio", { name: /Omnipod 5/ })
       .click();
     await expect(page).toHaveURL(/ejercicio-aerobico:omnipod-5/);
     // 0.63.0: en el ejercicio, al elegir el sistema se va a las comprobaciones previas.
@@ -44,7 +44,9 @@ test.describe("Uso 0.10.0 en el móvil", () => {
   test("Iniciación del sistema: nombres de sistema enteros, sin cortar", async ({ page }) => {
     await page.goto("/#/consultar/inicio/inicio");
     for (const nombre of ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"]) {
-      const b = page.getByRole("group", { name: "Sistema" }).getByRole("button", { name: nombre });
+      const b = page
+        .getByRole("radiogroup", { name: "Sistema" })
+        .getByRole("radio", { name: nombre });
       await expect(b).toBeVisible();
       const recortado = await b
         .locator("span")

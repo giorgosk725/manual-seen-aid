@@ -50,7 +50,10 @@ const GESTACION: BloqueSistema[][] = [
   [
     {
       rotulo: "Autorización y evidencia",
-      piezas: [s10("b3", [2]), s10("b5", [0]), fr("03-algoritmos", "b3", [2])],
+      // 0.77.1 (auditoría R5): sin la frase final de Liberty del apartado 3 («Por el momento no
+      // se recomienda… ni en gestación»): leída sola parecía decirlo de CamAPS FX; la primera
+      // frase ya dice que Liberty no está autorizada en la gestación.
+      piezas: [s10("b3", [2]), s10("b5", [0])],
     },
     { rotulo: "Objetivo del algoritmo", piezas: [s10("b6", [2, 3, 4]), casilla("T1", 6)] },
     { rotulo: "Parámetros en modo automático", piezas: [s10("b7", [0])] },
@@ -185,7 +188,7 @@ export const TABLA4_POR_SISTEMA: Record<string, BloqueSistema[][]> = {
     [],
     [{ rotulo: "Control-IQ+", piezas: [casilla("T3", 1)] }],
     [{ rotulo: "Boost", piezas: [BOOST] }],
-    [{ rotulo: "Basal adaptativa", piezas: [casilla("T1", 5)] }],
+    [{ rotulo: "Sin bolos automáticos: basal adaptativa", piezas: [casilla("T1", 5)] }],
   ],
 };
 

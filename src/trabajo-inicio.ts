@@ -8,7 +8,10 @@ import type { Control, Origen } from "./calculadora";
 
 export interface DatosCalculadora {
   origen: Origen;
-  referencia: boolean;
+  /* null: sin contestar (19-10-2026: no se preselecciona la respuesta). */
+  referencia: boolean | null;
+  /* Con «Otro sistema AID»: el sistema actual (índice de la Tabla 1), o null. */
+  sistemaPrevio: number | null;
   basal: string;
   rapida: string;
   dtd: string;
@@ -25,7 +28,8 @@ export interface DatosCalculadora {
 
 export const DATOS_INICIALES = (): DatosCalculadora => ({
   origen: "mdi",
-  referencia: false,
+  referencia: null,
+  sistemaPrevio: null,
   basal: "",
   rapida: "",
   dtd: "",
@@ -54,8 +58,12 @@ const avisar = () => {
 };
 
 /* Cambia los datos de la calculadora; la pauta previa se comparte con el paso 1. */
+/* Con otra pauta previa, la pregunta de la referencia es otra: vuelve a quedar sin contestar. */
+const conOrigen = (c: DatosCalculadora, origen: Origen): DatosCalculadora =>
+  origen === c.origen ? c : { ...c, origen, referencia: null };
 export function cambiarCalculadora(cambio: Partial<DatosCalculadora>) {
-  trabajo.calc = { ...trabajo.calc, ...cambio };
+  const base = cambio.origen ? conOrigen(trabajo.calc, cambio.origen) : trabajo.calc;
+  trabajo.calc = { ...base, ...cambio };
   if (cambio.origen) trabajo.resp = { ...trabajo.resp, pauta: cambio.origen };
   avisar();
 }
@@ -63,7 +71,7 @@ export function cambiarCalculadora(cambio: Partial<DatosCalculadora>) {
 export function cambiarRespuestas(resp: Record<string, string>) {
   trabajo.resp = resp;
   const p = resp.pauta;
-  if (p === "mdi" || p === "isci" || p === "aid") trabajo.calc = { ...trabajo.calc, origen: p };
+  if (p === "mdi" || p === "isci" || p === "aid") trabajo.calc = conOrigen(trabajo.calc, p);
   avisar();
 }
 export function cambiarHechos(hechos: Set<string>) {
@@ -85,6 +93,8 @@ export const hayTrabajo = () => {
   return (
     !!(c.basal || c.rapida || c.dtd || c.peso) ||
     c.origen !== d.origen ||
+    c.referencia !== d.referencia ||
+    c.sistemaPrevio !== d.sistemaPrevio ||
     Object.keys(trabajo.resp).length > 0 ||
     trabajo.hechos.size > 0
   );

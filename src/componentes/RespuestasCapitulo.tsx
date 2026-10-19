@@ -118,27 +118,6 @@ const filaDe = (id: string): number | undefined => {
 const NOMBRES_SISTEMA = ["MiniMed 780G", "Control-IQ", "CamAPS", "Omnipod 5"];
 const nombraVarios = (t: string) => NOMBRES_SISTEMA.filter((n) => t.includes(n)).length >= 3;
 
-/* Contenido a la vista o, plegado, tras un rótulo. */
-function Plegable({
-  abierto,
-  rotulo,
-  children,
-}: {
-  abierto: boolean;
-  rotulo: string;
-  children: ReactNode;
-}) {
-  if (abierto) return <div className="mt-1">{children}</div>;
-  return (
-    <details className="mt-1">
-      <summary className="min-h-11 cursor-pointer text-xs font-semibold text-slate-600 sm:min-h-6">
-        {rotulo}
-      </summary>
-      {children}
-    </details>
-  );
-}
-
 /* Enlaces de acción según de dónde sale la respuesta (además de «Ver en…»). */
 function accionesDe(r: Respuesta, punto?: string): { texto: string; ruta: string }[] {
   const out: { texto: string; ruta: string }[] = [];
@@ -246,7 +225,6 @@ function Tarjeta({
   const [verContexto, setVerContexto] = useState(false);
   // Si la persona tocó los chips, se quedan a la vista; si el sistema viene de la consulta, los
   // demás van plegados.
-  const [tocado, setTocado] = useState(false);
   const titulo = r.tipo === "texto" ? "" : r.titulo;
   const asterisco = notaAsterisco(r);
   const seguridad = esSeguridad(r.id);
@@ -274,6 +252,13 @@ function Tarjeta({
           <Marcado texto={titulo} q={q} />
         </p>
       )}
+      {/* 0.77.1 (auditoría del adjunto): la segunda línea del rótulo de la fila (Tabla 4: «Activar
+          la función temporal 1–2 h antes…»), también cuando se enseña la casilla de un sistema. */}
+      {casilla && r.porSistema && r.texto && (
+        <p className="mt-0.5 text-sm text-slate-600">
+          <Marcado texto={r.texto} q={q} />
+        </p>
+      )}
       {r.id.startsWith("F3/") && porId && principal && (
         <div className="mt-2 flex flex-wrap gap-1.5" role="group" aria-label="Tramo de β-OHB">
           {ESCALA_CETONEMIA.tramos.map((t) => (
@@ -288,23 +273,14 @@ function Tarjeta({
         </div>
       )}
       {casillas && !compacta && (
-        /* Con un sistema elegido, los demás van plegados: menos selectores repetidos. */
-        <Plegable abierto={!casilla || tocado} rotulo="Ver otros sistemas">
-          <div className="mt-1 flex flex-wrap gap-1.5" role="group" aria-label="Sistema">
-            {casillas.map((c, i) => (
-              <Chip
-                key={c.nombre}
-                on={sel === i}
-                onClick={() => {
-                  setTocado(true);
-                  setSel(sel === i ? null : i);
-                }}
-              >
-                {c.nombre}
-              </Chip>
-            ))}
-          </div>
-        </Plegable>
+        /* 0.77.1 (auditoría del adjunto; nada útil plegado): los sistemas, siempre a la vista. */
+        <div className="mt-1 flex flex-wrap gap-1.5" role="group" aria-label="Sistema">
+          {casillas.map((c, i) => (
+            <Chip key={c.nombre} on={sel === i} onClick={() => setSel(sel === i ? null : i)}>
+              {c.nombre}
+            </Chip>
+          ))}
+        </div>
       )}
       {ctx?.antes && (
         <p className="mt-2 text-sm text-slate-500">
@@ -578,7 +554,19 @@ export function RespuestasCapitulo({
   const H = `h${nivel}` as "h2" | "h3";
   // Con pregunta frecuente, el motor añade solo lo que ella no enseña.
   const yaVistos = new Set(frecuente?.respuestas.map((x) => x.id) ?? []);
-  const resto = frecuente ? respuestas.filter((x) => !yaVistos.has(x.id)) : respuestas;
+  // 0.77.1 (auditoría R5): tampoco el mismo texto dos veces (un pasaje citado por la pregunta y
+  // por el motor con otro identificador salía repetido, con su fuente).
+  const textos = new Set(
+    (frecuente?.respuestas ?? []).map((x) => (x.texto ?? "").trim()).filter(Boolean),
+  );
+  const resto = respuestas.filter((x) => {
+    if (yaVistos.has(x.id)) return false;
+    const t = (x.texto ?? "").trim();
+    if (!t || x.porSistema) return true;
+    if (textos.has(t)) return false;
+    textos.add(t);
+    return true;
+  });
   const Relacionadas =
     !compacta && relacionadas && relacionadas.length > 0 ? (
       <nav aria-label="Preguntas relacionadas" className="mt-3">

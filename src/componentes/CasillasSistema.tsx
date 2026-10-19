@@ -21,7 +21,11 @@ export function CasillasSistema({
   nombres,
   pista,
   extra,
+  unico = false,
 }: {
+  /* Elección única (Situaciones, gestación): botones de opción, no casillas (0.77.1, auditoría
+     visual: el dibujo de casilla prometía elegir varios). */
+  unico?: boolean;
   /* Columnas (0-3, orden de la Tabla 1) marcadas. */
   seleccion: number[];
   onToggle: (c: number) => void;
@@ -35,7 +39,7 @@ export function CasillasSistema({
 }) {
   return (
     <div
-      role="group"
+      role={unico ? "radiogroup" : "group"}
       aria-label={etiqueta}
       className="sm:flex sm:flex-wrap sm:items-center sm:gap-1.5"
     >
@@ -47,7 +51,7 @@ export function CasillasSistema({
             <button
               key={nombre}
               type="button"
-              aria-pressed={on}
+              {...(unico ? { role: "radio", "aria-checked": on } : { "aria-pressed": on })}
               onClick={() => onToggle(c)}
               className="tap-44 flex min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[13px] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-0 sm:px-2.5 sm:text-sm sm:leading-normal"
               style={
@@ -57,17 +61,29 @@ export function CasillasSistema({
               }
             >
               <span className="flex shrink-0 items-center gap-1 sm:contents">
-                <span
-                  aria-hidden="true"
-                  className="grid h-4 w-4 shrink-0 place-items-center rounded-sm border"
-                  style={
-                    on
-                      ? { background: SEEN.burdeos, borderColor: SEEN.burdeos }
-                      : { background: "#fff", borderColor: "#9ca3af" }
-                  }
-                >
-                  {on && <Check size={12} color="#fff" />}
-                </span>
+                {unico ? (
+                  <span
+                    aria-hidden="true"
+                    className="casilla-opcion grid h-4 w-4 shrink-0 place-items-center rounded-full border"
+                    style={{ borderColor: on ? SEEN.burdeos : "#9ca3af" }}
+                  >
+                    {on && (
+                      <span className="h-2 w-2 rounded-full" style={{ background: SEEN.burdeos }} />
+                    )}
+                  </span>
+                ) : (
+                  <span
+                    aria-hidden="true"
+                    className="grid h-4 w-4 shrink-0 place-items-center rounded-sm border"
+                    style={
+                      on
+                        ? { background: SEEN.burdeos, borderColor: SEEN.burdeos }
+                        : { background: "#fff", borderColor: "#9ca3af" }
+                    }
+                  >
+                    {on && <Check size={12} color="#fff" />}
+                  </span>
+                )}
                 <span
                   aria-hidden="true"
                   className="h-2 w-2 shrink-0 rounded-full"

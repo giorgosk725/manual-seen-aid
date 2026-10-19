@@ -174,7 +174,9 @@ function TablaHTML({
               <th
                 scope="row"
                 className="separador border-t px-3 py-2 text-left text-xs font-bold text-slate-800"
-                style={{ minWidth: "9rem" }}
+                // 0.77.1 (auditorías R3 y senior): columnas algo más estrechas, para que la tabla de
+                // los cuatro sistemas quepa entera en la columna de lectura (antes, 848 px en 734).
+                style={{ minWidth: "8rem" }}
               >
                 <span className="flex items-start gap-1.5">
                   {iconoFila?.(i)}
@@ -215,7 +217,7 @@ function TablaHTML({
                     key={c}
                     className="separador border-t px-3 py-2 text-slate-700"
                     style={{
-                      minWidth: tabla.porSistema ? "11rem" : "10rem",
+                      minWidth: tabla.porSistema ? "9.25rem" : "10rem",
                       ...(tabla.porSistema
                         ? { background: SISTEMA_HEX[c].soft, boxShadow: "inset 0 0 0 2px #fff" }
                         : {}),

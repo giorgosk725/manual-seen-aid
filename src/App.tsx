@@ -254,6 +254,10 @@ export default function App() {
       pantalla = <Buscar inicial={ruta.sub} />;
       titulo = "Buscar";
       break;
+    // 0.77.1: «#/tablas[/T1]» como atajo de «#/consultar/tablas[/T1]».
+    case "tablas":
+      pantalla = <Redireccion a={href("consultar", "tablas", ruta.sub)} />;
+      break;
     case "bibliografia":
       pantalla = <Bibliografia destacada={ruta.sub} />;
       titulo = "Bibliografía";
