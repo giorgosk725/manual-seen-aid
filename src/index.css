@@ -1884,3 +1884,72 @@ html.night *:focus-visible {
     break-after: avoid;
   }
 }
+
+/* ---------- 0.78.1, tanda 3 (segunda ronda de auditorías) ---------- */
+
+/* Nocturno: plecas, puntos y bordes de realce con la tinta clara del sistema (la misma del nombre
+   en nocturno); con el color «strong» medían 1,64:1 (MiniMed) y 1,43:1 (Tandem) sobre la tarjeta
+   #1e293b. `--sis` llega en línea («--sis: #004B87;»); aquí se sustituye en nocturno. Los grupos
+   de #/visual (azul del Manual, burdeos y pizarra) y la pleca sin sistema (acento), igual. */
+@media screen {
+  html.night [style*="--sis: #004B87" i],
+  html.night [style*="--sis: #003a6b" i],
+  html.night [style*="--sis: #3F6E9F" i] {
+    --sis: #93c5fd !important;
+  }
+  html.night [style*="--sis: #522D80" i],
+  html.night [style*="--sis: #3f2363" i] {
+    --sis: #c4b5fd !important;
+  }
+  html.night [style*="--sis: #0E8C77" i],
+  html.night [style*="--sis: #046b5b" i] {
+    --sis: #5eead4 !important;
+  }
+  html.night [style*="--sis: #E05300" i],
+  html.night [style*="--sis: #a83f00" i] {
+    --sis: #fdba74 !important;
+  }
+  html.night [style*="--sis: #8E254E" i] {
+    --sis: var(--acento-texto) !important;
+  }
+  html.night [style*="--sis: #3e566a" i] {
+    --sis: #cbd5e1 !important;
+  }
+  html.night .tarjeta-sistema,
+  html.night .casilla-sistema {
+    box-shadow: inset 3px 0 0 0 var(--sis, var(--acento-texto));
+  }
+  html.night .tarjeta-realce {
+    border-color: var(--sis, var(--acento-texto));
+    box-shadow: inset 0 0 0 1px var(--sis, var(--acento-texto));
+  }
+  /* La marca del sistema elegido en el selector (botón de opción y casilla): burdeos sobre el
+     fondo marcado medía 1,83:1; en nocturno, el burdeos claro del acento. */
+  html.night .marca-on {
+    border-color: var(--acento-texto) !important;
+  }
+  html.night .marca-punto,
+  html.night .marca-caja {
+    background: var(--acento-texto) !important;
+    border-color: var(--acento-texto) !important;
+  }
+  html.night .marca-caja svg {
+    stroke: #1e293b;
+  }
+}
+
+/* Prosa de los diagramas y de Interrupción a ≈ 72 caracteres por línea en pantallas anchas (a
+   1920 px llegaba a ≈ 177). Las cajas (tarjetas, bandas con fondo o borde) conservan su ancho en
+   la rejilla; en las que van a todo lo ancho se limita su texto (max-w-[72ch] en el componente, y
+   las líneas de <Lineas>, que son `span.block` sin más clases). */
+.prosa-72 :is(p, li):not(.tarjeta):not([class*="rounded"]):not([class*="border"]),
+.prosa-72 :is(span[class="block"], span[class="mt-1 block"]) {
+  max-width: 72ch;
+}
+
+/* Papel: los rótulos-enlace de las filas de la ficha (Parámetros, Modos) sin subrayado. */
+@media print {
+  .imprimible .filas-datos a {
+    text-decoration: none;
+  }
+}

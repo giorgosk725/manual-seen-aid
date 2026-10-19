@@ -64,17 +64,20 @@ export function CasillasSistema({
                 {unico ? (
                   <span
                     aria-hidden="true"
-                    className="casilla-opcion grid h-4 w-4 shrink-0 place-items-center rounded-full border"
+                    className={`casilla-opcion grid h-4 w-4 shrink-0 place-items-center rounded-full border ${on ? "marca-on" : ""}`}
                     style={{ borderColor: on ? SEEN.burdeos : "#9ca3af" }}
                   >
                     {on && (
-                      <span className="h-2 w-2 rounded-full" style={{ background: SEEN.burdeos }} />
+                      <span
+                        className="marca-punto h-2 w-2 rounded-full"
+                        style={{ background: SEEN.burdeos }}
+                      />
                     )}
                   </span>
                 ) : (
                   <span
                     aria-hidden="true"
-                    className="grid h-4 w-4 shrink-0 place-items-center rounded-sm border"
+                    className={`grid h-4 w-4 shrink-0 place-items-center rounded-sm border ${on ? "marca-caja" : ""}`}
                     style={
                       on
                         ? { background: SEEN.burdeos, borderColor: SEEN.burdeos }
@@ -86,8 +89,9 @@ export function CasillasSistema({
                 )}
                 <span
                   aria-hidden="true"
-                  className="h-2 w-2 shrink-0 rounded-full"
-                  style={{ background: h.strong }}
+                  className="punto-sistema h-2 w-2 shrink-0 rounded-full"
+                  // 0.78.1: lee `--sis`; en nocturno, la tinta clara del sistema (≥ 3:1).
+                  style={{ ["--sis" as string]: h.strong, background: "var(--sis)" }}
                 />
               </span>
               {nombres ? (

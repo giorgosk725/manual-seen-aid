@@ -97,7 +97,10 @@ describe("Fichas operativas (0.77.0)", () => {
           ...(F.VARIANTE_RESUMEN[c] ? [F.VARIANTE_RESUMEN[c]!] : []),
         ]) {
           expect(d.f.length, d.r).toBeGreaterThan(0);
-          const fuente = plano(d.f.flatMap((p) => textosDePieza(p, c)).join(" "));
+          // Las filas comunes a los cuatro (Tabla 4, «unida») tienen una sola casilla, la primera.
+          const fuente = plano(
+            d.f.flatMap((p) => [...textosDePieza(p, c), ...textosDePieza(p, 0)]).join(" "),
+          );
           for (const n of cifras([d.v, d.n ?? "", d.cond ?? "", d.variante?.v ?? ""].join(" ")))
             // La cifra entera: ni pegada a otros dígitos ni a una coma decimal («112,5»).
             if (!new RegExp(`(?<!\\d|\\d,)${n}(?!\\d|,\\d)`).test(fuente))
@@ -105,6 +108,15 @@ describe("Fichas operativas (0.77.0)", () => {
         }
       });
     expect(fallos).toEqual([]);
+    // Las filas del resumen de la entrada existen en los cuatro (0.78.1: un rótulo renombrado las
+    // dejaba fuera sin aviso).
+    for (const r of F.RESUMEN)
+      F.ALGORITMO.forEach((datos, c) =>
+        expect(
+          datos.some((d) => d.r === r),
+          `${c} ${r}`,
+        ).toBe(true),
+      );
   });
 });
 

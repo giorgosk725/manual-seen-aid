@@ -90,7 +90,7 @@ describe("App", () => {
     const grupo = screen.getByRole("group", { name: /Filtrar por sistema/ });
     await userEvent.click(within(grupo).getByRole("button", { name: /Omnipod 5/ }));
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
-    expect(screen.getByText(enTexto(/sin peso mínimo; DTD ≥ 5 UI\/día/))).toBeInTheDocument();
+    expect(screen.getByText(enTexto(/sin peso mínimo; DTD ≥\s5\sUI\/día/))).toBeInTheDocument();
     expect(screen.queryByText(/Guardian 4/)).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: /Los cuatro/ }));
     expect(screen.getByRole("table")).toBeInTheDocument();
@@ -241,10 +241,13 @@ describe("App", () => {
     render(<App />);
     await ir("#/visual/ejercicio");
     expect(
-      screen.getByRole("heading", { level: 2, name: "Glucemia y ejercicio" }),
+      // 0.78.1: el título del diagrama, en la cabecera editorial de la pantalla (h1).
+      screen.getByRole("heading", { level: 1, name: "Glucemia y ejercicio" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/se recomienda iniciar el ejercicio con una glucemia de 126–180 mg\/dl/),
+      screen.getByText(
+        enTexto(/se recomienda iniciar el ejercicio con una glucemia de 126–180\smg\/dl/),
+      ),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: /Leer en el capítulo: 10\./ }).getAttribute("href"),

@@ -197,7 +197,11 @@ function PiezaVistaBase({
             {t.columnas.slice(1).map((col, k) => (
               <p key={col} className="mt-1.5 text-sm text-slate-600">
                 <span className="font-semibold text-slate-700">{col}: </span>
-                <Texto siglas={pend(f.celdas[k + 1])}>{f.celdas[k + 1].replace(/\n/g, " ")}</Texto>
+                {/* 0.78.1 (segunda ronda, R5): las líneas de la casilla, separadas («; » si la
+                    línea no acaba en punto); antes se pegaban. */}
+                <Texto siglas={pend(f.celdas[k + 1])}>
+                  {f.celdas[k + 1].replace(/([^.;:])\n/g, "$1; ").replace(/\n/g, " ")}
+                </Texto>
               </p>
             ))}
           </div>

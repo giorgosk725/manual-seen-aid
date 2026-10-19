@@ -159,7 +159,8 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                   {ruta ? (
                     <a
                       href={ruta}
-                      className="text-[15px] font-bold leading-snug text-slate-900 underline decoration-slate-300 decoration-1 underline-offset-4 hover:decoration-slate-700"
+                      // 0.78.1 (segunda ronda): zona táctil de 24 px como mínimo (tap-44 la amplía).
+                      className="tap-44 inline-block min-h-6 py-0.5 text-[15px] font-bold leading-snug text-slate-900 underline decoration-slate-300 decoration-1 underline-offset-4 hover:decoration-slate-700"
                       title="Texto del capítulo"
                     >
                       {d.r}
@@ -176,7 +177,7 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                     </span>
                   )}
                 </dt>
-                <dd className="min-w-0 text-[15px] leading-snug text-slate-800">
+                <dd className="min-w-0 max-w-[72ch] text-[15px] leading-snug text-slate-800">
                   {d.cond && (
                     <span className="mb-0.5 block text-[13px] leading-snug text-slate-600">
                       <SinCortes texto={d.cond} />
@@ -191,6 +192,14 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                   <span className="block text-[14px]">
                     <Variante c={c} d={d} />
                   </span>
+                  {d.enlace && (
+                    <a
+                      href={d.enlace.ruta}
+                      className="tap-44 mt-1 inline-block text-[13px] font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900"
+                    >
+                      {d.enlace.texto}
+                    </a>
+                  )}
                 </dd>
               </div>
             );

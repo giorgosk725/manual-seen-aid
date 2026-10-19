@@ -18,6 +18,7 @@ import { CasillasSistema } from "./CasillasSistema";
 import { NombreSistema } from "./NombreSistema";
 import { TituloBloque } from "../nivel";
 import { FuentePie } from "./FuentePie";
+import { sinCortes } from "../sinCortes";
 import { paginasDe } from "../paginas";
 import { rutaDeTabla } from "../contenido";
 
@@ -93,7 +94,7 @@ function Notas({ notas }: { notas: string[] }) {
     <div className="mt-2 space-y-1 text-xs leading-relaxed text-slate-600">
       {notas.map((n, i) => (
         <p key={i}>
-          <Texto>{n}</Texto>
+          <Texto>{sinCortes(n)}</Texto>
         </p>
       ))}
     </div>
@@ -193,13 +194,13 @@ function TablaHTML({
                               : "mt-1 block text-xs font-normal leading-snug text-slate-600"
                           }
                         >
-                          <Texto>{l}</Texto>
+                          <Texto>{sinCortes(l)}</Texto>
                         </span>
                       ))}
                     </span>
                   ) : (
                     <span>
-                      <Lineas>{f.etiqueta}</Lineas>
+                      <Lineas>{sinCortes(f.etiqueta)}</Lineas>
                     </span>
                   )}
                 </span>
@@ -209,7 +210,7 @@ function TablaHTML({
                   colSpan={columnas.length}
                   className="separador border-t px-3 py-2 text-slate-700"
                 >
-                  <Lineas>{f.celdas[0]}</Lineas>
+                  <Lineas>{sinCortes(f.celdas[0])}</Lineas>
                 </td>
               ) : (
                 columnas.map((c) => (
@@ -223,7 +224,7 @@ function TablaHTML({
                         : {}),
                     }}
                   >
-                    <Lineas>{f.celdas[c]}</Lineas>
+                    <Lineas>{sinCortes(f.celdas[c])}</Lineas>
                   </td>
                 ))
               )}
@@ -254,7 +255,9 @@ function Fichas({
           <li key={i} className="tarjeta p-3">
             <div className="titulo-tarjeta mb-2">
               <Lineas>
-                {/^\d+$/.test(f.etiqueta) ? `${tabla.cabeceraEtiqueta} ${f.etiqueta}` : f.etiqueta}
+                {sinCortes(
+                  /^\d+$/.test(f.etiqueta) ? `${tabla.cabeceraEtiqueta} ${f.etiqueta}` : f.etiqueta,
+                )}
               </Lineas>
             </div>
             <dl className="space-y-2">
@@ -262,7 +265,12 @@ function Fichas({
                 <div
                   key={c}
                   className="border-l-[3px] py-0.5 pl-2.5"
-                  style={{ borderColor: tabla.porSistema ? SISTEMA_HEX[c].strong : "#cbd5e1" }}
+                  // 0.78.1: el filete del sistema lee `--sis` (en nocturno, su tinta clara).
+                  style={
+                    tabla.porSistema
+                      ? { ["--sis" as string]: SISTEMA_HEX[c].strong, borderColor: "var(--sis)" }
+                      : { borderColor: "#cbd5e1" }
+                  }
                 >
                   <dt
                     className="rotulo"
@@ -271,7 +279,7 @@ function Fichas({
                     {f.unida ? "Todos los sistemas" : tabla.columnas[c]}
                   </dt>
                   <dd className="mt-0.5 text-[15px] text-slate-800">
-                    <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
+                    <Lineas>{sinCortes(f.unida ? f.celdas[0] : f.celdas[c])}</Lineas>
                   </dd>
                 </div>
               ))}
@@ -306,12 +314,12 @@ function FichaSistema({ tabla, c }: { tabla: Tabla; c: number }) {
                       : "mt-1 block text-[13px] font-normal text-slate-600"
                   }
                 >
-                  <Texto>{l}</Texto>
+                  <Texto>{sinCortes(l)}</Texto>
                 </span>
               ))}
             </dt>
             <dd className="text-[15px] text-slate-800">
-              <Lineas>{f.unida ? f.celdas[0] : f.celdas[c]}</Lineas>
+              <Lineas>{sinCortes(f.unida ? f.celdas[0] : f.celdas[c])}</Lineas>
             </dd>
           </div>
         ))}
@@ -466,7 +474,7 @@ export function TablaVista({
             key={n}
             className="mt-1.5 rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs text-slate-600"
           >
-            {n}
+            {sinCortes(n)}
           </p>
         ))}
       {herramienta && (

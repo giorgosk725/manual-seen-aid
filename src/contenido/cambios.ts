@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — auditoría de cinco perfiles de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — segunda ronda de auditorías de uso`,
+    detalle: [
+      "Modos y funciones, más fieles a la Tabla 4: «planificado o riesgo previsible», «habitualmente», «valorar Boost», «posibles autocorrecciones», «si es posible»; la hiperglucemia persistente o inexplicada con su condición; la hipoglucemia nocturna, «antes de subir objetivos globalmente»; el alcohol, con su contexto (adolescencia y transición). Registro de la tabla en Parámetros.",
+      "Situaciones: lo urgente, el primero; una sola entrada para la hiperglucemia con sospecha de fallo (Figura 3); selector de sistema también en pruebas y cirugía; sin sistema en la ruta, el último consultado.",
+      "Ficha: «Los cuatro» en Modos compara la Tabla 4; la ficha entera, a un toque en el ordenador; al entrar no se desplaza; en papel, sin preguntas de relleno y con pie de capítulo, versión y fecha. La comida grasa lleva al patrón posprandial de la descarga.",
+      "Diseño: plecas y puntos de sistema legibles en modo nocturno; cifras que no se separan de su unidad en toda la app; cabecera común en las pantallas de diagramas; prosa a unos 72 caracteres por línea en pantallas anchas; Interrupción con frases completas.",
+      "Buscador: «fallo del set», «objetivo de los cuatro sistemas» y «cambiar de sistema AID» llevan a su herramienta; sin la hiperglucemia «sin sospecha de fallo» cuando se pregunta por el set.",
+    ],
+  },
+  {
+    fecha: "2026-10-20",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.78.0 — auditoría de cinco perfiles de uso",
     detalle: [
       "Modos y funciones: cada situación con su condición de la Tabla 4 («sin sospecha de fallo de infusión», «activar 1–2 h antes»); la hipoglucemia nocturna aparte, con lo que el apartado 9 manda revisar antes; alcohol, agua y comidas grasas en los cuatro sistemas.",
       "Del dato al texto del capítulo en un toque: el rótulo de cada fila de Parámetros y Modos lleva a la tabla con la columna del sistema o al párrafo.",

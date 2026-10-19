@@ -3,6 +3,7 @@
 import { paginasPorApartado } from "../paginasApartado";
 import { NOTA_ADAPTA_OMNIPOD } from "../notas-complementarias";
 import { FuentePie } from "./FuentePie";
+import { SinCortes } from "./SinCortes";
 import { BloquesPorSistema } from "./BloquesPorSistema";
 import { GUIA_POR_SISTEMA } from "../porSistema";
 import {
@@ -67,6 +68,16 @@ const TONO: Record<TonoFranja, { bg: string; fg: string }> = {
   "muy-bajo": { bg: "#7f1d1d", fg: "#ffffff" },
 };
 
+/* Un fragmento literal tal como se pinta suelto (0.78.1): inicial en mayúscula y sin raya
+   colgante (el inciso que cierra el fragmento, «—…—», entre paréntesis; una raya sin pareja, fuera)
+   y, si se pide, punto final solo si falta. Las palabras no cambian. */
+function fragmento(t: string, punto = false): string {
+  let s = t.trim().replace(/\s—([^—]+)—$/, " ($1)");
+  if ((s.match(/—/g) ?? []).length % 2) s = s.replace(/^—\s*/, "").replace(/\s*—$/, "");
+  s = s.charAt(0).toLocaleUpperCase("es") + s.slice(1);
+  return punto && !/[.!?:…]$/.test(s) ? `${s}.` : s;
+}
+
 /* Nivel del título del diagrama: 2 en su pantalla (#/visual, tras el h1) y 3 dentro de un
    apartado. Los subtítulos del diagrama van un nivel por debajo. */
 /* 1: el diagrama es la pantalla (Interrupción), bajo su h1. */
@@ -104,10 +115,14 @@ export function MarcoDiagrama({
   id,
   children,
   enApartado = false,
+  tituloFuera = false,
 }: {
   id: DiagramaId;
   children: ReactNode;
   enApartado?: boolean;
+  /* 0.78.1: en su pantalla (#/visual/<id>) el título es la cabecera editorial de la página (h1,
+     como en el resto de pantallas); el marco no lo repite y sus subtítulos van en h2. */
+  tituloFuera?: boolean;
 }) {
   const meta = DIAGRAMAS.find((d) => d.id === id)!;
   const ref = useRef<HTMLElement>(null);
@@ -116,20 +131,22 @@ export function MarcoDiagrama({
   const nivel: Nivel = enApartado ? nivelContexto : 2;
   const Titulo = `h${nivel}` as "h2" | "h3" | "h4";
   return (
-    <NivelDiagrama.Provider value={nivel}>
+    <NivelDiagrama.Provider value={tituloFuera ? 1 : nivel}>
       <section
         ref={ref}
-        aria-labelledby={`diag-${id}`}
-        className="bloque-papel imprimible tarjeta p-4"
+        {...(tituloFuera ? { "aria-label": meta.titulo } : { "aria-labelledby": `diag-${id}` })}
+        className="bloque-papel imprimible prosa-72 tarjeta p-4"
       >
-        <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
-          <div className="min-w-0">
-            {/* 0.70.0: solo el título (sin rótulo ni resumen); la fuente, al pie. */}
-            <Titulo id={`diag-${id}`} className="text-base font-extrabold text-slate-900">
-              {meta.titulo}
-            </Titulo>
+        {!tituloFuera && (
+          <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
+            <div className="min-w-0">
+              {/* 0.70.0: solo el título (sin rótulo ni resumen); la fuente, al pie. */}
+              <Titulo id={`diag-${id}`} className="text-base font-extrabold text-slate-900">
+                {meta.titulo}
+              </Titulo>
+            </div>
           </div>
-        </div>
+        )}
         {children}
         <FuentePie
           className="mt-3"
@@ -188,13 +205,17 @@ function Escalera({ i }: { i: number }) {
                 className="flex w-28 shrink-0 items-center px-2 py-2 text-xs font-bold"
                 style={{ background: t.bg, color: t.fg }}
               >
-                {f.franja}
+                <SinCortes texto={f.franja} />
               </span>
               <span className="flex min-w-0 flex-1 items-center gap-2 bg-white px-2 py-1.5">
                 <span className="w-16 shrink-0 whitespace-nowrap text-base font-extrabold tabular-nums text-slate-900">
-                  {f.objetivo}
+                  <SinCortes texto={f.objetivo} />
                 </span>
-                {f.nota && <span className="text-xs leading-snug text-slate-600">{f.nota}</span>}
+                {f.nota && (
+                  <span className="text-xs leading-snug text-slate-600">
+                    <SinCortes texto={f.nota} />
+                  </span>
+                )}
               </span>
             </li>
           );
@@ -204,10 +225,16 @@ function Escalera({ i }: { i: number }) {
         {p.extras.map((e) => (
           <li key={e.texto} className="flex gap-1.5">
             <span aria-hidden="true">·</span>
-            <span>{e.texto}</span>
+            <span>
+              <SinCortes texto={e.texto} />
+            </span>
           </li>
         ))}
-        {p.aviso && <li className="font-semibold text-slate-800">{p.aviso}</li>}
+        {p.aviso && (
+          <li className="font-semibold text-slate-800">
+            <SinCortes texto={p.aviso} />
+          </li>
+        )}
       </ul>
     </div>
   );
@@ -311,13 +338,13 @@ function EscalaCetonemia() {
         {[0, 0.6, 1.0, 1.5, 3.0].map((v) => (
           <span
             key={v}
-            className="absolute bottom-0 -translate-x-1/2 text-[11px] font-semibold tabular-nums text-slate-600"
+            className="absolute bottom-0 -translate-x-1/2 text-xs font-semibold tabular-nums text-slate-600"
             style={{ left: v === 0 ? "6px" : pct(v) }}
           >
             {v === 0 ? "0" : v.toFixed(1).replace(".", ",")}
           </span>
         ))}
-        <span className="absolute bottom-0 right-0 text-[11px] text-slate-500">mmol/l</span>
+        <span className="absolute bottom-0 right-0 text-xs text-slate-500">mmol/l</span>
       </div>
       <ul className="mt-2 grid gap-2 sm:grid-cols-2">
         {tramos.map((t) => (
@@ -404,7 +431,7 @@ function Ejercicio() {
           {EJERCICIO.zonas.map((z) => (
             <span
               key={z.etiqueta}
-              className="absolute top-0 flex h-full items-center justify-center text-[11px] font-bold"
+              className="absolute top-0 flex h-full items-center justify-center text-xs font-bold"
               style={{
                 left: pct(z.desde),
                 width: `calc(${pct(z.hasta)} - ${pct(z.desde)})`,
@@ -412,7 +439,9 @@ function Ejercicio() {
                 color: TONO[z.tono].fg,
               }}
             >
-              <span className="hidden sm:inline">{z.etiqueta}</span>
+              <span className="hidden sm:inline">
+                <SinCortes texto={z.etiqueta} />
+              </span>
             </span>
           ))}
           <span
@@ -424,13 +453,13 @@ function Ejercicio() {
         {[90, 126, 180, 270].map((v) => (
           <span
             key={v}
-            className="absolute bottom-0 -translate-x-1/2 text-[11px] font-semibold tabular-nums text-slate-600"
+            className="absolute bottom-0 -translate-x-1/2 text-xs font-semibold tabular-nums text-slate-600"
             style={{ left: pct(v) }}
           >
             {v}
           </span>
         ))}
-        <span className="absolute bottom-0 right-0 text-[11px] text-slate-500">mg/dl</span>
+        <span className="absolute bottom-0 right-0 text-xs text-slate-500">mg/dl</span>
       </div>
       <ul className="mt-2 grid gap-2 sm:grid-cols-3">
         {EJERCICIO.zonas.map((z) => (
@@ -444,8 +473,11 @@ function Ejercicio() {
               style={{ background: TONO[z.tono].bg }}
             />
             <span>
-              <span className="block font-bold text-slate-900">{z.etiqueta}</span>
-              {z.texto}
+              <span className="block font-bold text-slate-900">
+                <SinCortes texto={z.etiqueta} />
+              </span>
+              {/* 0.78.1: «con cifras <90…» empieza a media frase: inicial en mayúscula y punto. */}
+              <SinCortes texto={fragmento(z.texto, true)} />
             </span>
           </li>
         ))}
@@ -455,7 +487,9 @@ function Ejercicio() {
           aria-hidden="true"
           className="mt-1 h-3 w-0 shrink-0 border-l-2 border-dashed border-slate-900"
         />
-        {EJERCICIO.marca.texto}
+        <span>
+          <SinCortes texto={EJERCICIO.marca.texto} />
+        </span>
       </p>
       {/* La cetonemia manda sobre la glucemia para empezar (p. 19): junto a la escala. */}
       <p
@@ -466,7 +500,9 @@ function Ejercicio() {
           color: TRAMO_HEX.naranja.ink,
         }}
       >
-        {EJERCICIO.cetonemia}
+        <span className="block max-w-[72ch]">
+          <SinCortes texto={EJERCICIO.cetonemia} />
+        </span>
       </p>
       <div className="mt-4 grid gap-3 md:grid-cols-3">
         {EJERCICIO.fases.map((f) => (
@@ -476,7 +512,9 @@ function Ejercicio() {
               {f.items.map((it) => (
                 <li key={it} className="flex gap-1.5">
                   <span aria-hidden="true">·</span>
-                  {it}
+                  <span>
+                    <SinCortes texto={it} />
+                  </span>
                 </li>
               ))}
             </ul>
@@ -489,12 +527,14 @@ function Ejercicio() {
           {EJERCICIO.tipo.map((t) => (
             <li key={t} className="flex gap-1.5">
               <span aria-hidden="true">·</span>
-              {t}
+              <span>
+                <SinCortes texto={t} />
+              </span>
             </li>
           ))}
         </ul>
         <p className="mt-2">
-          {EJERCICIO.herramientas}{" "}
+          <SinCortes texto={EJERCICIO.herramientas} />{" "}
           <a
             href={href("consultar", "tablas", "T4")}
             className="no-imprimir inline-flex min-h-11 items-center gap-1 font-semibold text-slate-800 underline sm:min-h-0"
@@ -594,7 +634,8 @@ function DatoAlgoritmo({
   );
 }
 
-const unidos = (xs: string[]) => xs.join(" · ");
+/* 0.78.1: cada fragmento suelto, con la inicial en mayúscula y sin cortes entre cifra y unidad. */
+const unidos = (xs: string[]) => <SinCortes texto={xs.map((x) => fragmento(x)).join(" · ")} />;
 
 function Algoritmos() {
   const fila = (etiqueta: string, c: number) =>
@@ -622,7 +663,12 @@ function Algoritmos() {
               key={id}
               aria-labelledby={`alg-${id}`}
               className="row-span-9 grid grid-rows-subgrid gap-0 overflow-hidden rounded-xl border border-t-4 bg-white"
-              style={{ borderColor: "var(--linea)", borderTopColor: h.strong }}
+              // 0.78.1: el filete superior lee `--sis` (en nocturno, la tinta clara del sistema).
+              style={{
+                ["--sis" as string]: h.strong,
+                borderColor: "var(--linea)",
+                borderTopColor: "var(--sis)",
+              }}
             >
               <header
                 className="flex items-center gap-2.5 px-3 py-2.5"
@@ -761,12 +807,15 @@ function Hipoglucemia() {
               {r.cantidad}
             </span>
             <span className="mt-0.5 block">
-              <Texto>{r.condicion}</Texto>
+              <Texto>{fragmento(r.condicion)}</Texto>
             </span>
           </p>
         ))}
       </div>
-      <p className="mt-3 border-l-2 pl-3 text-sm text-slate-700" style={{ borderColor: "#cbd5e1" }}>
+      <p
+        className="mt-3 max-w-[72ch] border-l-2 pl-3 text-sm text-slate-700"
+        style={{ borderColor: "#cbd5e1" }}
+      >
         <Texto>{HIPOGLUCEMIA.orientacion}</Texto>
       </p>
       <ul className="mt-3 space-y-2 text-sm text-slate-800">
@@ -781,7 +830,7 @@ function Hipoglucemia() {
               >
                 <I size={15} />
               </span>
-              <span className="min-w-0">
+              <span className="min-w-0 max-w-[72ch]">
                 {"tema" in d && d.tema && <strong>{d.tema}: </strong>}
                 <Texto>{d.texto}</Texto>
               </span>
@@ -907,8 +956,10 @@ function Hospital() {
             </Sub>
           </div>
           <ul className="list-disc space-y-0.5 pl-5 text-sm text-slate-800">
+            {/* 0.78.1: «—excluida la anestesia—» al final, entre paréntesis (sigue en minúscula:
+                continúa la frase del título). */}
             {H.noApropiada.items.map((x) => (
-              <li key={x}>{x}</li>
+              <li key={x}>{x.replace(/\s—([^—]+)—$/, " ($1)")}</li>
             ))}
           </ul>
         </div>
@@ -1208,15 +1259,20 @@ function InterrupcionLinea() {
   const cetonemia = detalle("Cetonemia");
   // 0.72.0: las siglas del glosario, pulsables la primera vez que salen en la pantalla (en el
   // orden en que se pintan).
+  // 0.78.1: cada tramo con su punto solo si le falta («…cetosis..»); los formatos, que empiezan
+  // a media frase, con la inicial en mayúscula y sin rayas colgantes.
+  const pod = fragmento(L.formatos.pod, true);
+  const bomba = `${fragmento(L.formatos.bomba, true)} ${L.formatos.pausa}`;
+  const tramo = L.tramos.map((t) => fragmento(t.texto, true));
   const orden = [
     L.premisa,
     cetonemia?.texto ?? "",
-    L.formatos.pod,
-    `${L.formatos.bomba}. ${L.formatos.pausa}`,
-    L.tramos[0].texto + ".",
+    pod,
+    bomba,
+    tramo[0],
     L.tramos[0].condicion ?? "",
-    L.tramos[1].texto + ".",
-    L.tramos[2].texto,
+    tramo[1],
+    tramo[2],
     respaldo?.texto ?? "",
     ...L.programadas.flatMap((x) => [x.texto, ...x.mas]),
     reinicio?.texto ?? "",
@@ -1267,7 +1323,7 @@ function InterrupcionLinea() {
   );
   const PROGRAMADA = { soft: "#f1f5f9", strong: "#475569", ink: "#334155" };
   return (
-    <div className="space-y-4">
+    <div className="prosa-72 space-y-4">
       <p className="text-sm text-slate-700">
         <TS>{L.premisa}</TS>
       </p>
@@ -1279,7 +1335,7 @@ function InterrupcionLinea() {
         >
           <Droplets size={16} aria-hidden="true" style={{ color: TRAMO_HEX.rojo.strong }} />
           {/* 0.75.1: en el móvil, el enlace baja debajo del texto (no lo estrecha). */}
-          <span className="min-w-0 flex-1 basis-[calc(100%-2rem)] sm:basis-0">
+          <span className="min-w-0 max-w-[72ch] flex-1 basis-[calc(100%-2rem)] sm:basis-0">
             <span className="font-bold">{cetonemia.cuando}: </span>
             <TS>{cetonemia.texto}</TS>
           </span>
@@ -1294,11 +1350,11 @@ function InterrupcionLinea() {
         <Sub className="sr-only">Según el formato</Sub>
         <p className="text-sm leading-snug text-slate-800">
           <span className="rotulo mb-1 block">Pod</span>
-          <TS>{L.formatos.pod}</TS>
+          <TS>{pod}</TS>
         </p>
         <p className="text-sm leading-snug text-slate-800">
           <span className="rotulo mb-1 block">Bomba con catéter</span>
-          <TS>{`${L.formatos.bomba}. ${L.formatos.pausa}`}</TS>
+          <TS>{bomba}</TS>
         </p>
       </section>
       {/* Dos caminos que no son una sola línea de tiempo: lo programado se decide antes de
@@ -1308,7 +1364,7 @@ function InterrupcionLinea() {
         <ol className="grid items-start gap-3 md:grid-cols-3">
           <Tramo cuando={L.tramos[0].cuando} tono={TRAMO_HEX.verde}>
             <span className="block">
-              <TS>{L.tramos[0].texto + "."}</TS>
+              <TS>{tramo[0]}</TS>
             </span>
             <span className="block font-semibold">
               <TS>{L.tramos[0].condicion ?? ""}</TS>
@@ -1316,12 +1372,12 @@ function InterrupcionLinea() {
           </Tramo>
           <Tramo cuando={L.tramos[1].cuando} tono={TRAMO_HEX.amarillo}>
             <span className="block">
-              <TS>{L.tramos[1].texto + "."}</TS>
+              <TS>{tramo[1]}</TS>
             </span>
           </Tramo>
           <Tramo cuando={L.tramos[2].cuando} tono={TRAMO_HEX.rojo}>
             <span className="block">
-              <TS>{L.tramos[2].texto}</TS>
+              <TS>{tramo[2]}</TS>
             </span>
             {respaldo && <Anexo titulo={respaldo.cuando} texto={respaldo.texto} />}
           </Tramo>
@@ -1379,15 +1435,17 @@ export function DiagramaVista({
   id,
   enApartado = false,
   opcion,
+  tituloFuera = false,
 }: {
   id: DiagramaId;
   enApartado?: boolean;
   /* Pestaña inicial (población, sistema) cuando el diagrama tiene varias. */
   opcion?: string;
+  tituloFuera?: boolean;
 }) {
   const Cuerpo = CUERPO[id];
   return (
-    <MarcoDiagrama id={id} enApartado={enApartado}>
+    <MarcoDiagrama id={id} enApartado={enApartado} tituloFuera={tituloFuera}>
       <Cuerpo opcion={opcion} />
     </MarcoDiagrama>
   );

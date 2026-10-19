@@ -33,6 +33,7 @@ import { elegirRuta, fueNavegacionNueva, href } from "../rutas";
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
 import { CabeceraEditorial } from "../ui";
+import { recordarSistema, sistemaReciente } from "../sistemaReciente";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { useIrAlCambiar, useSubirAlElegir } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
@@ -57,6 +58,37 @@ type Extra = { t: string; fuente: string; ruta: string; alias?: string[] };
    columnas parejas en pantalla ancha; así la lista se lee igual en el móvil, en el lateral y en
    las dos columnas. */
 const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
+  // 0.78.1 (segunda ronda, guardia y senior): lo urgente, el primero; y una sola puerta para la
+  // hiperglucemia con sospecha de fallo: la Figura 3 (la fila de la Tabla 4 remite a ella).
+  {
+    t: "Noche, enfermedad e hiperglucemia",
+    ids: [
+      "sueno",
+      "necesidad-transitoria",
+      "hiperglucemia-puntual",
+      "enfermedad-intercurrente",
+      "glucocorticoides",
+    ],
+    extras: [
+      {
+        t: "Hiperglucemia persistente o sospecha de fallo; cetonemia",
+        fuente: "Figura 3",
+        ruta: href("consultar", "figura-3"),
+        alias: [
+          "cetonas",
+          "cetonemia",
+          "bohb",
+          "set",
+          "cateter",
+          "infusion",
+          "canula",
+          "persistente",
+          "inexplicada",
+          "fallo",
+        ],
+      },
+    ],
+  },
   {
     t: "Ejercicio y comidas",
     ids: ["ejercicio-aerobico", "ejercicio-anaerobico", "comida-grasa"],
@@ -78,25 +110,6 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
   {
     t: "Poblaciones y situaciones especiales",
     ids: ["gestacion", "adolescencia", "mayores", "dialisis"],
-  },
-  {
-    t: "Noche, enfermedad e hiperglucemia",
-    ids: [
-      "sueno",
-      "necesidad-transitoria",
-      "hiperglucemia-puntual",
-      "hiperglucemia-persistente",
-      "enfermedad-intercurrente",
-      "glucocorticoides",
-    ],
-    extras: [
-      {
-        t: "Hiperglucemia y cetonemia",
-        fuente: "Figura 3",
-        ruta: href("consultar", "figura-3"),
-        alias: ["cetonas", "cetonemia", "bohb", "set", "cateter", "infusion", "canula"],
-      },
-    ],
   },
   {
     t: "Resolución de incidencias",
@@ -568,6 +581,7 @@ export function SituacionSistema({
   // Elegida otra situación (sobre todo una de las últimas de la lista), al principio de su texto.
   useSubirAlElegir(situacion ?? "", "detalle-situacion");
   const sisIdx = sistema ? SIS_IDS.indexOf(sistema) : -1;
+  if (sisIdx >= 0) recordarSistema(sisIdx);
   const tabla = sit ? TABLAS[sit.tabla] : null;
   const fila = sit && tabla ? tabla.filas[sit.fila] : null;
   const porSistema = !!tabla?.porSistema && !fila?.unida;
@@ -621,7 +635,7 @@ export function SituacionSistema({
                     bloques={GUIA_POR_SISTEMA[guia.id].bloques}
                     comun={GUIA_POR_SISTEMA[guia.id].comun}
                     complementos={GUIA_POR_SISTEMA[guia.id].complementos}
-                    seleccion={sisIdx >= 0 ? sisIdx : 0}
+                    seleccion={sisIdx >= 0 ? sisIdx : (sistemaReciente() ?? 0)}
                     onElegir={(i) =>
                       elegirRuta("consultar", "situacion", `${guia.id}:${SIS_IDS[i]}`)
                     }
@@ -716,7 +730,7 @@ export function SituacionSistema({
                     </>
                   );
                 })()}
-                {porSistema && (
+                {(porSistema || sit.tabla === "T6") && (
                   <div>
                     <div className="rotulo mb-1">Sistema</div>
                     <CasillasSistema

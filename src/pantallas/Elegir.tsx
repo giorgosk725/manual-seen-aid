@@ -17,6 +17,7 @@ import { NombreSistema } from "../componentes/NombreSistema";
 import { Texto } from "../texto";
 import { CATEGORIA_HEX } from "../tokens";
 import { FuentePie } from "../componentes/FuentePie";
+import { SinCortes } from "../componentes/SinCortes";
 import { paginasDe } from "../paginas";
 
 const hex = CATEGORIA_HEX.consultar;
@@ -198,7 +199,7 @@ function PorCaracteristicas() {
                             className="mr-1 inline-block align-[-2px] text-slate-400"
                           />
                         )}
-                        {T1.filas[cr.fila].celdas[c]}
+                        <SinCortes texto={T1.filas[cr.fila].celdas[c]} />
                       </dd>
                     </div>
                   );
@@ -209,7 +210,7 @@ function PorCaracteristicas() {
                   <div key={fila} className="sm:contents">
                     <dt className="rotulo text-slate-500 sm:mt-1.5">{T1.filas[fila].etiqueta}</dt>
                     <dd className="whitespace-pre-line text-slate-700">
-                      {T1.filas[fila].celdas[c]}
+                      <SinCortes texto={T1.filas[fila].celdas[c]} />
                     </dd>
                   </div>
                 ))}

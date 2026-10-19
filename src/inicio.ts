@@ -362,11 +362,8 @@ export const TAREAS: Record<string, Tarea[]> = {
     {
       id: "ajustes",
       titulo: "Ajustes en las primeras descargas",
+      // 0.78.1 (segunda ronda, R5): sin «siguiente» al mismo destino que su enlace (pieza 5).
       piezas: [4, 5],
-      siguiente: () => ({
-        texto: "Interpretación de la descarga por pasos",
-        ruta: href("consultar", "descarga", "1"),
-      }),
     },
   ],
   mantenido: [

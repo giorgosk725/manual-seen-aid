@@ -610,7 +610,8 @@ function BuscadorLateral() {
       <label htmlFor="lateral-q" className="sr-only">
         Buscar en el capítulo
       </label>
-      <div className="flex items-center gap-2 rounded-md border border-slate-300 bg-white px-2.5 py-1.5 transition focus-within:border-slate-500">
+      {/* 0.78.1 (segunda ronda, R3): un solo marco de foco, el de la caja; sin la ✕ del navegador. */}
+      <div className="flex items-center gap-2 rounded-md border border-slate-300 bg-white px-2.5 py-1.5 transition focus-within:border-[#8E254E] focus-within:ring-1 focus-within:ring-[#8E254E]">
         <Search size={14} className="shrink-0 text-slate-500" aria-hidden="true" />
         <input
           id="lateral-q"
@@ -620,7 +621,7 @@ function BuscadorLateral() {
           onFocus={() => void precargarBuscador()}
           placeholder="Buscar en el capítulo"
           autoComplete="off"
-          className="w-full min-w-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none"
+          className="w-full min-w-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus-visible:outline-none [&::-webkit-search-cancel-button]:hidden"
         />
         {/* 0.72.0: que se vea que Intro (o este botón) abre los resultados. 0.77.1 (auditoría
             R3): solo la flecha, para que el campo no encoja al escribir. */}

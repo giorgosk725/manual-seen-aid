@@ -135,10 +135,12 @@ function Sistemas() {
                 </a>
                 <a
                   href={href("consultar", "inicio", `calculadora:${SLUG_INICIO[c]}`)}
-                  aria-label={`Iniciación de ${CORTO_SISTEMA[c]}`}
+                  // 0.78.1 (segunda ronda, R5): abre la calculadora; «Iniciación» de la ficha abre la
+                  // preparación. Un rótulo por destino.
+                  aria-label={`Cálculo de parámetros iniciales de ${CORTO_SISTEMA[c]}`}
                   className={enlace}
                 >
-                  Iniciación
+                  Cálculo
                 </a>
                 <a
                   href={href("sistemas", id, "preguntas")}

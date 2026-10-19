@@ -42,6 +42,8 @@ import { CATALOGO_SISTEMAS, sistemaDelCatalogo } from "../ampliacion/ids";
 import { Elegir } from "./Elegir";
 
 export { Elegir };
+import { recordarSistema } from "../sistemaReciente";
+import { VERSION_APP } from "../version";
 import { FRECUENTES } from "../frecuentes";
 import { NombreSistema } from "../componentes/NombreSistema";
 import {
@@ -76,17 +78,34 @@ function parrafosDelSistema(id: string) {
     sub: string;
     ancla: string;
     b: Extract<Bloque, { t: "p" }>;
+    /* 0.78.1: el número del párrafo dentro del subapartado (`np`), que se enseña (`n`) si hay
+       varias menciones en él. */
+    np: number;
+    n?: number;
   }[] = [];
   // 0.77.1 (auditoría R3): con su subapartado, para distinguir las menciones de un mismo apartado
   // («Situaciones especiales · Gestación», «… · Ejercicio físico»).
   for (const a of APARTADOS) {
     let sub = "";
+    let np = 0;
     a.bloques.forEach((b, i) => {
-      if (b.t === "h3") sub = b.texto;
+      if (b.t === "h3") {
+        sub = b.texto;
+        np = 0;
+      }
+      if (b.t === "p") np++;
       if (b.t === "p" && re.test(plano(b.texto)))
-        out.push({ slug: a.slug, titulo: a.titulo, sub, ancla: idDeBloque(b, i), b });
+        out.push({ slug: a.slug, titulo: a.titulo, sub, ancla: idDeBloque(b, i), b, np });
     });
   }
+  // Sin entradilla, varias menciones del mismo subapartado se distinguen por su número de párrafo.
+  const clave = (x: (typeof out)[number]) => `${x.slug}·${x.sub}`;
+  const cuantas = new Map<string, number>();
+  for (const x of out) if (!x.b.lead) cuantas.set(clave(x), (cuantas.get(clave(x)) ?? 0) + 1);
+  for (const x of out)
+    if (!x.b.lead && (cuantas.get(clave(x)) ?? 0) > 1) {
+      x.n = x.np;
+    }
   return out;
 }
 
@@ -346,6 +365,8 @@ const TODAS_LAS_SECCIONES = [
 const SECCIONES_COMPARACION = [
   { id: "esencial", t: "Características" },
   { id: "parametros", t: "Parámetros" },
+  // 0.78.1 (segunda ronda, adjunto): «Los cuatro» desde Modos se queda en Modos (la Tabla 4).
+  { id: "modos", t: "Modos y funciones" },
 ] as const;
 /* La ampliación técnica no va en la edición editorial (A06): ni pestaña ni sección. */
 const SECCIONES_FICHA = TODAS_LAS_SECCIONES.filter((x) => !retirado(x.id));
@@ -420,12 +441,7 @@ function trozosDe(f: (typeof FRECUENTES)[number], c: number, vistos: Set<string>
   return trozos;
 }
 function RespuestaImpresa({ trozos }: { trozos: TrozoImpreso[] }) {
-  if (!trozos.length)
-    return (
-      <p className="hidden px-4 pb-3 text-[13px] text-slate-600 print:block">
-        En las secciones anteriores de esta ficha.
-      </p>
-    );
+  if (!trozos.length) return null;
   // Trozos seguidos del mismo bloque y tipo, juntos (un párrafo; una lista).
   const grupos: (typeof trozos)[] = [];
   for (const t of trozos) {
@@ -503,10 +519,15 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
     if (!seccion || completa) return;
     // Al volver atrás (Ver en el capítulo → Atrás), la Shell restaura la posición: no se salta.
     if (primera && !fueNavegacionNueva()) return;
-    document.getElementById(seccion)?.scrollIntoView?.({ block: "start" });
+    // 0.78.1 (segunda ronda): solo si la sección ha quedado por encima (se había bajado y se
+    // cambia de pestaña); al entrar, la ficha se queda arriba, con su cabecera a la vista (antes
+    // bajaba unos 100 px y dejaba la fila de accesos medio tapada).
+    const el = document.getElementById(seccion);
+    if (el && el.getBoundingClientRect().top < 0) el.scrollIntoView?.({ block: "start" });
   }, [seccion, id, completa]);
   if (!s) return <Comparacion ids={[]} />;
   const c = columnaDeSistema(s.id);
+  recordarSistema(c);
   const h = SISTEMA_HEX[c];
   const slug = SLUG_TABLA[c];
   // Las preguntas frecuentes del sistema (columna de la Tabla 1). 0.77.1 (auditorías senior y R3):
@@ -556,7 +577,16 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             >
               {s.name}
             </h1>
-            <div className="no-imprimir shrink-0">
+            <div className="no-imprimir flex shrink-0 items-center gap-3">
+              {/* 0.78.1 (segunda ronda, R3): la ficha entera en una página, en el ordenador. */}
+              {!completa && (
+                <a
+                  href={href("sistemas", s.id, "completa")}
+                  className={`${accesoFicha} hidden lg:inline-flex`}
+                >
+                  Ficha entera
+                </a>
+              )}
               <BotonImprimir objetivo={ref} compacto>
                 Imprimir la ficha
               </BotonImprimir>
@@ -665,8 +695,10 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
             className="filas tarjeta tarjeta-sistema overflow-hidden"
             style={{ ["--sis" as string]: h.strong }}
           >
+            {/* 0.78.1 (segunda ronda): en papel, sin las preguntas cuya respuesta ya imprime la
+                ficha (antes, «En las secciones anteriores de esta ficha» cinco veces). */}
             {preguntas.map((f) => (
-              <li key={f.id}>
+              <li key={f.id} className={impresas.get(f.id)?.length ? "" : "print:hidden"}>
                 <a
                   href={href("preguntas", f.id)}
                   className="fila pl-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
@@ -696,6 +728,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
                     <span className="min-w-0 flex-1">
                       <span className="font-semibold">{p.titulo}</span>
                       {p.sub && <span className="font-semibold"> · {p.sub}</span>}
+                      {p.n && <span className="text-slate-600"> · párrafo {p.n}</span>}
                       {p.b.lead && <span className="text-slate-600"> · {p.b.lead}</span>}
                     </span>
                     <span className="shrink-0 text-xs text-slate-500">
@@ -710,6 +743,11 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       )}
 
       {CON_AMPLIACION && <Ampliacion s={sistemaPorId(s.id)!} />}
+      {/* En papel, de dónde sale la hoja (0.78.1, auditoría R3). */}
+      <p className="mt-6 hidden border-t pt-2 text-xs text-slate-600 print:block">
+        Manual de Endocrinología y Nutrición (SEEN) · Capítulo 89 · Complemento interactivo{" "}
+        {VERSION_APP} · impreso el {new Date().toLocaleDateString("es-ES")}
+      </p>
     </div>
   );
 }
@@ -837,10 +875,13 @@ function BarraSistemas({
   const deEntrada = ids.length === 1 || (ids.length === 0 && !seccion);
   const [plegada, setPlegada] = useState(movil && deEntrada);
   const [abierta, setAbierta] = useState(false);
+  // El nombre corto sobre las pestañas, solo cuando el título de la ficha ya no se ve.
+  const [bajada, setBajada] = useState(false);
   const barra = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!movil) return;
     const onScroll = () => {
+      setBajada(window.scrollY > 90);
       const lejos = window.scrollY > 220 || deEntrada;
       setPlegada((p) => (p !== lejos ? lejos : p));
       if (window.scrollY > 220) setAbierta(false);
@@ -939,7 +980,7 @@ function BarraSistemas({
       )}
       {/* 0.77.1 (auditoría visual): en el móvil, con la barra plegada en la ficha, el nombre del
           sistema encima de las pestañas (la cabecera con el título queda fuera de la vista). */}
-      {compacta && ids.length === 1 && (
+      {compacta && bajada && ids.length === 1 && (
         <p
           className="pt-1.5 text-[13px] font-bold leading-tight sm:hidden"
           style={{ color: SISTEMA_HEX[columnaDeSistema(ids[0] as SistemaId)].ink }}
@@ -970,7 +1011,7 @@ function BarraSistemas({
             href={href("sistemas", selStr, x.id)}
             aria-current={activa === x.id ? "location" : undefined}
             onFocus={pestanaALaVista}
-            className="pestana tap-44 px-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-2"
+            className="pestana tap-44 px-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-2"
           >
             {/* 0.73.0: en el móvil, el rótulo corto (las cinco pestañas caben a la vista). */}
             {"corto" in x && x.corto ? (
@@ -1032,12 +1073,12 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
               >
                 <a
                   href={href("sistemas", s.id)}
-                  className="separador group flex items-center gap-3 border-b px-4 py-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-600"
+                  className="separador group flex items-center gap-3 border-b px-4 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-600"
                 >
                   <img
                     src={FOTO_SISTEMA[s.id]}
                     alt=""
-                    className="foto-sistema h-14 w-14 shrink-0 rounded-md bg-white object-cover"
+                    className="foto-sistema h-12 w-12 shrink-0 rounded-md bg-white object-cover"
                     loading="lazy"
                     decoding="async"
                   />
@@ -1053,7 +1094,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                     </span>
                   </span>
                 </a>
-                <div className="flex-1 px-4 py-3">
+                <div className="flex-1 px-4 py-2.5">
                   <CasillasDatos c={c} datos={datosDe(c)} modo="resumen" />
                   {variante && (
                     <p className="mt-3 grid grid-cols-[auto_1fr] items-baseline gap-x-2 text-sm leading-snug text-slate-800">
@@ -1183,10 +1224,16 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
               <ul className="mb-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {cols.map((c) => {
                   const h = SISTEMA_HEX[c];
-                  const de = (a: boolean) =>
-                    PARAMETROS[c]
-                      .filter((d) => (a ? d.auto === "si" : d.auto === "no" || d.auto === "inicio"))
-                      .map((d) => d.r);
+                  // 0.78.1 (segunda ronda, senior): lo que solo cuenta al inicio y lo que no se
+                  // configura, en su propia línea (antes, en «Bolos o modo manual» o en ninguna).
+                  const de = (a: "si" | "no" | "inicio" | "fijo") =>
+                    PARAMETROS[c].filter((d) => d.auto === a).map((d) => d.r);
+                  const grupos = [
+                    { r: "Actúan en automático", xs: de("si"), fuerte: true },
+                    { r: "Bolos o modo manual", xs: de("no"), fuerte: false },
+                    { r: "Solo al inicio y en manual", xs: de("inicio"), fuerte: false },
+                    { r: "No configurable", xs: de("fijo"), fuerte: false },
+                  ].filter((g) => g.xs.length);
                   return (
                     <li
                       key={c}
@@ -1201,16 +1248,16 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
                         <NombreSistema n={CATALOGO_SISTEMAS[c].name} />
                       </a>
                       <dl className="mt-2 space-y-2 text-sm leading-snug">
-                        <div>
-                          <dt className="rotulo">Actúan en automático</dt>
-                          <dd className="mt-0.5 font-semibold text-slate-900">
-                            {de(true).join(" · ")}
-                          </dd>
-                        </div>
-                        <div>
-                          <dt className="rotulo">Bolos o modo manual</dt>
-                          <dd className="mt-0.5 text-slate-800">{de(false).join(" · ")}</dd>
-                        </div>
+                        {grupos.map((g) => (
+                          <div key={g.r}>
+                            <dt className="rotulo">{g.r}</dt>
+                            <dd
+                              className={`mt-0.5 ${g.fuerte ? "font-semibold text-slate-900" : "text-slate-800"}`}
+                            >
+                              {g.xs.join(" · ")}
+                            </dd>
+                          </div>
+                        ))}
                       </dl>
                     </li>
                   );
@@ -1224,6 +1271,11 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
                 <TablaVista tabla={TABLAS.T3} columnasFijas={cols} herramienta />
               </NivelTitulo.Provider>
             </>
+          )}
+          {seccion === "modos" && (
+            <NivelTitulo.Provider value={2}>
+              <TablaVista tabla={TABLAS.T4} columnasFijas={cols} herramienta />
+            </NivelTitulo.Provider>
           )}
           {seccion === "ampliacion" && CON_AMPLIACION && (
             <>

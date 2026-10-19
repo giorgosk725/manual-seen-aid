@@ -237,9 +237,9 @@ export function Buscar({ inicial }: { inicial?: string }) {
           qEf.trim().length < 2 || estado !== "listo"
             ? ""
             : hayRespuesta
-              ? `Hay respuesta del capítulo y ${res.length} resultados.`
+              ? `Hay respuesta del capítulo y ${res.length} ${res.length === 1 ? "resultado" : "resultados"}.`
               : res.length
-                ? `${res.length} resultados.`
+                ? `${res.length} ${res.length === 1 ? "resultado" : "resultados"}.`
                 : "Sin resultados."
         }
       />

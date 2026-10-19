@@ -12,10 +12,12 @@ test.describe("Aprobado el 11-10 (0.37.0)", () => {
     await page.goto("/#/sistemas/ciq+op5/funciona");
     const secciones = page.getByRole("navigation", { name: "Sección" });
     // 0.72.1: y «Resumen» delante, para volver a las tarjetas.
+    // 0.78.1: y «Modos y funciones» (la Tabla 4 de los sistemas elegidos).
     await expect(secciones.getByRole("link")).toHaveText([
       "Resumen",
       "Características",
       "Parámetros",
+      "Modos y funciones",
     ]);
     await expect(page.getByRole("region", { name: "Características" })).toBeVisible();
     await secciones.getByRole("link", { name: "Resumen" }).click();

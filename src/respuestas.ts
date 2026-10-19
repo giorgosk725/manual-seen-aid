@@ -1644,9 +1644,23 @@ export function ordenBM25(pregunta: string, max = 10): { a: Atomo; s: number }[]
   return out.sort((x, y) => y.s - x.s).slice(0, max);
 }
 
+/* 0.78.1 (segunda ronda, guardia): el set, el catéter o el pod en duda, con un problema o con
+   hiperglucemia, es la sospecha de fallo de infusión (Tabla 4 y Figura 3). */
+export const pideSospechaDeFallo = (n: string) =>
+  /\b(set|cateter|canula|pod|reservorio|infusion|bomba)\b/.test(n) &&
+  /fallo|falla|no funciona|no va|obstru|no baja|hiperglu|glucosa alta|glucemia alta|cetona/.test(n);
+
 export function responder(pregunta: string, opciones: { max?: number } = {}): Respuesta[] {
   const base = fundirBM25(pregunta, responderBase(pregunta, { max: 10 }), opciones.max ?? 3);
   const q = normalizar(pregunta);
+  // La sospecha de fallo, primero; sin la hiperglucemia puntual «sin sospecha de fallo».
+  // Con el dispositivo en duda, sin la hiperglucemia puntual «sin sospecha de fallo» delante
+  // (la sospecha de fallo y la Figura 3 van en los «Abrir» del buscador). Forzar la fila de la
+  // Tabla 4 primero empeoraba los bancos ciegos 1, 2 y 8.
+  if (pideSospechaDeFallo(q)) {
+    const resto = base.filter((x) => !/sin sospecha de fallo/i.test(x.titulo ?? ""));
+    return resto.length ? resto : base;
+  }
   const paso = numeroDePaso(pregunta);
   if (!paso || !/descarga|tabla 5/.test(q)) return base;
   const a = atomos().find((x) => x.r.id === `T5/${paso - 1}`);

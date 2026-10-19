@@ -1,24 +1,14 @@
 /* Que una cifra no se separe de su unidad ni de su signo al partir la línea (0.77.1, auditoría
    visual: «> 120 ⏎ mg/dl», «10– ⏎ 100 UI/día», «(EE. ⏎ UU.)»): espacio duro entre número y
-   unidad, tras < > ≤ ≥ y en algunas expresiones fijas; los intervalos con raya, sin partir. */
+   unidad, tras < > ≤ ≥ y en algunas expresiones fijas; los intervalos con raya o guion, sin
+   partir. 0.78.1 (tanda 3): también «tramos», «horas», «mmol/l», «g», «UI/kg», las semanas y las
+   fechas («13-10-2026»), y el intervalo va en una pieza con su signo y su unidad. */
 import { Fragment } from "react";
+import { RE_INTERVALO, sinCortes } from "../sinCortes";
 
-const NBSP = "\u00a0";
-const UNIDADES = "mg\\/dl|mg\\/dL|min|h|UI\\/día|UI\\/h|UI|años|año|kg|%|semanas|días";
-
-function sinCortes(texto: string): string {
-  return texto
-    .replace(new RegExp(`(\\d) (${UNIDADES})(?![\\p{L}])`, "gu"), `$1${NBSP}$2`)
-    .replace(/([<>≤≥]) (\d)/g, `$1${NBSP}$2`)
-    .replace(/EE\. UU\./g, `EE.${NBSP}UU.`)
-    .replace(/tipo (\d)/g, `tipo${NBSP}$1`)
-    .replace(/ratios? I\/HC/g, (m) => m.replace(" ", NBSP))
-    .replace(/(\d) (a|o) (\d)/g, `$1${NBSP}$2${NBSP}$3`);
-}
-
-/* El texto con sus intervalos («112,5–160», «2,5–4») en una pieza que no se parte. */
+/* El texto con sus intervalos («112,5–160 mg/dl», «2,5–4 h») en una pieza que no se parte. */
 export function SinCortes({ texto }: { texto: string }) {
-  const partes = sinCortes(texto).split(/(\d+(?:,\d+)?–\d+(?:,\d+)?)/);
+  const partes = sinCortes(texto).split(RE_INTERVALO);
   return (
     <>
       {partes.map((p, i) =>

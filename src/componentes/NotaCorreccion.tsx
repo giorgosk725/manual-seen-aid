@@ -5,7 +5,9 @@
 export function NotaCorreccion({ nota }: { nota: string }) {
   const k = nota.indexOf(": ");
   const titulo = k > 0 ? nota.slice(0, k) : "Nota";
-  const cuerpo = k > 0 ? nota.slice(k + 2) : nota;
+  const resto = k > 0 ? nota.slice(k + 2) : nota;
+  // 0.78.1: tras «…: » el texto seguía en minúscula; al pintarlo aparte, inicial en mayúscula.
+  const cuerpo = resto.charAt(0).toLocaleUpperCase("es") + resto.slice(1);
   // 0.74.2 (petición del responsable: nada útil plegado): la nota, a la vista.
   return (
     <p className="mt-1.5 rounded-md border border-dashed border-slate-300 px-2 py-1.5 text-xs font-normal text-slate-600">

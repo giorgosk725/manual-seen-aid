@@ -16,6 +16,8 @@ import { CabeceraEditorial, ToneCard } from "../ui";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { hojaExtraPorId, type HojaExtra } from "../hojas";
 import { Texto } from "../texto";
+import { SinCortes } from "../componentes/SinCortes";
+import { sinCortes } from "../sinCortes";
 import { abrirPlegables, imprimirRegion } from "../imprimir";
 import { VERSION_APP } from "../version";
 import { fechaCorta, material, materialListo } from "../materiales";
@@ -127,7 +129,16 @@ function Hoja({
         {complementaria
           ? ` · Complemento del capítulo ${CAPITULO.numero} (no es una publicación del Manual SEEN) · v${VERSION_APP}`
           : ""}
-        {m?.fecha ? ` · Revisada el ${fechaCorta(m.fecha)}` : ""}.
+        {/* 0.78.1: la fecha, sin partir («13- ⏎ 10-2026» en la hoja impresa). */}
+        {m?.fecha ? (
+          <>
+            {" · Revisada el "}
+            <span className="whitespace-nowrap">{fechaCorta(m.fecha)}</span>
+          </>
+        ) : (
+          ""
+        )}
+        .
       </footer>
     </div>
   );
@@ -268,7 +279,9 @@ function CuerpoHoja({ hoja, titulo = false }: { hoja: HojaExtra; titulo?: boolea
         <h2 className="mb-2 text-lg font-black leading-tight text-slate-900">{hoja.titulo}</h2>
       )}
       {hoja.intro && (
-        <p className="mb-3 text-[15px] leading-relaxed text-slate-800">{hoja.intro}</p>
+        <p className="mb-3 text-[15px] leading-relaxed text-slate-800">
+          <SinCortes texto={hoja.intro} />
+        </p>
       )}
       {hoja.secciones.map((sec) => (
         <section
@@ -285,13 +298,15 @@ function CuerpoHoja({ hoja, titulo = false }: { hoja: HojaExtra; titulo?: boolea
           </h3>
           {sec.parrafos?.map((par, i) => (
             <p key={i} className="mt-1 text-[15px] leading-relaxed text-slate-800">
-              {par}
+              <SinCortes texto={par} />
             </p>
           ))}
           {sec.items && (
             <ul className="mt-1 list-disc space-y-1 pl-5 text-[15px] leading-relaxed text-slate-800">
               {sec.items.map((it, i) => (
-                <li key={i}>{it}</li>
+                <li key={i}>
+                  <SinCortes texto={it} />
+                </li>
               ))}
             </ul>
           )}
@@ -305,7 +320,11 @@ function CuerpoHoja({ hoja, titulo = false }: { hoja: HojaExtra; titulo?: boolea
           <Hueco etiqueta={etiqueta} />
         </div>
       ))}
-      {hoja.nota && <p className="mt-3 text-xs text-slate-600">{hoja.nota}</p>}
+      {hoja.nota && (
+        <p className="mt-3 text-xs text-slate-600">
+          <SinCortes texto={hoja.nota} />
+        </p>
+      )}
     </>
   );
 }
@@ -477,8 +496,10 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
         titulo={`Plan de seguridad · ${nombre}`}
         fuente={
           <>
-            plan de seguridad (p. {plan?.p ?? 7}), hipoglucemia (pp. 8-9), Figura 3 (p.{" "}
-            {FIGURA3.pagina}) y Tabla 4 (pp. 11-12) del capítulo
+            plan de seguridad (p.&nbsp;{plan?.p ?? 7}), hipoglucemia (
+            <span className="whitespace-nowrap">pp. 8-9</span>), Figura 3 (p.&nbsp;
+            {FIGURA3.pagina}) y Tabla 4 (<span className="whitespace-nowrap">pp. 11-12</span>) del
+            capítulo
           </>
         }
       >
@@ -497,7 +518,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
                 <span className="flex gap-2">
                   <Casilla />
                   <span className="min-w-0 flex-1">
-                    <Texto>{it}</Texto>
+                    <Texto>{sinCortes(it)}</Texto>
                   </span>
                 </span>
                 {i === 0 && (
@@ -526,12 +547,14 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
           </h2>
           <ul className="mt-1 space-y-1 text-sm text-slate-800">
             {hipo.map((r) => (
-              <li key={r}>{r}</li>
+              <li key={r}>
+                <SinCortes texto={r} />
+              </li>
             ))}
           </ul>
         </section>
         <p className="hoja-seccion mb-3 text-sm font-semibold text-slate-900">
-          <Texto>{FIGURA3.reglaDeOro}</Texto>
+          <Texto>{sinCortes(FIGURA3.reglaDeOro)}</Texto>
         </p>
         <section className="hoja-seccion mb-1">
           <h2 className="text-base font-extrabold" style={{ color: SISTEMA_HEX[c].ink }}>
@@ -545,10 +568,12 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
                   {f.etiqueta.split("\n")[0].replace(/\.$/, "")}
                 </dt>
                 <dd className="text-slate-800">
-                  {(f.unida ? celdaUnidaDelSistema(f.celdas[0], c) : f.celdas[c]).replace(
-                    /\n/g,
-                    " · ",
-                  )}
+                  <SinCortes
+                    texto={(f.unida ? celdaUnidaDelSistema(f.celdas[0], c) : f.celdas[c]).replace(
+                      /\n/g,
+                      " · ",
+                    )}
+                  />
                 </dd>
               </div>
             ))}

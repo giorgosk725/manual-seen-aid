@@ -4,6 +4,7 @@
    hojas para el paciente, los casos y el test. Nunca se mezclan con
    el capítulo: van detrás y con su rótulo.
    Comparación sin tildes ni mayúsculas; todos los términos deben aparecer. */
+import { pideSospechaDeFallo } from "./respuestas";
 import {
   APARTADOS,
   DIAGRAMAS,
@@ -492,10 +493,7 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   });
   // 0.77.1 (auditoría de guardia): hiperglucemia con el set, el catéter o el pod en duda es la
   // sospecha de fallo de infusión (Tabla 4 y Figura 3), no la hiperglucemia puntual.
-  if (
-    /hiperglu|glucosa alta|glucemia alta|cetona|cetonemia/.test(n) &&
-    /\b(set|cateter|canula|pod|reservorio|fallo|falla|no funciona|obstru|infusion)\b/.test(n)
-  )
+  if (pideSospechaDeFallo(n))
     out.push(
       atajo(
         "recurso/sospecha-fallo",
@@ -527,6 +525,38 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         ),
       );
   }
+  // 0.78.1 (segunda ronda, adjunto): «objetivo(s) de los (cuatro) sistemas»: la fila de la
+  // Tabla 1 con los cuatro, comparados.
+  if (
+    /objetivo/.test(n) &&
+    /\b(sistemas|cuatro|todos|comparad)/.test(n) &&
+    sistemasDeConsulta(consulta).length === 0
+  )
+    out.push(
+      atajo(
+        "recurso/objetivos",
+        "Objetivo glucémico en modo automático de los cuatro (Tabla 1)",
+        href("sistemas", "todos", "esencial"),
+        TABLAS.T1.paginas[0],
+      ),
+    );
+  // 0.78.1 (segunda ronda, R5): «cambiar de sistema AID», «otro AID»: los parámetros comparados y
+  // la iniciación desde otro sistema.
+  if (/cambi\w* de sistema|otro (sistema )?aid|cambio de aid/.test(n))
+    out.push(
+      atajo(
+        "recurso/cambio-aid",
+        "Parámetros que actúan en automático en los cuatro",
+        href("sistemas", "todos", "parametros"),
+        TABLAS.T3.paginas[0],
+      ),
+      atajo(
+        "recurso/inicio-aid",
+        "Iniciación del sistema (desde otro sistema AID)",
+        href("consultar", "inicio"),
+        TABLAS.T2.paginas[0],
+      ),
+    );
   // 0.77.1 (auditoría R3): «descarga CamAPS» abre el análisis desde el primer paso.
   if (/\bdescarga|\bdescargar|analisis de la descarga/.test(n) && !pasoPedido(consulta))
     out.push(

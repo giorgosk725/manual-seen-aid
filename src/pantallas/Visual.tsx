@@ -49,7 +49,8 @@ const GRUPOS: { id: string; titulo: string; color: string; tinte: string; ids: D
 
 function GaleriaDiagramas() {
   return (
-    <div className="grid items-start gap-3 lg:grid-cols-3">
+    // 0.78.1: las tres tarjetas de una fila, a la misma altura (antes 129, 139 y 129 px).
+    <div className="grid gap-3 lg:grid-cols-3">
       {GRUPOS.map((g) => (
         <section
           key={g.id}
@@ -171,8 +172,10 @@ export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }
           Figuras y diagramas
         </a>
       </div>
-      <h1 className="sr-only">{d.titulo}</h1>
-      <DiagramaVista id={d.id} opcion={opcion} />
+      {/* 0.78.1: el título, con la cabecera editorial de todas las pantallas (antes, un h1 oculto
+          y el título a 16 px dentro de la tarjeta). */}
+      <CabeceraEditorial titulo={d.titulo} hex={hex} level={1} />
+      <DiagramaVista id={d.id} opcion={opcion} tituloFuera />
     </div>
   );
 }
