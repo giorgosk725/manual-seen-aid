@@ -9,17 +9,22 @@ import { NOTA_ADAPTA_OMNIPOD } from "../notas-complementarias";
 
 export function ComoFuncionaOperativo({ c }: { c: number }) {
   const variante = VARIANTE_OPERATIVA[c];
+  const fuente = (
+    <FuentePie fuentes={fuentesDeDatos([...ALGORITMO[c], ...(variante?.datos ?? [])])} />
+  );
   return (
     <div className="space-y-3">
-      <TarjetaDatos c={c} titulo="Algoritmo">
+      {/* 0.87.1 (undécima ronda, visual): en papel, la fuente dentro de la última tarjeta, como en
+          las demás secciones. */}
+      <TarjetaDatos c={c} titulo="Algoritmo" pie={!variante && fuente}>
         <CasillasDatos c={c} datos={ALGORITMO[c]} />
       </TarjetaDatos>
       {variante && (
-        <TarjetaDatos c={c} titulo={variante.titulo}>
+        <TarjetaDatos c={c} titulo={variante.titulo} pie={fuente}>
           <CasillasDatos c={c} datos={variante.datos} />
         </TarjetaDatos>
       )}
-      <FuentePie fuentes={fuentesDeDatos([...ALGORITMO[c], ...(variante?.datos ?? [])])} />
+      <div className="print:hidden">{fuente}</div>
       {/* Omnipod 5: el aprendizaje sigue la corrección posterior a la publicación (Tabla 1). */}
       {c === 3 && <NotaCorreccion nota={NOTA_ADAPTA_OMNIPOD} />}
     </div>

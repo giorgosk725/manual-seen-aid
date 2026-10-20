@@ -143,7 +143,7 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                       Fuente:{" "}
                       <a
                         href={rutaDeFigura(fig.id) ?? href("capitulo", ap.slug)}
-                        className="tap-44 inline-block py-1"
+                        className="tap-44 inline-block whitespace-nowrap py-1"
                       >
                         Apartado {ap.n}, p. {fig.pagina}
                       </a>

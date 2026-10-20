@@ -114,16 +114,18 @@ function Rama({
           </div>
         </div>
       </div>
-      {nota && JSON.stringify(tramo.pasos).includes("*") && (
-        <p className="mb-3 rounded-lg bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
-          {FIGURA3.notaAsterisco}
-        </p>
-      )}
       <ol className={`space-y-3 ${completa ? "" : ""}`}>
         {tramo.pasos.map((p, i) => (
           <Paso key={i} paso={p} hex={hex} i={i} />
         ))}
       </ol>
+      {/* 0.87.1 (undécima ronda, guardia): la nota de las dosis con asterisco, tras los pasos (antes
+          iba delante de «URGENCIAS» en la rama roja). El texto es el mismo. */}
+      {nota && JSON.stringify(tramo.pasos).includes("*") && (
+        <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
+          {FIGURA3.notaAsterisco}
+        </p>
+      )}
       {/* Decisión del responsable (15-10-2026, A01 revisada): sin el recuadro de urgencia junto
           a las ramas no rojas; la rama roja está a un toque en el selector y la app es para
           residentes y adjuntos que leen el capítulo. */}

@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — décima ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — undécima ronda de auditorías de uso`,
+    detalle: [
+      "Fuentes: cada referencia sin partir y en el orden del capítulo también en los pasos de Situaciones y en la galería.",
+      "En papel: las tarjetas cortas, enteras; Parámetros y Modos se parten con su borde; la fuente dentro de la última tarjeta en todas las secciones; las Tablas 3 y 4 en una cara; la descarga con el orden de los 8 pasos.",
+      "Fila marcada visible también en nocturno en la tabla comparada; Parámetros de dos sistemas a dos columnas; pestañas repartidas en el móvil; Control-IQ+ «Qué cambia» un dato por línea.",
+      "Figura 3: la nota de las dosis con asterisco, tras los pasos de la rama; con el sistema buscado o de la situación, ofrece su plan de seguridad.",
+      "Buscador: «agua» con un sistema, sin las ramas de la Figura 3.",
+    ],
+  },
+  {
+    fecha: "2026-10-20",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.87.0 — décima ronda de auditorías de uso",
     detalle: [
       "Fuentes al pie en el orden del capítulo (tablas, figuras y apartados por número) y sin partir «Apartado 10» ni «Tabla 4».",
       "Ficha en el móvil: las cinco pestañas caben a 360 px; Control-IQ+ en «Cómo funciona» con peso, DTD y bolo extendido.",

@@ -8,11 +8,27 @@ export interface Fuente {
   ruta?: string;
 }
 
+/* 0.87.1 (undécima ronda, senior y visual): cada referencia («Apartado 10, p. 19») de una pieza,
+   sin partir; solo la entradilla entre paréntesis puede pasar de línea. */
+function Referencia({ t }: { t: string }) {
+  const i = t.indexOf(" (");
+  const ref = i < 0 ? t : t.slice(0, i);
+  return (
+    <>
+      <span className="whitespace-nowrap">{ref}</span>
+      {i < 0 ? null : t.slice(i)}
+    </>
+  );
+}
+
 export function FuentePie({
   fuentes,
   nota = "",
   className = "mt-2",
+  onIr,
 }: {
+  /* Al seguir una fuente (p. ej. marcar el paso del guion en la ruta). */
+  onIr?: () => void;
   fuentes: Fuente[];
   /* Lo que se añade tras las fuentes; vacío para no añadir nada. */
   nota?: string;
@@ -43,16 +59,17 @@ export function FuentePie({
           {f.ruta ? (
             <a
               href={f.ruta}
+              onClick={onIr}
               // 0.75.1 (auditoría): en línea, con el área táctil de 44 px por `tap-44` (antes,
               // inline-flex de 44 px de alto: en el móvil cada fuente caía a su propia línea).
               // 0.84.1 (octava ronda): `inline` (no inline-block): con inline-block, el espacio duro
               // no impedía que el «·» abriera línea; el relleno vertical mantiene los 24 px.
               className="tap-44 inline py-1"
             >
-              {f.texto}
+              <Referencia t={f.texto} />
             </a>
           ) : (
-            f.texto
+            <Referencia t={f.texto} />
           )}
         </span>
       ))}

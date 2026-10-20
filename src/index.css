@@ -1319,6 +1319,9 @@ html.night ::highlight(frase-citada) {
     min-width: 0 !important;
     padding: 4pt 5pt;
     overflow-wrap: anywhere;
+    /* 0.87.1 (undécima ronda, R3 y visual): la Tabla 3 y la 4 caben en una cara (antes, la
+       última fila pasaba sola a la segunda). */
+    line-height: 1.35;
   }
   .tabla-capitulo thead th img {
     display: none;
@@ -1851,7 +1854,9 @@ html.night *:focus-visible {
      dejaba ≈ 18 % de la cara 1 en blanco en Control-IQ), pero nunca por una casilla; el título y
      la primera casilla van juntos (break-after en .titulo-tarjeta) y el borde se repite en cada
      trozo. */
-  .imprimible section[aria-labelledby="esencial"] .tarjeta-datos {
+  /* 0.87.1 (undécima ronda): las de «Indicación y material» son cortas y ya no se parten (senior y
+     R3: «Descarga» quedaba sola arriba de la cara 2); se parten Parámetros y Modos, con su borde. */
+  .imprimible section.tarjeta:has(> .filas-datos) {
     break-inside: auto;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
@@ -1941,7 +1946,8 @@ html.night *:focus-visible {
 
 /* 0.80.1 (cuarta ronda): la fila de una tabla a la que se llega desde el rótulo de una ficha. */
 .fila-resaltada,
-.fila-resaltada > * {
+.fila-resaltada > *,
+html.night .fila-resaltada > [style] {
   background: var(--acento-suave) !important;
 }
 .fila-resaltada,

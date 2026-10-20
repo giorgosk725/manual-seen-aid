@@ -1,4 +1,5 @@
 /* Buscar, Bibliografía, Sobre esta app, Autoevaluación y Preguntas frecuentes. */
+import { recordarSistema } from "../sistemaReciente";
 import { Anuncio } from "../componentes/Anuncio";
 import { guardarReciente } from "../prefs";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -147,9 +148,12 @@ export function Buscar({ inicial }: { inicial?: string }) {
     // 0.85.1 (novena ronda, guardia): con el atajo de la sospecha de fallo (Figura 3), sin la fila
     // «… sin sospecha de fallo de infusión» («cetonas 780g» la daba la primera).
     const urgencia = atajos.some((a) => a.entrada.id === "recurso/sospecha-fallo");
-    const rs = urgencia
-      ? rs0.filter((r) => !/sin sospecha/i.test(`${r.titulo} ${r.texto ?? ""}`))
-      : rs0;
+    // 0.87.1 (undécima ronda, guardia): con el atajo del agua, sin las ramas de la Figura 3 (casaban
+    // por «Hidratación con agua»).
+    const agua = atajos.some((a) => a.entrada.id.startsWith("recurso/agua/"));
+    const rs = rs0
+      .filter((r) => !urgencia || !/sin sospecha/i.test(`${r.titulo} ${r.texto ?? ""}`))
+      .filter((r) => !agua || !r.id.startsWith("F3/"));
     // 0.72.0: una sigla del glosario no va de pasaje principal si la consulta no la nombra
     // («cetonas» daba «β-OHB: β-hidroxibutirato»); pasa detrás. Solo cambia el orden.
     const nq = normalizar(qEf);
@@ -226,6 +230,11 @@ export function Buscar({ inicial }: { inicial?: string }) {
           )
       : [];
   const sistemaQ = motor ? motor.sistemaNombrado(qEf) : -1;
+  // 0.87.1 (undécima ronda, guardia): el sistema que nombra la búsqueda pasa a ser el último
+  // consultado (la Figura 3 ofrece entonces «Plan de seguridad · <sistema>»).
+  useEffect(() => {
+    if (sistemaQ >= 0) recordarSistema(sistemaQ);
+  }, [sistemaQ]);
   const relacionadas = motor
     ? motor.frecuentesRelacionadas(
         [...(frecuente?.respuestas ?? []), ...respuestas].map((r) => r.id),

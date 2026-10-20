@@ -353,21 +353,13 @@ function GuionVista({
                     })()}
                   </div>
                   {/* Una sola línea de fuente por momento, al párrafo exacto. */}
-                  <p className="fuente-pie">
-                    Fuente:{" "}
-                    {fuentesDeMomento(m).map((f, k) => (
-                      <span key={f.texto}>
-                        {k > 0 && " · "}
-                        <a
-                          href={f.ruta}
-                          onClick={() => marcarEnRuta(i)}
-                          className="tap-44 inline py-1"
-                        >
-                          {f.texto}
-                        </a>
-                      </span>
-                    ))}
-                  </p>
+                  {/* 0.87.1 (undécima ronda, visual): con FuentePie, como el resto (orden del
+                      capítulo, «Apartado 7» sin partir). */}
+                  <FuentePie
+                    className="mt-0"
+                    fuentes={fuentesDeMomento(m)}
+                    onIr={() => marcarEnRuta(i)}
+                  />
                 </div>
               )}
             </li>
@@ -601,6 +593,11 @@ export function SituacionSistema({
   // Elegida otra situación (sobre todo una de las últimas de la lista), al principio de su texto.
   useSubirAlElegir(situacion ?? "", "detalle-situacion");
   const sisIdx = sistema ? SIS_IDS.indexOf(sistema) : -1;
+  // 0.87.1 (undécima ronda, guardia): el sistema de la situación, el último consultado (la
+  // Figura 3 ofrece su plan de seguridad).
+  useEffect(() => {
+    if (sisIdx >= 0) recordarSistema(sisIdx);
+  }, [sisIdx]);
   if (sisIdx >= 0) recordarSistema(sisIdx);
   const tabla = sit ? TABLAS[sit.tabla] : null;
   const fila = sit && tabla ? tabla.filas[sit.fila] : null;
@@ -1090,6 +1087,15 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
             })}
           </ol>
         </nav>
+        {/* 0.87.1 (undécima ronda, R3): en papel, el orden de los 8 pasos (con el que se imprime
+            marcado) delante del paso; en pantalla ya está en la columna de la izquierda. */}
+        <ol className="mb-3 hidden list-decimal pl-5 text-sm print:block">
+          {t.filas.map((f, i) => (
+            <li key={i} className={i + 1 === n ? "font-bold" : ""}>
+              {f.celdas[0]}
+            </li>
+          ))}
+        </ol>
         <section
           key={n}
           id="paso-descarga"

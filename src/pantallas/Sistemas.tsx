@@ -1141,7 +1141,7 @@ function BarraSistemas({
         aria-label="Sección"
         // 0.86.1 (décima ronda, visual y R1): a 360 px caben las cinco pestañas (sin hueco y con
         // 3 px de relleno: «Preguntas» quedaba cortada bajo el desvanecido).
-        className="pestanas -mx-3 gap-0 px-3 sm:mx-0 sm:mt-1 sm:gap-1 sm:px-0"
+        className="pestanas -mx-3 gap-0 px-3 sm:mx-0 sm:mt-1 sm:gap-1 sm:px-0 justify-between sm:justify-start"
       >
         {/* 0.72.1: las tarjetas son una vista más, al lado de las dos tablas: así se vuelve a
             ellas desde la comparación (antes solo con «Sistemas» abajo o Atrás). */}
@@ -1400,7 +1400,10 @@ function Comparacion({
             <>
               {/* 0.77.0: qué parámetros actúan en automático en cada sistema, en una tarjeta
                   por sistema (Tablas 1 y 3; src/fichaOperativa.ts); debajo, la Tabla 3. */}
-              <ul className="mb-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {/* 0.87.1 (undécima ronda, adjunto): con dos sistemas, dos columnas (antes, media fila vacía). */}
+              <ul
+                className={`mb-4 grid gap-3 sm:grid-cols-2 ${cols.length > 2 ? "xl:grid-cols-4" : ""}`}
+              >
                 {cols.map((c) => {
                   const h = SISTEMA_HEX[c];
                   // 0.78.1 (segunda ronda, senior): lo que solo cuenta al inicio y lo que no se

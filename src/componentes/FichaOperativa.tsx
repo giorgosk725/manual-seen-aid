@@ -80,7 +80,7 @@ export function CasillasDatos({
         // literal con la fila marcada (no en las tarjetas de la entrada, que llevan a la ficha).
         const ruta = modo === "rejilla" ? literalDe(d.f[0], c) : undefined;
         return (
-          <div key={d.r} className={m.fila}>
+          <div key={d.r} className={`${m.fila} ${d.partes ? "sm:col-span-2" : ""}`}>
             <dt className={`rotulo pt-0.5 leading-tight ${m.dt}`}>
               {ruta ? (
                 <a
@@ -96,7 +96,15 @@ export function CasillasDatos({
             </dt>
             <dd className={`min-w-0 ${m.dd}`}>
               <span className="block text-[15px] font-semibold leading-snug text-slate-900">
-                <SinCortes texto={d.v} />
+                {d.partes ? (
+                  d.v.split(" · ").map((x) => (
+                    <span key={x} className="block">
+                      <SinCortes texto={x} />
+                    </span>
+                  ))
+                ) : (
+                  <SinCortes texto={d.v} />
+                )}
               </span>
               {d.n && (
                 <span className="mt-0.5 block text-[13px] leading-snug text-slate-600">
@@ -118,10 +126,14 @@ export function TarjetaDatos({
   c,
   titulo,
   children,
+  pie,
 }: {
   c: number;
   titulo: string;
   children: ReactNode;
+  /* 0.87.1 (undécima ronda, visual): la fuente que, en papel, va dentro de la tarjeta (como en
+     Parámetros y Modos: fuera, Chromium podía dejarla sola al principio de una cara). */
+  pie?: ReactNode;
 }) {
   const h = SISTEMA_HEX[c];
   return (
@@ -134,6 +146,7 @@ export function TarjetaDatos({
         {titulo}
       </h3>
       {children}
+      {pie && <div className="hidden print:block">{pie}</div>}
     </section>
   );
 }
@@ -142,12 +155,24 @@ export function TarjetaDatos({
 export function GruposDatos({ c, grupos }: { c: number; grupos: GrupoFicha[] }) {
   return (
     <div className="space-y-3">
-      {grupos.map((g) => (
-        <TarjetaDatos key={g.titulo} c={c} titulo={g.titulo}>
+      {grupos.map((g, k) => (
+        <TarjetaDatos
+          key={g.titulo}
+          c={c}
+          titulo={g.titulo}
+          pie={
+            k === grupos.length - 1 && (
+              <FuentePie fuentes={fuentesDeDatos(grupos.flatMap((x) => x.datos))} />
+            )
+          }
+        >
           <CasillasDatos c={c} datos={g.datos} />
         </TarjetaDatos>
       ))}
-      <FuentePie fuentes={fuentesDeDatos(grupos.flatMap((g) => g.datos))} />
+      <FuentePie
+        className="mt-2 print:hidden"
+        fuentes={fuentesDeDatos(grupos.flatMap((g) => g.datos))}
+      />
     </div>
   );
 }
