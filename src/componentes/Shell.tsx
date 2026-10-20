@@ -557,8 +557,12 @@ function Lateral({ ruta, pie }: { ruta: Ruta; pie: ReactNode }) {
         {ruta.seccion === "buscar" ? (
           <button
             type="button"
-            onClick={() => document.getElementById("buscar-q")?.focus()}
-            className="my-2 flex h-[34px] w-full items-center gap-2 rounded-md border border-dashed border-slate-300 px-2.5 text-sm text-slate-500"
+            onClick={() => {
+              const caja = document.getElementById("buscar-q") as HTMLInputElement | null;
+              caja?.focus();
+              caja?.select();
+            }}
+            className="my-2 flex h-[38px] w-full items-center gap-2 rounded-md border border-dashed border-slate-300 px-2.5 text-sm text-slate-500"
           >
             <Search size={14} className="shrink-0" aria-hidden="true" />
             Buscar en el capítulo
@@ -618,10 +622,16 @@ function BuscadorLateral() {
           type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          onFocus={() => void precargarBuscador()}
+          // 0.81.1 (quinta ronda, adjunto): al volver a la caja, la consulta anterior
+          // seleccionada (se escribe encima para encadenar otra).
+          onFocus={(e) => {
+            e.currentTarget.select();
+            void precargarBuscador();
+          }}
           placeholder="Buscar en el capítulo"
           autoComplete="off"
-          className="w-full min-w-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus-visible:outline-none [&::-webkit-search-cancel-button]:hidden"
+          // 0.81.1 (quinta ronda, R3): la altura del botón desde el principio (no crece al escribir).
+          className="h-6 w-full min-w-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus-visible:outline-none [&::-webkit-search-cancel-button]:hidden"
         />
         {/* 0.72.0: que se vea que Intro (o este botón) abre los resultados. 0.77.1 (auditoría
             R3): solo la flecha, para que el campo no encoja al escribir. */}

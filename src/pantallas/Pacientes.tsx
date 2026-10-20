@@ -493,7 +493,8 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
         hojaRef={ref}
         complementaria
         materialId="planes"
-        titulo={`Plan de seguridad · ${nombre}`}
+        // 0.81.1 (quinta ronda, guardia): el «·» al final de la línea, no al principio.
+        titulo={`Plan de seguridad\u00a0· ${nombre}`}
         fuente={
           <>
             plan de seguridad (p.&nbsp;{plan?.p ?? 7}), hipoglucemia (

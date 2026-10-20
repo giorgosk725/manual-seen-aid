@@ -22,28 +22,31 @@ export function ImagenFigura({ figura, abierta = false }: { figura: Figura; abie
   const [ver, setVer] = useState(abierta);
   if (!figura.imagen) return null;
   return (
+    // 0.81.1 (quinta ronda, guardia): los dos botones alineados también en dos líneas.
     <div className="no-imprimir mt-3">
-      <button
-        type="button"
-        onClick={() => setVer((v) => !v)}
-        aria-expanded={ver}
-        className="chip tap-44 min-h-9 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-8"
-      >
-        <ImageIcon size={14} aria-hidden="true" />
-        {ver ? "Ocultar la figura original" : "Ver la figura original"}
-      </button>
-      <AbrirEnVisor
-        imagen={{
-          src: figura.imagen.src,
-          alt: figura.imagen.alt,
-          titulo: figura.titulo,
-          nota: `p. ${figura.pagina}`,
-        }}
-        etiqueta={`Pantalla completa: ${figura.titulo}`}
-        className="ml-2 chip tap-44 min-h-9 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-8"
-      >
-        <Maximize2 size={14} aria-hidden="true" /> Pantalla completa
-      </AbrirEnVisor>
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => setVer((v) => !v)}
+          aria-expanded={ver}
+          className="chip tap-44 min-h-11 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-8"
+        >
+          <ImageIcon size={14} aria-hidden="true" />
+          {ver ? "Ocultar la figura original" : "Ver la figura original"}
+        </button>
+        <AbrirEnVisor
+          imagen={{
+            src: figura.imagen.src,
+            alt: figura.imagen.alt,
+            titulo: figura.titulo,
+            nota: `p. ${figura.pagina}`,
+          }}
+          etiqueta={`Pantalla completa: ${figura.titulo}`}
+          className="chip tap-44 min-h-11 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-8"
+        >
+          <Maximize2 size={14} aria-hidden="true" /> Pantalla completa
+        </AbrirEnVisor>
+      </div>
       {ver && (
         <figure className="animate-in mt-3 overflow-hidden tarjeta">
           <img
