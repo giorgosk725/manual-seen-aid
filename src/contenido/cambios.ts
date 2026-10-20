@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-21",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — calculadora: DTD sin reducción y cambio de AID`,
+    titulo: `Complemento interactivo ${VERSION_APP} — Resumen filtrado y portada`,
+    detalle: [
+      "Sistemas AID, Resumen: al marcar un sistema (o varios), solo sus tarjetas, sin cambiar de pantalla; sin marcar, las cuatro.",
+      "Ejercicio anaeróbico o de alta intensidad (Tabla 4, celda común): al comparar sin CamAPS FX, sin la frase «En CamAPS FX, no usar Boost de rutina…»; con los cuatro o con CamAPS FX, la celda entera.",
+      "Portada en el ordenador: «Complemento interactivo · Capítulo 89 del Manual SEEN · Área II. Diabetes».",
+    ],
+  },
+  {
+    fecha: "2026-10-21",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.91.1 — calculadora: DTD sin reducción y cambio de AID",
     detalle: [
       "Desde ISCI u otro AID, junto a la DTD de inicio: «Sin reducción: el capítulo da la reducción del 10–20 % solo para el paso desde MDI».",
       "Al cambiar de AID, junto a «¿Es adecuada la programación del sistema actual?», los parámetros que pasan a actuar en automático (p. ej., de MiniMed 780G a Control-IQ: la tasa basal y el factor de sensibilidad).",

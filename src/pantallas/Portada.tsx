@@ -48,6 +48,11 @@ export function Portada() {
                 className="inline-block h-2.5 w-2.5"
                 style={{ background: SEEN.diabetes }}
               />
+              {/* 0.91.2 (petición del responsable, 21-10-2026): en el ordenador, que la tarjeta es
+                  el complemento interactivo del capítulo, no el capítulo. */}
+              <span className="hidden lg:inline">
+                Complemento interactivo<span aria-hidden="true">&nbsp;·</span>
+              </span>
               <span>
                 Capítulo {CAPITULO.numero} del Manual SEEN<span aria-hidden="true">&nbsp;·</span>
               </span>

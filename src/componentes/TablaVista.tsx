@@ -40,6 +40,24 @@ const slugDe = (c: number) => CORTOS[c].toLowerCase().replace(/\s/g, "-");
 const listaNombres = (n: string[]) =>
   n.length < 2 ? n.join("") : `${n.slice(0, -1).join(", ")} y ${n[n.length - 1]}`;
 
+/* 0.91.2 (decisión del responsable, 21-10-2026: «lo que consideres mejor»): una celda común a los
+   cuatro (Tabla 4, «Ejercicio anaeróbico…», corrección 7/11) se enseña entera con los cuatro; con
+   una selección, sin la frase que empieza por «En <sistema>,» de un sistema que no está elegido
+   (al comparar MiniMed 780G y Omnipod 5, sin «En CamAPS FX, no usar Boost…»). Solo se omite esa
+   frase: el resto, literal. */
+function celdaUnida(tabla: Tabla, texto: string, columnas: number[]): string {
+  if (columnas.length >= tabla.columnas.length) return texto;
+  const frases = texto.split(/(?<=\.) (?=En [A-ZÁÉÍÓÚ])/);
+  const quedan = frases.filter((f) => {
+    const m = /^En ([^,]+),/.exec(f);
+    if (!m) return true;
+    const nombre = m[1].split(" ")[0];
+    const c = tabla.columnas.findIndex((x) => x.includes(nombre));
+    return c < 0 || columnas.includes(c);
+  });
+  return quedan.length === frases.length ? texto : quedan.join(" ").replace(/\.$/, "");
+}
+
 export function CabeceraTabla({
   tabla,
   enlaceConsultar,
@@ -220,7 +238,7 @@ function TablaHTML({
                   colSpan={columnas.length}
                   className="separador border-t px-3 py-2 text-slate-700"
                 >
-                  <Lineas>{sinCortes(f.celdas[0])}</Lineas>
+                  <Lineas>{sinCortes(celdaUnida(tabla, f.celdas[0], columnas))}</Lineas>
                 </td>
               ) : (
                 columnas.map((c) => (
@@ -320,7 +338,7 @@ function Fichas({
                   <dd className="mt-0.5 text-[15px] text-slate-800">
                     <Lineas>
                       {sinCortes(
-                        (f.unida ? f.celdas[0] : f.celdas[c]).replace(
+                        (f.unida ? celdaUnida(tabla, f.celdas[0], columnas) : f.celdas[c]).replace(
                           /configurable Objetivo:/,
                           "configurable\nObjetivo:",
                         ),
@@ -377,7 +395,7 @@ function FichaSistema({ tabla, c, resaltar }: { tabla: Tabla; c: number; resalta
             <dd className="text-[15px] text-slate-800">
               <Lineas>
                 {sinCortes(
-                  (f.unida ? f.celdas[0] : f.celdas[c]).replace(
+                  (f.unida ? celdaUnida(tabla, f.celdas[0], [c]) : f.celdas[c]).replace(
                     /configurable Objetivo:/,
                     "configurable\nObjetivo:",
                   ),

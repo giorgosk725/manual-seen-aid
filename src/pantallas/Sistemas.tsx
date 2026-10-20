@@ -6,7 +6,15 @@
    (#/sistemas/<a+b|todos>/<seccion>) = la misma sección, un sistema junto a otro: eso son
    «Comparar sistemas» y «Parámetros por sistema». */
 import { sinCortes } from "../sinCortes";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { ArrowRight, Check, ExternalLink, Minus, X } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, type Tabla } from "../contenido";
 import type { TablaId } from "../contenido/tipos";
@@ -939,9 +947,13 @@ function BarraSistemas({
   seccion,
   abrir = 0,
   completa = false,
+  marcadosEntrada,
 }: {
   ids: string[];
   seccion?: string;
+  /* 0.91.2 (petición del responsable, 21-10-2026): en la entrada, lo marcado lo comparte la
+     pantalla (las tarjetas del Resumen se quedan solo con lo marcado). */
+  marcadosEntrada?: [string[], Dispatch<SetStateAction<string[]>>];
   /* La ficha entera (#/sistemas/<id>/completa): ninguna pestaña marcada. */
   completa?: boolean;
   /* Cada cambio abre el selector (desde «Otro sistema o comparación» de la cabecera). */
@@ -972,7 +984,8 @@ function BarraSistemas({
   // En la entrada (los cuatro), las casillas se van marcando sin cambiar de pantalla; con dos
   // o más, «Comparar» (0.72.0: la primera casilla llevaba a la ficha).
   const entrada = ids.length === 0 && !sec;
-  const [marcados, setMarcados] = useState<string[]>([]);
+  const propios = useState<string[]>([]);
+  const [marcados, setMarcados] = marcadosEntrada ?? propios;
   // 0.81.1 (quinta ronda, R5): en la entrada, las pestañas llevan lo ya marcado (antes, «Los
   // cuatro» aunque se hubieran marcado dos).
   const selStr = ids.length ? ids.join("+") : marcados.length ? marcados.join("+") : "todos";
@@ -1383,6 +1396,7 @@ function Comparacion({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   useImprimirConTeclado(ref);
+  const marcadosEntrada = useState<string[]>([]);
   const cols = ids.length ? ids.map((id) => columnaDeSistema(id as SistemaId)) : [0, 1, 2, 3];
   // «Cómo funciona» comparado ya no está (0.70.0): esa dirección lleva a la Tabla 1.
   // «Cómo funciona» comparado lleva a la Tabla 1; una sección sin vista de varios (Modos,
@@ -1415,9 +1429,9 @@ function Comparacion({
           </BotonImprimir>
         }
       />
-      <BarraSistemas ids={ids} seccion={seccion} />
+      <BarraSistemas ids={ids} seccion={seccion} marcadosEntrada={marcadosEntrada} />
       {!seccion ? (
-        <EntradaSistemas ids={ids} />
+        <EntradaSistemas ids={ids.length ? ids : marcadosEntrada[0]} />
       ) : (
         <section
           key={seccion}
