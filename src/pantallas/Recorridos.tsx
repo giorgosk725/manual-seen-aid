@@ -353,11 +353,11 @@ function GuionVista({
                     Fuente:{" "}
                     {fuentesDeMomento(m).map((f, k) => (
                       <span key={f.texto}>
-                        {k > 0 && " · "}
+                        {k > 0 && " · "}
                         <a
                           href={f.ruta}
                           onClick={() => marcarEnRuta(i)}
-                          className="tap-44 inline-block py-1"
+                          className="tap-44 inline py-1"
                         >
                           {f.texto}
                         </a>
@@ -893,7 +893,9 @@ export function SituacionSistema({
                         {k > 0 && <span aria-hidden="true">&nbsp;· </span>}
                         <a
                           href={href("capitulo", l.slug, l.ancla)}
-                          className="tap-44 inline-block py-1"
+                          // 0.81.1 (quinta ronda, visual): en línea (inline-block abría corte
+                          // antes del «·»).
+                          className="tap-44 inline py-1"
                         >
                           {l.titulo}
                         </a>

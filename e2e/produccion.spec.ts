@@ -24,7 +24,7 @@ test.describe("Producción con service worker", () => {
     for (const [ruta, titulo] of [
       ["#/consultar/figura-3/naranja", /Hiperglucemia y cetonemia/],
       ["#/sistemas/ciq", /Tandem Control-IQ/],
-      ["#/pacientes/plan/op5", /Plan de seguridad · Omnipod 5/],
+      ["#/pacientes/plan/op5", /Plan de seguridad\s· Omnipod 5/],
       ["#/visual/gestacion-sistemas", /Gestación, sistema a sistema/],
       ["#/bibliografia", /Bibliografía/],
     ] as const) {

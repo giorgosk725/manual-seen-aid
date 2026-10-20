@@ -405,13 +405,14 @@ function respuestasImpresas(
   const vistos = new Set<string>();
   return new Map(preguntas.map((f) => [f.id, trozosDe(f, c, vistos)]));
 }
-/* 0.81.1 (quinta ronda, R3): con las filas de las Tablas 1–4 (la casilla de este sistema): sin
-   ellas, «¿Qué diferencia hay entre Control-IQ y Control-IQ+?» se imprimía sin las diferencias. */
+/* 0.81.1 (quinta ronda, R3 y visual): una pregunta que se responde con filas de las Tablas 1–4
+   no se imprime (sin ellas, «¿Qué diferencia hay entre Control-IQ y Control-IQ+?» salía sin las
+   diferencias; con ellas, la ficha pasaba de 4 a 5 caras): esas filas ya van en las tarjetas. */
 function trozosDe(f: (typeof FRECUENTES)[number], c: number, vistos: Set<string>): TrozoImpreso[] {
   const trozos: TrozoImpreso[] = [];
+  let conTabla = false;
   const poner = (bloque: string, tipo: "p" | "li", texto: string) => {
-    if (!texto || vistos.has(texto)) return;
-    vistos.add(texto);
+    if (!texto || vistos.has(texto) || trozos.some((t) => t.texto === texto)) return;
     trozos.push({ bloque, tipo, texto });
   };
   for (const id of f.pasajes) {
@@ -429,6 +430,8 @@ function trozosDe(f: (typeof FRECUENTES)[number], c: number, vistos: Set<string>
         if (k >= 0) poner(bloque, "li", plano(b.items[k] ?? ""));
         else b.items.forEach((x) => poner(bloque, "li", plano(x)));
       }
+    } else if (/^T[1-4]$/.test(p[0])) {
+      conTabla = true;
     } else if (/^T\d+$/.test(p[0])) {
       const t = TABLAS[p[0] as keyof typeof TABLAS];
       if (!t) continue;
@@ -436,6 +439,8 @@ function trozosDe(f: (typeof FRECUENTES)[number], c: number, vistos: Set<string>
       else poner(`${p[0]}/${p[1]}`, "p", textoDeFila(t, Number(p[1]), c));
     }
   }
+  if (conTabla) return [];
+  trozos.forEach((t) => vistos.add(t.texto));
   return trozos;
 }
 function RespuestaImpresa({ trozos }: { trozos: TrozoImpreso[] }) {
@@ -714,6 +719,11 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
               </li>
             ))}
           </ul>
+          {preguntas.some((f) => !impresas.get(f.id)?.length) && (
+            <p className="mt-1 hidden text-[13px] text-slate-600 print:block">
+              Las demás preguntas de esta ficha se responden con sus tarjetas.
+            </p>
+          )}
         </section>
       )}
 
@@ -882,6 +892,20 @@ function BarraSistemas({
   const deEntrada = ids.length === 1 || (ids.length === 0 && !seccion);
   const [plegada, setPlegada] = useState(movil && deEntrada);
   const [abierta, setAbierta] = useState(false);
+  // 0.81.1 (quinta ronda, visual): tras cambiar de pestaña en la comparación del móvil, la barra
+  // sigue plegada (al desplegarse después de colocar la sección, la tapaba 100 px).
+  const trasPestana = useRef(false);
+  const primera = useRef(true);
+  useEffect(() => {
+    if (primera.current) {
+      primera.current = false;
+      return;
+    }
+    if (movil && ids.length !== 1) {
+      trasPestana.current = true;
+      setPlegada(true);
+    }
+  }, [sec]); // eslint-disable-line react-hooks/exhaustive-deps
   // El nombre corto sobre las pestañas, solo cuando el título de la ficha ya no se ve.
   const [bajada, setBajada] = useState(false);
   const barra = useRef<HTMLDivElement>(null);
@@ -889,7 +913,8 @@ function BarraSistemas({
     if (!movil) return;
     const onScroll = () => {
       setBajada(window.scrollY > 90);
-      const lejos = window.scrollY > 220 || deEntrada;
+      if (window.scrollY < 8) trasPestana.current = false;
+      const lejos = window.scrollY > 220 || deEntrada || trasPestana.current;
       setPlegada((p) => (p !== lejos ? lejos : p));
       if (window.scrollY > 220) setAbierta(false);
     };

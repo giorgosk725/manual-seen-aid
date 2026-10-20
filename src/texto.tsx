@@ -1,5 +1,6 @@
 /* Marcado en línea mínimo del contenido: *cursiva*, **negrita** y «\*» para un asterisco
    literal (las dosis con asterisco de la Figura 3). Sin HTML, sin dependencias. */
+import { sinCortes } from "./sinCortes";
 import React from "react";
 import { trocear } from "./marcado";
 import { SiglaPulsable } from "./componentes/Sigla";
@@ -50,8 +51,10 @@ function ConCifrasTexto({ t }: { t: string }) {
   );
 }
 
+/* 0.81.1 (quinta ronda, visual): cifra y unidad sin partir en todo el texto de la app (antes,
+   solo donde se llamaba a sinCortes). */
 export function Texto({ children, siglas }: { children: string; siglas?: Set<string> }) {
-  return <Trozos trozos={trozosDe(children, siglas)} />;
+  return <Trozos trozos={trozosDe(sinCortes(children), siglas)} />;
 }
 
 /* Trozos ya partidos (Remisiones.tsx): los que llevan `sigla` se pintan como sigla pulsable,

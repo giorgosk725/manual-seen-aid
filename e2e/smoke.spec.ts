@@ -104,7 +104,7 @@ test.describe("Recorrido básico (escritorio)", () => {
       .getByRole("radio", { name: /Omnipod 5/ })
       .click();
     await expect(page).toHaveURL(/situacion\/ejercicio-aerobico:omnipod-5/);
-    await expect(page.getByText(/Función Actividad, objetivo 150 mg\/dl/)).toBeVisible();
+    await expect(page.getByText(/Función Actividad, objetivo 150\smg\/dl/)).toBeVisible();
     await expect(page.getByText(/Modo Ease-off/)).toHaveCount(0);
   });
 });

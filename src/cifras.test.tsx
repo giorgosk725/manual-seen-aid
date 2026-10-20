@@ -12,8 +12,11 @@ const cifras = (t: string) => {
     </ConCifras>,
   );
   return {
-    texto: container.textContent,
-    marcadas: [...container.querySelectorAll(".cifra")].map((b) => b.textContent),
+    // 0.81.1: los espacios duros entre cifra y unidad no cambian el texto.
+    texto: container.textContent?.replace(/\u00a0/g, " "),
+    marcadas: [...container.querySelectorAll(".cifra")].map((b) =>
+      b.textContent?.replace(/\u00a0/g, " "),
+    ),
   };
 };
 

@@ -6,7 +6,7 @@ test("los cinco casos, pod y bomba, en una sola pantalla", async ({ page }) => {
   await page.goto("/#/consultar/interrupcion");
   for (const frase of [
     /^Las interrupciones muy breves/,
-    /a partir de aproximadamente 1 h sin administración de insulina debe actuarse/,
+    /a partir de aproximadamente 1\sh sin administración de insulina debe actuarse/,
     /^En interrupciones prolongadas/,
     /^En interrupciones programadas y de pocas horas/,
     /^Cuando se prevea una interrupción prolongada/,

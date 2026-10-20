@@ -33,7 +33,9 @@ test.describe("Tareas en dos toques (393 px)", () => {
       .getByRole("radio", { name: /Omnipod 5/ })
       .tap();
     await expect(
-      page.getByText(/Función Actividad, objetivo 150 mg\/dl; reduce la administración automática/),
+      page.getByText(
+        /Función Actividad, objetivo 150\smg\/dl; reduce la administración automática/,
+      ),
     ).toBeVisible();
     tiempos["Omnipod 5 · ejercicio aeróbico"] = { toques: 3, ms: Date.now() - t0 };
   });

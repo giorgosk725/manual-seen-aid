@@ -32,7 +32,7 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     await page.goto("/#/consultar/situacion/ingreso-hospitalario");
     const momentos = page.getByRole("region", { name: "Texto del capítulo" });
     await expect(momentos.getByRole("heading", { name: /Período perioperatorio/ })).toBeVisible();
-    await expect(momentos.getByText(/unas 22 h tras la última dosis/)).toBeVisible();
+    await expect(momentos.getByText(/unas 22\sh tras la última dosis/)).toBeVisible();
     await page.goto("/#/consultar/situacion/gestacion");
     await expect(
       page

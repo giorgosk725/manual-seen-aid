@@ -88,7 +88,7 @@ test.describe("Situaciones (S61-01/02/06)", () => {
     const antes = page.locator("#antes-situacion");
     const conducta = page.getByRole("region", { name: "Conducta recomendada" });
     await expect(antes.getByRole("heading", { name: /Comprobaciones previas/ })).toBeVisible();
-    await expect(antes).toContainText(/126–180 mg\/dl/);
+    await expect(antes).toContainText(/126–180\smg\/dl/);
     expect((await antes.boundingBox())!.y).toBeLessThan((await conducta.boundingBox())!.y);
   });
 

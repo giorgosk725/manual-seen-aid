@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — cuarta ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — quinta ronda de auditorías de uso`,
+    detalle: [
+      "Del dato al literal también en Cómo funciona e Indicación y material: cada rótulo abre la tabla con la fila marcada.",
+      "Situaciones: comida grasa y sueño con lo que se revisa antes en los cuatro sistemas; rótulo de la sospecha de fallo igual que en la Tabla 4; la nota de las retiradas de más de 1 h, después de la conducta; sin sistema elegido si no se ha consultado ninguno; selector en una línea.",
+      "Buscador: «ciq+», «780G a Control-IQ», «780 glucosa alta», «no sé si funciona el set», «embarazo control-iq», agua con un sistema y «qué actúa en automático» llevan a su sitio; bajo un atajo de cambio de sistema, la lista de resultados plegada.",
+      "Preguntas frecuentes: las frases seguidas de un mismo párrafo, en una tarjeta con una sola fuente; sin entradillas ni notas repetidas. En papel, la ficha vuelve a 4 caras y no imprime las preguntas que ya responden sus tarjetas.",
+      "Cifra y unidad sin partir en todo el texto; la prosa a unos 75 caracteres por línea; la Tabla 4 en el móvil con la conducta común debajo del nombre y en gris; la barra de la comparación plegada al cambiar de pestaña.",
+    ],
+  },
+  {
+    fecha: "2026-10-20",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.81.0 — cuarta ronda de auditorías de uso",
     detalle: [
       "Situaciones y Modos con los mismos rótulos de la Tabla 4; sin la basal temporal de Control-IQ+ en la enfermedad leve; lo que el capítulo manda hacer antes (activar 1–2 h antes, revisar antes de subir objetivos, valorar el ascenso de 3–5 h), con el peso de la respuesta; Omnipod 5 con sus cinco objetivos y hasta 8 tramos/día.",
       "Del dato al literal: el rótulo de una fila abre la tabla del sistema con esa fila marcada y a la vista.",

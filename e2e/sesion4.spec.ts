@@ -27,7 +27,7 @@ test.describe("Material para el paciente: sin la versión compacta", () => {
     await expect(page.getByRole("button", { name: /Compacta|Imprimir en una cara/ })).toHaveCount(
       0,
     );
-    await expect(page.locator(".hoja-a4 h1")).toHaveText("Plan de seguridad · MiniMed 780G");
+    await expect(page.locator(".hoja-a4 h1")).toHaveText(/Plan de seguridad\s· MiniMed 780G/);
     // V54-09: la urgencia de la Figura 3, en la primera cara.
     await expect(
       page.getByRole("region", {

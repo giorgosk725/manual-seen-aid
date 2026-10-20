@@ -141,7 +141,7 @@ describe("App", () => {
     // Que no es una publicación del Manual SEEN, en el pie.
     expect(screen.getByText(/no es una publicación del Manual/)).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { level: 1, name: "Plan de seguridad · Omnipod 5" }),
+      screen.getByRole("heading", { level: 1, name: /^Plan de seguridad\s· Omnipod 5$/ }),
     ).toBeInTheDocument();
     // La hoja se rellena a mano: no hay ni un campo de texto.
     expect(document.querySelectorAll("main input, main textarea")).toHaveLength(0);
@@ -197,7 +197,7 @@ describe("App", () => {
     render(<App />);
     await ir("#/consultar/situacion/comida-grasa:control-iq");
     expect(
-      screen.getByText(enTexto(/bolo extendido \(hasta 2 h; Control-IQ\+: de 15 min a 8 h\)/)),
+      screen.getByText(enTexto(/bolo extendido \(hasta 2\sh; Control-IQ\+: de 15\smin a 8\sh\)/)),
     ).toBeInTheDocument();
     expect(screen.queryByText(/Función comida de absorción lenta/)).not.toBeInTheDocument();
   });

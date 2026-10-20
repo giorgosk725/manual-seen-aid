@@ -261,11 +261,30 @@ function Fichas({
         return (
           <li key={i} className="tarjeta p-3">
             <div className="titulo-tarjeta mb-2">
-              <Lineas>
-                {sinCortes(
-                  /^\d+$/.test(f.etiqueta) ? `${tabla.cabeceraEtiqueta} ${f.etiqueta}` : f.etiqueta,
-                )}
-              </Lineas>
+              {/* 0.81.1 (quinta ronda, visual): la conducta común que sigue al nombre, debajo y
+                  en gris, como en la tabla del ordenador (antes, cuatro líneas en negrita). */}
+              {tabla.id !== "T4" ? (
+                <Lineas>
+                  {sinCortes(
+                    /^\d+$/.test(f.etiqueta)
+                      ? `${tabla.cabeceraEtiqueta} ${f.etiqueta}`
+                      : f.etiqueta,
+                  )}
+                </Lineas>
+              ) : (
+                f.etiqueta.split("\n").map((l, k) => (
+                  <span
+                    key={k}
+                    className={
+                      k === 0
+                        ? "block"
+                        : "mt-1 block text-[13px] font-normal leading-snug text-slate-600"
+                    }
+                  >
+                    {sinCortes(l)}
+                  </span>
+                ))
+              )}
             </div>
             <dl className="space-y-2">
               {(f.unida ? [columnas[0]] : columnas).map((c) => (

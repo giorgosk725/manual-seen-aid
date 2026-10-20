@@ -86,20 +86,20 @@ function LineasSistema({ texto, q, sistema }: { texto: string; q: string; sistem
   if (!lineas || !propia)
     return (
       <span className="whitespace-pre-line">
-        <Marcado texto={texto} q={q} />
+        <Marcado texto={sinCortes(texto)} q={q} />
       </span>
     );
   return (
     <>
       <span className="block rounded-md px-2 py-1" style={{ background: "#f7eff3" }}>
-        <Marcado texto={propia.linea} q={q} />
+        <Marcado texto={sinCortes(propia.linea)} q={q} />
       </span>
       <details className="mt-1">
         <summary className="min-h-11 cursor-pointer text-xs font-semibold text-slate-600 sm:min-h-6">
           Ver los cuatro
         </summary>
         <span className="mt-1 block whitespace-pre-line">
-          <Marcado texto={texto} q={q} />
+          <Marcado texto={sinCortes(texto)} q={q} />
         </span>
       </details>
     </>

@@ -1938,10 +1938,10 @@ html.night *:focus-visible {
 /* 0.80.1 (cuarta ronda, visual): la prosa de consulta a unos 75 caracteres por línea (pasajes del
    buscador, situaciones, notas de la calculadora y de la Figura 3); y en nocturno, un subrayado
    suave como en claro (antes, casi tan fuerte como el texto). */
-p.literal,
-.literal p,
-.notas-figura3 > p,
-main p.text-xs {
+/* 0.81.1 (quinta ronda, visual): toda la prosa de main (también notas de la calculadora y
+   recuadros de Situaciones a 1920). */
+main p,
+main .text-xs > li {
   max-width: 75ch;
 }
 html.night .decoration-slate-300 {
