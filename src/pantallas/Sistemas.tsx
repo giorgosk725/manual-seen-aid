@@ -405,6 +405,8 @@ function respuestasImpresas(
   const vistos = new Set<string>();
   return new Map(preguntas.map((f) => [f.id, trozosDe(f, c, vistos)]));
 }
+/* 0.81.1 (quinta ronda, R3): con las filas de las Tablas 1–4 (la casilla de este sistema): sin
+   ellas, «¿Qué diferencia hay entre Control-IQ y Control-IQ+?» se imprimía sin las diferencias. */
 function trozosDe(f: (typeof FRECUENTES)[number], c: number, vistos: Set<string>): TrozoImpreso[] {
   const trozos: TrozoImpreso[] = [];
   const poner = (bloque: string, tipo: "p" | "li", texto: string) => {
@@ -427,10 +429,6 @@ function trozosDe(f: (typeof FRECUENTES)[number], c: number, vistos: Set<string>
         if (k >= 0) poner(bloque, "li", plano(b.items[k] ?? ""));
         else b.items.forEach((x) => poner(bloque, "li", plano(x)));
       }
-    } else if (/^T[1-4]$/.test(p[0])) {
-      // 0.77.1 (auditoría R3): las filas de las Tablas 1–4 ya las resumen las tarjetas de la ficha
-      // impresa; en papel, bajo la pregunta, solo los párrafos y las demás tablas.
-      continue;
     } else if (/^T\d+$/.test(p[0])) {
       const t = TABLAS[p[0] as keyof typeof TABLAS];
       if (!t) continue;
@@ -845,7 +843,6 @@ function BarraSistemas({
     : ids.length === 1 && !(sec && secciones.some((x) => x.id === sec))
       ? "funciona"
       : sec;
-  const selStr = ids.length ? ids.join("+") : "todos";
   const rutaCon = (nuevos: string[]) =>
     nuevos.length === 1
       ? href("sistemas", nuevos[0], sec ?? "funciona")
@@ -858,6 +855,9 @@ function BarraSistemas({
   // o más, «Comparar» (0.72.0: la primera casilla llevaba a la ficha).
   const entrada = ids.length === 0 && !sec;
   const [marcados, setMarcados] = useState<string[]>([]);
+  // 0.81.1 (quinta ronda, R5): en la entrada, las pestañas llevan lo ya marcado (antes, «Los
+  // cuatro» aunque se hubieran marcado dos).
+  const selStr = ids.length ? ids.join("+") : marcados.length ? marcados.join("+") : "todos";
   const alternar = (id: string) => {
     if (entrada) {
       setMarcados((m) =>

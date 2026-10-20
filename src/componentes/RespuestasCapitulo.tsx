@@ -491,6 +491,30 @@ function BloqueFrecuente({
           return true;
         });
         const ampliacion = frecuente.respuestas.filter(esAmpliacion);
+        // 0.81.1 (quinta ronda, R3): la tarjeta «Nota de…» no se repite si la nota ya va con el
+        // pasaje que la lleva; y las frases seguidas del mismo párrafo, en una sola tarjeta con
+        // una sola fuente (no una tarjeta y una fuente por frase).
+        const notas = principales.map((r) => notaAsterisco(r)?.nota).filter(Boolean) as string[];
+        const sinNotasRepetidas = principales.filter(
+          (r) => !(/\/nota\//.test(r.id) && notas.some((n) => n.includes((r.texto ?? "").trim()))),
+        );
+        const FRASE = /^t\/([^/]+\/[^/]+)\/(\d+)$/;
+        const suelta = (r: Respuesta) =>
+          r.tipo === "texto" && FRASE.test(r.id) && !r.items && !r.casillas && !r.porSistema;
+        const juntas: Respuesta[] = [];
+        for (const r of sinNotasRepetidas) {
+          const ant = juntas[juntas.length - 1];
+          const a = ant && suelta(ant) ? FRASE.exec(ant.id.split("+").pop()!) : null;
+          const b = suelta(r) ? FRASE.exec(r.id) : null;
+          if (a && b && a[1] === b[1]) {
+            const seguida = Number(b[2]) === Number(a[2]) + 1;
+            juntas[juntas.length - 1] = {
+              ...ant,
+              id: `${ant.id}+${r.id}`,
+              texto: `${ant.texto}${seguida ? " " : " […] "}${r.texto}`,
+            };
+          } else juntas.push(r);
+        }
         const tarjeta = (r: Respuesta, k: number, lista: Respuesta[]) => {
           const nota = notaAsterisco(r)?.nota;
           const repetida = !!nota && notasVistas.has(nota);
@@ -504,13 +528,20 @@ function BloqueFrecuente({
               sinNota={repetida}
               sistemaConsulta={sistema ?? frecuente.sistema}
               fijo={frecuente.sistema !== undefined}
-              previo={k > 0 ? (lista[k - 1].texto ?? "") : undefined}
+              previo={
+                k > 0
+                  ? lista
+                      .slice(0, k)
+                      .map((x) => `${x.contexto ?? ""} ${x.texto ?? ""}`)
+                      .join(" ")
+                  : undefined
+              }
             />
           );
         };
         return (
           <>
-            <div className="space-y-2">{principales.map(tarjeta)}</div>
+            <div className="space-y-2">{juntas.map(tarjeta)}</div>
             {ampliacion.length > 0 && (
               <details className="mt-2" open>
                 <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">

@@ -43,7 +43,7 @@ const fr = (apartado: string, bloque: string, k: number[]): Pieza => ({
   bloque,
   k,
 });
-const NOCHE = fr("09-descarga", "b7", [1]);
+const NOCHE = fr("09-descarga", "b7", [0, 1]);
 const TARDIA = fr("09-descarga", "b6", [1]);
 /* El ascenso tardío tras comidas grasas o proteicas (apartado 9) y, en los sistemas sin función
    específica, la individualización. */
@@ -89,7 +89,7 @@ export const ALGORITMO: Dato[][] = [
       r: "Objetivo",
       v: "112,5–160 mg/dl, fijo",
       n: "Modo sueño 112,5–120 · modo ejercicio 140–160",
-      f: [t1(6)],
+      f: [t1(6), t3(0)],
     },
     {
       r: "Bolos automáticos de corrección",
@@ -488,6 +488,12 @@ const PAUSAR =
 const UMBRAL_1H =
   "A partir de aproximadamente 1 h sin insulina, actuar: glucemia capilar, cetonemia según el contexto y reposición de la insulina no administrada";
 const INTERRUPCION = { texto: "Interrupción del sistema", ruta: "#/consultar/interrupcion" };
+/* 0.81.1 (quinta ronda, adjunto): de la enfermedad leve a su guía (hidratación, cetosis con
+   glucosa normal, cuándo pasar a la Figura 3). */
+const ENFERMEDAD = {
+  texto: "Enfermedad intercurrente y riesgo de cetosis",
+  ruta: "#/consultar/situacion/enfermedad-intercurrente",
+};
 const R_AEROBICO =
   "Ejercicio aeróbico planificado o situación previsible de mayor riesgo de hipoglucemia";
 const C_AEROBICO =
@@ -499,7 +505,6 @@ const R_FALLO = "Hiperglucemia persistente o inexplicada (sospecha de fallo de i
 const C_NOCTURNA =
   "Antes de subir objetivos globalmente, revisar ejercicio vespertino, alcohol, bolo tardío de cena, corrección manual, objetivo demasiado bajo o ratios agresivas, y si el patrón se concentra en una franja";
 const ALCOHOL = fr("10-situaciones", "b14", [2]);
-const C_ALCOHOL = "Del apartado de adolescencia y transición";
 const N_ALCOHOL =
   "Educar sobre la prudencia con los bolos prandiales en comidas asociadas a alcohol";
 const AGUA_CATETER: Dato = {
@@ -542,6 +547,7 @@ export const MODOS: Dato[][] = [
     },
     {
       r: R_NECESIDAD,
+      enlace: ENFERMEDAD,
       v: `${NECESIDAD}; ajustar la configuración (objetivo, duración de la insulina activa) si es posible`,
       f: [t4(3)],
     },
@@ -553,7 +559,6 @@ export const MODOS: Dato[][] = [
     GRASA("Sin función específica", { n: N_INDIVIDUALIZAR }, [TARDIA_RESTO]),
     {
       r: "Alcohol",
-      cond: C_ALCOHOL,
       v: "Anticipar hipoglucemia diferida hasta 12–24 h tras la ingesta; valorar un objetivo glucémico más conservador la noche del consumo y la mañana siguiente",
       n: N_ALCOHOL,
       f: [ALCOHOL],
@@ -591,6 +596,7 @@ export const MODOS: Dato[][] = [
     },
     {
       r: R_NECESIDAD,
+      enlace: ENFERMEDAD,
       v: `${NECESIDAD}; ajustar la configuración (tasa basal, factor de sensibilidad)`,
       f: [t4(3)],
     },
@@ -603,7 +609,6 @@ export const MODOS: Dato[][] = [
     {
       // Con objetivo fijo, sin «objetivo más conservador» (pregunta al autor, 20-10-2026).
       r: "Alcohol",
-      cond: C_ALCOHOL,
       v: "Anticipar hipoglucemia diferida hasta 12–24 h tras la ingesta",
       n: N_ALCOHOL,
       f: [ALCOHOL],
@@ -644,6 +649,7 @@ export const MODOS: Dato[][] = [
     },
     {
       r: R_NECESIDAD,
+      enlace: ENFERMEDAD,
       v: `${NECESIDAD}; valorar Boost y, si se mantiene, ajustar el objetivo`,
       f: [t4(3)],
     },
@@ -655,7 +661,6 @@ export const MODOS: Dato[][] = [
     GRASA("Función de comida de absorción lenta", {}, [TARDIA]),
     {
       r: "Alcohol",
-      cond: C_ALCOHOL,
       v: "Anticipar hipoglucemia diferida hasta 12–24 h tras la ingesta; valorar Ease-off o un objetivo glucémico más conservador la noche del consumo y la mañana siguiente",
       n: N_ALCOHOL,
       f: [ALCOHOL],
@@ -693,6 +698,7 @@ export const MODOS: Dato[][] = [
     },
     {
       r: R_NECESIDAD,
+      enlace: ENFERMEDAD,
       v: `${NECESIDAD}; ajustar el objetivo`,
       f: [t4(3)],
     },
@@ -700,7 +706,6 @@ export const MODOS: Dato[][] = [
     GRASA("Bolo extendido disponible solo en modo manual", { n: N_INDIVIDUALIZAR }, [TARDIA_RESTO]),
     {
       r: "Alcohol",
-      cond: C_ALCOHOL,
       v: "Anticipar hipoglucemia diferida hasta 12–24 h tras la ingesta; valorar un objetivo glucémico más conservador la noche del consumo y la mañana siguiente",
       n: N_ALCOHOL,
       f: [ALCOHOL],

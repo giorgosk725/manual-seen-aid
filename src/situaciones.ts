@@ -76,7 +76,7 @@ export const SITUACIONES: Situacion[] = [
   },
   {
     id: "hiperglucemia-persistente",
-    etiqueta: "Hiperglucemia persistente o inexplicada (sospecha de fallo)",
+    etiqueta: "Hiperglucemia persistente o inexplicada (sospecha de fallo de infusión)",
     tabla: "T4",
     fila: 6,
     leer: [

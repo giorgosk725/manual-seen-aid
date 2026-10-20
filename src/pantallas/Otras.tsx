@@ -134,7 +134,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
     [motor, qEf, res],
   );
   const intencionClara = atajos.some((a) =>
-    /^recurso\/(cambio|cambio-aid|objetivos)/.test(a.entrada.id),
+    /^recurso\/(cambio|cambio-aid|objetivos|actua-automatico)/.test(a.entrada.id),
   );
   const respuestas = useMemo(() => {
     const todos = motor && qEf.trim().length >= 2 ? motor.fusionar(qEf, parecidos) : [];
@@ -312,7 +312,11 @@ export function Buscar({ inicial }: { inicial?: string }) {
             </a>
           </p>
         )}
-        <AvisosBusqueda q={qEf} parcial={busqueda.parcial} primera={respuestas[0]}>
+        <AvisosBusqueda
+          q={qEf}
+          parcial={busqueda.parcial && !intencionClara}
+          primera={respuestas[0]}
+        >
           <RespuestasCapitulo
             respuestas={respuestas}
             q={qEf}
@@ -362,17 +366,16 @@ export function Buscar({ inicial }: { inicial?: string }) {
           /* Todos los resultados, plegados cuando ya hay una respuesta arriba (la clave hace que
              el pliegue se decida de nuevo con cada búsqueda). */
           <details
-            key={`${qEf}|${hayRespuesta}`}
+            key={`${qEf}|${hayRespuesta}|${intencionClara}`}
             className="mt-4"
-            open={!hayRespuesta}
+            // 0.81.1 (quinta ronda, adjunto): bajo un atajo de cambio de sistema o de objetivos,
+            // la lista, plegada (casaba sobre todo por el nombre del sistema o por «pasar»).
+            open={!hayRespuesta && !intencionClara}
             data-testid="todos-los-resultados"
           >
             <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-9">
               Todos los resultados (
-              {hayMas && res.length < busqueda.totalCapitulo + busqueda.totalFuera
-                ? `${res.length} de ${busqueda.totalCapitulo + busqueda.totalFuera}`
-                : res.length}
-              )
+              {Math.max(res.length, busqueda.totalCapitulo + busqueda.totalFuera)})
             </summary>
             <div className="mt-2">
               <Segmented

@@ -98,6 +98,11 @@ export function CasillasSistema({
                 <span>
                   <NombreSistema n={pegarFinal(nombres[c])} />
                 </span>
+              ) : unico ? (
+                // 0.81.1 (quinta ronda, adjunto): en la elección única (paneles estrechos de
+                // Situaciones y la calculadora), el nombre corto también en el ordenador: las
+                // cuatro en una línea.
+                <span>{pegarFinal(CORTO_SISTEMA[c])}</span>
               ) : (
                 <>
                   <span className="sm:hidden">{pegarFinal(CORTO_SISTEMA[c])}</span>

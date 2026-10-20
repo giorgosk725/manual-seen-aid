@@ -124,25 +124,32 @@ export const TABLA4_POR_SISTEMA: Record<string, BloqueSistema[][]> = {
     [
       {
         rotulo: "Hipoglucemia nocturna",
-        piezas: [s9("b7", [1], /en MiniMed, un objetivo más alto o temporal puede ayudar/)],
-      },
-    ],
-    [
-      {
-        rotulo: "Hipoglucemia nocturna",
-        piezas: [s9("b7", [1], /En Tandem, el modo sueño no autocorrige, pero ajusta basal/)],
-      },
-    ],
-    [
-      {
-        rotulo: "Hipoglucemia nocturna",
-        piezas: [s9("b7", [1], /en CamAPS FX, Ease-off o un objetivo más alto/)],
+        piezas: [
+          s9("b7", [0]),
+          s9("b7", [1], /en MiniMed, un objetivo más alto o temporal puede ayudar/),
+        ],
       },
     ],
     [
       {
         rotulo: "Hipoglucemia nocturna",
         piezas: [
+          s9("b7", [0]),
+          s9("b7", [1], /En Tandem, el modo sueño no autocorrige, pero ajusta basal/),
+        ],
+      },
+    ],
+    [
+      {
+        rotulo: "Hipoglucemia nocturna",
+        piezas: [s9("b7", [0]), s9("b7", [1], /en CamAPS FX, Ease-off o un objetivo más alto/)],
+      },
+    ],
+    [
+      {
+        rotulo: "Hipoglucemia nocturna",
+        piezas: [
+          s9("b7", [0]),
           s9(
             "b7",
             [1],
@@ -153,26 +160,41 @@ export const TABLA4_POR_SISTEMA: Record<string, BloqueSistema[][]> = {
     ],
   ],
   "comida-grasa": [
-    [{ rotulo: "Hiperglucemia tardía", piezas: [s9("b6", [0, 2])] }],
     [
       {
         rotulo: "Hiperglucemia tardía",
-        piezas: [s9("b6", [1], /En Control-IQ el bolo extendido[^;]*/)],
+        piezas: [s9("b6", [0]), s9("b6", [2], /la estrategia debe individualizarse[^.]*/)],
       },
     ],
     [
       {
         rotulo: "Hiperglucemia tardía",
-        piezas: [s9("b6", [1], /en CamAPS FX puede utilizarse la función de absorción lenta/)],
+        piezas: [s9("b6", [0]), s9("b6", [1], /En Control-IQ el bolo extendido[^;]*/)],
       },
     ],
-    [{ rotulo: "Hiperglucemia tardía", piezas: [s9("b6", [0, 2])] }],
+    [
+      {
+        rotulo: "Hiperglucemia tardía",
+        piezas: [
+          s9("b6", [0]),
+          s9("b6", [1], /en CamAPS FX puede utilizarse la función de absorción lenta/),
+        ],
+      },
+    ],
+    [
+      {
+        rotulo: "Hiperglucemia tardía",
+        piezas: [s9("b6", [0]), s9("b6", [2], /la estrategia debe individualizarse[^.]*/)],
+      },
+    ],
   ],
   // 0.74.2 (auditoría): sin la desconexión (va en el guion, con el apartado 7) ni el Ease-off
   // del párrafo de la gestación; en Control-IQ, sus rangos (modo ejercicio 140–160).
   "ejercicio-aerobico": [
     [],
-    [{ rotulo: "Rangos de objetivo y modos", piezas: [casilla("T1", 6)] }],
+    // 0.81.1 (quinta ronda, senior): sin los rangos de la Tabla 1, que repetían el 140–160 de la
+    // casilla de la Tabla 4.
+    [],
     [],
     [
       {

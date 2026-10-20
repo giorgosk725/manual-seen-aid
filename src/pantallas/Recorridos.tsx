@@ -66,7 +66,7 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
     ids: [],
     extras: [
       {
-        t: "Hiperglucemia persistente o inexplicada (sospecha de fallo); cetonemia",
+        t: "Hiperglucemia persistente o inexplicada (sospecha de fallo de infusión)",
         fuente: "Figura 3",
         ruta: href("consultar", "figura-3"),
         alias: [
@@ -650,7 +650,7 @@ export function SituacionSistema({
                     bloques={GUIA_POR_SISTEMA[guia.id].bloques}
                     comun={GUIA_POR_SISTEMA[guia.id].comun}
                     complementos={GUIA_POR_SISTEMA[guia.id].complementos}
-                    seleccion={sisIdx >= 0 ? sisIdx : (sistemaReciente() ?? 0)}
+                    seleccion={sisIdx >= 0 ? sisIdx : (sistemaReciente() ?? -1)}
                     onElegir={(i) =>
                       elegirRuta("consultar", "situacion", `${guia.id}:${SIS_IDS[i]}`)
                     }
@@ -828,19 +828,6 @@ export function SituacionSistema({
                     </dl>
                   </div>
                 )}
-                {/* 0.80.1 (cuarta ronda, R5): la nota de la Tabla 6 sobre retiradas de más de 1 h,
-                    con su herramienta. */}
-                {sit.tabla === "T6" && tabla.notas[0] && (
-                  <p className="max-w-[75ch] text-sm leading-snug text-slate-700">
-                    <Texto>{tabla.notas[0]}</Texto>{" "}
-                    <a
-                      href={href("consultar", "interrupcion")}
-                      className="tap-44 inline-block min-h-6 py-0.5 font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4"
-                    >
-                      Interrupción del sistema y pauta alternativa
-                    </a>
-                  </p>
-                )}
                 {!porSistema && !fila.unida && (
                   <>
                     <dl className="sm:columns-2 sm:gap-3 [&>div]:mb-3 [&>div]:break-inside-avoid">
@@ -858,6 +845,19 @@ export function SituacionSistema({
                       })}
                     </dl>
                   </>
+                )}
+                {/* 0.80.1 (cuarta ronda, R5): la nota de la Tabla 6 sobre retiradas de más de 1 h,
+                    con su herramienta; 0.81.1 (quinta ronda, R5): después de la conducta. */}
+                {sit.tabla === "T6" && tabla.notas[0] && (
+                  <p className="max-w-[75ch] text-sm leading-snug text-slate-700">
+                    <Texto>{tabla.notas[0]}</Texto>{" "}
+                    <a
+                      href={href("consultar", "interrupcion")}
+                      className="tap-44 inline-block min-h-6 py-0.5 font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4"
+                    >
+                      Interrupción del sistema y pauta alternativa
+                    </a>
+                  </p>
                 )}
                 {/* 0.77.1 (auditoría de guardia): la sospecha de fallo se resuelve con la Figura 3;
                     su algoritmo, a un toque (antes, «Figura 3» llevaba a la lectura). */}
@@ -888,8 +888,9 @@ export function SituacionSistema({
                     Leer en el capítulo:{" "}
                     {sit.leer.map((l, k) => (
                       <span key={l.slug + (l.ancla ?? "")}>
-                        {k > 0 && " "}
-                        {k > 0 && <span aria-hidden="true">·&nbsp;</span>}
+                        {/* 0.81.1 (quinta ronda, guardia): el «·» al final de la línea, nunca al
+                            principio de la siguiente. */}
+                        {k > 0 && <span aria-hidden="true">&nbsp;· </span>}
                         <a
                           href={href("capitulo", l.slug, l.ancla)}
                           className="tap-44 inline-block py-1"
@@ -1180,25 +1181,23 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
             <button
               type="button"
               disabled={n === 1}
-              hidden={n === 1}
               onClick={() => {
                 alPaso();
                 ir(n - 1);
               }}
-              className="chip disabled:opacity-40"
+              // 0.81.1 (quinta ronda, R3): `hidden` no podía con el display de .chip.
+              className={`chip disabled:opacity-40 ${n === 1 ? "invisible" : ""}`}
             >
               <ChevronLeft size={14} aria-hidden="true" /> Paso {n - 1 || 1}
             </button>
-            <span aria-hidden="true" hidden={n !== 1} />
             <button
               type="button"
               disabled={n === 8}
-              hidden={n === 8}
               onClick={() => {
                 alPaso();
                 ir(n + 1);
               }}
-              className="inline-flex min-h-11 items-center gap-1 rounded-md px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-40"
+              className={`inline-flex min-h-11 items-center gap-1 rounded-md px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-40 ${n === 8 ? "invisible" : ""}`}
               style={{ background: hex.strong }}
             >
               Paso {Math.min(8, n + 1)} <ChevronRight size={14} aria-hidden="true" />

@@ -69,24 +69,41 @@ export function CasillasDatos({
   const m = MODO[modo];
   return (
     <dl className={m.dl}>
-      {datos.map((d) => (
-        <div key={d.r} className={m.fila}>
-          <dt className={`rotulo pt-0.5 leading-tight ${m.dt}`}>{d.r}</dt>
-          <dd className={`min-w-0 ${m.dd}`}>
-            <span className="block text-[15px] font-semibold leading-snug text-slate-900">
-              <SinCortes texto={d.v} />
-            </span>
-            {d.n && (
-              <span className="mt-0.5 block text-[13px] leading-snug text-slate-600">
-                <SinCortes texto={d.n} />
+      {datos.map((d) => {
+        // 0.81.1 (quinta ronda, senior): como en Parámetros y Modos, el rótulo lleva al texto
+        // literal con la fila marcada (no en las tarjetas de la entrada, que llevan a la ficha).
+        const ruta = modo === "rejilla" ? literalDe(d.f[0], c) : undefined;
+        return (
+          <div key={d.r} className={m.fila}>
+            <dt className={`rotulo pt-0.5 leading-tight ${m.dt}`}>
+              {ruta ? (
+                <a
+                  href={ruta}
+                  className="tap-44 -my-[5px] inline-block py-[5px] underline decoration-slate-300 decoration-1 underline-offset-4 hover:decoration-slate-700"
+                  title="Texto del capítulo"
+                >
+                  {d.r}
+                </a>
+              ) : (
+                d.r
+              )}
+            </dt>
+            <dd className={`min-w-0 ${m.dd}`}>
+              <span className="block text-[15px] font-semibold leading-snug text-slate-900">
+                <SinCortes texto={d.v} />
               </span>
-            )}
-            <span className="block text-[13px] leading-snug text-slate-800">
-              <Variante c={c} d={d} />
-            </span>
-          </dd>
-        </div>
-      ))}
+              {d.n && (
+                <span className="mt-0.5 block text-[13px] leading-snug text-slate-600">
+                  <SinCortes texto={d.n} />
+                </span>
+              )}
+              <span className="block text-[13px] leading-snug text-slate-800">
+                <Variante c={c} d={d} />
+              </span>
+            </dd>
+          </div>
+        );
+      })}
     </dl>
   );
 }

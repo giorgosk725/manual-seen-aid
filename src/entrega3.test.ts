@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
   buscarConTotales,
   consultaEfectiva,
+  olvidarTema,
   recordarTema,
   recursosPedidos,
   sugerir,
@@ -372,5 +373,46 @@ describe("Pertinencia de relacionadas y continuación (0.42.0)", () => {
     expect(continuacionDe("T2/2", -1)?.ruta).toBe("#/consultar/inicio/inicio::transicion");
     expect(continuacionDe("T2/0", 1)?.texto).toMatch(/Plan de respaldo.*Control-IQ/);
     expect(continuacionDe("T4/2", 0)).toBeNull();
+  });
+});
+
+describe("Quinta ronda de auditorías (0.81.1): atajos del buscador", () => {
+  const rec = (q: string) =>
+    recursosPedidos(q, buscarConTotales(q, 12).resultados).map((r) => r.entrada.ruta);
+  it("glucosa alta dicha con palabras y un sistema: la sospecha de fallo", () => {
+    expect(rec("780 glucosa alta")).toContain(
+      "#/consultar/situacion/hiperglucemia-persistente:minimed-780g",
+    );
+    expect(rec("no se si funciona el set")).toContain(
+      "#/consultar/situacion/hiperglucemia-persistente",
+    );
+    expect(rec("hiperglucemia puntual 780G")).not.toContain(
+      "#/consultar/situacion/hiperglucemia-persistente:minimed-780g",
+    );
+  });
+  it("«X a Y» entre dos sistemas: la calculadora con el destino", () => {
+    expect(rec("780G a Control-IQ")).toContain(
+      "#/consultar/inicio/calculadora:control-iq:desde-minimed-780g",
+    );
+    expect(rec("780 → control-iq")).toContain(
+      "#/consultar/inicio/calculadora:control-iq:desde-minimed-780g",
+    );
+  });
+  it("gestación con el sistema nombrado", () => {
+    expect(rec("embarazo control-iq")).toContain("#/consultar/situacion/gestacion:control-iq");
+  });
+  it("«ciq+» y «control-iq+» solos: la pregunta de las diferencias", () => {
+    olvidarTema();
+    expect(consultaEfectiva("ciq+")).toBe("control-iq+");
+    expect(rec("control-iq+")).toContain("#/preguntas/f61");
+    expect(rec("control-iq+")).toContain("#/preguntas/f61");
+    expect(rec("control-iq+ diferencias")).toContain("#/preguntas/f61");
+  });
+  it("agua con un sistema: su fila en Modos; «poner en marcha» no es «mar»", () => {
+    expect(rec("omnipod agua")).toContain("#/sistemas/op5/modos");
+    expect(rec("poner en marcha una 780G")).not.toContain("#/sistemas/mm780/modos");
+  });
+  it("qué actúa en automático: los parámetros comparados", () => {
+    expect(rec("qué actúa en automático en los cuatro")).toContain("#/sistemas/todos/parametros");
   });
 });

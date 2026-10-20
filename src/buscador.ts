@@ -482,6 +482,23 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
             fragmento: "",
             puntos: 0,
           },
+          // 0.81.1 (quinta ronda, guardia): «control-iq+» solo: también sus diferencias.
+          ...(/control[\s-]*iq\s*\+/.test(consulta.toLowerCase())
+            ? [
+                {
+                  entrada: {
+                    id: "recurso/frecuente/f61",
+                    tipo: "atajo" as const,
+                    titulo: "¿Qué diferencia hay entre Control-IQ y Control-IQ+?",
+                    texto: "",
+                    pagina: TABLAS.T1.paginas[0],
+                    ruta: href("preguntas", "f61"),
+                  },
+                  fragmento: "",
+                  puntos: 0,
+                },
+              ]
+            : []),
         ]
       : [];
   }
@@ -499,13 +516,16 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   if (
     pideSospechaDeFallo(n) ||
     (cifraAlta && sis >= 0) ||
+    // 0.81.1 (quinta ronda, guardia): «780 glucosa alta», «780G cetonas», «no sé si funciona el set».
+    (sis >= 0 && /glucosa alta|glucemia alta|hiperglu|ceton/.test(n) && !/puntual/.test(n)) ||
+    /(set|pod|cateter|canula)\b.*funciona|funciona.*\b(set|pod|cateter|canula)/.test(n) ||
     (cifraAlta && /\b(h|hora|horas|h\s)\b|horas/.test(n)) ||
     /no baja/.test(n)
   )
     out.push(
       atajo(
         "recurso/sospecha-fallo",
-        "Hiperglucemia persistente o inexplicada (sospecha de fallo)",
+        "Hiperglucemia persistente o inexplicada (sospecha de fallo de infusión)",
         href(
           "consultar",
           "situacion",
@@ -528,7 +548,8 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     if (
       dos.length >= 2 &&
       (/\b(cambi|pasar|pasa a|paso de|pase de|migr|sustitu|transici)/.test(n) ||
-        /\bde \S.* a \S/.test(crudo))
+        /\bde \S.* a \S/.test(crudo) ||
+        /\S \s*(a|→|->|por)\s+\S/.test(crudo))
     )
       out.push(
         atajo(
@@ -567,6 +588,60 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
           : "Plan de seguridad de cada sistema",
         href("pacientes", "plan", sis >= 0 ? CATALOGO_SISTEMAS[sis].id : undefined),
         9,
+      ),
+    );
+  // 0.81.1 (quinta ronda, guardia): «hoja» o «qué le doy» para el paciente, sin tema: las hojas.
+  else if (/\bhoja|que le doy/.test(n) && /paciente/.test(n))
+    out.push(
+      atajo(
+        "recurso/pacientes",
+        "Para el paciente: hojas y plan de seguridad",
+        href("pacientes"),
+        0,
+      ),
+    );
+  // 0.81.1 (quinta ronda, guardia): «control-iq+» solo o con «diferencias»: la pregunta frecuente.
+  {
+    const resto = consulta
+      .toLowerCase()
+      .replace(/control[\s-]*iq\s*\+/g, " ")
+      .replace(
+        /control[\s-]*iq|tandem|\b(diferencias?|vs|frente|entre|que|y|a|cambia|con)\b|[¿?]/g,
+        " ",
+      )
+      .trim();
+    if (/control[\s-]*iq\s*\+/.test(consulta.toLowerCase()) && resto === "")
+      out.push(
+        atajo(
+          "recurso/frecuente/f61",
+          "¿Qué diferencia hay entre Control-IQ y Control-IQ+?",
+          href("preguntas", "f61"),
+          TABLAS.T1.paginas[0],
+        ),
+      );
+  }
+  // 0.81.1 (quinta ronda, R3): «qué actúa en automático (en los cuatro)»: los parámetros
+  // comparados, agrupados por si actúan en el modo automático.
+  if (/actua(n)? en (el )?(modo )?automatico|que actua/.test(n) && !/ceton/.test(n))
+    out.push(
+      atajo(
+        "recurso/actua-automatico",
+        sis >= 0
+          ? `Parámetros de ${CATALOGO_SISTEMAS[sis].name}: qué actúa en automático`
+          : "Parámetros de los cuatro: qué actúa en automático",
+        href("sistemas", sis >= 0 ? CATALOGO_SISTEMAS[sis].id : "todos", "parametros"),
+        TABLAS.T3.paginas[0],
+      ),
+    );
+  // 0.81.1 (quinta ronda, guardia): agua, nadar, piscina o bañarse con un sistema: su fila «Agua»
+  // en Modos y funciones.
+  if (sis >= 0 && /\b(agua|nadar|natacion|piscina|ban(o|ar|arse)|mar|playa|acuatic\w*)\b/.test(n))
+    out.push(
+      atajo(
+        `recurso/agua/${SIS_IDS[sis]}`,
+        `Agua · Modos y funciones de ${CATALOGO_SISTEMAS[sis].name}`,
+        href("sistemas", CATALOGO_SISTEMAS[sis].id, "modos"),
+        TABLAS.T4.paginas[0],
       ),
     );
   // 0.78.1 (segunda ronda, adjunto): «objetivo(s) de los (cuatro) sistemas»: la fila de la
@@ -750,7 +825,8 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
       [
         /(?<!no )gestan|embaraz|gestacion|\bparto\b|posparto/,
         "Situaciones · Gestación, parto y posparto",
-        href("consultar", "situacion", "gestacion"),
+        // 0.81.1 (quinta ronda, R5): con el sistema nombrado («embarazo control-iq»).
+        href("consultar", "situacion", `gestacion${sis >= 0 ? `:${SIS_IDS[sis]}` : ""}`),
       ],
     ];
     const n = normalizar(consulta);
@@ -835,7 +911,10 @@ const palabrasDeSistema = (consulta: string) =>
     .split(/\s+/);
 /* En «de X a Y» o «pasar de X a Y», el de destino es el que va después de « a ». */
 function destinoDe(crudo: string, dos: number[]): number {
-  const tras = crudo.split(/ a /).slice(1).join(" a ");
+  const tras = crudo
+    .split(/ (?:a|→|->|por) /)
+    .slice(1)
+    .join(" a ");
   return (
     dos.find((i) =>
       ALIAS_SISTEMA[i].test(
@@ -1020,7 +1099,17 @@ export function olvidarTema() {
   temaAnterior = null;
 }
 /* «y en Omnipod 5» → la búsqueda anterior con ese sistema; null si no es un seguimiento. */
-export function consultaEfectiva(q: string): string | null {
+/* 0.81.1 (quinta ronda, guardia): «ciq+», «ciq plus», «control iq plus» = Control-IQ+. */
+const reescribir = (q: string) =>
+  q
+    .replace(/\bciq\s*(\+|plus\b)/gi, "control-iq+")
+    .replace(/control[\s-]*iq\s*plus\b/gi, "control-iq+");
+export function consultaEfectiva(q0: string): string | null {
+  const q = reescribir(q0);
+  const r = consultaEfectivaDe(q);
+  return r ?? (q !== q0 ? q : null);
+}
+function consultaEfectivaDe(q: string): string | null {
   // Escribir letra a letra no es un seguimiento: si una consulta empieza por la otra, es la
   // misma que se está escribiendo o borrando («cam», «camaps», «camaps tc») (0.72.0).
   if (temaAnterior) {

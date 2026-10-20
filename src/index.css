@@ -109,10 +109,6 @@
   .tarjeta-sistema {
     box-shadow: inset 3px 0 0 0 var(--sis, var(--acento));
   }
-  .tarjeta-realce {
-    border-color: var(--sis, var(--acento));
-    box-shadow: inset 0 0 0 1px var(--sis, var(--acento));
-  }
   /* Celda gris dentro de una caja (casilla literal, dato de una tarea). */
   .casilla {
     background: var(--papel-2);
@@ -310,9 +306,6 @@
     color: #f1f5f9 !important;
   }
   /* Rejilla de dos columnas sin hueco: la última tarjeta, si queda sola, a lo ancho. */
-  .ultima-ancha > :last-child:nth-child(odd) {
-    grid-column: 1 / -1;
-  }
   .separador {
     border-color: var(--linea-suave);
   }
@@ -433,9 +426,6 @@
   html.night .bg-slate-200 {
     background-color: #334155;
   }
-  html.night .bg-slate-300 {
-    background-color: #475569;
-  }
   html.night .bg-slate-800 {
     background-color: #e2e8f0;
     color: #0f172a;
@@ -495,8 +485,7 @@
   }
   /* 0.72.0: también los separadores sin color propio (el gris claro por defecto, de noche,
      era una línea blanca entre filas). */
-  html.night .divide-y > :not([hidden]) ~ :not([hidden]),
-  html.night .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+  html.night .divide-y > :not([hidden]) ~ :not([hidden]) {
     border-color: #334155;
   }
   html.night .shadow-soft {
@@ -575,11 +564,6 @@
   html.night .bg-emerald-100 {
     background-color: #14382d;
   }
-  html.night .border-emerald-200,
-  html.night .border-emerald-300 {
-    border-color: #1f6b52;
-  }
-  html.night .text-emerald-900,
   html.night .text-emerald-800 {
     color: #a7f3d0;
   }
@@ -592,11 +576,9 @@
   html.night .bg-sky-100 {
     background-color: #103049;
   }
-  html.night .border-sky-200,
-  html.night .border-sky-300 {
+  html.night .border-sky-200 {
     border-color: #1e5a80;
   }
-  html.night .text-sky-900,
   html.night .text-sky-800 {
     color: #bae6fd;
   }
@@ -606,26 +588,14 @@
   html.night .border-indigo-200 {
     border-color: #3f4590;
   }
-  html.night .text-indigo-900,
-  html.night .text-indigo-800 {
-    color: #c7d2fe;
-  }
   html.night .bg-violet-50 {
     background-color: #241b3a;
   }
   html.night .border-violet-200 {
     border-color: #5b3f9a;
   }
-  html.night .text-violet-900,
-  html.night .text-violet-800 {
+  html.night .text-violet-900 {
     color: #ddd6fe;
-  }
-  html.night .bg-rose-50 {
-    background-color: #2f1420;
-  }
-  html.night .text-rose-900,
-  html.night .text-rose-800 {
-    color: #fecdd3;
   }
   /* --- Superficies y tintes definidos EN LÍNEA (tarjetas de los hubs, tintes por sistema) ---
      El navegador serializa los estilos en línea en rgb(): los selectores de atributo van
@@ -829,18 +799,6 @@
   }
   /* Chips de sistema de la tabla comparativa (ACCENT.text sobre ACCENT.soft): los fondos 50
      ya se oscurecen arriba; el texto 700 se aclara al 300 del mismo matiz. */
-  html.night .text-blue-700 {
-    color: #93c5fd;
-  }
-  html.night .text-violet-700 {
-    color: #c4b5fd;
-  }
-  html.night .text-teal-700 {
-    color: #5eead4;
-  }
-  html.night .text-orange-700 {
-    color: #fdba74;
-  }
   html.night .bg-violet-50 {
     background-color: #241a3a;
   }
@@ -908,44 +866,11 @@
     --cat-ink: color-mix(in srgb, var(--cat, #94a3b8) 45%, #ffffff) !important;
   }
   /* Clases de tinte por sistema (tokens SYSTEM.soft) y sus textos. */
-  html.night .bg-blue-50 {
-    background-color: #172a3f;
-  }
-  html.night .bg-teal-50 {
-    background-color: #12302b;
-  }
-  html.night .bg-orange-50 {
-    background-color: #33211a;
-  }
-  html.night .text-blue-900,
-  html.night .text-blue-800 {
-    color: #bfdbfe;
-  }
-  html.night .text-teal-900,
-  html.night .text-teal-800 {
-    color: #99f6e4;
-  }
-  html.night .text-orange-900,
-  html.night .text-orange-800 {
-    color: #fed7aa;
-  }
-  html.night .border-blue-200 {
-    border-color: #1e4a7a;
-  }
-  html.night .border-teal-200 {
-    border-color: #1f6b5c;
-  }
-  html.night .border-orange-200 {
-    border-color: #7a3f1a;
-  }
 }
 
 /* ---------- Impresión ----------
    Solo el contenido: fuera navegación, cabeceras móviles, botones flotantes y sombras.
    `.print-only` deja un bloque pensado para papel (p. ej. el cuaderno completo). */
-.print-only {
-  display: none;
-}
 @media print {
   html,
   html.night {
@@ -956,7 +881,6 @@
   .barra-lateral,
   .cabecera,
   nav[aria-label="Barra inferior"],
-  .no-print,
   .no-imprimir,
   .volver-arriba,
   .aviso-version,
@@ -972,9 +896,6 @@
   }
   .shadow-soft {
     box-shadow: none !important;
-  }
-  .print-only {
-    display: block !important;
   }
 }
 
@@ -1440,25 +1361,6 @@ html.night .leyendo {
 }
 
 /* Tramos de la Figura 3 en el plan de seguridad: borde del color del tramo (también en papel). */
-.tramo-plan.tramo-verde {
-  border-color: #a7f3d0;
-  background: #ecfdf5;
-}
-.tramo-plan.tramo-amarillo {
-  border-color: #fde68a;
-  background: #fffbeb;
-}
-.tramo-plan.tramo-naranja {
-  border-color: #fed7aa;
-  background: #fff7ed;
-}
-.tramo-plan.tramo-rojo {
-  border-color: #fecaca;
-  background: #fef2f2;
-}
-html.night .tramo-plan {
-  background: #1e293b;
-}
 
 /* Hoja A4 en papel: UNA cara, a dos columnas, letra pequeña pero legible (7,2 pt).
    En pantalla es una sola columna normal. La prueba e2e (sesion4.spec.ts) cuenta las páginas
@@ -1521,18 +1423,10 @@ html.night .tramo-plan {
     break-before: page;
     border-top: 0;
   }
-  html.imprimiendo .hoja-a4 .tramo-plan {
-    break-inside: avoid;
-    padding: 0.8mm 1.2mm !important;
-  }
   /* En papel, los pasos de cada tramo y las filas de la Tabla 4 van seguidos. */
-  html.imprimiendo .hoja-a4 .tramo-plan li,
   html.imprimiendo .hoja-a4 .plan-t4 dt,
   html.imprimiendo .hoja-a4 .plan-t4 dd {
     display: inline;
-  }
-  html.imprimiendo .hoja-a4 .tramo-plan li + li::before {
-    content: " · ";
   }
   html.imprimiendo .hoja-a4 .plan-t4 dt::after {
     content: ": ";
@@ -1584,9 +1478,6 @@ html.night .tramo-plan {
   }
   /* La Figura 3 del plan ocupa casi una cara: puede empezar a mitad de página y partirse entre
      ramas (nunca dentro de una ni separando las ramas con dosis de su nota) (V54-09). */
-  html.imprimiendo .hoja-a4.grande .hoja-seccion.plan-figura3 {
-    break-inside: auto;
-  }
   html.imprimiendo .hoja-a4.grande p,
   html.imprimiendo .hoja-a4.grande li,
   html.imprimiendo .hoja-a4.grande dd,
@@ -1598,9 +1489,6 @@ html.night .tramo-plan {
   html.imprimiendo .hoja-a4.grande .space-y-1\.5 > *,
   html.imprimiendo .hoja-a4.grande .space-y-2 > * {
     margin-top: 1mm !important;
-  }
-  html.imprimiendo .hoja-a4.grande .tramo-plan {
-    padding: 1.5mm 2.5mm !important;
   }
   html.imprimiendo .hoja-a4.grande .hueco {
     min-height: 8mm;
@@ -1811,15 +1699,6 @@ html.night .sigla:focus-visible {
     text-decoration: none;
   }
 }
-html.night .bg-orange-50 {
-  background-color: #2f1a0c;
-}
-html.night .border-orange-200 {
-  border-color: #7c2d12;
-}
-html.night .text-orange-900 {
-  color: #fed7aa;
-}
 
 /* Foco visible en modo nocturno (edición 0.50): un contorno claro de 2 px sobre el fondo oscuro
    (contraste ≥ 3:1 con el fondo), aunque el control use focus:outline-none con un anillo gris. */
@@ -1850,10 +1729,6 @@ html.night *:focus-visible {
 @media print {
   /* V54-09: la figura puede partirse, pero no una rama; y las ramas con dosis van juntas con su
      nota de población. */
-  .plan-figura3 .tramo-plan,
-  .plan-f3-dosis {
-    break-inside: avoid;
-  }
 }
 
 /* Bloque de alarma de una hoja para el paciente (V54-02): el marco rojo se imprime (aunque el
@@ -1918,10 +1793,6 @@ html.night *:focus-visible {
   html.night .tarjeta-sistema,
   html.night .casilla-sistema {
     box-shadow: inset 3px 0 0 0 var(--sis, var(--acento-texto));
-  }
-  html.night .tarjeta-realce {
-    border-color: var(--sis, var(--acento-texto));
-    box-shadow: inset 0 0 0 1px var(--sis, var(--acento-texto));
   }
   /* La marca del sistema elegido en el selector (botón de opción y casilla): burdeos sobre el
      fondo marcado medía 1,83:1; en nocturno, el burdeos claro del acento. */

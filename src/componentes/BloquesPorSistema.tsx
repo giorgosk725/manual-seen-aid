@@ -72,25 +72,33 @@ export function BloquesPorSistema({
   /* Dentro de un diagrama, la fuente va en la línea del marco (una sola). */
   sinFuente?: boolean;
 }) {
+  // 0.81.1 (quinta ronda, R5): sin sistema elegido (−1), ninguno marcado ni preelegido.
   const c = seleccion;
-  const todas = [...bloques[c], ...comun].flatMap((b) => b.piezas);
+  const propios = c >= 0 ? bloques[c] : [];
+  const todas = [...propios, ...comun].flatMap((b) => b.piezas);
   return (
     <div>
       {/* 0.76: el mismo selector de sistema de toda la app (uno marcado). */}
       <div className="mb-3">
-        <CasillasSistema seleccion={[c]} onToggle={onElegir} nombres={CORTO_SISTEMA} unico />
+        <CasillasSistema
+          seleccion={c >= 0 ? [c] : []}
+          onToggle={onElegir}
+          nombres={CORTO_SISTEMA}
+          unico
+          pista={c < 0 ? "Elegir el sistema" : undefined}
+        />
       </div>
-      <Bloques c={c} bloques={bloques[c]} />
+      {c >= 0 && <Bloques c={c} bloques={propios} />}
       {/* Lo común a los cuatro (objetivos de inicio), a todo lo ancho tras lo del sistema: es la
           tarjeta más alta y, en las columnas, dejaba un pie desigual. */}
       {comun.length > 0 && (
         <div className="mt-3">
-          <Bloques c={c} bloques={comun} />
+          <Bloques c={Math.max(c, 0)} bloques={comun} />
         </div>
       )}
       {!sinFuente && <FuentePie className="mt-3" fuentes={fuentesDePiezas(todas)} />}
       {/* Lo complementario del sistema (no es del capítulo), al final y con su propia fuente. */}
-      {complementos[c] && <ComplementoVista complemento={complementos[c]} />}
+      {c >= 0 && complementos[c] && <ComplementoVista complemento={complementos[c]} />}
     </div>
   );
 }
