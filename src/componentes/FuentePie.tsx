@@ -26,8 +26,9 @@ export function FuentePie({
       Fuente:{" "}
       {unicas.map((f, k) => (
         <span key={f.texto}>
-          {/* Espacio duro tras el punto: si la línea se parte, el «·» baja con su fuente. */}
-          {k > 0 && " · "}
+          {/* 0.82.1 (sexta ronda, visual): espacio duro antes del punto: si la línea se parte, el
+              «·» se queda al final (como en el resto de la app). */}
+          {k > 0 && "\u00a0· "}
           {f.ruta ? (
             <a
               href={f.ruta}

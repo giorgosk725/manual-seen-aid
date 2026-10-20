@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — quinta ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — sexta ronda de auditorías de uso`,
+    detalle: [
+      "Buscador: «ciq+» sin aviso de búsqueda encadenada y con la pregunta de las diferencias ya contestada; la sospecha de fallo, un solo atajo a la Figura 3; hiperglucemia tardía → comida grasa; hipoglucemia nocturna con un sistema → su sueño; agua y alcohol con un sistema → su fila de Modos, marcada; «X frente a Y» ya no es un cambio de sistema; gestación con dos sistemas, sin ninguno marcado.",
+      "Preguntas frecuentes: las frases seguidas de un párrafo y los incisos de una lista, en una sola tarjeta con una sola fuente; la nota de la Figura 3 y las de las tablas, una vez.",
+      "Fuentes al pie: cada párrafo con la suya aunque compartan página (con su título); el «·» nunca abre línea.",
+      "Selector de sistema en una fila a 1366 y 1440; en Modos, la respuesta del sistema en seminegrita tras lo que se hace antes; el Resumen de la comparación conserva los sistemas elegidos.",
+      "En papel, sin la sección de preguntas vacía y sin la fuente sola al principio de una cara.",
+    ],
+  },
+  {
+    fecha: "2026-10-20",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.82.0 — quinta ronda de auditorías de uso",
     detalle: [
       "Del dato al literal también en Cómo funciona e Indicación y material: cada rótulo abre la tabla con la fila marcada.",
       "Situaciones: comida grasa y sueño con lo que se revisa antes en los cuatro sistemas; rótulo de la sospecha de fallo igual que en la Tabla 4; la nota de las retiradas de más de 1 h, después de la conducta; sin sistema elegido si no se ha consultado ninguno; selector en una línea.",

@@ -1,7 +1,7 @@
 /* La procedencia de las piezas del capítulo («Tabla 2, p. 10», «Apartado 8, p. 12»), con su
    sitio exacto en el capítulo, para la línea de fuente al pie de cada bloque de las
    herramientas. */
-import { APARTADOS, TABLAS, rutaDeTabla } from "./contenido";
+import { APARTADOS, TABLAS, idDeBloque, rutaDeTabla } from "./contenido";
 import { frasesDe, listaDe, type Pieza } from "./inicio";
 import { paginasDe } from "./paginas";
 
@@ -43,10 +43,25 @@ export function fuentesDePieza(p: Pieza): { texto: string; ruta: string }[] {
       return [];
   }
 }
-/* Las fuentes de unas piezas, sin repetir. */
+/* El título en negrita con que empieza un párrafo («Hipoglucemia nocturna»), por su ruta. */
+function entradillaDe(ruta: string): string | undefined {
+  const [, , slug, ancla] = ruta.split("/");
+  const a = APARTADOS.find((x) => x.slug === slug);
+  const b = a?.bloques.find((x, i) => idDeBloque(x, i) === ancla);
+  return b?.t === "p" ? b.lead?.replace(/[.:]$/, "") : undefined;
+}
+/* Las fuentes de unas piezas, sin repetir. 0.82.1 (sexta ronda, senior): sin repetir el sitio
+   (antes, el texto: dos párrafos de la misma página daban una sola fuente, que llevaba al otro);
+   si dos sitios se escriben igual, cada uno con la entradilla de su párrafo. */
 export function fuentesDePiezas(piezas: Pieza[]): { texto: string; ruta: string }[] {
   const vistas = new Set<string>();
-  return piezas
+  const unicas = piezas
     .flatMap(fuentesDePieza)
-    .filter((f) => !vistas.has(f.texto) && !!vistas.add(f.texto));
+    .filter((f) => !vistas.has(f.ruta) && !!vistas.add(f.ruta));
+  const veces = new Map<string, number>();
+  for (const f of unicas) veces.set(f.texto, (veces.get(f.texto) ?? 0) + 1);
+  return unicas.map((f) => {
+    const e = (veces.get(f.texto) ?? 0) > 1 ? entradillaDe(f.ruta) : undefined;
+    return e ? { ...f, texto: `${f.texto} · ${e}` } : f;
+  });
 }

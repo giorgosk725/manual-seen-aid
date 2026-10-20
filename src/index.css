@@ -1755,8 +1755,13 @@ html.night *:focus-visible {
     break-inside: avoid;
   }
   .imprimible .titulo-seccion,
-  .imprimible .titulo-tarjeta {
+  .imprimible .titulo-tarjeta,
+  .imprimible .filas-datos > div:last-child {
     break-after: avoid;
+  }
+  /* 0.82.1 (sexta ronda, R3 y visual): la fuente no abre cara sola. */
+  .imprimible .fuente-pie {
+    break-before: avoid;
   }
 }
 

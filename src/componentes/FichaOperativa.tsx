@@ -5,7 +5,13 @@
 import type { ReactNode } from "react";
 import { FuentePie } from "./FuentePie";
 import { SinCortes } from "./SinCortes";
-import { fuentesDeDatos, type Dato, type EnAutomatico, type GrupoFicha } from "../fichaOperativa";
+import {
+  fuentesDeDatos,
+  slugDato,
+  type Dato,
+  type EnAutomatico,
+  type GrupoFicha,
+} from "../fichaOperativa";
 import { SISTEMA_HEX } from "../tokens";
 import { fuentesDePieza } from "../fuentesPiezas";
 import { href } from "../rutas";
@@ -172,6 +178,8 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
             return (
               <div
                 key={d.r}
+                // 0.82.1 (sexta ronda, guardia): la fila a la que lleva un atajo («modos:agua»).
+                data-dato={slugDato(d.r)}
                 className="grid gap-x-5 gap-y-1 px-4 py-3 sm:grid-cols-[minmax(11rem,16rem)_1fr]"
               >
                 <dt className="min-w-0">
@@ -204,12 +212,20 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                   )}
                   {/* 0.80.1 (cuarta ronda, senior): lo que el capítulo manda hacer antes, con el
                       mismo peso que la respuesta (antes iba en la línea pequeña). */}
+                  {/* 0.82.1 (sexta ronda, senior y visual): lo que se hace antes, con su peso; la
+                      respuesta del sistema, en seminegrita, para que no se confundan. */}
                   {d.antes && (
-                    <span className="mb-1 block">
+                    <span className="mb-1.5 block">
                       <SinCortes texto={d.antes} />
                     </span>
                   )}
-                  <SinCortes texto={d.v} />
+                  {d.antes ? (
+                    <span className="block font-semibold text-slate-900">
+                      <SinCortes texto={d.v} />
+                    </span>
+                  ) : (
+                    <SinCortes texto={d.v} />
+                  )}
                   {d.n && (
                     <span className="mt-0.5 block text-[13px] text-slate-600">
                       <SinCortes texto={d.n} />

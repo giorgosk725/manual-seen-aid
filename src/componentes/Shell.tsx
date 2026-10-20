@@ -148,7 +148,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
         <div ref={zona} onKeyDown={alMoverse}>
           {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
           <Autocompletar items={sugerencias} onElegir={setQ} onIr={cerrarYGuardar} />
-          {qEf !== q && (
+          {qEf !== q && qEf !== motor?.reescribir(q) && (
             <p className="mt-1 text-xs text-slate-600" role="status">
               Buscado junto con la consulta anterior: «{qEf}».
             </p>

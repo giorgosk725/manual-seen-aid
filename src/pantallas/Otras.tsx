@@ -134,7 +134,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
     [motor, qEf, res],
   );
   const intencionClara = atajos.some((a) =>
-    /^recurso\/(cambio|cambio-aid|objetivos|actua-automatico)/.test(a.entrada.id),
+    /^recurso\/(cambio|cambio-aid|objetivos|actua-automatico|frecuente)/.test(a.entrada.id),
   );
   const respuestas = useMemo(() => {
     const todos = motor && qEf.trim().length >= 2 ? motor.fusionar(qEf, parecidos) : [];
@@ -148,11 +148,14 @@ export function Buscar({ inicial }: { inicial?: string }) {
       return [...rs.slice(1), rs[0]];
     return rs;
   }, [motor, qEf, parecidos, intencionClara]);
-  const frecuente = useMemo(
-    () =>
-      motor && qEf.trim().length >= 2 && !intencionClara ? motor.preguntaFrecuente(qEf) : null,
-    [motor, qEf, intencionClara],
-  );
+  // 0.82.1 (sexta ronda, guardia): si un atajo pide una pregunta frecuente («ciq+»), se enseña
+  // ya contestada (y el atajo, que la repetiría, no).
+  const frecuente = useMemo(() => {
+    if (!motor || qEf.trim().length < 2) return null;
+    const pedida = atajos.find((a) => a.entrada.id.startsWith("recurso/frecuente/"));
+    if (pedida) return motor.preguntaFrecuente(pedida.entrada.titulo);
+    return intencionClara ? null : motor.preguntaFrecuente(qEf);
+  }, [motor, qEf, intencionClara, atajos]);
   useEffect(() => {
     if (motor && (respuestas.length || frecuente)) motor.recordarTema(qEf);
     else if (motor && qEf === q && q.trim().length >= 3) motor.olvidarTema();
@@ -230,6 +233,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
     pestana === "texto" && !textoRes.length ? (tablasRes.length ? "tablas" : "fuera") : pestana;
   const hayMas = dentro.length < busqueda.totalCapitulo || fueraRes.length < busqueda.totalFuera;
   const hayRespuesta = !!frecuente || respuestas.length > 0 || extras.length > 0;
+  const total = Math.max(res.length, busqueda.totalCapitulo + busqueda.totalFuera);
   return (
     <div>
       <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1} />
@@ -250,18 +254,20 @@ export function Buscar({ inicial }: { inicial?: string }) {
         texto={
           qEf.trim().length < 2 || estado !== "listo"
             ? ""
-            : hayRespuesta
-              ? res.length
-                ? `Hay respuesta del capítulo y ${res.length} ${res.length === 1 ? "resultado más" : "resultados más"}.`
+            : // 0.82.1 (sexta ronda, adjunto): la misma cifra que «Todos los resultados (N)».
+              hayRespuesta
+              ? total
+                ? `Hay respuesta del capítulo y ${total} ${total === 1 ? "resultado más" : "resultados más"}.`
                 : "Hay respuesta del capítulo."
-              : res.length
-                ? `${res.length} ${res.length === 1 ? "resultado" : "resultados"}.`
+              : total
+                ? `${total} ${total === 1 ? "resultado" : "resultados"}.`
                 : "Sin resultados."
         }
       />
       {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
       {!frecuente && <Autocompletar items={sugerencias} onElegir={setQ} />}
-      {qEf !== q && (
+      {/* 0.82.1 (sexta ronda, guardia): «ciq+» leído como «control-iq+» no es un seguimiento. */}
+      {qEf !== q && qEf !== motor?.reescribir(q) && (
         <p className="mt-2 text-xs text-slate-600" role="status">
           Buscado junto con la consulta anterior: «{qEf}».{" "}
           <button
@@ -281,7 +287,13 @@ export function Buscar({ inicial }: { inicial?: string }) {
           if ((e.target as HTMLElement).closest("a")) guardarReciente(q);
         }}
       >
-        {motor && qEf.trim().length >= 2 && <RecursosPedidos items={atajos} />}
+        {motor && qEf.trim().length >= 2 && (
+          <RecursosPedidos
+            items={atajos.filter(
+              (a) => !(frecuente && a.entrada.id === `recurso/frecuente/${frecuente.id}`),
+            )}
+          />
+        )}
         {noCubierto && (
           <div
             role="status"

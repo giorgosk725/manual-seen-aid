@@ -41,7 +41,14 @@ export function CasillasSistema({
     <div
       role={unico ? "radiogroup" : "group"}
       aria-label={etiqueta}
-      className="sm:flex sm:flex-wrap sm:items-center sm:gap-1.5"
+      // 0.82.1 (sexta ronda, adjunto y visual): en la elección única, cuatro columnas iguales desde
+      // sm (antes, Omnipod 5 bajaba solo a otra fila a 1366 y 1440); un nombre largo va en dos
+      // líneas dentro de su casilla.
+      className={
+        unico
+          ? "sm:grid sm:grid-cols-4 sm:gap-1.5"
+          : "sm:flex sm:flex-wrap sm:items-center sm:gap-1.5"
+      }
     >
       <div className="grid grid-cols-2 gap-1.5 sm:contents">
         {TABLAS.T1.columnas.map((nombre, c) => {
@@ -116,7 +123,9 @@ export function CasillasSistema({
         })}
       </div>
       {(extra || pista) && (
-        <div className="mt-1.5 flex items-center gap-2 empty:hidden sm:contents">
+        <div
+          className={`mt-1.5 flex items-center gap-2 empty:hidden ${unico ? "sm:col-span-4" : "sm:contents"}`}
+        >
           {extra}
           {pista && <span className="text-xs text-slate-500">{pista}</span>}
         </div>

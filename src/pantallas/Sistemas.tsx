@@ -5,6 +5,7 @@
    aparte la Ampliación técnica, fuera del capítulo y con sus fuentes. Varios o todos
    (#/sistemas/<a+b|todos>/<seccion>) = la misma sección, un sistema junto a otro: eso son
    «Comparar sistemas» y «Parámetros por sistema». */
+import { sinCortes } from "../sinCortes";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ArrowRight, Check, ExternalLink, Minus, X } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, type Tabla } from "../contenido";
@@ -505,9 +506,40 @@ function TituloSeccion({
   );
 }
 
-export function FichaSistema({ id, seccion }: { id?: string; seccion?: string }) {
+export function FichaSistema({
+  id,
+  seccion,
+  fila,
+}: {
+  id?: string;
+  seccion?: string;
+  fila?: string;
+}) {
   const s = sistemaDelCatalogo(id);
   const ref = useRef<HTMLDivElement>(null);
+  // 0.82.1 (sexta ronda, guardia): con una fila pedida, marcada y justo bajo la barra pegada.
+  useEffect(() => {
+    if (!fila) return;
+    let n = 0;
+    let marco = 0;
+    const buscar = () => {
+      const el = ref.current?.querySelector<HTMLElement>(`[data-dato^="${fila}"]`);
+      if (!el) {
+        if (n++ < 40) marco = requestAnimationFrame(buscar);
+        return;
+      }
+      ref.current
+        ?.querySelectorAll(".fila-resaltada")
+        .forEach((x) => x.classList.remove("fila-resaltada"));
+      el.classList.add("fila-resaltada");
+      const barra = document.querySelector(".barra-pegada")?.getBoundingClientRect().bottom ?? 0;
+      window.scrollTo({
+        top: Math.max(0, window.scrollY + el.getBoundingClientRect().top - barra - 12),
+      });
+    };
+    marco = requestAnimationFrame(buscar);
+    return () => cancelAnimationFrame(marco);
+  }, [fila, id]);
   const parrafos = useMemo(() => (s ? parrafosDelSistema(s.id) : []), [s]);
   const completa = seccion === "completa";
   // 0.76: en el móvil, el selector de sistemas se abre desde la cabecera (la barra pegada solo
@@ -696,7 +728,8 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       {preguntas.length > 0 && (
         <section
           aria-labelledby="preguntas"
-          className={`${mt} scroll-mt-2 print:mt-8 ${papel("preguntas")}`}
+          // 0.82.1 (sexta ronda, R3 y visual): en papel, sin la sección si no queda ninguna.
+          className={`${mt} scroll-mt-2 print:mt-8 ${papel("preguntas")} ${preguntas.every((f) => !impresas.get(f.id)?.length) ? "print:hidden" : ""}`}
         >
           <TituloSeccion id="preguntas" sistema={s.name} color={h.ink} visible={completa}>
             Preguntas frecuentes
@@ -798,7 +831,10 @@ function AsituacionesConSistema({ ids }: { ids: string[] }) {
   return null;
 }
 
-export function Sistemas({ sel, seccion }: { sel?: string; seccion?: string }) {
+export function Sistemas({ sel, seccion: pedida }: { sel?: string; seccion?: string }) {
+  // 0.82.1 (sexta ronda): «modos:agua» = la sección y la fila que se marca.
+  const [base, filaPedida] = (pedida ?? "").split(":");
+  const seccion = base || undefined;
   if (sel === "elegir") return <Elegir antigua={!!seccion} />;
   const ids = sel === undefined ? [] : leerSeleccion(sel);
   if (seccion === "situaciones") return <AsituacionesConSistema ids={ids} />;
@@ -810,7 +846,8 @@ export function Sistemas({ sel, seccion }: { sel?: string; seccion?: string }) {
     : seccion === "completa"
       ? "completa"
       : undefined;
-  if (ids.length === 1) return <FichaSistema id={ids[0]} seccion={sec} />;
+  if (ids.length === 1)
+    return <FichaSistema id={ids[0]} seccion={sec} fila={filaPedida || undefined} />;
   return <Comparacion ids={ids} seccion={sec === "completa" ? "esencial" : sec} />;
 }
 
@@ -1030,9 +1067,11 @@ function BarraSistemas({
         {/* 0.72.1: las tarjetas son una vista más, al lado de las dos tablas: así se vuelve a
             ellas desde la comparación (antes solo con «Sistemas» abajo o Atrás). */}
         {ids.length !== 1 && (
+          // 0.82.1 (sexta ronda, R5): con dos o más marcados, el Resumen de esos (antes, volvía a
+          // los cuatro sin nada marcado).
           <a
-            href={href("sistemas")}
-            aria-current={entrada ? "location" : undefined}
+            href={selStr.includes("+") ? href("sistemas", selStr) : href("sistemas")}
+            aria-current={entrada || (ids.length > 1 && !sec) ? "location" : undefined}
             onFocus={pestanaALaVista}
             className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
@@ -1124,7 +1163,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                       <NombreSistema n={s.name} />
                     </span>
                     <span className="mt-0.5 block text-sm font-semibold text-slate-700">
-                      {ALGORITMO[c][0].v}
+                      {sinCortes(ALGORITMO[c][0].v)}
                     </span>
                   </span>
                 </a>
@@ -1135,7 +1174,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                       <span className="insignia" style={{ background: h.soft, color: h.ink }}>
                         {variante.r}
                       </span>
-                      <span className="min-w-0">{variante.v}</span>
+                      <span className="min-w-0">{sinCortes(variante.v)}</span>
                     </p>
                   )}
                 </div>

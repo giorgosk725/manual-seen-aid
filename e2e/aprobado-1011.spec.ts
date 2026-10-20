@@ -22,7 +22,8 @@ test.describe("Aprobado el 11-10 (0.37.0)", () => {
     ]);
     await expect(page.getByRole("region", { name: "Características" })).toBeVisible();
     await secciones.getByRole("link", { name: "Resumen" }).click();
-    await expect(page).toHaveURL(/#\/sistemas$/);
+    // 0.82.1 (sexta ronda, R5): el Resumen de los dos elegidos (antes, el de los cuatro).
+    await expect(page).toHaveURL(/#\/sistemas\/ciq\+op5$/);
   });
 
   test("paso 7 del ejemplo: contexto plegable antes de las opciones y comentario en cuatro partes", async ({

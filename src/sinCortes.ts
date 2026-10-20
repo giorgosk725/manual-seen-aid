@@ -21,11 +21,16 @@ export const RE_PIEZA = new RegExp(
 /* El texto con sus espacios duros, sin piezas: para pasarlo a <Lineas> o <Texto>, que ya llevan
    su marcado y sus siglas. Solo cambia el espacio; las palabras y las cifras son las mismas. */
 export function sinCortes(texto: string): string {
-  return texto
-    .replace(RE_UNIDAD, `$1${NBSP}$2`)
-    .replace(/([<>≤≥]) (\d)/g, `$1${NBSP}$2`)
-    .replace(/EE\. UU\./g, `EE.${NBSP}UU.`)
-    .replace(/tipo (\d)/g, `tipo${NBSP}$1`)
-    .replace(/ratios? I\/HC/g, (m) => m.replace(" ", NBSP))
-    .replace(/(\d) (a|o) (\d)/g, `$1${NBSP}$2${NBSP}$3`);
+  return (
+    texto
+      .replace(RE_UNIDAD, `$1${NBSP}$2`)
+      .replace(/([<>≤≥]) (\d)/g, `$1${NBSP}$2`)
+      .replace(/EE\. UU\./g, `EE.${NBSP}UU.`)
+      .replace(/tipo (\d)/g, `tipo${NBSP}$1`)
+      .replace(/ratios? I\/HC/g, (m) => m.replace(" ", NBSP))
+      .replace(/(\d) (a|o) (\d)/g, `$1${NBSP}$2${NBSP}$3`)
+      // 0.82.1 (sexta ronda, visual): el «·» de una enumeración, al final de la línea, nunca al
+      // principio de la siguiente.
+      .replace(/ · /g, `${NBSP}· `)
+  );
 }

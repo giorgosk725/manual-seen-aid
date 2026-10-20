@@ -182,7 +182,7 @@ function Chip({
       type="button"
       aria-pressed={on}
       onClick={onClick}
-      className={`tap-44 inline-flex min-h-8 items-center rounded-md border px-2.5 text-xs font-semibold transition ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-500"}`}
+      className={`tap-44 inline-flex min-h-11 items-center rounded-md border px-2.5 text-xs font-semibold transition sm:min-h-8 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-500"}`}
       style={on ? { background: "#8E254E", borderColor: "#8E254E" } : { borderColor: "#d4d4d4" }}
     >
       {children}
@@ -383,7 +383,12 @@ function Tarjeta({
           ))}
         </dl>
       )}
-      {asterisco && !sinNota && <p className="mt-1 text-xs text-slate-600">{asterisco.nota}</p>}
+      {/* 0.82.1 (sexta ronda, R3): no debajo de la propia nota (salía dos veces). */}
+      {asterisco &&
+        !sinNota &&
+        !(r.texto ?? "").includes(asterisco.nota.replace(/^\*\s*/, "").slice(0, 40)) && (
+          <p className="mt-1 text-xs text-slate-600">{asterisco.nota}</p>
+        )}
       {/* Una decisión registrada que ayuda a leer el pasaje (V54-11), rotulada aparte. */}
       {NOTAS_POR_PASAJE[r.id] &&
         (!r.sistema ||
@@ -495,24 +500,42 @@ function BloqueFrecuente({
         // pasaje que la lleva; y las frases seguidas del mismo párrafo, en una sola tarjeta con
         // una sola fuente (no una tarjeta y una fuente por frase).
         const notas = principales.map((r) => notaAsterisco(r)?.nota).filter(Boolean) as string[];
+        // 0.82.1 (sexta ronda, R3): también la nota de la Figura 3 («F3/nota»), y comparando el
+        // texto sin el asterisco.
+        const sinAst = (x: string) => x.replace(/^\*\s*/, "").trim();
         const sinNotasRepetidas = principales.filter(
-          (r) => !(/\/nota\//.test(r.id) && notas.some((n) => n.includes((r.texto ?? "").trim()))),
+          (r) =>
+            !(
+              /\/nota(\/|$)/.test(r.id) &&
+              notas.some((n) => sinAst(n).includes(sinAst(r.texto ?? "").slice(0, 60)))
+            ),
         );
-        const FRASE = /^t\/([^/]+\/[^/]+)\/(\d+)$/;
+        // Frases («t/…/k») e incisos de lista («l/…/k») seguidos del mismo bloque, juntos: hasta
+        // ahora solo se unían de dos en dos (se miraba el id ya unido).
+        const PIEZA = /^([tl])\/([^/]+\/[^/]+)\/(\d+)$/;
+        const ultima = (r: Respuesta) => r.id.split("+").pop()!;
         const suelta = (r: Respuesta) =>
-          r.tipo === "texto" && FRASE.test(r.id) && !r.items && !r.casillas && !r.porSistema;
+          r.tipo === "texto" && PIEZA.test(ultima(r)) && !r.casillas && !r.porSistema;
         const juntas: Respuesta[] = [];
         for (const r of sinNotasRepetidas) {
           const ant = juntas[juntas.length - 1];
-          const a = ant && suelta(ant) ? FRASE.exec(ant.id.split("+").pop()!) : null;
-          const b = suelta(r) ? FRASE.exec(r.id) : null;
-          if (a && b && a[1] === b[1]) {
-            const seguida = Number(b[2]) === Number(a[2]) + 1;
-            juntas[juntas.length - 1] = {
-              ...ant,
-              id: `${ant.id}+${r.id}`,
-              texto: `${ant.texto}${seguida ? " " : " […] "}${r.texto}`,
-            };
+          const a = ant && suelta(ant) ? PIEZA.exec(ultima(ant)) : null;
+          const b = suelta(r) && !r.items ? PIEZA.exec(r.id) : null;
+          if (a && b && a[1] === b[1] && a[2] === b[2]) {
+            const seguida = Number(b[3]) === Number(a[3]) + 1;
+            juntas[juntas.length - 1] =
+              b[1] === "l"
+                ? {
+                    ...ant,
+                    id: `${ant.id}+${r.id}`,
+                    texto: "",
+                    items: [...(ant.items ?? [ant.texto ?? ""]), r.texto ?? ""],
+                  }
+                : {
+                    ...ant,
+                    id: `${ant.id}+${r.id}`,
+                    texto: `${ant.texto}${seguida ? " " : " […] "}${r.texto}`,
+                  };
           } else juntas.push(r);
         }
         const tarjeta = (r: Respuesta, k: number, lista: Respuesta[]) => {

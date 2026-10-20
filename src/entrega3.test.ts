@@ -380,15 +380,9 @@ describe("Quinta ronda de auditorías (0.81.1): atajos del buscador", () => {
   const rec = (q: string) =>
     recursosPedidos(q, buscarConTotales(q, 12).resultados).map((r) => r.entrada.ruta);
   it("glucosa alta dicha con palabras y un sistema: la sospecha de fallo", () => {
-    expect(rec("780 glucosa alta")).toContain(
-      "#/consultar/situacion/hiperglucemia-persistente:minimed-780g",
-    );
-    expect(rec("no se si funciona el set")).toContain(
-      "#/consultar/situacion/hiperglucemia-persistente",
-    );
-    expect(rec("hiperglucemia puntual 780G")).not.toContain(
-      "#/consultar/situacion/hiperglucemia-persistente:minimed-780g",
-    );
+    expect(rec("780 glucosa alta")).toContain("#/consultar/figura-3");
+    expect(rec("no se si funciona el set")).toContain("#/consultar/figura-3");
+    expect(rec("hiperglucemia puntual 780G")).not.toContain("#/consultar/figura-3");
   });
   it("«X a Y» entre dos sistemas: la calculadora con el destino", () => {
     expect(rec("780G a Control-IQ")).toContain(
@@ -409,10 +403,37 @@ describe("Quinta ronda de auditorías (0.81.1): atajos del buscador", () => {
     expect(rec("control-iq+ diferencias")).toContain("#/preguntas/f61");
   });
   it("agua con un sistema: su fila en Modos; «poner en marcha» no es «mar»", () => {
-    expect(rec("omnipod agua")).toContain("#/sistemas/op5/modos");
+    expect(rec("omnipod agua")).toContain("#/sistemas/op5/modos:agua");
     expect(rec("poner en marcha una 780G")).not.toContain("#/sistemas/mm780/modos");
   });
   it("qué actúa en automático: los parámetros comparados", () => {
     expect(rec("qué actúa en automático en los cuatro")).toContain("#/sistemas/todos/parametros");
+  });
+});
+
+describe("Sexta ronda de auditorías (0.82.1): atajos del buscador", () => {
+  const rec = (q: string) =>
+    recursosPedidos(q, buscarConTotales(q, 12).resultados).map((r) => r.entrada.ruta);
+  it("«X frente a Y» o «comparado» no es un cambio de sistema", () => {
+    expect(rec("camaps frente a control-iq en el embarazo").join(" ")).not.toMatch(/calculadora/);
+    expect(rec("780g comparado a omnipod 5").join(" ")).not.toMatch(/calculadora/);
+    expect(rec("780g a ciq").join(" ")).toMatch(/calculadora:control-iq:desde-minimed-780g/);
+  });
+  it("gestación con dos sistemas: ninguno marcado", () => {
+    expect(rec("embarazo camaps o control-iq")).toContain("#/consultar/situacion/gestacion");
+  });
+  it("hiperglucemia tardía: la comida grasa, no la sospecha de fallo", () => {
+    const r = rec("hiperglucemia tardía 780G");
+    expect(r).toContain("#/consultar/situacion/comida-grasa:minimed-780g");
+    expect(r).not.toContain("#/consultar/figura-3");
+  });
+  it("hipoglucemia nocturna con un sistema: el sueño de ese sistema", () => {
+    expect(rec("hipoglucemias nocturnas control-iq")).toContain(
+      "#/consultar/situacion/sueno:control-iq",
+    );
+  });
+  it("alcohol y objetivo temporal con un sistema: su ficha", () => {
+    expect(rec("alcohol control-iq")).toContain("#/sistemas/ciq/modos:alcohol");
+    expect(rec("objetivo temporal 780G")).toContain("#/sistemas/mm780/modos");
   });
 });

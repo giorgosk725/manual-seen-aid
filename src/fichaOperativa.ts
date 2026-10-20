@@ -33,6 +33,15 @@ export interface GrupoFicha {
   datos: Dato[];
 }
 
+/* El rótulo de una fila, como clave de dirección («Agua y deportes de contacto» → «agua-y-…»). */
+export const slugDato = (r: string) =>
+  r
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
 const t1 = (fila: number): Pieza => ({ t: "casilla", tabla: "T1", fila });
 const t3 = (fila: number): Pieza => ({ t: "casilla", tabla: "T3", fila });
 const t4 = (fila: number): Pieza => ({ t: "casilla", tabla: "T4", fila });
@@ -66,7 +75,7 @@ export const ALGORITMO: Dato[][] = [
     {
       r: "Bolos automáticos de corrección",
       v: "Sí, hasta uno cada 5 min si predice > 120 mg/dl",
-      n: "Safe Bolus la reduce si predice hipoglucemia",
+      n: "Safe Bolus reduce la dosis si se predice hipoglucemia",
       f: [t1(5)],
     },
     {

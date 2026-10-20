@@ -513,7 +513,23 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   // sospecha de fallo de infusión (Tabla 4 y Figura 3), no la hiperglucemia puntual.
   // 0.79.1 (tercera ronda, guardia): también con una glucemia de 250 o más y horas, o «no baja».
   const cifraAlta = (n.match(/\b(2[5-9]\d|[3-5]\d\d)\b/) ?? []).length > 0;
-  if (
+  // 0.82.1 (sexta ronda, R3): la hiperglucemia tardía tras comidas grasas no es sospecha de fallo.
+  const tardia = /tardi|posprandial|grasa|proteic|cena/.test(n);
+  if (tardia) {
+    const rutaGrasa = href(
+      "consultar",
+      "situacion",
+      `comida-grasa${sis >= 0 ? `:${SIS_IDS[sis]}` : ""}`,
+    );
+    out.push(
+      atajo(
+        "recurso/comida-grasa",
+        "Comida rica en grasa o proteína (Tabla 4)",
+        rutaGrasa,
+        TABLAS.T4.paginas[0],
+      ),
+    );
+  } else if (
     pideSospechaDeFallo(n) ||
     (cifraAlta && sis >= 0) ||
     // 0.81.1 (quinta ronda, guardia): «780 glucosa alta», «780G cetonas», «no sé si funciona el set».
@@ -522,20 +538,12 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     (cifraAlta && /\b(h|hora|horas|h\s)\b|horas/.test(n)) ||
     /no baja/.test(n)
   )
+    // 0.82.1 (sexta ronda, guardia): un solo atajo y al mismo sitio que en Situaciones (antes,
+    // una página intermedia con una línea de la Tabla 4 y, aparte, la Figura 3).
     out.push(
       atajo(
         "recurso/sospecha-fallo",
-        "Hiperglucemia persistente o inexplicada (sospecha de fallo de infusión)",
-        href(
-          "consultar",
-          "situacion",
-          sis >= 0 ? `hiperglucemia-persistente:${SIS_IDS[sis]}` : "hiperglucemia-persistente",
-        ),
-        TABLAS.T4.paginas[0],
-      ),
-      atajo(
-        "recurso/figura-3",
-        "Hiperglucemia y cetonemia (Figura 3)",
+        "Sospecha de fallo de infusión: hiperglucemia y cetonemia (Figura 3)",
         href("consultar", "figura-3"),
         9,
       ),
@@ -547,9 +555,10 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     const crudo = consulta.toLowerCase();
     if (
       dos.length >= 2 &&
+      !/frente a|comparad|respecto|\bvs\b|\bentre\b|diferenc/.test(n) &&
       (/\b(cambi|pasar|pasa a|paso de|pase de|migr|sustitu|transici)/.test(n) ||
         /\bde \S.* a \S/.test(crudo) ||
-        /\S \s*(a|→|->|por)\s+\S/.test(crudo))
+        entreSistemas(crudo))
     )
       out.push(
         atajo(
@@ -620,6 +629,16 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         ),
       );
   }
+  // 0.82.1 (sexta ronda, senior): el alcohol con un sistema, su fila de Modos.
+  if (sis >= 0 && /alcohol/.test(n))
+    out.push(
+      atajo(
+        `recurso/alcohol/${SIS_IDS[sis]}`,
+        `Alcohol · Modos y funciones de ${CATALOGO_SISTEMAS[sis].name}`,
+        href("sistemas", CATALOGO_SISTEMAS[sis].id, "modos:alcohol"),
+        TABLAS.T4.paginas[0],
+      ),
+    );
   // 0.81.1 (quinta ronda, R3): «qué actúa en automático (en los cuatro)»: los parámetros
   // comparados, agrupados por si actúan en el modo automático.
   if (/actua(n)? en (el )?(modo )?automatico|que actua/.test(n) && !/ceton/.test(n))
@@ -640,7 +659,7 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
       atajo(
         `recurso/agua/${SIS_IDS[sis]}`,
         `Agua · Modos y funciones de ${CATALOGO_SISTEMAS[sis].name}`,
-        href("sistemas", CATALOGO_SISTEMAS[sis].id, "modos"),
+        href("sistemas", CATALOGO_SISTEMAS[sis].id, "modos:agua"),
         TABLAS.T4.paginas[0],
       ),
     );
@@ -805,7 +824,14 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         "Hiperglucemia y cetonemia (Figura 3)",
         href("consultar", "figura-3"),
       ],
-      [/hipogluc|\bhipos?\b/, "Hipoglucemia en asa cerrada", href("visual", "hipoglucemia")],
+      // 0.82.1 (sexta ronda, R3): la hipoglucemia nocturna es la situación del sueño.
+      /noct|noche|madrugada/.test(normalizar(consulta))
+        ? [
+            /hipogluc|\bhipos?\b/,
+            "Sueño/período nocturno (Tabla 4)",
+            href("consultar", "situacion", `sueno${sis >= 0 ? `:${SIS_IDS[sis]}` : ""}`),
+          ]
+        : [/hipogluc|\bhipos?\b/, "Hipoglucemia en asa cerrada", href("visual", "hipoglucemia")],
       [
         /interrup|desconect|repuesto|se ha roto|averi|falla (el |la )?(pod|bomba)|(pod|bomba) (que )?falla|(quit|retir)(ar|o|amos)? (la |el )?(bomba|pod)/,
         "Interrupción del sistema",
@@ -813,9 +839,13 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
       ],
       [
         /modo actividad|funcion actividad|objetivo temporal|modo ejercicio|objetivo de ejercicio|ease-?off/,
-        "Ejercicio aeróbico planificado (Tabla 4)",
-        // Con el sistema nombrado, su conducta («objetivo temporal 780G»).
-        href("consultar", "situacion", `ejercicio-aerobico${sis >= 0 ? `:${SIS_IDS[sis]}` : ""}`),
+        // 0.82.1 (sexta ronda, adjunto): con el sistema nombrado, sus modos y funciones.
+        sis >= 0
+          ? `Modos y funciones de ${CATALOGO_SISTEMAS[sis].name}`
+          : "Ejercicio aeróbico planificado (Tabla 4)",
+        sis >= 0
+          ? href("sistemas", CATALOGO_SISTEMAS[sis].id, "modos")
+          : href("consultar", "situacion", "ejercicio-aerobico"),
       ],
       [
         /cateter|canula|set de infusion/,
@@ -826,7 +856,12 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         /(?<!no )gestan|embaraz|gestacion|\bparto\b|posparto/,
         "Situaciones · Gestación, parto y posparto",
         // 0.81.1 (quinta ronda, R5): con el sistema nombrado («embarazo control-iq»).
-        href("consultar", "situacion", `gestacion${sis >= 0 ? `:${SIS_IDS[sis]}` : ""}`),
+        // 0.82.1 (sexta ronda, R5): con dos sistemas, ninguno marcado.
+        href(
+          "consultar",
+          "situacion",
+          `gestacion${sis >= 0 && sistemasDeConsulta(consulta).length === 1 ? `:${SIS_IDS[sis]}` : ""}`,
+        ),
       ],
     ];
     const n = normalizar(consulta);
@@ -909,6 +944,15 @@ const palabrasDeSistema = (consulta: string) =>
   normalizar(consulta)
     .replace(/control[\s-]*iq\+?/g, "control-iq")
     .split(/\s+/);
+/* 0.82.1 (sexta ronda, R5): «780G a Control-IQ», «780 → control-iq», «780g por control-iq»: el
+   conector entre dos nombres de sistema (no cualquier « a » de la frase). */
+function entreSistemas(crudo: string): boolean {
+  const t = crudo.replace(/control[\s-]*iq\+?/g, "control-iq").split(/\s+/);
+  const es = (w?: string) => !!w && ALIAS_SISTEMA.some((re) => re.test(w));
+  return t.some(
+    (w, i) => ["a", "por", "→", "->"].includes(w) && (es(t[i - 1]) || es(t[i - 2])) && es(t[i + 1]),
+  );
+}
 /* En «de X a Y» o «pasar de X a Y», el de destino es el que va después de « a ». */
 function destinoDe(crudo: string, dos: number[]): number {
   const tras = crudo
@@ -1100,7 +1144,7 @@ export function olvidarTema() {
 }
 /* «y en Omnipod 5» → la búsqueda anterior con ese sistema; null si no es un seguimiento. */
 /* 0.81.1 (quinta ronda, guardia): «ciq+», «ciq plus», «control iq plus» = Control-IQ+. */
-const reescribir = (q: string) =>
+export const reescribir = (q: string) =>
   q
     .replace(/\bciq\s*(\+|plus\b)/gi, "control-iq+")
     .replace(/control[\s-]*iq\s*plus\b/gi, "control-iq+");
