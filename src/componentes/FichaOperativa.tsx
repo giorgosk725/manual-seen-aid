@@ -85,7 +85,7 @@ export function CasillasDatos({
               {ruta ? (
                 <a
                   href={ruta}
-                  className="tap-44 -my-[5px] inline-block py-[5px] underline decoration-slate-300 decoration-1 underline-offset-4 hover:decoration-slate-700"
+                  className="tap-44 -my-[5px] inline-block py-[5px] underline decoration-slate-400 decoration-1 underline-offset-4 hover:decoration-slate-700"
                   title="Texto del capítulo"
                 >
                   {d.r}

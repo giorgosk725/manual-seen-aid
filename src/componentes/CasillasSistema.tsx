@@ -22,7 +22,11 @@ export function CasillasSistema({
   pista,
   extra,
   unico = false,
+  desactivado,
 }: {
+  /* 0.89.1 (13.ª ronda, R5): una columna que no se puede elegir (en la calculadora, el sistema
+     actual no puede ser el de destino). */
+  desactivado?: number;
   /* Elección única (Situaciones, gestación): botones de opción, no casillas (0.77.1, auditoría
      visual: el dibujo de casilla prometía elegir varios). */
   unico?: boolean;
@@ -54,13 +58,16 @@ export function CasillasSistema({
         {TABLAS.T1.columnas.map((nombre, c) => {
           const on = seleccion.includes(c);
           const h = SISTEMA_HEX[c];
+          const fuera = desactivado === c;
           return (
             <button
               key={nombre}
               type="button"
               {...(unico ? { role: "radio", "aria-checked": on } : { "aria-pressed": on })}
               onClick={() => onToggle(c)}
-              className="tap-44 flex min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[13px] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-9 sm:px-2.5 sm:text-sm sm:leading-normal"
+              disabled={fuera}
+              title={fuera ? "Es el sistema de destino" : undefined}
+              className="tap-44 flex disabled:cursor-not-allowed disabled:opacity-50 min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[13px] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-9 sm:px-2.5 sm:text-sm sm:leading-normal"
               style={
                 on
                   ? { borderColor: SEEN.burdeos, background: "#f7eff3" }

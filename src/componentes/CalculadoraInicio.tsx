@@ -535,14 +535,10 @@ export function CalculadoraInicio({
                 {/* 0.88.1 (duodécima ronda, R5): en el móvil, con los datos completos, el resultado a un
                     toque desde aquí (queda unos 950 px más abajo). */}
                 {resumen.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => resultados.current?.scrollIntoView({ block: "start" })}
-                    className="no-imprimir inline-flex min-h-11 items-center gap-1.5 text-left text-sm font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 xl:hidden"
-                  >
-                    Parámetros iniciales: {resumen.join(" · ")}
-                    <ArrowDown size={14} aria-hidden="true" className="shrink-0" />
-                  </button>
+                  <IrAResultado
+                    texto={`Parámetros iniciales: ${resumen.join(" · ")}`}
+                    onIr={() => resultados.current?.scrollIntoView({ block: "start" })}
+                  />
                 )}
                 <Opciones
                   etiqueta="Ratio y factor de sensibilidad"
@@ -651,6 +647,7 @@ export function CalculadoraInicio({
                         seleccion={d.sistemaPrevio !== null ? [d.sistemaPrevio] : []}
                         onToggle={(v) => set({ sistemaPrevio: v })}
                         nombres={CORTOS}
+                        desactivado={sis}
                       />
                     </div>
                     {d.sistemaPrevio !== null && sis !== undefined && d.sistemaPrevio !== sis ? (
@@ -719,14 +716,10 @@ export function CalculadoraInicio({
                 {/* 0.88.1 (duodécima ronda, R5): en el móvil, con los datos completos, el resultado a un
                     toque desde aquí (queda unos 950 px más abajo). */}
                 {resumen.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => resultados.current?.scrollIntoView({ block: "start" })}
-                    className="no-imprimir inline-flex min-h-11 items-center gap-1.5 text-left text-sm font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 xl:hidden"
-                  >
-                    Parámetros iniciales: {resumen.join(" · ")}
-                    <ArrowDown size={14} aria-hidden="true" className="shrink-0" />
-                  </button>
+                  <IrAResultado
+                    texto={`Parámetros iniciales: ${resumen.join(" · ")}`}
+                    onIr={() => resultados.current?.scrollIntoView({ block: "start" })}
+                  />
                 )}
               </div>
             )}
@@ -1083,7 +1076,7 @@ function CambioDeSistema({ actual, destino }: { actual: number; destino: number 
       </div>
       <FuentePie
         fuentes={fuentesDeDatos(columnas.flatMap((x) => x.datos))}
-        className="separador border-t px-3 py-1.5"
+        className="separador max-w-none border-t px-3 py-1.5"
       />
     </section>
   );
@@ -1119,5 +1112,30 @@ function SetsDeInfusion({ sis }: { sis: number }) {
         recogidas el 2-10-2026. La oferta disponible depende del proveedor.
       </p>
     </div>
+  );
+}
+
+/* 0.88.1 (duodécima ronda, R5): en el móvil, con los datos completos, el resultado a un toque
+   desde los campos (queda unos 950 px más abajo). 0.89.1 (13.ª ronda, R5): al aparecer, a la vista
+   por encima de la barra inferior (si el campo del peso quedaba abajo, el enlace caía debajo). */
+function IrAResultado({ texto, onIr }: { texto: string; onIr: () => void }) {
+  const ref = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !window.matchMedia?.("(max-width: 1279px)").matches) return;
+    const libre = window.innerHeight - 96;
+    const abajo = el.getBoundingClientRect().bottom;
+    if (abajo > libre) window.scrollBy({ top: abajo - libre + 8 });
+  }, []);
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={onIr}
+      className="no-imprimir inline-flex min-h-11 items-center gap-1.5 text-left text-sm font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 xl:hidden"
+    >
+      {texto}
+      <ArrowDown size={14} aria-hidden="true" className="shrink-0" />
+    </button>
   );
 }

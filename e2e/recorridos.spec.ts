@@ -71,7 +71,7 @@ test.describe("Recorridos completos (0.36.0)", () => {
     await expect(
       page.getByText("¿Qué diferencia hay entre Control-IQ y Control-IQ+?").first(),
     ).toBeVisible();
-    await expect(page.getByText(/Control-IQ\+: ≥\s2\saños/).first()).toBeVisible();
+    await expect(page.getByText(/Control-IQ\+:\s≥\s2\saños/).first()).toBeVisible();
     await expect(page.getByRole("region", { name: /^También sobre/ })).toHaveCount(0);
   });
 

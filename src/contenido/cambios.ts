@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-21",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — duodécima ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — decimotercera ronda de auditorías de uso`,
+    detalle: [
+      "Líneas de fuente: tocar o pulsar una referencia abre esa referencia también cuando la línea se parte en varias (antes, el área de la de abajo se quedaba los toques).",
+      "Comparación: quitar uno y marcar otro vuelve a la misma pestaña de la comparación; la ficha, con el selector a la vista entre medias.",
+      "Calculadora: el enlace al resultado, a la vista sobre la barra inferior; el sistema actual no puede ser el de destino.",
+      "Descarga: botón «Imprimir este paso» y cada paso en una hoja; al imprimir desde el modo nocturno, la página en claro también en los márgenes.",
+      "Buscador: «cuándo cambiar el set» lleva a la Figura 3 y, con la sospecha de fallo, primero el pasaje que la define; ficha con sus accesos en una línea en el móvil; «β-OHB» y los signos «> 180» sin partir.",
+    ],
+  },
+  {
+    fecha: "2026-10-21",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.89.0 — duodécima ronda de auditorías de uso",
     detalle: [
       "Fuentes: con ratón, cada referencia abre la suya (el área táctil ampliada, solo en pantallas táctiles); una fuente con varias referencias se parte entre ellas y ya no desborda en el móvil.",
       "Sistemas: en el Resumen, las filas de las tarjetas vecinas a la misma altura; «Cálculo» en la cabecera de la ficha; en el móvil, el selector de la comparación sigue abierto al marcar y desmarcar.",

@@ -661,7 +661,7 @@ export function FichaSistema({
         </div>
         {/* Sistema visual: los tres accesos como enlaces de texto en una fila (en el móvil eran tres
             botones apilados antes del contenido). */}
-        <div className="no-imprimir col-span-2 mt-0.5 flex flex-wrap gap-x-3 gap-y-0 sm:col-span-1 sm:col-start-2 sm:mt-0 sm:gap-x-4">
+        <div className="no-imprimir col-span-2 mt-0.5 flex flex-wrap gap-x-2 gap-y-0 sm:col-span-1 sm:col-start-2 sm:mt-0 sm:gap-x-4">
           <a
             // I61-04: al principio del recorrido (preparación), con el sistema; no al paso 5.
             href={href("consultar", "inicio", `preparacion:${slug}`)}
@@ -697,9 +697,12 @@ export function FichaSistema({
               setAbrirSelector((n) => n + 1);
               window.scrollTo({ top: 0 });
             }}
+            // 0.89.1 (13.ª ronda, guardia): «Cambiar», como en la barra plegada; las cinco en una
+            // línea a 360 px (antes, «Otro sistema» sola en una segunda línea).
+            aria-label="Otro sistema o comparación"
             className={`${accesoFicha} sm:hidden`}
           >
-            Otro sistema
+            Cambiar
           </button>
         </div>
       </header>
@@ -842,7 +845,8 @@ export function FichaSistema({
       {/* En papel, de dónde sale la hoja (0.78.1, auditoría R3). */}
       <p className="colofon mt-6 hidden border-t pt-2 text-xs text-slate-600 print:mt-2 print:block print:pt-1">
         Manual de Endocrinología y Nutrición (SEEN) · Capítulo 89 · Complemento interactivo{" "}
-        {VERSION_APP} · impreso el {new Date().toLocaleDateString("es-ES")}
+        {VERSION_APP}
+        {"\u00a0· "}impreso el {new Date().toLocaleDateString("es-ES")}
       </p>
     </div>
   );
@@ -926,6 +930,10 @@ function AmpliacionRetirada({ ids }: { ids: string[] }) {
 /* 0.88.1 (duodécima ronda, R5): en el móvil, el selector abierto sigue abierto tras marcar o
    desmarcar (cada cambio es otra ruta y la barra se montaba de nuevo, plegada). */
 let seguirAbierta = 0;
+/* 0.89.1 (13.ª ronda, R5): «cambiar uno por otro» quitando primero: al quedar uno, la ficha con el
+   selector abierto; al marcar el otro, de vuelta a la pestaña de la comparación de la que se venía
+   (antes, a «Cómo funciona» con el selector cerrado y luego a Características). */
+let deComparacion: { sec: string; t: number } | null = null;
 function BarraSistemas({
   ids,
   seccion,
@@ -981,7 +989,25 @@ function BarraSistemas({
       ? ids.filter((x) => x !== id)
       : IDS_SISTEMA.filter((x) => ids.includes(x) || x === id);
     if (abierta && nuevos.length > 1) seguirAbierta = Date.now();
-    window.location.replace(rutaCon(nuevos));
+    const vuelta =
+      ids.length === 1 &&
+      nuevos.length > 1 &&
+      deComparacion &&
+      Date.now() - deComparacion.t < 120000
+        ? deComparacion.sec
+        : null;
+    deComparacion = null;
+    if (ids.length > 1 && nuevos.length === 1) {
+      deComparacion = { sec: sec ?? "", t: Date.now() };
+      seguirAbierta = Date.now();
+    }
+    window.location.replace(
+      vuelta === null
+        ? rutaCon(nuevos)
+        : vuelta
+          ? href("sistemas", nuevos.join("+"), vuelta)
+          : href("sistemas", nuevos.join("+")),
+    );
     // De la ficha a la comparación (o al revés), arriba: es otra pantalla (0.72.0).
     if ((ids.length === 1) !== (nuevos.length === 1)) window.scrollTo({ top: 0 });
   };
@@ -1270,14 +1296,16 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                     sueltos); desde sm, en una fila de enlaces de texto. */}
                 <nav
                   aria-label={`Ficha de ${s.name}`}
-                  className="separador grid grid-cols-3 gap-1.5 border-t p-3 sm:flex sm:flex-wrap sm:gap-x-4 sm:gap-y-0 sm:px-4 sm:py-1"
+                  // 0.89.1 (13.ª ronda, adjunto): desde xl (dos columnas), con los rótulos cortos en
+                  // una línea: a 1366 × 768 los cuatro objetivos entran sin desplazarse.
+                  className="separador grid grid-cols-3 gap-1.5 border-t p-3 sm:flex sm:flex-wrap sm:gap-x-4 sm:gap-y-0 sm:px-4 sm:py-1 xl:gap-x-3"
                 >
                   {accesos.map(([t, corto, ruta]) => (
                     <a key={t} href={ruta} className={accesoTarjeta}>
-                      <span className="sm:hidden" aria-hidden="true">
+                      <span className="sm:hidden xl:inline" aria-hidden="true">
                         {corto}
                       </span>
-                      <span className="sr-only sm:not-sr-only">{t}</span>
+                      <span className="sr-only sm:not-sr-only xl:sr-only">{t}</span>
                     </a>
                   ))}
                 </nav>

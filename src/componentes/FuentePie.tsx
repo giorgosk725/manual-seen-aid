@@ -25,7 +25,7 @@ function Referencia({ t }: { t: string }) {
           <span className="whitespace-nowrap">{x}</span>
         </span>
       ))}
-      {i < 0 ? null : t.slice(i)}
+      {i < 0 ? null : <span>{t.slice(i)}</span>}
     </>
   );
 }

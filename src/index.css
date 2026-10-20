@@ -250,6 +250,13 @@
   .fuente-pie a:hover {
     text-decoration: underline;
   }
+  /* 0.89.1 (13.ª ronda, senior): el texto de cada referencia, por encima del área ampliada (relleno
+     y ::after de 44 px) de las de la línea de al lado: tocar o pulsar «Tabla 4» abre la Tabla 4
+     aunque la línea de abajo lleve otra referencia. */
+  .fuente-pie a > span {
+    position: relative;
+    z-index: 1;
+  }
   /* Pestaña: subrayado burdeos. */
   .pestana {
     display: inline-flex;
@@ -1973,4 +1980,14 @@ main .text-xs > li {
 }
 html.night .decoration-slate-300 {
   text-decoration-color: #475569;
+}
+
+/* 0.89.1 (13.ª ronda, visual): al imprimir desde el modo nocturno, la página en claro también en
+   sus márgenes (con «gráficos de fondo» activado salían negros). */
+@media print {
+  html,
+  html.night {
+    color-scheme: light;
+    background: #fff;
+  }
 }

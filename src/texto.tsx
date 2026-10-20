@@ -35,6 +35,24 @@ function partirCifras(t: string): { t: string; cifra: boolean }[] {
   if (i < t.length) out.push({ t: t.slice(i), cifra: false });
   return out;
 }
+/* 0.89.1 (13.ª ronda, visual): «β-OHB» en una pieza que no se parte por el guion en todo el
+   texto (antes, solo en la Figura 3 y en <SinCortes>). */
+function SinPartir({ t }: { t: string }) {
+  if (!t.includes("β-OHB")) return <>{t}</>;
+  return (
+    <>
+      {t.split(/(β-OHB)/).map((x, i) =>
+        i % 2 ? (
+          <span key={i} className="whitespace-nowrap">
+            {x}
+          </span>
+        ) : (
+          <React.Fragment key={i}>{x}</React.Fragment>
+        ),
+      )}
+    </>
+  );
+}
 function ConCifrasTexto({ t }: { t: string }) {
   return (
     <>
@@ -44,7 +62,7 @@ function ConCifrasTexto({ t }: { t: string }) {
             {x.t}
           </b>
         ) : (
-          <React.Fragment key={i}>{x.t}</React.Fragment>
+          <SinPartir key={i} t={x.t} />
         ),
       )}
     </>
@@ -69,7 +87,7 @@ export function Trozos({ trozos }: { trozos: TrozoSigla[] }) {
         ) : cifras && !tr.b ? (
           <ConCifrasTexto t={tr.t} />
         ) : (
-          tr.t
+          <SinPartir t={tr.t} />
         );
         return tr.b ? (
           <strong key={i}>{nodo}</strong>

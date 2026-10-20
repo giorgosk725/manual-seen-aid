@@ -25,8 +25,10 @@ export function sinCortes(texto: string): string {
     texto
       .replace(RE_UNIDAD, `$1${NBSP}$2`)
       .replace(/([<>≤≥]) (\d)/g, `$1${NBSP}$2`)
+      // 0.89.1 (13.ª ronda, senior): el signo tampoco abre línea («predice ⏎ > 180 mg/dl»).
+      .replace(/ ([<>≤≥])(?=\u00a0\d)/g, `${NBSP}$1`)
       .replace(/EE\. UU\./g, `EE.${NBSP}UU.`)
-      .replace(/tipo (\d)/g, `tipo${NBSP}$1`)
+      .replace(/tipo (\d)/gi, (m) => m.replace(" ", NBSP))
       .replace(/ratios? I\/HC/g, (m) => m.replace(" ", NBSP))
       .replace(/(\d) (a|o) (\d)/g, `$1${NBSP}$2${NBSP}$3`)
       // 0.82.1 (sexta ronda, visual): el «·» de una enumeración, al final de la línea, nunca al

@@ -25,7 +25,7 @@ test.describe("Pertinencia y continuación (0.42.0)", () => {
     page,
   }) => {
     await page.goto("/#/preguntas/f61");
-    await expect(page.getByText(/Control-IQ\+: ≥\s2\saños/).first()).toBeVisible();
+    await expect(page.getByText(/Control-IQ\+:\s≥\s2\saños/).first()).toBeVisible();
     // 0.77.1 (nada útil plegado): los sistemas, a la vista, sin «Ver otros sistemas».
     await expect(page.getByText("Ver otros sistemas")).toHaveCount(0);
     // 0.80.1: en una pregunta de un solo sistema, sin botones de sistema en cada tarjeta.

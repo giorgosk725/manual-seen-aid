@@ -32,7 +32,8 @@ import { kDe, siglasPorPiezas, type Pieza } from "../inicio";
 import { elegirRuta, fueNavegacionNueva, href } from "../rutas";
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
-import { CabeceraEditorial } from "../ui";
+import { BotonImprimir, CabeceraEditorial } from "../ui";
+import { useImprimirConTeclado } from "../imprimirConTeclado";
 import { recordarSistema, sistemaReciente } from "../sistemaReciente";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { useIrAlCambiar, useSubirAlElegir } from "../irAlCambiar";
@@ -1022,6 +1023,9 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
   const patrones = parrafosConLead(PATRON_DEL_PASO[n] || []);
   const ir = (k: number) => elegirRuta("consultar", "descarga", String(k));
   const alPaso = useIrAlCambiar(String(n), "paso-descarga");
+  // 0.89.1 (13.ª ronda, R3): el paso, con su botón de imprimir (y Ctrl+P, igual).
+  const raiz = useRef<HTMLDivElement>(null);
+  useImprimirConTeclado(raiz);
   // El paso actual, a la vista en la fila de botones (a 360 px, el 8 quedaba fuera; 0.72.0).
   const filaPasos = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -1033,7 +1037,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
       fila.scrollLeft = izq - (fila.clientWidth - b.offsetWidth) / 2;
   }, [n]);
   return (
-    <div>
+    <div ref={raiz}>
       <CabeceraEditorial titulo="Interpretación de la descarga" hex={hex} level={1} />
       {/* 0.72.0: los ocho pasos a la vista. Hasta el ordenador ancho, ocho botones numerados
           con el avance; en él, la lista con sus títulos a la izquierda. */}
@@ -1089,7 +1093,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
         </nav>
         {/* 0.87.1 (undécima ronda, R3): en papel, el orden de los 8 pasos (con el que se imprime
             marcado) delante del paso; en pantalla ya está en la columna de la izquierda. */}
-        <ol className="mb-3 hidden list-decimal pl-5 text-sm print:block">
+        <ol className="mb-3 hidden list-decimal gap-x-8 pl-5 text-sm print:block print:columns-2">
           {t.filas.map((f, i) => (
             <li key={i} className={i + 1 === n ? "font-bold" : ""}>
               {f.celdas[0]}
@@ -1105,8 +1109,13 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
         >
           <div className="flex items-start justify-between gap-2">
             <h2 className="titulo-seccion">{fila.celdas[0]}</h2>
+            <span className="no-imprimir">
+              <BotonImprimir objetivo={raiz} compacto titulo="Imprimir este paso">
+                <span className="sr-only sm:not-sr-only">Imprimir este paso</span>
+              </BotonImprimir>
+            </span>
           </div>
-          <dl className="mt-3 divide-y md:grid md:grid-cols-3 md:gap-4 md:divide-y-0">
+          <dl className="mt-3 divide-y md:grid md:grid-cols-3 md:gap-4 md:divide-y-0 print:grid print:grid-cols-3 print:gap-4 print:divide-y-0">
             {t.columnas.slice(1).map((col, j) => {
               return (
                 <div key={col} className="py-2.5 md:py-0">
@@ -1143,9 +1152,14 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
               <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8 print:list-none">
                 Patrones relacionados ({patrones.length})
               </summary>
-              <ul className="mt-2 space-y-2">
+              {/* 0.89.1 (13.ª ronda, R3): en papel, algo más compactos (el paso 4 dejaba una
+                  segunda hoja con tres líneas y la fuente). */}
+              <ul className="mt-2 space-y-2 print:space-y-1">
                 {patrones.map((p) => (
-                  <li key={p.ancla} className="literal py-1 text-sm text-slate-800">
+                  <li
+                    key={p.ancla}
+                    className="literal py-1 text-sm text-slate-800 print:text-[12.5px] print:leading-snug"
+                  >
                     <strong>{p.b.lead} </strong>
                     <Texto>{p.b.texto}</Texto>
                   </li>

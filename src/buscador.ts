@@ -538,7 +538,9 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     (sis >= 0 && /glucosa alta|glucemia alta|hiperglu|ceton/.test(n) && !/puntual/.test(n)) ||
     /(set|pod|cateter|canula)\b.*funciona|funciona.*\b(set|pod|cateter|canula)/.test(n) ||
     (cifraAlta && /\b(h|hora|horas|h\s)\b|horas/.test(n)) ||
-    /no baja/.test(n)
+    /no baja/.test(n) ||
+    // 0.89.1 (13.ª ronda, guardia): «cuándo cambiar el set».
+    /cambi\w* (el |de )?(set|cateter|canula)\b/.test(n)
   )
     // 0.82.1 (sexta ronda, guardia): un solo atajo y al mismo sitio que en Situaciones (antes,
     // una página intermedia con una línea de la Tabla 4 y, aparte, la Figura 3).

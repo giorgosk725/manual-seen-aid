@@ -90,7 +90,7 @@ describe("App", () => {
     const grupo = screen.getByRole("group", { name: /Filtrar por sistema/ });
     await userEvent.click(within(grupo).getByRole("button", { name: /Omnipod 5/ }));
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
-    expect(screen.getByText(enTexto(/sin peso mínimo; DTD ≥\s5\sUI\/día/))).toBeInTheDocument();
+    expect(screen.getByText(enTexto(/sin peso mínimo; DTD\s≥\s5\sUI\/día/))).toBeInTheDocument();
     expect(screen.queryByText(/Guardian 4/)).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: /Los cuatro/ }));
     expect(screen.getByRole("table")).toBeInTheDocument();
@@ -189,7 +189,7 @@ describe("App", () => {
     expect(screen.queryByText(/Insulinas rápidas compatibles/)).toBeNull();
     // 0.77.1: en las tarjetas, espacio duro entre la cifra y su unidad (\s también lo casa).
     expect(
-      screen.getAllByText(enTexto(/sin peso mínimo; DTD ≥\s5\sUI\/día/)).length,
+      screen.getAllByText(enTexto(/sin peso mínimo; DTD\s≥\s5\sUI\/día/)).length,
     ).toBeGreaterThan(0);
   });
 

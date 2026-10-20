@@ -291,7 +291,7 @@ function ObjetivosMCG({ opcion }: { opcion?: string }) {
         ))}
       </div>
       <p className="mt-3 text-xs text-slate-500">
-        Objetivos recogidos en el capítulo, con su página. «—»: sin objetivo para esa franja.
+        Objetivos recogidos en el capítulo. «—»: sin objetivo para esa franja.
       </p>
     </div>
   );

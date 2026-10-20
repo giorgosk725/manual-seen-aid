@@ -154,6 +154,13 @@ export function Buscar({ inicial }: { inicial?: string }) {
     const rs = rs0
       .filter((r) => !urgencia || !/sin sospecha/i.test(`${r.titulo} ${r.texto ?? ""}`))
       .filter((r) => !agua || !r.id.startsWith("F3/"));
+    // 0.89.1 (13.ª ronda, guardia): con la sospecha de fallo, primero el pasaje que la define
+    // («… sospecha de fallo del set», apartado 9), no la lista de contenidos de la educación.
+    if (urgencia) {
+      const define = (r: (typeof rs)[number]) =>
+        /fallo del set|fallo de (la )?infusi/i.test(`${r.titulo} ${r.texto ?? ""}`) ? 0 : 1;
+      rs.sort((x, y) => define(x) - define(y));
+    }
     // 0.72.0: una sigla del glosario no va de pasaje principal si la consulta no la nombra
     // («cetonas» daba «β-OHB: β-hidroxibutirato»); pasa detrás. Solo cambia el orden.
     const nq = normalizar(qEf);
