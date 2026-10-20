@@ -500,7 +500,7 @@ describe("Novena ronda de auditorías (0.85.1): atajos del buscador", () => {
     recursosPedidos(q, buscarConTotales(q, 12).resultados).map((r) => r.entrada.ruta);
   it("«calendario de revisiones» y «seguimiento»: los tres primeros meses", () => {
     expect(rec("calendario de revisiones")).toContain("#/consultar/inicio/primeros-meses");
-    expect(rec("seguimiento 780g")).toContain("#/consultar/inicio/primeros-meses");
+    expect(rec("seguimiento 780g")).toContain("#/consultar/inicio/primeros-meses:minimed-780g");
   });
   it("comparar dos sistemas en la gestación: la fila de la gestación", () => {
     expect(rec("embarazo camaps o control-iq").join(" ")).toMatch(/ciq\+camaps\/esencial:8/);
@@ -508,5 +508,23 @@ describe("Novena ronda de auditorías (0.85.1): atajos del buscador", () => {
   it("«omnipod agua»: el primer pasaje no es la ratio insulina/hidratos", () => {
     const r = buscarConTotales("omnipod agua", 12).resultados;
     expect(r[0]?.entrada.titulo ?? "").not.toMatch(/hidratos/i);
+  });
+});
+
+describe("Décima ronda de auditorías (0.86.1): atajos del buscador", () => {
+  const rec = (q: string) =>
+    recursosPedidos(q, buscarConTotales(q, 12).resultados).map((r) => r.entrada.ruta);
+  it("«plan de seguridad» y «plan 780g»: el plan imprimible, no la descarga", () => {
+    expect(rec("plan de seguridad")).toContain("#/pacientes/plan");
+    const r = rec("plan 780g");
+    expect(r).toContain("#/pacientes/plan/mm780");
+    expect(r.join(" ")).not.toMatch(/descarga/);
+  });
+  it("gestación con dos sistemas sin conector: la comparación en su fila", () => {
+    expect(rec("gestación camaps control-iq").join(" ")).toMatch(/ciq\+camaps\/esencial:8/);
+  });
+  it("«10 semanas» en la gestación no es tema", () => {
+    olvidarTema();
+    expect(consultaEfectiva("embarazada 10 semanas camaps") ?? "").not.toMatch(/10/);
   });
 });

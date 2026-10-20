@@ -187,8 +187,10 @@ export const VARIANTE_OPERATIVA: (GrupoFicha | null)[] = [
       // hay dos versiones). Los mismos datos y piezas que la tarjeta de la entrada.
       {
         r: "Qué cambia",
-        v: "≥ 2 años · diabetes tipo 2 y gestación autorizadas (FDA y CE) · basal temporal 0–250 %",
-        f: [t1(7), t1(8), t3(1)],
+        // 0.86.1 (décima ronda, senior): también el peso, la DTD y el bolo extendido (lo que da la
+        // pregunta frecuente de las diferencias).
+        v: "≥ 2 años, 9–200 kg, DTD 5–200 UI/día · diabetes tipo 2 y gestación autorizadas (FDA y CE) · basal temporal 0–250 % · bolo extendido de 15 min a 8 h",
+        f: [t1(7), t1(8), t3(1), t4(5)],
       },
     ],
   },

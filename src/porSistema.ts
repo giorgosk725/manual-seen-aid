@@ -43,7 +43,12 @@ const GESTACION: BloqueSistema[][] = [
     { rotulo: "Estrategia de ajuste", piezas: [s10("b8", [1])] },
   ],
   [
-    { rotulo: "Autorización y evidencia", piezas: [s10("b9", [0]), s10("b5", [2])] },
+    // 0.86.1 (décima ronda, R5): con la casilla de la Tabla 1 (Control-IQ sin autorización;
+    // Control-IQ+, sí): es la distinción que más importa a una gestante con Control-IQ.
+    {
+      rotulo: "Autorización y evidencia",
+      piezas: [casilla("T1", 8), s10("b9", [0]), s10("b5", [2])],
+    },
     { rotulo: "Estrategia de intensificación", piezas: [s10("b9", [1])] },
     { rotulo: "Modo sueño continuado", piezas: [s10("b9", [2, 3, 4]), casilla("T1", 6)] },
   ],

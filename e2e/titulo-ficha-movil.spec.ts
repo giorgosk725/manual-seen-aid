@@ -23,3 +23,12 @@ for (const ancho of [360, 390, 414])
       expect(m.partido, id).toBe(false);
     }
   });
+
+/* 0.86.1 (décima ronda, R5): la comparación con una fila pedida la deja marcada y a la vista. */
+test("comparación con la fila de la gestación, marcada y a la vista a 390 px", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/#/");
+  await page.goto("/#/sistemas/ciq+camaps/esencial:8");
+  const fila = page.locator(".fila-resaltada:visible").filter({ hasText: "Gestación" }).first();
+  await expect(fila).toBeInViewport();
+});

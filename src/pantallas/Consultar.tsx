@@ -1,5 +1,6 @@
 /* Consultar: tablas (filtrables), Figura 3 (recorrido) e infografía (mapa). El hub es la portada; «Comparar» y «Parámetros» viven en Sistemas. */
 import { useRef } from "react";
+import { useImprimirConTeclado } from "../imprimirConTeclado";
 import { ArrowRight, Printer } from "lucide-react";
 import {
   INFO,
@@ -92,6 +93,9 @@ function TablaPantalla({
   const tabla = TABLAS[tid];
   const ap = apartadoDeTabla(tid);
   const ref = useRef<HTMLDivElement>(null);
+  // 0.86.1 (décima ronda, senior y R3): Ctrl+P imprime la tabla igual que el botón (antes, la
+  // primera cara salía casi en blanco).
+  useImprimirConTeclado(ref);
   return (
     <div>
       {/* 0.71.0: «Tabla N» una vez (pestaña y cabecera de la tabla); sin migas: las pestañas

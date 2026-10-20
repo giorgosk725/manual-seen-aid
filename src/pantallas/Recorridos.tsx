@@ -1191,7 +1191,8 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
               Algoritmo de la Figura 3 <ArrowRight size={14} aria-hidden="true" />
             </a>
           )}
-          <div className="separador mt-4 flex items-center justify-between border-t pt-3">
+          {/* 0.86.1 (décima ronda, R3): sin los botones de paso en papel. */}
+          <div className="separador no-imprimir mt-4 flex items-center justify-between border-t pt-3">
             {/* 0.72.0: en el primer y el último paso, sin el botón que no lleva a ningún sitio. */}
             <button
               type="button"

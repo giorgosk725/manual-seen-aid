@@ -19,7 +19,18 @@ export function FuentePie({
   className?: string;
 }) {
   const vistas = new Set<string>();
-  const unicas = fuentes.filter((f) => !vistas.has(f.texto) && !!vistas.add(f.texto));
+  // 0.86.1 (décima ronda, senior, R3 y visual): sin partir «Apartado 10» ni «Tabla 4» (espacio
+  // duro tras la palabra) y en el orden del capítulo: tablas, figuras y apartados por número y
+  // página (antes, en el de los datos: «Apartado 9 · Apartado 10 · Apartado 7»).
+  const orden = (t: string) => {
+    const m = /^(Tabla|Figura|Apartado)\s(\d+)/.exec(t);
+    const pag = Number(/p+\.\s?(\d+)/.exec(t)?.[1] ?? 0);
+    return m ? ["Tabla", "Figura", "Apartado"].indexOf(m[1]) * 1e6 + Number(m[2]) * 1e3 + pag : 4e6;
+  };
+  const unicas = fuentes
+    .filter((f) => !vistas.has(f.texto) && !!vistas.add(f.texto))
+    .map((f) => ({ ...f, texto: f.texto.replace(/\b(Apartado|Tabla|Figura) /g, "$1\u00a0") }))
+    .sort((a, b) => orden(a.texto) - orden(b.texto));
   if (!unicas.length) return null;
   return (
     <p className={`fuente-pie ${className}`}>

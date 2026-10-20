@@ -812,7 +812,13 @@ export function FichaSistema({
                     <span className="min-w-0 flex-1">
                       <span className="font-semibold">{p.titulo}</span>
                       {p.sub && <span className="font-semibold"> · {p.sub}</span>}
-                      {p.n && <span className="text-slate-600"> · párrafo {p.n}</span>}
+                      {p.n && (
+                        <span className="text-slate-600">
+                          {" "}
+                          · párrafo{"\u00a0"}
+                          {p.n}
+                        </span>
+                      )}
                       {p.b.lead && (
                         // 0.83.1 (séptima ronda, senior): sin el punto final de la entradilla.
                         <span className="text-slate-600"> · {p.b.lead.replace(/[.:]$/, "")}</span>
@@ -1133,7 +1139,9 @@ function BarraSistemas({
       <nav
         ref={pestanas}
         aria-label="Sección"
-        className="pestanas -mx-3 px-3 sm:mx-0 sm:mt-1 sm:gap-1 sm:px-0"
+        // 0.86.1 (décima ronda, visual y R1): a 360 px caben las cinco pestañas (sin hueco y con
+        // 3 px de relleno: «Preguntas» quedaba cortada bajo el desvanecido).
+        className="pestanas -mx-3 gap-0 px-3 sm:mx-0 sm:mt-1 sm:gap-1 sm:px-0"
       >
         {/* 0.72.1: las tarjetas son una vista más, al lado de las dos tablas: así se vuelve a
             ellas desde la comparación (antes solo con «Sistemas» abajo o Atrás). */}
@@ -1155,7 +1163,7 @@ function BarraSistemas({
             href={href("sistemas", selStr, x.id)}
             aria-current={activa === x.id ? "location" : undefined}
             onFocus={pestanaALaVista}
-            className="pestana tap-44 px-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-2"
+            className="pestana tap-44 px-[3px] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-2"
           >
             {/* 0.73.0: en el móvil, el rótulo corto (las cinco pestañas caben a la vista). */}
             {"corto" in x && x.corto ? (
@@ -1345,12 +1353,15 @@ function Comparacion({
   // 0.80.1 (cuarta ronda, visual): como en la ficha, al cambiar de pestaña desde abajo la sección
   // empieza justo bajo la barra pegada.
   useEffect(() => {
+    // 0.86.1 (décima ronda, R5): con una fila pedida («esencial:8»), manda la fila (la tabla ya
+    // la pone a la vista; esto la devolvía al principio de la sección).
+    if (fila) return;
     const el = ref.current?.querySelector<HTMLElement>("section.pantalla-in");
     const barra = document.querySelector(".barra-pegada")?.getBoundingClientRect().bottom ?? 0;
     const arriba = el?.getBoundingClientRect().top ?? 0;
     if (el && arriba < barra)
       window.scrollTo({ top: Math.max(0, window.scrollY + arriba - barra - 8) });
-  }, [seccion]);
+  }, [seccion, fila]);
   return (
     <div ref={ref} className="imprimible">
       <CabeceraEditorial

@@ -665,6 +665,19 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         TABLAS.T3.paginas[0],
       ),
     );
+  // 0.86.1 (décima ronda, guardia): «plan de seguridad», «plan 780g», «imprimir plan»: el plan
+  // imprimible (del sistema si se nombra), por delante de la descarga.
+  if (/\bplan\b/.test(n) && !/hiperglu|ceto|glucosa alta|descarga/.test(n))
+    out.push(
+      atajo(
+        "recurso/plan-seguridad",
+        sis >= 0
+          ? `Plan de seguridad · ${CATALOGO_SISTEMAS[sis].name}`
+          : "Plan de seguridad de cada sistema",
+        href("pacientes", "plan", sis >= 0 ? CATALOGO_SISTEMAS[sis].id : undefined),
+        TABLAS.T1.paginas[0],
+      ),
+    );
   // 0.85.1 (novena ronda, guardia): «calendario de revisiones», «seguimiento», «visitas»: los tres
   // primeros meses (el mismo nombre que en la portada).
   if (
@@ -675,7 +688,8 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
       atajo(
         "recurso/primeros-meses",
         "Calendario de revisiones (los 3 primeros meses)",
-        href("consultar", "inicio", "primeros-meses"),
+        // 0.86.1 (décima ronda, guardia): con el sistema nombrado, ya elegido.
+        href("consultar", "inicio", `primeros-meses${sis >= 0 ? `:${SIS_IDS[sis]}` : ""}`),
         TABLAS.T2.paginas[0],
       ),
     );
@@ -758,6 +772,8 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   if (
     varios.length >= 2 &&
     (/diferenci|compar|frente a|versus|\bvs\b|distin|entre/.test(normalizar(consulta)) ||
+      // 0.86.1 (décima ronda, R5): con la gestación, también sin conector.
+      /gestan|embaraz|gestacion/.test(normalizar(consulta)) ||
       // 0.83.1 (séptima ronda, R5): «embarazo camaps o control-iq».
       /\S \s*o \s*\S/.test(consulta.toLowerCase()))
   ) {
@@ -1012,7 +1028,13 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         const b = nuevo(`t:${normalizar(r.entrada.titulo)}`);
         return a && b;
       })
-      .filter((r) => !((cambio || urgencia) && r.entrada.ruta.startsWith("#/consultar/descarga")))
+      .filter(
+        (r) =>
+          !(
+            (cambio || urgencia || todos.some((x) => x.entrada.id === "recurso/plan-seguridad")) &&
+            r.entrada.ruta.startsWith("#/consultar/descarga")
+          ),
+      )
       // 0.84.1 (octava ronda, guardia): con la Figura 3, nada «sin sospecha de fallo».
       .filter((r) => !(urgencia && /sin sospecha/i.test(r.entrada.titulo)))
       .slice(0, 2)
@@ -1238,6 +1260,9 @@ export function olvidarTema() {
 /* 0.81.1 (quinta ronda, guardia): «ciq+», «ciq plus», «control iq plus» = Control-IQ+. */
 export const reescribir = (q: string) =>
   q
+    // 0.86.1 (décima ronda, R5): en la gestación, «10 semanas» es la edad gestacional, no tema del
+    // capítulo (casaba con «2–4 semanas» del seguimiento).
+    .replace(/(?<=(gestan|embaraz|gestaci|gestac)[^]*)\b\d+\s*(semanas?|sem)\b/gi, " ")
     .replace(/\bciq\s*(\+|plus\b)/gi, "control-iq+")
     .replace(/control[\s-]*iq\s*plus\b/gi, "control-iq+");
 export function consultaEfectiva(q0: string): string | null {

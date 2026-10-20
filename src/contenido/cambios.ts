@@ -15,7 +15,20 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — novena ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — décima ronda de auditorías de uso`,
+    detalle: [
+      "Fuentes al pie en el orden del capítulo (tablas, figuras y apartados por número) y sin partir «Apartado 10» ni «Tabla 4».",
+      "Ficha en el móvil: las cinco pestañas caben a 360 px; Control-IQ+ en «Cómo funciona» con peso, DTD y bolo extendido.",
+      "Comparación: la fila pedida se ve marcada también en la tabla de varios sistemas y, en el móvil, queda a la vista.",
+      "Impresión: Ctrl+P en Tablas sale como el botón; en la descarga, sin los botones de paso.",
+      "Buscador: «plan de seguridad» y «plan 780g» llevan al plan imprimible; «agua» sin diálisis ni cetosis; «seguimiento 780g» abre el calendario con el sistema; la gestación con dos sistemas compara su fila aunque no haya «o»; «10 semanas» ya no desvía la respuesta.",
+      "Gestación con Control-IQ: con la casilla de la Tabla 1 (Control-IQ sin autorización; Control-IQ+, sí).",
+    ],
+  },
+  {
+    fecha: "2026-10-20",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.86.0 — novena ronda de auditorías de uso",
     detalle: [
       "Ficha en el móvil: el nombre del sistema entero en el título (parte entre palabras, nunca dentro de «Control-IQ») e «Imprimir la ficha» como icono.",
       "Impresión: Ctrl+P imprime igual que el botón; las preguntas impresas, enteras con su título y con su fuente; las referencias de una fuente no se parten («Apartado 10, p. 19»); todas las páginas con raya corta.",
