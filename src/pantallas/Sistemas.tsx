@@ -363,10 +363,10 @@ const TODAS_LAS_SECCIONES = [
 /* La comparación (0.70.0): la Tabla 1 y la Tabla 3, sin «Cómo funciona» comparado (repetía la
    Tabla 1). */
 const SECCIONES_COMPARACION = [
-  { id: "esencial", t: "Características" },
+  { id: "esencial", t: "Características", corto: "Tabla 1" },
   { id: "parametros", t: "Parámetros" },
   // 0.78.1 (segunda ronda, adjunto): «Los cuatro» desde Modos se queda en Modos (la Tabla 4).
-  { id: "modos", t: "Modos y funciones" },
+  { id: "modos", t: "Modos y funciones", corto: "Modos" },
 ] as const;
 /* La ampliación técnica no va en la edición editorial (A06): ni pestaña ni sección. */
 const SECCIONES_FICHA = TODAS_LAS_SECCIONES.filter((x) => !retirado(x.id));
@@ -523,7 +523,12 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
     // cambia de pestaña); al entrar, la ficha se queda arriba, con su cabecera a la vista (antes
     // bajaba unos 100 px y dejaba la fila de accesos medio tapada).
     const el = document.getElementById(seccion);
-    if (el && el.getBoundingClientRect().top < 0) el.scrollIntoView?.({ block: "start" });
+    const barra = document.querySelector(".barra-pegada")?.getBoundingClientRect().bottom ?? 0;
+    const arriba = el?.getBoundingClientRect().top ?? 0;
+    // 0.79.1 (tercera ronda): con la barra pegada, la sección empieza justo debajo de ella (con
+    // scrollIntoView quedaba tapada por la barra).
+    if (el && arriba < barra)
+      window.scrollTo({ top: Math.max(0, window.scrollY + arriba - barra - 8) });
   }, [seccion, id, completa]);
   if (!s) return <Comparacion ids={[]} />;
   const c = columnaDeSistema(s.id);
@@ -533,7 +538,14 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   // Las preguntas frecuentes del sistema (columna de la Tabla 1). 0.77.1 (auditorías senior y R3):
   // todas, como en Preguntas frecuentes (antes se quitaban las que solo citaban casillas).
   const preguntas = FRECUENTES.filter((f) => f.sistema === c);
-  const impresas = respuestasImpresas(preguntas, c);
+  // En papel, bajo cada pregunta, solo los pasajes que nombran el sistema (tercera ronda, R3: la
+  // de Control-IQ+ se respondía con un párrafo de los cuatro).
+  const impresas = new Map(
+    [...respuestasImpresas(preguntas, c)].map(([k, v]) => [
+      k,
+      v.filter((t) => ALIAS[s.id].test(t.texto)),
+    ]),
+  );
   // Una sola página (0.70.0): la sección de la ruta es solo adónde se salta.
   const sec = completa ? undefined : seccion;
   // 0.73.0 (auditoría de uso): cada pestaña enseña solo su sección (la ficha entera medía casi
@@ -965,7 +977,9 @@ function BarraSistemas({
                   <ArrowRight size={13} aria-hidden="true" />
                 </a>
               )
-            ) : (
+            ) : sec === "preguntas" ? null : (
+              // 0.79.1 (tercera ronda, adjunto): sin «Los cuatro» en Preguntas (no hay vista de
+              // los cuatro: llevaba al Resumen).
               <button
                 type="button"
                 aria-pressed={ids.length === 0}
@@ -1226,12 +1240,13 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
                   const h = SISTEMA_HEX[c];
                   // 0.78.1 (segunda ronda, senior): lo que solo cuenta al inicio y lo que no se
                   // configura, en su propia línea (antes, en «Bolos o modo manual» o en ninguna).
-                  const de = (a: "si" | "no" | "inicio" | "fijo") =>
+                  const de = (a: "si" | "no" | "inicio" | "fijo" | "manual") =>
                     PARAMETROS[c].filter((d) => d.auto === a).map((d) => d.r);
                   const grupos = [
                     { r: "Actúan en automático", xs: de("si"), fuerte: true },
                     { r: "Bolos o modo manual", xs: de("no"), fuerte: false },
                     { r: "Solo al inicio y en manual", xs: de("inicio"), fuerte: false },
+                    { r: "Solo en manual o de respaldo", xs: de("manual"), fuerte: false },
                     { r: "No configurable", xs: de("fijo"), fuerte: false },
                   ].filter((g) => g.xs.length);
                   return (
@@ -1242,7 +1257,7 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
                     >
                       <a
                         href={href("sistemas", ORDEN_SISTEMAS[c], "parametros")}
-                        className="titulo-tarjeta hover:underline"
+                        className="titulo-tarjeta tap-44 inline-block min-h-6 hover:underline"
                         style={{ color: h.ink }}
                       >
                         <NombreSistema n={CATALOGO_SISTEMAS[c].name} />

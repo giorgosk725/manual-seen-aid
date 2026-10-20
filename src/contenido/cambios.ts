@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — segunda ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — tercera ronda de auditorías de uso`,
+    detalle: [
+      "Modos y funciones con las palabras de la Tabla 4 y del capítulo («específico», «valorar», «necesariamente», «no ajusta directamente»), los rótulos de la Tabla 4 y el umbral de 1 h en la desconexión; el agua en Omnipod 5 sin la frase que el capítulo dice de las bombas con catéter; la basal temporal de Control-IQ+, solo en Parámetros.",
+      "Situaciones: «Urgencias» (hiperglucemia persistente o inexplicada y cetonemia, hipoglucemia en asa cerrada, interrupción) el primer grupo; la guía abierta, marcada en la lista; la comida grasa lleva al patrón posprandial.",
+      "Ficha: al cambiar de pestaña desde abajo, la sección justo bajo la barra; sin «Los cuatro» en Preguntas; en papel, solo lo que trata del sistema, en 4 caras y con su letra.",
+      "Buscador: una glucemia de 250 o más con horas, «no baja» o «hoja» con hiperglucemia llevan a la sospecha de fallo, la Figura 3 o la hoja de cetonas; «de 780G a Control-IQ» compara y abre la calculadora del de destino; un solo marco de foco.",
+      "Diseño: cabecera de las tablas comparativas bien pegada en el ordenador; cajas de aviso a su ancho; «Reúne lo marcado» en la elección; marca de 126 mg/dl legible en nocturno; el plan de seguridad del último sistema junto a la hoja de cetonas.",
+    ],
+  },
+  {
+    fecha: "2026-10-20",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.79.0 — segunda ronda de auditorías de uso",
     detalle: [
       "Modos y funciones, más fieles a la Tabla 4: «planificado o riesgo previsible», «habitualmente», «valorar Boost», «posibles autocorrecciones», «si es posible»; la hiperglucemia persistente o inexplicada con su condición; la hipoglucemia nocturna, «antes de subir objetivos globalmente»; el alcohol, con su contexto (adolescencia y transición). Registro de la tabla en Parámetros.",
       "Situaciones: lo urgente, el primero; una sola entrada para la hiperglucemia con sospecha de fallo (Figura 3); selector de sistema también en pruebas y cirugía; sin sistema en la ruta, el último consultado.",

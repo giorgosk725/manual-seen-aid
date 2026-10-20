@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { FIGURA3, type PasoTramo, type Tramo, type TramoFigura3 } from "../contenido";
 import { Texto } from "../texto";
+import { sinCortes } from "../sinCortes";
 import { PaginaBadge } from "../ui";
 import { TRAMO_HEX } from "../tokens";
 import { elegirRuta, href, fueNavegacionNueva } from "../rutas";
@@ -57,7 +58,7 @@ function Paso({ paso, hex, i }: { paso: PasoTramo; hex: (typeof TRAMO_HEX)[Tramo
       </span>
       <div className="min-w-0 flex-1 pt-1.5 text-sm text-slate-800">
         <p>
-          <Texto>{paso.texto}</Texto>
+          <Texto>{sinCortes(paso.texto)}</Texto>
         </p>
         {paso.detalle && (
           <ul
@@ -66,7 +67,7 @@ function Paso({ paso, hex, i }: { paso: PasoTramo; hex: (typeof TRAMO_HEX)[Tramo
           >
             {paso.detalle.map((d, j) => (
               <li key={j}>
-                <Texto>{d}</Texto>
+                <Texto>{sinCortes(d)}</Texto>
               </li>
             ))}
           </ul>
@@ -184,7 +185,8 @@ function NotasDelPie() {
     <div className="grid gap-3 sm:grid-cols-3">
       {FIGURA3.pie.map((p, i) => (
         <div key={i} className="tarjeta p-3 text-sm text-slate-700">
-          <span className="font-bold text-slate-900">{p.titulo}</span> <Texto>{p.texto}</Texto>
+          <span className="font-bold text-slate-900">{p.titulo}</span>{" "}
+          <Texto>{sinCortes(p.texto)}</Texto>
         </div>
       ))}
     </div>

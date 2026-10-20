@@ -187,7 +187,7 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
     await expect(
       dialogo.getByText(/Control-IQ: ¿cómo usar los modos sueño y ejercicio\?/).first(),
     ).toBeVisible();
-    await expect(dialogo.getByText(/140–160 mg\/dl/).first()).toBeVisible();
+    await expect(dialogo.getByText(/140–160\smg\/dl/).first()).toBeVisible();
   });
 
   test("Buscar: la cifra de cetonemia no elige rama, enseña la urgencia y lo de fuera no consta", async ({

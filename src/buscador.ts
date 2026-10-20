@@ -465,7 +465,8 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     .filter((w) => !ALIAS_SISTEMA.some((re) => re.test(w)) && w !== "5");
   const sis = sistemaDeConsulta(consulta);
   // Solo el nombre de un sistema o de su fabricante («medtronic», «omnipod»): su ficha (0.72.0).
-  if (!terminos.length) {
+  // Con dos sistemas («de 780G a Control-IQ»), sigue: se comparan (0.79.1).
+  if (!terminos.length && sistemasDeConsulta(consulta).length < 2) {
     const s = sis >= 0 && sistemasDeConsulta(consulta).length === 1 ? CATALOGO_SISTEMAS[sis] : null;
     return s
       ? [
@@ -493,7 +494,13 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   });
   // 0.77.1 (auditoría de guardia): hiperglucemia con el set, el catéter o el pod en duda es la
   // sospecha de fallo de infusión (Tabla 4 y Figura 3), no la hiperglucemia puntual.
-  if (pideSospechaDeFallo(n))
+  // 0.79.1 (tercera ronda, guardia): también con una glucemia de 250 o más y horas, o «no baja».
+  const cifraAlta = (n.match(/\b(2[5-9]\d|[3-5]\d\d)\b/) ?? []).length > 0;
+  if (
+    pideSospechaDeFallo(n) ||
+    (cifraAlta && /\b(h|hora|horas|h\s)\b|horas/.test(n)) ||
+    /no baja/.test(n)
+  )
     out.push(
       atajo(
         "recurso/sospecha-fallo",
@@ -515,7 +522,12 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   // 0.77.1 (auditoría R5): «pasar de 780G a Control-IQ»: los parámetros de los dos, comparados.
   {
     const dos = sistemasDeConsulta(consulta);
-    if (dos.length >= 2 && /\b(cambi|pasar|paso de|pase de|migr|sustitu|de .+ a )/.test(n))
+    // Con la consulta tal cual: la normalización quita «de» y «a» («de 780G a Control-IQ»).
+    const crudo = consulta.toLowerCase();
+    if (
+      dos.length >= 2 &&
+      (/\b(cambi|pasar|paso de|pase de|migr|sustitu)/.test(n) || /\bde \S.* a \S/.test(crudo))
+    )
       out.push(
         atajo(
           `recurso/cambio/${dos.join("+")}`,
@@ -523,8 +535,34 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
           href("sistemas", dos.map((i) => ORDEN_SISTEMAS[i]).join("+"), "parametros"),
           TABLAS.T3.paginas[0],
         ),
+        // 0.79.1 (tercera ronda, R5 y adjunto): la calculadora, con el sistema de destino.
+        atajo(
+          `recurso/cambio-calculadora/${dos.join("+")}`,
+          `Cálculo de parámetros iniciales · ${TABLAS.T1.columnas[destinoDe(crudo, dos)]} (desde otro sistema AID)`,
+          href("consultar", "inicio", `calculadora:${SIS_IDS[destinoDe(crudo, dos)]}`),
+          TABLAS.T2.paginas[0],
+        ),
       );
   }
+  // 0.79.1 (tercera ronda, guardia): «hoja» con hiperglucemia o cetonas: la hoja de cetonas y
+  // el plan de seguridad.
+  if (/\bhoja|plan de seguridad|para el paciente/.test(n) && /hiperglu|ceto|glucosa alta/.test(n))
+    out.push(
+      atajo(
+        "recurso/hoja-cetonas",
+        "Hoja para el paciente: cetonas",
+        href("pacientes", "hoja", "cetonas"),
+        9,
+      ),
+      atajo(
+        "recurso/plan",
+        sis >= 0
+          ? `Plan de seguridad · ${CATALOGO_SISTEMAS[sis].name}`
+          : "Plan de seguridad de cada sistema",
+        href("pacientes", "plan", sis >= 0 ? CATALOGO_SISTEMAS[sis].id : undefined),
+        9,
+      ),
+    );
   // 0.78.1 (segunda ronda, adjunto): «objetivo(s) de los (cuatro) sistemas»: la fila de la
   // Tabla 1 con los cuatro, comparados.
   if (
@@ -535,14 +573,14 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     out.push(
       atajo(
         "recurso/objetivos",
-        "Objetivo glucémico en modo automático de los cuatro (Tabla 1)",
-        href("sistemas", "todos", "esencial"),
+        "Objetivo glucémico en modo automático de los cuatro (Sistemas AID)",
+        href("sistemas"),
         TABLAS.T1.paginas[0],
       ),
     );
   // 0.78.1 (segunda ronda, R5): «cambiar de sistema AID», «otro AID»: los parámetros comparados y
   // la iniciación desde otro sistema.
-  if (/cambi\w* de sistema|otro (sistema )?aid|cambio de aid/.test(n))
+  if (/cambi\w* de (sistema|bomba)|pas\w* de sistema|otro (sistema )?aid|cambio de aid/.test(n))
     out.push(
       atajo(
         "recurso/cambio-aid",
@@ -769,6 +807,7 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     .filter((x) => x.f >= 0.6)
     .sort((a, b) => b.f - a.f || b.r.puntos - a.r.puntos)
     .map((x) => x.r);
+  const cambio = out.some((r) => r.entrada.id.startsWith("recurso/cambio/"));
   // Un solo «Abrir» por destino y por título (0.77.1, auditoría R5: «Resonancia magnética»
   // salía dos veces, con y sin el sistema en la ruta).
   const vistos = new Set<string>();
@@ -779,6 +818,7 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
       const b = nuevo(`t:${normalizar(r.entrada.titulo)}`);
       return a && b;
     })
+    .filter((r) => !(cambio && r.entrada.ruta.startsWith("#/consultar/descarga")))
     .slice(0, 2);
 }
 
@@ -787,6 +827,17 @@ const palabrasDeSistema = (consulta: string) =>
   normalizar(consulta)
     .replace(/control[\s-]*iq\+?/g, "control-iq")
     .split(/\s+/);
+/* En «de X a Y» o «pasar de X a Y», el de destino es el que va después de « a ». */
+function destinoDe(crudo: string, dos: number[]): number {
+  const tras = crudo.split(/ a /).slice(1).join(" a ");
+  return (
+    dos.find((i) =>
+      ALIAS_SISTEMA[i].test(
+        tras.replace(/control[\s-]*iq\+?/g, "control-iq").split(/\s+/)[0] ?? "",
+      ),
+    ) ?? dos[dos.length - 1]
+  );
+}
 function sistemaDeConsulta(consulta: string): number {
   const palabras = palabrasDeSistema(consulta);
   return ALIAS_SISTEMA.findIndex((re) => palabras.some((w) => re.test(w)));

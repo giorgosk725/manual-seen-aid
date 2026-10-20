@@ -2,6 +2,7 @@
    los resultados de la búsqueda. Todo es texto literal del capítulo con su página; lo único de
    la app son los rótulos. Se usa en la paleta (compacta), en «¿Qué necesitas?» de la portada
    (compacta) y en la pantalla Buscar (con las otras respuestas). */
+import { sinCortes } from "../sinCortes";
 import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
 import { TABLAS } from "../contenido";
 import { useId, useState, type ReactNode } from "react";
@@ -256,7 +257,7 @@ function Tarjeta({
           la función temporal 1–2 h antes…»), también cuando se enseña la casilla de un sistema. */}
       {casilla && r.porSistema && r.texto && (
         <p className="mt-0.5 text-sm text-slate-600">
-          <Marcado texto={r.texto} q={q} />
+          <Marcado texto={sinCortes(r.texto)} q={q} />
         </p>
       )}
       {r.id.startsWith("F3/") && porId && principal && (
@@ -294,7 +295,7 @@ function Tarjeta({
       )}
       {casilla ? (
         <p className="literal mt-1 whitespace-pre-line text-[15px] leading-relaxed text-slate-900">
-          <Marcado texto={casilla.texto} q={q} />
+          <Marcado texto={sinCortes(casilla.texto)} q={q} />
         </p>
       ) : (
         r.texto && (
@@ -304,7 +305,7 @@ function Tarjeta({
             {sistemaConsulta !== undefined && sistemaConsulta >= 0 ? (
               <LineasSistema texto={r.texto} q={q} sistema={sistemaConsulta} />
             ) : (
-              <Marcado texto={r.texto} q={q} />
+              <Marcado texto={sinCortes(r.texto)} q={q} />
             )}
           </p>
         )

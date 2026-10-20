@@ -133,6 +133,7 @@ const EN_AUTOMATICO: Record<EnAutomatico, string> = {
   no: "Bolos o modo manual",
   inicio: "Solo al inicio y en manual",
   fijo: "No configurable",
+  manual: "Solo en manual o de respaldo",
 };
 
 /* Filas con el rótulo a la izquierda (parámetros, modos): una tarjeta, una fila por dato. El
@@ -195,7 +196,7 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                   {d.enlace && (
                     <a
                       href={d.enlace.ruta}
-                      className="tap-44 mt-1 inline-block text-[13px] font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900"
+                      className="tap-44 mt-1 inline-block text-[13px] font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 print:hidden"
                     >
                       {d.enlace.texto}
                     </a>

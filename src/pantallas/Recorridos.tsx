@@ -60,18 +60,13 @@ type Extra = { t: string; fuente: string; ruta: string; alias?: string[] };
 const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
   // 0.78.1 (segunda ronda, guardia y senior): lo urgente, el primero; y una sola puerta para la
   // hiperglucemia con sospecha de fallo: la Figura 3 (la fila de la Tabla 4 remite a ella).
+  // 0.79.1 (tercera ronda, guardia): las tres urgencias, juntas y las primeras.
   {
-    t: "Noche, enfermedad e hiperglucemia",
-    ids: [
-      "sueno",
-      "necesidad-transitoria",
-      "hiperglucemia-puntual",
-      "enfermedad-intercurrente",
-      "glucocorticoides",
-    ],
+    t: "Urgencias",
+    ids: [],
     extras: [
       {
-        t: "Hiperglucemia persistente o sospecha de fallo; cetonemia",
+        t: "Hiperglucemia persistente o inexplicada (sospecha de fallo); cetonemia",
         fuente: "Figura 3",
         ruta: href("consultar", "figura-3"),
         alias: [
@@ -85,8 +80,43 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
           "persistente",
           "inexplicada",
           "fallo",
+          "glucosa",
+          "alta",
         ],
       },
+      {
+        t: "Hipoglucemia en asa cerrada",
+        fuente: "Apartado 7",
+        ruta: href("visual", "hipoglucemia"),
+        alias: ["hipo", "bajada", "hidratos", "alarma", "baja"],
+      },
+      {
+        t: "Interrupción del sistema y pauta alternativa",
+        fuente: "p. 9",
+        ruta: href("consultar", "interrupcion"),
+        alias: [
+          "desconectar",
+          "desconexion",
+          "quitar",
+          "retirar",
+          "ducha",
+          "bano",
+          "pod",
+          "bomba",
+          "fallo",
+          "repuesto",
+        ],
+      },
+    ],
+  },
+  {
+    t: "Noche, enfermedad e hiperglucemia",
+    ids: [
+      "sueno",
+      "necesidad-transitoria",
+      "hiperglucemia-puntual",
+      "enfermedad-intercurrente",
+      "glucocorticoides",
     ],
   },
   {
@@ -115,12 +145,6 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
     t: "Resolución de incidencias",
     ids: [],
     extras: [
-      {
-        t: "Hipoglucemia en asa cerrada",
-        fuente: "Apartado 7",
-        ruta: href("visual", "hipoglucemia"),
-        alias: ["hipo", "bajada", "hidratos", "alarma", "baja"],
-      },
       {
         t: "Hipoglucemia nocturna",
         fuente: "Apartado 9",
@@ -168,29 +192,6 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
         fuente: "Apartado 10",
         ruta: href("capitulo", "10-situaciones", "b43"),
         alias: ["viaje", "avion", "aeropuerto"],
-      },
-    ],
-  },
-  {
-    t: "Interrupción del sistema",
-    ids: [],
-    extras: [
-      {
-        t: "Interrupción del sistema y pauta alternativa",
-        fuente: "p. 9",
-        ruta: href("consultar", "interrupcion"),
-        alias: [
-          "desconectar",
-          "desconexion",
-          "quitar",
-          "retirar",
-          "ducha",
-          "bano",
-          "pod",
-          "bomba",
-          "fallo",
-          "repuesto",
-        ],
       },
     ],
   },
@@ -423,6 +424,7 @@ function ParaSeguir({ filas }: { filas: { href: string; t: string; color?: strin
 
 function ListaSituaciones({
   sit,
+  activa,
   sistema,
   filtro = "",
   onLimpiar,
@@ -431,6 +433,8 @@ function ListaSituaciones({
   /* Sin situación elegida, a todo el ancho y en columnas (0.71.0). */
   ancha?: boolean;
   sit: Situacion | null;
+  /* La guía abierta (gestación, ingreso…), marcada como la situación de la Tabla 4. */
+  activa?: string;
   sistema?: string;
   /* Texto escrito en «Filtrar»: las entradas cuyo nombre o alias casan (casaFiltro). */
   filtro?: string;
@@ -522,7 +526,7 @@ function ListaSituaciones({
         </h2>
         <ul className="filas" role="list">
           {sits.map((s) => {
-            const on = sit?.id === s.id;
+            const on = sit?.id === s.id || activa === s.id;
             return (
               <li key={s.id}>
                 <button
@@ -611,6 +615,7 @@ export function SituacionSistema({
           />
           <ListaSituaciones
             sit={sit}
+            activa={guia?.id}
             sistema={sistema}
             filtro={filtro}
             onLimpiar={() => setFiltro("")}
@@ -791,7 +796,7 @@ export function SituacionSistema({
                     onClick={() => elegirRuta("consultar", "situacion", sit.id)}
                     className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
                   >
-                    Quitar la selección
+                    Los cuatro
                   </button>
                 )}
                 {/* 0.77.1 (auditoría R5): en las pruebas y cirugías (Tabla 6), con un sistema en la
@@ -901,6 +906,15 @@ export function SituacionSistema({
                               ? "Hoja para el paciente: antes de una prueba o una cirugía"
                               : "Plan de seguridad y hoja de cetonas para el paciente",
                           color: CATEGORIA_HEX.pacientes.strong,
+                        },
+                      ]
+                    : []),
+                  // 0.79.1 (tercera ronda, R3): la actuación ante el patrón posprandial (Tabla 5).
+                  ...(sit.id === "comida-grasa"
+                    ? [
+                        {
+                          href: href("consultar", "descarga", "6"),
+                          t: "Patrón posprandial: descarga, paso 6",
                         },
                       ]
                     : []),

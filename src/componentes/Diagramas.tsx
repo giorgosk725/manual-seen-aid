@@ -446,7 +446,7 @@ function Ejercicio() {
           ))}
           <span
             aria-hidden="true"
-            className="absolute top-0 h-full border-l-2 border-dashed border-slate-900"
+            className="marca-ejercicio absolute top-0 h-full border-l-2 border-dashed border-slate-900"
             style={{ left: pct(EJERCICIO.marca.valor) }}
           />
         </div>
@@ -485,15 +485,16 @@ function Ejercicio() {
       <p className="mt-2 flex gap-2 text-xs text-slate-700">
         <span
           aria-hidden="true"
-          className="mt-1 h-3 w-0 shrink-0 border-l-2 border-dashed border-slate-900"
+          className="marca-ejercicio mt-1 h-3 w-0 shrink-0 border-l-2 border-dashed border-slate-900"
         />
         <span>
           <SinCortes texto={EJERCICIO.marca.texto} />
         </span>
       </p>
       {/* La cetonemia manda sobre la glucemia para empezar (p. 19): junto a la escala. */}
+      {/* 0.79.1: la caja, al ancho de su texto (con el texto a 72ch, medía 1206 px a 1920). */}
       <p
-        className="mt-2 rounded-lg border px-3 py-2 text-xs font-semibold"
+        className="mt-2 w-fit rounded-lg border px-3 py-2 text-xs font-semibold"
         style={{
           borderColor: TRAMO_HEX.naranja.border,
           background: TRAMO_HEX.naranja.soft,
@@ -521,7 +522,7 @@ function Ejercicio() {
           </div>
         ))}
       </div>
-      <div className="linea mt-3 rounded-xl border p-3 text-xs text-slate-700">
+      <div className="linea mt-3 max-w-[78ch] rounded-xl border p-3 text-xs text-slate-700 print:max-w-none">
         <Sub className="mb-1 text-sm font-extrabold text-slate-900">Según el tipo de ejercicio</Sub>
         <ul className="space-y-1.5">
           {EJERCICIO.tipo.map((t) => (
@@ -577,12 +578,16 @@ function Seguimiento() {
                       className="h-3 w-3 shrink-0 rounded-full"
                       style={{ background: c.punto }}
                     />
-                    <span className="text-sm font-extrabold text-slate-900">{h.cuando}</span>
+                    <span className="text-sm font-extrabold text-slate-900">
+                      <SinCortes texto={h.cuando} />
+                    </span>
                   </div>
                   <div className="mt-0.5 text-xs font-semibold" style={{ color: c.tinta }}>
                     {h.tipo}
                   </div>
-                  <p className="mt-1 text-xs leading-snug text-slate-700">{h.que}</p>
+                  <p className="mt-1 text-xs leading-snug text-slate-700">
+                    <SinCortes texto={h.que} />
+                  </p>
                 </li>
               ))}
             </ol>
@@ -591,7 +596,9 @@ function Seguimiento() {
       })}
       <ul className="space-y-1 text-xs text-slate-600">
         {SEGUIMIENTO.notas.map((n) => (
-          <li key={n.texto}>{n.texto}</li>
+          <li key={n.texto}>
+            <SinCortes texto={n.texto} />
+          </li>
         ))}
       </ul>
     </div>
@@ -1330,7 +1337,7 @@ function InterrupcionLinea() {
       {cetonemia && (
         <a
           href={href("consultar", "figura-3")}
-          className="no-imprimir flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border px-3 py-2 text-sm text-slate-900 transition hover:border-slate-500"
+          className="no-imprimir flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border px-3 py-2 text-sm text-slate-900 transition hover:border-slate-500 sm:w-fit"
           style={{ borderColor: TRAMO_HEX.rojo.border, background: TRAMO_HEX.rojo.soft }}
         >
           <Droplets size={16} aria-hidden="true" style={{ color: TRAMO_HEX.rojo.strong }} />

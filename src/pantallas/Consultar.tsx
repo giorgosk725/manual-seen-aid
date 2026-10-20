@@ -10,6 +10,8 @@ import {
   type TablaId,
 } from "../contenido";
 import { elegirRuta, href } from "../rutas";
+import { sistemaReciente } from "../sistemaReciente";
+import { CORTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { BotonImprimir, CabeceraEditorial, PaginaBadge, Revelar } from "../ui";
 import { pestanaALaVista } from "../disposicion";
 import { CATEGORIA_HEX } from "../tokens";
@@ -131,6 +133,19 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
         style={{ background: hex.strong }}
       >
         <Printer size={16} aria-hidden="true" /> Hoja para el paciente: cetonas
+      </a>
+      {/* 0.79.1 (tercera ronda, guardia): el plan de seguridad del último sistema consultado. */}
+      <a
+        href={href(
+          "pacientes",
+          "plan",
+          sistemaReciente() !== undefined ? ORDEN_SISTEMAS[sistemaReciente()!] : undefined,
+        )}
+        className="no-imprimir mb-3 ml-3 inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900"
+      >
+        {sistemaReciente() !== undefined
+          ? `Plan de seguridad · ${CORTO_SISTEMA[sistemaReciente()!]}`
+          : "Plan de seguridad"}
       </a>
       <div className="tarjeta p-4">
         <NivelTitulo.Provider value={2}>

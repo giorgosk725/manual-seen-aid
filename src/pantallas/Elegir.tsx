@@ -140,6 +140,33 @@ function PorCaracteristicas() {
           </div>
         ))}
       </div>
+      {/* 0.79.1 (auditoría R3): el botón, justo debajo de lo que se marca (antes, tras las cuatro
+          tarjetas, que miden más de una pantalla). */}
+      {/* 0.73.0: si ninguno reúne lo marcado, se dice (antes el botón volvía a los cuatro). */}
+      {hayAlgo && reunen.length === 0 && (
+        <p role="status" className="mt-3 text-sm font-semibold text-slate-700">
+          Ningún sistema reúne todo lo marcado.
+        </p>
+      )}
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <a
+          href={destino}
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-md px-4 text-sm font-bold text-white"
+          style={{ background: hex.strong }}
+        >
+          {rotulo}
+          <ArrowRight size={14} aria-hidden="true" />
+        </a>
+        {hayAlgo && (
+          <button
+            type="button"
+            onClick={() => setMarcado({})}
+            className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-600 underline underline-offset-2 sm:min-h-8"
+          >
+            Quitar lo marcado
+          </button>
+        )}
+      </div>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-live="polite">
         {ORDEN_SISTEMAS.map((id, c) => {
           const h = SISTEMA_HEX[c];
@@ -168,6 +195,12 @@ function PorCaracteristicas() {
                 {fuera && (
                   <span className="insignia mt-0.5 inline-flex w-fit items-center gap-1">
                     <X size={12} aria-hidden="true" /> No reúne lo marcado
+                  </span>
+                )}
+                {/* 0.79.1: el que sí lo reúne lo dice también (antes, solo el borde). */}
+                {hayAlgo && !fuera && (
+                  <span className="insignia mt-0.5 inline-flex w-fit items-center gap-1">
+                    <Check size={12} aria-hidden="true" /> Reúne lo marcado
                   </span>
                 )}
               </div>
@@ -219,31 +252,6 @@ function PorCaracteristicas() {
           );
         })}
       </ul>
-      {/* 0.73.0: si ninguno reúne lo marcado, se dice (antes el botón volvía a los cuatro). */}
-      {hayAlgo && reunen.length === 0 && (
-        <p role="status" className="mt-3 text-sm font-semibold text-slate-700">
-          Ningún sistema reúne todo lo marcado.
-        </p>
-      )}
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-        <a
-          href={destino}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-md px-4 text-sm font-bold text-white"
-          style={{ background: hex.strong }}
-        >
-          {rotulo}
-          <ArrowRight size={14} aria-hidden="true" />
-        </a>
-        {hayAlgo && (
-          <button
-            type="button"
-            onClick={() => setMarcado({})}
-            className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-600 underline underline-offset-2 sm:min-h-8"
-          >
-            Quitar lo marcado
-          </button>
-        )}
-      </div>
     </section>
   );
 }
@@ -278,10 +286,11 @@ export function Elegir({ antigua = false }: { antigua?: boolean }) {
 
       <section
         aria-label="Elección compartida: texto del capítulo"
-        className="prosa tarjeta mt-4 p-4"
+        className="prosa tarjeta mt-4 w-fit p-4"
         style={{ maxWidth: "none" }}
       >
-        <p className="literal text-sm">{b5.t === "p" && <Texto>{b5.texto}</Texto>}</p>
+        {/* 0.79.1: a ≈ 75 caracteres por línea (a 1920 llegaba a 184), con la caja a su medida. */}
+        <p className="literal max-w-[75ch] text-sm">{b5.t === "p" && <Texto>{b5.texto}</Texto>}</p>
         <a href={href("capitulo", a6.slug, "b5")} className={enlace}>
           Leer en el capítulo <ArrowRight size={13} aria-hidden="true" />
         </a>

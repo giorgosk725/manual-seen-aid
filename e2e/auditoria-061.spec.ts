@@ -115,7 +115,7 @@ test.describe("Sistemas (M61-01/02/03)", () => {
     // 0.77.0: tarjetas operativas; el objetivo, en la del algoritmo.
     await expect(page.getByLabel("Algoritmo")).toContainText("112,5–160 mg/dl, fijo");
     await page.goto("/#/sistemas");
-    await expect(page.getByText(/no en modo sueño/).first()).toBeVisible();
+    await expect(page.getByText(/no actúa en modo sueño/).first()).toBeVisible();
     // La edad de Liberty, como variante junto a la indicación (Tabla 1, «> 13 años»).
     await page.goto("/#/sistemas/camaps/esencial");
     await expect(page.getByLabel("Indicación", { exact: true })).toContainText("> 13 años");

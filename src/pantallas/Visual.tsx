@@ -125,20 +125,21 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                     />
                   </span>
                 </AbrirEnVisor>
-                <div className="separador p-3 max-sm:min-w-0 max-sm:flex-1 max-sm:border-l sm:flex-1 sm:border-t">
+                {/* 0.79.1: la línea de fuente, al pie de la tarjeta (a la misma altura en las cuatro). */}
+                <div className="separador p-3 max-sm:min-w-0 max-sm:flex-1 max-sm:border-l sm:flex sm:flex-1 sm:flex-col sm:border-t">
                   <div className="text-sm font-bold leading-snug text-slate-900">
                     {fig.titulo.replace(/\.$/, "")}
                   </div>
                   {extra && (
                     <a
                       href={extra.href}
-                      className="mt-1 inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 sm:min-h-8"
+                      className="mt-1 inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 sm:min-h-8 sm:self-start"
                     >
                       {extra.texto}
                     </a>
                   )}
                   {ap && (
-                    <p className="fuente-pie mt-1">
+                    <p className="fuente-pie mt-1 sm:mt-auto sm:pt-1">
                       Fuente:{" "}
                       <a
                         href={rutaDeFigura(fig.id) ?? href("capitulo", ap.slug)}

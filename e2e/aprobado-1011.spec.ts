@@ -13,11 +13,12 @@ test.describe("Aprobado el 11-10 (0.37.0)", () => {
     const secciones = page.getByRole("navigation", { name: "Sección" });
     // 0.72.1: y «Resumen» delante, para volver a las tarjetas.
     // 0.78.1: y «Modos y funciones» (la Tabla 4 de los sistemas elegidos).
+    // 0.79.1: con su rótulo corto del móvil («Tabla 1», «Modos») en el mismo enlace.
     await expect(secciones.getByRole("link")).toHaveText([
       "Resumen",
-      "Características",
+      /Características$/,
       "Parámetros",
-      "Modos y funciones",
+      /Modos y funciones$/,
     ]);
     await expect(page.getByRole("region", { name: "Características" })).toBeVisible();
     await secciones.getByRole("link", { name: "Resumen" }).click();

@@ -92,8 +92,10 @@ export function CabeceraTabla({
 function Notas({ notas }: { notas: string[] }) {
   return (
     <div className="mt-2 space-y-1 text-xs leading-relaxed text-slate-600">
+      {/* 0.79.1: a ≈ 75 caracteres por línea en pantalla (a 1920 llegaban a 190); en papel, a todo
+          lo ancho. */}
       {notas.map((n, i) => (
-        <p key={i}>
+        <p key={i} className="max-w-[75ch] print:max-w-none">
           <Texto>{sinCortes(n)}</Texto>
         </p>
       ))}
@@ -472,7 +474,7 @@ export function TablaVista({
         .map((n) => (
           <p
             key={n}
-            className="mt-1.5 rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs text-slate-600"
+            className="mt-1.5 w-fit max-w-[calc(75ch+1rem)] rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs text-slate-600 print:max-w-none"
           >
             {sinCortes(n)}
           </p>

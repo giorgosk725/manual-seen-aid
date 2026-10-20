@@ -9,7 +9,7 @@ import type { Pieza } from "./inicio";
 import { fuentesDePiezas } from "./fuentesPiezas";
 
 /* Si un parámetro actúa en el modo automático (Tabla 1, fila de parámetros, y Tabla 3). */
-export type EnAutomatico = "si" | "no" | "inicio" | "fijo";
+export type EnAutomatico = "si" | "no" | "inicio" | "fijo" | "manual";
 
 export interface Dato {
   r: string;
@@ -47,7 +47,7 @@ const TARDIA = fr("09-descarga", "b6", [1]);
 const TARDIA_INICIO = fr("09-descarga", "b6", [0]);
 const TARDIA_RESTO = fr("09-descarga", "b6", [2]);
 const C_GRASA =
-  "Si el ascenso aparece 3–5 h después: valorar grasa y proteínas, bolo insuficiente o estrategia prandial inadecuada";
+  "Si el ascenso aparece 3–5 h después de la ingesta: valorar el efecto de la grasa y las proteínas, un bolo insuficiente o una estrategia prandial inadecuada";
 const N_INDIVIDUALIZAR =
   "Individualizar la estrategia según las herramientas disponibles, la respuesta previa y el riesgo de hipoglucemia";
 const BASAL_PESO = fr("08-iniciacion", "b8", [2]);
@@ -91,7 +91,7 @@ export const ALGORITMO: Dato[][] = [
     {
       r: "Bolos automáticos de corrección",
       v: "Sí, máx. uno por hora si predice > 180 mg/dl a 30 min",
-      n: "60 % de la dosis, hacia 110 mg/dl; no en modo sueño",
+      n: "Administra el 60 % de la dosis para un objetivo de 110 mg/dl; no actúa en modo sueño",
       f: [t1(5)],
     },
     {
@@ -129,7 +129,7 @@ export const ALGORITMO: Dato[][] = [
     {
       r: "Funciona en",
       v: "El pod",
-      n: "Controlador (Europa) o app del smartphone (EE. UU.)",
+      n: "Control mediante el controlador (Europa) o la app del smartphone (EE. UU.)",
       f: [t1(2)],
     },
     {
@@ -166,14 +166,9 @@ export const VARIANTE_OPERATIVA: (GrupoFicha | null)[] = [
     titulo: "Control-IQ+",
     datos: [
       {
-        r: "Cuál lleva",
+        r: "Versión del algoritmo",
         v: "Control-IQ o Control-IQ+, según el dispositivo (t:slim X2 o Mobi) y la versión de software",
         f: [fr("04-sistemas", "b4", [1])],
-      },
-      {
-        r: "Basal temporal",
-        v: "Añade basal temporal del 0 al 250 % durante 15 min–72 h, manteniendo las correcciones automáticas",
-        f: [t3(1)],
       },
     ],
   },
@@ -370,8 +365,8 @@ export const PARAMETROS: Dato[][] = [
     },
     {
       r: P_BASAL,
-      auto: "no",
-      v: "Solo en modo manual o de respaldo",
+      auto: "manual",
+      v: "Se utiliza en modo manual o de respaldo; no influye en el modo automático",
       f: [t3(1), BASAL_PESO],
     },
   ],
@@ -396,7 +391,7 @@ export const PARAMETROS: Dato[][] = [
     {
       r: P_OBJ,
       auto: "fijo",
-      v: "Fijo, no configurable: se actúa con la basal, el factor de sensibilidad y los modos sueño (112,5–120 mg/dl) y ejercicio (140–160 mg/dl)",
+      v: "Fijo: se interviene con la tasa basal, el factor de sensibilidad y los modos sueño (112,5–120 mg/dl) y ejercicio (140–160 mg/dl)",
       f: [t3(0)],
     },
     {
@@ -422,7 +417,7 @@ export const PARAMETROS: Dato[][] = [
     {
       r: P_FS,
       auto: "no",
-      v: "El algoritmo adapta su propia sensibilidad; el factor configurado se usa solo en el calculador",
+      v: "El algoritmo adapta internamente su sensibilidad; el factor configurado se usa en el calculador y no ajusta directamente la modulación automática",
       f: [t3(3), fr("10-situaciones", "b7", [0])],
     },
     {
@@ -433,8 +428,8 @@ export const PARAMETROS: Dato[][] = [
     },
     {
       r: P_BASAL,
-      auto: "no",
-      v: "Solo en modo manual o de respaldo",
+      auto: "manual",
+      v: "Se utiliza en modo manual o de respaldo; no influye en el modo automático",
       f: [t3(1), BASAL_PESO],
     },
   ],
@@ -477,14 +472,20 @@ export const PARAMETROS: Dato[][] = [
    dato; la hipoglucemia nocturna aparte, con lo que el apartado 9 manda revisar antes; alcohol y
    agua en los cuatro sistemas. 0.78.1 (segunda ronda): las palabras que dan el matiz de la tabla
    («habitualmente», «valorar», «posibles», «si es posible», «temporalmente»). */
-const ANAEROBICO_V = "Habitualmente sin modo temporal: mantener el objetivo estándar";
+const ANAEROBICO_V = "Habitualmente sin modo temporal específico: mantener el objetivo estándar";
 const ANAEROBICO_N = "Para no favorecer la hiperglucemia reactiva";
 const PUNTUAL = "Mantener el automático y administrar bolo corrector según el calculador";
 const NECESIDAD = "Intensificar la monitorización, vigilar cetonemia y mantener el automático";
-const FALLO =
-  "Medir cetonemia, corregir con pluma y recambiar el set según el plan de seguridad (Figura 3)";
+const FALLO = "Medir cetonemia, corregir con pluma y recambiar el set según el plan de seguridad";
+/* 0.79.1 (tercera ronda, guardia): la Figura 3, a un toque desde la fila. */
+const FIGURA_3 = { texto: "Hiperglucemia y cetonemia (Figura 3)", ruta: "#/consultar/figura-3" };
 const PAUSAR = "Suspender o pausar la administración al desconectar la bomba";
-const R_AEROBICO = "Ejercicio aeróbico planificado o riesgo previsible de hipoglucemia";
+/* El umbral operativo de la interrupción (apartado 7) y su herramienta. */
+const UMBRAL_1H =
+  "A partir de aproximadamente 1 h sin insulina, actuar: glucemia capilar, cetonemia según el contexto y reposición de la insulina no administrada";
+const INTERRUPCION = { texto: "Interrupción del sistema", ruta: "#/consultar/interrupcion" };
+const R_AEROBICO =
+  "Ejercicio aeróbico planificado o situación previsible de mayor riesgo de hipoglucemia";
 const C_AEROBICO =
   "Activar la función temporal 1–2 h antes e individualizar la duración según la respuesta previa";
 const R_NECESIDAD = "Mayor necesidad transitoria leve";
@@ -496,11 +497,12 @@ const C_NOCTURNA =
   "Antes de subir objetivos globalmente, revisar ejercicio vespertino, alcohol, bolo tardío de cena, corrección manual, objetivo demasiado bajo o ratios agresivas, y si el patrón se concentra en una franja";
 const ALCOHOL = fr("10-situaciones", "b14", [2]);
 const C_ALCOHOL = "Adolescencia y transición";
-const N_ALCOHOL = "Prudencia con los bolos prandiales de las comidas asociadas a alcohol";
+const N_ALCOHOL =
+  "Educar sobre la prudencia con los bolos prandiales en comidas asociadas a alcohol";
 const AGUA_CATETER: Dato = {
   r: "Agua y deportes de contacto",
-  v: "Puede ser necesario retirar temporalmente la bomba, según el dispositivo, el fabricante y el tipo y duración de la actividad",
-  n: "La resistencia al agua no implica que se recomiende nadar con la bomba; evitar desconexiones de más de 1 h (riesgo de hiperglucemia y cetosis)",
+  v: "Puede ser necesario retirar temporalmente la bomba, según el dispositivo, las recomendaciones del fabricante y el tipo y duración de la actividad",
+  n: "La resistencia al agua no implica necesariamente que se recomiende nadar con la bomba; evitar desconexiones de más de 1 h (riesgo de hiperglucemia y cetosis)",
   f: [fr("10-situaciones", "b24", [0, 1, 3])],
 };
 const ANAEROBICO: Dato = {
@@ -510,7 +512,7 @@ const ANAEROBICO: Dato = {
   f: [t4(1)],
 };
 const GRASA = (v: string, extra: Partial<Dato>, f: Pieza[]): Dato => ({
-  r: "Comida grasa o proteica",
+  r: "Comida rica en grasa o proteína",
   cond: C_GRASA,
   v,
   // 0.78.1 (segunda ronda, R3): la actuación ante el patrón posprandial está en la Tabla 5.
@@ -528,7 +530,7 @@ export const MODOS: Dato[][] = [
       f: [t4(0)],
     },
     ANAEROBICO,
-    { r: "Noche", v: "Sin modo nocturno específico", f: [t4(2)] },
+    { r: "Sueño/período nocturno", v: "Sin modo nocturno específico", f: [t4(2)] },
     {
       r: "Hipoglucemia nocturna",
       cond: C_NOCTURNA,
@@ -551,13 +553,19 @@ export const MODOS: Dato[][] = [
     {
       r: "Alcohol",
       cond: C_ALCOHOL,
-      v: "Anticipar hipoglucemia diferida hasta 12–24 h; objetivo glucémico más conservador la noche del consumo y la mañana siguiente",
+      v: "Anticipar hipoglucemia diferida hasta 12–24 h tras la ingesta; valorar un objetivo glucémico más conservador la noche del consumo y la mañana siguiente",
       n: N_ALCOHOL,
       f: [ALCOHOL],
     },
     AGUA_CATETER,
-    { r: R_FALLO, cond: C_FALLO, v: FALLO, f: [t4(6)] },
-    { r: "Desconexión", v: PAUSAR, f: [DESCONEXION] },
+    { r: R_FALLO, cond: C_FALLO, v: FALLO, enlace: FIGURA_3, f: [t4(6)] },
+    {
+      r: "Desconexión",
+      v: PAUSAR,
+      n: UMBRAL_1H,
+      enlace: INTERRUPCION,
+      f: [DESCONEXION, fr("07-educacion", "b11", [4])],
+    },
   ],
   [
     {
@@ -569,7 +577,7 @@ export const MODOS: Dato[][] = [
     },
     ANAEROBICO,
     {
-      r: "Noche",
+      r: "Sueño/período nocturno",
       v: "Modo sueño (112,5–120 mg/dl) en una franja horaria configurable",
       n: "Mantiene la modulación basal, sin bolos de autocorrección",
       f: [t4(2)],
@@ -584,8 +592,7 @@ export const MODOS: Dato[][] = [
       r: R_NECESIDAD,
       cond: C_NECESIDAD,
       v: `${NECESIDAD}; ajustar la configuración (tasa basal, factor de sensibilidad)`,
-      variante: { nombre: "Control-IQ+", v: "Dispone además de basal temporal del 0 al 250 %" },
-      f: [t4(3), t3(1)],
+      f: [t4(3)],
     },
     { r: "Hiperglucemia puntual", cond: C_SIN_FALLO, v: PUNTUAL, f: [t4(4)] },
     GRASA(
@@ -602,8 +609,14 @@ export const MODOS: Dato[][] = [
       f: [ALCOHOL],
     },
     AGUA_CATETER,
-    { r: R_FALLO, cond: C_FALLO, v: FALLO, f: [t4(6)] },
-    { r: "Desconexión", v: PAUSAR, f: [DESCONEXION] },
+    { r: R_FALLO, cond: C_FALLO, v: FALLO, enlace: FIGURA_3, f: [t4(6)] },
+    {
+      r: "Desconexión",
+      v: PAUSAR,
+      n: UMBRAL_1H,
+      enlace: INTERRUPCION,
+      f: [DESCONEXION, fr("07-educacion", "b11", [4])],
+    },
   ],
   [
     {
@@ -618,7 +631,7 @@ export const MODOS: Dato[][] = [
       n: `${ANAEROBICO_N}. No usar Boost de rutina (riesgo de hipoglucemia diferida)`,
     },
     {
-      r: "Noche",
+      r: "Sueño/período nocturno",
       v: "Sin modo nocturno específico",
       n: "Objetivo configurable por tramos",
       f: [t4(2)],
@@ -645,13 +658,19 @@ export const MODOS: Dato[][] = [
     {
       r: "Alcohol",
       cond: C_ALCOHOL,
-      v: "Anticipar hipoglucemia diferida hasta 12–24 h; Ease-off u objetivo glucémico más conservador la noche del consumo y la mañana siguiente",
+      v: "Anticipar hipoglucemia diferida hasta 12–24 h tras la ingesta; valorar Ease-off o un objetivo glucémico más conservador la noche del consumo y la mañana siguiente",
       n: N_ALCOHOL,
       f: [ALCOHOL],
     },
     AGUA_CATETER,
-    { r: R_FALLO, cond: C_FALLO, v: FALLO, f: [t4(6)] },
-    { r: "Desconexión", v: PAUSAR, f: [DESCONEXION] },
+    { r: R_FALLO, cond: C_FALLO, v: FALLO, enlace: FIGURA_3, f: [t4(6)] },
+    {
+      r: "Desconexión",
+      v: PAUSAR,
+      n: UMBRAL_1H,
+      enlace: INTERRUPCION,
+      f: [DESCONEXION, fr("07-educacion", "b11", [4])],
+    },
   ],
   [
     {
@@ -663,7 +682,7 @@ export const MODOS: Dato[][] = [
     },
     ANAEROBICO,
     {
-      r: "Noche",
+      r: "Sueño/período nocturno",
       v: "Sin modo nocturno específico",
       n: "Objetivo configurable por tramos",
       f: [t4(2)],
@@ -685,26 +704,29 @@ export const MODOS: Dato[][] = [
     {
       r: "Alcohol",
       cond: C_ALCOHOL,
-      v: "Anticipar hipoglucemia diferida hasta 12–24 h; objetivo glucémico más conservador la noche del consumo y la mañana siguiente",
+      v: "Anticipar hipoglucemia diferida hasta 12–24 h tras la ingesta; valorar un objetivo glucémico más conservador la noche del consumo y la mañana siguiente",
       n: N_ALCOHOL,
       f: [ALCOHOL],
     },
     {
       r: "Agua",
       v: "Por su formato parche sin tubo, puede mantenerse en actividades acuáticas dentro de los límites de inmersión del fabricante",
-      n: "La resistencia al agua no implica que se recomiende nadar; la inmersión puede limitar la comunicación entre el sensor y el sistema",
+      n: "La inmersión puede además limitar la comunicación entre el sensor y el sistema AID",
       f: [fr("10-situaciones", "b24", [1, 2])],
     },
     {
       r: R_FALLO,
       cond: C_FALLO,
-      v: "Medir cetonemia, corregir con pluma y recambiar el pod según el plan de seguridad (Figura 3)",
+      v: "Medir cetonemia, corregir con pluma y recambiar el pod según el plan de seguridad",
+      enlace: FIGURA_3,
       f: [t4(6)],
     },
     {
       r: "Desconexión",
       v: "El pod no se desconecta: si falla, se despega o debe retirarse, se sustituye por uno nuevo",
-      f: [DESCONEXION],
+      n: UMBRAL_1H,
+      enlace: INTERRUPCION,
+      f: [DESCONEXION, fr("07-educacion", "b11", [4])],
     },
   ],
 ];

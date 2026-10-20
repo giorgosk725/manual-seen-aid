@@ -118,7 +118,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
     else lista[i - 1]?.focus();
   };
   return (
-    <Modal open={open} onClose={onClose} ariaLabel="Paleta de búsqueda" maxW="max-w-xl">
+    <Modal open={open} onClose={onClose} ariaLabel="Paleta de búsqueda" maxW="max-w-2xl">
       <div className="p-3">
         <label className="sr-only" htmlFor="paleta-q">
           Buscar en el capítulo

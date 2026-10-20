@@ -43,7 +43,7 @@ test.describe("Tareas en dos toques (393 px)", () => {
     const t0 = Date.now();
     await page.getByRole("link", { name: /^Hiperglucemia y cetonemia/ }).tap();
     await page.getByRole("button", { name: /^β-OHB 1,0-2,9 mmol\/l/ }).tap();
-    await expect(page.getByText(/0,1 UI\/kg/).first()).toBeVisible();
+    await expect(page.getByText(/0,1\sUI\/kg/).first()).toBeVisible();
     tiempos["β-OHB 1,2 mmol/l"] = { toques: 2, ms: Date.now() - t0 };
   });
 
