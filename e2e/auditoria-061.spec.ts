@@ -113,7 +113,7 @@ test.describe("Sistemas (M61-01/02/03)", () => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/#/sistemas/ciq/funciona");
     // 0.77.0: tarjetas operativas; el objetivo, en la del algoritmo.
-    await expect(page.getByLabel("Algoritmo")).toContainText("112,5–160 mg/dl, fijo");
+    await expect(page.getByLabel("Algoritmo")).toContainText("112,5–160 mg/dl; no configurable");
     await page.goto("/#/sistemas");
     await expect(page.getByText(/no actúa en modo sueño/).first()).toBeVisible();
     // La edad de Liberty, como variante junto a la indicación (Tabla 1, «> 13 años»).

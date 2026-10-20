@@ -19,7 +19,8 @@ test.describe("Auditorías 0.72.0", () => {
     await expect(page).toHaveURL(/#\/sistemas$/);
     await grupo.getByRole("button").nth(3).click();
     await page.getByRole("link", { name: /Comparar \(2\)/ }).click();
-    await expect(page).toHaveURL(/#\/sistemas\/mm780\+op5\/esencial$/);
+    // 0.84.1 (octava ronda, adjunto): desde el Resumen, al Resumen de los dos.
+    await expect(page).toHaveURL(/#\/sistemas\/mm780\+op5$/);
   });
 
   test("búsqueda: «gestante» y «modo actividad» abren su situación; «cetonas» su herramienta", async ({

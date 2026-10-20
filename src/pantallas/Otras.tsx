@@ -157,7 +157,13 @@ export function Buscar({ inicial }: { inicial?: string }) {
     if (!motor || qEf.trim().length < 2) return null;
     const pedida = atajos.find((a) => a.entrada.id.startsWith("recurso/frecuente/"));
     if (pedida) return motor.preguntaFrecuente(pedida.entrada.titulo);
-    return intencionClara ? null : motor.preguntaFrecuente(qEf);
+    if (intencionClara) return null;
+    const f = motor.preguntaFrecuente(qEf);
+    // 0.84.1 (octava ronda, guardia): una pregunta sobre el ejercicio solo si se habla de él
+    // («glucosa alta» daba «¿Se puede hacer ejercicio con la glucosa alta?»).
+    if (f && /ejercicio/i.test(f.pregunta) && !/ejerc|deport|activ|entren|correr|nadar/i.test(qEf))
+      return null;
+    return f;
   }, [motor, qEf, intencionClara, atajos]);
   useEffect(() => {
     if (motor && (respuestas.length || frecuente)) motor.recordarTema(qEf);
@@ -246,10 +252,16 @@ export function Buscar({ inicial }: { inicial?: string }) {
       <input
         id="buscar-q"
         autoFocus
+        // 0.84.1 (octava ronda, guardia): en el móvil, Intro cierra el teclado (la respuesta
+        // quedaba debajo) y la tecla dice «Buscar».
+        enterKeyHint="search"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") e.currentTarget.blur();
+        }}
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder="Buscar: cetonas, modo sueño, TBR…"
-        className="w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8E254E]"
+        className="w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8E254E] [&::-webkit-search-cancel-button]:hidden"
         autoComplete="off"
       />
       {/* 0.72.0 (4.1.3): lo que ha encontrado, dicho al lector cuando se deja de escribir. */}

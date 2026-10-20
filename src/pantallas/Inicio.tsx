@@ -279,7 +279,7 @@ function Hoja({ sis }: { sis?: number }) {
           {[...new Set([...h.antes.map((x) => x.pagina), h.seguimiento.pagina])]
             .sort((a, b) => a - b)
             .join(", ")}
-          {h.sistema ? ", Tabla 1, pp. 3-4, y Tabla 3, p. 11" : ""}.
+          {h.sistema ? ", Tabla 1, pp. 3–4, y Tabla 3, p. 11" : ""}.
         </p>
       </div>
     </div>

@@ -15,7 +15,20 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — séptima ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — octava ronda de auditorías de uso`,
+    detalle: [
+      "Fuentes al pie: el «·» ya no abre línea (en pantalla ni en papel); las páginas con raya corta («pp. 11–12») en toda la app; la de la Tabla 4 lleva a la tabla en Tablas, donde cabe entera.",
+      "Buscador: la puntuación junto al nombre de un sistema ya no lo esconde; «paciente con X» es el sistema de origen; en un cambio, la calculadora primero y con el sistema de origen en el título; «glucosa alta» lleva a la Figura 3 y sin la fila «sin sospecha»; «descarga ordenada» y «cena grasa», a sus preguntas; la pregunta del ejercicio solo si se habla de ejercicio; en el móvil, Intro cierra el teclado.",
+      "Fichas: el nombre del sistema sin partir en el título del móvil; Control-IQ con «112,5–160 mg/dl; no configurable»; sin salto de las pestañas en Preguntas; desde el Resumen, «Comparar» lleva al Resumen de los marcados.",
+      "Calculadora: «Sistema de destino» al venir de otro AID; cifras sin partir.",
+      "Plan de seguridad con el mismo selector de sistema que el resto; recortes literales sin rayas colgando.",
+      "En papel: el mismo aire sobre cada sección, filas algo más juntas y la fuente a lo ancho (CamAPS FX en 3 caras).",
+    ],
+  },
+  {
+    fecha: "2026-10-20",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.84.0 — séptima ronda de auditorías de uso",
     detalle: [
       "Buscador: «viniendo de» y «desde» marcan el sistema de origen; con dos sistemas no se abre la iniciación de uno; «X o Y» compara los dos; «ease off alcohol» lleva al alcohol en CamAPS FX; «qué parámetros usa el algoritmo», a los parámetros comparados; la hiperglucemia persistente, siempre y primero a la Figura 3; el tema de la búsqueda anterior se olvida al salir de Buscar; al escribir, la tarjeta marca el sistema de la respuesta.",
       "Fuentes con la entradilla del párrafo entre paréntesis; «Sobre todo en bolos o manual», con la palabra de la nota de la Tabla 1.",

@@ -46,6 +46,7 @@ import { href } from "../rutas";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { FuentePie } from "./FuentePie";
 import { CasillasSistema } from "./CasillasSistema";
+import { sinCortes } from "../sinCortes";
 import { cambiarCalculadora, useTrabajo } from "../trabajo-inicio";
 
 const hex = CATEGORIA_HEX.consultar;
@@ -210,7 +211,7 @@ function Cifra({
         </span>
         <span className="text-sm font-semibold text-slate-600">{unidad}</span>
       </div>
-      <div className="mt-0.5 text-xs tabular-nums text-slate-600">{cuenta}</div>
+      <div className="mt-0.5 text-xs tabular-nums text-slate-600">{sinCortes(cuenta)}</div>
       <div className="mt-1 text-xs text-slate-500">{regla}</div>
     </div>
   );
@@ -388,7 +389,7 @@ export function CalculadoraInicio({
     { texto: `Tabla 3, p. ${TABLAS.T3.paginas[0]}`, ruta: rutaDeTabla("T3") },
     // Los modos y funciones del paso 5 salen de la Tabla 4.
     {
-      texto: `Tabla 4, pp. ${TABLAS.T4.paginas[0]}-${TABLAS.T4.paginas[1]}`,
+      texto: `Tabla 4, pp. ${TABLAS.T4.paginas[0]}–${TABLAS.T4.paginas[1]}`,
       ruta: rutaDeTabla("T4"),
     },
   ].map((f) => ({ texto: f.texto, ruta: f.ruta ?? undefined }));
@@ -468,7 +469,9 @@ export function CalculadoraInicio({
             </div>
           </Paso>
 
-          <Paso n={2} titulo="Sistema">
+          {/* 0.84.1 (octava ronda, R5): desde otro AID, «Sistema de destino» (como en la caja
+              que los compara): eran dos filas iguales y fáciles de confundir. */}
+          <Paso n={2} titulo={d.origen === "aid" ? "Sistema de destino" : "Sistema"}>
             {/* 0.76: el mismo selector de sistema de toda la app. */}
             <CasillasSistema
               unico

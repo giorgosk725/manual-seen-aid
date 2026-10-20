@@ -268,7 +268,7 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
     etiqueta: "Ingreso hospitalario (planta, persona adulta no crítica)",
     intro:
       "Qué mantener, cuándo no y cómo pasar a una pauta subcutánea: lo que recoge el capítulo del posicionamiento internacional de 2026.",
-    fuente: "pp. 20-21",
+    fuente: "pp. 20–21",
     pagina: 20,
     guion: [
       { rotulo: "Ámbito de aplicación", apartado: S, bloque: "b33" },
@@ -297,7 +297,7 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
     etiqueta: "Gestación, parto y posparto",
     intro:
       "Qué sistemas tienen autorización y evidencia, los objetivos de la gestación y cómo se ajusta cada sistema.",
-    fuente: "pp. 17-18",
+    fuente: "pp. 17–18",
     pagina: 17,
     guion: [
       // 0.73.0: lo de cada sistema va arriba (GestacionSistema); aquí, lo común a los cuatro.

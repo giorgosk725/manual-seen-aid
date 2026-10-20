@@ -96,8 +96,9 @@ export const ALGORITMO: Dato[][] = [
     },
     {
       r: "Objetivo",
-      v: "112,5–160 mg/dl, fijo",
-      n: "Modo sueño 112,5–120 · modo ejercicio 140–160",
+      // 0.84.1 (octava ronda, senior): «fijo» junto a un intervalo podía leerse mal.
+      v: "112,5–160 mg/dl; no configurable",
+      n: "Modo sueño 112,5–120 mg/dl · modo ejercicio 140–160 mg/dl",
       f: [t1(6), t3(0)],
     },
     {

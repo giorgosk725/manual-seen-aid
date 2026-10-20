@@ -531,6 +531,8 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     );
   } else if (
     pideSospechaDeFallo(n) ||
+    // 0.84.1 (octava ronda, guardia): «glucosa alta», «glucemia elevada», sin más.
+    /^(la )?(glucosa|glucemia) (muy )?(alta|elevada)$/.test(n.trim()) ||
     (cifraAlta && sis >= 0) ||
     // 0.81.1 (quinta ronda, guardia): «780 glucosa alta», «780G cetonas», «no sé si funciona el set».
     (sis >= 0 && /glucosa alta|glucemia alta|hiperglu|ceton/.test(n) && !/puntual/.test(n)) ||
@@ -556,31 +558,31 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     if (
       dos.length >= 2 &&
       !/frente a|comparad|respecto|\bvs\b|\bentre\b|diferenc/.test(n) &&
-      (/\b(cambi|pasar|pasa a|paso de|pase de|migr|sustitu|transici|desde|viniendo de|viene de|procede)/.test(
+      (/\b(cambi|pasar|pasa a|paso de|pase de|migr|sustitu|transici|desde|viniendo de|viene de|procede|paciente con|que lleva|lleva)/.test(
         n,
       ) ||
         /\bde \S.* a \S/.test(crudo) ||
         entreSistemas(crudo))
-    )
+    ) {
+      // 0.84.1 (octava ronda, adjunto y R5): la calculadora, la primera (es lo que se hace en
+      // consulta al cambiar de sistema), y con el sistema de origen en el título.
+      const destino = destinoDe(crudo, dos);
+      const origen = dos.find((i) => i !== destino) ?? dos[0];
       out.push(
+        atajo(
+          `recurso/cambio-calculadora/${dos.join("+")}`,
+          `Cálculo de parámetros iniciales · ${TABLAS.T1.columnas[destino]} (desde ${TABLAS.T1.columnas[origen]})`,
+          href("consultar", "inicio", `calculadora:${SIS_IDS[destino]}:desde-${SIS_IDS[origen]}`),
+          TABLAS.T2.paginas[0],
+        ),
         atajo(
           `recurso/cambio/${dos.join("+")}`,
           `Parámetros de ${dos.map((i) => TABLAS.T1.columnas[i]).join(" y ")}`,
           href("sistemas", dos.map((i) => ORDEN_SISTEMAS[i]).join("+"), "parametros"),
           TABLAS.T3.paginas[0],
         ),
-        // 0.79.1 (tercera ronda, R5 y adjunto): la calculadora, con el sistema de destino.
-        atajo(
-          `recurso/cambio-calculadora/${dos.join("+")}`,
-          `Cálculo de parámetros iniciales · ${TABLAS.T1.columnas[destinoDe(crudo, dos)]} (desde otro sistema AID)`,
-          href(
-            "consultar",
-            "inicio",
-            `calculadora:${SIS_IDS[destinoDe(crudo, dos)]}:desde-${SIS_IDS[dos.find((i) => i !== destinoDe(crudo, dos)) ?? dos[0]]}`,
-          ),
-          TABLAS.T2.paginas[0],
-        ),
       );
+    }
   }
   // 0.79.1 (tercera ronda, guardia): «hoja» con hiperglucemia o cetonas: la hoja de cetonas y
   // el plan de seguridad.
@@ -648,7 +650,7 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   // 0.83.1 (séptima ronda, R3): «qué parámetros usa el algoritmo», «parámetros que influyen en
   // el modo automático».
   if (
-    /actua(n)? en (el )?(modo )?automatico|que actua|parametros (que )?(usa|influyen|intervienen|utiliza)|influyen en el (modo )?automatico/.test(
+    /actua(n)? en (el )?(modo )?automatico|que actua|parametros (que )?(usa|influyen|intervienen|utiliza)|parametros del algoritmo|influyen en el (modo )?automatico/.test(
       n,
     ) &&
     !/ceton/.test(n)
@@ -661,6 +663,26 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
           : "Parámetros de los cuatro: qué actúa en automático",
         href("sistemas", sis >= 0 ? CATALOGO_SISTEMAS[sis].id : "todos", "parametros"),
         TABLAS.T3.paginas[0],
+      ),
+    );
+  // 0.84.1 (octava ronda, R3): «descarga + orden/pasos»: la pregunta de la revisión ordenada; «cena
+  // grasa», «comida grasa»: la de la comida rica en grasa (antes ganaba la de la enfermedad leve).
+  if (/descarga/.test(n) && /\b(orden|ordenad|pasos|sistematic)/.test(n))
+    out.push(
+      atajo(
+        "recurso/frecuente/f21",
+        "¿Cómo revisar una descarga de forma ordenada?",
+        href("preguntas", "f21"),
+        TABLAS.T5.paginas[0],
+      ),
+    );
+  if (/\b(cena|comida|comidas) (rica |ricas )?(en )?(grasa|grasas|proteic)/.test(n))
+    out.push(
+      atajo(
+        "recurso/frecuente/f57",
+        "¿Cómo manejar una comida rica en grasa o proteína?",
+        href("preguntas", "f57"),
+        TABLAS.T4.paginas[0],
       ),
     );
   // 0.81.1 (quinta ronda, guardia): agua, nadar, piscina o bañarse con un sistema: su fila «Agua»
@@ -964,25 +986,33 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   // salía dos veces, con y sin el sistema en la ruta).
   const vistos = new Set<string>();
   const nuevo = (k: string) => !vistos.has(k) && !!vistos.add(k);
-  return todos
-    .filter((r) => {
-      const a = nuevo(r.entrada.ruta);
-      const b = nuevo(`t:${normalizar(r.entrada.titulo)}`);
-      return a && b;
-    })
-    .filter((r) => !((cambio || urgencia) && r.entrada.ruta.startsWith("#/consultar/descarga")))
-    .slice(0, 2);
+  return (
+    todos
+      .filter((r) => {
+        const a = nuevo(r.entrada.ruta);
+        const b = nuevo(`t:${normalizar(r.entrada.titulo)}`);
+        return a && b;
+      })
+      .filter((r) => !((cambio || urgencia) && r.entrada.ruta.startsWith("#/consultar/descarga")))
+      // 0.84.1 (octava ronda, guardia): con la Figura 3, nada «sin sospecha de fallo».
+      .filter((r) => !(urgencia && /sin sospecha/i.test(r.entrada.titulo)))
+      .slice(0, 2)
+  );
 }
 
 const palabrasDeSistema = (consulta: string) =>
   // «control iq» en dos palabras cuenta como una.
   normalizar(consulta)
     .replace(/control[\s-]*iq\+?/g, "control-iq")
-    .split(/\s+/);
+    // 0.84.1 (octava ronda, R5): «780g,», «¿camaps» o «control-iq?» también son sistemas.
+    .split(/[\s,.;:¿?¡!()«»"]+/);
 /* 0.82.1 (sexta ronda, R5): «780G a Control-IQ», «780 → control-iq», «780g por control-iq»: el
    conector entre dos nombres de sistema (no cualquier « a » de la frase). */
 function entreSistemas(crudo: string): boolean {
-  const t = crudo.replace(/control[\s-]*iq\+?/g, "control-iq").split(/\s+/);
+  const t = crudo
+    .replace(/control[\s-]*iq\+?/g, "control-iq")
+    .split(/[\s,.;:¿?¡!()«»"]+/)
+    .filter(Boolean);
   const es = (w?: string) => !!w && ALIAS_SISTEMA.some((re) => re.test(w));
   return t.some(
     (w, i) => ["a", "por", "→", "->"].includes(w) && (es(t[i - 1]) || es(t[i - 2])) && es(t[i + 1]),
@@ -992,9 +1022,10 @@ function entreSistemas(crudo: string): boolean {
 function destinoDe(crudo: string, dos: number[]): number {
   // 0.83.1 (séptima ronda, R5): «iniciar Control-IQ viniendo de 780G», «Control-IQ desde 780G»:
   // el que va tras «desde» o «viniendo de» es el de origen.
-  const origen = /(?:desde|viniendo de|viene de|procede de)(?: la| el| una| un)? (\S+)/.exec(
-    crudo.replace(/control[\s-]*iq\+?/g, "control-iq"),
-  )?.[1];
+  const origen =
+    /(?:desde|viniendo de|viene de|procede de|procedente de|paciente con|que lleva|lleva)(?: la| el| una| un)? ([^\s,.;:¿?¡!()]+)/.exec(
+      crudo.replace(/control[\s-]*iq\+?/g, "control-iq"),
+    )?.[1];
   const o = origen ? dos.find((i) => ALIAS_SISTEMA[i].test(origen)) : undefined;
   if (o !== undefined) return dos.find((i) => i !== o) ?? dos[0];
   const tras = crudo

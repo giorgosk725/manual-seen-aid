@@ -53,7 +53,7 @@ export const FASES: Fase[] = [
     id: "preparacion",
     nombre: "Selección individualizada y preparación",
     corto: "Preparación",
-    paginas: "pp. 5-7",
+    paginas: "pp. 5–7",
     piezas: [
       { t: "frase", apartado: "06-indicaciones", bloque: "b3", k: [0, 1] },
       { t: "casilla", tabla: "T1", fila: 7 },
@@ -75,7 +75,7 @@ export const FASES: Fase[] = [
     id: "inicio",
     nombre: "Inicio del sistema",
     corto: "Inicio",
-    paginas: "pp. 10-12",
+    paginas: "pp. 10–12",
     piezas: [
       { t: "fila", tabla: "T2", fila: 0 },
       { t: "inicializacion" },
@@ -116,7 +116,7 @@ export const FASES: Fase[] = [
     id: "primeros-meses",
     nombre: "Seguimiento estrecho durante los primeros 3 meses",
     corto: "3 primeros meses",
-    paginas: "pp. 12-13",
+    paginas: "pp. 12–13",
     piezas: [
       { t: "frase", apartado: "08-iniciacion", bloque: "b9", k: [0] },
       {
@@ -248,7 +248,7 @@ export function hojaDeComprobacion(sis?: number) {
       { texto: `Apartado 7, p. ${plan.pagina}`, ruta: plan.ruta },
       { texto: `Apartado 8, p. ${nucleo.pagina}`, ruta: nucleo.ruta },
       {
-        texto: `Tabla 2, ${TABLAS.T2.paginas[0] === TABLAS.T2.paginas[1] ? `p. ${TABLAS.T2.paginas[0]}` : `pp. ${TABLAS.T2.paginas[0]}-${TABLAS.T2.paginas[1]}`}`,
+        texto: `Tabla 2, ${TABLAS.T2.paginas[0] === TABLAS.T2.paginas[1] ? `p. ${TABLAS.T2.paginas[0]}` : `pp. ${TABLAS.T2.paginas[0]}–${TABLAS.T2.paginas[1]}`}`,
         ruta: rutaDeTabla("T2") ?? href("capitulo", "08-iniciacion"),
       },
     ],

@@ -1769,6 +1769,10 @@ html.night *:focus-visible {
   .imprimible .fuente-pie a {
     padding: 0;
   }
+  /* 0.84.1 (octava ronda, visual): filas algo más juntas en papel (CamAPS, de 4 a 3 caras). */
+  .imprimible .filas-datos > div {
+    padding-block: 7px;
+  }
 }
 
 /* ---------- 0.78.1, tanda 3 (segunda ronda de auditorías) ---------- */

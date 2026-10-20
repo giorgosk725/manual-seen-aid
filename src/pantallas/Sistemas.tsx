@@ -583,7 +583,10 @@ export function FichaSistema({
   const vista = sec && SECCIONES_FICHA.some((x) => x.id === sec) ? sec : "funciona";
   const ver = (id: string) => completa || vista === id;
   // En papel se imprime la ficha entera: las secciones de otras pestañas van ocultas en pantalla.
-  const papel = (id: string) => (ver(id) ? "" : "hidden print:block print:mt-7");
+  // 0.84.1 (octava ronda, visual y R3): en papel, el mismo aire sobre cada sección, también sobre
+  // la de la pestaña desde la que se imprime (antes, 6–11 pt).
+  const papel = (id: string) =>
+    `${ver(id) ? "" : "hidden print:block"} ${id === "funciona" ? "" : "print:mt-7"}`;
   const mt = completa ? "mt-7" : "";
   return (
     <div ref={ref} className="imprimible">
@@ -617,7 +620,8 @@ export function FichaSistema({
               className="min-w-0 font-display text-xl font-medium uppercase leading-tight tracking-[0.04em]"
               style={{ color: h.ink }}
             >
-              {s.name}
+              {/* 0.84.1 (octava ronda, visual): sin partir «Control-IQ+» por el guion en el móvil. */}
+              <NombreSistema n={s.name} />
             </h1>
             <div className="no-imprimir flex shrink-0 items-center gap-3">
               {/* 0.78.1 (segunda ronda, R3): la ficha entera en una página, en el ordenador. */}
@@ -1038,7 +1042,11 @@ function BarraSistemas({
                 </button>
               ) : (
                 <a
-                  href={rutaCon(marcados)}
+                  // 0.84.1 (octava ronda, adjunto): desde el Resumen, al Resumen de los marcados
+                  // (antes, a Características).
+                  href={
+                    marcados.length > 1 ? href("sistemas", marcados.join("+")) : rutaCon(marcados)
+                  }
                   onClick={() => window.scrollTo({ top: 0 })}
                   className="tap-44 inline-flex min-h-9 shrink-0 items-center gap-1 whitespace-nowrap rounded-md px-3 py-1 text-sm font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                   style={{ background: SEEN.burdeos }}
@@ -1047,7 +1055,13 @@ function BarraSistemas({
                   <ArrowRight size={13} aria-hidden="true" />
                 </a>
               )
-            ) : sec === "preguntas" ? null : (
+            ) : sec === "preguntas" ? (
+              // 0.84.1 (octava ronda, visual y R3): el hueco de «Los cuatro», para que las
+              // pestañas no salten al llegar a Preguntas.
+              <span aria-hidden="true" className="chip invisible shrink-0">
+                Los cuatro
+              </span>
+            ) : (
               // 0.79.1 (tercera ronda, adjunto): sin «Los cuatro» en Preguntas (no hay vista de
               // los cuatro: llevaba al Resumen).
               <button

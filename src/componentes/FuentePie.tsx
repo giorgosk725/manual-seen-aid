@@ -34,7 +34,9 @@ export function FuentePie({
               href={f.ruta}
               // 0.75.1 (auditoría): en línea, con el área táctil de 44 px por `tap-44` (antes,
               // inline-flex de 44 px de alto: en el móvil cada fuente caía a su propia línea).
-              className="tap-44 inline-block py-1"
+              // 0.84.1 (octava ronda): `inline` (no inline-block): con inline-block, el espacio duro
+              // no impedía que el «·» abriera línea; el relleno vertical mantiene los 24 px.
+              className="tap-44 inline py-1"
             >
               {f.texto}
             </a>

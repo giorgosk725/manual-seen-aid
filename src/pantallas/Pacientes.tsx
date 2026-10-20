@@ -13,7 +13,7 @@ import type { SistemaId } from "../ampliacion/tipos";
 import { AUTOR_PACIENTES, RESUMEN_CAPITULO, TITULO_CAPITULO_PACIENTES } from "../pacientes/textos";
 import { elegirRuta, href } from "../rutas";
 import { CabeceraEditorial, ToneCard } from "../ui";
-import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
+import { CATEGORIA_HEX, SEEN, SISTEMA_HEX } from "../tokens";
 import { hojaExtraPorId, type HojaExtra } from "../hojas";
 import { Texto } from "../texto";
 import { SinCortes } from "../componentes/SinCortes";
@@ -474,17 +474,16 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
             onClick={() => elegirRuta("pacientes", "plan", sid)}
             aria-pressed={sid === id}
             className="min-h-11 rounded-lg border px-1 py-1 text-xs font-semibold leading-tight transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-0 sm:rounded-full sm:px-3 sm:py-1.5"
+            // 0.84.1 (octava ronda, visual): el acento de interacción de toda la app (burdeos), no
+            // el color del sistema; y el nombre corto de casilla («Control-IQ»): a 360 px
+            // «Control-IQ / Control-IQ+» ocupaba tres líneas. El título del plan da el nombre entero.
             style={
               sid === id
-                ? {
-                    background: SISTEMA_HEX[k].ink,
-                    borderColor: SISTEMA_HEX[k].ink,
-                    color: "#ffffff",
-                  }
+                ? { background: SEEN.burdeos, borderColor: SEEN.burdeos, color: "#ffffff" }
                 : { borderColor: "#d4d4d4", color: "#334155", background: "#ffffff" }
             }
           >
-            {CORTO_SISTEMA[k]}
+            {CORTO_CASILLA[k]}
           </button>
         ))}
       </div>

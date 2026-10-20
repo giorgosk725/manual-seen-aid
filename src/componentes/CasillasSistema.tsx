@@ -60,7 +60,7 @@ export function CasillasSistema({
               type="button"
               {...(unico ? { role: "radio", "aria-checked": on } : { "aria-pressed": on })}
               onClick={() => onToggle(c)}
-              className="tap-44 flex min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[13px] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-0 sm:px-2.5 sm:text-sm sm:leading-normal"
+              className="tap-44 flex min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[13px] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-9 sm:px-2.5 sm:text-sm sm:leading-normal"
               style={
                 on
                   ? { borderColor: SEEN.burdeos, background: "#f7eff3" }

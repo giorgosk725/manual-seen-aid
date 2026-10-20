@@ -14,7 +14,9 @@ export function fuentesDePieza(p: Pieza): { texto: string; ruta: string }[] {
       // Sin página por fila, el intervalo entero de la tabla (A11): una fila de la Tabla 1 puede
       // estar en la p. 4 aunque la tabla empiece en la 3.
       const t = TABLAS[p.tabla];
-      const r = rutaDeTabla(p.tabla);
+      // 0.84.1 (octava ronda, senior): la Tabla 4 no cabe en la columna de lectura del capítulo
+      // (se cortaba Omnipod 5): su fuente lleva a la tabla en Tablas, que cabe entera.
+      const r = p.tabla === "T4" ? "#/consultar/tablas/T4" : rutaDeTabla(p.tabla);
       return r
         ? [{ texto: `Tabla ${t.numero}, ${paginasDe(t.paginas[0], t.paginas[1])}`, ruta: r }]
         : [];

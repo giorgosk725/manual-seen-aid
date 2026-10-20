@@ -243,15 +243,16 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                       {d.enlace.texto}
                     </a>
                   )}
-                  {/* 0.83.1 (séptima ronda, R3 y visual): en papel, la fuente dentro de la última fila
-                      (que no se parte): fuera, Chromium la dejaba sola al principio de una cara. */}
-                  {k === datos.length - 1 && (
-                    <FuentePie
-                      className="mt-2 hidden print:block"
-                      fuentes={fuentesDeDatos(datos)}
-                    />
-                  )}
                 </dd>
+                {/* 0.83.1 (séptima ronda, R3 y visual): en papel, la fuente dentro de la última fila
+                    (que no se parte): fuera, Chromium la dejaba sola al principio de una cara.
+                    0.84.1: en su propia celda, a lo ancho (en la columna del dato parecía la fuente
+                    de esa fila). */}
+                {k === datos.length - 1 && (
+                  <dd className="col-span-full hidden print:block">
+                    <FuentePie className="mt-1" fuentes={fuentesDeDatos(datos)} />
+                  </dd>
+                )}
               </div>
             );
           })}

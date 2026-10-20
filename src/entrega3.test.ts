@@ -464,3 +464,33 @@ describe("Séptima ronda de auditorías (0.83.1): atajos del buscador", () => {
     );
   });
 });
+
+describe("Octava ronda de auditorías (0.84.1): atajos del buscador", () => {
+  const rec = (q: string) =>
+    recursosPedidos(q, buscarConTotales(q, 12).resultados).map((r) => r.entrada.ruta);
+  it("la puntuación junto al nombre del sistema no lo esconde", () => {
+    expect(rec("paciente con 780g, cambio a tandem").join(" ")).toMatch(
+      /calculadora:control-iq:desde-minimed-780g/,
+    );
+    const r = rec("empezar control-iq, viene de 780g").join(" ");
+    expect(r).toMatch(/calculadora:control-iq:desde-minimed-780g/);
+    expect(r).not.toMatch(/preparacion:minimed-780g/);
+  });
+  it("«paciente con X» es el sistema de origen", () => {
+    expect(rec("iniciar control-iq en paciente con 780g").join(" ")).toMatch(
+      /calculadora:control-iq:desde-minimed-780g/,
+    );
+  });
+  it("en un cambio, la calculadora va primero", () => {
+    expect(rec("pasar de 780G a control-iq")[0]).toMatch(/calculadora:control-iq/);
+  });
+  it("«glucosa alta» sola: la Figura 3; sin la fila «sin sospecha»", () => {
+    expect(rec("glucosa alta")).toContain("#/consultar/figura-3");
+    expect(rec("fallo de infusión 780g").join(" ")).not.toMatch(/necesidad-transitoria/);
+  });
+  it("descarga ordenada y comida grasa: sus preguntas frecuentes", () => {
+    expect(rec("descarga camaps orden")).toContain("#/preguntas/f21");
+    expect(rec("780g cena grasa")).toContain("#/preguntas/f57");
+    expect(rec("parámetros del algoritmo")).toContain("#/sistemas/todos/parametros");
+  });
+});
