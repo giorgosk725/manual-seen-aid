@@ -18,6 +18,9 @@ export interface Dato {
   n?: string;
   /* La condición de la fila (Tabla 4), bajo el rótulo. */
   cond?: string;
+  /* Lo que el capítulo manda hacer antes (activar 1–2 h antes, revisar…), con el mismo peso que
+     la respuesta, antes de ella. */
+  antes?: string;
   /* Lo que cambia con la variante del sistema (Control-IQ+, Liberty). */
   variante?: { nombre: string; v: string };
   auto?: EnAutomatico;
@@ -140,8 +143,8 @@ export const ALGORITMO: Dato[][] = [
     },
     {
       r: "Objetivo",
-      v: "110–150 mg/dl, hasta 8 tramos",
-      n: "110, 120, 130, 140 o 150 mg/dl",
+      v: "110, 120, 130, 140 o 150 mg/dl",
+      n: "Hasta 8 tramos/día",
       f: [t1(6)],
     },
     {
@@ -167,7 +170,7 @@ export const VARIANTE_OPERATIVA: (GrupoFicha | null)[] = [
     datos: [
       {
         r: "Versión del algoritmo",
-        v: "Control-IQ o Control-IQ+, según el dispositivo (t:slim X2 o Mobi) y la versión de software",
+        v: "Control-IQ o Control-IQ+, según el dispositivo y la versión de software",
         f: [fr("04-sistemas", "b4", [1])],
       },
     ],
@@ -194,7 +197,7 @@ export const INDICACION: GrupoFicha[][] = [
       datos: [
         { r: "Edad y dosis", v: "≥ 2 años; DTD ≥ 6 UI/día", f: [t1(7)] },
         { r: "Diabetes tipo 2", v: "Autorizado (marcado CE)", f: [t1(7)] },
-        { r: "Gestación", v: "Autorizado (CE); ensayo CRISTAL", f: [t1(8)] },
+        { r: "Gestación", v: "Autorizado (CE); evidencia: CRISTAL", f: [t1(8)] },
       ],
     },
     {
@@ -240,7 +243,7 @@ export const INDICACION: GrupoFicha[][] = [
         {
           r: "Gestación",
           v: "Control-IQ: sin autorización",
-          variante: { nombre: "Control-IQ+", v: "Autorizado (FDA y CE); ensayo CIRCUIT" },
+          variante: { nombre: "Control-IQ+", v: "Autorizado (FDA y CE); evidencia: CIRCUIT" },
           f: [t1(8)],
         },
       ],
@@ -282,7 +285,7 @@ export const INDICACION: GrupoFicha[][] = [
         { r: "Diabetes tipo 2", v: "No consta en el capítulo", f: [t1(7)] },
         {
           r: "Gestación",
-          v: "Autorizado (CE); ensayo AiDAPT",
+          v: "Autorizado (CE); evidencia: AiDAPT",
           variante: { nombre: "Liberty", v: "No autorizado" },
           f: [t1(8)],
         },
@@ -417,7 +420,7 @@ export const PARAMETROS: Dato[][] = [
     {
       r: P_FS,
       auto: "no",
-      v: "El algoritmo adapta internamente su sensibilidad; el factor configurado se usa en el calculador y no ajusta directamente la modulación automática",
+      v: "El algoritmo adapta internamente su sensibilidad; el factor configurado se usa en el calculador para correcciones indicadas por la persona y no ajusta directamente la modulación automática",
       f: [t3(3), fr("10-situaciones", "b7", [0])],
     },
     {
@@ -437,7 +440,7 @@ export const PARAMETROS: Dato[][] = [
     {
       r: P_OBJ,
       auto: "si",
-      v: "Hasta 8 tramos (110–150 mg/dl). La Función Actividad lo fija en 150 mg/dl",
+      v: "110, 120, 130, 140 o 150 mg/dl, hasta 8 tramos/día. La Función Actividad lo fija en 150 mg/dl",
       f: [t3(0), t1(10)],
     },
     {
@@ -479,7 +482,8 @@ const NECESIDAD = "Intensificar la monitorización, vigilar cetonemia y mantener
 const FALLO = "Medir cetonemia, corregir con pluma y recambiar el set según el plan de seguridad";
 /* 0.79.1 (tercera ronda, guardia): la Figura 3, a un toque desde la fila. */
 const FIGURA_3 = { texto: "Hiperglucemia y cetonemia (Figura 3)", ruta: "#/consultar/figura-3" };
-const PAUSAR = "Suspender o pausar la administración al desconectar la bomba";
+const PAUSAR =
+  "Suspender o pausar la administración al desconectar la bomba, según las instrucciones del fabricante";
 /* El umbral operativo de la interrupción (apartado 7) y su herramienta. */
 const UMBRAL_1H =
   "A partir de aproximadamente 1 h sin insulina, actuar: glucemia capilar, cetonemia según el contexto y reposición de la insulina no administrada";
@@ -488,21 +492,20 @@ const R_AEROBICO =
   "Ejercicio aeróbico planificado o situación previsible de mayor riesgo de hipoglucemia";
 const C_AEROBICO =
   "Activar la función temporal 1–2 h antes e individualizar la duración según la respuesta previa";
-const R_NECESIDAD = "Mayor necesidad transitoria leve";
-const C_NECESIDAD = "Enfermedad leve, menstruación o estrés, sin sospecha de fallo de infusión";
-const C_SIN_FALLO = "Sin sospecha de fallo de infusión";
-const R_FALLO = "Hiperglucemia persistente o inexplicada";
-const C_FALLO = "Sospecha de fallo de infusión";
+const R_NECESIDAD =
+  "Mayor necesidad transitoria leve sin sospecha de fallo de infusión (enfermedad leve, menstruación o estrés)";
+const R_PUNTUAL = "Hiperglucemia puntual sin sospecha de fallo de infusión";
+const R_FALLO = "Hiperglucemia persistente o inexplicada (sospecha de fallo de infusión)";
 const C_NOCTURNA =
   "Antes de subir objetivos globalmente, revisar ejercicio vespertino, alcohol, bolo tardío de cena, corrección manual, objetivo demasiado bajo o ratios agresivas, y si el patrón se concentra en una franja";
 const ALCOHOL = fr("10-situaciones", "b14", [2]);
-const C_ALCOHOL = "Adolescencia y transición";
+const C_ALCOHOL = "Del apartado de adolescencia y transición";
 const N_ALCOHOL =
   "Educar sobre la prudencia con los bolos prandiales en comidas asociadas a alcohol";
 const AGUA_CATETER: Dato = {
   r: "Agua y deportes de contacto",
   v: "Puede ser necesario retirar temporalmente la bomba, según el dispositivo, las recomendaciones del fabricante y el tipo y duración de la actividad",
-  n: "La resistencia al agua no implica necesariamente que se recomiende nadar con la bomba; evitar desconexiones de más de 1 h (riesgo de hiperglucemia y cetosis)",
+  n: "La resistencia al agua no implica necesariamente que se recomiende nadar con la bomba; las desconexiones de más de 1 h pueden aumentar el riesgo de hiperglucemia y cetosis",
   f: [fr("10-situaciones", "b24", [0, 1, 3])],
 };
 const ANAEROBICO: Dato = {
@@ -513,7 +516,7 @@ const ANAEROBICO: Dato = {
 };
 const GRASA = (v: string, extra: Partial<Dato>, f: Pieza[]): Dato => ({
   r: "Comida rica en grasa o proteína",
-  cond: C_GRASA,
+  antes: C_GRASA,
   v,
   // 0.78.1 (segunda ronda, R3): la actuación ante el patrón posprandial está en la Tabla 5.
   enlace: { texto: "Patrón posprandial: descarga, paso 6", ruta: "#/consultar/descarga/6" },
@@ -524,7 +527,7 @@ export const MODOS: Dato[][] = [
   [
     {
       r: R_AEROBICO,
-      cond: C_AEROBICO,
+      antes: C_AEROBICO,
       v: "Objetivo temporal 150 mg/dl",
       n: "Suspende las autocorrecciones mientras está activo",
       f: [t4(0)],
@@ -533,19 +536,17 @@ export const MODOS: Dato[][] = [
     { r: "Sueño/período nocturno", v: "Sin modo nocturno específico", f: [t4(2)] },
     {
       r: "Hipoglucemia nocturna",
-      cond: C_NOCTURNA,
+      antes: C_NOCTURNA,
       v: "Un objetivo más alto o temporal puede ayudar",
       f: [NOCHE],
     },
     {
       r: R_NECESIDAD,
-      cond: C_NECESIDAD,
       v: `${NECESIDAD}; ajustar la configuración (objetivo, duración de la insulina activa) si es posible`,
       f: [t4(3)],
     },
     {
-      r: "Hiperglucemia puntual",
-      cond: C_SIN_FALLO,
+      r: R_PUNTUAL,
       v: "Mantener SmartGuard; ante hiperglucemia mantenida, confirmar la glucemia capilar y administrar el bolo corrector recomendado por el sistema",
       f: [t4(4)],
     },
@@ -558,7 +559,7 @@ export const MODOS: Dato[][] = [
       f: [ALCOHOL],
     },
     AGUA_CATETER,
-    { r: R_FALLO, cond: C_FALLO, v: FALLO, enlace: FIGURA_3, f: [t4(6)] },
+    { r: R_FALLO, v: FALLO, enlace: FIGURA_3, f: [t4(6)] },
     {
       r: "Desconexión",
       v: PAUSAR,
@@ -570,7 +571,7 @@ export const MODOS: Dato[][] = [
   [
     {
       r: R_AEROBICO,
-      cond: C_AEROBICO,
+      antes: C_AEROBICO,
       v: "Modo ejercicio (140–160 mg/dl)",
       n: "Reduce o suspende la administración si predice descenso; mantiene posibles autocorrecciones si se superan los umbrales del algoritmo",
       f: [t4(0)],
@@ -584,17 +585,16 @@ export const MODOS: Dato[][] = [
     },
     {
       r: "Hipoglucemia nocturna",
-      cond: C_NOCTURNA,
+      antes: C_NOCTURNA,
       v: "El modo sueño no autocorrige, pero ajusta la basal",
       f: [NOCHE],
     },
     {
       r: R_NECESIDAD,
-      cond: C_NECESIDAD,
       v: `${NECESIDAD}; ajustar la configuración (tasa basal, factor de sensibilidad)`,
       f: [t4(3)],
     },
-    { r: "Hiperglucemia puntual", cond: C_SIN_FALLO, v: PUNTUAL, f: [t4(4)] },
+    { r: R_PUNTUAL, v: PUNTUAL, f: [t4(4)] },
     GRASA(
       "Bolo extendido hasta 2 h",
       { variante: { nombre: "Control-IQ+", v: "De 15 min a 8 h" } },
@@ -609,7 +609,7 @@ export const MODOS: Dato[][] = [
       f: [ALCOHOL],
     },
     AGUA_CATETER,
-    { r: R_FALLO, cond: C_FALLO, v: FALLO, enlace: FIGURA_3, f: [t4(6)] },
+    { r: R_FALLO, v: FALLO, enlace: FIGURA_3, f: [t4(6)] },
     {
       r: "Desconexión",
       v: PAUSAR,
@@ -621,7 +621,7 @@ export const MODOS: Dato[][] = [
   [
     {
       r: R_AEROBICO,
-      cond: C_AEROBICO,
+      antes: C_AEROBICO,
       v: "Ease-off: eleva temporalmente el objetivo y reduce la administración automática",
       n: "Inicio inmediato o diferido y duración configurable. En hipoglucemia recurrente por tramo horario, valorar un objetivo más alto en ese periodo",
       f: [t4(0)],
@@ -638,19 +638,17 @@ export const MODOS: Dato[][] = [
     },
     {
       r: "Hipoglucemia nocturna",
-      cond: C_NOCTURNA,
+      antes: C_NOCTURNA,
       v: "Ease-off o un objetivo más alto",
       f: [NOCHE],
     },
     {
       r: R_NECESIDAD,
-      cond: C_NECESIDAD,
       v: `${NECESIDAD}; valorar Boost y, si se mantiene, ajustar el objetivo`,
       f: [t4(3)],
     },
     {
-      r: "Hiperglucemia puntual",
-      cond: C_SIN_FALLO,
+      r: R_PUNTUAL,
       v: "Mantener el automático y valorar Boost o bolo corrector según el calculador",
       f: [t4(4)],
     },
@@ -663,7 +661,7 @@ export const MODOS: Dato[][] = [
       f: [ALCOHOL],
     },
     AGUA_CATETER,
-    { r: R_FALLO, cond: C_FALLO, v: FALLO, enlace: FIGURA_3, f: [t4(6)] },
+    { r: R_FALLO, v: FALLO, enlace: FIGURA_3, f: [t4(6)] },
     {
       r: "Desconexión",
       v: PAUSAR,
@@ -675,7 +673,7 @@ export const MODOS: Dato[][] = [
   [
     {
       r: R_AEROBICO,
-      cond: C_AEROBICO,
+      antes: C_AEROBICO,
       v: "Función Actividad (objetivo 150 mg/dl)",
       n: "Reduce la administración automática; duración programable de 1–24 h",
       f: [t4(0)],
@@ -689,17 +687,16 @@ export const MODOS: Dato[][] = [
     },
     {
       r: "Hipoglucemia nocturna",
-      cond: C_NOCTURNA,
+      antes: C_NOCTURNA,
       v: "Función Actividad (objetivo 150 mg/dl) o un objetivo configurado más alto",
       f: [NOCHE],
     },
     {
       r: R_NECESIDAD,
-      cond: C_NECESIDAD,
       v: `${NECESIDAD}; ajustar el objetivo`,
       f: [t4(3)],
     },
-    { r: "Hiperglucemia puntual", cond: C_SIN_FALLO, v: PUNTUAL, f: [t4(4)] },
+    { r: R_PUNTUAL, v: PUNTUAL, f: [t4(4)] },
     GRASA("Bolo extendido disponible solo en modo manual", { n: N_INDIVIDUALIZAR }, [TARDIA_RESTO]),
     {
       r: "Alcohol",
@@ -716,7 +713,6 @@ export const MODOS: Dato[][] = [
     },
     {
       r: R_FALLO,
-      cond: C_FALLO,
       v: "Medir cetonemia, corregir con pluma y recambiar el pod según el plan de seguridad",
       enlace: FIGURA_3,
       f: [t4(6)],

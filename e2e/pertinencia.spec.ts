@@ -28,7 +28,8 @@ test.describe("Pertinencia y continuación (0.42.0)", () => {
     await expect(page.getByText(/Control-IQ\+: ≥\s2\saños/).first()).toBeVisible();
     // 0.77.1 (nada útil plegado): los sistemas, a la vista, sin «Ver otros sistemas».
     await expect(page.getByText("Ver otros sistemas")).toHaveCount(0);
-    await expect(page.getByRole("group", { name: "Sistema" }).first()).toBeVisible();
+    // 0.80.1: en una pregunta de un solo sistema, sin botones de sistema en cada tarjeta.
+    await expect(page.getByRole("group", { name: "Sistema" })).toHaveCount(0);
     await expect(page.getByText("Todos los sistemas")).toBeVisible();
   });
 

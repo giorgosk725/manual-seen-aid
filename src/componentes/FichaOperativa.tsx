@@ -17,7 +17,8 @@ const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
    párrafo del capítulo, resaltado (0.77.1, auditoría R3: del dato al literal en un toque). */
 function literalDe(p: Pieza | undefined, c: number): string | undefined {
   if (!p) return undefined;
-  if (p.t === "casilla") return href("consultar", "tablas", `${p.tabla}:${SLUG_TABLA[c]}`);
+  if (p.t === "casilla")
+    return href("consultar", "tablas", `${p.tabla}:${SLUG_TABLA[c]}:${p.fila}`);
   return fuentesDePieza(p)[0]?.ruta;
 }
 
@@ -180,8 +181,15 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                 </dt>
                 <dd className="min-w-0 max-w-[72ch] text-[15px] leading-snug text-slate-800">
                   {d.cond && (
-                    <span className="mb-0.5 block text-[13px] leading-snug text-slate-600">
+                    <span className="mb-0.5 block text-[13px] italic leading-snug text-slate-600">
                       <SinCortes texto={d.cond} />
+                    </span>
+                  )}
+                  {/* 0.80.1 (cuarta ronda, senior): lo que el capítulo manda hacer antes, con el
+                      mismo peso que la respuesta (antes iba en la línea pequeña). */}
+                  {d.antes && (
+                    <span className="mb-1 block">
+                      <SinCortes texto={d.antes} />
                     </span>
                   )}
                   <SinCortes texto={d.v} />
@@ -196,7 +204,7 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                   {d.enlace && (
                     <a
                       href={d.enlace.ruta}
-                      className="tap-44 mt-1 inline-block text-[13px] font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 print:hidden"
+                      className="tap-44 mt-1 inline-block min-h-6 py-0.5 text-[13px] font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 print:hidden"
                     >
                       {d.enlace.texto}
                     </a>

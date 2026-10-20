@@ -200,7 +200,14 @@ function Tarjeta({
   porId,
   contexto,
   sistemaConsulta,
+  fijo = false,
+  previo,
 }: {
+  /* 0.80.1 (cuarta ronda): en una pregunta frecuente de un solo sistema, sin etiqueta ni botones
+     de sistema en cada tarjeta. */
+  fijo?: boolean;
+  /* El texto de la tarjeta anterior: su contexto no se repite debajo. */
+  previo?: string;
   r: Respuesta;
   q: string;
   principal?: boolean;
@@ -243,7 +250,7 @@ function Tarjeta({
       className={principal ? "" : "rounded-lg border bg-white p-3"}
       style={principal ? undefined : { borderColor: "#e6e6e6" }}
     >
-      {casilla && (
+      {casilla && !fijo && (
         <p className="text-xs">
           <span className="insignia">{casilla.nombre}</span>
         </p>
@@ -273,7 +280,7 @@ function Tarjeta({
           ))}
         </div>
       )}
-      {casillas && !compacta && (
+      {casillas && !compacta && !fijo && (
         /* 0.77.1 (auditoría del adjunto; nada útil plegado): los sistemas, siempre a la vista. */
         <div className="mt-1 flex flex-wrap gap-1.5" role="group" aria-label="Sistema">
           {casillas.map((c, i) => (
@@ -288,7 +295,7 @@ function Tarjeta({
           <Texto>{ctx.antes}</Texto>
         </p>
       )}
-      {r.contexto && !ctx && (
+      {r.contexto && !ctx && !(previo && previo.includes(r.contexto.trim())) && (
         <p className="mt-1 text-sm text-slate-600">
           <Marcado texto={r.contexto} q={q} />
         </p>
@@ -318,7 +325,7 @@ function Tarjeta({
       {items && items.length > 0 && clave >= 0 ? (
         <>
           <p className="mt-1 text-[15px] leading-relaxed text-slate-900">
-            <Marcado texto={items[clave]} q={q} />
+            <Marcado texto={sinCortes(items[clave])} q={q} />
           </p>
           <details className="mt-1">
             <summary className="min-h-11 cursor-pointer text-xs font-semibold text-slate-600 sm:min-h-6">
@@ -327,7 +334,7 @@ function Tarjeta({
             <ul className="mt-1 list-disc space-y-0.5 pl-5 text-sm text-slate-900">
               {r.items!.map((it, i) => (
                 <li key={i}>
-                  <Marcado texto={it} q={q} />
+                  <Marcado texto={sinCortes(it)} q={q} />
                 </li>
               ))}
             </ul>
@@ -339,7 +346,7 @@ function Tarjeta({
           <ul className="mt-1 list-disc space-y-0.5 pl-5 text-sm text-slate-900">
             {items.map((it, i) => (
               <li key={i}>
-                <Marcado texto={it} q={q} />
+                <Marcado texto={sinCortes(it)} q={q} />
               </li>
             ))}
             {items !== r.items && <li className="list-none text-slate-500">…</li>}
@@ -357,7 +364,7 @@ function Tarjeta({
                 {sistemaConsulta !== undefined && sistemaConsulta >= 0 ? (
                   <LineasSistema texto={p.texto} q={q} sistema={sistemaConsulta} />
                 ) : (
-                  <Marcado texto={p.texto} q={q} />
+                  <Marcado texto={sinCortes(p.texto)} q={q} />
                 )}
               </dd>
             </div>
@@ -370,7 +377,7 @@ function Tarjeta({
             <div key={s.nombre} className="rounded-md bg-slate-50 px-2 py-1">
               <dt className="text-xs font-bold text-slate-600">{s.nombre}</dt>
               <dd className="whitespace-pre-line text-slate-900">
-                <Marcado texto={s.texto} q={q} />
+                <Marcado texto={sinCortes(s.texto)} q={q} />
               </dd>
             </div>
           ))}
@@ -473,9 +480,18 @@ function BloqueFrecuente({
         // En una pregunta sobre un sistema, el párrafo que enumera los cuatro va como ampliación.
         const esAmpliacion = (r: Respuesta) =>
           frecuente.sistema !== undefined && r.tipo === "texto" && nombraVarios(r.texto);
-        const principales = frecuente.respuestas.filter((r) => !esAmpliacion(r));
+        // Sin la misma frase dos veces (cuarta ronda, R3: f87 repetía dos frases).
+        const vistos = new Set<string>();
+        const principales = frecuente.respuestas.filter((r) => {
+          if (esAmpliacion(r)) return false;
+          const t = (r.texto ?? "").trim();
+          if (!t || r.porSistema || r.casillas) return true;
+          if (vistos.has(t)) return false;
+          vistos.add(t);
+          return true;
+        });
         const ampliacion = frecuente.respuestas.filter(esAmpliacion);
-        const tarjeta = (r: Respuesta) => {
+        const tarjeta = (r: Respuesta, k: number, lista: Respuesta[]) => {
           const nota = notaAsterisco(r)?.nota;
           const repetida = !!nota && notasVistas.has(nota);
           if (nota) notasVistas.add(nota);
@@ -487,6 +503,8 @@ function BloqueFrecuente({
               onIr={onIr}
               sinNota={repetida}
               sistemaConsulta={sistema ?? frecuente.sistema}
+              fijo={frecuente.sistema !== undefined}
+              previo={k > 0 ? (lista[k - 1].texto ?? "") : undefined}
             />
           );
         };

@@ -538,14 +538,9 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
   // Las preguntas frecuentes del sistema (columna de la Tabla 1). 0.77.1 (auditorías senior y R3):
   // todas, como en Preguntas frecuentes (antes se quitaban las que solo citaban casillas).
   const preguntas = FRECUENTES.filter((f) => f.sistema === c);
-  // En papel, bajo cada pregunta, solo los pasajes que nombran el sistema (tercera ronda, R3: la
-  // de Control-IQ+ se respondía con un párrafo de los cuatro).
-  const impresas = new Map(
-    [...respuestasImpresas(preguntas, c)].map(([k, v]) => [
-      k,
-      v.filter((t) => ALIAS[s.id].test(t.texto)),
-    ]),
-  );
+  // En papel, bajo cada pregunta, sus pasajes enteros (0.80.1, cuarta ronda, R3: filtrar las frases
+  // que nombran el sistema dejaba respuestas a medias).
+  const impresas = respuestasImpresas(preguntas, c);
   // Una sola página (0.70.0): la sección de la ruta es solo adónde se salta.
   const sec = completa ? undefined : seccion;
   // 0.73.0 (auditoría de uso): cada pestaña enseña solo su sección (la ficha entera medía casi
@@ -727,7 +722,7 @@ export function FichaSistema({ id, seccion }: { id?: string; seccion?: string })
       {/* En papel, sin los párrafos (0.72.0: la ficha impresa salía en cinco caras). */}
       {ver("funciona") && (
         <section aria-label="Más del capítulo sobre este sistema" className="no-imprimir mt-7">
-          <Foldable title="Menciones en el capítulo" count={parrafos.length}>
+          <Foldable title="Menciones en el capítulo" count={parrafos.length} open>
             {/* 0.73.0: enlaces a cada párrafo (antes, los párrafos enteros: repetían el
                 capítulo dentro de la ficha). */}
             <ul className="filas">
@@ -1203,6 +1198,15 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
   // Preguntas) vuelve al Resumen (0.77.1: antes, la pantalla quedaba vacía).
   const enComparacion = (x?: string) => SECCIONES_COMPARACION.some((y) => y.id === x);
   const seccion = pedida === "funciona" ? "esencial" : enComparacion(pedida) ? pedida : undefined;
+  // 0.80.1 (cuarta ronda, visual): como en la ficha, al cambiar de pestaña desde abajo la sección
+  // empieza justo bajo la barra pegada.
+  useEffect(() => {
+    const el = ref.current?.querySelector<HTMLElement>("section.pantalla-in");
+    const barra = document.querySelector(".barra-pegada")?.getBoundingClientRect().bottom ?? 0;
+    const arriba = el?.getBoundingClientRect().top ?? 0;
+    if (el && arriba < barra)
+      window.scrollTo({ top: Math.max(0, window.scrollY + arriba - barra - 8) });
+  }, [seccion]);
   return (
     <div ref={ref} className="imprimible">
       <CabeceraEditorial

@@ -443,7 +443,7 @@ export function buscarConTotales(
 
 /* Sistema que nombra la consulta (índice de columna), o -1. */
 const ALIAS_SISTEMA: RegExp[] = [
-  /^(780g|minimed|medtronic|smartguard)$/,
+  /^(780g?|minimed|medtronic|smartguard)$/,
   /^(control-?iq|tandem|t:?slim|mobi|ciq)$/,
   /^(camaps|ypsopump|mylife|myloop)$/,
   /^(omnipod|op5|insulet|smartadjust)$/,
@@ -498,6 +498,7 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   const cifraAlta = (n.match(/\b(2[5-9]\d|[3-5]\d\d)\b/) ?? []).length > 0;
   if (
     pideSospechaDeFallo(n) ||
+    (cifraAlta && sis >= 0) ||
     (cifraAlta && /\b(h|hora|horas|h\s)\b|horas/.test(n)) ||
     /no baja/.test(n)
   )
@@ -526,7 +527,8 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     const crudo = consulta.toLowerCase();
     if (
       dos.length >= 2 &&
-      (/\b(cambi|pasar|paso de|pase de|migr|sustitu)/.test(n) || /\bde \S.* a \S/.test(crudo))
+      (/\b(cambi|pasar|pasa a|paso de|pase de|migr|sustitu|transici)/.test(n) ||
+        /\bde \S.* a \S/.test(crudo))
     )
       out.push(
         atajo(
@@ -539,7 +541,11 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         atajo(
           `recurso/cambio-calculadora/${dos.join("+")}`,
           `Cálculo de parámetros iniciales · ${TABLAS.T1.columnas[destinoDe(crudo, dos)]} (desde otro sistema AID)`,
-          href("consultar", "inicio", `calculadora:${SIS_IDS[destinoDe(crudo, dos)]}`),
+          href(
+            "consultar",
+            "inicio",
+            `calculadora:${SIS_IDS[destinoDe(crudo, dos)]}:desde-${SIS_IDS[dos.find((i) => i !== destinoDe(crudo, dos)) ?? dos[0]]}`,
+          ),
           TABLAS.T2.paginas[0],
         ),
       );
@@ -590,8 +596,8 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
       ),
       atajo(
         "recurso/inicio-aid",
-        "Iniciación del sistema (desde otro sistema AID)",
-        href("consultar", "inicio"),
+        "Cálculo de parámetros iniciales (desde otro sistema AID)",
+        href("consultar", "inicio", "calculadora::desde-aid"),
         TABLAS.T2.paginas[0],
       ),
     );

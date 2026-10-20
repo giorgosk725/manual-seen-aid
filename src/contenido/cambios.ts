@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — tercera ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — cuarta ronda de auditorías de uso`,
+    detalle: [
+      "Situaciones y Modos con los mismos rótulos de la Tabla 4; sin la basal temporal de Control-IQ+ en la enfermedad leve; lo que el capítulo manda hacer antes (activar 1–2 h antes, revisar antes de subir objetivos, valorar el ascenso de 3–5 h), con el peso de la respuesta; Omnipod 5 con sus cinco objetivos y hasta 8 tramos/día.",
+      "Del dato al literal: el rótulo de una fila abre la tabla del sistema con esa fila marcada y a la vista.",
+      "Buscador: «de 780G a Control-IQ» abre la calculadora ya desde otro sistema AID con el sistema actual marcado; sin coincidencias parciales ni pasos de la descarga bajo los atajos de cambio de sistema; «780» y «pasa a» reconocidos; una glucemia alta con un sistema lleva a la sospecha de fallo.",
+      "Preguntas frecuentes de un solo sistema sin etiquetas ni botones de sistema en cada tarjeta, y sin la misma frase dos veces; en papel, los pasajes enteros.",
+      "Pruebas y cirugía con la nota de la Tabla 6 sobre retiradas de más de 1 h; menciones del capítulo abiertas; comparación sin saltos al cambiar de pestaña; prosa a unos 75 caracteres; subrayado suave en nocturno.",
+    ],
+  },
+  {
+    fecha: "2026-10-20",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.80.0 — tercera ronda de auditorías de uso",
     detalle: [
       "Modos y funciones con las palabras de la Tabla 4 y del capítulo («específico», «valorar», «necesariamente», «no ajusta directamente»), los rótulos de la Tabla 4 y el umbral de 1 h en la desconexión; el agua en Omnipod 5 sin la frase que el capítulo dice de las bombas con catéter; la basal temporal de Control-IQ+, solo en Parámetros.",
       "Situaciones: «Urgencias» (hiperglucemia persistente o inexplicada y cetonemia, hipoglucemia en asa cerrada, interrupción) el primer grupo; la guía abierta, marcada en la lista; la comida grasa lleva al patrón posprandial.",

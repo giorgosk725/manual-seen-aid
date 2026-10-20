@@ -153,7 +153,7 @@ export const TABLA4_POR_SISTEMA: Record<string, BloqueSistema[][]> = {
     ],
   ],
   "comida-grasa": [
-    [{ rotulo: "Hiperglucemia tardía", piezas: [s9("b6", [2])] }],
+    [{ rotulo: "Hiperglucemia tardía", piezas: [s9("b6", [0, 2])] }],
     [
       {
         rotulo: "Hiperglucemia tardía",
@@ -166,7 +166,7 @@ export const TABLA4_POR_SISTEMA: Record<string, BloqueSistema[][]> = {
         piezas: [s9("b6", [1], /en CamAPS FX puede utilizarse la función de absorción lenta/)],
       },
     ],
-    [{ rotulo: "Hiperglucemia tardía", piezas: [s9("b6", [2])] }],
+    [{ rotulo: "Hiperglucemia tardía", piezas: [s9("b6", [0, 2])] }],
   ],
   // 0.74.2 (auditoría): sin la desconexión (va en el guion, con el apartado 7) ni el Ease-off
   // del párrafo de la gestación; en Control-IQ, sus rangos (modo ejercicio 140–160).
@@ -186,7 +186,9 @@ export const TABLA4_POR_SISTEMA: Record<string, BloqueSistema[][]> = {
   ],
   "necesidad-transitoria": [
     [],
-    [{ rotulo: "Control-IQ+", piezas: [casilla("T3", 1)] }],
+    // 0.80.1 (cuarta ronda, senior): sin la basal temporal de Control-IQ+ (Tabla 3): la Tabla 4
+    // no la indica en esta situación.
+    [],
     [{ rotulo: "Boost", piezas: [BOOST] }],
     [{ rotulo: "Sin bolos automáticos: basal adaptativa", piezas: [casilla("T1", 5)] }],
   ],

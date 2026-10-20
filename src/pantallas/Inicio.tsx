@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { CalculadoraInicio } from "../componentes/CalculadoraInicio";
 import {
+  cambiarCalculadora,
   cambiarHechos,
   cambiarRespuestas,
   hayTrabajo,
@@ -569,6 +570,15 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
     tareaId && /^a\d+$/.test(tareaId)
       ? pasoDeRuta(tareaDePieza("inicio", Number(tareaId.slice(1)))?.id)
       : pasoDeRuta(tareaId);
+  // 0.80.1 (cuarta ronda, adjunto y R5): «calculadora:<destino>:desde-<origen>» (atajo del
+  // buscador «de 780G a Control-IQ») deja marcados «Otro sistema AID» y el sistema actual.
+  const desde =
+    actual === CALC && tareaId?.startsWith("desde-") ? SIS_IDS.indexOf(tareaId.slice(6)) : -1;
+  const desdeAid = actual === CALC && tareaId === "desde-aid";
+  useEffect(() => {
+    if (desde >= 0) cambiarCalculadora({ origen: "aid", sistemaPrevio: desde });
+    else if (desdeAid) cambiarCalculadora({ origen: "aid" });
+  }, [desde, desdeAid]);
   useEffect(() => {
     // La dirección antigua de la guía se reescribe a la de la fase.
     if (faseId === GUIA)

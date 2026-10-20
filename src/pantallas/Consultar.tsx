@@ -65,13 +65,30 @@ function IndiceTablas() {
   );
 }
 
-export function Tablas({ id, seleccion }: { id?: string; seleccion?: string }) {
+export function Tablas({
+  id,
+  seleccion,
+  fila,
+}: {
+  id?: string;
+  seleccion?: string;
+  /* 0.80.1: la fila de la que se viene (rótulo de una ficha), marcada y a la vista. */
+  fila?: string;
+}) {
   const tid = (id && id in TABLAS ? id : null) as TablaId | null;
   if (!tid) return <IndiceTablas />;
-  return <TablaPantalla tid={tid} seleccion={seleccion} />;
+  return <TablaPantalla tid={tid} seleccion={seleccion} fila={fila} />;
 }
 
-function TablaPantalla({ tid, seleccion }: { tid: TablaId; seleccion?: string }) {
+function TablaPantalla({
+  tid,
+  seleccion,
+  fila,
+}: {
+  tid: TablaId;
+  seleccion?: string;
+  fila?: string;
+}) {
   const tabla = TABLAS[tid];
   const ap = apartadoDeTabla(tid);
   const ref = useRef<HTMLDivElement>(null);
@@ -101,6 +118,7 @@ function TablaPantalla({ tid, seleccion }: { tid: TablaId; seleccion?: string })
             tabla={tabla}
             modo="interactiva"
             seleccionInicial={seleccion}
+            resaltarFila={fila !== undefined && fila !== "" ? Number(fila) : undefined}
             onSeleccion={(x) => elegirRuta("consultar", "tablas", x ? `${tid}:${x}` : tid)}
           />
         </NivelTitulo.Provider>

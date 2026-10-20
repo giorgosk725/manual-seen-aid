@@ -31,7 +31,7 @@ export const SITUACIONES: Situacion[] = [
   },
   {
     id: "sueno",
-    etiqueta: "Sueño / período nocturno",
+    etiqueta: "Sueño/período nocturno",
     tabla: "T4",
     fila: 2,
     // 0.72.0: un enlace por párrafo (el de «patrones» caía cuatro párrafos antes).
@@ -42,7 +42,8 @@ export const SITUACIONES: Situacion[] = [
   },
   {
     id: "necesidad-transitoria",
-    etiqueta: "Enfermedad leve, menstruación o estrés, sin sospecha de fallo",
+    etiqueta:
+      "Mayor necesidad transitoria leve sin sospecha de fallo de infusión (enfermedad leve, menstruación o estrés)",
     tabla: "T4",
     fila: 3,
     leer: [
@@ -55,7 +56,7 @@ export const SITUACIONES: Situacion[] = [
   },
   {
     id: "hiperglucemia-puntual",
-    etiqueta: "Hiperglucemia puntual sin sospecha de fallo",
+    etiqueta: "Hiperglucemia puntual sin sospecha de fallo de infusión",
     tabla: "T4",
     fila: 4,
     leer: [{ slug: "09-descarga", ancla: "incidencias", titulo: "Resolución de incidencias" }],

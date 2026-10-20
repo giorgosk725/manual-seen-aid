@@ -1,5 +1,6 @@
 /* Diagramas a partir del texto del capítulo (datos en src/contenido/diagramas.ts). HTML y CSS,
    no SVG: el texto es real (se lee a 360 px, se busca, se imprime y lo lee un lector de pantalla). */
+import { sinCortes } from "../sinCortes";
 import { paginasPorApartado } from "../paginasApartado";
 import { NOTA_ADAPTA_OMNIPOD } from "../notas-complementarias";
 import { FuentePie } from "./FuentePie";
@@ -563,7 +564,7 @@ function Seguimiento() {
         return (
           <section key={f.titulo}>
             <Sub className="mb-2 text-sm font-extrabold" style={{ color: c.tinta }}>
-              {f.titulo}
+              {sinCortes(f.titulo)}
             </Sub>
             <ol className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {f.hitos.map((h) => (
@@ -829,7 +830,7 @@ function Hipoglucemia() {
         {HIPOGLUCEMIA.despues.map((d) => {
           const I = /15 min/.test(d.texto) ? Timer : /comida/.test(d.texto) ? Utensils : RefreshCw;
           return (
-            <li key={d.texto} className="flex gap-2.5 tarjeta p-3">
+            <li key={d.texto} className="flex w-fit max-w-full gap-2.5 tarjeta p-3">
               <span
                 aria-hidden="true"
                 className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"

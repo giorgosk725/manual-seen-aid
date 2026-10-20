@@ -126,18 +126,32 @@ export function Buscar({ inicial }: { inicial?: string }) {
     [motor, qEf, tope],
   );
   const res = busqueda.resultados;
+  // 0.80.1 (cuarta ronda, adjunto y R5): con un atajo de cambio de sistema o de objetivos de los
+  // cuatro, sin las coincidencias parciales, los pasos de la descarga ni la pregunta frecuente que
+  // solo casaban por «paso», «pasar» o «cuatro».
+  const atajos = useMemo(
+    () => (motor && qEf.trim().length >= 2 ? motor.recursosPedidos(qEf, res) : []),
+    [motor, qEf, res],
+  );
+  const intencionClara = atajos.some((a) =>
+    /^recurso\/(cambio|cambio-aid|objetivos)/.test(a.entrada.id),
+  );
   const respuestas = useMemo(() => {
-    const rs = motor && qEf.trim().length >= 2 ? motor.fusionar(qEf, parecidos) : [];
+    const todos = motor && qEf.trim().length >= 2 ? motor.fusionar(qEf, parecidos) : [];
+    const rs = intencionClara
+      ? todos.filter((r) => !r.aproximada && !r.id.startsWith("T5/"))
+      : todos;
     // 0.72.0: una sigla del glosario no va de pasaje principal si la consulta no la nombra
     // («cetonas» daba «β-OHB: β-hidroxibutirato»); pasa detrás. Solo cambia el orden.
     const nq = normalizar(qEf);
     if (rs.length > 1 && rs[0].tipo === "sigla" && !nq.includes(normalizar(rs[0].titulo)))
       return [...rs.slice(1), rs[0]];
     return rs;
-  }, [motor, qEf, parecidos]);
+  }, [motor, qEf, parecidos, intencionClara]);
   const frecuente = useMemo(
-    () => (motor && qEf.trim().length >= 2 ? motor.preguntaFrecuente(qEf) : null),
-    [motor, qEf],
+    () =>
+      motor && qEf.trim().length >= 2 && !intencionClara ? motor.preguntaFrecuente(qEf) : null,
+    [motor, qEf, intencionClara],
   );
   useEffect(() => {
     if (motor && (respuestas.length || frecuente)) motor.recordarTema(qEf);
@@ -237,7 +251,9 @@ export function Buscar({ inicial }: { inicial?: string }) {
           qEf.trim().length < 2 || estado !== "listo"
             ? ""
             : hayRespuesta
-              ? `Hay respuesta del capítulo y ${res.length} ${res.length === 1 ? "resultado" : "resultados"}.`
+              ? res.length
+                ? `Hay respuesta del capítulo y ${res.length} ${res.length === 1 ? "resultado más" : "resultados más"}.`
+                : "Hay respuesta del capítulo."
               : res.length
                 ? `${res.length} ${res.length === 1 ? "resultado" : "resultados"}.`
                 : "Sin resultados."
@@ -265,9 +281,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
           if ((e.target as HTMLElement).closest("a")) guardarReciente(q);
         }}
       >
-        {motor && qEf.trim().length >= 2 && (
-          <RecursosPedidos items={motor.recursosPedidos(qEf, res)} />
-        )}
+        {motor && qEf.trim().length >= 2 && <RecursosPedidos items={atajos} />}
         {noCubierto && (
           <div
             role="status"

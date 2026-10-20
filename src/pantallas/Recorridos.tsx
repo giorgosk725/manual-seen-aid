@@ -463,12 +463,15 @@ function ListaSituaciones({
       {on && <Check size={15} className="shrink-0" aria-hidden="true" />}
     </>
   );
+  // 0.80.1 (cuarta ronda, senior): un criterio: la Figura 3, un diagrama de la app o el capítulo.
   const destinoDe = (ruta: string) =>
     ruta.startsWith("#/capitulo")
       ? "Capítulo"
-      : ruta.startsWith("#/consultar/figura-3") || ruta.startsWith("#/visual")
-        ? "Figura"
-        : undefined;
+      : ruta.startsWith("#/consultar/figura-3")
+        ? "Figura 3"
+        : ruta.startsWith("#/visual")
+          ? "Diagrama"
+          : undefined;
   const conFilas = visibles.filter((g) => g.sits.length || g.extras.length);
   return (
     <div
@@ -635,6 +638,13 @@ export function SituacionSistema({
                   después los objetivos y lo común. */}
               {GUIA_POR_SISTEMA[guia.id] && (
                 <section aria-label="Sistema a sistema" className="tarjeta p-4">
+                  {/* 0.80.1 (cuarta ronda, adjunto): sin sistema en la dirección, se dice cuál se
+                      enseña y por qué. */}
+                  {sisIdx < 0 && sistemaReciente() !== undefined && (
+                    <p className="mb-2 text-xs text-slate-600">
+                      Sistema elegido: el último consultado ({CORTO_SISTEMA[sistemaReciente()!]}).
+                    </p>
+                  )}
                   <BloquesPorSistema
                     key={guia.id}
                     bloques={GUIA_POR_SISTEMA[guia.id].bloques}
@@ -818,6 +828,19 @@ export function SituacionSistema({
                     </dl>
                   </div>
                 )}
+                {/* 0.80.1 (cuarta ronda, R5): la nota de la Tabla 6 sobre retiradas de más de 1 h,
+                    con su herramienta. */}
+                {sit.tabla === "T6" && tabla.notas[0] && (
+                  <p className="max-w-[75ch] text-sm leading-snug text-slate-700">
+                    <Texto>{tabla.notas[0]}</Texto>{" "}
+                    <a
+                      href={href("consultar", "interrupcion")}
+                      className="tap-44 inline-block min-h-6 py-0.5 font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4"
+                    >
+                      Interrupción del sistema y pauta alternativa
+                    </a>
+                  </p>
+                )}
                 {!porSistema && !fila.unida && (
                   <>
                     <dl className="sm:columns-2 sm:gap-3 [&>div]:mb-3 [&>div]:break-inside-avoid">
@@ -865,7 +888,8 @@ export function SituacionSistema({
                     Leer en el capítulo:{" "}
                     {sit.leer.map((l, k) => (
                       <span key={l.slug + (l.ancla ?? "")}>
-                        {k > 0 && " · "}
+                        {k > 0 && " "}
+                        {k > 0 && <span aria-hidden="true">·&nbsp;</span>}
                         <a
                           href={href("capitulo", l.slug, l.ancla)}
                           className="tap-44 inline-block py-1"

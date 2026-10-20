@@ -2057,3 +2057,22 @@ html.night *:focus-visible {
     --tw-ring-color: var(--acento-texto) !important;
   }
 }
+
+/* 0.80.1 (cuarta ronda): la fila de una tabla a la que se llega desde el rótulo de una ficha. */
+.fila-resaltada {
+  background: var(--acento-suave);
+  box-shadow: inset 3px 0 0 var(--acento);
+}
+
+/* 0.80.1 (cuarta ronda, visual): la prosa de consulta a unos 75 caracteres por línea (pasajes del
+   buscador, situaciones, notas de la calculadora y de la Figura 3); y en nocturno, un subrayado
+   suave como en claro (antes, casi tan fuerte como el texto). */
+p.literal,
+.literal p,
+.notas-figura3 > p,
+main p.text-xs {
+  max-width: 75ch;
+}
+html.night .decoration-slate-300 {
+  text-decoration-color: #475569;
+}

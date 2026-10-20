@@ -179,7 +179,8 @@ function TablaHTML({
                 className="separador border-t px-3 py-2 text-left text-xs font-bold text-slate-800"
                 // 0.77.1 (auditorías R3 y senior): columnas algo más estrechas, para que la tabla de
                 // los cuatro sistemas quepa entera en la columna de lectura (antes, 848 px en 734).
-                style={{ minWidth: "8rem" }}
+                // 0.80.1: en la Tabla 4, rótulos largos: columna más ancha (6–7 líneas a 1920).
+                style={{ minWidth: tabla.id === "T4" ? "12rem" : "8rem" }}
               >
                 <span className="flex items-start gap-1.5">
                   {iconoFila?.(i)}
@@ -226,7 +227,11 @@ function TablaHTML({
                         : {}),
                     }}
                   >
-                    <Lineas>{sinCortes(f.celdas[c])}</Lineas>
+                    <Lineas>
+                      {sinCortes(
+                        f.celdas[c].replace(/configurable Objetivo:/, "configurable\nObjetivo:"),
+                      )}
+                    </Lineas>
                   </td>
                 ))
               )}
@@ -281,7 +286,14 @@ function Fichas({
                     {f.unida ? "Todos los sistemas" : tabla.columnas[c]}
                   </dt>
                   <dd className="mt-0.5 text-[15px] text-slate-800">
-                    <Lineas>{sinCortes(f.unida ? f.celdas[0] : f.celdas[c])}</Lineas>
+                    <Lineas>
+                      {sinCortes(
+                        (f.unida ? f.celdas[0] : f.celdas[c]).replace(
+                          /configurable Objetivo:/,
+                          "configurable\nObjetivo:",
+                        ),
+                      )}
+                    </Lineas>
                   </dd>
                 </div>
               ))}
@@ -294,8 +306,13 @@ function Fichas({
 }
 
 /* Ficha de UN sistema: característica → valor, en una columna de lectura. */
-function FichaSistema({ tabla, c }: { tabla: Tabla; c: number }) {
+function FichaSistema({ tabla, c, resaltar }: { tabla: Tabla; c: number; resaltar?: number }) {
   const hex = SISTEMA_HEX[c];
+  // La fila de la que se viene, a la vista al abrir (una vez).
+  useEffect(() => {
+    if (resaltar === undefined) return;
+    document.getElementById(`fila-${tabla.id}-${resaltar}`)?.scrollIntoView?.({ block: "center" });
+  }, [resaltar, tabla.id]);
   return (
     <div className="tarjeta tarjeta-sistema" style={{ ["--sis" as string]: hex.strong }}>
       <div className="titulo-seccion px-4 pt-4" style={{ color: hex.ink }}>
@@ -303,7 +320,12 @@ function FichaSistema({ tabla, c }: { tabla: Tabla; c: number }) {
       </div>
       <dl className="divide-y px-4 pb-2">
         {tabla.filas.map((f, i) => (
-          <div key={i} className="grid gap-1 py-3 sm:grid-cols-[13rem_1fr] sm:gap-4">
+          <div
+            key={i}
+            id={`fila-${tabla.id}-${i}`}
+            className={`grid gap-1 py-3 sm:grid-cols-[13rem_1fr] sm:gap-4 ${resaltar === i ? "fila-resaltada -mx-4 px-4" : ""}`}
+            aria-current={resaltar === i ? "location" : undefined}
+          >
             {/* 0.72.0: el nombre de la fila en minúscula y negrita (en versalitas de 11 px costaba
                 leerlo); lo que sigue en su casilla —la conducta común—, debajo y en gris. */}
             <dt className="text-sm leading-snug">
@@ -321,7 +343,14 @@ function FichaSistema({ tabla, c }: { tabla: Tabla; c: number }) {
               ))}
             </dt>
             <dd className="text-[15px] text-slate-800">
-              <Lineas>{sinCortes(f.unida ? f.celdas[0] : f.celdas[c])}</Lineas>
+              <Lineas>
+                {sinCortes(
+                  (f.unida ? f.celdas[0] : f.celdas[c]).replace(
+                    /configurable Objetivo:/,
+                    "configurable\nObjetivo:",
+                  ),
+                )}
+              </Lineas>
             </dd>
           </div>
         ))}
@@ -339,8 +368,11 @@ export function TablaVista({
   columnasFijas,
   herramienta = false,
   iconoFila,
+  resaltarFila,
 }: {
   tabla: Tabla;
+  /* La fila de la que se viene (rótulo de una ficha operativa): marcada en la vista del sistema. */
+  resaltarFila?: number;
   /* Dentro de una herramienta (comparación de Sistemas): la fuente al pie, no arriba. */
   herramienta?: boolean;
   /* Icono para el rótulo de cada fila (lo da quien la usa: Sistemas). */
@@ -447,7 +479,7 @@ export function TablaVista({
       )}
 
       {interactiva && tabla.porSistema && sel.length === 1 ? (
-        <FichaSistema tabla={tabla} c={sel[0]} />
+        <FichaSistema tabla={tabla} c={sel[0]} resaltar={resaltarFila} />
       ) : interactiva && !tabla.porSistema && fila != null ? (
         <Fichas tabla={tabla} columnas={todas} filas={[fila]} />
       ) : (

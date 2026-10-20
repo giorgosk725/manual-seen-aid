@@ -186,7 +186,8 @@ function NotasDelPie() {
       {FIGURA3.pie.map((p, i) => (
         <div key={i} className="tarjeta p-3 text-sm text-slate-700">
           <span className="font-bold text-slate-900">{p.titulo}</span>{" "}
-          <Texto>{sinCortes(p.texto)}</Texto>
+          {/* 0.80.1 (cuarta ronda, guardia): «β-OHB» sin partir por el guion (unión invisible). */}
+          <Texto>{sinCortes(p.texto).replace(/β-OHB/g, "β-⁠OHB")}</Texto>
         </div>
       ))}
     </div>
@@ -213,7 +214,7 @@ function NotasComunes({ conAsterisco = true }: { conAsterisco?: boolean }) {
 
 function Pies({ sinNotas, sinTitulo }: { sinNotas?: boolean; sinTitulo?: boolean }) {
   return (
-    <div className="mt-4 space-y-3">
+    <div className="notas-figura3 mt-4 space-y-3">
       {!sinNotas && <NotasDelPie />}
       <div
         className="flex items-start gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white"

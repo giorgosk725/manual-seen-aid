@@ -182,7 +182,11 @@ export default function App() {
           break;
         case "tablas": {
           pantalla = (
-            <Tablas id={ruta.detalle?.split(":")[0]} seleccion={ruta.detalle?.split(":")[1]} />
+            <Tablas
+              id={ruta.detalle?.split(":")[0]}
+              seleccion={ruta.detalle?.split(":")[1]}
+              fila={ruta.detalle?.split(":")[2]}
+            />
           );
           const t = ruta.detalle && TABLAS[ruta.detalle.split(":")[0] as keyof typeof TABLAS];
           titulo = t ? `Tabla ${t.numero}` : "Tablas";
