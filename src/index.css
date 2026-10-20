@@ -1638,11 +1638,6 @@ html.night input.bg-transparent {
 .remision:hover {
   text-decoration-style: solid;
 }
-.remision:focus-visible {
-  outline: 2px solid #3f6e9f;
-  outline-offset: 2px;
-  border-radius: 2px;
-}
 html.night .remision {
   text-decoration-color: #93c5fd;
 }
@@ -1671,15 +1666,8 @@ html.night .remision {
 .sigla:hover {
   text-decoration-style: solid;
 }
-.sigla:focus-visible {
-  outline: 2px solid #8a5e10;
-  outline-offset: 2px;
-}
 html.night .sigla {
   text-decoration-color: #e0a83e;
-}
-html.night .sigla:focus-visible {
-  outline-color: #e0a83e;
 }
 /* En el móvil, hoja al pie sobre la barra inferior; desde 640 px, junto a la sigla (posición
    calculada en línea). */
@@ -1768,6 +1756,13 @@ html.night *:focus-visible {
   }
   .imprimible .fuente-pie a {
     padding: 0;
+  }
+  /* 0.85.1 (novena ronda, visual y senior): la sección de preguntas impresas no se parte (con
+     .imprimible en position:absolute, break-inside no bastaba); sale entera con su título.
+     (Pagada con las reglas de foco de .sigla y .remision, que *:focus-visible ya pisaba.) */
+  .imprimible section:has(> ul.filas > li:not(.print\:hidden)) {
+    display: inline-block !important;
+    width: 100%;
   }
   /* 0.84.1 (octava ronda, visual): filas algo más juntas en papel (CamAPS, de 4 a 3 caras). */
   .imprimible .filas-datos > div {

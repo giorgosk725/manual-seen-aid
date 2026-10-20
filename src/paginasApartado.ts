@@ -10,7 +10,8 @@ export const intervalos = (ps: number[]) => {
   for (let k = 0; k < xs.length; k++) {
     let j = k;
     while (j + 1 < xs.length && xs[j + 1] === xs[j] + 1) j++;
-    out.push(j > k ? `${xs[k]}-${xs[j]}` : String(xs[k]));
+    // 0.85.1 (novena ronda, R3): con raya corta, como en el resto de la app.
+    out.push(j > k ? `${xs[k]}–${xs[j]}` : String(xs[k]));
     k = j;
   }
   return out.join(", ");

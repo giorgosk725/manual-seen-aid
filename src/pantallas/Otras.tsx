@@ -141,16 +141,22 @@ export function Buscar({ inicial }: { inicial?: string }) {
   );
   const respuestas = useMemo(() => {
     const todos = motor && qEf.trim().length >= 2 ? motor.fusionar(qEf, parecidos) : [];
-    const rs = intencionClara
+    const rs0 = intencionClara
       ? todos.filter((r) => !r.aproximada && !r.id.startsWith("T5/"))
       : todos;
+    // 0.85.1 (novena ronda, guardia): con el atajo de la sospecha de fallo (Figura 3), sin la fila
+    // «… sin sospecha de fallo de infusión» («cetonas 780g» la daba la primera).
+    const urgencia = atajos.some((a) => a.entrada.id === "recurso/sospecha-fallo");
+    const rs = urgencia
+      ? rs0.filter((r) => !/sin sospecha/i.test(`${r.titulo} ${r.texto ?? ""}`))
+      : rs0;
     // 0.72.0: una sigla del glosario no va de pasaje principal si la consulta no la nombra
     // («cetonas» daba «β-OHB: β-hidroxibutirato»); pasa detrás. Solo cambia el orden.
     const nq = normalizar(qEf);
     if (rs.length > 1 && rs[0].tipo === "sigla" && !nq.includes(normalizar(rs[0].titulo)))
       return [...rs.slice(1), rs[0]];
     return rs;
-  }, [motor, qEf, parecidos, intencionClara]);
+  }, [motor, qEf, parecidos, intencionClara, atajos]);
   // 0.82.1 (sexta ronda, guardia): si un atajo pide una pregunta frecuente («ciq+»), se enseña
   // ya contestada (y el atajo, que la repetiría, no).
   const frecuente = useMemo(() => {
@@ -209,7 +215,16 @@ export function Buscar({ inicial }: { inicial?: string }) {
       (!!noCubierto || (!respuestas.length && !frecuente && !extras.length)),
     res.length > 0,
   );
-  const sugerencias = motor && q.trim().length >= 3 ? motor.sugerir(q) : [];
+  // 0.85.1 (novena ronda, guardia): sin sugerencias si ya hay un atajo (empujaban el «Abrir» hacia
+  // abajo) y sin la del ejercicio si la consulta no habla de él.
+  const sugerencias =
+    motor && q.trim().length >= 3 && !atajos.some((a) => a.entrada.id === "recurso/sospecha-fallo")
+      ? motor
+          .sugerir(q)
+          .filter(
+            (x) => !/ejercicio/i.test(x.texto) || /ejerc|deport|activ|entren|correr|nadar/i.test(q),
+          )
+      : [];
   const sistemaQ = motor ? motor.sistemaNombrado(qEf) : -1;
   const relacionadas = motor
     ? motor.frecuentesRelacionadas(

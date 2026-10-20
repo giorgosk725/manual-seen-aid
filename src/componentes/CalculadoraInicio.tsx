@@ -218,7 +218,17 @@ function Cifra({
 }
 
 /* Lo que bloquea o deja pendiente la propuesta, siempre antes de las cifras (I61-03). */
-function Estado({ ev, sis }: { ev: Evaluacion; sis?: number }) {
+function Estado({
+  ev,
+  sis,
+  previos = [],
+}: {
+  ev: Evaluacion;
+  sis?: number;
+  /* 0.85.1 (novena ronda, R5): lo que falta elegir antes de las cifras (sistemas). */
+  previos?: string[];
+}) {
+  const faltan = [...previos, ...ev.faltan];
   return (
     // 0.72.0 (4.1.3): sin regiones vivas aquí; lo anuncia un solo resumen, con calma (Anuncio).
     <div className="space-y-2">
@@ -252,13 +262,13 @@ function Estado({ ev, sis }: { ev: Evaluacion; sis?: number }) {
           ))}
         </ul>
       )}
-      {ev.faltan.length > 0 && (
+      {faltan.length > 0 && (
         <p
           className="rounded-md border border-dashed px-3 py-3 text-center text-sm text-slate-700"
           style={{ borderColor: "#cbd5e1" }}
         >
           <Calculator size={18} className="mx-auto mb-1 text-slate-400" aria-hidden="true" />
-          {ev.faltan.length > 1 ? "Faltan" : "Falta"}: {ev.faltan.map(enMinuscula).join(", ")}.
+          {faltan.length > 1 ? "Faltan" : "Falta"}: {faltan.map(enMinuscula).join(", ")}.
         </p>
       )}
       {ev.indicacion.variante && (
@@ -385,7 +395,7 @@ export function CalculadoraInicio({
   const fuentes = [
     { texto: `Tabla 2, p. ${TABLAS.T2.paginas[0]}`, ruta: rutaDeTabla("T2") },
     { texto: "Apartado 8, p. 12", ruta: href("capitulo", "08-iniciacion") },
-    { texto: "Tabla 1, pp. 3-4", ruta: rutaDeTabla("T1") },
+    { texto: "Tabla 1, pp. 3–4", ruta: rutaDeTabla("T1") },
     { texto: `Tabla 3, p. ${TABLAS.T3.paginas[0]}`, ruta: rutaDeTabla("T3") },
     // Los modos y funciones del paso 5 salen de la Tabla 4.
     {
@@ -755,7 +765,16 @@ export function CalculadoraInicio({
                       : ""
               }
             />
-            <Estado ev={ev} sis={sis} />
+            <Estado
+              ev={ev}
+              sis={sis}
+              previos={[
+                ...(sis === undefined
+                  ? [d.origen === "aid" ? "Sistema de destino" : "Sistema"]
+                  : []),
+                ...(d.origen === "aid" && d.sistemaPrevio === null ? ["Sistema actual"] : []),
+              ]}
+            />
             {ev.lista && (ev.calcula.basal || ev.calcula.ratioFactor) && (
               <div className="grid grid-cols-2 gap-2 lg:grid-cols-4 xl:grid-cols-2">
                 <Cifra

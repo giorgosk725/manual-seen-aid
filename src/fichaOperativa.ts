@@ -183,6 +183,13 @@ export const VARIANTE_OPERATIVA: (GrupoFicha | null)[] = [
         v: "Control-IQ o Control-IQ+, según el dispositivo y la versión de software",
         f: [fr("04-sistemas", "b4", [1])],
       },
+      // 0.85.1 (novena ronda, senior y visual): lo que cambia (antes, la tarjeta solo decía que
+      // hay dos versiones). Los mismos datos y piezas que la tarjeta de la entrada.
+      {
+        r: "Qué cambia",
+        v: "≥ 2 años · diabetes tipo 2 y gestación autorizadas (FDA y CE) · basal temporal 0–250 %",
+        f: [t1(7), t1(8), t3(1)],
+      },
     ],
   },
   {

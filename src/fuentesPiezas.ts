@@ -32,7 +32,7 @@ export function fuentesDePieza(p: Pieza): { texto: string; ruta: string }[] {
       const f = frasesDe(p.apartado, p.bloque, p.k, p.t === "frase" ? p.trozo : undefined);
       return [
         {
-          texto: `Apartado ${numeroApartado(p.apartado)}, ${paginasDe(f.pagina, f.pagina2)}`,
+          texto: `Apartado ${numeroApartado(p.apartado)},\u00a0${paginasDe(f.pagina, f.pagina2)}`,
           ruta: f.ruta,
         },
       ];

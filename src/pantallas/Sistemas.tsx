@@ -9,6 +9,9 @@ import { sinCortes } from "../sinCortes";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ArrowRight, Check, ExternalLink, Minus, X } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, type Tabla } from "../contenido";
+import type { TablaId } from "../contenido/tipos";
+import type { Pieza } from "../inicio";
+import { fuentesDePiezas } from "../fuentesPiezas";
 import {
   COMPAT_INSULINA,
   CRITERIOS,
@@ -47,6 +50,7 @@ import { recordarSistema } from "../sistemaReciente";
 import { VERSION_APP } from "../version";
 import { FRECUENTES } from "../frecuentes";
 import { NombreSistema } from "../componentes/NombreSistema";
+import { useImprimirConTeclado } from "../imprimirConTeclado";
 import {
   ALGORITMO,
   INDICACION,
@@ -444,6 +448,17 @@ function trozosDe(f: (typeof FRECUENTES)[number], c: number, vistos: Set<string>
   trozos.forEach((t) => vistos.add(t.texto));
   return trozos;
 }
+/* El pasaje de una pregunta frecuente («t/09-descarga/b6/0», «T5/2») como pieza, para su fuente. */
+function piezaDePasaje(id: string): Pieza | null {
+  const p = id.split("/");
+  if (p[0] === "t" || p[0] === "l")
+    return p[0] === "l"
+      ? { t: "lista", apartado: p[1], bloque: p[2] }
+      : { t: "frase", apartado: p[1], bloque: p[2], k: p[3] !== undefined ? [Number(p[3])] : [0] };
+  if (/^T[5-9]$/.test(p[0]) && /^\d+$/.test(p[1] ?? ""))
+    return { t: "fila", tabla: p[0] as TablaId, fila: Number(p[1]) };
+  return null;
+}
 function RespuestaImpresa({ trozos }: { trozos: TrozoImpreso[] }) {
   if (!trozos.length) return null;
   // Trozos seguidos del mismo bloque y tipo, juntos (un párrafo; una lista).
@@ -517,6 +532,8 @@ export function FichaSistema({
 }) {
   const s = sistemaDelCatalogo(id);
   const ref = useRef<HTMLDivElement>(null);
+  // 0.85.1 (novena ronda, R3): Ctrl+P imprime la ficha igual que «Imprimir la ficha».
+  useImprimirConTeclado(ref);
   // 0.82.1 (sexta ronda, guardia): con una fila pedida, marcada y justo bajo la barra pegada.
   useEffect(() => {
     if (!fila) return;
@@ -620,8 +637,10 @@ export function FichaSistema({
               className="min-w-0 font-display text-xl font-medium uppercase leading-tight tracking-[0.04em]"
               style={{ color: h.ink }}
             >
-              {/* 0.84.1 (octava ronda, visual): sin partir «Control-IQ+» por el guion en el móvil. */}
-              <NombreSistema n={s.name} />
+              {/* 0.84.1 (octava ronda, visual): sin partir «Control-IQ+» por el guion en el móvil.
+                  0.85.1 (novena ronda, todos): parte entre palabras (sin partir, «Tandem
+                  Control-IQ» y «myLoop CamAPS FX» quedaban bajo el botón de imprimir). */}
+              <NombreSistema n={s.name} porPalabra />
             </h1>
             <div className="no-imprimir flex shrink-0 items-center gap-3">
               {/* 0.78.1 (segunda ronda, R3): la ficha entera en una página, en el ordenador. */}
@@ -633,8 +652,9 @@ export function FichaSistema({
                   Ficha entera
                 </a>
               )}
-              <BotonImprimir objetivo={ref} compacto>
-                Imprimir la ficha
+              {/* 0.85.1 (novena ronda, visual): en el móvil, solo el icono (44 px, con nombre). */}
+              <BotonImprimir objetivo={ref} compacto titulo="Imprimir la ficha">
+                <span className="sr-only sm:not-sr-only">Imprimir la ficha</span>
               </BotonImprimir>
             </div>
           </div>
@@ -761,6 +781,18 @@ export function FichaSistema({
               Las demás preguntas de esta ficha se responden con sus tarjetas.
             </p>
           )}
+          {/* 0.85.1 (novena ronda, senior y visual): en papel, la fuente de las respuestas
+              impresas (en pantalla la lleva cada respuesta). */}
+          <FuentePie
+            className="mt-1 hidden print:block"
+            fuentes={fuentesDePiezas(
+              preguntas
+                .filter((f) => impresas.get(f.id)?.length)
+                .flatMap((f) => f.pasajes)
+                .map(piezaDePasaje)
+                .filter((x): x is Pieza => !!x),
+            )}
+          />
         </section>
       )}
 
@@ -855,7 +887,13 @@ export function Sistemas({ sel, seccion: pedida }: { sel?: string; seccion?: str
       : undefined;
   if (ids.length === 1)
     return <FichaSistema id={ids[0]} seccion={sec} fila={filaPedida || undefined} />;
-  return <Comparacion ids={ids} seccion={sec === "completa" ? "esencial" : sec} />;
+  return (
+    <Comparacion
+      ids={ids}
+      seccion={sec === "completa" ? "esencial" : sec}
+      fila={filaPedida || undefined}
+    />
+  );
 }
 
 function AmpliacionRetirada({ ids }: { ids: string[] }) {
@@ -897,14 +935,20 @@ function BarraSistemas({
     : ids.length === 1 && !(sec && secciones.some((x) => x.id === sec))
       ? "funciona"
       : sec;
+  // 0.85.1 (novena ronda, adjunto): desde el Resumen de una comparación, se sigue en el Resumen
+  // (antes, marcar o desmarcar llevaba a Características; «Los cuatro», a la Tabla 1).
   const rutaCon = (nuevos: string[]) =>
     nuevos.length === 1
       ? href("sistemas", nuevos[0], sec ?? "funciona")
-      : href(
-          "sistemas",
-          nuevos.length ? nuevos.join("+") : "todos",
-          !sec || sec === "funciona" ? "esencial" : sec,
-        );
+      : !sec && ids.length > 1
+        ? nuevos.length
+          ? href("sistemas", nuevos.join("+"))
+          : href("sistemas")
+        : href(
+            "sistemas",
+            nuevos.length ? nuevos.join("+") : "todos",
+            !sec || sec === "funciona" ? "esencial" : sec,
+          );
   // En la entrada (los cuatro), las casillas se van marcando sin cambiar de pantalla; con dos
   // o más, «Comparar» (0.72.0: la primera casilla llevaba a la ficha).
   const entrada = ids.length === 0 && !sec;
@@ -1281,8 +1325,17 @@ function TarjetaSistema({
   );
 }
 
-function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string }) {
+function Comparacion({
+  ids,
+  seccion: pedida,
+  fila,
+}: {
+  ids: string[];
+  seccion?: string;
+  fila?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
+  useImprimirConTeclado(ref);
   const cols = ids.length ? ids.map((id) => columnaDeSistema(id as SistemaId)) : [0, 1, 2, 3];
   // «Cómo funciona» comparado ya no está (0.70.0): esa dirección lleva a la Tabla 1.
   // «Cómo funciona» comparado lleva a la Tabla 1; una sección sin vista de varios (Modos,
@@ -1323,7 +1376,13 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
         >
           {seccion === "esencial" && (
             <NivelTitulo.Provider value={2}>
-              <TablaVista tabla={TABLAS.T1} columnasFijas={cols} herramienta />
+              <TablaVista
+                tabla={TABLAS.T1}
+                columnasFijas={cols}
+                herramienta
+                // 0.85.1 (novena ronda, R5): «esencial:8» = la fila de la gestación marcada.
+                resaltarFila={fila !== undefined && /^\d+$/.test(fila) ? Number(fila) : undefined}
+              />
             </NivelTitulo.Provider>
           )}
           {seccion === "parametros" && (

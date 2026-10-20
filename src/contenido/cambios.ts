@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — octava ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — novena ronda de auditorías de uso`,
+    detalle: [
+      "Ficha en el móvil: el nombre del sistema entero en el título (parte entre palabras, nunca dentro de «Control-IQ») e «Imprimir la ficha» como icono.",
+      "Impresión: Ctrl+P imprime igual que el botón; las preguntas impresas, enteras con su título y con su fuente; las referencias de una fuente no se parten («Apartado 10, p. 19»); todas las páginas con raya corta.",
+      "Sistemas: en el Resumen de una comparación, marcar o desmarcar sigue en el Resumen; Control-IQ+ en «Cómo funciona» con lo que cambia.",
+      "Buscador: «agua» ya no trae la ratio insulina/hidratos; «calendario de revisiones» y «seguimiento», a los tres primeros meses; comparar dos sistemas en la gestación lleva a esa fila marcada; con la sospecha de fallo, sin la fila «sin sospecha»; sin sugerencias que empujen el atajo.",
+      "Calculadora: «Faltan» nombra también el sistema de destino y el actual.",
+    ],
+  },
+  {
+    fecha: "2026-10-20",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.85.0 — octava ronda de auditorías de uso",
     detalle: [
       "Fuentes al pie: el «·» ya no abre línea (en pantalla ni en papel); las páginas con raya corta («pp. 11–12») en toda la app; la de la Tabla 4 lleva a la tabla en Tablas, donde cabe entera.",
       "Buscador: la puntuación junto al nombre de un sistema ya no lo esconde; «paciente con X» es el sistema de origen; en un cambio, la calculadora primero y con el sistema de origen en el título; «glucosa alta» lleva a la Figura 3 y sin la fila «sin sospecha»; «descarga ordenada» y «cena grasa», a sus preguntas; la pregunta del ejercicio solo si se habla de ejercicio; en el móvil, Intro cierra el teclado.",

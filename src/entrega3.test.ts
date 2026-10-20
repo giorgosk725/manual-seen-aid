@@ -494,3 +494,19 @@ describe("Octava ronda de auditorías (0.84.1): atajos del buscador", () => {
     expect(rec("parámetros del algoritmo")).toContain("#/sistemas/todos/parametros");
   });
 });
+
+describe("Novena ronda de auditorías (0.85.1): atajos del buscador", () => {
+  const rec = (q: string) =>
+    recursosPedidos(q, buscarConTotales(q, 12).resultados).map((r) => r.entrada.ruta);
+  it("«calendario de revisiones» y «seguimiento»: los tres primeros meses", () => {
+    expect(rec("calendario de revisiones")).toContain("#/consultar/inicio/primeros-meses");
+    expect(rec("seguimiento 780g")).toContain("#/consultar/inicio/primeros-meses");
+  });
+  it("comparar dos sistemas en la gestación: la fila de la gestación", () => {
+    expect(rec("embarazo camaps o control-iq").join(" ")).toMatch(/ciq\+camaps\/esencial:8/);
+  });
+  it("«omnipod agua»: el primer pasaje no es la ratio insulina/hidratos", () => {
+    const r = buscarConTotales("omnipod agua", 12).resultados;
+    expect(r[0]?.entrada.titulo ?? "").not.toMatch(/hidratos/i);
+  });
+});

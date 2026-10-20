@@ -371,7 +371,9 @@ const LEXICO: Record<string, string[]> = {
   refresco: ["azucarados", "liquidos"],
   beber: ["liquidos", "hidratacion"],
   bebida: ["liquidos", "hidratacion"],
-  agua: ["hidratacion", "liquidos"],
+  // 0.85.1 (novena ronda, guardia): sin «hidratacion» (su raíz casaba con «hidratos»: «omnipod
+  // agua» daba la ratio insulina/hidratos); el agua del capítulo es la actividad acuática.
+  agua: ["liquidos", "acuatica", "natacion"],
   boli: ["pluma"],
   inyeccion: ["pluma"],
   plumas: ["pluma", "mdi"],

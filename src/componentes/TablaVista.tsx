@@ -108,10 +108,13 @@ function TablaHTML({
   tabla,
   columnas,
   iconoFila,
+  resaltar,
 }: {
   tabla: Tabla;
   columnas: number[];
   iconoFila?: (i: number) => ReactNode;
+  /* 0.85.1 (novena ronda, R5): la fila pedida, marcada (comparación de varios sistemas). */
+  resaltar?: number;
 }) {
   // 0.72.0: si la tabla cabe a lo ancho, sin caja de desplazamiento propia (clase «cabe»): la
   // cabecera se queda pegada al bajar por la página. Si no cabe, se desplaza a lo ancho.
@@ -173,7 +176,11 @@ function TablaHTML({
         </thead>
         <tbody>
           {tabla.filas.map((f, i) => (
-            <tr key={i} className="align-top">
+            <tr
+              key={i}
+              data-fila={i}
+              className={`align-top ${resaltar === i ? "fila-resaltada" : ""}`}
+            >
               <th
                 scope="row"
                 className="separador border-t px-3 py-2 text-left text-xs font-bold text-slate-800"
@@ -248,10 +255,12 @@ function Fichas({
   tabla,
   columnas,
   filas,
+  resaltar,
 }: {
   tabla: Tabla;
   columnas: number[];
   filas?: number[];
+  resaltar?: number;
 }) {
   const idx = filas ?? tabla.filas.map((_, i) => i);
   return (
@@ -259,7 +268,11 @@ function Fichas({
       {idx.map((i) => {
         const f = tabla.filas[i];
         return (
-          <li key={i} className="tarjeta p-3">
+          <li
+            key={i}
+            data-fila={i}
+            className={`tarjeta p-3 ${resaltar === i ? "fila-resaltada" : ""}`}
+          >
             <div className="titulo-tarjeta mb-2">
               {/* 0.81.1 (quinta ronda, visual): la conducta común que sigue al nombre, debajo y
                   en gris, como en la tabla del ordenador (antes, cuatro líneas en negrita). */}
@@ -406,6 +419,19 @@ export function TablaVista({
   onSeleccion?: (seleccion: string | undefined) => void;
 }) {
   const todas = tabla.columnas.map((_, i) => i);
+  // 0.85.1 (novena ronda, R5): en la comparación, la fila pedida a la vista, bajo la barra.
+  const raiz = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (resaltarFila === undefined || !columnasFijas) return;
+    const el = [
+      ...(raiz.current?.querySelectorAll<HTMLElement>(`[data-fila="${resaltarFila}"]`) ?? []),
+    ].find((x) => x.offsetParent !== null);
+    if (!el) return;
+    const barra = document.querySelector(".barra-pegada")?.getBoundingClientRect().bottom ?? 0;
+    window.scrollTo({
+      top: Math.max(0, window.scrollY + el.getBoundingClientRect().top - barra - 12),
+    });
+  }, [resaltarFila, columnasFijas]);
   const desdeRuta = (s?: string): number[] => {
     if (!tabla.porSistema || !s) return [];
     const ids = s.split("+");
@@ -439,7 +465,7 @@ export function TablaVista({
 
   const interactiva = modo === "interactiva";
   return (
-    <section aria-label={`Tabla ${tabla.numero}`} className="bloque-papel">
+    <section ref={raiz} aria-label={`Tabla ${tabla.numero}`} className="bloque-papel">
       <CabeceraTabla
         tabla={tabla}
         enlaceConsultar={!interactiva && !columnasFijas && !herramienta}
@@ -504,10 +530,15 @@ export function TablaVista({
       ) : (
         <>
           <div className="vista-tabla hidden md:block">
-            <TablaHTML tabla={tabla} columnas={columnas} iconoFila={iconoFila} />
+            <TablaHTML
+              tabla={tabla}
+              columnas={columnas}
+              iconoFila={iconoFila}
+              resaltar={resaltarFila}
+            />
           </div>
           <div className="vista-fichas md:hidden">
-            <Fichas tabla={tabla} columnas={columnas} />
+            <Fichas tabla={tabla} columnas={columnas} resaltar={resaltarFila} />
           </div>
         </>
       )}

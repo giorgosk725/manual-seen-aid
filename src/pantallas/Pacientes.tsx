@@ -4,7 +4,7 @@
    PDF. El plan cabe en una cara (lo que hay que tener y rellenar, y qué función usar del sistema)
    y lleva como segunda cara la hoja de cetonas. Las hojas se imprimen con letra grande (12 pt);
    la app no guarda nada: solo líneas en blanco para el papel. */
-import { useEffect, useRef, type ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import { Printer } from "lucide-react";
 import { UrgenciaF3 } from "../componentes/UrgenciaF3";
 import { CAPITULO, FIGURA3, TABLAS, apartadoPorSlug, idDeBloque } from "../contenido";
@@ -18,7 +18,8 @@ import { hojaExtraPorId, type HojaExtra } from "../hojas";
 import { Texto } from "../texto";
 import { SinCortes } from "../componentes/SinCortes";
 import { sinCortes } from "../sinCortes";
-import { abrirPlegables, imprimirRegion } from "../imprimir";
+import { imprimirRegion } from "../imprimir";
+import { useImprimirConTeclado } from "../imprimirConTeclado";
 import { VERSION_APP } from "../version";
 import { fechaCorta, material, materialListo } from "../materiales";
 
@@ -54,35 +55,6 @@ function Acciones({
       </button>
     </div>
   );
-}
-
-/* Imprimir desde el navegador (Ctrl+P o su menú) una pantalla con hoja: se marca igual que
-   con el botón, para que salga solo la hoja. */
-function useImprimirConTeclado(ref: React.RefObject<HTMLDivElement>) {
-  useEffect(() => {
-    const html = document.documentElement;
-    let marcado = false;
-    let restaurar = () => {};
-    const antes = () => {
-      if (html.classList.contains("imprimiendo")) return;
-      marcado = true;
-      html.classList.add("imprimiendo");
-      restaurar = abrirPlegables(ref.current);
-    };
-    const despues = () => {
-      if (!marcado) return;
-      marcado = false;
-      html.classList.remove("imprimiendo");
-      restaurar();
-    };
-    window.addEventListener("beforeprint", antes);
-    window.addEventListener("afterprint", despues);
-    return () => {
-      window.removeEventListener("beforeprint", antes);
-      window.removeEventListener("afterprint", despues);
-      despues();
-    };
-  }, [ref]);
 }
 
 /* ---------- Hoja A4 (en pantalla, una hoja; en papel, 12 pt a una columna) ---------- */
@@ -473,7 +445,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
             type="button"
             onClick={() => elegirRuta("pacientes", "plan", sid)}
             aria-pressed={sid === id}
-            className="min-h-11 rounded-lg border px-1 py-1 text-xs font-semibold leading-tight transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-0 sm:rounded-full sm:px-3 sm:py-1.5"
+            className="min-h-11 rounded-lg border px-1 py-1 text-xs font-semibold leading-tight transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-0 sm:px-3 sm:py-1.5"
             // 0.84.1 (octava ronda, visual): el acento de interacción de toda la app (burdeos), no
             // el color del sistema; y el nombre corto de casilla («Control-IQ»): a 360 px
             // «Control-IQ / Control-IQ+» ocupaba tres líneas. El título del plan da el nombre entero.

@@ -665,6 +665,20 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         TABLAS.T3.paginas[0],
       ),
     );
+  // 0.85.1 (novena ronda, guardia): «calendario de revisiones», «seguimiento», «visitas»: los tres
+  // primeros meses (el mismo nombre que en la portada).
+  if (
+    /calendario|revisiones|\bseguimiento|visitas|primeros meses/.test(n) &&
+    !/descarga|cetona|ceton/.test(n)
+  )
+    out.push(
+      atajo(
+        "recurso/primeros-meses",
+        "Calendario de revisiones (los 3 primeros meses)",
+        href("consultar", "inicio", "primeros-meses"),
+        TABLAS.T2.paginas[0],
+      ),
+    );
   // 0.84.1 (octava ronda, R3): «descarga + orden/pasos»: la pregunta de la revisión ordenada; «cena
   // grasa», «comida grasa»: la de la comida rica en grasa (antes ganaba la de la enfermedad leve).
   if (/descarga/.test(n) && /\b(orden|ordenad|pasos|sistematic)/.test(n))
@@ -756,7 +770,12 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         texto: "",
         pagina: TABLAS.T1.paginas[0],
         pagina2: TABLAS.T1.paginas[1],
-        ruta: href("sistemas", varios.map((i) => ORDEN_SISTEMAS[i]).join("+"), "esencial"),
+        // 0.85.1 (novena ronda, R5): con la gestación, a su fila de la Tabla 1, marcada.
+        ruta: href(
+          "sistemas",
+          varios.map((i) => ORDEN_SISTEMAS[i]).join("+"),
+          /gestan|embaraz|gestacion/.test(normalizar(consulta)) ? "esencial:8" : "esencial",
+        ),
       },
       fragmento: "",
       puntos: 0,
