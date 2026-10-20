@@ -13,9 +13,18 @@ export interface Fuente {
 function Referencia({ t }: { t: string }) {
   const i = t.indexOf(" (");
   const ref = i < 0 ? t : t.slice(0, i);
+  // 0.88.1 (duodécima ronda, visual): una cadena con varias referencias («Apartado 5, pp. 4–5 ·
+  // Apartado 9, pp. 15, 17») se parte entre ellas, no dentro (antes, un solo tramo sin partir
+  // desbordaba en el móvil).
+  const partes = ref.split(/\s·\s/);
   return (
     <>
-      <span className="whitespace-nowrap">{ref}</span>
+      {partes.map((x, k) => (
+        <span key={k}>
+          {k > 0 && "\u00a0· "}
+          <span className="whitespace-nowrap">{x}</span>
+        </span>
+      ))}
       {i < 0 ? null : t.slice(i)}
     </>
   );

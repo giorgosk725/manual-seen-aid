@@ -566,6 +566,8 @@ export const MODOS: Dato[][] = [
       r: "Hipoglucemia nocturna",
       antes: C_NOCTURNA,
       v: "Un objetivo más alto o temporal puede ayudar",
+      // 0.88.1 (duodécima ronda, R3): como la comida grasa (paso 6), su paso de la descarga.
+      enlace: { texto: "Patrón nocturno: descarga, paso 5", ruta: "#/consultar/descarga/5" },
       f: [NOCHE],
     },
     {
@@ -615,6 +617,8 @@ export const MODOS: Dato[][] = [
       r: "Hipoglucemia nocturna",
       antes: C_NOCTURNA,
       v: "El modo sueño no autocorrige, pero ajusta la basal",
+      // 0.88.1 (duodécima ronda, R3): como la comida grasa (paso 6), su paso de la descarga.
+      enlace: { texto: "Patrón nocturno: descarga, paso 5", ruta: "#/consultar/descarga/5" },
       f: [NOCHE],
     },
     {
@@ -668,6 +672,8 @@ export const MODOS: Dato[][] = [
       r: "Hipoglucemia nocturna",
       antes: C_NOCTURNA,
       v: "Ease-off o un objetivo más alto",
+      // 0.88.1 (duodécima ronda, R3): como la comida grasa (paso 6), su paso de la descarga.
+      enlace: { texto: "Patrón nocturno: descarga, paso 5", ruta: "#/consultar/descarga/5" },
       f: [NOCHE],
     },
     {
@@ -717,6 +723,8 @@ export const MODOS: Dato[][] = [
       r: "Hipoglucemia nocturna",
       antes: C_NOCTURNA,
       v: "Función Actividad (objetivo 150 mg/dl) o un objetivo configurado más alto",
+      // 0.88.1 (duodécima ronda, R3): como la comida grasa (paso 6), su paso de la descarga.
+      enlace: { texto: "Patrón nocturno: descarga, paso 5", ruta: "#/consultar/descarga/5" },
       f: [NOCHE],
     },
     {

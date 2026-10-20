@@ -532,6 +532,18 @@ export function CalculadoraInicio({
                     max={LIMITES.peso}
                   />
                 </div>
+                {/* 0.88.1 (duodécima ronda, R5): en el móvil, con los datos completos, el resultado a un
+                    toque desde aquí (queda unos 950 px más abajo). */}
+                {resumen.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => resultados.current?.scrollIntoView({ block: "start" })}
+                    className="no-imprimir inline-flex min-h-11 items-center gap-1.5 text-left text-sm font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 xl:hidden"
+                  >
+                    Parámetros iniciales: {resumen.join(" · ")}
+                    <ArrowDown size={14} aria-hidden="true" className="shrink-0" />
+                  </button>
+                )}
                 <Opciones
                   etiqueta="Ratio y factor de sensibilidad"
                   opciones={[
@@ -704,6 +716,18 @@ export function CalculadoraInicio({
                     max={LIMITES.peso}
                   />
                 </div>
+                {/* 0.88.1 (duodécima ronda, R5): en el móvil, con los datos completos, el resultado a un
+                    toque desde aquí (queda unos 950 px más abajo). */}
+                {resumen.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => resultados.current?.scrollIntoView({ block: "start" })}
+                    className="no-imprimir inline-flex min-h-11 items-center gap-1.5 text-left text-sm font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 xl:hidden"
+                  >
+                    Parámetros iniciales: {resumen.join(" · ")}
+                    <ArrowDown size={14} aria-hidden="true" className="shrink-0" />
+                  </button>
+                )}
               </div>
             )}
             {(ev.calcula.basal || ev.calcula.ratioFactor || pideObjetivo) && (

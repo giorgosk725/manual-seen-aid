@@ -8,7 +8,7 @@ import { useRef, type ReactNode } from "react";
 import { Printer } from "lucide-react";
 import { UrgenciaF3 } from "../componentes/UrgenciaF3";
 import { CAPITULO, FIGURA3, TABLAS, apartadoPorSlug, idDeBloque } from "../contenido";
-import { CORTO_CASILLA, CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CORTO_CASILLA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import type { SistemaId } from "../ampliacion/tipos";
 import { AUTOR_PACIENTES, RESUMEN_CAPITULO, TITULO_CAPITULO_PACIENTES } from "../pacientes/textos";
 import { elegirRuta, href } from "../rutas";
@@ -433,7 +433,9 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
   const cetonas = hojaExtraPorId("cetonas");
   return (
     <div>
-      <Volver actual={`Plan de seguridad · ${CORTO_SISTEMA[c]}`} />
+      {/* 0.88.1 (duodécima ronda, guardia): sin el sistema (se cortaba en el móvil y repetía el
+          título y el selector de debajo). */}
+      <Volver actual="Plan de seguridad" />
       <div
         className="no-imprimir mb-3 grid grid-cols-4 gap-1 sm:flex sm:flex-wrap sm:gap-1.5"
         role="group"

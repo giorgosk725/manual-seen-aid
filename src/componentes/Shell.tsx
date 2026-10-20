@@ -1043,7 +1043,8 @@ function Mandos({
         aria-pressed={night}
         aria-label={night ? "Modo diurno" : "Modo nocturno"}
         title={night ? "Modo diurno" : "Modo nocturno"}
-        className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        // 0.88.1 (duodécima ronda, guardia): 44 × 44 px, como los demás controles.
+        className="tap-44 inline-flex h-11 w-11 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
         {night ? <Sun size={18} /> : <Moon size={18} />}
       </button>

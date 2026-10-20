@@ -364,14 +364,19 @@
   .tap-44 {
     position: relative;
   }
-  .tap-44::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: max(100%, 44px);
-    height: max(100%, 44px);
-    transform: translate(-50%, -50%);
+  /* 0.88.1 (duodécima ronda, senior): solo en pantallas táctiles (con ratón, el área de un enlace
+     de la línea de fuente invadía la línea de arriba y se quedaba sus clics: «Tabla 4» abría otro
+     párrafo). */
+  @media (pointer: coarse) {
+    .tap-44::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: max(100%, 44px);
+      height: max(100%, 44px);
+      transform: translate(-50%, -50%);
+    }
   }
 }
 

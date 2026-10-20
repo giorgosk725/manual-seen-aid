@@ -13,9 +13,22 @@ export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-21",
+    ambito: "app",
+    titulo: `Complemento interactivo ${VERSION_APP} — duodécima ronda de auditorías de uso`,
+    detalle: [
+      "Fuentes: con ratón, cada referencia abre la suya (el área táctil ampliada, solo en pantallas táctiles); una fuente con varias referencias se parte entre ellas y ya no desborda en el móvil.",
+      "Sistemas: en el Resumen, las filas de las tarjetas vecinas a la misma altura; «Cálculo» en la cabecera de la ficha; en el móvil, el selector de la comparación sigue abierto al marcar y desmarcar.",
+      "Calculadora en el móvil: bajo el peso, el resultado a un toque con sus cifras.",
+      "Figura 3: la cifra de cada tramo ya no toca el borde a 360 px. Modos: «Hipoglucemia nocturna» con su paso de la descarga.",
+      "En papel: la descarga sin el enlace suelto ni el triángulo del desplegable.",
+      "Detalles: «Qué cambia» con mayúscula en cada línea; la fuente de Tandem sin partir por el guion; botón nocturno de 44 px; miga del plan sin cortar.",
+    ],
+  },
+  {
     fecha: "2026-10-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — undécima ronda de auditorías de uso`,
+    titulo: "Complemento interactivo 0.88.0 — undécima ronda de auditorías de uso",
     detalle: [
       "Fuentes: cada referencia sin partir y en el orden del capítulo también en los pasos de Situaciones y en la galería.",
       "En papel: las tarjetas cortas, enteras; Parámetros y Modos se parten con su borde; la fuente dentro de la última tarjeta en todas las secciones; las Tablas 3 y 4 en una cara; la descarga con el orden de los 8 pasos.",

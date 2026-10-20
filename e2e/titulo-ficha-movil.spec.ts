@@ -32,3 +32,15 @@ test("comparación con la fila de la gestación, marcada y a la vista a 390 px",
   const fila = page.locator(".fila-resaltada:visible").filter({ hasText: "Gestación" }).first();
   await expect(fila).toBeInViewport();
 });
+
+/* 0.88.1 (duodécima ronda, visual): una fuente con varias referencias no desborda a 360 px. */
+test("objetivos de MCG sin desbordar a 360 px", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 780 });
+  await page.goto("/#/visual/objetivos-mcg");
+  await expect(page.locator("main h1").first()).toBeVisible();
+  const [sw, cw] = await page.evaluate(() => [
+    document.documentElement.scrollWidth,
+    document.documentElement.clientWidth,
+  ]);
+  expect(sw).toBeLessThanOrEqual(cw);
+});

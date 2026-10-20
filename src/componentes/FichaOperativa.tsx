@@ -57,7 +57,7 @@ const MODO = {
     dd: "sm:mt-0.5",
   },
   resumen: {
-    dl: "grid gap-y-2.5 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-3 xl:grid-cols-1 xl:gap-y-2.5",
+    dl: "grid gap-y-2.5 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-3 xl:row-span-3 xl:grid-cols-1 xl:grid-rows-subgrid xl:gap-y-2.5",
     fila: "grid min-w-0 grid-cols-[6.5rem_1fr] gap-x-3 sm:block xl:grid xl:grid-cols-[8.5rem_1fr]",
     dt: "sm:pt-0 xl:pt-0.5",
     dd: "sm:mt-0.5 xl:mt-0",
@@ -99,7 +99,8 @@ export function CasillasDatos({
                 {d.partes ? (
                   d.v.split(" · ").map((x) => (
                     <span key={x} className="block">
-                      <SinCortes texto={x} />
+                      {/* 0.88.1 (duodécima ronda, senior): cada línea con mayúscula inicial. */}
+                      <SinCortes texto={x.charAt(0).toUpperCase() + x.slice(1)} />
                     </span>
                   ))
                 ) : (

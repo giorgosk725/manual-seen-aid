@@ -157,7 +157,8 @@ function RangoTramo({ rango, on }: { rango: string; on: boolean }) {
         />
       </span>{" "}
       <span className="mt-1 inline-block whitespace-nowrap">
-        <span className="text-2xl font-extrabold tabular-nums">{m[2]}</span>{" "}
+        {/* 0.88.1 (duodécima ronda, visual): a 360 px la unidad tocaba el borde de la tarjeta. */}
+        <span className="text-xl font-extrabold tabular-nums sm:text-2xl">{m[2]}</span>{" "}
         <span className="text-xs font-bold">{m[3]}</span>
       </span>
       {m[4] && " "}

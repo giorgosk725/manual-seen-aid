@@ -29,7 +29,19 @@ export function ComplementoVista({ complemento: k }: { complemento: Complemento 
           </div>
         ))}
       </div>
-      <p className="fuente-pie mt-3">Fuente: {k.fuente}</p>
+      {/* 0.88.1 (duodécima ronda, senior): sin partir por el guion «Control-IQ» ni «MAT-2075_1». */}
+      <p className="fuente-pie mt-3">
+        Fuente:{" "}
+        {k.fuente.split(/(\S+-\S+)/).map((x, i) =>
+          i % 2 ? (
+            <span key={i} className="whitespace-nowrap">
+              {x}
+            </span>
+          ) : (
+            x
+          ),
+        )}
+      </p>
     </section>
   );
 }

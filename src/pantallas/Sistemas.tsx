@@ -670,6 +670,11 @@ export function FichaSistema({
             <span className="sm:hidden">Iniciación</span>
             <span className="hidden sm:inline">Iniciación del sistema</span>
           </a>
+          {/* 0.88.1 (duodécima ronda, R5): el cálculo de parámetros iniciales del sistema, directo
+              (Iniciación abre las fases). */}
+          <a href={href("consultar", "inicio", `calculadora:${slug}`)} className={accesoFicha}>
+            Cálculo
+          </a>
           <a href={href("pacientes", "plan", s.id)} className={accesoFicha}>
             {/* Rótulo corto en el móvil; el nombre accesible, siempre el completo. */}
             <span className="sm:hidden" aria-hidden="true">
@@ -781,8 +786,6 @@ export function FichaSistema({
               Las demás preguntas de esta ficha se responden con sus tarjetas.
             </p>
           )}
-          {/* 0.85.1 (novena ronda, senior y visual): en papel, la fuente de las respuestas
-              impresas (en pantalla la lleva cada respuesta). */}
           <FuentePie
             className="mt-1 hidden print:block"
             fuentes={fuentesDePiezas(
@@ -837,7 +840,7 @@ export function FichaSistema({
 
       {CON_AMPLIACION && <Ampliacion s={sistemaPorId(s.id)!} />}
       {/* En papel, de dónde sale la hoja (0.78.1, auditoría R3). */}
-      <p className="colofon mt-6 hidden border-t pt-2 text-xs text-slate-600 print:block">
+      <p className="colofon mt-6 hidden border-t pt-2 text-xs text-slate-600 print:mt-2 print:block print:pt-1">
         Manual de Endocrinología y Nutrición (SEEN) · Capítulo 89 · Complemento interactivo{" "}
         {VERSION_APP} · impreso el {new Date().toLocaleDateString("es-ES")}
       </p>
@@ -920,6 +923,9 @@ function AmpliacionRetirada({ ids }: { ids: string[] }) {
 
 /* Selector de sistemas y pestañas de sección, pegados arriba al desplazarse: el sistema y la
    sección que se consultan quedan siempre a mano. */
+/* 0.88.1 (duodécima ronda, R5): en el móvil, el selector abierto sigue abierto tras marcar o
+   desmarcar (cada cambio es otra ruta y la barra se montaba de nuevo, plegada). */
+let seguirAbierta = 0;
 function BarraSistemas({
   ids,
   seccion,
@@ -974,6 +980,7 @@ function BarraSistemas({
     const nuevos = ids.includes(id)
       ? ids.filter((x) => x !== id)
       : IDS_SISTEMA.filter((x) => ids.includes(x) || x === id);
+    if (abierta && nuevos.length > 1) seguirAbierta = Date.now();
     window.location.replace(rutaCon(nuevos));
     // De la ficha a la comparación (o al revés), arriba: es otra pantalla (0.72.0).
     if ((ids.length === 1) !== (nuevos.length === 1)) window.scrollTo({ top: 0 });
@@ -985,7 +992,7 @@ function BarraSistemas({
   // Plegada de entrada en la ficha de un sistema y en la lista (las tarjetas ya eligen).
   const deEntrada = ids.length === 1 || (ids.length === 0 && !seccion);
   const [plegada, setPlegada] = useState(movil && deEntrada);
-  const [abierta, setAbierta] = useState(false);
+  const [abierta, setAbierta] = useState(() => Date.now() - seguirAbierta < 1500);
   // 0.81.1 (quinta ronda, visual): tras cambiar de pestaña en la comparación del móvil, la barra
   // sigue plegada (al desplegarse después de colocar la sección, la tapaba 100 px).
   const trasPestana = useRef(false);
@@ -1010,7 +1017,7 @@ function BarraSistemas({
       if (window.scrollY < 8) trasPestana.current = false;
       const lejos = window.scrollY > 220 || deEntrada || trasPestana.current;
       setPlegada((p) => (p !== lejos ? lejos : p));
-      if (window.scrollY > 220) setAbierta(false);
+      if (window.scrollY > 220 && Date.now() - seguirAbierta > 1500) setAbierta(false);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -1039,7 +1046,7 @@ function BarraSistemas({
   }, [ids, sec]);
   const compacta = plegada && !abierta;
   const resumen = ids.length
-    ? ids.map((id) => SLUG_CORTO[columnaDeSistema(id as SistemaId)]).join(" + ")
+    ? ids.map((id) => SLUG_CORTO[columnaDeSistema(id as SistemaId)]).join(" · ")
     : "Los cuatro sistemas";
   return (
     <div
@@ -1202,7 +1209,9 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
     <div className="space-y-4">
       {/* 0.77.1 (auditoría del adjunto): en pantallas anchas, 2 × 2, para ver los cuatro
           objetivos sin desplazarse. */}
-      <ul className="grid gap-3 xl:grid-cols-2">
+      {/* 0.88.1 (duodécima ronda, adjunto): desde xl, las filas de las tarjetas vecinas a la misma
+          altura (subgrid: cabecera, tres datos, variante y accesos). */}
+      <ul className="grid gap-3 xl:grid-cols-2 xl:gap-y-0">
         {visibles.map(({ s, c }) => {
           const h = SISTEMA_HEX[c];
           const variante = VARIANTE_RESUMEN[c];
@@ -1217,10 +1226,10 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
             ["Plan de seguridad", "Plan", href("pacientes", "plan", s.id)],
           ];
           return (
-            <li key={s.id} className="min-w-0">
+            <li key={s.id} className="min-w-0 xl:row-span-6 xl:mb-3 xl:grid xl:grid-rows-subgrid">
               <article
                 aria-label={s.name}
-                className="tarjeta tarjeta-sistema flex h-full flex-col overflow-hidden"
+                className="tarjeta tarjeta-sistema flex h-full flex-col overflow-hidden xl:row-span-6 xl:grid xl:grid-rows-subgrid xl:gap-y-0"
                 style={{ ["--sis" as string]: h.strong }}
               >
                 <a
@@ -1246,7 +1255,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                     </span>
                   </span>
                 </a>
-                <div className="flex-1 px-4 py-2.5">
+                <div className="flex-1 px-4 py-2.5 xl:row-span-4 xl:grid xl:grid-rows-subgrid xl:gap-y-2.5">
                   <CasillasDatos c={c} datos={datosDe(c)} modo="resumen" />
                   {variante && (
                     <p className="mt-3 grid grid-cols-[auto_1fr] items-baseline gap-x-2 text-sm leading-snug text-slate-800">

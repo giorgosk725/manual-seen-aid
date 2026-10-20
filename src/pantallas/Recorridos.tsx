@@ -1140,7 +1140,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           </div>
           {patrones.length > 0 && (
             <details className="mt-4" open>
-              <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
+              <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8 print:list-none">
                 Patrones relacionados ({patrones.length})
               </summary>
               <ul className="mt-2 space-y-2">
@@ -1182,7 +1182,8 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           {n === 5 && (
             <a
               href={href("consultar", "tablas", "T4")}
-              className="mt-4 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
+              // 0.88.1 (duodécima ronda, R3): sin el enlace en papel (pasaba solo a otra cara).
+              className="no-imprimir mt-4 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
             >
               Herramientas del sistema ante situaciones clínicas{" "}
               <ArrowRight size={14} aria-hidden="true" />
