@@ -677,6 +677,12 @@ export function CalculadoraInicio({
                     )}
                   </>
                 )}
+                {d.origen === "aid" &&
+                  d.sistemaPrevio !== null &&
+                  sis !== undefined &&
+                  d.sistemaPrevio !== sis && (
+                    <PasanAAutomatico actual={d.sistemaPrevio} destino={sis} />
+                  )}
                 <Opciones
                   etiqueta={`¿Es adecuada la programación ${previa}?`}
                   opciones={[
@@ -812,9 +818,15 @@ export function CalculadoraInicio({
                   cuenta={
                     mdi
                       ? `${coma(redondea(ev.dtdPrevia!, 1))} UI − ${d.reduccion} %`
-                      : `${coma(redondea(ev.dtdPrevia!, 1))} UI (sin reducción)`
+                      : `${coma(redondea(ev.dtdPrevia!, 1))} UI, DTD ${previa}`
                   }
-                  regla={mdi ? "Reducción respecto a MDI" : `DTD ${previa}`}
+                  // 0.91.1 (decisión del responsable, 21-10-2026): desde ISCI u otro AID, la DTD
+                  // sin reducir, y por qué (la frase literal de la basal dice «DTD reducida»).
+                  regla={
+                    mdi
+                      ? "Reducción respecto a MDI"
+                      : "Sin reducción: el capítulo da la reducción del 10–20 % solo para el paso desde MDI"
+                  }
                   color={color}
                 />
                 {ev.calcula.basal && (
@@ -1057,6 +1069,35 @@ const enMinuscula = (x: string) =>
 
 /* Cambio de sistema (19-10-2026): qué parámetros actúan en el modo automático en el sistema
    actual y en el de destino, de las fichas operativas (fichaOperativa.ts, Tablas 1 y 3). */
+/* 0.91.1 (decisión del responsable, 21-10-2026): al cambiar de AID, los parámetros que no actúan
+   en automático en el sistema actual y sí en el de destino (Tabla 1, asterisco): al trasladar la
+   programación, pasan a usarse en automático. Solo el hecho, sin instrucción. */
+const CON_ARTICULO: Record<string, string> = {
+  "Objetivo glucémico": "el objetivo glucémico",
+  "Tasa basal programada": "la tasa basal",
+  "Ratio I/HC": "la ratio I/HC",
+  "Factor de sensibilidad": "el factor de sensibilidad",
+  "Duración de la insulina activa": "la duración de la insulina activa",
+};
+function PasanAAutomatico({ actual, destino }: { actual: number; destino: number }) {
+  const nuevos = PARAMETROS[destino].filter(
+    (d) => d.auto === "si" && PARAMETROS[actual].find((x) => x.r === d.r)?.auto !== "si",
+  );
+  if (!nuevos.length) return null;
+  const nombres = nuevos.map((d) => CON_ARTICULO[d.r] ?? d.r.toLowerCase());
+  const lista =
+    nombres.length > 1
+      ? `${nombres.slice(0, -1).join(", ")} y ${nombres[nombres.length - 1]}`
+      : nombres[0];
+  return (
+    <p className="text-sm leading-snug text-slate-800">
+      {sinCortes(
+        `En ${CORTOS[actual]}, ${lista} no ${nuevos.length > 1 ? "actúan" : "actúa"} en automático; en ${CORTOS[destino]}, sí.`,
+      )}
+    </p>
+  );
+}
+
 function CambioDeSistema({ actual, destino }: { actual: number; destino: number }) {
   const columnas = [
     { c: actual, rotulo: "Sistema actual" },

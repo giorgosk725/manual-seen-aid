@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-21",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — decimocuarta ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — calculadora: DTD sin reducción y cambio de AID`,
+    detalle: [
+      "Desde ISCI u otro AID, junto a la DTD de inicio: «Sin reducción: el capítulo da la reducción del 10–20 % solo para el paso desde MDI».",
+      "Al cambiar de AID, junto a «¿Es adecuada la programación del sistema actual?», los parámetros que pasan a actuar en automático (p. ej., de MiniMed 780G a Control-IQ: la tasa basal y el factor de sensibilidad).",
+    ],
+  },
+  {
+    fecha: "2026-10-21",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.91.0 — decimocuarta ronda de auditorías de uso",
     detalle: [
       "Descarga: «Imprimir este paso» imprime el paso (salía la hoja en blanco), en una hoja A4.",
       "En papel, desde el modo nocturno, las tintas de día (los rótulos del plan salían en rosa pálido).",
