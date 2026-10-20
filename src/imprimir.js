@@ -111,12 +111,16 @@ function imprimirYa(getRegion, win) {
   const region = typeof getRegion === "function" ? getRegion() : getRegion;
   const restaurarPlegables = abrirPlegables(region);
   doc.documentElement.classList.add("imprimiendo");
+  // 0.90.1 (14.ª ronda, R5): en papel, sin el modo nocturno (se devuelve al limpiar).
+  const noche = doc.documentElement.classList.contains("night");
+  doc.documentElement.classList.remove("night");
   let limpio = false;
   let quitarOyente = () => {};
   const limpiar = () => {
     if (limpio) return;
     limpio = true;
     doc.documentElement.classList.remove("imprimiendo");
+    if (noche) doc.documentElement.classList.add("night");
     restaurarPlegables();
     quitarOyente();
     win.removeEventListener("pointerdown", limpiar);

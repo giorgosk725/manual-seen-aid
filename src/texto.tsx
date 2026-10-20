@@ -38,10 +38,10 @@ function partirCifras(t: string): { t: string; cifra: boolean }[] {
 /* 0.89.1 (13.ª ronda, visual): «β-OHB» en una pieza que no se parte por el guion en todo el
    texto (antes, solo en la Figura 3 y en <SinCortes>). */
 function SinPartir({ t }: { t: string }) {
-  if (!t.includes("β-OHB")) return <>{t}</>;
+  if (!t.includes("β-")) return <>{t}</>;
   return (
     <>
-      {t.split(/(β-OHB)/).map((x, i) =>
+      {t.split(/(β-OHB|β-hidroxibutirato)/).map((x, i) =>
         i % 2 ? (
           <span key={i} className="whitespace-nowrap">
             {x}

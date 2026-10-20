@@ -52,6 +52,15 @@ function entradillaDe(ruta: string): string | undefined {
   const b = a?.bloques.find((x, i) => idDeBloque(x, i) === ancla);
   return b?.t === "p" ? b.lead?.replace(/[.:]$/, "") : undefined;
 }
+/* 0.90.1 (decisión del responsable, 21-10-2026): el contexto de un párrafo sin entradilla cuyo
+   dato se aplica fuera de él (el alcohol, en el párrafo de adolescencia y transición). */
+const CONTEXTO: Record<string, string> = {
+  "10-situaciones/b14": "Adolescencia y transición",
+};
+const contextoDe = (ruta: string) => {
+  const [, , slug, ancla] = ruta.split("/");
+  return CONTEXTO[`${slug}/${ancla}`];
+};
 /* Las fuentes de unas piezas, sin repetir. 0.82.1 (sexta ronda, senior): sin repetir el sitio
    (antes, el texto: dos párrafos de la misma página daban una sola fuente, que llevaba al otro);
    si dos sitios se escriben igual, cada uno con la entradilla de su párrafo. */
@@ -63,7 +72,8 @@ export function fuentesDePiezas(piezas: Pieza[]): { texto: string; ruta: string 
   const veces = new Map<string, number>();
   for (const f of unicas) veces.set(f.texto, (veces.get(f.texto) ?? 0) + 1);
   return unicas.map((f) => {
-    const e = (veces.get(f.texto) ?? 0) > 1 ? entradillaDe(f.ruta) : undefined;
+    const e =
+      ((veces.get(f.texto) ?? 0) > 1 ? entradillaDe(f.ruta) : undefined) ?? contextoDe(f.ruta);
     // 0.83.1 (séptima ronda, senior y R3): entre paréntesis (con «·» parecía otra fuente).
     return e ? { ...f, texto: `${f.texto} (${e})` } : f;
   });

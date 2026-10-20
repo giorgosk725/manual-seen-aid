@@ -1252,7 +1252,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
             ["Plan de seguridad", "Plan", href("pacientes", "plan", s.id)],
           ];
           return (
-            <li key={s.id} className="min-w-0 xl:row-span-6 xl:mb-3 xl:grid xl:grid-rows-subgrid">
+            <li key={s.id} className="min-w-0 xl:row-span-6 xl:mb-1 xl:grid xl:grid-rows-subgrid">
               <article
                 aria-label={s.name}
                 className="tarjeta tarjeta-sistema flex h-full flex-col overflow-hidden xl:row-span-6 xl:grid xl:grid-rows-subgrid xl:gap-y-0"
@@ -1260,12 +1260,14 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
               >
                 <a
                   href={href("sistemas", s.id)}
-                  className="separador group flex items-center gap-3 border-b px-4 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-600"
+                  // 0.90.1 (14.ª ronda, adjunto): desde xl, cabecera algo más baja: a 1366 × 768
+                  // los cuatro objetivos entran enteros en la primera pantalla.
+                  className="separador group flex items-center gap-3 border-b px-4 py-2.5 focus:outline-none xl:py-2 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-600"
                 >
                   <img
                     src={FOTO_SISTEMA[s.id]}
                     alt=""
-                    className="foto-sistema h-12 w-12 shrink-0 rounded-md bg-white object-cover"
+                    className="foto-sistema h-12 w-12 shrink-0 rounded-md bg-white object-cover xl:h-10 xl:w-10"
                     loading="lazy"
                     decoding="async"
                   />
@@ -1281,7 +1283,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                     </span>
                   </span>
                 </a>
-                <div className="flex-1 px-4 py-2.5 xl:row-span-4 xl:grid xl:grid-rows-subgrid xl:gap-y-2.5">
+                <div className="flex-1 px-4 py-2.5 xl:row-span-4 xl:grid xl:grid-rows-subgrid xl:gap-y-2 xl:py-2">
                   <CasillasDatos c={c} datos={datosDe(c)} modo="resumen" />
                   {variante && (
                     <p className="mt-3 grid grid-cols-[auto_1fr] items-baseline gap-x-2 text-sm leading-snug text-slate-800">
@@ -1298,7 +1300,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                   aria-label={`Ficha de ${s.name}`}
                   // 0.89.1 (13.ª ronda, adjunto): desde xl (dos columnas), con los rótulos cortos en
                   // una línea: a 1366 × 768 los cuatro objetivos entran sin desplazarse.
-                  className="separador grid grid-cols-3 gap-1.5 border-t p-3 sm:flex sm:flex-wrap sm:gap-x-4 sm:gap-y-0 sm:px-4 sm:py-1 xl:gap-x-3"
+                  className="separador grid grid-cols-3 gap-1.5 border-t p-3 sm:flex sm:flex-wrap sm:gap-x-4 sm:gap-y-0 sm:px-4 sm:py-1 xl:gap-x-3 xl:py-0.5"
                 >
                   {accesos.map(([t, corto, ruta]) => (
                     <a key={t} href={ruta} className={accesoTarjeta}>

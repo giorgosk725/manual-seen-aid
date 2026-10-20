@@ -47,7 +47,9 @@ const GESTACION: BloqueSistema[][] = [
     // Control-IQ+, sí): es la distinción que más importa a una gestante con Control-IQ.
     {
       rotulo: "Autorización y evidencia",
-      piezas: [casilla("T1", 8), s10("b9", [0]), s10("b5", [2])],
+      // 0.90.1 (decisión del responsable, 21-10-2026): una fila con Control-IQ / Control-IQ+,
+      // sin la frase del apartado 10 que repetía la autorización de Control-IQ+.
+      piezas: [casilla("T1", 8), s10("b5", [2])],
     },
     { rotulo: "Estrategia de intensificación", piezas: [s10("b9", [1])] },
     { rotulo: "Modo sueño continuado", piezas: [s10("b9", [2, 3, 4]), casilla("T1", 6)] },

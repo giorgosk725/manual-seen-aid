@@ -297,6 +297,11 @@ export function CalculadoraInicio({
   const { calc: d } = useTrabajo();
   const set = cambiarCalculadora;
   const mdi = d.origen === "mdi";
+  // 0.90.1 (14.ª ronda, R5): si el destino pasa a ser el sistema actual, el actual queda sin
+  // elegir (antes, marcado y desactivado a la vez, y la comparación desaparecía sin aviso).
+  useEffect(() => {
+    if (sis !== undefined && d.sistemaPrevio === sis) set({ sistemaPrevio: null });
+  }, [sis, d.sistemaPrevio, set]);
   const previa = PREVIA[d.origen];
 
   const elegirControl = (c: Control) => {
@@ -324,6 +329,9 @@ export function CalculadoraInicio({
   const color = h?.ink ?? "#1f2f5c";
   const resultados = useRef<HTMLDivElement>(null);
   const [resultadosVisibles, setResultadosVisibles] = useState(true);
+  // 0.90.1 (14.ª ronda, R5 y visual): con el enlace al resultado a la vista, sin la barra
+  // flotante (las mismas cifras dos veces, y la barra lo tapaba).
+  const [enlaceVisible, setEnlaceVisible] = useState(false);
   useEffect(() => {
     const el = resultados.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
@@ -429,6 +437,7 @@ export function CalculadoraInicio({
           quedara dentro de ella. */}
       {resumen.length > 0 &&
         !resultadosVisibles &&
+        !enlaceVisible &&
         !editando &&
         createPortal(
           <button
@@ -538,6 +547,7 @@ export function CalculadoraInicio({
                   <IrAResultado
                     texto={`Parámetros iniciales: ${resumen.join(" · ")}`}
                     onIr={() => resultados.current?.scrollIntoView({ block: "start" })}
+                    onVisible={setEnlaceVisible}
                   />
                 )}
                 <Opciones
@@ -719,6 +729,7 @@ export function CalculadoraInicio({
                   <IrAResultado
                     texto={`Parámetros iniciales: ${resumen.join(" · ")}`}
                     onIr={() => resultados.current?.scrollIntoView({ block: "start" })}
+                    onVisible={setEnlaceVisible}
                   />
                 )}
               </div>
@@ -1118,15 +1129,37 @@ function SetsDeInfusion({ sis }: { sis: number }) {
 /* 0.88.1 (duodécima ronda, R5): en el móvil, con los datos completos, el resultado a un toque
    desde los campos (queda unos 950 px más abajo). 0.89.1 (13.ª ronda, R5): al aparecer, a la vista
    por encima de la barra inferior (si el campo del peso quedaba abajo, el enlace caía debajo). */
-function IrAResultado({ texto, onIr }: { texto: string; onIr: () => void }) {
+function IrAResultado({
+  texto,
+  onIr,
+  onVisible,
+}: {
+  texto: string;
+  onIr: () => void;
+  onVisible: (v: boolean) => void;
+}) {
   const ref = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     const el = ref.current;
     if (!el || !window.matchMedia?.("(max-width: 1279px)").matches) return;
-    const libre = window.innerHeight - 96;
+    // Con el teclado abierto, el alto visible (visualViewport), no el de la ventana.
+    const alto = window.visualViewport?.height ?? window.innerHeight;
+    const libre = alto - 96;
     const abajo = el.getBoundingClientRect().bottom;
     if (abajo > libre) window.scrollBy({ top: abajo - libre + 8 });
   }, []);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([e]) => onVisible(e.isIntersecting), {
+      rootMargin: "0px 0px -80px 0px",
+    });
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      onVisible(false);
+    };
+  }, [onVisible]);
   return (
     <button
       ref={ref}

@@ -1572,75 +1572,79 @@ html.night .regla-seccion > span:last-child {
 }
 
 /* Nocturno: bordes finos en línea, tintes suaves y tintas de las categorías nuevas. */
-html.night [style*="border-color: rgb(230, 230, 230)"],
-html.night [style*="border-color: rgb(212, 212, 212)"],
-html.night [style*="border-color: rgb(226, 232, 240)"],
-html.night [style*="border-color: rgb(236, 239, 243)"],
-html.night [style*="border-color: rgb(238, 240, 242)"],
-html.night [style*="border-color: rgb(238, 238, 238)"] {
-  border-color: #334155 !important;
-}
-html.night [style*="background: rgb(238, 243, 249)"] {
-  background: #172a3f !important;
-  color: #e2e8f0 !important;
-}
-html.night [style*="background: rgb(247, 239, 243)"] {
-  background: #33202b !important;
-  color: #e2e8f0 !important;
-}
-html.night [style*="background: rgb(239, 243, 246)"] {
-  background: #1e293b !important;
-  color: #e2e8f0 !important;
-}
-html.night [style*="background: rgb(251, 244, 230)"] {
-  background: #2b220c !important;
-  color: #e2e8f0 !important;
-}
-html.night [style*="background: rgb(251, 238, 235)"] {
-  background: #33201c !important;
-  color: #e2e8f0 !important;
-}
-html.night [style^="color: rgb(47, 86, 128)"],
-html.night [style*="; color: rgb(47, 86, 128)"],
-html.night [style^="color: rgb(63, 110, 159)"],
-html.night [style*="; color: rgb(63, 110, 159)"] {
-  color: #93c5fd !important;
-  filter: none !important;
-}
-html.night [style^="color: rgb(110, 52, 82)"],
-html.night [style*="; color: rgb(110, 52, 82)"],
-html.night [style^="color: rgb(148, 73, 110)"],
-html.night [style*="; color: rgb(148, 73, 110)"],
-html.night [style^="color: rgb(126, 61, 94)"],
-html.night [style*="; color: rgb(126, 61, 94)"] {
-  color: #f5b8d2 !important;
-  filter: none !important;
-}
-html.night [style^="color: rgb(62, 86, 106)"],
-html.night [style*="; color: rgb(62, 86, 106)"],
-html.night [style^="color: rgb(91, 123, 149)"],
-html.night [style*="; color: rgb(91, 123, 149)"] {
-  color: #cbd5e1 !important;
-  filter: none !important;
-}
-html.night [style^="color: rgb(107, 74, 13)"],
-html.night [style*="; color: rgb(107, 74, 13)"],
-html.night [style^="color: rgb(138, 94, 16)"],
-html.night [style*="; color: rgb(138, 94, 16)"] {
-  color: #fcd34d !important;
-  filter: none !important;
-}
-html.night [style^="color: rgb(127, 49, 40)"],
-html.night [style*="; color: rgb(127, 49, 40)"],
-html.night [style^="color: rgb(168, 71, 58)"],
-html.night [style*="; color: rgb(168, 71, 58)"],
-html.night [style^="color: rgb(142, 37, 78)"],
-html.night [style*="; color: rgb(142, 37, 78)"] {
-  color: #fca5a5 !important;
-  filter: none !important;
-}
-html.night input.bg-transparent {
-  background: transparent !important;
+/* 0.90.1 (14.ª ronda, R5): solo en pantalla (en papel, desde el modo nocturno, los rótulos
+   del plan salían en rosa pálido sobre blanco). */
+@media screen {
+  html.night [style*="border-color: rgb(230, 230, 230)"],
+  html.night [style*="border-color: rgb(212, 212, 212)"],
+  html.night [style*="border-color: rgb(226, 232, 240)"],
+  html.night [style*="border-color: rgb(236, 239, 243)"],
+  html.night [style*="border-color: rgb(238, 240, 242)"],
+  html.night [style*="border-color: rgb(238, 238, 238)"] {
+    border-color: #334155 !important;
+  }
+  html.night [style*="background: rgb(238, 243, 249)"] {
+    background: #172a3f !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(247, 239, 243)"] {
+    background: #33202b !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(239, 243, 246)"] {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(251, 244, 230)"] {
+    background: #2b220c !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style*="background: rgb(251, 238, 235)"] {
+    background: #33201c !important;
+    color: #e2e8f0 !important;
+  }
+  html.night [style^="color: rgb(47, 86, 128)"],
+  html.night [style*="; color: rgb(47, 86, 128)"],
+  html.night [style^="color: rgb(63, 110, 159)"],
+  html.night [style*="; color: rgb(63, 110, 159)"] {
+    color: #93c5fd !important;
+    filter: none !important;
+  }
+  html.night [style^="color: rgb(110, 52, 82)"],
+  html.night [style*="; color: rgb(110, 52, 82)"],
+  html.night [style^="color: rgb(148, 73, 110)"],
+  html.night [style*="; color: rgb(148, 73, 110)"],
+  html.night [style^="color: rgb(126, 61, 94)"],
+  html.night [style*="; color: rgb(126, 61, 94)"] {
+    color: #f5b8d2 !important;
+    filter: none !important;
+  }
+  html.night [style^="color: rgb(62, 86, 106)"],
+  html.night [style*="; color: rgb(62, 86, 106)"],
+  html.night [style^="color: rgb(91, 123, 149)"],
+  html.night [style*="; color: rgb(91, 123, 149)"] {
+    color: #cbd5e1 !important;
+    filter: none !important;
+  }
+  html.night [style^="color: rgb(107, 74, 13)"],
+  html.night [style*="; color: rgb(107, 74, 13)"],
+  html.night [style^="color: rgb(138, 94, 16)"],
+  html.night [style*="; color: rgb(138, 94, 16)"] {
+    color: #fcd34d !important;
+    filter: none !important;
+  }
+  html.night [style^="color: rgb(127, 49, 40)"],
+  html.night [style*="; color: rgb(127, 49, 40)"],
+  html.night [style^="color: rgb(168, 71, 58)"],
+  html.night [style*="; color: rgb(168, 71, 58)"],
+  html.night [style^="color: rgb(142, 37, 78)"],
+  html.night [style*="; color: rgb(142, 37, 78)"] {
+    color: #fca5a5 !important;
+    filter: none !important;
+  }
+  html.night input.bg-transparent {
+    background: transparent !important;
+  }
 }
 
 /* Remisiones internas del capítulo («v. Tabla 5»): enlace discreto, subrayado punteado. */

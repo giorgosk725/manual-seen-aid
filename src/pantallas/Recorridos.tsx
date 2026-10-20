@@ -908,7 +908,9 @@ export function SituacionSistema({
                           // antes del «·»).
                           className="tap-44 inline py-1"
                         >
-                          {l.titulo}
+                          {/* 0.90.1 (14.ª ronda, visual): en su span, por encima del área
+                              ampliada del enlace de la línea de abajo (.fuente-pie a > span). */}
+                          <span>{l.titulo}</span>
                         </a>
                       </span>
                     ))}
@@ -1037,7 +1039,9 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
       fila.scrollLeft = izq - (fila.clientWidth - b.offsetWidth) / 2;
   }, [n]);
   return (
-    <div ref={raiz}>
+    // 0.90.1 (14.ª ronda, R3 y visual): la región que se imprime (sin la clase, la hoja salía en
+    // blanco: con `imprimiendo`, todo lo que no es `.imprimible` se oculta).
+    <div ref={raiz} className="imprimible">
       <CabeceraEditorial titulo="Interpretación de la descarga" hex={hex} level={1} />
       {/* 0.72.0: los ocho pasos a la vista. Hasta el ordenador ancho, ocho botones numerados
           con el avance; en él, la lista con sus títulos a la izquierda. */}

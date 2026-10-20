@@ -528,8 +528,16 @@ const R_FALLO = "Hiperglucemia persistente o inexplicada (sospecha de fallo de i
 const C_NOCTURNA =
   "Antes de subir objetivos globalmente, revisar ejercicio vespertino, alcohol, bolo tardío de cena, corrección manual, objetivo demasiado bajo o ratios agresivas, y si el patrón se concentra en una franja";
 const ALCOHOL = fr("10-situaciones", "b14", [2]);
+/* 0.90.1 (decisión del responsable, 21-10-2026: «lo mejor que creas»): la guía operativa está en
+   el párrafo de adolescencia (su fuente lo dice); el apartado 9 lo da como causa que revisar en
+   cualquier paciente (hipoglucemia nocturna, hiperglucemia matutina, TBR elevado). */
+const ALCOHOL_9 = [
+  fr("09-descarga", "b7", [0]),
+  fr("09-descarga", "b8", [0]),
+  fr("09-descarga", "b10", [0]),
+];
 const N_ALCOHOL =
-  "Educar sobre la prudencia con los bolos prandiales en comidas asociadas a alcohol";
+  "Educar sobre la prudencia con los bolos prandiales en comidas asociadas a alcohol; revisarlo ante hipoglucemia nocturna, hiperglucemia matutina o TBR elevado";
 const AGUA_CATETER: Dato = {
   r: "Agua y deportes de contacto",
   v: "Puede ser necesario retirar temporalmente la bomba, según el dispositivo, las recomendaciones del fabricante y el tipo y duración de la actividad",
@@ -586,7 +594,7 @@ export const MODOS: Dato[][] = [
       r: "Alcohol",
       v: "Anticipar hipoglucemia diferida hasta 12–24 h tras la ingesta; valorar un objetivo glucémico más conservador la noche del consumo y la mañana siguiente",
       n: N_ALCOHOL,
-      f: [ALCOHOL],
+      f: [ALCOHOL, ...ALCOHOL_9],
     },
     AGUA_CATETER,
     { r: R_FALLO, v: FALLO, enlace: FIGURA_3, f: [t4(6)] },
@@ -638,7 +646,7 @@ export const MODOS: Dato[][] = [
       r: "Alcohol",
       v: "Anticipar hipoglucemia diferida hasta 12–24 h tras la ingesta",
       n: N_ALCOHOL,
-      f: [ALCOHOL],
+      f: [ALCOHOL, ...ALCOHOL_9],
     },
     AGUA_CATETER,
     { r: R_FALLO, v: FALLO, enlace: FIGURA_3, f: [t4(6)] },
@@ -692,7 +700,7 @@ export const MODOS: Dato[][] = [
       r: "Alcohol",
       v: "Anticipar hipoglucemia diferida hasta 12–24 h tras la ingesta; valorar Ease-off o un objetivo glucémico más conservador la noche del consumo y la mañana siguiente",
       n: N_ALCOHOL,
-      f: [ALCOHOL],
+      f: [ALCOHOL, ...ALCOHOL_9],
     },
     AGUA_CATETER,
     { r: R_FALLO, v: FALLO, enlace: FIGURA_3, f: [t4(6)] },
@@ -739,7 +747,7 @@ export const MODOS: Dato[][] = [
       r: "Alcohol",
       v: "Anticipar hipoglucemia diferida hasta 12–24 h tras la ingesta; valorar un objetivo glucémico más conservador la noche del consumo y la mañana siguiente",
       n: N_ALCOHOL,
-      f: [ALCOHOL],
+      f: [ALCOHOL, ...ALCOHOL_9],
     },
     {
       r: "Agua",

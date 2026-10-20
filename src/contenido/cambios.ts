@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-21",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — decimotercera ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — decimocuarta ronda de auditorías de uso`,
+    detalle: [
+      "Descarga: «Imprimir este paso» imprime el paso (salía la hoja en blanco), en una hoja A4.",
+      "En papel, desde el modo nocturno, las tintas de día (los rótulos del plan salían en rosa pálido).",
+      "Alcohol: la fuente dice que la guía operativa está en el párrafo de adolescencia y transición, y la fila añade lo que el apartado 9 manda revisar en cualquier paciente (hipoglucemia nocturna, hiperglucemia matutina, TBR elevado).",
+      "Gestación con Control-IQ: una sola fila de autorización y evidencia para Control-IQ / Control-IQ+.",
+      "Calculadora: sin la barra flotante cuando el enlace al resultado está a la vista; si el destino pasa a ser el sistema actual, el actual se vacía. Buscador: «cuándo cambiar el set» se contesta con la sospecha de fallo. Resumen de Sistemas: a 1366 × 768, los cuatro objetivos enteros. «β-hidroxibutirato» sin partir; los signos «>» vuelven a poder abrir línea (dejaban medio renglón vacío).",
+    ],
+  },
+  {
+    fecha: "2026-10-21",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.90.0 — decimotercera ronda de auditorías de uso",
     detalle: [
       "Líneas de fuente: tocar o pulsar una referencia abre esa referencia también cuando la línea se parte en varias (antes, el área de la de abajo se quedaba los toques).",
       "Comparación: quitar uno y marcar otro vuelve a la misma pestaña de la comparación; la ficha, con el selector a la vista entre medias.",

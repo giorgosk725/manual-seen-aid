@@ -57,7 +57,18 @@ export const alternarNoche = () => {
 export function useNocturno(): [boolean, () => void] {
   const noche = useSyncExternalStore(suscribirNoche, nocheActual, () => false);
   useEffect(() => {
-    document.documentElement.classList.toggle("night", noche);
+    const html = document.documentElement;
+    html.classList.toggle("night", noche);
+    // 0.90.1 (14.ª ronda, R5): el papel, siempre en claro (las tintas nocturnas forzadas con
+    // !important salían en rosa o azul pálidos sobre blanco).
+    const antes = () => html.classList.remove("night");
+    const despues = () => html.classList.toggle("night", noche);
+    window.addEventListener("beforeprint", antes);
+    window.addEventListener("afterprint", despues);
+    return () => {
+      window.removeEventListener("beforeprint", antes);
+      window.removeEventListener("afterprint", despues);
+    };
   }, [noche]);
   return [noche, alternarNoche];
 }

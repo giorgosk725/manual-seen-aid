@@ -12,7 +12,7 @@ export const RE_INTERVALO = new RegExp(
 /* Piezas que <SinCortes> pinta sin partir: los intervalos y las palabras que no deben cortarse por
    su guion («β-OHB»; 0.79.1). El guion no se cambia por U+2011 (Open Sans no lo trae y saldría con
    otra letra) ni se le añade un carácter invisible (cambiaría el texto que se copia o se busca). */
-const PALABRAS_CON_GUION = "β-OHB";
+const PALABRAS_CON_GUION = "β-OHB|β-hidroxibutirato";
 export const RE_PIEZA = new RegExp(
   `(${PALABRAS_CON_GUION}|${RE_INTERVALO.source.slice(1, -1)})`,
   "u",
@@ -25,8 +25,6 @@ export function sinCortes(texto: string): string {
     texto
       .replace(RE_UNIDAD, `$1${NBSP}$2`)
       .replace(/([<>≤≥]) (\d)/g, `$1${NBSP}$2`)
-      // 0.89.1 (13.ª ronda, senior): el signo tampoco abre línea («predice ⏎ > 180 mg/dl»).
-      .replace(/ ([<>≤≥])(?=\u00a0\d)/g, `${NBSP}$1`)
       .replace(/EE\. UU\./g, `EE.${NBSP}UU.`)
       .replace(/tipo (\d)/gi, (m) => m.replace(" ", NBSP))
       .replace(/ratios? I\/HC/g, (m) => m.replace(" ", NBSP))

@@ -175,6 +175,10 @@ export function Buscar({ inicial }: { inicial?: string }) {
     const pedida = atajos.find((a) => a.entrada.id.startsWith("recurso/frecuente/"));
     if (pedida) return motor.preguntaFrecuente(pedida.entrada.titulo);
     if (intencionClara) return null;
+    // 0.90.1 (14.ª ronda, guardia): «cuándo cambiar el set» se contesta con la sospecha de fallo
+    // (≥ 250 mg/dl persistente…; «ante la duda, cambia el set»).
+    if (/cambi\w* (el |de )?(set|cateter|canula)\b/.test(normalizar(qEf)))
+      return motor.preguntaFrecuente("cuándo sospechar un fallo del set");
     const f = motor.preguntaFrecuente(qEf);
     // 0.84.1 (octava ronda, guardia): una pregunta sobre el ejercicio solo si se habla de él
     // («glucosa alta» daba «¿Se puede hacer ejercicio con la glucosa alta?»).
