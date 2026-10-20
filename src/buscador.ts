@@ -556,7 +556,9 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     if (
       dos.length >= 2 &&
       !/frente a|comparad|respecto|\bvs\b|\bentre\b|diferenc/.test(n) &&
-      (/\b(cambi|pasar|pasa a|paso de|pase de|migr|sustitu|transici)/.test(n) ||
+      (/\b(cambi|pasar|pasa a|paso de|pase de|migr|sustitu|transici|desde|viniendo de|viene de|procede)/.test(
+        n,
+      ) ||
         /\bde \S.* a \S/.test(crudo) ||
         entreSistemas(crudo))
     )
@@ -630,18 +632,27 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
       );
   }
   // 0.82.1 (sexta ronda, senior): el alcohol con un sistema, su fila de Modos.
-  if (sis >= 0 && /alcohol/.test(n))
+  // 0.83.1 (séptima ronda, adjunto): «ease off alcohol» es CamAPS FX (Ease-off y Boost son suyos).
+  const sisAlcohol = sis >= 0 ? sis : /ease-?off|ease off|boost/.test(n) ? 2 : -1;
+  if (sisAlcohol >= 0 && /alcohol/.test(n))
     out.push(
       atajo(
-        `recurso/alcohol/${SIS_IDS[sis]}`,
-        `Alcohol · Modos y funciones de ${CATALOGO_SISTEMAS[sis].name}`,
-        href("sistemas", CATALOGO_SISTEMAS[sis].id, "modos:alcohol"),
+        `recurso/alcohol/${SIS_IDS[sisAlcohol]}`,
+        `Alcohol · Modos y funciones de ${CATALOGO_SISTEMAS[sisAlcohol].name}`,
+        href("sistemas", CATALOGO_SISTEMAS[sisAlcohol].id, "modos:alcohol"),
         TABLAS.T4.paginas[0],
       ),
     );
   // 0.81.1 (quinta ronda, R3): «qué actúa en automático (en los cuatro)»: los parámetros
   // comparados, agrupados por si actúan en el modo automático.
-  if (/actua(n)? en (el )?(modo )?automatico|que actua/.test(n) && !/ceton/.test(n))
+  // 0.83.1 (séptima ronda, R3): «qué parámetros usa el algoritmo», «parámetros que influyen en
+  // el modo automático».
+  if (
+    /actua(n)? en (el )?(modo )?automatico|que actua|parametros (que )?(usa|influyen|intervienen|utiliza)|influyen en el (modo )?automatico/.test(
+      n,
+    ) &&
+    !/ceton/.test(n)
+  )
     out.push(
       atajo(
         "recurso/actua-automatico",
@@ -710,7 +721,9 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   const varios = sistemasDeConsulta(consulta);
   if (
     varios.length >= 2 &&
-    /diferenci|compar|frente a|versus|\bvs\b|distin|entre/.test(normalizar(consulta))
+    (/diferenci|compar|frente a|versus|\bvs\b|distin|entre/.test(normalizar(consulta)) ||
+      // 0.83.1 (séptima ronda, R5): «embarazo camaps o control-iq».
+      /\S \s*o \s*\S/.test(consulta.toLowerCase()))
   ) {
     const nombres = varios.map((i) => TABLAS.T1.columnas[i]);
     out.push({
@@ -729,6 +742,8 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   }
   if (
     sis >= 0 &&
+    // 0.83.1 (séptima ronda, R5): con dos sistemas es un cambio, no el inicio de uno.
+    sistemasDeConsulta(consulta).length < 2 &&
     /\b(inici|empez|comenz|arranc|poner en marcha|pasar a (la |una )?bomba|desde mdi|multiples dosis|desde (las )?plumas|pasar de (las )?(plumas|bolis)|dejar (las |los )?(plumas|bolis)|cambiar de (las |los )?(mdi|plumas|bolis)|de (las |los )?(plumas|bolis) a|pasar de mdi|empezar (con )?(una |la )?bomba|viniendo de|transici|pauta bolo|bolo-basal)/.test(
       normalizar(consulta),
     )
@@ -925,17 +940,37 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     .sort((a, b) => b.f - a.f || b.r.puntos - a.r.puntos)
     .map((x) => x.r);
   const cambio = out.some((r) => r.entrada.id.startsWith("recurso/cambio/"));
+  // 0.83.1 (séptima ronda, guardia): la hiperglucemia persistente lleva siempre a la Figura 3 (como
+  // en la lista de Situaciones), va delante de la puntual y no lleva pasos de la descarga.
+  const F3 = href("consultar", "figura-3");
+  const aF3 = (r: Resultado): Resultado =>
+    r.entrada.ruta.startsWith(href("consultar", "situacion", "hiperglucemia-persistente"))
+      ? {
+          ...r,
+          entrada: {
+            ...r.entrada,
+            id: "recurso/sospecha-fallo",
+            titulo: "Sospecha de fallo de infusión: hiperglucemia y cetonemia (Figura 3)",
+            ruta: F3,
+          },
+        }
+      : r;
+  const todos = [...out, ...nombrados].map(aF3);
+  const urgencia = todos.some((r) => r.entrada.ruta === F3);
+  const orden = (r: Resultado) =>
+    r.entrada.ruta === F3 ? 0 : /hiperglucemia-puntual/.test(r.entrada.ruta) ? 2 : 1;
+  if (urgencia) todos.sort((a, b) => orden(a) - orden(b));
   // Un solo «Abrir» por destino y por título (0.77.1, auditoría R5: «Resonancia magnética»
   // salía dos veces, con y sin el sistema en la ruta).
   const vistos = new Set<string>();
   const nuevo = (k: string) => !vistos.has(k) && !!vistos.add(k);
-  return [...out, ...nombrados]
+  return todos
     .filter((r) => {
       const a = nuevo(r.entrada.ruta);
       const b = nuevo(`t:${normalizar(r.entrada.titulo)}`);
       return a && b;
     })
-    .filter((r) => !(cambio && r.entrada.ruta.startsWith("#/consultar/descarga")))
+    .filter((r) => !((cambio || urgencia) && r.entrada.ruta.startsWith("#/consultar/descarga")))
     .slice(0, 2);
 }
 
@@ -955,6 +990,13 @@ function entreSistemas(crudo: string): boolean {
 }
 /* En «de X a Y» o «pasar de X a Y», el de destino es el que va después de « a ». */
 function destinoDe(crudo: string, dos: number[]): number {
+  // 0.83.1 (séptima ronda, R5): «iniciar Control-IQ viniendo de 780G», «Control-IQ desde 780G»:
+  // el que va tras «desde» o «viniendo de» es el de origen.
+  const origen = /(?:desde|viniendo de|viene de|procede de)(?: la| el| una| un)? (\S+)/.exec(
+    crudo.replace(/control[\s-]*iq\+?/g, "control-iq"),
+  )?.[1];
+  const o = origen ? dos.find((i) => ALIAS_SISTEMA[i].test(origen)) : undefined;
+  if (o !== undefined) return dos.find((i) => i !== o) ?? dos[0];
   const tras = crudo
     .split(/ (?:a|→|->|por) /)
     .slice(1)

@@ -154,7 +154,8 @@ export function GruposDatos({ c, grupos }: { c: number; grupos: GrupoFicha[] }) 
 
 const EN_AUTOMATICO: Record<EnAutomatico, string> = {
   si: "Actúa en automático",
-  no: "Bolos o modo manual",
+  // 0.83.1 (séptima ronda, senior): con la palabra de la nota de la Tabla 1 («sobre todo»).
+  no: "Sobre todo en bolos o manual",
   inicio: "Solo al inicio y en manual",
   fijo: "No configurable",
   manual: "Solo en manual o de respaldo",
@@ -173,7 +174,7 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
         style={{ ["--sis" as string]: h.strong }}
       >
         <dl className="filas-datos divide-y divide-[var(--linea-suave)]">
-          {datos.map((d) => {
+          {datos.map((d, k) => {
             const ruta = literalDe(d.f[0], c);
             return (
               <div
@@ -242,13 +243,21 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                       {d.enlace.texto}
                     </a>
                   )}
+                  {/* 0.83.1 (séptima ronda, R3 y visual): en papel, la fuente dentro de la última fila
+                      (que no se parte): fuera, Chromium la dejaba sola al principio de una cara. */}
+                  {k === datos.length - 1 && (
+                    <FuentePie
+                      className="mt-2 hidden print:block"
+                      fuentes={fuentesDeDatos(datos)}
+                    />
+                  )}
                 </dd>
               </div>
             );
           })}
         </dl>
       </section>
-      <FuentePie fuentes={fuentesDeDatos(datos)} />
+      <FuentePie className="mt-2 print:hidden" fuentes={fuentesDeDatos(datos)} />
     </div>
   );
 }

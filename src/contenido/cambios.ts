@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — sexta ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — séptima ronda de auditorías de uso`,
+    detalle: [
+      "Buscador: «viniendo de» y «desde» marcan el sistema de origen; con dos sistemas no se abre la iniciación de uno; «X o Y» compara los dos; «ease off alcohol» lleva al alcohol en CamAPS FX; «qué parámetros usa el algoritmo», a los parámetros comparados; la hiperglucemia persistente, siempre y primero a la Figura 3; el tema de la búsqueda anterior se olvida al salir de Buscar; al escribir, la tarjeta marca el sistema de la respuesta.",
+      "Fuentes con la entradilla del párrafo entre paréntesis; «Sobre todo en bolos o manual», con la palabra de la nota de la Tabla 1.",
+      "Sistemas: la misma cabecera en las cuatro pestañas; calculadora con un solo estilo de selector; «Tener siempre» y «Faltan».",
+      "Situaciones: «Hipoglucemia nocturna» en su grupo y con el sistema elegido.",
+      "En papel, la fuente de cada bloque va con su última fila.",
+    ],
+  },
+  {
+    fecha: "2026-10-20",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.83.0 — sexta ronda de auditorías de uso",
     detalle: [
       "Buscador: «ciq+» sin aviso de búsqueda encadenada y con la pregunta de las diferencias ya contestada; la sospecha de fallo, un solo atajo a la Figura 3; hiperglucemia tardía → comida grasa; hipoglucemia nocturna con un sistema → su sueño; agua y alcohol con un sistema → su fila de Modos, marcada; «X frente a Y» ya no es un cambio de sistema; gestación con dos sistemas, sin ninguno marcado.",
       "Preguntas frecuentes: las frases seguidas de un párrafo y los incisos de una lista, en una sola tarjeta con una sola fuente; la nota de la Figura 3 y las de las tablas, una vez.",

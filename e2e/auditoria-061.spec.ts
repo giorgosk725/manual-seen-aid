@@ -27,7 +27,7 @@ test.describe("Calculadora (I61-01/02/03)", () => {
     await page.getByRole("button", { name: /Bomba de insulina/ }).click();
     await page.getByRole("button", { name: "Sí: se traslada tal cual" }).click();
     await expect(page.getByLabel(/DTD actual/)).toBeVisible();
-    await expect(paso(page, 4).getByText(/Falta: DTD actual, peso/)).toBeVisible();
+    await expect(paso(page, 4).getByText(/Faltan: DTD actual, peso/)).toBeVisible();
     await page.getByLabel(/DTD actual/).fill("36");
     await page.getByLabel(/^Peso/).fill("8");
     // 0.72.0: un grupo rotulado (no una alerta a cada tecla); el lector lo oye en el resumen.

@@ -118,6 +118,16 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
       "enfermedad-intercurrente",
       "glucocorticoides",
     ],
+    // 0.83.1 (séptima ronda, R3): la hipoglucemia nocturna, en su grupo y con el sistema elegido
+    // (antes, en «Resolución de incidencias» y al párrafo del capítulo con los cuatro).
+    extras: [
+      {
+        t: "Hipoglucemia nocturna",
+        fuente: "Tabla 4 · Apartado 9",
+        ruta: href("consultar", "situacion", "sueno"),
+        alias: ["noche", "nocturna", "dormir", "madrugada", "hipoglucemia"],
+      },
+    ],
   },
   {
     t: "Ejercicio y comidas",
@@ -145,12 +155,6 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
     t: "Resolución de incidencias",
     ids: [],
     extras: [
-      {
-        t: "Hipoglucemia nocturna",
-        fuente: "Apartado 9",
-        ruta: href("capitulo", "09-descarga", "b7"),
-        alias: ["noche", "nocturna", "dormir", "madrugada"],
-      },
       {
         t: "Bolo omitido o retrasado",
         fuente: "Apartado 9",
@@ -471,7 +475,9 @@ function ListaSituaciones({
         ? "Figura 3"
         : ruta.startsWith("#/visual")
           ? "Diagrama"
-          : undefined;
+          : ruta.startsWith("#/consultar/situacion")
+            ? "Situación"
+            : undefined;
   const conFilas = visibles.filter((g) => g.sits.length || g.extras.length);
   return (
     <div
@@ -552,7 +558,14 @@ function ListaSituaciones({
           })}
           {extras.map((x) => (
             <li key={x.ruta}>
-              <a href={x.ruta} className={fila}>
+              <a
+                href={
+                  sistema && x.ruta.startsWith(href("consultar", "situacion"))
+                    ? `${x.ruta}:${sistema}`
+                    : x.ruta
+                }
+                className={fila}
+              >
                 <Fila texto={x.t} destino={destinoDe(x.ruta)} />
               </a>
             </li>

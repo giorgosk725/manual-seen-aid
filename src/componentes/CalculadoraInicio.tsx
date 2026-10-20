@@ -257,7 +257,7 @@ function Estado({ ev, sis }: { ev: Evaluacion; sis?: number }) {
           style={{ borderColor: "#cbd5e1" }}
         >
           <Calculator size={18} className="mx-auto mb-1 text-slate-400" aria-hidden="true" />
-          Falta: {ev.faltan.map(enMinuscula).join(", ")}.
+          {ev.faltan.length > 1 ? "Faltan" : "Falta"}: {ev.faltan.map(enMinuscula).join(", ")}.
         </p>
       )}
       {ev.indicacion.variante && (
@@ -615,12 +615,19 @@ export function CalculadoraInicio({
               <div className="space-y-4">
                 {d.origen === "aid" && (
                   <>
-                    <Opciones
-                      etiqueta="Sistema actual"
-                      opciones={CORTOS.map((t, v) => ({ v, t }))}
-                      valor={d.sistemaPrevio}
-                      onChange={(v) => set({ sistemaPrevio: v })}
-                    />
+                    {/* 0.83.1 (séptima ronda, adjunto y R5): el mismo selector que el del paso 2. */}
+                    <div>
+                      <div className="mb-1 text-sm font-semibold text-slate-800">
+                        Sistema actual
+                      </div>
+                      <CasillasSistema
+                        unico
+                        etiqueta="Sistema actual"
+                        seleccion={d.sistemaPrevio !== null ? [d.sistemaPrevio] : []}
+                        onToggle={(v) => set({ sistemaPrevio: v })}
+                        nombres={CORTOS}
+                      />
+                    </div>
                     {d.sistemaPrevio !== null && sis !== undefined && d.sistemaPrevio !== sis ? (
                       <CambioDeSistema actual={d.sistemaPrevio} destino={sis} />
                     ) : (
@@ -916,7 +923,8 @@ export function CalculadoraInicio({
           <div className="space-y-2">
             <SetsDeInfusion sis={sis} />
             <p className="text-sm text-slate-900">
-              <span className="font-semibold">Recambios que hay que tener siempre: </span>
+              {/* 0.83.1 (séptima ronda, R5): sin «Recambios… Recambios». */}
+              <span className="font-semibold">Tener siempre: </span>
               {RECAMBIOS.plan}
             </p>
           </div>

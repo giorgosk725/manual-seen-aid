@@ -777,7 +777,10 @@ export function FichaSistema({
                       <span className="font-semibold">{p.titulo}</span>
                       {p.sub && <span className="font-semibold"> · {p.sub}</span>}
                       {p.n && <span className="text-slate-600"> · párrafo {p.n}</span>}
-                      {p.b.lead && <span className="text-slate-600"> · {p.b.lead}</span>}
+                      {p.b.lead && (
+                        // 0.83.1 (séptima ronda, senior): sin el punto final de la entradilla.
+                        <span className="text-slate-600"> · {p.b.lead.replace(/[.:]$/, "")}</span>
+                      )}
                     </span>
                     <span className="shrink-0 text-xs text-slate-500">
                       {paginasDe(p.b.p, p.b.p2)}
@@ -792,7 +795,7 @@ export function FichaSistema({
 
       {CON_AMPLIACION && <Ampliacion s={sistemaPorId(s.id)!} />}
       {/* En papel, de dónde sale la hoja (0.78.1, auditoría R3). */}
-      <p className="mt-6 hidden border-t pt-2 text-xs text-slate-600 print:block">
+      <p className="colofon mt-6 hidden border-t pt-2 text-xs text-slate-600 print:block">
         Manual de Endocrinología y Nutrición (SEEN) · Capítulo 89 · Complemento interactivo{" "}
         {VERSION_APP} · impreso el {new Date().toLocaleDateString("es-ES")}
       </p>
@@ -1023,7 +1026,17 @@ function BarraSistemas({
           onToggle={(c) => alternar(IDS_SISTEMA[c])}
           extra={
             entrada ? (
-              marcados.length > 0 && (
+              marcados.length === 0 ? (
+                // 0.83.1 (séptima ronda, adjunto): en el Resumen de los cuatro, «Los cuatro» también,
+                // marcado (es lo que se ve), como en las demás pestañas.
+                <button
+                  type="button"
+                  aria-pressed
+                  className="chip tap-44 shrink-0 whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                >
+                  Los cuatro
+                </button>
+              ) : (
                 <a
                   href={rutaCon(marcados)}
                   onClick={() => window.scrollTo({ top: 0 })}
@@ -1277,12 +1290,12 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
         titulo="Sistemas AID"
         hex={hex}
         level={1}
+        // 0.83.1 (séptima ronda, adjunto): la misma cabecera en las cuatro pestañas (en el Resumen
+        // faltaba «Imprimir» y las pestañas saltaban 16 px).
         accion={
-          seccion && (
-            <BotonImprimir objetivo={ref} compacto>
-              Imprimir
-            </BotonImprimir>
-          )
+          <BotonImprimir objetivo={ref} compacto>
+            Imprimir
+          </BotonImprimir>
         }
       />
       <BarraSistemas ids={ids} seccion={seccion} />
@@ -1312,7 +1325,7 @@ function Comparacion({ ids, seccion: pedida }: { ids: string[]; seccion?: string
                     PARAMETROS[c].filter((d) => d.auto === a).map((d) => d.r);
                   const grupos = [
                     { r: "Actúan en automático", xs: de("si"), fuerte: true },
-                    { r: "Bolos o modo manual", xs: de("no"), fuerte: false },
+                    { r: "Sobre todo en bolos o modo manual", xs: de("no"), fuerte: false },
                     { r: "Solo al inicio y en manual", xs: de("inicio"), fuerte: false },
                     { r: "Solo en manual o de respaldo", xs: de("manual"), fuerte: false },
                     { r: "No configurable", xs: de("fijo"), fuerte: false },

@@ -1759,9 +1759,15 @@ html.night *:focus-visible {
   .imprimible .filas-datos > div:last-child {
     break-after: avoid;
   }
-  /* 0.82.1 (sexta ronda, R3 y visual): la fuente no abre cara sola. */
-  .imprimible .fuente-pie {
+  /* 0.82.1 (sexta ronda, R3 y visual): la fuente no abre cara sola; 0.83.1: ni se parte, y sus
+     enlaces sin el alto táctil (en papel no se tocan). */
+  .imprimible .fuente-pie,
+  .imprimible .colofon {
     break-before: avoid;
+    break-inside: avoid;
+  }
+  .imprimible .fuente-pie a {
+    padding: 0;
   }
 }
 

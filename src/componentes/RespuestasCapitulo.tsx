@@ -405,7 +405,7 @@ function Tarjeta({
           href={ruta}
           onClick={onIr}
           aria-label={`${
-            r.tipo === "tabla" && casilla
+            r.tipo === "tabla" && casilla && !ruta.includes("/situacion/")
               ? "Ver en la ficha del sistema"
               : r.tipo === "tabla" && ruta.includes("/situacion/")
                 ? "Ver esta situación"
@@ -418,10 +418,12 @@ function Tarjeta({
           className="inline-flex min-h-11 items-center gap-1 text-[13px] font-semibold text-slate-600 hover:underline sm:min-h-8"
         >
           {r.fuente.replace(/^(Tabla \d+)\..*$/s, "$1")}, {paginas(r)}
-          {r.tipo === "tabla" && casilla ? " · ficha del sistema" : ""}
-          {r.tipo === "tabla" && !casilla && ruta.includes("/situacion/")
-            ? " · situación"
-            : ""}{" "}
+          {/* 0.83.1 (séptima ronda, R3): el rótulo dice adónde lleva (una casilla de la Tabla 4
+              lleva a su situación, no a la ficha). */}
+          {r.tipo === "tabla" && casilla && !ruta.includes("/situacion/")
+            ? " · ficha del sistema"
+            : ""}
+          {r.tipo === "tabla" && ruta.includes("/situacion/") ? " · situación" : ""}{" "}
           <ArrowRight size={14} aria-hidden="true" />
         </a>
         {principal && r.tipo === "texto" && contexto && (
@@ -544,7 +546,7 @@ function BloqueFrecuente({
           if (nota) notasVistas.add(nota);
           return (
             <Tarjeta
-              key={r.id}
+              key={`${r.id}|${r.sistema ?? ""}`}
               r={r}
               q={q}
               onIr={onIr}
@@ -668,7 +670,7 @@ export function RespuestasCapitulo({
         </summary>
         <div className="mt-2 space-y-2">
           {lista.map((o) => (
-            <Tarjeta key={o.id} r={o} q={q} onIr={onIr} />
+            <Tarjeta key={`${o.id}|${o.sistema ?? ""}`} r={o} q={q} onIr={onIr} />
           ))}
         </div>
       </details>
@@ -726,6 +728,9 @@ export function RespuestasCapitulo({
           <Quote size={14} aria-hidden="true" /> {titulo}
         </H>
         <Tarjeta
+          // 0.83.1 (séptima ronda, R3): otra respuesta u otro sistema, otra tarjeta (el sistema
+          // marcado se decide al montarla; al escribir, la tarjeta se reutilizaba sin marcarlo).
+          key={`${r.id}|${r.sistema ?? ""}`}
           r={r}
           q={q}
           principal

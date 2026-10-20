@@ -437,3 +437,30 @@ describe("Sexta ronda de auditorías (0.82.1): atajos del buscador", () => {
     expect(rec("objetivo temporal 780G")).toContain("#/sistemas/mm780/modos");
   });
 });
+
+describe("Séptima ronda de auditorías (0.83.1): atajos del buscador", () => {
+  const rec = (q: string) =>
+    recursosPedidos(q, buscarConTotales(q, 12).resultados).map((r) => r.entrada.ruta);
+  it("«viniendo de» / «desde»: el destino es el otro sistema y no la iniciación del de origen", () => {
+    const r = rec("iniciar control-iq viniendo de 780g").join(" ");
+    expect(r).toMatch(/calculadora:control-iq:desde-minimed-780g/);
+    expect(r).not.toMatch(/inicio\/preparacion:minimed-780g/);
+    expect(rec("control-iq desde 780g").join(" ")).toMatch(
+      /calculadora:control-iq:desde-minimed-780g/,
+    );
+  });
+  it("«ease off alcohol» es CamAPS FX", () => {
+    expect(rec("ease off alcohol")).toContain("#/sistemas/camaps/modos:alcohol");
+  });
+  it("«qué parámetros usa el algoritmo»: los parámetros comparados", () => {
+    expect(rec("qué parámetros usa el algoritmo")).toContain("#/sistemas/todos/parametros");
+  });
+  it("la hiperglucemia persistente, siempre a la Figura 3 y la primera", () => {
+    expect(rec("hiperglucemia persistente")[0]).toBe("#/consultar/figura-3");
+  });
+  it("«X o Y» con gestación: la comparación de los dos", () => {
+    expect(rec("embarazo camaps o control-iq").join(" ")).toMatch(
+      /sistemas\/ciq\+camaps\/esencial/,
+    );
+  });
+});

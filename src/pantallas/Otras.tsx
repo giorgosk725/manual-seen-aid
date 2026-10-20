@@ -116,6 +116,9 @@ export function Buscar({ inicial }: { inicial?: string }) {
   const { motor, estado, reintentar } = useBuscador(true);
   // «y en Omnipod 5» hereda el tema de la búsqueda anterior (seguimiento).
   const qEf = (motor && motor.consultaEfectiva(q)) || q;
+  // 0.83.1 (séptima ronda, guardia): el seguimiento («y en Omnipod 5») vale dentro de una tanda de
+  // búsquedas; al salir de Buscar se olvida el tema (antes duraba toda la sesión).
+  useEffect(() => () => motor?.olvidarTema(), [motor]);
   // Con conexión, los pasajes parecidos por el sentido se funden con los de las palabras.
   const parecidos = useParecidos(qEf);
   const busqueda: Busqueda = useMemo(

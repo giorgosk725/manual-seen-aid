@@ -61,7 +61,7 @@ test.describe("Buscar con más mano (0.28.0)", () => {
       "true",
     );
     await expect(
-      page.getByRole("link", { name: "Ver en la ficha del sistema" }).first(),
+      page.getByRole("link", { name: /Ver en la ficha del sistema|Ver esta situación/ }).first(),
     ).toHaveAttribute("href", /omnipod-5|op5/);
   });
 

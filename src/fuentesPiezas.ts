@@ -62,6 +62,7 @@ export function fuentesDePiezas(piezas: Pieza[]): { texto: string; ruta: string 
   for (const f of unicas) veces.set(f.texto, (veces.get(f.texto) ?? 0) + 1);
   return unicas.map((f) => {
     const e = (veces.get(f.texto) ?? 0) > 1 ? entradillaDe(f.ruta) : undefined;
-    return e ? { ...f, texto: `${f.texto} · ${e}` } : f;
+    // 0.83.1 (séptima ronda, senior y R3): entre paréntesis (con «·» parecía otra fuente).
+    return e ? { ...f, texto: `${f.texto} (${e})` } : f;
   });
 }
