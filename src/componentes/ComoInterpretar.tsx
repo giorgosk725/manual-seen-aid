@@ -40,7 +40,7 @@ export function ComoInterpretar({
       className="no-imprimir mt-2 rounded-lg border px-3 py-1"
       style={{ borderColor: "#e3c7d3" }}
     >
-      <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-800 sm:min-h-8">
+      <summary className="con-chevron min-h-11 cursor-pointer text-sm font-semibold text-slate-800 sm:min-h-8">
         {titulo}
       </summary>
       <div className="space-y-2 pb-2 text-sm text-slate-800">

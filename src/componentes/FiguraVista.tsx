@@ -88,7 +88,7 @@ export function FiguraVista({ figura }: { figura: Figura }) {
           <img src={figura.imagen.src} alt={figura.imagen.alt} className="block w-full" />
         </AbrirEnVisor>
         <details className="mt-3 text-sm">
-          <summary className="min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-8">
+          <summary className="con-chevron min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-8">
             Texto de la infografía (transcripción)
           </summary>
           <div className="mt-2 grid gap-3 sm:grid-cols-2">

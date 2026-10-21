@@ -16,7 +16,7 @@ import { VeaseTambien } from "./VeaseTambien";
 import { CON_INTERPRETACIONES } from "../edicion";
 import { ESCALA_CETONEMIA } from "../contenido/diagramas";
 import { href } from "../rutas";
-import { Texto } from "../texto";
+import { SinPartir, Texto } from "../texto";
 import { ponerConsulta } from "../consultaBuscar";
 import { SISTEMA_HEX } from "../tokens";
 import { CORTO_SISTEMA } from "../ampliacion/ids";
@@ -30,7 +30,10 @@ function Marcado({ texto, q }: { texto: string; q: string }) {
             {t.t}
           </mark>
         ) : (
-          <span key={i}>{t.t}</span>
+          // 0.96.0 (16.ª ronda, visual): los intervalos sin partir («DTD 10–100 UI/día»).
+          <span key={i}>
+            <SinPartir t={t.t} />
+          </span>
         ),
       )}
     </>
@@ -98,7 +101,7 @@ function LineasSistema({ texto, q, sistema }: { texto: string; q: string; sistem
         <Marcado texto={sinCortes(propia.linea)} q={q} />
       </span>
       <details className="mt-1">
-        <summary className="min-h-11 cursor-pointer text-xs font-semibold text-slate-600 sm:min-h-6">
+        <summary className="con-chevron min-h-11 cursor-pointer text-xs font-semibold text-slate-600 sm:min-h-6">
           Ver los cuatro
         </summary>
         <span className="mt-1 block whitespace-pre-line">
@@ -361,7 +364,7 @@ function Tarjeta({
             <Marcado texto={sinCortes(items[clave])} q={q} />
           </p>
           <details className="mt-1">
-            <summary className="min-h-11 cursor-pointer text-xs font-semibold text-slate-600 sm:min-h-6">
+            <summary className="con-chevron min-h-11 cursor-pointer text-xs font-semibold text-slate-600 sm:min-h-6">
               Ver la lista entera ({r.items!.length} puntos)
             </summary>
             <ul className="mt-1 list-disc space-y-0.5 pl-5 text-sm text-slate-900">
@@ -617,7 +620,7 @@ function BloqueFrecuente({
             <div className="space-y-3">{juntas.map(tarjeta)}</div>
             {ampliacion.length > 0 && (
               <details className="mt-2" open>
-                <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
+                <summary className="con-chevron min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
                   Todos los sistemas
                 </summary>
                 <div className="mt-2 space-y-3">{ampliacion.map(tarjeta)}</div>
@@ -688,8 +691,10 @@ export function RespuestasCapitulo({
     textos.add(t);
     return true;
   });
+  // 0.96.0 (16.ª ronda, R1 y visual): sin la pregunta frecuente que ya se enseña arriba.
+  const relacionadasOtras = (relacionadas ?? []).filter((f) => f.id !== frecuente?.id);
   const Relacionadas =
-    !compacta && relacionadas && relacionadas.length > 0 ? (
+    !compacta && relacionadasOtras.length > 0 ? (
       // 0.92.1 (segunda revisión de tarjetas): la misma lista que «Véase también» (antes, otra
       // forma: rótulo y enlaces sueltos).
       <VeaseTambien
@@ -697,14 +702,14 @@ export function RespuestasCapitulo({
         enCaja
         nivel={3}
         onIr={onIr}
-        filas={relacionadas.map((f) => ({ href: href("preguntas", f.id), t: f.pregunta }))}
+        filas={relacionadasOtras.map((f) => ({ href: href("preguntas", f.id), t: f.pregunta }))}
       />
     ) : null;
   // 0.74.2 (nada útil plegado): hasta tres pasajes más, abiertos; si son más, plegados.
   const masPasajes = (lista: Respuesta[], enCaja = false) =>
     lista.length > 0 && (
       <details className="mt-3" open={lista.length <= 3}>
-        <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
+        <summary className="con-chevron min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
           Más pasajes del capítulo ({lista.length})
         </summary>
         {/* 0.92.1 (segunda revisión de tarjetas): al ancho de su texto (75ch), sin media tarjeta vacía. */}

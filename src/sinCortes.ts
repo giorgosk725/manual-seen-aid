@@ -12,7 +12,9 @@ export const RE_INTERVALO = new RegExp(
 /* Piezas que <SinCortes> pinta sin partir: los intervalos y las palabras que no deben cortarse por
    su guion («β-OHB»; 0.79.1). El guion no se cambia por U+2011 (Open Sans no lo trae y saldría con
    otra letra) ni se le añade un carácter invisible (cambiaría el texto que se copia o se busca). */
-const PALABRAS_CON_GUION = "β-OHB|β-hidroxibutirato";
+/* 0.96.0 (16.ª ronda, visual): también «U-100» («glargina U- ⏎ 100» en Interrupción). Se pinta
+   sin partir (nowrap), no con el guion duro U+2011, por lo mismo que arriba. */
+const PALABRAS_CON_GUION = "β-OHB|β-hidroxibutirato|U-100";
 export const RE_PIEZA = new RegExp(
   `(${PALABRAS_CON_GUION}|${RE_INTERVALO.source.slice(1, -1)})`,
   "u",

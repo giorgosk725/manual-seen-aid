@@ -1243,14 +1243,16 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
               </BotonImprimir>
             </span>
           </div>
-          <dl className="mt-3 divide-y md:grid md:grid-cols-3 md:gap-4 md:divide-y-0 print:grid print:grid-cols-3 print:gap-4 print:divide-y-0">
+          <dl className="mt-3 md:grid md:grid-cols-3 md:gap-4 print:grid print:grid-cols-3 print:gap-4">
             {t.columnas.slice(1).map((col, j) => {
               return (
                 // 0.94.0 (rediseño, fase 2): desde md, cada columna abre con su línea capilar, como
-                // los datos de las fichas.
+                // los datos de las fichas. 0.96.0 (16.ª ronda, visual y R3): las tres (el
+                // `md:divide-y-0` de la lista quitaba la de la segunda y la tercera); en el móvil,
+                // una línea entre ellas.
                 <div
                   key={col}
-                  className="py-2.5 md:border-t md:border-[var(--linea-suave)] md:pb-0 md:pt-2.5"
+                  className="border-t border-[var(--linea-suave)] py-2.5 first:border-t-0 md:pb-0 md:pt-2.5 md:first:border-t print:first:border-t"
                 >
                   <dt className="rotulo mb-1">{col}</dt>
                   <dd className="text-[15px] text-slate-800">
@@ -1282,7 +1284,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           </div>
           {patrones.length > 0 && (
             <details className="mt-4" open>
-              <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8 print:list-none">
+              <summary className="con-chevron min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
                 Patrones relacionados ({patrones.length})
               </summary>
               {/* 0.89.1 (13.ª ronda, R3): en papel, algo más compactos (el paso 4 dejaba una
@@ -1367,7 +1369,8 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                 alPaso();
                 ir(n + 1);
               }}
-              className={`inline-flex min-h-11 items-center gap-1 rounded-md px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-40 ${n === 8 ? "invisible" : ""}`}
+              // 0.96.0 (16.ª ronda, visual): a la altura del chip de «‹ Paso N» (44 px en el móvil, 36 desde sm).
+              className={`inline-flex min-h-11 items-center gap-1 rounded-md px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-40 sm:min-h-9 ${n === 8 ? "invisible" : ""}`}
               style={{ background: hex.strong }}
             >
               Paso {Math.min(8, n + 1)} <ChevronRight size={14} aria-hidden="true" />

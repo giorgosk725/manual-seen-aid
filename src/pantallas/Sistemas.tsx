@@ -768,10 +768,11 @@ export function FichaSistema({
         </div>
       </header>
       {/* 0.94.0 (rediseño): la regla de las cabeceras de pantalla (tramo del color del sistema y
-          línea fina), como en CabeceraEditorial; en el móvil, la línea de las pestañas ya cierra. */}
-      <div aria-hidden="true" className="regla-seccion mb-1 hidden h-px w-full sm:flex">
+          línea fina), como en CabeceraEditorial. 0.96.0 (16.ª ronda, senior): también en el móvil
+          (no se veía: toda cabecera de pantalla lleva su regla), bajo los accesos. */}
+      <div aria-hidden="true" className="regla-seccion mb-1 mt-2 flex h-px w-full sm:mt-0">
         <span
-          className="w-12"
+          className="tramo-regla w-12"
           style={{ ["--sis" as string]: h.strong, background: "var(--sis)" }}
         />
         <span className="flex-1" />

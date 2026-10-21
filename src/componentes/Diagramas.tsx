@@ -773,7 +773,7 @@ function Algoritmos() {
                 </ul>
               </DatoAlgoritmo>
               <details className="separador border-t px-3 py-2 text-xs">
-                <summary className="tap-44 cursor-pointer font-semibold text-slate-700">
+                <summary className="con-chevron tap-44 cursor-pointer font-semibold text-slate-700">
                   Celdas completas
                 </summary>
                 <dl className="mt-2 space-y-1.5">

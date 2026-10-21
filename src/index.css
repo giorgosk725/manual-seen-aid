@@ -147,6 +147,31 @@
     font-weight: 700;
     color: var(--tinta-2);
   }
+  /* 0.96.0 (16.ª ronda, visual): un desplegable con el mismo chevrón que el resto de la app (el
+     de los apartados: a la derecha cerrado, hacia abajo abierto), no el triángulo nativo. */
+  summary.con-chevron {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+  }
+  summary.con-chevron::-webkit-details-marker {
+    display: none;
+  }
+  summary.con-chevron::before {
+    content: "";
+    flex-shrink: 0;
+    width: 0.4375rem;
+    height: 0.4375rem;
+    margin: 0 0.125rem 0 0.1875rem;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 0.15s;
+  }
+  details[open] > summary.con-chevron::before {
+    transform: translateY(-0.125rem) rotate(45deg);
+  }
   /* Insignia de dato (no de interacción): esquinas de 4 px, gris o del sistema (`--sis-soft`). */
   .insignia {
     display: inline-block;
@@ -190,6 +215,26 @@
   @media (min-width: 640px) {
     .chip {
       min-height: 2.25rem;
+    }
+  }
+  /* 0.96.0 (16.ª ronda, visual): el paso activo de Iniciación, sin relleno burdeos: subrayado como
+     una pestaña; en el móvil (solo se ve el activo, bajo la fila de números), su título como
+     texto. */
+  .chip.paso-tab[aria-current] {
+    background: var(--superficie);
+    border-color: var(--linea-fuerte);
+    color: var(--tinta);
+    box-shadow: inset 0 -2px 0 var(--acento);
+  }
+  @media (max-width: 639px) {
+    .chip.paso-tab[aria-current] {
+      min-height: 0;
+      padding: 0.25rem 0 0;
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
+      font-size: 0.9375rem;
+      font-weight: 700;
     }
   }
   /* Número de paso. */
@@ -1310,6 +1355,10 @@ html.night ::highlight(frase-citada) {
 
 /* Impresión de la lectura: columna completa, sin cromo, insignias de página visibles. */
 @media print {
+  /* El chevrón de los desplegables no se imprime (en papel todo va abierto). */
+  summary.con-chevron::before {
+    display: none;
+  }
   .prosa {
     max-width: none;
     font-size: 11pt;
@@ -1605,6 +1654,16 @@ html.night .titulo-manual {
 }
 html.night .regla-seccion > span:last-child {
   background: #334155;
+}
+/* 0.96.0 (16.ª ronda, visual): el tramo de la regla, visible de noche: el burdeos, en la tinta del
+   acento; el color de un área, aclarado. Solo en pantalla. */
+@media screen {
+  html.night .tramo-regla[style*="--tramo"] {
+    background: color-mix(in srgb, var(--tramo) 45%, #fff) !important;
+  }
+  html.night .tramo-regla[data-acento] {
+    background: var(--acento-texto) !important;
+  }
 }
 
 /* Nocturno: bordes finos en línea, tintes suaves y tintas de las categorías nuevas. */

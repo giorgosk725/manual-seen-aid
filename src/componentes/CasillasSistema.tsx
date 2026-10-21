@@ -24,7 +24,11 @@ export function CasillasSistema({
   unico = false,
   desactivado,
   enFila = false,
+  cortoEnMovil = false,
 }: {
+  /* 0.96.0 (16.ª ronda, visual): con `enFila`, en el móvil el nombre breve de la casilla
+     («Control-IQ»); desde sm, `nombres` (Iniciación: el texto del paso empieza antes). */
+  cortoEnMovil?: boolean;
   /* 0.92.0 (revisión de tarjetas, ★12): en el móvil, las cuatro en una fila (marca y punto arriba,
      nombre debajo) en vez de 2 × 2: el plan del paciente las quiere a la vista sin ocupar dos
      filas (decisión previa, prueba de 360 px). */
@@ -113,7 +117,18 @@ export function CasillasSistema({
                   style={{ ["--sis" as string]: h.strong, background: "var(--sis)" }}
                 />
               </span>
-              {nombres && enFila ? (
+              {nombres && enFila && cortoEnMovil ? (
+                <>
+                  <span className="text-xs sm:hidden">
+                    {CORTO_SISTEMA[c]
+                      .replace(/-/g, "\u2011")
+                      .replace(/(Omnipod|CamAPS) /, "$1\u00a0")}
+                  </span>
+                  <span className="hidden sm:inline">
+                    <NombreSistema n={pegarFinal(nombres[c])} />
+                  </span>
+                </>
+              ) : nombres && enFila ? (
                 // En la fila de cuatro del móvil, el nombre puede partirse («MiniMed ⏎ 780G»), pero
                 // no por el guion («Control-⏎IQ»): guion duro.
                 <span className="max-sm:text-xs">

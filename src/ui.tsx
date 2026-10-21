@@ -537,7 +537,13 @@ export function CabeceraEditorial({
       </div>
       {children && <div className="mt-1">{children}</div>}
       <div aria-hidden="true" className="regla-seccion mt-2 flex h-px w-full">
-        <span className="w-12" style={{ background: hex.strong }} />
+        {/* 0.96.0 (16.ª ronda, visual): de noche, el burdeos casi no se veía sobre el marino: el
+            tramo en la tinta del acento (index.css, .tramo-regla). */}
+        <span
+          className="tramo-regla w-12"
+          data-acento={hex.strong.toLowerCase() === "#8e254e" ? "" : undefined}
+          style={{ background: hex.strong, ["--tramo" as string]: hex.strong }}
+        />
         <span className="flex-1" />
       </div>
     </div>

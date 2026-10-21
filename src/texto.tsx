@@ -1,6 +1,6 @@
 /* Marcado en línea mínimo del contenido: *cursiva*, **negrita** y «\*» para un asterisco
    literal (las dosis con asterisco de la Figura 3). Sin HTML, sin dependencias. */
-import { sinCortes } from "./sinCortes";
+import { RE_PIEZA, sinCortes } from "./sinCortes";
 import React from "react";
 import { trocear } from "./marcado";
 import { SiglaPulsable } from "./componentes/Sigla";
@@ -37,12 +37,14 @@ function partirCifras(t: string): { t: string; cifra: boolean }[] {
   return out;
 }
 /* 0.89.1 (13.ª ronda, visual): «β-OHB» en una pieza que no se parte por el guion en todo el
-   texto (antes, solo en la Figura 3 y en <SinCortes>). */
-function SinPartir({ t }: { t: string }) {
-  if (!t.includes("β-")) return <>{t}</>;
+   texto (antes, solo en la Figura 3 y en <SinCortes>). 0.96.0 (16.ª ronda, visual): también los
+   intervalos («DTD 10–100 UI/día», «12–24 h») y «U-100»: las mismas piezas que <SinCortes>, en
+   todo el texto de la app (pregunta frecuente, Los cuatro · Modos, Interrupción). */
+export function SinPartir({ t }: { t: string }) {
+  if (!RE_PIEZA.test(t)) return <>{t}</>;
   return (
     <>
-      {t.split(/(β-OHB|β-hidroxibutirato)/).map((x, i) =>
+      {t.split(RE_PIEZA).map((x, i) =>
         i % 2 ? (
           <span key={i} className="whitespace-nowrap">
             {x}

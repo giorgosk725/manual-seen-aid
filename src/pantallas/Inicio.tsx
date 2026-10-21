@@ -401,6 +401,37 @@ function PasosInicio({
     });
   return (
     <div id="paso-guia" className="scroll-mt-4">
+      {/* En el móvil solo se ve el paso activo, con su título entero; una fila de números lleva a
+          cualquier otro. 0.92.3 (15.ª ronda, R5): antes, un desplegable que repetía el paso activo
+          recortado con «…». 0.96.0 (16.ª ronda, visual): la fila de números, primero y como las
+          pestañas (subrayado sobre una línea capilar), no cinco cajas con la activa rellena. */}
+      <ol
+        className="separador no-imprimir mb-2 flex gap-1 border-b sm:hidden"
+        aria-label="Ir al paso"
+      >
+        {PASOS_GUIA.map((x, i) => {
+          const on = i === n - 1;
+          return (
+            <li key={x.id} className="min-w-11 flex-1">
+              <button
+                type="button"
+                aria-current={on ? "step" : undefined}
+                aria-label={`Paso ${i + 1}: ${x.titulo}`}
+                onClick={() => {
+                  alPaso();
+                  ir(i + 1);
+                }}
+                className="pestana -mb-px h-11 w-full justify-center text-[15px] tabular-nums focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+              >
+                {i + 1}
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+      {/* 0.96.0 (16.ª ronda, visual): el paso activo, sin banda rellena: en el ordenador, subrayado
+          como una pestaña; en el móvil, su título como texto (paso-tab, index.css). Menos burdeos
+          apilado: la fase sigue marcada, el paso y su número ya no van rellenos. */}
       <ol className="mb-3 grid gap-1.5 sm:grid-cols-5" aria-label="Pasos de la fase">
         {PASOS_GUIA.map((x, i) => {
           const on = i === n - 1;
@@ -414,34 +445,10 @@ function PasosInicio({
                   alPaso();
                   ir(i + 1);
                 }}
-                className={`chip h-full w-full items-start px-2.5 py-1.5 text-[13px] leading-snug focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "" : "max-sm:hidden"}`}
+                className={`chip paso-tab h-full w-full items-start px-2.5 py-1.5 text-[13px] leading-snug focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "" : "max-sm:hidden"}`}
               >
-                <span className={`num ${on ? "bg-white/20 text-white" : ""}`}>{i + 1}</span>
+                <span className="num max-sm:hidden">{i + 1}</span>
                 <span className="min-w-0">{x.titulo}</span>
-              </button>
-            </li>
-          );
-        })}
-      </ol>
-      {/* En el móvil solo se ve el paso activo, con su título entero; una fila de números lleva a
-          cualquier otro. 0.92.3 (15.ª ronda, R5): antes, un desplegable que repetía el paso activo
-          recortado con «…». */}
-      <ol className="no-imprimir mb-2 flex gap-1 sm:hidden" aria-label="Ir al paso">
-        {PASOS_GUIA.map((x, i) => {
-          const on = i === n - 1;
-          return (
-            <li key={x.id} className="min-w-11 flex-1">
-              <button
-                type="button"
-                aria-current={on ? "step" : undefined}
-                aria-label={`Paso ${i + 1}: ${x.titulo}`}
-                onClick={() => {
-                  alPaso();
-                  ir(i + 1);
-                }}
-                className={`chip h-11 w-full justify-center px-0 tabular-nums focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "" : "text-slate-600"}`}
-              >
-                {i + 1}
               </button>
             </li>
           );
@@ -665,8 +672,12 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
         <div className="no-imprimir">
           <div className="rotulo mb-1">Sistema</div>
           <div className="mb-4">
+            {/* 0.96.0 (16.ª ronda, visual): en el móvil, las cuatro en una fila (el texto del paso
+                empieza antes). */}
             <CasillasSistema
               unico
+              enFila
+              cortoEnMovil
               seleccion={sis !== undefined ? [sis] : []}
               onToggle={(c) =>
                 ir(
