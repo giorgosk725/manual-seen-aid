@@ -72,7 +72,7 @@ al final de cada fila.
 
 - Entre secciones de una pantalla: 24 px (`space-y-6` / `mt-6`).
 - Entre tarjetas de una rejilla: 12 px (`gap-3`).
-- Dentro de una tarjeta: 12 px (`p-3`) en tarjetas de datos, 16 px (`p-4`) en cajas de lectura;
+- Dentro de una tarjeta: 16 px (`p-4`) en las tarjetas de datos de las fichas (`TarjetaDatos`) y en cajas de lectura; 12 px (`p-3`) en las tarjetas compactas (Parámetros de los cuatro, casillas);
   rótulo → valor: 4 px; valor → fuente: 8 px.
 - Rejillas sin huecos: con un número impar de tarjetas, la última ocupa la fila entera
   (`.ultima-ancha`).

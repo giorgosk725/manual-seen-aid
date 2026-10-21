@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-21",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — Parámetros en el orden de la Tabla 3`,
+    titulo: `Complemento interactivo ${VERSION_APP} — decimoquinta ronda de auditorías de uso`,
+    detalle: [
+      "Situaciones: lo que añaden los apartados 9 y 10 también con los cuatro sistemas (la hipoglucemia nocturna: lo de cada sistema en su tarjeta y lo común una vez); el sueño, con el patrón nocturno de la descarga y sin la frase que repetía la Tabla 4; en la gestación, «(Control-IQ+)» en la estrategia y el modo sueño continuado.",
+      "Comparación: «Agua, alcohol y desconexión» de las fichas, comparados (los sistemas que dicen lo mismo, juntos); al marcar el segundo sistema en el Resumen, la comparación queda en la ruta; «Cambiar» de la barra plegada abre el selector también con la página bajada.",
+      "Calculadora: un objetivo fijo (Control-IQ) ya no figura como «no actúa en automático»; «Control‑IQ+» sin partir. Iniciación en el móvil: una fila de números en vez de un desplegable recortado, el título de la fase nueva a la vista y «Siguiente fase: …».",
+      "Buscador: con la Figura 3, sin coincidencias parciales. Diseño: las listas de cifras en negrita enteras; títulos de tabla a 15 px; Control-IQ+ con el cuerpo de Control-IQ en Indicación; los ocho pasos de la descarga caben a 360 px; diagramas a 14 px en su pantalla; fuentes sin duplicados; la descarga impresa, con su procedencia al pie.",
+    ],
+  },
+  {
+    fecha: "2026-10-21",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.92.2 — Parámetros en el orden de la Tabla 3",
     detalle: [
       "Ficha de cada sistema, Parámetros: el mismo orden en los cuatro, el de la Tabla 3 (objetivo, basal, ratio, factor de sensibilidad, insulina activa); la insignia marca lo que actúa en automático.",
       "Preguntas frecuentes: en el ordenador, los temas abiertos; en el móvil, plegados con su número (y «Ver todas las preguntas» los abre).",

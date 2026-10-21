@@ -153,6 +153,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
     const agua = atajos.some((a) => a.entrada.id.startsWith("recurso/agua/"));
     const rs = rs0
       .filter((r) => !urgencia || !/sin sospecha/i.test(`${r.titulo} ${r.texto ?? ""}`))
+      // 0.92.3 (15.ª ronda, guardia): con la Figura 3, sin coincidencias parciales.
+      .filter((r) => !urgencia || !r.aproximada)
       .filter((r) => !agua || !r.id.startsWith("F3/"));
     // 0.89.1 (13.ª ronda, guardia): con la sospecha de fallo, primero el pasaje que la define
     // («… sospecha de fallo del set», apartado 9), no la lista de contenidos de la educación.
@@ -376,7 +378,11 @@ export function Buscar({ inicial }: { inicial?: string }) {
         )}
         <AvisosBusqueda
           q={qEf}
-          parcial={busqueda.parcial && !intencionClara}
+          parcial={
+            busqueda.parcial &&
+            !intencionClara &&
+            !atajos.some((a) => a.entrada.id === "recurso/sospecha-fallo")
+          }
           primera={respuestas[0]}
         >
           <RespuestasCapitulo

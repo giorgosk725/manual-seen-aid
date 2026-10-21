@@ -21,8 +21,9 @@ export function ConCifras({ children }: { children: React.ReactNode }) {
   return <CifrasCtx.Provider value={true}>{children}</CifrasCtx.Provider>;
 }
 const RE_CIFRA =
-  /(?:[≥≤<>]\s?)?\d+(?:[.,]\d+)?(?:\s?[-–]\s?\d+(?:[.,]\d+)?)?\s?(?:mmol\/l|mg\/dl|UI\/kg\/día|UI\/kg\/h|UI\/kg|UI\/día|UI\/h|UI|%|horas?|h|minutos|min|g|días?|semanas|años|kg)(?![\p{L}\d])/gu;
-// Sin «i»: «780G» no es una cifra en gramos (0.72.0). El capítulo escribe las unidades en
+  /(?:[≥≤<>]\s?)?(?:\d+(?:[.,]\d+)?(?:,\s|\so\s|\sy\s|\/)(?=\d))*\d+(?:[.,]\d+)?(?:\s?[-–]\s?\d+(?:[.,]\d+)?)?\s?(?:mmol\/l|mg\/dl|UI\/kg\/día|UI\/kg\/h|UI\/kg|UI\/día|UI\/h|UI|%|horas?|h|minutos|min|g|días?|semanas|años|kg)(?![\p{L}\d])/gu;
+// Sin «i»: «780G» no es una cifra en gramos (0.72.0). 0.92.3 (15.ª ronda, adjunto): con la lista
+// delante («100, 110 o 120 mg/dl»), toda en negrita (antes, solo la última cifra). El capítulo escribe las unidades en
 // minúscula («mmol/l», «mg/dl»).
 function partirCifras(t: string): { t: string; cifra: boolean }[] {
   const out: { t: string; cifra: boolean }[] = [];

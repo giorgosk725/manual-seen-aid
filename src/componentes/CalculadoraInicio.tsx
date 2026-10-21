@@ -1087,7 +1087,10 @@ const CON_ARTICULO: Record<string, string> = {
 };
 function PasanAAutomatico({ actual, destino }: { actual: number; destino: number }) {
   const nuevos = PARAMETROS[destino].filter(
-    (d) => d.auto === "si" && PARAMETROS[actual].find((x) => x.r === d.r)?.auto !== "si",
+    // 0.92.3 (15.ª ronda, senior): un objetivo fijo (Control-IQ) actúa, aunque no se configure.
+    (d) =>
+      d.auto === "si" &&
+      !["si", "fijo"].includes(PARAMETROS[actual].find((x) => x.r === d.r)?.auto ?? ""),
   );
   if (!nuevos.length) return null;
   const nombres = nuevos.map((d) => CON_ARTICULO[d.r] ?? d.r.toLowerCase());
@@ -1119,7 +1122,8 @@ function CambioDeSistema({ actual, destino }: { actual: number; destino: number 
           <div key={rotulo} className={`min-w-0 px-3 py-2 ${i ? "separador border-l" : ""}`}>
             <div className="text-xs text-slate-600">{rotulo}</div>
             <div className="text-sm font-bold" style={{ color: SISTEMA_HEX[c].ink }}>
-              {CORTOS[c]}
+              {/* 0.92.3 (15.ª ronda, R5): sin partir «Control-IQ+» por el guion a 390 px. */}
+              {CORTOS[c].replace(/-/g, "\u2011")}
             </div>
             <ul className="mt-1 space-y-1.5">
               {datos.map((d) => (

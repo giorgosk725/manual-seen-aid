@@ -4,6 +4,7 @@
    - Interpretación de la descarga: la Tabla 5 paso a paso (8 pasos), con el patrón relacionado.
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
+import { VERSION_APP } from "../version";
 import { ponerConsulta } from "../consultaBuscar";
 import { useEffect, useRef, useState } from "react";
 import { AlertTriangle, ArrowRight, Check, ChevronLeft, ChevronRight, Siren } from "lucide-react";
@@ -582,6 +583,29 @@ export function SituacionSistema({
   const tabla = sit ? TABLAS[sit.tabla] : null;
   const fila = sit && tabla ? tabla.filas[sit.fila] : null;
   const porSistema = !!tabla?.porSistema && !fila?.unida;
+  // 0.92.3 (15.ª ronda, guardia): lo que los apartados 9 y 10 añaden a la casilla, también con
+  // los cuatro (antes, solo con un sistema elegido: «Hipoglucemia nocturna» no salía sin elegir):
+  // lo de cada sistema en su tarjeta y lo común a los cuatro una vez, debajo.
+  const anadido = (() => {
+    const xs = sit ? TABLA4_POR_SISTEMA[sit.id] : undefined;
+    if (!xs || !porSistema) return null;
+    if (sisIdx >= 0) return { propios: xs.map((bs, c) => (c === sisIdx ? bs : [])), comun: [] };
+    const clave = (p: Pieza) => JSON.stringify(p, (_, v) => (v instanceof RegExp ? String(v) : v));
+    const enTodos = (p: Pieza) =>
+      xs.every((bs) => bs.some((b) => b.piezas.some((q) => clave(q) === clave(p))));
+    const comunes = (xs[0][0]?.piezas ?? []).filter(enTodos);
+    const ks = new Set(comunes.map(clave));
+    return {
+      propios: xs.map((bs) =>
+        bs
+          .map((b) => ({ ...b, piezas: b.piezas.filter((p) => !ks.has(clave(p))) }))
+          .filter((b) => b.piezas.length),
+      ),
+      comun: comunes.length
+        ? [{ rotulo: `${xs[0][0].rotulo} · todos los sistemas`, piezas: comunes }]
+        : [],
+    };
+  })();
   // Al elegir el sistema, su casilla a la vista (en el móvil quedaba bajo la barra inferior).
   // Con comprobaciones previas (ejercicio), al elegir el sistema se va a ellas, no a la conducta.
   const aLaCasilla = useIrAlCambiar(
@@ -762,27 +786,29 @@ export function SituacionSistema({
                               <NombreSistema n={CATALOGO_SISTEMAS[c]?.name ?? nombre} />
                             </span>
                           </div>
-                          <p
-                            className={`px-4 py-2.5 text-slate-800 ${sisIdx >= 0 ? "text-base" : "text-[15px]"}`}
-                          >
-                            <Lineas>{fila.celdas[c]}</Lineas>
+                          <p className="px-4 py-2.5 text-[15px] text-slate-800">
+                            <Lineas>
+                              {fila.celdas[c].replace(
+                                /configurable Objetivo:/,
+                                "configurable\nObjetivo:",
+                              )}
+                            </Lineas>
                           </p>
                           {/* 0.73.0: lo que los apartados 9 y 10 añaden para ese sistema. 0.92.0
                               (revisión de tarjetas, ★10): dentro de su tarjeta, en casillas grises
                               (antes, otra tarjeta con la misma pleca debajo). */}
-                          {sisIdx >= 0 && TABLA4_POR_SISTEMA[sit.id] && (
+                          {anadido && anadido.propios[c].length > 0 && (
                             <div className="px-4 pb-3">
-                              <AnadidoDelSistema
-                                c={sisIdx}
-                                bloques={TABLA4_POR_SISTEMA[sit.id][sisIdx]}
-                                sinFuente
-                              />
+                              <AnadidoDelSistema c={c} bloques={anadido.propios[c]} sinFuente />
                             </div>
                           )}
                         </div>
                       ),
                     )}
                   </div>
+                )}
+                {anadido && anadido.comun.length > 0 && (
+                  <AnadidoDelSistema c={0} bloques={anadido.comun} sinFuente />
                 )}
                 {/* 0.77.1 (auditoría R5): en las pruebas y cirugías (Tabla 6), con un sistema en la
                     ruta, el sistema con su formato y sus sensores (Tabla 1): «retirar, salvo
@@ -832,7 +858,12 @@ export function SituacionSistema({
                               {nombre}
                             </dt>
                             <dd className="text-base text-slate-800">
-                              <Lineas>{fila.celdas[c]}</Lineas>
+                              <Lineas>
+                                {fila.celdas[c].replace(
+                                  /configurable Objetivo:/,
+                                  "configurable\nObjetivo:",
+                                )}
+                              </Lineas>
                             </dd>
                           </div>
                         );
@@ -869,8 +900,10 @@ export function SituacionSistema({
                       texto: `Tabla ${tabla.numero}, ${paginasDe(tabla.paginas[0], tabla.paginas[1])}`,
                       ruta: rutaDeTabla(sit.tabla),
                     },
-                    ...(porSistema && sisIdx >= 0 && TABLA4_POR_SISTEMA[sit.id]
-                      ? fuentesDePiezas(TABLA4_POR_SISTEMA[sit.id][sisIdx].flatMap((b) => b.piezas))
+                    ...(porSistema && anadido
+                      ? fuentesDePiezas(
+                          [...anadido.propios.flat(), ...anadido.comun].flatMap((b) => b.piezas),
+                        )
                       : []),
                     ...(sit.tabla === "T6" && sisIdx >= 0
                       ? fuentesDePiezas([{ t: "casilla", tabla: "T1", fila: 1 }])
@@ -928,6 +961,15 @@ export function SituacionSistema({
                             sit.tabla === "T6"
                               ? "Hoja para el paciente: antes de una prueba o una cirugía"
                               : "Plan de seguridad y hoja de cetonas para el paciente",
+                        },
+                      ]
+                    : []),
+                  // 0.92.3 (15.ª ronda, R3): y el nocturno, desde el sueño.
+                  ...(sit.id === "sueno"
+                    ? [
+                        {
+                          href: href("consultar", "descarga", "5"),
+                          t: "Patrón nocturno: descarga, paso 5",
                         },
                       ]
                     : []),
@@ -1036,7 +1078,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           {t.filas.map((f, i) => {
             const on = i + 1 === n;
             return (
-              <li key={i} className="min-w-11 flex-1">
+              <li key={i} className="min-w-10 flex-1 min-[380px]:min-w-11">
                 <button
                   type="button"
                   aria-current={on ? "step" : undefined}
@@ -1234,6 +1276,12 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           <Texto>{t.notas[1]}</Texto>
         </p>
       )}
+      {/* 0.92.3 (15.ª ronda, R3): en papel, de dónde sale la hoja (como en la ficha). */}
+      <p className="colofon mt-6 hidden border-t pt-2 text-xs text-slate-600 print:mt-2 print:block print:pt-1">
+        Manual de Endocrinología y Nutrición (SEEN) · Capítulo 89 · Complemento interactivo{" "}
+        {VERSION_APP}
+        {"\u00a0· "}impreso el {new Date().toLocaleDateString("es-ES")}
+      </p>
     </div>
   );
 }
@@ -1247,7 +1295,7 @@ export function Interrupcion(_props: { tramo?: string }) {
   return (
     <div>
       <CabeceraEditorial titulo="Interrupción del sistema" hex={hex} level={1} />
-      <div className="interrupcion-grande">
+      <div className="diagrama-grande">
         <InterrupcionPantalla />
       </div>
       <FuentePie

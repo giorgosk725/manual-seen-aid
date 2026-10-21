@@ -60,7 +60,11 @@ test.describe("Inicio (I61-04/08)", () => {
   test("en el móvil, «Ir al paso» lleva al respaldo sin recorrer los pasos", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/#/consultar/inicio/inicio:control-iq");
-    await page.getByLabel("Ir al paso").selectOption("4");
+    // 0.92.3 (15.ª ronda, R5): una fila de números (antes, un desplegable que recortaba el paso).
+    await page
+      .getByRole("list", { name: "Ir al paso" })
+      .getByRole("button", { name: /^Paso 4:/ })
+      .click();
     await expect(page).toHaveURL(/inicio:control-iq:respaldo$/);
   });
 });

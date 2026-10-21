@@ -178,7 +178,7 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
             href={href("capitulo", "07-educacion", "b5")}
             className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
           >
-            Leer en su apartado: 7. Educación terapéutica y plan de seguridad{" "}
+            Leer en el capítulo: 7. Educación terapéutica y plan de seguridad{" "}
             <ArrowRight size={14} aria-hidden="true" />
           </a>
         </div>

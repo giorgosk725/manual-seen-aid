@@ -160,7 +160,11 @@ export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }
       {/* 0.78.1: el título, con la cabecera editorial de todas las pantallas (antes, un h1 oculto
           y el título a 16 px dentro de la tarjeta). */}
       <CabeceraEditorial titulo={d.titulo} hex={hex} level={1} />
-      <DiagramaVista id={d.id} opcion={opcion} tituloFuera />
+      {/* 0.92.3 (15.ª ronda, visual): en su pantalla, el cuerpo de lectura a 14 px (13 en la
+          galería), como en Interrupción. */}
+      <div className="diagrama-grande">
+        <DiagramaVista id={d.id} opcion={opcion} tituloFuera />
+      </div>
     </div>
   );
 }

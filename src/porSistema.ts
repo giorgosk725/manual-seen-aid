@@ -51,8 +51,13 @@ const GESTACION: BloqueSistema[][] = [
       // sin la frase del apartado 10 que repetía la autorización de Control-IQ+.
       piezas: [casilla("T1", 8), s10("b5", [2])],
     },
-    { rotulo: "Estrategia de intensificación", piezas: [s10("b9", [1])] },
-    { rotulo: "Modo sueño continuado", piezas: [s10("b9", [2, 3, 4]), casilla("T1", 6)] },
+    // 0.92.3 (15.ª ronda, senior): con la variante en el rótulo (sin la frase que nombra
+    // Control-IQ+, «No incorpora…» se leía como de Control-IQ).
+    { rotulo: "Estrategia de intensificación (Control-IQ+)", piezas: [s10("b9", [1])] },
+    {
+      rotulo: "Modo sueño continuado (Control-IQ+)",
+      piezas: [s10("b9", [2, 3, 4]), casilla("T1", 6)],
+    },
   ],
   [
     {
@@ -140,10 +145,9 @@ export const TABLA4_POR_SISTEMA: Record<string, BloqueSistema[][]> = {
     [
       {
         rotulo: "Hipoglucemia nocturna",
-        piezas: [
-          s9("b7", [0]),
-          s9("b7", [1], /En Tandem, el modo sueño no autocorrige, pero ajusta basal/),
-        ],
+        // 0.92.3 (15.ª ronda, R3): sin «En Tandem, el modo sueño no autocorrige, pero ajusta
+        // basal», que repetía la celda de la Tabla 4 justo encima.
+        piezas: [s9("b7", [0])],
       },
     ],
     [

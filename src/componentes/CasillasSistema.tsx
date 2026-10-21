@@ -116,7 +116,9 @@ export function CasillasSistema({
               {nombres && enFila ? (
                 // En la fila de cuatro del móvil, el nombre puede partirse («MiniMed ⏎ 780G»), pero
                 // no por el guion («Control-⏎IQ»): guion duro.
-                <span className="max-sm:text-xs">{nombres[c].replace(/-/g, "\u2011")}</span>
+                <span className="max-sm:text-xs">
+                  {nombres[c].replace(/-/g, "\u2011").replace(/(Omnipod|CamAPS) /, "$1\u00a0")}
+                </span>
               ) : nombres ? (
                 <span>
                   <NombreSistema n={pegarFinal(nombres[c])} />

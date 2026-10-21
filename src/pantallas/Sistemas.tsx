@@ -50,7 +50,7 @@ import { TablaVista } from "../componentes/TablaVista";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { NivelTitulo } from "../nivel-contexto";
 import { CON_AMPLIACION, retirado } from "../edicion";
-import { CATALOGO_SISTEMAS, sistemaDelCatalogo } from "../ampliacion/ids";
+import { CATALOGO_SISTEMAS, CORTO_SISTEMA, sistemaDelCatalogo } from "../ampliacion/ids";
 import { Elegir } from "./Elegir";
 
 export { Elegir };
@@ -1040,11 +1040,18 @@ function BarraSistemas({
   const selStr = ids.length ? ids.join("+") : marcados.length ? marcados.join("+") : "todos";
   const alternar = (id: string) => {
     if (entrada) {
-      setMarcados((m) =>
-        m.includes(id)
-          ? m.filter((x) => x !== id)
-          : IDS_SISTEMA.filter((x) => m.includes(x) || x === id),
-      );
+      const nuevos = marcados.includes(id)
+        ? marcados.filter((x) => x !== id)
+        : IDS_SISTEMA.filter((x) => marcados.includes(x) || x === id);
+      // 0.92.3 (15.ª ronda, adjunto): con dos o más, la comparación en la ruta (el mismo Resumen,
+      // filtrado): sobrevive a Atrás y a recargar, y sin «Comparar (n)», que no añadía nada.
+      if (nuevos.length >= 2) {
+        if (abierta) seguirAbierta = Date.now();
+        setMarcados([]);
+        window.location.replace(href("sistemas", nuevos.join("+")));
+        return;
+      }
+      setMarcados(nuevos);
       return;
     }
     const nuevos = ids.includes(id)
@@ -1084,6 +1091,8 @@ function BarraSistemas({
   // 0.81.1 (quinta ronda, visual): tras cambiar de pestaña en la comparación del móvil, la barra
   // sigue plegada (al desplegarse después de colocar la sección, la tapaba 100 px).
   const trasPestana = useRef(false);
+  // Desde dónde se abrió la barra plegada (0.92.3): se cierra al alejarse de ahí.
+  const abiertaEn = useRef(-1000);
   const primera = useRef(true);
   useEffect(() => {
     if (primera.current) {
@@ -1105,7 +1114,12 @@ function BarraSistemas({
       if (window.scrollY < 8) trasPestana.current = false;
       const lejos = window.scrollY > 220 || deEntrada || trasPestana.current;
       setPlegada((p) => (p !== lejos ? lejos : p));
-      if (window.scrollY > 220 && Date.now() - seguirAbierta > 1500) setAbierta(false);
+      if (
+        window.scrollY > 220 &&
+        Date.now() - seguirAbierta > 1500 &&
+        Math.abs(window.scrollY - abiertaEn.current) > 240
+      )
+        setAbierta(false);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -1147,10 +1161,16 @@ function BarraSistemas({
         <button
           type="button"
           onClick={() => {
+            // 0.92.3 (15.ª ronda, R5): con la página bajada, abrir la barra movía la página y el
+            // desplazamiento la volvía a cerrar: se queda abierta hasta que se desplace de verdad.
+            abiertaEn.current = window.scrollY;
+            seguirAbierta = Date.now();
             setAbierta(true);
-            // El foco, a la primera casilla (2.4.3: el botón desaparece al abrirse).
+            // El foco, a la primera casilla (2.4.3: el botón desaparece al abrirse), sin desplazar.
             requestAnimationFrame(() =>
-              barra.current?.querySelector<HTMLElement>('[role="group"] button')?.focus(),
+              barra.current
+                ?.querySelector<HTMLElement>('[role="group"] button')
+                ?.focus({ preventScroll: true }),
             );
           }}
           className="flex min-h-11 w-full items-center gap-2 text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
@@ -1391,6 +1411,84 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
   );
 }
 
+/* 0.92.3 (15.ª ronda, adjunto): lo que las fichas añaden a la Tabla 4 (agua, alcohol y
+   desconexión, de los apartados 7 y 10), comparado: la natación o la desconexión se eligen sin
+   abrir las cuatro fichas. Los mismos datos que la pestaña Modos de cada ficha. */
+const OTRAS_SITUACIONES = [
+  { rotulo: "Alcohol", re: /^Alcohol/ },
+  { rotulo: "Agua", re: /^Agua/ },
+  { rotulo: "Desconexión", re: /^Desconexión/ },
+];
+function OtrasSituaciones({ cols }: { cols: number[] }) {
+  // Sin repeticiones: los sistemas que dicen lo mismo, juntos, con el texto una vez.
+  const filas = OTRAS_SITUACIONES.map((g) => {
+    const grupos: { cs: number[]; d: (typeof MODOS)[number][number] }[] = [];
+    for (const c of cols) {
+      const d = MODOS[c].find((x) => g.re.test(x.r));
+      if (!d) continue;
+      const igual = grupos.find((x) => x.d.v === d.v && x.d.n === d.n);
+      if (igual) igual.cs.push(c);
+      else grupos.push({ cs: [c], d });
+    }
+    return { ...g, grupos };
+  }).filter((f) => f.grupos.length);
+  if (!filas.length) return null;
+  return (
+    <section aria-labelledby="otras-situaciones" className="tarjeta mt-5 overflow-hidden">
+      <h2 id="otras-situaciones" className="titulo-tarjeta px-4 pb-1 pt-3">
+        Agua, alcohol y desconexión
+      </h2>
+      <dl className="divide-y divide-[var(--linea-suave)]">
+        {filas.map((f) => (
+          <div
+            key={f.rotulo}
+            className="grid gap-x-5 gap-y-1 px-4 py-3 sm:grid-cols-[minmax(9rem,12rem)_1fr]"
+          >
+            <dt className="text-[15px] font-semibold leading-snug text-slate-900">{f.rotulo}</dt>
+            <dd className="min-w-0 max-w-[72ch] space-y-2 text-[15px] leading-snug text-slate-800">
+              {f.grupos.map(({ cs, d }) => (
+                <div key={cs.join("-")}>
+                  {f.grupos.length > 1 || cs.length < cols.length ? (
+                    <span className="mb-0.5 flex flex-wrap gap-x-3 text-[13px] font-semibold">
+                      {cs.map((c) => (
+                        <span
+                          key={c}
+                          className="inline-flex items-center gap-1"
+                          style={{ color: SISTEMA_HEX[c].ink }}
+                        >
+                          <span
+                            aria-hidden="true"
+                            className="punto-sistema h-2 w-2 rounded-full"
+                            style={{
+                              ["--sis" as string]: SISTEMA_HEX[c].strong,
+                              background: "var(--sis)",
+                            }}
+                          />
+                          {CORTO_SISTEMA[c]}
+                        </span>
+                      ))}
+                    </span>
+                  ) : null}
+                  <span className="block">{sinCortes(d.v)}</span>
+                  {d.n && (
+                    <span className="mt-0.5 block text-[13px] text-slate-600">
+                      {sinCortes(d.n)}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      <FuentePie
+        className="separador border-t px-4 py-2"
+        fuentes={fuentesDeDatos(filas.flatMap((f) => f.grupos.map((g) => g.d)))}
+      />
+    </section>
+  );
+}
+
 /* Tarjeta de un sistema dentro de la comparación, para lo que no cabe en columnas
    («Cómo funciona» y la ampliación técnica se leen sistema a sistema). */
 function TarjetaSistema({
@@ -1562,9 +1660,12 @@ function Comparacion({
             </>
           )}
           {seccion === "modos" && (
-            <NivelTitulo.Provider value={2}>
-              <TablaVista tabla={TABLAS.T4} columnasFijas={cols} herramienta />
-            </NivelTitulo.Provider>
+            <>
+              <NivelTitulo.Provider value={2}>
+                <TablaVista tabla={TABLAS.T4} columnasFijas={cols} herramienta />
+              </NivelTitulo.Provider>
+              <OtrasSituaciones cols={cols} />
+            </>
           )}
           {seccion === "ampliacion" && CON_AMPLIACION && (
             <>

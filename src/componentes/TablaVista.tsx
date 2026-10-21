@@ -71,7 +71,7 @@ export function CabeceraTabla({
   if (herramienta)
     return (
       <div className="mb-2">
-        <TituloBloque className="text-sm font-semibold text-slate-800">{tabla.titulo}</TituloBloque>
+        <TituloBloque className="titulo-tarjeta text-slate-800">{tabla.titulo}</TituloBloque>
       </div>
     );
   return (
@@ -80,7 +80,7 @@ export function CabeceraTabla({
         <div className="rotulo" style={{ color: BRAND_ACCENT.ink }}>
           Tabla {tabla.numero}
         </div>
-        <TituloBloque className="text-sm font-semibold text-slate-800">{tabla.titulo}</TituloBloque>
+        <TituloBloque className="titulo-tarjeta text-slate-800">{tabla.titulo}</TituloBloque>
       </div>
       <div className="flex items-center gap-2">
         <PaginaBadge p={tabla.paginas[0]} p2={tabla.paginas[1]} />

@@ -1747,9 +1747,9 @@ html.night *:focus-visible {
   }
 }
 
-/* Interrupción del sistema (0.70.0): el esquema del apartado 7 como pantalla de consulta, con la
+/* Interrupción del sistema (0.70.0) y, desde la 0.92.3, cada diagrama en su pantalla: con la
    letra de lectura (en la galería de diagramas sigue compacto). */
-.interrupcion-grande .text-xs {
+.diagrama-grande :is(.text-xs, .text-\[13px\]) {
   font-size: 0.875rem;
   line-height: 1.35rem;
 }

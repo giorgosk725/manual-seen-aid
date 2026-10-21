@@ -132,7 +132,11 @@ export function CasillasDatos({
                   <SinCortes texto={d.n} />
                 </span>
               )}
-              <span className="block text-[13px] leading-snug text-slate-800">
+              {/* 0.92.3 (15.ª ronda, guardia): en las fichas, la variante con el cuerpo del dato
+                  (Control-IQ+ parecía secundario en letra menor); en el Resumen, discreta. */}
+              <span
+                className={`block leading-snug ${modo === "rejilla" ? "text-[15px] font-semibold text-slate-900" : "text-[13px] text-slate-800"}`}
+              >
                 <Variante c={c} d={d} />
               </span>
             </dd>

@@ -52,8 +52,11 @@ export function FuentePie({
     const pag = Number(/p+\.\s?(\d+)/.exec(t)?.[1] ?? 0);
     return m ? ["Tabla", "Figura", "Apartado"].indexOf(m[1]) * 1e6 + Number(m[2]) * 1e3 + pag : 4e6;
   };
+  // 0.92.3 (15.ª ronda, R5): sin repetir aunque una venga con espacios duros y otra sin ellos
+  // («Tabla 2, p. 10 · Tabla 2, p. 10»).
+  const clave = (t: string) => t.replace(/\s+/g, " ");
   const unicas = fuentes
-    .filter((f) => !vistas.has(f.texto) && !!vistas.add(f.texto))
+    .filter((f) => !vistas.has(clave(f.texto)) && !!vistas.add(clave(f.texto)))
     .map((f) => ({ ...f, texto: f.texto.replace(/\b(Apartado|Tabla|Figura) /g, "$1\u00a0") }))
     .sort((a, b) => orden(a.texto) - orden(b.texto));
   if (!unicas.length) return null;

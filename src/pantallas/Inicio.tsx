@@ -423,24 +423,30 @@ function PasosInicio({
           );
         })}
       </ol>
-      {/* En el móvil solo se ve el paso activo: un selector lleva a cualquier otro. */}
-      <label className="no-imprimir mb-2 flex items-center gap-2 sm:hidden">
-        <select
-          aria-label="Ir al paso"
-          value={n}
-          onChange={(e) => {
-            alPaso();
-            ir(Number(e.target.value));
-          }}
-          className="min-h-11 min-w-0 flex-1 rounded-md border border-slate-300 bg-white px-2 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-        >
-          {PASOS_GUIA.map((x, i) => (
-            <option key={x.id} value={i + 1}>
-              {i + 1}. {x.titulo}
-            </option>
-          ))}
-        </select>
-      </label>
+      {/* En el móvil solo se ve el paso activo, con su título entero; una fila de números lleva a
+          cualquier otro. 0.92.3 (15.ª ronda, R5): antes, un desplegable que repetía el paso activo
+          recortado con «…». */}
+      <ol className="no-imprimir mb-2 flex gap-1 sm:hidden" aria-label="Ir al paso">
+        {PASOS_GUIA.map((x, i) => {
+          const on = i === n - 1;
+          return (
+            <li key={x.id} className="min-w-11 flex-1">
+              <button
+                type="button"
+                aria-current={on ? "step" : undefined}
+                aria-label={`Paso ${i + 1}: ${x.titulo}`}
+                onClick={() => {
+                  alPaso();
+                  ir(i + 1);
+                }}
+                className={`chip h-11 w-full justify-center px-0 tabular-nums focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "" : "text-slate-600"}`}
+              >
+                {i + 1}
+              </button>
+            </li>
+          );
+        })}
+      </ol>
       {/* 0.73.0: sin «Paso n de N» (lo dicen el selector y el número del título). 0.92.0
           (revisión de tarjetas, ★4 y ★7): el título del paso, solo para el lector de pantalla:
           repetía el paso marcado encima y su «2.» se confundía con el de la fase. */}
@@ -702,7 +708,13 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
         </div>
       )}
 
-      <div id="paso-inicio" tabIndex={-1} className="scroll-mt-4 focus:outline-none">
+      {/* 0.92.3 (15.ª ronda, R5): en el móvil, bajo la cabecera pegada (el título de la fase nueva
+          quedaba fuera de la pantalla). */}
+      <div
+        id="paso-inicio"
+        tabIndex={-1}
+        className="scroll-mt-20 focus:outline-none lg:scroll-mt-4"
+      >
         {actual === CALC ? (
           <CalculadoraInicio sis={sis} onSistema={(c) => ir(CALC, sis === c ? undefined : c)} />
         ) : fase ? (
@@ -736,8 +748,15 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
               <PasosInicio
                 sis={sis}
                 paso={pasoInicio}
-                onAntesDelPrimero={() => ir(FASES[n - 1].id)}
-                onTrasElUltimo={() => ir(FASES[n + 1].id)}
+                // 0.92.3 (15.ª ronda, R5): al cambiar de fase desde un paso, a su título.
+                onAntesDelPrimero={() => {
+                  alPaso();
+                  ir(FASES[n - 1].id);
+                }}
+                onTrasElUltimo={() => {
+                  alPaso();
+                  ir(FASES[n + 1].id);
+                }}
               />
             )}
             {fase.id !== "inicio" && (
@@ -789,7 +808,9 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
             className="inline-flex min-h-11 items-center gap-1 rounded-md px-3 text-sm font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
             style={{ background: hex.strong }}
           >
-            {n === FASES.length - 1 ? "Hoja de comprobación" : "Siguiente"}{" "}
+            {n === FASES.length - 1
+              ? "Hoja de comprobación"
+              : `Siguiente fase: ${FASES[n + 1].corto}`}{" "}
             <ChevronRight size={14} aria-hidden="true" />
           </button>
         </div>
