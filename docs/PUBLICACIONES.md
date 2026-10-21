@@ -61,3 +61,4 @@ Preguntas abiertos en el ordenador), así que llevaba ya esos cambios sin estar 
 sustituido 9 minutos después por la 0.92.2 (09eaaab), que es su commit exacto. Para recuperar la
 0.92.1 tal cual, construir desde c6fd9cb, no usar aquel despliegue.
 | 2026-10-21 16:57 | main | 0.93.0 | 9ec4f59abfeb | index-1ou5Mg4v.js | 0.92.2 (09eaaab95482) |
+| 2026-10-21 18:31 | main | 0.93.1 | 783729571289 | index-DSIhmauG.js | 0.93.0 (9ec4f59abfeb) |
