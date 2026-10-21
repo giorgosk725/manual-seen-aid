@@ -404,3 +404,25 @@ descarga, Buscar, Preguntas, Material para el paciente).
 - **Los rótulos que llevan al literal** se subrayan en `--linea-fuerte`; nunca más oscuros que el
   propio rótulo en reposo.
 - **Tira de pestañas**: siempre apoyada en una línea capilar a todo lo ancho.
+
+## 17. Rediseño 0.94, segunda entrega (21-10-2026)
+
+Las pantallas que la primera entrega dejó igual. Mismas reglas: solo diseño, ningún texto cambia.
+
+| Pantalla                      | Antes                                                                                                  | Después                                                                                                                                                                                                             |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Portada · jerarquía           | Sistemas; después iniciación, lectura y paciente a tercios; al final, situaciones.                     | Tres niveles: los sistemas (título a 17 px); la consulta (iniciación y situaciones, a la par); la lectura y el paciente.                                                                                            |
+| Portada · tarjetas de sistema | Foto de 48 px y nombre corto; accesos apretados a cuartos.                                             | Foto de 64 px, nombre a 16/800 y su algoritmo (el «Tipo» de la ficha), dos por fila hasta 2xl y accesos en tercios. En el móvil, igual que antes (la portada debe caber en 2,5 pantallas). `src/fichaAlgoritmo.ts`. |
+| Situaciones                   | Título de la situación en una tarjeta de 15 px; selector y tarjeta del sistema dentro de otra tarjeta. | Título de sección (17/700) sobre una línea fina, sin caja; selector, tarjeta del sistema y casilla común sobre el papel (también en las guías sistema a sistema).                                                   |
+| Iniciación · programación     | Punto de color y dos líneas apiladas por parámetro.                                                    | Hoja de programación: parámetro a la izquierda, cifra a la derecha (15/700, cifras tabulares); los modos con la misma rejilla; 16 px de margen y líneas a todo lo ancho.                                            |
+| Interrupción                  | Cuerpo a 14 px, caminos con título de tarjeta.                                                         | Cuerpo a 15 px (anexos a 14), caminos con título de sección (17 px), más aire en cada caso. Cabeceras de riesgo, igual.                                                                                             |
+| Descarga                      | Tres columnas sueltas.                                                                                 | Cada columna abre con la línea capilar de las fichas.                                                                                                                                                               |
+| Pregunta frecuente            | Pregunta en versalitas de Oswald («HBA1C»).                                                            | `CabeceraEditorial frase`: Open Sans 20–22/700, con su grafía, la misma regla debajo.                                                                                                                               |
+| Barra inferior (móvil)        | Activo solo por el color.                                                                              | Además, filete de 2 px arriba (`--acento-texto`).                                                                                                                                                                   |
+
+Sin cambio, a propósito: Figura 3 (los tramos y la Regla de oro reproducen la figura), Material para
+el paciente (ya es una lista corta y limpia), la lista de Preguntas frecuentes y Buscar (siguen §15),
+la cabecera del móvil y la barra lateral.
+
+Excepción nueva: **un h1 que es una frase** (pregunta frecuente) va en Open Sans con su grafía, no en
+Oswald en mayúsculas.

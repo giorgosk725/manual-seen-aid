@@ -1314,7 +1314,7 @@ function InterrupcionLinea() {
     // tarjeta se dibuja en sus dos partes (cabecera arriba, cuerpo abajo), sin aire vacío dentro.
     <li className="min-w-0 md:row-span-2 md:grid md:grid-rows-subgrid">
       <span
-        className="cabecera-tramo tarjeta flex items-start rounded-b-none border-b-0 px-3 py-2 text-[15px] font-bold leading-snug"
+        className="cabecera-tramo tarjeta flex items-start rounded-b-none border-b-0 px-3 py-2.5 text-[15px] font-bold leading-snug"
         style={{
           background: tono.soft,
           color: tono.ink,
@@ -1324,13 +1324,14 @@ function InterrupcionLinea() {
       >
         {cuando}
       </span>
-      <span className="tarjeta block space-y-1.5 self-start rounded-t-none border-t-0 px-3 py-2.5 text-sm leading-snug text-slate-800">
+      {/* 0.94.0 (rediseño, fase 2): algo más de aire en el cuerpo (en la pantalla, a 15 px). */}
+      <span className="tarjeta block space-y-2 self-start rounded-t-none border-t-0 px-3 py-3 text-sm leading-snug text-slate-800">
         {children}
       </span>
     </li>
   );
   const Anexo = ({ titulo, texto }: { titulo: string; texto: string }) => (
-    <span className="casilla mt-1 block px-2.5 py-2 text-[13px] leading-snug">
+    <span className="casilla anexo mt-1 block px-3 py-2 text-[13px] leading-snug">
       <span className="rotulo block">{titulo}</span>
       <TS>{texto}</TS>
     </span>
@@ -1360,7 +1361,7 @@ function InterrupcionLinea() {
         </a>
       )}
       {/* 0.72.0: el formato, antes de los casos (qué se puede desconectar y qué no). */}
-      <section className="tarjeta grid gap-3 p-3 md:grid-cols-2">
+      <section className="tarjeta grid gap-x-6 gap-y-3 p-4 md:grid-cols-2">
         <Sub className="sr-only">Según el formato</Sub>
         <p className="text-sm leading-snug text-slate-800">
           <span className="rotulo mb-1 block">Pod</span>

@@ -495,10 +495,14 @@ export function CabeceraEditorial({
   hex,
   level = 2,
   accion,
+  frase = false,
   children,
 }: {
   numero?: string | number;
   titulo: ReactNode;
+  /* 0.94.0 (rediseño, fase 2): un título que es una frase (una pregunta frecuente), en Open Sans y
+     con su grafía: en versalitas de Oswald, «HbA1c» salía «HBA1C» y la pregunta costaba leerla. */
+  frase?: boolean;
   hex: { strong: string; ink: string };
   level?: 1 | 2 | 3;
   /* Una acción breve (Imprimir) a la derecha del título: no ocupa una fila propia. */
@@ -520,7 +524,11 @@ export function CabeceraEditorial({
           </span>
         )}
         <H
-          className="font-display text-xl font-medium uppercase leading-tight tracking-[0.04em]"
+          className={
+            frase
+              ? "text-balance text-xl font-bold leading-snug sm:text-[1.375rem]"
+              : "font-display text-xl font-medium uppercase leading-tight tracking-[0.04em]"
+          }
           style={{ color: hex.ink }}
         >
           {titulo}

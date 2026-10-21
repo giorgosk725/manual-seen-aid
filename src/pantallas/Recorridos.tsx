@@ -303,7 +303,8 @@ function GuionVista({
       <h2 className="sr-only">{rotulo}</h2>
       {/* Los momentos en orden, como una línea de tiempo: el número en su círculo y una raya
           que los une; el título abre el párrafo literal (13-10-2026: sin el índice repetido). */}
-      <ol className="mt-2" aria-label="Momentos">
+      {/* 0.94.0 (rediseño, fase 2): sin el margen de arriba (el título va solo para el lector). */}
+      <ol aria-label="Momentos">
         {momentos.map((m, i) =>
           i < desde ? null : (
             <li
@@ -381,11 +382,12 @@ function CabeceraSituacion({
 }) {
   void id;
   return (
-    // 0.92.0 (revisión de tarjetas, ★2 y ★4): sin pleca (no es un sistema) y con el título de
-    // tarjeta (15 px), como el resto de títulos dentro de una tarjeta.
-    <div className="tarjeta flex items-center gap-3 p-3">
+    // 0.92.0 (revisión de tarjetas, ★2 y ★4): sin pleca (no es un sistema).
+    // 0.94.0 (rediseño, fase 2): el asunto de la columna, como título de sección (17/700) sobre una
+    // línea fina y sin caja: lo que sigue (la conducta) es lo que va en tarjetas.
+    <div className="separador flex min-h-11 items-center gap-3 border-b pb-2">
       <div className="min-w-0 flex-1">
-        <h2 className="titulo-tarjeta">{etiqueta}</h2>
+        <h2 className="titulo-seccion">{etiqueta}</h2>
       </div>
       <button type="button" onClick={onCambiar} className="chip shrink-0 lg:hidden">
         Cambiar
@@ -652,7 +654,9 @@ export function SituacionSistema({
                   después los objetivos y lo común. */}
               {GUIA_POR_SISTEMA[guia.id] && (
                 // 0.92.0 (revisión de tarjetas, ★11): en el móvil, 12 px (marco dentro de marco).
-                <section aria-label="Sistema a sistema" className="tarjeta p-3 sm:p-4">
+                // 0.94.0 (rediseño, fase 2): sin marco alrededor (el selector y la tarjeta del
+                // sistema iban dentro de otra tarjeta).
+                <section aria-label="Sistema a sistema">
                   {/* 0.80.1 (cuarta ronda, adjunto): sin sistema en la dirección, se dice cuál se
                       enseña y por qué. */}
                   {sisIdx < 0 && sistemaReciente() !== undefined && (
@@ -733,7 +737,9 @@ export function SituacionSistema({
               )}
               <section
                 id="conducta-situacion"
-                className="tarjeta scroll-mb-28 scroll-mt-4 space-y-3 p-4"
+                // 0.94.0 (rediseño, fase 2): sin marco alrededor: el selector, la tarjeta del
+                // sistema y la casilla común van sobre el papel (antes, tarjeta dentro de tarjeta).
+                className="scroll-mb-28 scroll-mt-4 space-y-3"
                 aria-label="Conducta recomendada"
               >
                 {(porSistema || sit.tabla === "T6") && (
@@ -1148,7 +1154,12 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           <dl className="mt-3 divide-y md:grid md:grid-cols-3 md:gap-4 md:divide-y-0 print:grid print:grid-cols-3 print:gap-4 print:divide-y-0">
             {t.columnas.slice(1).map((col, j) => {
               return (
-                <div key={col} className="py-2.5 md:py-0">
+                // 0.94.0 (rediseño, fase 2): desde md, cada columna abre con su línea capilar, como
+                // los datos de las fichas.
+                <div
+                  key={col}
+                  className="py-2.5 md:border-t md:border-[var(--linea-suave)] md:pb-0 md:pt-2.5"
+                >
                   <dt className="rotulo mb-1">{col}</dt>
                   <dd className="text-[15px] text-slate-800">
                     <Lineas>{fila.celdas[j + 1]}</Lineas>
@@ -1297,7 +1308,8 @@ export function Interrupcion(_props: { tramo?: string }) {
   return (
     <div>
       <CabeceraEditorial titulo="Interrupción del sistema" hex={hex} level={1} />
-      <div className="diagrama-grande">
+      {/* 0.94.0 (rediseño, fase 2): «pantalla-interrupcion» pone el cuerpo a la letra de consulta. */}
+      <div className="diagrama-grande pantalla-interrupcion">
         <InterrupcionPantalla />
       </div>
       <FuentePie
