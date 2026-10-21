@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-21",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — fichas con un solo estilo de filas`,
+    titulo: `Complemento interactivo ${VERSION_APP} — rediseño, segunda fase`,
+    detalle: [
+      "Portada en tres niveles: los sistemas (cada uno con su foto, su nombre y su algoritmo), la consulta (Iniciación y seguimiento, Situaciones clínicas) y la lectura y el material para el paciente.",
+      "Situaciones: el asunto como título de sección; el selector, la tarjeta del sistema y lo común, sobre el papel, sin cajas dentro de cajas.",
+      "Programación inicial como hoja de programación (parámetro a la izquierda, cifra a la derecha); Interrupción a 15 px y con más aire; la descarga con la línea fina de las fichas; la pregunta frecuente con su título en minúscula («HbA1c»); en el móvil, la pestaña activa de la barra inferior con su filete.",
+    ],
+  },
+  {
+    fecha: "2026-10-21",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.94.1 — fichas con un solo estilo de filas",
     detalle: [
       "Cómo funciona e Indicación y material, con el estilo de filas de Modos y Parámetros: rótulo a la izquierda, en minúscula y negrita; el dato a la derecha; una línea fina entre filas (antes, una rejilla con rótulos en versalitas).",
       "Parámetros de los cuatro: cada grupo con la etiqueta de la ficha y un parámetro por línea (antes, rótulos en mayúsculas partidos en dos líneas).",
