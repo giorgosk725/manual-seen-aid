@@ -1,9 +1,17 @@
 /* Buscar, Bibliografía, Sobre esta app, Autoevaluación y Preguntas frecuentes. */
+import { VeaseTambien } from "../componentes/VeaseTambien";
 import { recordarSistema } from "../sistemaReciente";
 import { Anuncio } from "../componentes/Anuncio";
 import { guardarReciente } from "../prefs";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, CheckCircle2, ChevronDown, ExternalLink, XCircle } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  ChevronDown,
+  ChevronLeft,
+  ExternalLink,
+  XCircle,
+} from "lucide-react";
 import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { FRECUENTES } from "../frecuentes";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
@@ -895,15 +903,14 @@ export function Preguntas({ id }: { id?: string }) {
     const hermanas = FRECUENTES.filter((x) => x.tema === f.tema && x.id !== f.id);
     return (
       <div>
-        <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-          <a
-            href={href("preguntas")}
-            className="inline-flex min-h-11 items-center font-semibold hover:underline"
-          >
+        {/* 0.93.1 (petición del responsable: «cómo vuelvo a las preguntas»): la vuelta a la lista,
+            como botón a la vista (antes, una miga de 12 px). */}
+        <div className="no-imprimir mb-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <a href={href("preguntas")} className="chip tap-44 gap-1">
+            <ChevronLeft size={14} aria-hidden="true" />
             Preguntas frecuentes
           </a>
-          <span aria-hidden="true">›</span>
-          <span>{f.tema}</span>
+          <span className="text-xs text-slate-500">{f.tema}</span>
         </div>
         <CabeceraEditorial titulo={f.pregunta} hex={hex} level={1} />
         {estado === "cargando" && <p className="text-sm text-slate-600">Cargando los pasajes…</p>}
@@ -918,24 +925,16 @@ export function Preguntas({ id }: { id?: string }) {
         {/* En su pantalla, sin resaltar palabras (0.70.0). */}
         {r && <RespuestasCapitulo respuestas={[]} q="" frecuente={r} sinPregunta />}
         {hermanas.length > 0 && (
-          <section aria-labelledby="mismo-tema" className="mt-6">
-            <h2 id="mismo-tema" className="rotulo mb-2" style={{ color: hex.ink }}>
-              Del mismo tema
-            </h2>
-            <ul className="space-y-1">
-              {hermanas.map((x) => (
-                <li key={x.id}>
-                  <a
-                    href={href("preguntas", x.id)}
-                    className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
-                  >
-                    {x.pregunta}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
+          <VeaseTambien
+            titulo="Del mismo tema"
+            className="mt-6"
+            filas={hermanas.map((x) => ({ href: href("preguntas", x.id), t: x.pregunta }))}
+          />
         )}
+        <a href={href("preguntas")} className="no-imprimir chip tap-44 mt-4 gap-1">
+          <ChevronLeft size={14} aria-hidden="true" />
+          Todas las preguntas frecuentes
+        </a>
       </div>
     );
   }

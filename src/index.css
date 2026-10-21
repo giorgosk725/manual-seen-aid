@@ -1749,7 +1749,7 @@ html.night *:focus-visible {
 
 /* Interrupción del sistema (0.70.0) y, desde la 0.92.3, cada diagrama en su pantalla: con la
    letra de lectura (en la galería de diagramas sigue compacto). */
-.diagrama-grande :is(.text-xs, .text-\[13px\]) {
+.diagrama-grande .text-xs {
   font-size: 0.875rem;
   line-height: 1.35rem;
 }

@@ -7,6 +7,7 @@
    «Comparar sistemas» y «Parámetros por sistema». */
 import { sinCortes } from "../sinCortes";
 import {
+  Fragment,
   useEffect,
   useMemo,
   useRef,
@@ -388,7 +389,7 @@ const enOrdenDeTabla3 = <T extends { r: string }>(xs: T[]) =>
 // 0.92.0 (revisión de tarjetas, sistemas): enlaces de texto también en el móvil (la rejilla de
 // botones ocupaba 119 px por tarjeta).
 const accesoTarjeta =
-  "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9 sm:text-sm";
+  "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline sm:min-h-9 sm:text-sm";
 
 /* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
 const TODAS_LAS_SECCIONES = [
@@ -1381,15 +1382,25 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                   aria-label={`Ficha de ${s.name}`}
                   // 0.89.1 (13.ª ronda, adjunto): desde xl (dos columnas), con los rótulos cortos en
                   // una línea: a 1366 × 768 los cuatro objetivos entran sin desplazarse.
-                  className="separador flex flex-wrap justify-between gap-x-2 gap-y-0 border-t px-4 py-1 sm:justify-start sm:gap-x-4 xl:gap-x-3 xl:py-0.5"
+                  className="separador flex flex-wrap justify-between gap-x-2 gap-y-0 border-t px-4 py-1 sm:justify-start sm:gap-x-2.5 xl:py-0.5"
                 >
-                  {accesos.map(([t, corto, ruta]) => (
-                    <a key={t} href={ruta} className={accesoTarjeta}>
-                      <span className="sm:hidden xl:inline" aria-hidden="true">
-                        {corto}
-                      </span>
-                      <span className="sr-only sm:not-sr-only xl:sr-only">{t}</span>
-                    </a>
+                  {accesos.map(([t, corto, ruta], k) => (
+                    <Fragment key={t}>
+                      {k > 0 && (
+                        <span
+                          aria-hidden="true"
+                          className="hidden self-center text-slate-300 sm:inline"
+                        >
+                          ·
+                        </span>
+                      )}
+                      <a href={ruta} className={accesoTarjeta}>
+                        <span className="sm:hidden xl:inline" aria-hidden="true">
+                          {corto}
+                        </span>
+                        <span className="sr-only sm:not-sr-only xl:sr-only">{t}</span>
+                      </a>
+                    </Fragment>
                   ))}
                 </nav>
               </article>

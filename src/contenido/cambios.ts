@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-21",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — decimoquinta ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — tarjetas más limpias y vuelta a las preguntas`,
+    detalle: [
+      "Fichas: los rótulos que llevan al texto del capítulo, con subrayado de puntos (como las remisiones); los enlaces de cada fila, con su flecha y sin subrayado; más aire entre filas.",
+      "Resumen de Sistemas: cada dato en su banda, con una línea fina entre filas; los accesos de cada tarjeta, en una línea separada por «·» y sin subrayados.",
+      "Preguntas frecuentes: «‹ Preguntas frecuentes» arriba y «‹ Todas las preguntas frecuentes» al final de cada pregunta; «Del mismo tema» como lista.",
+    ],
+  },
+  {
+    fecha: "2026-10-21",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.93.0 — decimoquinta ronda de auditorías de uso",
     detalle: [
       "Situaciones: lo que añaden los apartados 9 y 10 también con los cuatro sistemas (la hipoglucemia nocturna: lo de cada sistema en su tarjeta y lo común una vez); el sueño, con el patrón nocturno de la descarga y sin la frase que repetía la Tabla 4; en la gestación, «(Control-IQ+)» en la estrategia y el modo sueño continuado.",
       "Comparación: «Agua, alcohol y desconexión» de las fichas, comparados (los sistemas que dicen lo mismo, juntos); al marcar el segundo sistema en el Resumen, la comparación queda en la ruta; «Cambiar» de la barra plegada abre el selector también con la página bajada.",

@@ -2,6 +2,7 @@
    lo de la variante (Control-IQ+, Liberty) junto al dato y la fuente al pie, que lleva al texto
    literal del capítulo. Dos formas: casillas (datos cortos, en rejilla) y filas (parámetros y
    modos, con el rótulo a la izquierda). */
+import { ArrowRight } from "lucide-react";
 import type { ReactNode } from "react";
 import { FuentePie } from "./FuentePie";
 import { SinCortes } from "./SinCortes";
@@ -62,7 +63,7 @@ const MODO = {
   },
   resumen: {
     dl: "grid gap-y-3 sm:grid-cols-3 sm:gap-x-5 xl:row-span-3 xl:grid-cols-1 xl:grid-rows-subgrid xl:gap-y-2",
-    fila: "min-w-0 xl:grid xl:grid-cols-[9.25rem_1fr] xl:gap-x-3",
+    fila: "min-w-0 xl:grid xl:grid-cols-[9.25rem_1fr] xl:gap-x-3 xl:border-t xl:border-[var(--linea-suave)] xl:pt-2 xl:first:border-t-0 xl:first:pt-0",
     dt: "xl:pt-0.5",
     dd: "mt-1 xl:mt-0",
   },
@@ -105,7 +106,7 @@ export function CasillasDatos({
               {ruta ? (
                 <a
                   href={ruta}
-                  className="tap-44 -my-[5px] inline-block py-[5px] underline decoration-slate-400 decoration-1 underline-offset-[3px] hover:decoration-slate-700"
+                  className="tap-44 -my-[5px] inline-block py-[5px] underline decoration-slate-400 decoration-dotted decoration-1 underline-offset-[3px] hover:decoration-solid hover:decoration-slate-700"
                   title="Texto del capítulo"
                 >
                   {d.r}
@@ -233,14 +234,17 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                 data-dato={slugDato(d.r)}
                 // 0.92.0 (revisión de tarjetas): desde lg, rótulo en 20 rem (en 16, los de Modos
                 // iban a 3–4 líneas); el valor sigue limitado a 72ch.
-                className="grid gap-x-5 gap-y-1 px-4 py-3 sm:grid-cols-[minmax(11rem,16rem)_1fr] lg:grid-cols-[minmax(11rem,20rem)_1fr]"
+                // 0.93.1 (petición del responsable: «mejorar estas tarjetas»): más aire por fila.
+                className="grid gap-x-6 gap-y-1 px-4 py-3.5 sm:grid-cols-[minmax(11rem,16rem)_1fr] lg:grid-cols-[minmax(11rem,19rem)_1fr]"
               >
                 <dt className="min-w-0">
                   {ruta ? (
                     <a
                       href={ruta}
                       // 0.78.1 (segunda ronda): zona táctil de 24 px como mínimo (tap-44 la amplía).
-                      className="tap-44 inline-block min-h-6 py-0.5 text-[15px] font-semibold leading-snug text-slate-900 underline decoration-slate-400 decoration-1 underline-offset-[3px] hover:decoration-slate-700"
+                      // 0.93.1: subrayado de puntos, como las remisiones del capítulo (los
+                      // subrayados continuos de todas las filas hacían ruido).
+                      className="tap-44 inline-block min-h-6 py-0.5 text-[15px] font-semibold leading-snug text-slate-900 underline decoration-slate-400 decoration-dotted decoration-1 underline-offset-4 hover:decoration-solid hover:decoration-slate-700"
                       title="Texto del capítulo"
                     >
                       {d.r}
@@ -292,9 +296,10 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                   {d.enlace && (
                     <a
                       href={d.enlace.ruta}
-                      className="tap-44 mt-1 inline-block min-h-6 py-0.5 text-[13px] font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 print:hidden"
+                      className="tap-44 mt-1.5 inline-flex min-h-6 items-center gap-1 py-0.5 text-[13px] font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline print:hidden"
                     >
                       {d.enlace.texto}
+                      <ArrowRight size={13} aria-hidden="true" className="shrink-0" />
                     </a>
                   )}
                 </dd>
