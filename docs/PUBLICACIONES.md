@@ -53,3 +53,10 @@ Cloudflare Pages).
 | 2026-10-20 23:24 | main   | 0.91.2  | eeba8a00dfb1 | index-BggYRyzk.js                       | 0.91.1 (43a1d1f29926) |
 | 2026-10-21 15:37 | main   | 0.92.0  | 2cc4169da017 | index-fyu922hE.js                       | 0.91.2 (eeba8a00dfb1) |
 | 2026-10-21 15:56 | main   | 0.92.1  | c6fd9cb682d7 | index-jYJpffWg.js                       | 0.92.0 (2cc4169da017) |
+| 2026-10-21 16:05 | main   | 0.92.2  | 09eaaab95482 | index-CQPkAxCj.js                       | 0.92.1 (c6fd9cb682d7) |
+
+Nota (21-10-2026): el despliegue de la 0.92.1 (index-jYJpffWg.js) se construyó mientras ya se
+editaban en la copia de trabajo los cambios de la 0.92.2 (orden de Parámetros y temas de
+Preguntas abiertos en el ordenador), así que llevaba ya esos cambios sin estar en c6fd9cb. Quedó
+sustituido 9 minutos después por la 0.92.2 (09eaaab), que es su commit exacto. Para recuperar la
+0.92.1 tal cual, construir desde c6fd9cb, no usar aquel despliegue.
