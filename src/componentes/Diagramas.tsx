@@ -107,7 +107,8 @@ function Sub({
 const SEGUIR_DIAGRAMA: Partial<Record<DiagramaId, { texto: string; ruta: string }[]>> = {
   hipoglucemia: [
     { texto: "Plan de seguridad (hoja para el paciente)", ruta: href("pacientes") },
-    { texto: "Hipoglucemia nocturna", ruta: href("capitulo", "09-descarga", "b7") },
+    // 0.95.1 (16.ª ronda, guardia): a la situación (con lo de cada sistema), no al párrafo.
+    { texto: "Hipoglucemia nocturna", ruta: href("consultar", "situacion", "sueno") },
     { texto: "Tiempo por debajo del rango elevado", ruta: href("capitulo", "09-descarga", "b10") },
   ],
 };

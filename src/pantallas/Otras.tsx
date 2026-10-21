@@ -12,7 +12,7 @@ import {
   ExternalLink,
   XCircle,
 } from "lucide-react";
-import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { FRECUENTES } from "../frecuentes";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
 import { BUILD } from "../build";
@@ -901,17 +901,37 @@ export function Preguntas({ id }: { id?: string }) {
   if (f) {
     const r = motor?.respuestaDeFrecuente(f.id) ?? null;
     const hermanas = FRECUENTES.filter((x) => x.tema === f.tema && x.id !== f.id);
+    // 0.95.1 (16.ª ronda, guardia): una pregunta de un sistema vuelve a las preguntas de su ficha
+    // (antes, a la lista global; desde la ficha se perdía el sitio).
+    const deFicha =
+      f.sistema !== undefined && f.sistema >= 0
+        ? {
+            href: href("sistemas", ORDEN_SISTEMAS[f.sistema], "preguntas"),
+            t: `Preguntas · ${CORTO_SISTEMA[f.sistema]}`,
+          }
+        : null;
+    const volver = (abajo: boolean) => (
+      <div
+        className={`no-imprimir flex flex-wrap items-center gap-x-3 gap-y-1 ${abajo ? "mt-4" : "mb-3"}`}
+      >
+        {deFicha && (
+          <a href={deFicha.href} className="chip tap-44 gap-1">
+            <ChevronLeft size={14} aria-hidden="true" />
+            {deFicha.t}
+          </a>
+        )}
+        <a href={href("preguntas")} className="chip tap-44 gap-1">
+          {!deFicha && <ChevronLeft size={14} aria-hidden="true" />}
+          {deFicha ? "Todas las preguntas" : "Preguntas frecuentes"}
+        </a>
+        {!abajo && <span className="text-xs text-slate-500">{f.tema}</span>}
+      </div>
+    );
     return (
       <div>
         {/* 0.93.1 (petición del responsable: «cómo vuelvo a las preguntas»): la vuelta a la lista,
             como botón a la vista (antes, una miga de 12 px). */}
-        <div className="no-imprimir mb-3 flex flex-wrap items-center gap-x-3 gap-y-1">
-          <a href={href("preguntas")} className="chip tap-44 gap-1">
-            <ChevronLeft size={14} aria-hidden="true" />
-            Preguntas frecuentes
-          </a>
-          <span className="text-xs text-slate-500">{f.tema}</span>
-        </div>
+        {volver(false)}
         <CabeceraEditorial titulo={f.pregunta} hex={hex} level={1} frase />
         {estado === "cargando" && <p className="text-sm text-slate-600">Cargando los pasajes…</p>}
         {estado === "error" && (
@@ -931,10 +951,7 @@ export function Preguntas({ id }: { id?: string }) {
             filas={hermanas.map((x) => ({ href: href("preguntas", x.id), t: x.pregunta }))}
           />
         )}
-        <a href={href("preguntas")} className="no-imprimir chip tap-44 mt-4 gap-1">
-          <ChevronLeft size={14} aria-hidden="true" />
-          Todas las preguntas frecuentes
-        </a>
+        {volver(true)}
       </div>
     );
   }

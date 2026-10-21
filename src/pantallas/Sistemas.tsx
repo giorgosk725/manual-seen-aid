@@ -360,7 +360,7 @@ const sinNombreDelSistema = (q: string) =>
 // 0.94.0 (rediseño): sin subrayado en reposo y separados por «·» desde sm, como los accesos de las
 // tarjetas del Resumen (subrayados, se leían como una segunda fila de pestañas).
 const accesoFicha =
-  "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline sm:min-h-9";
+  "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-medium text-slate-500 underline-offset-4 hover:text-slate-900 hover:underline sm:min-h-9";
 /* «Ficha entera», junto a Imprimir: enlace suelto, con su subrayado fino. */
 const accesoSuelto =
   "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-600 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9";

@@ -973,6 +973,8 @@ export function SituacionSistema({
                   // 0.92.3 (15.ª ronda, R3): y el nocturno, desde el sueño.
                   ...(sit.id === "sueno"
                     ? [
+                        // 0.95.1 (16.ª ronda, guardia): el tratamiento de la hipoglucemia, a mano.
+                        { href: href("visual", "hipoglucemia"), t: "Hipoglucemia en asa cerrada" },
                         {
                           href: href("consultar", "descarga", "5"),
                           t: "Patrón nocturno: descarga, paso 5",
