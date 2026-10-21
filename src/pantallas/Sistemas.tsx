@@ -696,7 +696,9 @@ export function FichaSistema({
               )}
               {/* 0.85.1 (novena ronda, visual): en el móvil, solo el icono (44 px, con nombre). */}
               <BotonImprimir objetivo={ref} compacto titulo="Imprimir la ficha">
-                <span className="sr-only sm:not-sr-only">Imprimir la ficha</span>
+                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                  Imprimir la ficha
+                </span>
               </BotonImprimir>
             </div>
           </div>
@@ -765,7 +767,10 @@ export function FichaSistema({
       {/* 0.94.0 (rediseño): la regla de las cabeceras de pantalla (tramo del color del sistema y
           línea fina), como en CabeceraEditorial; en el móvil, la línea de las pestañas ya cierra. */}
       <div aria-hidden="true" className="regla-seccion mb-1 hidden h-px w-full sm:flex">
-        <span className="w-12" style={{ ["--sis" as string]: h.strong, background: "var(--sis)" }} />
+        <span
+          className="w-12"
+          style={{ ["--sis" as string]: h.strong, background: "var(--sis)" }}
+        />
         <span className="flex-1" />
       </div>
 
@@ -1671,9 +1676,11 @@ function Comparacion({
                       >
                         <NombreSistema n={CATALOGO_SISTEMAS[c].name} />
                       </a>
+                      {/* 0.94.0 (rediseño): cada grupo abre con su línea capilar, como los datos
+                          de las fichas. */}
                       <dl className="mt-2 space-y-2 text-sm leading-snug">
                         {grupos.map((g) => (
-                          <div key={g.r}>
+                          <div key={g.r} className="border-t border-[var(--linea-suave)] pt-2">
                             <dt className="rotulo">{g.r}</dt>
                             <dd
                               className={`mt-0.5 ${g.fuerte ? "font-semibold text-slate-900" : "text-slate-800"}`}

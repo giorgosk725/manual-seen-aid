@@ -1321,6 +1321,22 @@ html.night ::highlight(frase-citada) {
   .tabla-capitulo thead th * {
     font-size: inherit !important;
   }
+  /* 0.94.0 (rediseño): en papel, los rótulos de fila a la letra de la tabla (iban a 13 px, más que
+     las celdas) y las cifras largas pueden partirse («110, 120, 130, 140 o 150 mg/dl» se salía de
+     la columna de Omnipod 5). */
+  .tabla-capitulo tbody th,
+  .tabla-capitulo tbody th .text-xs {
+    font-size: 8.5pt !important;
+    line-height: 1.3 !important;
+  }
+  .tabla-capitulo .cifra {
+    white-space: normal;
+  }
+  /* Una tabla más alta que una cara empieza en la primera (antes dejaba la cara 1 con el título
+     de la pantalla y nada más). */
+  section.bloque-papel:has(.tabla-capitulo) {
+    break-inside: auto;
+  }
   .tabla-capitulo {
     font-size: 8.5pt;
     table-layout: fixed;

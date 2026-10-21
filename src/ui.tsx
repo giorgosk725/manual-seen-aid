@@ -416,7 +416,8 @@ export function BotonImprimir({
       onClick={() => imprimirRegion(() => objetivo.current || null)}
       className={
         compacto
-          ? "chip tap-44 shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+          ? // 0.94.0 (rediseño): en una línea («Imprimir este / paso» se partía a 1440 px).
+            "chip tap-44 shrink-0 whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
           : "boton-primario shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
       }
     >
