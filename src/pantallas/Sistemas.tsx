@@ -357,7 +357,12 @@ const sinNombreDelSistema = (q: string) =>
 /* Enlace de acceso en la cabecera de la ficha: texto con subrayado fino. */
 // 0.92.0 (revisión de tarjetas, sistemas): 13 px y gris medio, para que no se lean como otra fila
 // de pestañas.
+// 0.94.0 (rediseño): sin subrayado en reposo y separados por «·» desde sm, como los accesos de las
+// tarjetas del Resumen (subrayados, se leían como una segunda fila de pestañas).
 const accesoFicha =
+  "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline sm:min-h-9";
+/* «Ficha entera», junto a Imprimir: enlace suelto, con su subrayado fino. */
+const accesoSuelto =
   "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-600 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9";
 
 /* 0.92.0 (revisión de tarjetas, sistemas): las menciones del capítulo, agrupadas por apartado
@@ -655,7 +660,7 @@ export function FichaSistema({
         <span>{s.name}</span>
       </div>
       {/* En el móvil, los enlaces van a lo ancho debajo de la foto (dos filas en vez de tres). */}
-      <header className="mb-2 grid grid-cols-[auto_1fr] items-center gap-x-3 sm:mb-4 sm:items-start sm:gap-x-4">
+      <header className="mb-2 grid grid-cols-[auto_1fr] items-center gap-x-3 sm:mb-3 sm:items-start sm:gap-x-4">
         <AbrirEnVisor
           imagen={{ src: FOTO_SISTEMA[s.id], alt: `Foto oficial de ${s.name}`, titulo: s.name }}
           className="tarjeta h-14 w-14 shrink-0 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:row-span-2 sm:h-16 sm:w-16"
@@ -684,7 +689,7 @@ export function FichaSistema({
               {!completa && (
                 <a
                   href={href("sistemas", s.id, "completa")}
-                  className={`${accesoFicha} hidden lg:inline-flex`}
+                  className={`${accesoSuelto} hidden lg:inline-flex`}
                 >
                   Ficha entera
                 </a>
@@ -698,7 +703,7 @@ export function FichaSistema({
         </div>
         {/* Sistema visual: los tres accesos como enlaces de texto en una fila (en el móvil eran tres
             botones apilados antes del contenido). */}
-        <div className="no-imprimir col-span-2 mt-0.5 flex flex-wrap gap-x-3 gap-y-0 max-sm:[&>*]:px-0 sm:col-span-1 sm:col-start-2 sm:mt-0 sm:gap-x-4">
+        <div className="no-imprimir col-span-2 mt-0.5 flex flex-wrap gap-x-3 gap-y-0 max-sm:[&>*]:px-0 sm:col-span-1 sm:col-start-2 sm:mt-0 sm:gap-x-2">
           <a
             // I61-04: al principio del recorrido (preparación), con el sistema; no al paso 5.
             href={href("consultar", "inicio", `preparacion:${slug}`)}
@@ -707,11 +712,17 @@ export function FichaSistema({
             <span className="sm:hidden">Iniciación</span>
             <span className="hidden sm:inline">Iniciación del sistema</span>
           </a>
+          <span aria-hidden="true" className="hidden self-center text-slate-300 sm:inline">
+            ·
+          </span>
           {/* 0.88.1 (duodécima ronda, R5): el cálculo de parámetros iniciales del sistema, directo
               (Iniciación abre las fases). */}
           <a href={href("consultar", "inicio", `calculadora:${slug}`)} className={accesoFicha}>
             Cálculo
           </a>
+          <span aria-hidden="true" className="hidden self-center text-slate-300 sm:inline">
+            ·
+          </span>
           <a href={href("pacientes", "plan", s.id)} className={accesoFicha}>
             {/* Rótulo corto en el móvil; el nombre accesible, siempre el completo. */}
             <span className="sm:hidden" aria-hidden="true">
@@ -719,9 +730,15 @@ export function FichaSistema({
             </span>
             <span className="sr-only sm:not-sr-only">Plan de seguridad</span>
           </a>
+          <span aria-hidden="true" className="hidden self-center text-slate-300 sm:inline">
+            ·
+          </span>
           <a href={href("consultar", "situacion", `:${slug}`)} className={accesoFicha}>
             Situaciones
           </a>
+          <span aria-hidden="true" className="hidden self-center text-slate-300 sm:inline">
+            ·
+          </span>
           <a
             href={href("consultar", "descarga")}
             className={`${accesoFicha} hidden sm:inline-flex`}
@@ -745,6 +762,12 @@ export function FichaSistema({
           </button>
         </div>
       </header>
+      {/* 0.94.0 (rediseño): la regla de las cabeceras de pantalla (tramo del color del sistema y
+          línea fina), como en CabeceraEditorial; en el móvil, la línea de las pestañas ya cierra. */}
+      <div aria-hidden="true" className="regla-seccion mb-1 hidden h-px w-full sm:flex">
+        <span className="w-12" style={{ ["--sis" as string]: h.strong, background: "var(--sis)" }} />
+        <span className="flex-1" />
+      </div>
 
       <BarraSistemas ids={[s.id]} seccion={sec} abrir={abrirSelector} completa={completa} />
       {/* 0.70.0: la ficha es una sola página; las pestañas llevan a cada sección. */}
@@ -1156,7 +1179,10 @@ function BarraSistemas({
       ref={barra}
       // En la comparación del ordenador, la barra no se pega: lo que queda arriba al bajar es la
       // cabecera de la tabla, con los nombres de los sistemas (0.72.0).
-      className={`barra-pegada separador no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 sm:mx-0 sm:rounded-lg sm:border sm:px-3 sm:pt-2 ${ids.length === 1 ? "" : "lg:static"} ${compacta && ids.length === 1 ? "" : "pt-2"}`}
+      // 0.94.0 (rediseño): sin caja desde sm (borde y esquinas la hacían parecer un formulario):
+      // las casillas y, debajo, la tira de pestañas apoyada en una línea a todo lo ancho, como en el
+      // móvil.
+      className={`barra-pegada separador no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 sm:mx-0 sm:px-0 sm:pt-2.5 ${ids.length === 1 ? "" : "lg:static"} ${compacta && ids.length === 1 ? "" : "pt-2"}`}
     >
       {compacta && ids.length === 1 ? null : compacta ? (
         <button
