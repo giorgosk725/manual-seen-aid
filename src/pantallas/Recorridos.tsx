@@ -1154,7 +1154,12 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           <dl className="mt-3 divide-y md:grid md:grid-cols-3 md:gap-4 md:divide-y-0 print:grid print:grid-cols-3 print:gap-4 print:divide-y-0">
             {t.columnas.slice(1).map((col, j) => {
               return (
-                <div key={col} className="py-2.5 md:py-0">
+                // 0.94.0 (rediseño, fase 2): desde md, cada columna abre con su línea capilar, como
+                // los datos de las fichas.
+                <div
+                  key={col}
+                  className="py-2.5 md:border-t md:border-[var(--linea-suave)] md:pb-0 md:pt-2.5"
+                >
                   <dt className="rotulo mb-1">{col}</dt>
                   <dd className="text-[15px] text-slate-800">
                     <Lineas>{fila.celdas[j + 1]}</Lineas>
@@ -1303,7 +1308,8 @@ export function Interrupcion(_props: { tramo?: string }) {
   return (
     <div>
       <CabeceraEditorial titulo="Interrupción del sistema" hex={hex} level={1} />
-      <div className="diagrama-grande">
+      {/* 0.94.0 (rediseño, fase 2): «pantalla-interrupcion» pone el cuerpo a la letra de consulta. */}
+      <div className="diagrama-grande pantalla-interrupcion">
         <InterrupcionPantalla />
       </div>
       <FuentePie
