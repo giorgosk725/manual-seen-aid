@@ -213,12 +213,10 @@ export function Infografia() {
           const esPlan = i === 4;
           return (
             <Revelar as="li" key={i} className={i >= 4 ? "md:col-span-2" : ""}>
-              <section
-                className="tarjeta tarjeta-sistema p-4"
-                style={{ ["--sis" as string]: hex.strong }}
-                aria-labelledby={`info-${i}`}
-              >
-                <h2 id={`info-${i}`} className="titulo-seccion" style={{ color: hex.ink }}>
+              {/* 0.92.0 (revisión de tarjetas, ★2 y ★4): tarjeta sin pleca (no es un sistema) y
+                  título de tarjeta en tinta. */}
+              <section className="tarjeta p-4" aria-labelledby={`info-${i}`}>
+                <h2 id={`info-${i}`} className="titulo-tarjeta">
                   <Texto>{c.titulo || ""}</Texto>
                 </h2>
                 <ul

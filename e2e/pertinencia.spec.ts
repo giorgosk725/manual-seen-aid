@@ -13,10 +13,11 @@ test.describe("Pertinencia y continuación (0.42.0)", () => {
     await expect(
       page.getByText(/Control-IQ frente a Control-IQ\+|diferencia hay entre Control-IQ/),
     ).toHaveCount(0);
+    // 0.92.0 (revisión de tarjetas, ★1): «Véase también» es una lista con su título.
     await expect(
-      page.getByRole("link", {
-        name: /Véase también: Iniciación del sistema · Programación inicial/,
-      }),
+      page
+        .getByRole("region", { name: "Véase también" })
+        .getByRole("link", { name: /Iniciación del sistema · Programación inicial/ }),
     ).toBeVisible();
     await expect(page.getByText("Cómo leer esta tabla")).toHaveCount(0);
   });

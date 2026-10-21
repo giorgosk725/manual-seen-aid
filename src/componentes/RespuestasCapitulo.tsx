@@ -12,11 +12,13 @@ import type { RespuestaFrecuente } from "../respuestas";
 import type { Frecuente } from "../frecuentes";
 import { FIGURA3, LISTA_TABLAS, type TablaId } from "../contenido";
 import { ComoInterpretar } from "./ComoInterpretar";
+import { VeaseTambien } from "./VeaseTambien";
 import { CON_INTERPRETACIONES } from "../edicion";
 import { ESCALA_CETONEMIA } from "../contenido/diagramas";
 import { href } from "../rutas";
 import { Texto } from "../texto";
 import { ponerConsulta } from "../consultaBuscar";
+import { SISTEMA_HEX } from "../tokens";
 
 function Marcado({ texto, q }: { texto: string; q: string }) {
   return (
@@ -168,27 +170,34 @@ function puntoClave(items: string[] | undefined, q: string): number {
   return mejor;
 }
 
+/* 0.92.0 (revisión de tarjetas, ★3): el chip de la app (.chip); con `sis`, el punto del color del
+   sistema delante (el filtro de las casillas de sistema, que van debajo con la misma pleca). */
 function Chip({
   on,
   onClick,
+  sis,
   children,
 }: {
   on: boolean;
   onClick: () => void;
+  sis?: number;
   children: ReactNode;
 }) {
   return (
-    <button
-      type="button"
-      aria-pressed={on}
-      onClick={onClick}
-      className={`tap-44 inline-flex min-h-11 items-center rounded-md border px-2.5 text-xs font-semibold transition sm:min-h-8 ${on ? "text-white" : "bg-white text-slate-700 hover:border-slate-500"}`}
-      style={on ? { background: "#8E254E", borderColor: "#8E254E" } : { borderColor: "#d4d4d4" }}
-    >
+    <button type="button" aria-pressed={on} onClick={onClick} className="chip tap-44 text-xs">
+      {sis !== undefined && sis >= 0 && (
+        <span
+          aria-hidden="true"
+          className="punto-sistema h-2 w-2 shrink-0 rounded-full"
+          style={{ ["--sis" as string]: SISTEMA_HEX[sis].strong, background: "var(--sis)" }}
+        />
+      )}
       {children}
     </button>
   );
 }
+/* La columna (0-3) de una casilla por su nombre de sistema («MiniMed 780G», «Omnipod 5»…). */
+const columnaDe = (nombre: string) => PREFIJO_SISTEMA.findIndex((re) => re.test(nombre.trim()));
 
 function Tarjeta({
   r: inicial,
@@ -202,7 +211,11 @@ function Tarjeta({
   sistemaConsulta,
   fijo = false,
   previo,
+  enCaja,
 }: {
+  /* 0.92.0 (revisión de tarjetas): dentro de la tarjeta de la pregunta o de los pasajes, sin marco
+     propio (marco dentro de marco); desde la segunda, separada de la anterior por una línea. */
+  enCaja?: "primera" | "siguiente";
   /* 0.80.1 (cuarta ronda): en una pregunta frecuente de un solo sistema, sin etiqueta ni botones
      de sistema en cada tarjeta. */
   fijo?: boolean;
@@ -247,8 +260,15 @@ function Tarjeta({
     "inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline sm:min-h-8";
   return (
     <div
-      className={principal ? "" : "rounded-lg border bg-white p-3"}
-      style={principal ? undefined : { borderColor: "#e6e6e6" }}
+      className={
+        principal
+          ? ""
+          : enCaja === "siguiente"
+            ? "separador border-t pt-3"
+            : enCaja
+              ? ""
+              : "tarjeta p-3"
+      }
     >
       {casilla && !fijo && (
         <p className="text-xs">
@@ -284,7 +304,12 @@ function Tarjeta({
         /* 0.77.1 (auditoría del adjunto; nada útil plegado): los sistemas, siempre a la vista. */
         <div className="mt-1 flex flex-wrap gap-1.5" role="group" aria-label="Sistema">
           {casillas.map((c, i) => (
-            <Chip key={c.nombre} on={sel === i} onClick={() => setSel(sel === i ? null : i)}>
+            <Chip
+              key={c.nombre}
+              on={sel === i}
+              sis={columnaDe(c.nombre)}
+              onClick={() => setSel(sel === i ? null : i)}
+            >
               {c.nombre}
             </Chip>
           ))}
@@ -372,15 +397,26 @@ function Tarjeta({
         </dl>
       )}
       {casillas && !casilla && (
-        <dl className="mt-1 grid gap-1 text-sm sm:grid-cols-2">
-          {casillas.map((s) => (
-            <div key={s.nombre} className="rounded-md bg-slate-50 px-2 py-1">
-              <dt className="text-xs font-bold text-slate-600">{s.nombre}</dt>
-              <dd className="whitespace-pre-line text-slate-900">
-                <Marcado texto={sinCortes(s.texto)} q={q} />
-              </dd>
-            </div>
-          ))}
+        // 0.92.0 (revisión de tarjetas, ★3): las casillas de sistema de la app (gris, pleca y
+        // nombre en el color del sistema), como en Situaciones y la ficha.
+        <dl className="mt-1.5 grid gap-1.5 text-sm sm:grid-cols-2">
+          {casillas.map((s) => {
+            const c = columnaDe(s.nombre);
+            return (
+              <div
+                key={s.nombre}
+                className={`casilla px-2.5 py-1.5 ${c >= 0 ? "casilla-sistema" : ""}`}
+                style={c >= 0 ? { ["--sis" as string]: SISTEMA_HEX[c].strong } : undefined}
+              >
+                <dt className="rotulo" style={c >= 0 ? { color: SISTEMA_HEX[c].ink } : undefined}>
+                  {s.nombre}
+                </dt>
+                <dd className="mt-0.5 whitespace-pre-line text-slate-900">
+                  <Marcado texto={sinCortes(s.texto)} q={q} />
+                </dd>
+              </div>
+            );
+          })}
         </dl>
       )}
       {/* 0.82.1 (sexta ronda, R3): no debajo de la propia nota (salía dos veces). */}
@@ -467,16 +503,14 @@ function BloqueFrecuente({
   // La misma nota (p. ej. la del asterisco de la Tabla 1) se enseña una vez por bloque.
   const notasVistas = new Set<string>();
   return (
-    <section
-      aria-labelledby={id}
-      className="mt-3 rounded-xl border-2 bg-white p-3 sm:p-4"
-      style={{ borderColor: "#8E254E" }}
-    >
+    // 0.92.0 (revisión de tarjetas, ★3): una tarjeta como las demás, con el rótulo en burdeos; el
+    // borde de 2 px burdeos queda solo para el foco de la caja de búsqueda.
+    <section aria-labelledby={id} className="tarjeta mt-3 p-3 sm:p-4">
       {/* En la pantalla de la pregunta, el rótulo solo para lectores de pantalla (0.70.0). */}
       <H
         id={id}
         className={sinPregunta ? "sr-only" : "mb-1 flex items-center gap-1.5 rotulo"}
-        style={{ color: "#8E254E" }}
+        style={{ color: "var(--acento-texto)" }}
       >
         <MessageCircleQuestion size={14} aria-hidden="true" /> Pregunta frecuente
       </H>
@@ -553,6 +587,7 @@ function BloqueFrecuente({
               sinNota={repetida}
               sistemaConsulta={sistema ?? frecuente.sistema}
               fijo={frecuente.sistema !== undefined}
+              enCaja={k > 0 ? "siguiente" : "primera"}
               previo={
                 k > 0
                   ? lista
@@ -566,28 +601,26 @@ function BloqueFrecuente({
         };
         return (
           <>
-            <div className="space-y-2">{juntas.map(tarjeta)}</div>
+            <div className="space-y-3">{juntas.map(tarjeta)}</div>
             {ampliacion.length > 0 && (
               <details className="mt-2" open>
                 <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
                   Todos los sistemas
                 </summary>
-                <div className="mt-2 space-y-2">{ampliacion.map(tarjeta)}</div>
+                <div className="mt-2 space-y-3">{ampliacion.map(tarjeta)}</div>
               </details>
             )}
           </>
         );
       })()}
+      {/* 0.92.0 (revisión de tarjetas, ★1): la misma lista de «Véase también» que en el resto. */}
       {frecuente.siguiente && (
-        <p className="mt-2">
-          <a
-            href={frecuente.siguiente.ruta}
-            onClick={onIr}
-            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline sm:min-h-8"
-          >
-            Véase también: {frecuente.siguiente.texto} <ArrowRight size={13} aria-hidden="true" />
-          </a>
-        </p>
+        <VeaseTambien
+          enCaja
+          nivel={H === "h2" ? 3 : 4}
+          onIr={onIr}
+          filas={[{ href: frecuente.siguiente.ruta, t: frecuente.siguiente.texto }]}
+        />
       )}
     </section>
   );
@@ -662,15 +695,21 @@ export function RespuestasCapitulo({
       </nav>
     ) : null;
   // 0.74.2 (nada útil plegado): hasta tres pasajes más, abiertos; si son más, plegados.
-  const masPasajes = (lista: Respuesta[]) =>
+  const masPasajes = (lista: Respuesta[], enCaja = false) =>
     lista.length > 0 && (
       <details className="mt-3" open={lista.length <= 3}>
         <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
           Más pasajes del capítulo ({lista.length})
         </summary>
-        <div className="mt-2 space-y-2">
-          {lista.map((o) => (
-            <Tarjeta key={`${o.id}|${o.sistema ?? ""}`} r={o} q={q} onIr={onIr} />
+        <div className={`mt-2 ${enCaja ? "space-y-3" : "space-y-2"}`}>
+          {lista.map((o, k) => (
+            <Tarjeta
+              key={`${o.id}|${o.sistema ?? ""}`}
+              r={o}
+              q={q}
+              onIr={onIr}
+              enCaja={enCaja ? (k > 0 ? "siguiente" : "primera") : undefined}
+            />
           ))}
         </div>
       </details>
@@ -715,15 +754,13 @@ export function RespuestasCapitulo({
       : "Coincidencia parcial en el capítulo";
   return (
     <>
-      <section
-        aria-labelledby={id}
-        className={`mt-3 rounded-xl bg-white p-3 sm:p-4 ${cercana ? "border" : "border-2"}`}
-        style={{ borderColor: cercana ? "#94a3b8" : "#3f6e9f" }}
-      >
+      {/* 0.92.0 (revisión de tarjetas, ★3): la misma tarjeta que la pregunta frecuente y «Abrir»
+          (antes, borde de 2 px azul o de 1 px gris pizarra); lo que la distingue es su rótulo. */}
+      <section aria-labelledby={id} className="tarjeta mt-3 p-3 sm:p-4">
         <H
           id={id}
           className="mb-1 flex items-center gap-1.5 rotulo"
-          style={{ color: cercana ? "#475569" : "#2f5680" }}
+          style={{ color: "var(--acento-texto)" }}
         >
           <Quote size={14} aria-hidden="true" /> {titulo}
         </H>
@@ -745,15 +782,12 @@ export function RespuestasCapitulo({
           <ComoInterpretar tabla={tablaDe(r.id)!} fila={filaDe(r.id)} />
         )}
         {!compacta && continuacion && (
-          <p className="mt-2">
-            <a
-              href={continuacion.ruta}
-              onClick={onIr}
-              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline sm:min-h-8"
-            >
-              Véase también: {continuacion.texto} <ArrowRight size={13} aria-hidden="true" />
-            </a>
-          </p>
+          <VeaseTambien
+            enCaja
+            nivel={nivel === 2 ? 3 : 4}
+            onIr={onIr}
+            filas={[{ href: continuacion.ruta, t: continuacion.texto }]}
+          />
         )}
         {compacta ? (
           <a
@@ -769,7 +803,7 @@ export function RespuestasCapitulo({
               : "Todos los resultados"}
           </a>
         ) : (
-          masPasajes(otras)
+          masPasajes(otras, true)
         )}
       </section>
       {Relacionadas}

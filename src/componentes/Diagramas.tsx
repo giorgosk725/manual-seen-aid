@@ -141,8 +141,9 @@ export function MarcoDiagrama({
         {!tituloFuera && (
           <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
             <div className="min-w-0">
-              {/* 0.70.0: solo el título (sin rótulo ni resumen); la fuente, al pie. */}
-              <Titulo id={`diag-${id}`} className="text-base font-extrabold text-slate-900">
+              {/* 0.70.0: solo el título (sin rótulo ni resumen); la fuente, al pie. 0.92.0
+                  (revisión de tarjetas, ★4): título de tarjeta (15/700), no 16/800. */}
+              <Titulo id={`diag-${id}`} className="titulo-tarjeta">
                 {meta.titulo}
               </Titulo>
             </div>
@@ -194,7 +195,8 @@ function Escalera({ i }: { i: number }) {
   return (
     <div>
       <div className="mb-2 flex items-baseline justify-between gap-2">
-        <Sub className="text-sm font-bold text-slate-900">{p.nombre}</Sub>
+        {/* 0.92.0 (revisión de tarjetas, ★4): título de tarjeta, no 14/700. */}
+        <Sub className="titulo-tarjeta">{p.nombre}</Sub>
       </div>
       <ol className="space-y-1">
         {/* Solo los objetivos del capítulo: el TAR > 180 de adultos va sin cifra (A07). */}
@@ -1306,19 +1308,23 @@ function InterrupcionLinea() {
     tono: { soft: string; strong: string; ink: string };
     children: ReactNode;
   }) => (
-    <li
-      className="tarjeta min-w-0 overflow-hidden"
-      style={{ borderTop: `4px solid ${tono.strong}` }}
-    >
-      {/* Cabecera con alto fijo en la rejilla (hasta tres líneas): las bandas de color quedan a la
-          misma altura sin estirar las tarjetas. */}
+    // 0.92.0 (revisión de tarjetas, ★5): sin alto fijo en la cabecera (58 px aunque cupiera en
+    // una línea). En la rejilla, cada caso ocupa dos filas de una subrejilla: las cabeceras de
+    // una fila toman la altura de la más alta y el cuerpo acaba con su texto (`self-start`). La
+    // tarjeta se dibuja en sus dos partes (cabecera arriba, cuerpo abajo), sin aire vacío dentro.
+    <li className="min-w-0 md:row-span-2 md:grid md:grid-rows-subgrid">
       <span
-        className="cabecera-tramo flex items-start px-3 py-2 text-[15px] font-bold leading-snug md:min-h-[3.6rem]"
-        style={{ background: tono.soft, color: tono.ink, ["--tono" as string]: tono.strong }}
+        className="cabecera-tramo tarjeta flex items-start rounded-b-none border-b-0 px-3 py-2 text-[15px] font-bold leading-snug"
+        style={{
+          background: tono.soft,
+          color: tono.ink,
+          borderTop: `4px solid ${tono.strong}`,
+          ["--tono" as string]: tono.strong,
+        }}
       >
         {cuando}
       </span>
-      <span className="block space-y-1.5 px-3 py-2.5 text-sm leading-snug text-slate-800">
+      <span className="tarjeta block space-y-1.5 self-start rounded-t-none border-t-0 px-3 py-2.5 text-sm leading-snug text-slate-800">
         {children}
       </span>
     </li>
@@ -1369,7 +1375,7 @@ function InterrupcionLinea() {
           desconectar; lo no programado se actúa a partir de aproximadamente 1 h sin insulina. */}
       <section>
         <Sub className="titulo-tarjeta mb-1.5">Si no estaba programada</Sub>
-        <ol className="grid items-start gap-3 md:grid-cols-3">
+        <ol className="grid gap-3 md:grid-cols-3 md:gap-y-0">
           <Tramo cuando={L.tramos[0].cuando} tono={TRAMO_HEX.verde}>
             <span className="block">
               <TS>{tramo[0]}</TS>
@@ -1395,7 +1401,7 @@ function InterrupcionLinea() {
         <Sub className="titulo-tarjeta mb-1.5">
           Si está programada: se decide antes de desconectar
         </Sub>
-        <ul className="grid items-start gap-3 md:grid-cols-2">
+        <ul className="grid gap-3 md:grid-cols-2 md:gap-y-0">
           {L.programadas.map((x, k) => (
             <Tramo key={x.cuando} cuando={x.cuando} tono={PROGRAMADA}>
               <span className="block">

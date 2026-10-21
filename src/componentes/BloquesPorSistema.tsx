@@ -14,9 +14,18 @@ import { tarjetasDeBloques } from "./tarjetasDeBloques";
 import { ComplementoVista } from "./Complemento";
 import type { Complemento } from "../notas-complementarias";
 
-function Bloques({ c, bloques }: { c: number; bloques: BloqueSistema[] }) {
+function Bloques({
+  c,
+  bloques,
+  comun = false,
+}: {
+  c: number;
+  bloques: BloqueSistema[];
+  /* Lo común a los cuatro: sin la pleca del sistema (0.92.0). */
+  comun?: boolean;
+}) {
   const h = SISTEMA_HEX[c];
-  const tarjetas = tarjetasDeBloques(c, bloques);
+  const tarjetas = tarjetasDeBloques(c, bloques, comun ? "comun" : "sistema");
   return (
     <div
       className={`grid gap-3 print:grid-cols-1 ${bloques.length > 1 ? "lg:grid-cols-2 lg:items-start" : ""}`}
@@ -34,7 +43,9 @@ function Bloques({ c, bloques }: { c: number; bloques: BloqueSistema[] }) {
   );
 }
 
-/* Debajo de una casilla de la Tabla 4, para el sistema ya elegido (sin selector). */
+/* Debajo de una casilla de la Tabla 4, para el sistema ya elegido (sin selector). 0.92.0 (revisión
+   de tarjetas, ★10): dentro de la tarjeta del sistema, como casillas grises sin pleca (antes, una
+   tarjeta más con la misma pleca debajo de la del sistema). */
 export function AnadidoDelSistema({
   c,
   bloques,
@@ -47,8 +58,8 @@ export function AnadidoDelSistema({
 }) {
   if (!bloques.length) return null;
   return (
-    <div className="mt-3">
-      <Bloques c={c} bloques={bloques} />
+    <div>
+      <dl className="space-y-2">{tarjetasDeBloques(c, bloques, "casilla").map((t) => t.nodo)}</dl>
       {!sinFuente && <FuentePie fuentes={fuentesDePiezas(bloques.flatMap((b) => b.piezas))} />}
     </div>
   );
@@ -93,7 +104,7 @@ export function BloquesPorSistema({
           tarjeta más alta y, en las columnas, dejaba un pie desigual. */}
       {comun.length > 0 && (
         <div className="mt-3">
-          <Bloques c={Math.max(c, 0)} bloques={comun} />
+          <Bloques c={Math.max(c, 0)} bloques={comun} comun />
         </div>
       )}
       {!sinFuente && <FuentePie className="mt-3" fuentes={fuentesDePiezas(todas)} />}

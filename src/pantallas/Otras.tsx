@@ -12,7 +12,7 @@ import { PREGUNTAS } from "../contenido/test";
 import { elegirRuta, href } from "../rutas";
 import { alCambiarConsulta, consultaBuscar, ponerConsulta } from "../consultaBuscar";
 import { Badge, CabeceraEditorial, Revelar, Segmented, ToneCard } from "../ui";
-import { CATEGORIA_HEX } from "../tokens";
+import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import {
   fueraDelCapitulo,
   marcar,
@@ -769,11 +769,8 @@ export function Test() {
         ))}
       </ol>
       {n === PREGUNTAS.length && (
-        <section
-          aria-labelledby="test-resultado"
-          className="tarjeta mt-4 border-2 p-4"
-          style={{ borderColor: CATEGORIA_HEX.aprender.strong }}
-        >
+        // 0.92.0 (revisión de tarjetas): tarjeta normal (sin borde de 2 px del color del área).
+        <section aria-labelledby="test-resultado" className="tarjeta mt-4 p-4">
           <h2 id="test-resultado" className="titulo-seccion">
             Resultado: {aciertos} de {PREGUNTAS.length}
           </h2>
@@ -812,7 +809,6 @@ const TEMAS = [
   "Uso habitual",
   ...TEMAS_SISTEMA,
 ].filter((t) => FRECUENTES.some((f) => f.tema === t));
-const PRIMER_TEMA_SISTEMA = TEMAS.find((t) => TEMAS_SISTEMA.includes(t));
 
 function IconoTema({ tema }: { tema: string }) {
   const k = TEMAS_SISTEMA.indexOf(tema);
@@ -827,6 +823,47 @@ function IconoTema({ tema }: { tema: string }) {
       />
     );
   return null;
+}
+
+/* Un tema de preguntas, plegado (decisión pendiente del autor sobre los 14 grupos). Los de sistema,
+   con la pleca y el nombre en el color del sistema. */
+function TemaPreguntas({ tema, abierto }: { tema: string; abierto: boolean }) {
+  const k = TEMAS_SISTEMA.indexOf(tema);
+  const h = k >= 0 ? SISTEMA_HEX[k] : null;
+  return (
+    <details
+      open={abierto || undefined}
+      className={`tarjeta group ${h ? "tarjeta-sistema" : ""}`}
+      style={h ? { ["--sis" as string]: h.strong } : undefined}
+    >
+      <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 text-sm font-bold text-slate-900 [&::-webkit-details-marker]:hidden">
+        <IconoTema tema={tema} />
+        <span className="flex-1" style={h ? { color: h.ink } : undefined}>
+          {tema}
+        </span>
+        <span className="insignia tabular-nums">
+          {FRECUENTES.filter((x) => x.tema === tema).length}
+        </span>
+        <ChevronDown
+          size={15}
+          className="text-slate-400 transition group-open:rotate-180"
+          aria-hidden="true"
+        />
+      </summary>
+      <ul className="filas separador border-t">
+        {FRECUENTES.filter((x) => x.tema === tema).map((x) => (
+          <li key={x.id}>
+            <a
+              href={href("preguntas", x.id)}
+              className="fila font-normal focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            >
+              <span className="flex-1">{x.pregunta}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  );
 }
 
 export function Preguntas({ id }: { id?: string }) {
@@ -935,48 +972,34 @@ export function Preguntas({ id }: { id?: string }) {
           ))}
         </ul>
       )}
-      {/* 0.72.0: un icono por tema (la foto en los de sistema) y, en el ordenador, dos columnas. */}
-      <div
-        className={
-          filtradas
-            ? "hidden"
-            : "grid gap-2 lg:block lg:columns-2 lg:gap-3 lg:[&>*]:mb-2 [&>*]:break-inside-avoid"
-        }
-      >
-        {TEMAS.map((tema) => (
-          <div key={tema}>
-            {tema === PRIMER_TEMA_SISTEMA && (
-              <h2 className="titulo-tarjeta mb-1.5 mt-4 lg:mt-0">Preguntas por sistema</h2>
-            )}
-            <details open={todas || undefined} className="tarjeta group">
-              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 text-sm font-bold text-slate-900 [&::-webkit-details-marker]:hidden">
-                <IconoTema tema={tema} />
-                <span className="flex-1">{tema}</span>
-                <span className="insignia tabular-nums">
-                  {FRECUENTES.filter((x) => x.tema === tema).length}
-                </span>
-                <ChevronDown
-                  size={15}
-                  className="text-slate-400 transition group-open:rotate-180"
-                  aria-hidden="true"
-                />
-              </summary>
-              <ul className="filas separador border-t">
-                {FRECUENTES.filter((x) => x.tema === tema).map((x) => (
-                  <li key={x.id}>
-                    <a
-                      href={href("preguntas", x.id)}
-                      className="fila font-normal focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                    >
-                      <span className="flex-1">{x.pregunta}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </details>
-          </div>
-        ))}
-      </div>
+      {/* 0.72.0: un icono por tema (la foto en los de sistema) y, en el ordenador, dos columnas.
+          0.92.0 (revisión de tarjetas, ★13): «Preguntas por sistema», a todo lo ancho antes de los
+          cuatro temas de sistema, que van como tarjetas de sistema (pleca y nombre en su color). */}
+      {!filtradas &&
+        [
+          TEMAS.filter((t) => !TEMAS_SISTEMA.includes(t)),
+          TEMAS.filter((t) => TEMAS_SISTEMA.includes(t)),
+        ].map(
+          (grupo, g) =>
+            grupo.length > 0 && (
+              <section
+                key={g}
+                aria-labelledby={g === 1 ? "preguntas-por-sistema" : undefined}
+                className={g === 1 ? "mt-6" : undefined}
+              >
+                {g === 1 && (
+                  <h2 id="preguntas-por-sistema" className="titulo-seccion mb-2">
+                    Preguntas por sistema
+                  </h2>
+                )}
+                <div className="grid gap-2 lg:block lg:columns-2 lg:gap-3 lg:[&>*]:mb-2 [&>*]:break-inside-avoid">
+                  {grupo.map((tema) => (
+                    <TemaPreguntas key={tema} tema={tema} abierto={todas} />
+                  ))}
+                </div>
+              </section>
+            ),
+        )}
     </div>
   );
 }

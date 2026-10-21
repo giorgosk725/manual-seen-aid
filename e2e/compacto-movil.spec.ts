@@ -37,7 +37,8 @@ test.describe("Móvil compacto (360 px)", () => {
     const migas = page.getByRole("navigation", { name: "Hojas para el paciente" });
     await expect(migas.getByRole("link", { name: "Material para el paciente" })).toBeVisible();
     expect((await migas.boundingBox())!.height).toBeLessThanOrEqual(48);
-    const sistemas = page.getByRole("group", { name: "Sistema" }).getByRole("button");
+    // 0.92.0 (revisión de tarjetas): el selector de toda la app (botones de opción), en una fila.
+    const sistemas = page.getByRole("radiogroup", { name: "Sistema" }).getByRole("radio");
     await expect(sistemas).toHaveCount(4);
     for (const i of [1, 2, 3]) await mismaFila(sistemas.nth(0), sistemas.nth(i));
     // Solo letra grande (A12): el botón de imprimir, sin selector de formato.

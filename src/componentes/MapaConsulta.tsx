@@ -37,7 +37,8 @@ export function TarjetaPortada({
     <section aria-labelledby={id} className="tarjeta flex h-full min-w-0 flex-col overflow-hidden">
       <header className="flex items-center gap-2.5 px-4 py-2.5">
         <Icono size={18} aria-hidden="true" className="shrink-0" style={{ color: hex.strong }} />
-        <Titulo id={id} className="titulo-tarjeta min-w-0 text-base">
+        {/* 0.92.0 (revisión de tarjetas, ★4): 15/700 como todo título de tarjeta (antes, 16). */}
+        <Titulo id={id} className="titulo-tarjeta min-w-0">
           {titulo}
         </Titulo>
       </header>
@@ -286,7 +287,25 @@ function Situaciones() {
       icono={LifeBuoy}
       hex={CATEGORIA_HEX.consultar}
     >
-      <ul className="flex flex-wrap gap-2 px-3 py-3">
+      {/* 0.92.0 (revisión de tarjetas, ★14): en el móvil, las tres con pantalla propia como filas a
+          todo lo ancho (antes, chips que se partían en dos líneas); desde sm, chips con las demás. */}
+      <ul className="filas sm:hidden">
+        {CON_COLOR.map(([id, t]) => {
+          const d = DESTINOS.find((x) => x.id === id)!;
+          return (
+            <li key={id}>
+              <a
+                href={d.href}
+                className={`fila ${foco}`}
+                style={t ? { background: t.soft, color: t.ink } : undefined}
+              >
+                {d.etiqueta}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+      <ul className="hidden flex-wrap gap-2 px-3 py-3 sm:flex">
         {CON_COLOR.map(([id, t]) => {
           const d = DESTINOS.find((x) => x.id === id)!;
           return (
@@ -301,10 +320,8 @@ function Situaciones() {
             </li>
           );
         })}
-        {/* En el móvil, solo las tres con pantalla propia: el resto, en «Todas» y en la barra
-            inferior («Situaciones»). */}
         {SITUACIONES_PORTADA.map(([id, t]) => (
-          <li key={id} className="hidden sm:block">
+          <li key={id}>
             <a
               href={href("consultar", "situacion", id)}
               className="chip focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"

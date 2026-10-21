@@ -54,6 +54,7 @@ import {
 } from "../inicio";
 import { fuentesDePiezas } from "../fuentesPiezas";
 import { FuentePie } from "../componentes/FuentePie";
+import { VeaseTambien } from "../componentes/VeaseTambien";
 
 const hex = CATEGORIA_HEX.consultar;
 const NOMBRES = TABLAS.T1.columnas;
@@ -342,15 +343,9 @@ function TareaVista({
             ))}
           </div>
           <LineaFuente fuentes={fuentes} />
+          {/* 0.92.0 (revisión de tarjetas, ★1): la misma lista de «Véase también» que en el resto. */}
           {siguiente && (
-            <p className="mt-2">
-              <a
-                href={siguiente.ruta}
-                className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline sm:min-h-8"
-              >
-                Véase también: {siguiente.texto} <ArrowRight size={13} aria-hidden="true" />
-              </a>
-            </p>
+            <VeaseTambien enCaja nivel={4} filas={[{ href: siguiente.ruta, t: siguiente.texto }]} />
           )}
         </div>
       )}
@@ -446,14 +441,13 @@ function PasosInicio({
           ))}
         </select>
       </label>
-      {/* 0.73.0: sin «Paso n de N» (lo dicen el selector y el número del título). */}
-      <h3 id="guia-titulo" className="titulo-seccion">
-        <span className="mr-2 tabular-nums" style={{ color: hex.strong }}>
-          {n}.
-        </span>
-        {p.titulo}
+      {/* 0.73.0: sin «Paso n de N» (lo dicen el selector y el número del título). 0.92.0
+          (revisión de tarjetas, ★4 y ★7): el título del paso, solo para el lector de pantalla:
+          repetía el paso marcado encima y su «2.» se confundía con el de la fase. */}
+      <h3 id="guia-titulo" className="sr-only">
+        {n}. {p.titulo}
       </h3>
-      {p.intro && <p className="mt-1 text-sm text-slate-600">{p.intro}</p>}
+      {p.intro && <p className="text-sm text-slate-600">{p.intro}</p>}
       {preguntas.map((q) => (
         <div key={q.id} className="mt-3">
           <div className="mb-1 text-sm font-semibold text-slate-800">{q.rotulo}</div>
@@ -511,16 +505,7 @@ function PasosInicio({
               : []),
         ]}
       />
-      {enlace && (
-        <p className="mt-2">
-          <a
-            href={enlace.ruta}
-            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline sm:min-h-8"
-          >
-            Véase también: {enlace.texto} <ArrowRight size={13} aria-hidden="true" />
-          </a>
-        </p>
-      )}
+      {enlace && <VeaseTambien enCaja nivel={4} filas={[{ href: enlace.ruta, t: enlace.texto }]} />}
       <div className="no-imprimir mt-4 flex items-center justify-between gap-2">
         <button
           type="button"

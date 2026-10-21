@@ -40,6 +40,7 @@ import { useIrAlCambiar, useSubirAlElegir } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { FuentePie } from "../componentes/FuentePie";
+import { VeaseTambien } from "../componentes/VeaseTambien";
 import { paginasPorApartado } from "../paginasApartado";
 import { paginasDe } from "../paginas";
 import { fuentesDePiezas } from "../fuentesPiezas";
@@ -316,10 +317,9 @@ function GuionVista({
                   style={{ background: "#e6dfe3" }}
                 />
               )}
-              <span
-                aria-hidden="true"
-                className={`num absolute left-0 top-2.5 ${abierto(i) ? "num-on" : ""}`}
-              >
+              {/* 0.92.0 (revisión de tarjetas, ★8): el número, en gris (en burdeos solo el paso
+                  activo de un recorrido, como en la descarga); aquí van todos abiertos. */}
+              <span aria-hidden="true" className="num absolute left-0 top-2.5">
                 {i - desde + 1}
               </span>
               <h3>
@@ -329,15 +329,12 @@ function GuionVista({
                   onClick={() => alternar(i)}
                   className="titulo-tarjeta flex min-h-11 w-full items-center justify-between gap-3 py-1 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                 >
+                  {/* Sin el chevrón: cada momento va abierto de entrada (0.74.2); el título sigue
+                      plegándolo. */}
                   <span>
                     <span className="sr-only">{i - desde + 1}. </span>
                     {m.rotulo}
                   </span>
-                  <ChevronRight
-                    size={15}
-                    aria-hidden="true"
-                    className={`shrink-0 text-slate-500 transition ${abierto(i) ? "rotate-90" : ""}`}
-                  />
                 </button>
               </h3>
               {abierto(i) && (
@@ -383,9 +380,11 @@ function CabeceraSituacion({
 }) {
   void id;
   return (
-    <div className="tarjeta tarjeta-sistema flex items-center gap-3 p-3 pl-4">
+    // 0.92.0 (revisión de tarjetas, ★2 y ★4): sin pleca (no es un sistema) y con el título de
+    // tarjeta (15 px), como el resto de títulos dentro de una tarjeta.
+    <div className="tarjeta flex items-center gap-3 p-3">
       <div className="min-w-0 flex-1">
-        <h2 className="titulo-seccion">{etiqueta}</h2>
+        <h2 className="titulo-tarjeta">{etiqueta}</h2>
       </div>
       <button type="button" onClick={onCambiar} className="chip shrink-0 lg:hidden">
         Cambiar
@@ -394,30 +393,11 @@ function CabeceraSituacion({
   );
 }
 
-/* «Para seguir»: la hoja para el paciente, los apartados y la tabla entera, en filas como las
-   del mapa de la portada. */
-function ParaSeguir({ filas }: { filas: { href: string; t: string; color?: string }[] }) {
-  if (!filas.length) return null;
-  return (
-    <section aria-label="Véase también" className="tarjeta overflow-hidden">
-      <h2 className="titulo-tarjeta px-3 pb-1.5 pt-3" style={{ color: hex.ink }}>
-        Véase también
-      </h2>
-      <ul className="filas">
-        {filas.map((f) => (
-          <li key={f.href}>
-            <a
-              href={f.href}
-              className="fila focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
-            >
-              <span className="min-w-0 flex-1">{f.t}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
+/* «Para seguir»: la hoja para el paciente, los apartados y la tabla entera. 0.92.0 (revisión de
+   tarjetas, ★1): con VeaseTambien, la misma forma que en el resto de la app. */
+const ParaSeguir = ({ filas }: { filas: { href: string; t: string }[] }) => (
+  <VeaseTambien filas={filas} />
+);
 
 function ListaSituaciones({
   sit,
@@ -523,9 +503,8 @@ function ListaSituaciones({
   function grupo({ tema, sits, extras }: (typeof visibles)[number]) {
     return (
       <section key={tema.t} aria-label={tema.t} className="tarjeta overflow-hidden">
-        <h2 className="titulo-tarjeta px-3 pb-1.5 pt-3" style={{ color: hex.ink }}>
-          {tema.t}
-        </h2>
+        {/* 0.92.0 (revisión de tarjetas, ★2): tarjeta de lista, título en tinta (sin color de área). */}
+        <h2 className="titulo-tarjeta px-3 pb-1.5 pt-3">{tema.t}</h2>
         <ul className="filas" role="list">
           {sits.map((s) => {
             const on = sit?.id === s.id || activa === s.id;
@@ -648,7 +627,8 @@ export function SituacionSistema({
               {/* 0.73.0: primero lo de cada sistema (frases literales, src/porSistema.ts);
                   después los objetivos y lo común. */}
               {GUIA_POR_SISTEMA[guia.id] && (
-                <section aria-label="Sistema a sistema" className="tarjeta p-4">
+                // 0.92.0 (revisión de tarjetas, ★11): en el móvil, 12 px (marco dentro de marco).
+                <section aria-label="Sistema a sistema" className="tarjeta p-3 sm:p-4">
                   {/* 0.80.1 (cuarta ronda, adjunto): sin sistema en la dirección, se dice cuál se
                       enseña y por qué. */}
                   {sisIdx < 0 && sistemaReciente() !== undefined && (
@@ -683,20 +663,12 @@ export function SituacionSistema({
                 momento={momento}
                 inicial={MOMENTO_INICIAL[guia.id] ?? [0]}
               />
-              <div>
-                <div className="rotulo mb-1.5">Véase también</div>
-                <ul className="flex flex-wrap gap-2">
-                  {guia.enlaces
-                    .filter((l) => !l.ruta.startsWith("#/visual/objetivos-mcg/"))
-                    .map((l) => (
-                      <li key={l.ruta}>
-                        <a href={l.ruta} className="chip">
-                          {l.texto} <ArrowRight size={12} aria-hidden="true" />
-                        </a>
-                      </li>
-                    ))}
-                </ul>
-              </div>
+              {/* 0.92.0 (revisión de tarjetas, ★1): tarjeta de lista, no chips con flecha. */}
+              <ParaSeguir
+                filas={guia.enlaces
+                  .filter((l) => !l.ruta.startsWith("#/visual/objetivos-mcg/"))
+                  .map((l) => ({ href: l.ruta, t: l.texto }))}
+              />
             </div>
           )}
           {sit && tabla && fila && (
@@ -712,7 +684,9 @@ export function SituacionSistema({
                 <section
                   id="antes-situacion"
                   aria-labelledby="antes-situacion-titulo"
-                  className="scroll-mt-4 rounded-xl border-2 px-4 py-3"
+                  // 0.92.0 (revisión de tarjetas): la receta del aviso ámbar de la app (borde de
+                  // 1 px y esquinas de 6 px, como en la calculadora), no un borde de 2 px.
+                  className="scroll-mt-4 rounded-md border px-4 py-3"
                   style={{ borderColor: "#f3d38a", background: "#fffbeb" }}
                 >
                   <h2
@@ -738,24 +712,6 @@ export function SituacionSistema({
                 className="tarjeta scroll-mb-28 scroll-mt-4 space-y-3 p-4"
                 aria-label="Conducta recomendada"
               >
-                {/* El rótulo de la fila ya está en la cabecera; aquí, lo común a los cuatro si lo trae. */}
-                {(() => {
-                  const comun = fila.etiqueta.split("\n").slice(1);
-                  return (
-                    <>
-                      {(comun.length > 0 || fila.unida) && (
-                        <div className="casilla casilla-sistema px-3 py-2.5">
-                          <span className="rotulo mb-0.5 block" style={{ color: hex.ink }}>
-                            Todos los sistemas
-                          </span>
-                          <span className="block text-[15px] font-semibold leading-snug text-slate-900">
-                            <Lineas>{fila.unida ? fila.celdas[0] : comun.join("\n")}</Lineas>
-                          </span>
-                        </div>
-                      )}
-                    </>
-                  );
-                })()}
                 {(porSistema || sit.tabla === "T6") && (
                   <div>
                     {/* 0.91.3 (14.ª ronda, adjunto): «Los cuatro», junto al selector (antes,
@@ -811,18 +767,22 @@ export function SituacionSistema({
                           >
                             <Lineas>{fila.celdas[c]}</Lineas>
                           </p>
+                          {/* 0.73.0: lo que los apartados 9 y 10 añaden para ese sistema. 0.92.0
+                              (revisión de tarjetas, ★10): dentro de su tarjeta, en casillas grises
+                              (antes, otra tarjeta con la misma pleca debajo). */}
+                          {sisIdx >= 0 && TABLA4_POR_SISTEMA[sit.id] && (
+                            <div className="px-4 pb-3">
+                              <AnadidoDelSistema
+                                c={sisIdx}
+                                bloques={TABLA4_POR_SISTEMA[sit.id][sisIdx]}
+                                sinFuente
+                              />
+                            </div>
+                          )}
                         </div>
                       ),
                     )}
                   </div>
-                )}
-                {/* 0.73.0: lo que los apartados 9 y 10 añaden para ese sistema. */}
-                {porSistema && sisIdx >= 0 && TABLA4_POR_SISTEMA[sit.id] && (
-                  <AnadidoDelSistema
-                    c={sisIdx}
-                    bloques={TABLA4_POR_SISTEMA[sit.id][sisIdx]}
-                    sinFuente
-                  />
                 )}
                 {/* 0.77.1 (auditoría R5): en las pruebas y cirugías (Tabla 6), con un sistema en la
                     ruta, el sistema con su formato y sus sensores (Tabla 1): «retirar, salvo
@@ -843,6 +803,25 @@ export function SituacionSistema({
                     </dl>
                   </div>
                 )}
+                {/* El rótulo de la fila ya está en la cabecera; aquí, lo común a los cuatro si lo trae.
+                    0.92.0 (revisión de tarjetas, ★10): siempre en el mismo sitio, después del
+                    selector y de la tarjeta del sistema, y en casilla gris sin pleca (no es de un
+                    sistema). */}
+                {(() => {
+                  const comun = fila.etiqueta.split("\n").slice(1);
+                  return (
+                    <>
+                      {(comun.length > 0 || fila.unida) && (
+                        <div className="casilla px-3 py-2.5">
+                          <span className="rotulo mb-0.5 block">Todos los sistemas</span>
+                          <span className="block text-[15px] font-semibold leading-snug text-slate-900">
+                            <Lineas>{fila.unida ? fila.celdas[0] : comun.join("\n")}</Lineas>
+                          </span>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
                 {!porSistema && !fila.unida && (
                   <>
                     <dl className="sm:columns-2 sm:gap-3 [&>div]:mb-3 [&>div]:break-inside-avoid">
@@ -949,7 +928,6 @@ export function SituacionSistema({
                             sit.tabla === "T6"
                               ? "Hoja para el paciente: antes de una prueba o una cirugía"
                               : "Plan de seguridad y hoja de cetonas para el paciente",
-                          color: CATEGORIA_HEX.pacientes.strong,
                         },
                       ]
                     : []),
@@ -1282,13 +1260,15 @@ export function Interrupcion(_props: { tramo?: string }) {
         ]}
       />
       {/* 0.72.0: «¿le quito la bomba?» en el hospital está en el ingreso (apartado 10). */}
-      <div className="no-imprimir mt-4">
-        <div className="rotulo mb-1.5">Véase también</div>
-        <a href={href("consultar", "situacion", "ingreso-hospitalario::m4")} className="chip">
-          Ingreso hospitalario: criterios para no continuar y paso a pauta subcutánea{" "}
-          <ArrowRight size={12} aria-hidden="true" />
-        </a>
-      </div>
+      <VeaseTambien
+        className="no-imprimir mt-4"
+        filas={[
+          {
+            href: href("consultar", "situacion", "ingreso-hospitalario::m4"),
+            t: "Ingreso hospitalario: criterios para no continuar y paso a pauta subcutánea",
+          },
+        ]}
+      />
     </div>
   );
 }

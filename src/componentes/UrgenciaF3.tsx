@@ -15,7 +15,10 @@ export function UrgenciaF3({
   enlace = false,
   className = "",
   donde = "",
+  grande = false,
 }: {
+  /* 0.92.0 (revisión de tarjetas, ★12): en las hojas para el paciente, a 15 px como el resto. */
+  grande?: boolean;
   enlace?: boolean;
   className?: string;
   /* Dónde va (junto a qué rama o tarjeta): el nombre de la región es único en la página. */
@@ -24,7 +27,7 @@ export function UrgenciaF3({
   return (
     <section
       aria-label={`Urgencia y signos de gravedad (Figura 3)${donde ? `, ${donde}` : ""}`}
-      className={`rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-900 ${className}`}
+      className={`rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-red-900 ${grande ? "text-[15px]" : "text-sm"} ${className}`}
     >
       <p className="flex items-start gap-2 font-bold">
         <Siren size={16} className="mt-0.5 shrink-0" aria-hidden="true" />

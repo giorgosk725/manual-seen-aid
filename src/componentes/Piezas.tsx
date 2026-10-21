@@ -43,21 +43,25 @@ function CabeceraTabla({ tabla, etiqueta }: { tabla: keyof typeof TABLAS; etique
   );
 }
 
+/* 0.92.0 (revisión de tarjetas, ★2): `sinPleca` dentro de una tarea o de la tarjeta de un sistema
+   (la pantalla o la caja ya son de ese sistema: la pleca repetía la de su contenedor). */
 function Casilla({
   nombre,
   texto,
   c,
   siglas,
+  sinPleca = false,
 }: {
   nombre: string;
   texto: string;
   c: number;
   siglas?: Set<string>;
+  sinPleca?: boolean;
 }) {
   return (
     <div
-      className="casilla casilla-sistema p-3 text-sm text-slate-800"
-      style={{ ["--sis" as string]: SISTEMA_HEX[c].strong }}
+      className={`casilla p-3 text-sm text-slate-800 ${sinPleca ? "" : "casilla-sistema"}`}
+      style={sinPleca ? undefined : { ["--sis" as string]: SISTEMA_HEX[c].strong }}
     >
       {nombre && (
         <span className="rotulo mb-1 block" style={{ color: SISTEMA_HEX[c].ink }}>
@@ -184,11 +188,12 @@ function PiezaVistaBase({
         return (
           <div>
             <Rotulo tabla={pieza.tabla} etiqueta={numerada ? f.celdas[0] : f.etiqueta} />
+            {/* 0.92.0 (revisión de tarjetas, ★2): «Recomendación orientativa» no es de un sistema:
+                casilla gris sin pleca y rótulo gris (antes, pleca y rótulo burdeos o, dentro de
+                una tarjeta de sistema, los de su contenedor). */}
             {!numerada && (
-              <div className="casilla casilla-sistema p-3">
-                <div className="rotulo mb-0.5" style={{ color: hex.ink }}>
-                  {t.columnas[0]}
-                </div>
+              <div className="casilla p-3">
+                <div className="rotulo mb-0.5">{t.columnas[0]}</div>
                 <div className="text-[15px] font-medium text-slate-900">
                   <Lineas siglas={pend(f.celdas[0])}>{f.celdas[0]}</Lineas>
                 </div>
@@ -211,10 +216,9 @@ function PiezaVistaBase({
           <Rotulo tabla={pieza.tabla} etiqueta={f.etiqueta} />
           <dl className="grid gap-2 sm:grid-cols-2">
             {t.columnas.map((col, c) => (
-              <div key={col} className={`casilla p-2.5 ${c === 0 ? "casilla-sistema" : ""}`}>
-                <dt className="rotulo mb-0.5" style={c === 0 ? { color: hex.ink } : undefined}>
-                  {col}
-                </dt>
+              // 0.92.0 (revisión de tarjetas): sin la pleca burdeos en la primera columna.
+              <div key={col} className="casilla p-2.5">
+                <dt className="rotulo mb-0.5">{col}</dt>
                 <dd className="text-sm text-slate-800">
                   <Lineas siglas={pend(f.celdas[c])}>{f.celdas[c]}</Lineas>
                 </dd>
@@ -236,6 +240,7 @@ function PiezaVistaBase({
               texto={f.celdas[sis]}
               c={sis}
               siglas={pend(f.celdas[sis])}
+              sinPleca={compacta}
             />
           ) : (
             <div className="grid gap-2 sm:grid-cols-2">
@@ -267,10 +272,15 @@ function PiezaVistaBase({
             {lineasInicializacion(sis).map((l) => (
               <li
                 key={l}
-                className="casilla casilla-sistema p-2.5 text-sm text-slate-800"
-                style={{
-                  ["--sis" as string]: sis !== undefined ? SISTEMA_HEX[sis].strong : hex.strong,
-                }}
+                className={`casilla p-2.5 text-sm text-slate-800 ${compacta ? "" : "casilla-sistema"}`}
+                style={
+                  compacta
+                    ? undefined
+                    : {
+                        ["--sis" as string]:
+                          sis !== undefined ? SISTEMA_HEX[sis].strong : hex.strong,
+                      }
+                }
               >
                 {l}
               </li>

@@ -10,9 +10,14 @@ import { lineasDe } from "../disposicion";
 
 /* Las tarjetas de los bloques de un sistema, con su altura estimada: ColumnaTabla las reparte
    en las mismas dos columnas que las filas de la tabla (una sola rejilla por sección). */
+/* 0.92.0 (revisión de tarjetas, ★2, ★10 y ★11): la pleca del sistema, solo en lo que es del
+   sistema. `forma`: «sistema» (tarjeta con la pleca y el rótulo en su color), «comun» (lo común a
+   los cuatro: tarjeta sin pleca, rótulo gris) o «casilla» (dentro de la tarjeta del sistema: casilla
+   gris sin pleca, que no repite la de su contenedor). */
 export function tarjetasDeBloques(
   c: number,
   bloques: BloqueSistema[],
+  forma: "sistema" | "comun" | "casilla" = "sistema",
 ): { clave: string; peso: number; nodo: ReactNode }[] {
   const h = SISTEMA_HEX[c];
   const todas = bloques.flatMap((b) => b.piezas);
@@ -25,11 +30,11 @@ export function tarjetasDeBloques(
     nodo: (
       <div
         key={`bloque-${b.rotulo}`}
-        className="tarjeta tarjeta-sistema min-w-0 p-3"
-        style={{ ["--sis" as string]: h.strong }}
+        className={`min-w-0 p-3 ${forma === "casilla" ? "casilla" : forma === "comun" ? "tarjeta" : "tarjeta tarjeta-sistema"}`}
+        style={forma === "sistema" ? { ["--sis" as string]: h.strong } : undefined}
       >
         <PiezasSinTitulos.Provider value={true}>
-          <dt className="rotulo" style={{ color: h.ink }}>
+          <dt className="rotulo" style={forma === "sistema" ? { color: h.ink } : undefined}>
             {b.rotulo}
           </dt>
           <dd className="mt-1 space-y-1.5 text-[15px] leading-snug text-slate-900">

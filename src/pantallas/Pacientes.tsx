@@ -7,13 +7,14 @@
 import { useRef, type ReactNode } from "react";
 import { Printer } from "lucide-react";
 import { UrgenciaF3 } from "../componentes/UrgenciaF3";
+import { CasillasSistema } from "../componentes/CasillasSistema";
 import { CAPITULO, FIGURA3, TABLAS, apartadoPorSlug, idDeBloque } from "../contenido";
 import { CORTO_CASILLA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import type { SistemaId } from "../ampliacion/tipos";
 import { AUTOR_PACIENTES, RESUMEN_CAPITULO, TITULO_CAPITULO_PACIENTES } from "../pacientes/textos";
 import { elegirRuta, href } from "../rutas";
 import { CabeceraEditorial, ToneCard } from "../ui";
-import { CATEGORIA_HEX, SEEN, SISTEMA_HEX } from "../tokens";
+import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { hojaExtraPorId, type HojaExtra } from "../hojas";
 import { Texto } from "../texto";
 import { SinCortes } from "../componentes/SinCortes";
@@ -259,12 +260,14 @@ function CuerpoHoja({ hoja, titulo = false }: { hoja: HojaExtra; titulo?: boolea
         <section
           key={sec.titulo}
           aria-label={sec.urgente ? `Urgente: ${sec.titulo}` : undefined}
-          className={`hoja-seccion mb-3 ${sec.urgente ? "hoja-urgente rounded-lg border-2 px-3 py-2" : ""}`}
-          style={sec.urgente ? { borderColor: "#b91c1c", background: "#fef2f2" } : undefined}
+          // 0.92.0 (revisión de tarjetas, ★12): la misma receta de urgencia que la de la Figura 3
+          // (UrgenciaF3: borde rojo claro de 1 px, fondo rojo pálido, esquinas de 6 px); en papel,
+          // las dos con el marco de .hoja-urgente.
+          className={`hoja-seccion mb-3 ${sec.urgente ? "hoja-urgente rounded-md border border-red-200 bg-red-50 px-3 py-2.5" : ""}`}
         >
           <h3
-            className="text-base font-extrabold"
-            style={{ color: sec.urgente ? "#991b1b" : hex.ink }}
+            className={`text-base font-extrabold ${sec.urgente ? "text-red-900" : ""}`}
+            style={sec.urgente ? undefined : { color: hex.ink }}
           >
             {sec.titulo}
           </h3>
@@ -415,7 +418,6 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const c = ORDEN_SISTEMAS.indexOf(sistema as SistemaId);
   if (c < 0) return <HubPacientes />;
-  const id = ORDEN_SISTEMAS[c];
   const nombre = TABLAS.T1.columnas[c];
   const plan = bloque("07-educacion", "b4");
   // Lo que hay que tener (sin el último punto, la Figura 3: va en la segunda cara).
@@ -436,30 +438,16 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
       {/* 0.88.1 (duodécima ronda, guardia): sin el sistema (se cortaba en el móvil y repetía el
           título y el selector de debajo). */}
       <Volver actual="Plan de seguridad" />
-      <div
-        className="no-imprimir mb-3 grid grid-cols-4 gap-1 sm:flex sm:flex-wrap sm:gap-1.5"
-        role="group"
-        aria-label="Sistema"
-      >
-        {ORDEN_SISTEMAS.map((sid, k) => (
-          <button
-            key={sid}
-            type="button"
-            onClick={() => elegirRuta("pacientes", "plan", sid)}
-            aria-pressed={sid === id}
-            className="min-h-11 rounded-lg border px-1 py-1 text-xs font-semibold leading-tight transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-0 sm:px-3 sm:py-1.5"
-            // 0.84.1 (octava ronda, visual): el acento de interacción de toda la app (burdeos), no
-            // el color del sistema; y el nombre corto de casilla («Control-IQ»): a 360 px
-            // «Control-IQ / Control-IQ+» ocupaba tres líneas. El título del plan da el nombre entero.
-            style={
-              sid === id
-                ? { background: SEEN.burdeos, borderColor: SEEN.burdeos, color: "#ffffff" }
-                : { borderColor: "#d4d4d4", color: "#334155", background: "#ffffff" }
-            }
-          >
-            {CORTO_CASILLA[k]}
-          </button>
-        ))}
+      {/* 0.92.0 (revisión de tarjetas, ★12): el selector de sistema de toda la app (botones de
+          opción con el punto del sistema), las cuatro en una fila también en el móvil. */}
+      <div className="no-imprimir mb-3">
+        <CasillasSistema
+          unico
+          enFila
+          seleccion={[c]}
+          onToggle={(k) => elegirRuta("pacientes", "plan", ORDEN_SISTEMAS[k])}
+          nombres={CORTO_CASILLA}
+        />
       </div>
       <Acciones hoja={ref} materialId="planes" />
       <Hoja
@@ -477,7 +465,11 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
           </>
         }
       >
-        <UrgenciaF3 className="hoja-seccion hoja-urgente mb-3" donde="al principio del plan" />
+        <UrgenciaF3
+          grande
+          className="hoja-seccion hoja-urgente mb-3"
+          donde="al principio del plan"
+        />
         <div className="hoja-seccion mb-3 flex flex-wrap gap-x-4 gap-y-2">
           <Hueco etiqueta="Nombre:" ancho="min-w-[12rem] flex-[2]" />
           <Hueco etiqueta="Fecha:" ancho="min-w-[8rem] flex-1" />
@@ -486,7 +478,8 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
           <h2 className="text-base font-extrabold" style={{ color: hex.ink }}>
             Mi plan
           </h2>
-          <ol className="mt-1.5 space-y-2 text-sm text-slate-800">
+          {/* 0.92.0 (revisión de tarjetas, ★12): 15 px en toda la hoja, como la cara de cetonas. */}
+          <ol className="mt-1.5 space-y-2 text-[15px] text-slate-800">
             {items.map((it, i) => (
               <li key={i}>
                 <span className="flex gap-2">
@@ -519,7 +512,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
           <h2 className="text-base font-extrabold" style={{ color: hex.ink }}>
             Hipoglucemia
           </h2>
-          <ul className="mt-1 space-y-1 text-sm text-slate-800">
+          <ul className="mt-1 space-y-1 text-[15px] text-slate-800">
             {hipo.map((r) => (
               <li key={r}>
                 <SinCortes texto={r} />
@@ -527,14 +520,14 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
             ))}
           </ul>
         </section>
-        <p className="hoja-seccion mb-3 text-sm font-semibold text-slate-900">
+        <p className="hoja-seccion mb-3 text-[15px] font-semibold text-slate-900">
           <Texto>{sinCortes(FIGURA3.reglaDeOro)}</Texto>
         </p>
         <section className="hoja-seccion mb-1">
           <h2 className="text-base font-extrabold" style={{ color: SISTEMA_HEX[c].ink }}>
             {nombre}: qué función usar
           </h2>
-          <dl className="plan-t4 mt-1 space-y-1.5 text-sm">
+          <dl className="plan-t4 mt-1 space-y-1.5 text-[15px]">
             {t4.map((f) => (
               <div key={f.etiqueta}>
                 {/* Sin el punto final: en papel va seguido de «: » (0.72.0: salía «.:»). */}
