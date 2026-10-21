@@ -1678,14 +1678,29 @@ function Comparacion({
                       </a>
                       {/* 0.94.0 (rediseño): cada grupo abre con su línea capilar, como los datos
                           de las fichas. */}
-                      <dl className="mt-2 space-y-2 text-sm leading-snug">
+                      {/* 0.94.1 (petición del responsable: «los fonts y las líneas no se ven
+                          bien»): cada grupo con la etiqueta de la ficha (en el color del sistema
+                          lo que actúa en automático) y un parámetro por línea (antes, rótulos en
+                          mayúsculas partidos en dos líneas y los parámetros unidos por «·»). */}
+                      <dl className="mt-2.5 space-y-3">
                         {grupos.map((g) => (
-                          <div key={g.r} className="border-t border-[var(--linea-suave)] pt-2">
-                            <dt className="rotulo">{g.r}</dt>
-                            <dd
-                              className={`mt-0.5 ${g.fuerte ? "font-semibold text-slate-900" : "text-slate-800"}`}
-                            >
-                              {g.xs.join(" · ")}
+                          <div key={g.r} className="border-t border-[var(--linea-suave)] pt-2.5">
+                            <dt>
+                              <span
+                                className="insignia"
+                                style={g.fuerte ? { background: h.soft, color: h.ink } : undefined}
+                              >
+                                {g.r}
+                              </span>
+                            </dt>
+                            <dd className="mt-1.5">
+                              <ul
+                                className={`space-y-0.5 text-[15px] leading-snug ${g.fuerte ? "font-semibold text-slate-900" : "text-slate-800"}`}
+                              >
+                                {g.xs.map((x) => (
+                                  <li key={x}>{x}</li>
+                                ))}
+                              </ul>
                             </dd>
                           </div>
                         ))}
