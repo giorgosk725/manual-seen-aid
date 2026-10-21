@@ -1139,7 +1139,9 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
             <h2 className="titulo-seccion">{fila.celdas[0]}</h2>
             <span className="no-imprimir">
               <BotonImprimir objetivo={raiz} compacto titulo="Imprimir este paso">
-                <span className="sr-only sm:not-sr-only">Imprimir este paso</span>
+                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                  Imprimir este paso
+                </span>
               </BotonImprimir>
             </span>
           </div>

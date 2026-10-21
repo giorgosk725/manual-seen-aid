@@ -55,9 +55,12 @@ const MODO = {
   // móvil, a la izquierda en 6,5 rem, bajaba a 3–5 líneas y el valor se quedaba en 216 px); en el
   // Resumen desde xl, a la izquierda en 9,25 rem (dos líneas como mucho) por la alineación entre
   // tarjetas vecinas.
+  // 0.94.0 (rediseño): cada dato abre con una línea capilar a todo su ancho: las filas de la
+  // rejilla quedan alineadas, como en una hoja técnica (antes, casillas sueltas).
   rejilla: {
-    dl: "grid gap-y-3 sm:grid-cols-2 sm:gap-x-5 lg:grid-cols-3",
-    fila: "min-w-0",
+    // En papel, más juntas (la ficha de CamAPS no pasa de tres caras).
+    dl: "grid gap-y-3 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-3 print:gap-y-1.5",
+    fila: "min-w-0 border-t border-[var(--linea-suave)] pt-2.5 print:pt-1",
     dt: "",
     dd: "mt-1",
   },
@@ -106,7 +109,7 @@ export function CasillasDatos({
               {ruta ? (
                 <a
                   href={ruta}
-                  className="tap-44 -my-[5px] inline-block py-[5px] underline decoration-slate-400 decoration-dotted decoration-1 underline-offset-[3px] hover:decoration-solid hover:decoration-slate-700"
+                  className="tap-44 -my-[5px] inline-block py-[5px] underline decoration-slate-300 decoration-dotted decoration-1 underline-offset-[3px] hover:decoration-solid hover:decoration-slate-700"
                   title="Texto del capítulo"
                 >
                   {d.r}
@@ -168,7 +171,7 @@ export function TarjetaDatos({
       className="tarjeta tarjeta-sistema tarjeta-datos min-w-0 p-4"
       style={{ ["--sis" as string]: h.strong }}
     >
-      <h3 className="titulo-tarjeta mb-2.5" style={{ color: h.ink }}>
+      <h3 className="titulo-tarjeta mb-3" style={{ color: h.ink }}>
         {titulo}
       </h3>
       {children}
@@ -244,7 +247,7 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                       // 0.78.1 (segunda ronda): zona táctil de 24 px como mínimo (tap-44 la amplía).
                       // 0.93.1: subrayado de puntos, como las remisiones del capítulo (los
                       // subrayados continuos de todas las filas hacían ruido).
-                      className="tap-44 inline-block min-h-6 py-0.5 text-[15px] font-semibold leading-snug text-slate-900 underline decoration-slate-400 decoration-dotted decoration-1 underline-offset-4 hover:decoration-solid hover:decoration-slate-700"
+                      className="tap-44 inline-block min-h-6 py-0.5 text-[15px] font-semibold leading-snug text-slate-900 underline decoration-slate-300 decoration-dotted decoration-1 underline-offset-4 hover:decoration-solid hover:decoration-slate-700"
                       title="Texto del capítulo"
                     >
                       {d.r}

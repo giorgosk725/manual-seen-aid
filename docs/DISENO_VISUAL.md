@@ -356,3 +356,51 @@ Situaciones).
 - **Comparación de sistemas y selector**: los fondos tintados por sistema (§1) se mantienen.
 - **Fichas de los sistemas** (`FichaOperativa`, `ComoFuncionaOperativo`, Resumen y Parámetros):
   fuera de esta revisión (se revisan aparte).
+
+## 16. Rediseño 0.94 (21-10-2026)
+
+Objetivo: que las fichas de los sistemas y la comparación se lean como una hoja técnica de manual
+(un dato en dos segundos), con el mismo lenguaje en las cuatro fichas y en el resto de pantallas.
+Solo diseño: ningún texto clínico cambia. Recorrido previo con capturas a 1440 y 390 px, en claro y
+en nocturno (fichas, Resumen, comparación, Tablas, Situaciones, Figura 3, Interrupción, Iniciación,
+descarga, Buscar, Preguntas, Material para el paciente).
+
+### Diagnóstico
+
+- **Tablas comparativas** (Tabla 1, 3 y 4 en Sistemas y en Tablas): la cabecera azul marino
+  (#15324f) era lo más pesado de la app y no es ni el burdeos ni el color de ningún sistema; los
+  nombres en versalitas («MYLOOP CAMAPS») perdían su grafía; cada celda era una caja tintada con
+  2 px de blanco alrededor (un mosaico que se leía por casillas, no por filas).
+- **Cabecera de la ficha**: sin la regla de color que llevan los demás títulos de pantalla; la fila
+  de accesos (cinco enlaces subrayados) se leía como una segunda fila de pestañas; el selector y las
+  pestañas, dentro de una caja con borde y esquinas, parecían un formulario, y la pestaña activa no
+  se apoyaba en ninguna línea.
+- **Tarjetas de datos** («Cómo funciona», «Indicación y material»): en la rejilla de tres columnas
+  los datos de una fila no tenían línea que los alineara; el subrayado de puntos de cada rótulo
+  (que lleva al literal) era la textura más visible de la tarjeta.
+- **Filas de Parámetros y Modos**: el mismo subrayado, en rótulos de dos y tres líneas.
+- **Pulido**: «Imprimir este paso» se partía en dos líneas a 1440 px.
+
+### Cambios (antes → después)
+
+| Pieza                         | Antes                                                                                                                                | Después                                                                                                                                                                                                       |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cabecera de tabla comparativa | Marino, texto blanco en versalitas, foto en caja blanca.                                                                             | Superficie del papel con filete superior de 3 px del color de cada sistema; nombre con su grafía, 14/700, en la tinta del sistema; línea capilar debajo. Pegada al bajar, como antes.                         |
+| Celdas de la comparación      | Fondo tintado por sistema con 2 px blancos (mosaico); cebra.                                                                         | Blancas, separadas por líneas capilares (filas) y finas verticales (columnas); la columna de rótulos en `--papel-2`. La fila de la que se viene sigue marcada en burdeos suave.                               |
+| Cabecera de la ficha          | Título sin regla; accesos subrayados.                                                                                                | Regla de pantalla (tramo del color del sistema + línea fina), como `CabeceraEditorial`; accesos como enlaces de texto sin subrayado separados por «·» (subrayado al pasar), como en las tarjetas del Resumen. |
+| Selector y pestañas           | Caja con borde y esquinas (desde sm).                                                                                                | Sin caja: casillas y, debajo, la tira de pestañas apoyada en una línea capilar a todo lo ancho; la activa, subrayado burdeos sobre esa línea. En el móvil, igual que antes (ya iba a sangre con su línea).    |
+| Tarjeta de datos              | Título y casillas sueltas.                                                                                                           | Cada dato abre con una línea capilar (`border-t`) a todo su ancho: las filas de la rejilla quedan alineadas como en una hoja técnica; el título queda encima de la primera línea.                             |
+| Rótulo-enlace al literal      | Subrayado de puntos gris medio.                                                                                                      | Subrayado de puntos en `--linea-fuerte` (se intuye, no se impone); sólido y oscuro al pasar o con el foco. Igual en las filas de Parámetros y Modos.                                                          |
+| Imprimir este paso            | Partido en dos líneas.                                                                                                               | En una línea (`whitespace-nowrap`).                                                                                                                                                                           |
+| Parámetros de los cuatro      | Grupos de rótulo y valor sueltos.                                                                                                    | Cada grupo abre con su línea capilar, como los datos de las fichas.                                                                                                                                           |
+| Comparación impresa           | Cara 1 con solo el título (la tabla no se partía); rótulos de fila a 13 px; «110, 120, 130, 140 o 150 mg/dl» se salía de la columna. | La tabla empieza en la cara 1 y se parte por filas (3 → 2 caras); rótulos a 8,5 pt como las celdas; las cifras largas pueden partirse en papel.                                                               |
+
+### Reglas que se añaden
+
+- **Una tabla comparativa no lleva fondo de color en las celdas**: la identidad del sistema va en la
+  cabecera (filete, foto y nombre). Retira la excepción de §15 («Comparación de sistemas y selector:
+  los fondos tintados se mantienen») para las celdas; el selector conserva su marcado.
+- **Toda cabecera de pantalla lleva su regla** (tramo de color + línea fina), también la ficha.
+- **Los rótulos que llevan al literal** se subrayan en `--linea-fuerte`; nunca más oscuros que el
+  propio rótulo en reposo.
+- **Tira de pestañas**: siempre apoyada en una línea capilar a todo lo ancho.
