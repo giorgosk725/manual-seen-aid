@@ -10,7 +10,9 @@ import { join } from "node:path";
 
 const LIMITES = {
   entradaJs: 165 * 1024,
-  entradaCss: 16 * 1024,
+  // 22 KB desde la 0.93.2 (decisión del responsable, 21-10-2026: «yo veo que carga rápido;
+  // mejora el diseño lo máximo y ya valoramos la velocidad»). Antes, 16 KB.
+  entradaCss: 22 * 1024,
   // 26 KB desde la 0.59.0: el buscador (se carga al buscar, no al entrar) creció con el léxico.
   trozoPerezoso: 26 * 1024,
   // 40 KB desde la 0.65.0, solo el buscador: lleva las raíces de las consultas del índice
