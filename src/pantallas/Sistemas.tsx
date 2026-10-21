@@ -62,6 +62,7 @@ import { NombreSistema } from "../componentes/NombreSistema";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
 import {
   ALGORITMO,
+  tipoBajoNombre,
   INDICACION,
   MODOS,
   PARAMETROS,
@@ -70,6 +71,8 @@ import {
   fuentesDeDatos,
 } from "../fichaOperativa";
 import { CasillasDatos, FilasDatos, GruposDatos } from "../componentes/FichaOperativa";
+import { literalDe } from "../fuentesPiezas";
+import { SinCortes } from "../componentes/SinCortes";
 import { ComoFuncionaOperativo } from "../componentes/ComoFuncionaOperativo";
 import { FuentePie } from "../componentes/FuentePie";
 
@@ -1392,11 +1395,12 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                       <NombreSistema n={s.name} />
                     </span>
                     <span className="mt-0.5 block text-sm font-semibold text-slate-700">
-                      {sinCortes(ALGORITMO[c][0].v)}
+                      {/* 0.96.0 (16.ª ronda): sin repetir el nombre de encima («Control-IQ · …»). */}
+                      {sinCortes(tipoBajoNombre(c, s.name))}
                     </span>
                   </span>
                 </a>
-                <div className="flex-1 px-4 py-2.5 xl:row-span-4 xl:grid xl:grid-rows-subgrid xl:gap-y-2 xl:py-2">
+                <div className="flex-1 px-4 py-2.5 xl:row-span-4 xl:grid xl:grid-rows-subgrid xl:gap-y-1.5 xl:py-2">
                   <CasillasDatos c={c} datos={datosDe(c)} modo="resumen" />
                   {variante && (
                     <p className="mt-3 grid grid-cols-[auto_1fr] items-baseline gap-x-2 text-sm leading-snug text-slate-800">
@@ -1456,27 +1460,51 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
 /* 0.92.3 (15.ª ronda, adjunto): lo que las fichas añaden a la Tabla 4 (agua, alcohol y
    desconexión, de los apartados 7 y 10), comparado: la natación o la desconexión se eligen sin
    abrir las cuatro fichas. Los mismos datos que la pestaña Modos de cada ficha. */
+/* 0.96.0 (16.ª ronda, senior): el rótulo, el de las fichas. El del agua no es el mismo en todas
+   («Agua y deportes de contacto» en las tres bombas con catéter, «Agua» en Omnipod 5): con varios,
+   el que abarca a los dos. */
 const OTRAS_SITUACIONES = [
-  { rotulo: "Alcohol", re: /^Alcohol/ },
-  { rotulo: "Agua", re: /^Agua/ },
-  { rotulo: "Desconexión", re: /^Desconexión/ },
+  { re: /^Alcohol/ },
+  { re: /^Agua/, varios: "Agua y deportes de contacto" },
+  { re: /^Desconexión/ },
 ];
-function OtrasSituaciones({ cols }: { cols: number[] }) {
-  // Sin repeticiones: los sistemas que dicen lo mismo, juntos, con el texto una vez.
+function OtrasSituaciones({ cols, aLaVista }: { cols: number[]; aLaVista?: boolean }) {
+  // 0.96.0 (16.ª ronda, adjunto): «modos:otras» (desde Elección) = este bloque, bajo la barra.
+  const caja = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!aLaVista || !caja.current) return;
+    const barra = document.querySelector(".barra-pegada")?.getBoundingClientRect().bottom ?? 0;
+    window.scrollTo({
+      top: Math.max(0, window.scrollY + caja.current.getBoundingClientRect().top - barra - 12),
+    });
+  }, [aLaVista]);
+  // Sin repeticiones: los sistemas que dicen lo mismo, juntos, con el texto una vez. 0.96.0 (16.ª
+  // ronda, senior): la nota que es la misma en todos (la prudencia con los bolos en el alcohol, el
+  // umbral de 1 h en la desconexión), una sola vez al final de la fila, sin rótulo de sistema
+  // (antes, una vez por grupo: tres y dos veces).
   const filas = OTRAS_SITUACIONES.map((g) => {
+    const datos = cols
+      .map((c) => ({ c, d: MODOS[c].find((x) => g.re.test(x.r)) }))
+      .filter((x): x is { c: number; d: (typeof MODOS)[number][number] } => !!x.d);
+    const nota = datos[0]?.d.n;
+    const notaComun = datos.length > 1 && !!nota && datos.every((x) => x.d.n === nota);
     const grupos: { cs: number[]; d: (typeof MODOS)[number][number] }[] = [];
-    for (const c of cols) {
-      const d = MODOS[c].find((x) => g.re.test(x.r));
-      if (!d) continue;
-      const igual = grupos.find((x) => x.d.v === d.v && x.d.n === d.n);
+    for (const { c, d } of datos) {
+      const igual = grupos.find((x) => x.d.v === d.v && (notaComun || x.d.n === d.n));
       if (igual) igual.cs.push(c);
       else grupos.push({ cs: [c], d });
     }
-    return { ...g, grupos };
+    const rotulos = [...new Set(datos.map((x) => x.d.r))];
+    const rotulo = rotulos.length > 1 && g.varios ? g.varios : rotulos[0];
+    return { rotulo, grupos, nota: notaComun ? nota : undefined };
   }).filter((f) => f.grupos.length);
   if (!filas.length) return null;
   return (
-    <section aria-labelledby="otras-situaciones" className="tarjeta mt-5 overflow-hidden">
+    <section
+      ref={caja}
+      aria-labelledby="otras-situaciones"
+      className="tarjeta mt-5 overflow-hidden"
+    >
       <h2 id="otras-situaciones" className="titulo-tarjeta px-4 pb-1 pt-3">
         Agua, alcohol y desconexión
       </h2>
@@ -1486,7 +1514,26 @@ function OtrasSituaciones({ cols }: { cols: number[] }) {
             key={f.rotulo}
             className="grid gap-x-5 gap-y-1 px-4 py-3 sm:grid-cols-[minmax(9rem,12rem)_1fr]"
           >
-            <dt className="text-[15px] font-semibold leading-snug text-slate-900">{f.rotulo}</dt>
+            {/* 0.96.0 (16.ª ronda, senior): el rótulo lleva al literal, como en las fichas (la
+                primera fuente del primer sistema; el resto, en la línea de fuentes del pie). */}
+            <dt className="min-w-0">
+              {(() => {
+                const ruta = literalDe(f.grupos[0].d.f[0], f.grupos[0].cs[0]);
+                return ruta ? (
+                  <a
+                    href={ruta}
+                    className="tap-44 inline-block min-h-6 py-0.5 text-[15px] font-semibold leading-snug text-slate-900 underline decoration-[var(--linea-fuerte)] decoration-dotted decoration-1 underline-offset-4 hover:decoration-solid hover:decoration-slate-700"
+                    title="Texto del capítulo"
+                  >
+                    {f.rotulo}
+                  </a>
+                ) : (
+                  <span className="text-[15px] font-semibold leading-snug text-slate-900">
+                    {f.rotulo}
+                  </span>
+                );
+              })()}
+            </dt>
             <dd className="min-w-0 max-w-[72ch] space-y-2 text-[15px] leading-snug text-slate-800">
               {f.grupos.map(({ cs, d }) => (
                 <div key={cs.join("-")}>
@@ -1511,14 +1558,22 @@ function OtrasSituaciones({ cols }: { cols: number[] }) {
                       ))}
                     </span>
                   ) : null}
-                  <span className="block">{sinCortes(d.v)}</span>
-                  {d.n && (
+                  {/* 0.96.0 (16.ª ronda, visual): intervalos sin partir («12–24 h»). */}
+                  <span className="block">
+                    <SinCortes texto={d.v} />
+                  </span>
+                  {d.n && !f.nota && (
                     <span className="mt-0.5 block text-[13px] text-slate-600">
-                      {sinCortes(d.n)}
+                      <SinCortes texto={d.n} />
                     </span>
                   )}
                 </div>
               ))}
+              {f.nota && (
+                <p className="text-[13px] text-slate-600">
+                  <SinCortes texto={f.nota} />
+                </p>
+              )}
             </dd>
           </div>
         ))}
@@ -1724,7 +1779,7 @@ function Comparacion({
               <NivelTitulo.Provider value={2}>
                 <TablaVista tabla={TABLAS.T4} columnasFijas={cols} herramienta />
               </NivelTitulo.Provider>
-              <OtrasSituaciones cols={cols} />
+              <OtrasSituaciones cols={cols} aLaVista={fila === "otras"} />
             </>
           )}
           {seccion === "ampliacion" && CON_AMPLIACION && (

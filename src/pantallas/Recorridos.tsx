@@ -27,7 +27,7 @@ import { AnadidoDelSistema, BloquesPorSistema } from "../componentes/BloquesPorS
 import { DosColumnas } from "../componentes/DosColumnas";
 import { NombreSistema } from "../componentes/NombreSistema";
 import { GUIA_POR_SISTEMA, TABLA4_POR_SISTEMA } from "../porSistema";
-import { CATALOGO_SISTEMAS, CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { kDe, siglasPorPiezas, type Pieza } from "../inicio";
 
 import { elegirRuta, fueNavegacionNueva, href } from "../rutas";

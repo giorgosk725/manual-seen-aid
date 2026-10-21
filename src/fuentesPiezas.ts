@@ -4,6 +4,7 @@
 import { APARTADOS, TABLAS, idDeBloque, rutaDeTabla } from "./contenido";
 import { frasesDe, listaDe, type Pieza } from "./inicio";
 import { paginasDe } from "./paginas";
+import { href } from "./rutas";
 
 /* La procedencia de una pieza, en una línea («Tabla 2, p. 10»), con su sitio en el capítulo. */
 export const numeroApartado = (slug: string) => APARTADOS.find((a) => a.slug === slug)?.n ?? "";
@@ -86,4 +87,16 @@ export function fuentesDePiezas(piezas: Pieza[]): { texto: string; ruta: string 
     // 0.83.1 (séptima ronda, senior y R3): entre paréntesis (con «·» parecía otra fuente).
     return e ? { ...f, texto: `${f.texto} (${e})` } : f;
   });
+}
+
+/* Identificador del sistema en la vista de tablas (orden de la Tabla 1). */
+const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
+/* 0.96.0: aquí (antes en componentes/FichaOperativa) para usarla también en Sistemas.
+   Adónde lleva el rótulo de una fila: la tabla con la columna del sistema (casilla literal) o el
+   párrafo del capítulo, resaltado (0.77.1, auditoría R3: del dato al literal en un toque). */
+export function literalDe(p: Pieza | undefined, c: number): string | undefined {
+  if (!p) return undefined;
+  if (p.t === "casilla")
+    return href("consultar", "tablas", `${p.tabla}:${SLUG_TABLA[c]}:${p.fila}`);
+  return fuentesDePieza(p)[0]?.ruta;
 }

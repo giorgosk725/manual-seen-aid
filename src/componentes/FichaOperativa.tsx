@@ -14,20 +14,7 @@ import {
   type GrupoFicha,
 } from "../fichaOperativa";
 import { SISTEMA_HEX } from "../tokens";
-import { fuentesDePieza } from "../fuentesPiezas";
-import { href } from "../rutas";
-import type { Pieza } from "../inicio";
-
-/* Identificador del sistema en la vista de tablas (orden de la Tabla 1). */
-const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
-/* Adónde lleva el rótulo de una fila: la tabla con la columna del sistema (casilla literal) o el
-   párrafo del capítulo, resaltado (0.77.1, auditoría R3: del dato al literal en un toque). */
-function literalDe(p: Pieza | undefined, c: number): string | undefined {
-  if (!p) return undefined;
-  if (p.t === "casilla")
-    return href("consultar", "tablas", `${p.tabla}:${SLUG_TABLA[c]}:${p.fila}`);
-  return fuentesDePieza(p)[0]?.ruta;
-}
+import { literalDe } from "../fuentesPiezas";
 
 /* La variante, siempre igual: la insignia a la izquierda y su texto al lado, aunque ocupe dos
    líneas (0.77.1, auditoría visual: con flex-wrap la insignia quedaba sola en su línea). */
@@ -67,11 +54,14 @@ const MODO = {
     dt: "",
     dd: "",
   },
+  // 0.96.0 (16.ª ronda, visual): en el Resumen, el rótulo de la ficha (minúscula y negrita, 14 px)
+  // y la línea fina entre datos también en el móvil (antes, MAYÚSCULAS grises de 12 px); desde xl,
+  // la misma subrejilla entre tarjetas vecinas.
   resumen: {
-    dl: "grid gap-y-3 sm:grid-cols-3 sm:gap-x-5 xl:row-span-3 xl:grid-cols-1 xl:grid-rows-subgrid xl:gap-y-2",
-    fila: "min-w-0 xl:grid xl:grid-cols-[9.25rem_1fr] xl:gap-x-3 xl:border-t xl:border-[var(--linea-suave)] xl:pt-2 xl:first:border-t-0 xl:first:pt-0",
-    dt: "xl:pt-0.5",
-    dd: "mt-1 xl:mt-0",
+    dl: "grid gap-y-2.5 sm:grid-cols-3 sm:gap-x-5 xl:row-span-3 xl:grid-cols-1 xl:grid-rows-subgrid xl:gap-y-1.5",
+    fila: "min-w-0 border-t border-[var(--linea-suave)] pt-2.5 first:border-t-0 first:pt-0 sm:border-t-0 sm:pt-0 xl:grid xl:grid-cols-[9.25rem_1fr] xl:gap-x-3 xl:border-t xl:pt-1.5 xl:first:border-t-0 xl:first:pt-0",
+    dt: "",
+    dd: "mt-0.5 xl:mt-0",
   },
 };
 export function CasillasDatos({
@@ -99,7 +89,7 @@ export function CasillasDatos({
               className={
                 modo === "rejilla"
                   ? "text-[15px] font-semibold leading-snug text-slate-900"
-                  : `rotulo pt-0.5 leading-tight ${m.dt}`
+                  : `text-sm font-semibold leading-snug text-slate-900 ${m.dt}`
               }
             >
               {ruta ? (

@@ -17,7 +17,8 @@ test.describe("Explorar criterios de elección", () => {
     await expect(main.getByRole("heading", { name: "Factores de la Figura 2" })).toBeVisible();
     // 0.72.2 (A02 revisada por el autor): por las características del dispositivo (Tabla 1),
     // sin datos de la persona ni puntuación; los cuatro en el orden de la tabla.
-    await expect(main.getByRole("link", { name: /Comparación de sistemas/ })).toBeVisible();
+    // 0.96.0 (16.ª ronda, adjunto): el botón se llama como el destino de la portada (el Resumen).
+    await expect(main.getByRole("link", { name: /Resumen de los cuatro sistemas/ })).toBeVisible();
     await main
       .getByRole("group", { name: "Formato" })
       .getByRole("button", { name: "Bomba con catéter" })

@@ -106,7 +106,7 @@ function PorCaracteristicas() {
       ? `Ver la ficha de ${CATALOGO_SISTEMAS[reunen[0]].name}`
       : hayAlgo && reunen.length >= 2
         ? `Comparar los ${reunen.length}`
-        : "Comparación de sistemas";
+        : "Resumen de los cuatro sistemas";
   return (
     <section aria-labelledby="por-caracteristicas" className="no-imprimir tarjeta p-4">
       <h2 id="por-caracteristicas" className="titulo-seccion">
@@ -210,14 +210,14 @@ function PorCaracteristicas() {
                   const r = casa(cr, c);
                   return (
                     <div key={cr.id} className="sm:contents">
-                      <dt className="rotulo text-slate-500 sm:mt-1.5">
+                      <dt className={ROTULO_DATO}>
                         {T1.filas[cr.fila].etiqueta}
                         <span className="sr-only">
                           {r === true ? " (coincide)" : r === false ? " (no coincide)" : ""}
                         </span>
                       </dt>
                       <dd
-                        className={r === true ? "font-semibold text-slate-900" : "text-slate-700"}
+                        className={`${DATO_PEGADO} ${r === true ? "font-semibold text-slate-900" : "text-slate-700"}`}
                       >
                         {r === true && (
                           <Check
@@ -242,8 +242,8 @@ function PorCaracteristicas() {
                     Control-IQ+ y Liberty, a la vista en cada tarjeta. */}
                 {[7, 8].map((fila) => (
                   <div key={fila} className="sm:contents">
-                    <dt className="rotulo text-slate-500 sm:mt-1.5">{T1.filas[fila].etiqueta}</dt>
-                    <dd className="whitespace-pre-line text-slate-700">
+                    <dt className={ROTULO_DATO}>{T1.filas[fila].etiqueta}</dt>
+                    <dd className={`${DATO_PEGADO} whitespace-pre-line text-slate-700`}>
                       <SinCortes texto={T1.filas[fila].celdas[c]} />
                     </dd>
                   </div>
@@ -253,9 +253,25 @@ function PorCaracteristicas() {
           );
         })}
       </ul>
+      {/* 0.96.0 (16.ª ronda, adjunto): lo que la Tabla 1 no compara y también decide (nadar, el
+          alcohol, desconectar), a un toque: el bloque de Los cuatro · Modos. */}
+      <a
+        href={href("sistemas", "todos", "modos:otras")}
+        className="mt-3 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700"
+      >
+        Agua, alcohol y desconexión de los cuatro
+        <ArrowRight size={14} aria-hidden="true" />
+      </a>
     </section>
   );
 }
+
+/* 0.96.0 (16.ª ronda, visual): el rótulo de un dato, como en las fichas (minúscula y negrita, sobre
+   una línea fina), no en MAYÚSCULAS grises. */
+const ROTULO_DATO =
+  "separador mt-1.5 border-t pt-1.5 text-[13px] font-semibold leading-snug text-slate-900 sm:mt-0";
+/* En la subrejilla (desde sm) el dato va en la fila siguiente: sin el hueco de la rejilla. */
+const DATO_PEGADO = "sm:-mt-2";
 
 export function Elegir({ antigua = false }: { antigua?: boolean }) {
   // Dirección antigua con criterios (#/sistemas/elegir/edad=…): se sustituye por la de la
