@@ -215,7 +215,9 @@ function TablaHTML({
                 // 0.77.1 (auditorías R3 y senior): columnas algo más estrechas, para que la tabla de
                 // los cuatro sistemas quepa entera en la columna de lectura (antes, 848 px en 734).
                 // 0.80.1: en la Tabla 4, rótulos largos: columna más ancha (6–7 líneas a 1920).
-                style={{ minWidth: tabla.id === "T4" ? "12rem" : "8rem" }}
+                // 0.95.1: rótulos de fila más anchos en las tablas de rótulo largo (en la Tabla 3, «Objetivo
+                // glucémico y funciones temporales…» iba en seis líneas).
+                style={{ minWidth: tabla.id === "T4" || tabla.id === "T3" ? "12rem" : "10rem" }}
               >
                 <span className="flex items-start gap-1.5">
                   {iconoFila?.(i)}
