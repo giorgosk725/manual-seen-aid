@@ -695,7 +695,8 @@ export const MODOS: Dato[][] = [
       v: "Mantener el automático y valorar Boost o bolo corrector según el calculador",
       f: [t4(4)],
     },
-    GRASA("Función de comida de absorción lenta", {}, [TARDIA]),
+    // 0.91.3 (14.ª ronda, R3): con el nombre de la Tabla 4.
+    GRASA("Función comida de absorción lenta", {}, [TARDIA]),
     {
       r: "Alcohol",
       v: "Anticipar hipoglucemia diferida hasta 12–24 h tras la ingesta; valorar Ease-off o un objetivo glucémico más conservador la noche del consumo y la mañana siguiente",

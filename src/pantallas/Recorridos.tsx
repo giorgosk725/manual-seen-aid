@@ -758,7 +758,20 @@ export function SituacionSistema({
                 })()}
                 {(porSistema || sit.tabla === "T6") && (
                   <div>
-                    <div className="rotulo mb-1">Sistema</div>
+                    {/* 0.91.3 (14.ª ronda, adjunto): «Los cuatro», junto al selector (antes,
+                        suelto entre la tarjeta y la fuente). */}
+                    <div className="mb-1 flex items-baseline justify-between gap-3">
+                      <span className="rotulo">Sistema</span>
+                      {porSistema && sisIdx >= 0 && (
+                        <button
+                          type="button"
+                          onClick={() => elegirRuta("consultar", "situacion", sit.id)}
+                          className="tap-44 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700"
+                        >
+                          Los cuatro
+                        </button>
+                      )}
+                    </div>
                     <CasillasSistema
                       unico
                       nombres={CORTO_SISTEMA}
@@ -810,15 +823,6 @@ export function SituacionSistema({
                     bloques={TABLA4_POR_SISTEMA[sit.id][sisIdx]}
                     sinFuente
                   />
-                )}
-                {porSistema && sisIdx >= 0 && (
-                  <button
-                    type="button"
-                    onClick={() => elegirRuta("consultar", "situacion", sit.id)}
-                    className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
-                  >
-                    Los cuatro
-                  </button>
                 )}
                 {/* 0.77.1 (auditoría R5): en las pruebas y cirugías (Tabla 6), con un sistema en la
                     ruta, el sistema con su formato y sus sensores (Tabla 1): «retirar, salvo

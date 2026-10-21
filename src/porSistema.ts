@@ -182,10 +182,9 @@ export const TABLA4_POR_SISTEMA: Record<string, BloqueSistema[][]> = {
     [
       {
         rotulo: "Hiperglucemia tardía",
-        piezas: [
-          s9("b6", [0]),
-          s9("b6", [1], /en CamAPS FX puede utilizarse la función de absorción lenta/),
-        ],
+        // 0.91.3 (14.ª ronda, R3): sin «en CamAPS FX puede utilizarse la función de absorción
+        // lenta», que repetía la herramienta de la Tabla 4 justo encima.
+        piezas: [s9("b6", [0])],
       },
     ],
     [

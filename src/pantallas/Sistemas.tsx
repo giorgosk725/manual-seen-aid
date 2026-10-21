@@ -15,7 +15,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
-import { ArrowRight, Check, ExternalLink, Minus, X } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, ExternalLink, Minus, X } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, type Tabla } from "../contenido";
 import type { TablaId } from "../contenido/tipos";
 import type { Pieza } from "../inicio";
@@ -669,7 +669,7 @@ export function FichaSistema({
         </div>
         {/* Sistema visual: los tres accesos como enlaces de texto en una fila (en el móvil eran tres
             botones apilados antes del contenido). */}
-        <div className="no-imprimir col-span-2 mt-0.5 flex flex-wrap gap-x-2 gap-y-0 sm:col-span-1 sm:col-start-2 sm:mt-0 sm:gap-x-4">
+        <div className="no-imprimir col-span-2 mt-0.5 flex flex-wrap gap-x-1.5 gap-y-0 max-sm:[&>*]:px-0 sm:col-span-1 sm:col-start-2 sm:mt-0 sm:gap-x-4">
           <a
             // I61-04: al principio del recorrido (preparación), con el sistema; no al paso 5.
             href={href("consultar", "inicio", `preparacion:${slug}`)}
@@ -708,9 +708,11 @@ export function FichaSistema({
             // 0.89.1 (13.ª ronda, guardia): «Cambiar», como en la barra plegada; las cinco en una
             // línea a 360 px (antes, «Otro sistema» sola en una segunda línea).
             aria-label="Otro sistema o comparación"
-            className={`${accesoFicha} sm:hidden`}
+            className={`${accesoFicha} gap-0.5 sm:hidden`}
           >
+            {/* 0.91.3 (14.ª ronda, guardia): con su flecha, que despliega el selector. */}
             Cambiar
+            <ChevronDown size={14} aria-hidden="true" className="shrink-0" />
           </button>
         </div>
       </header>
