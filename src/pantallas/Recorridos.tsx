@@ -396,6 +396,19 @@ function CabeceraSituacion({
   );
 }
 
+/* 0.96.0 (16.ª ronda, adjunto): un «Véase también» que lleva a la situación cuya fila de tabla ya
+   enseña arriba la herramienta del sistema (en la enfermedad intercurrente, «Enfermedad leve, sin
+   sospecha de fallo (Tabla 4)»), sobra mientras haya un sistema elegido. */
+function yaArriba(guia: SituacionGuia, ruta: string, sis: number | undefined): boolean {
+  if (sis === undefined || sis < 0) return false;
+  const id = /^#\/consultar\/situacion\/([a-z0-9-]+)$/.exec(ruta)?.[1];
+  const s = id && SITUACIONES.find((x) => x.id === id);
+  if (!s) return false;
+  return (GUIA_POR_SISTEMA[guia.id]?.bloques[sis] ?? []).some((b) =>
+    b.piezas.some((p) => p.t === "casilla" && p.tabla === s.tabla && p.fila === s.fila),
+  );
+}
+
 /* «Para seguir»: la hoja para el paciente, los apartados y la tabla entera. 0.92.0 (revisión de
    tarjetas, ★1): con VeaseTambien, la misma forma que en el resto de la app. */
 const ParaSeguir = ({ filas }: { filas: { href: string; t: string }[] }) => (
@@ -451,9 +464,8 @@ function ListaSituaciones({
         ? "Figura 3"
         : ruta.startsWith("#/visual")
           ? "Diagrama"
-          : ruta.startsWith("#/consultar/situacion")
-            ? "Situación"
-            : undefined;
+          : // 0.96.0 (16.ª ronda, adjunto y R1): sin «Situación» (todas lo son en esta lista).
+            undefined;
   const conFilas = visibles.filter((g) => g.sits.length || g.extras.length);
   return (
     <div
@@ -531,20 +543,28 @@ function ListaSituaciones({
               </li>
             );
           })}
-          {extras.map((x) => (
-            <li key={x.ruta}>
-              <a
-                href={
-                  sistema && x.ruta.startsWith(href("consultar", "situacion"))
-                    ? `${x.ruta}:${sistema}`
-                    : x.ruta
-                }
-                className={fila}
-              >
-                <Fila texto={x.t} destino={destinoDe(x.ruta)} />
-              </a>
-            </li>
-          ))}
+          {extras.map((x) => {
+            // 0.96.0 (16.ª ronda, R3): «Hipoglucemia nocturna» lleva a «Sueño/período nocturno»:
+            // con esa situación abierta, las dos filas se marcan como elegidas (es la misma). Las
+            // dos se quedan: cada una es el nombre con el que se busca.
+            const on = !!sit && x.ruta === href("consultar", "situacion", sit.id);
+            return (
+              <li key={x.ruta}>
+                <a
+                  href={
+                    sistema && x.ruta.startsWith(href("consultar", "situacion"))
+                      ? `${x.ruta}:${sistema}`
+                      : x.ruta
+                  }
+                  aria-current={on ? "true" : undefined}
+                  className={`${fila} ${on ? "text-white hover:!bg-[var(--acento)]" : ""}`}
+                  style={on ? { background: hex.strong } : undefined}
+                >
+                  <Fila texto={x.t} destino={destinoDe(x.ruta)} on={on} />
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </section>
     );
@@ -561,6 +581,7 @@ export function SituacionSistema({
   momento?: string;
 }) {
   const [filtro, setFiltro] = useState("");
+  const [cambiarSistema, setCambiarSistema] = useState(false);
   const sit = SITUACIONES.find((s) => s.id === situacion) || null;
   const guia = SITUACIONES_GUIA.find((s) => s.id === situacion) || null;
   // En el móvil, con una situación elegida el catálogo se pliega; «Cambiar» lo vuelve a abrir.
@@ -596,16 +617,41 @@ export function SituacionSistema({
     const enTodos = (p: Pieza) =>
       xs.every((bs) => bs.some((b) => b.piezas.some((q) => clave(q) === clave(p))));
     const comunes = (xs[0][0]?.piezas ?? []).filter(enTodos);
-    const ks = new Set(comunes.map(clave));
+    // 0.96.0 (16.ª ronda, R3): lo que dicen igual dos o tres sistemas (en la comida grasa, «la
+    // estrategia debe individualizarse…», de MiniMed 780G y Omnipod 5), también una vez, rotulado
+    // con sus sistemas (antes, en cada tarjeta).
+    const quien = new Map<string, { p: Pieza; cs: number[]; rotulo: string }>();
+    xs.forEach((bs, c) =>
+      bs.forEach((b) =>
+        b.piezas.forEach((p) => {
+          const k = clave(p);
+          const q = quien.get(k);
+          if (q) q.cs.push(c);
+          else quien.set(k, { p, cs: [c], rotulo: b.rotulo });
+        }),
+      ),
+    );
+    const compartidas = [...quien.values()].filter((q) => q.cs.length > 1 && !enTodos(q.p));
+    const ks = new Set([...comunes, ...compartidas.map((q) => q.p)].map(clave));
+    const nombres = (cs: number[]) =>
+      cs.length < 2
+        ? CORTO_SISTEMA[cs[0]]
+        : `${cs
+            .slice(0, -1)
+            .map((c) => CORTO_SISTEMA[c])
+            .join(", ")} y ${CORTO_SISTEMA[cs[cs.length - 1]]}`;
     return {
       propios: xs.map((bs) =>
         bs
           .map((b) => ({ ...b, piezas: b.piezas.filter((p) => !ks.has(clave(p))) }))
           .filter((b) => b.piezas.length),
       ),
-      comun: comunes.length
-        ? [{ rotulo: `${xs[0][0].rotulo} · todos los sistemas`, piezas: comunes }]
-        : [],
+      comun: [
+        ...(comunes.length
+          ? [{ rotulo: `${xs[0][0].rotulo} · todos los sistemas`, piezas: comunes }]
+          : []),
+        ...compartidas.map((q) => ({ rotulo: `${q.rotulo} · ${nombres(q.cs)}`, piezas: [q.p] })),
+      ],
     };
   })();
   // Al elegir el sistema, su casilla a la vista (en el móvil quedaba bajo la barra inferior).
@@ -624,6 +670,44 @@ export function SituacionSistema({
       {/* Sin situación elegida, la lista a todo el ancho; con una, lista a la izquierda (0.71.0). */}
       <div className={`grid gap-4 ${sit || guia ? "lg:grid-cols-[18rem_1fr]" : ""}`}>
         <div className={(sit || guia) && !verLista ? "hidden lg:block" : undefined}>
+          {/* 0.96.0 (16.ª ronda, R3): desde la ficha de un sistema (#/consultar/situacion/:camaps),
+              qué sistema va ya elegido en las situaciones que se abran, y cómo cambiarlo. */}
+          {!sit && !guia && sisIdx >= 0 && (
+            <div className="mb-3 text-sm text-slate-700">
+              <p className="flex flex-wrap items-center gap-x-1.5">
+                <span>
+                  Sistema: <span className="font-semibold">{CORTO_SISTEMA[sisIdx]}</span>
+                </span>
+                <span aria-hidden="true">·</span>
+                <button
+                  type="button"
+                  aria-expanded={cambiarSistema}
+                  onClick={() => setCambiarSistema((x) => !x)}
+                  className="tap-44 inline-flex min-h-11 items-center font-semibold underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700 sm:min-h-6"
+                >
+                  cambiar
+                </button>
+              </p>
+              {cambiarSistema && (
+                <div className="mt-1.5">
+                  <CasillasSistema
+                    unico
+                    etiqueta="Sistema"
+                    nombres={CORTO_SISTEMA}
+                    seleccion={[sisIdx]}
+                    onToggle={(c) => {
+                      setCambiarSistema(false);
+                      elegirRuta(
+                        "consultar",
+                        "situacion",
+                        c === sisIdx ? undefined : `:${SIS_IDS[c]}`,
+                      );
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
           <input
             type="search"
             aria-label="Filtrar situaciones"
@@ -695,6 +779,7 @@ export function SituacionSistema({
               <ParaSeguir
                 filas={guia.enlaces
                   .filter((l) => !l.ruta.startsWith("#/visual/objetivos-mcg/"))
+                  .filter((l) => !yaArriba(guia, l.ruta, sisIdx >= 0 ? sisIdx : sistemaReciente()))
                   .map((l) => ({ href: l.ruta, t: l.texto }))}
               />
             </div>
@@ -752,7 +837,9 @@ export function SituacionSistema({
                         <button
                           type="button"
                           onClick={() => elegirRuta("consultar", "situacion", sit.id)}
-                          className="tap-44 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700"
+                          // 0.96.0 (16.ª ronda, visual): 44 px de alto también a la vista en el
+                          // móvil (no solo la zona ampliada).
+                          className="tap-44 inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700 sm:min-h-0"
                         >
                           Los cuatro
                         </button>

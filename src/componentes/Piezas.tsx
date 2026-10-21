@@ -234,7 +234,14 @@ function PiezaVistaBase({
       return (
         <div className={caja} style={borde}>
           <Rotulo tabla={pieza.tabla} etiqueta={f.etiqueta} />
-          {sis !== undefined ? (
+          {sis !== undefined && compacta && sinTitulos ? (
+            // 0.96.0 (16.ª ronda, adjunto): dentro de la tarjeta de un bloque (la herramienta del
+            // sistema en una situación, los bloques de la ficha), la casilla como dato de una fila,
+            // sin caja gris dentro de la tarjeta; las filas las separa una línea fina.
+            <p className="text-[15px] leading-snug text-slate-800">
+              <Lineas siglas={pend(f.celdas[sis])}>{f.celdas[sis]}</Lineas>
+            </p>
+          ) : sis !== undefined ? (
             <Casilla
               nombre={compacta ? "" : t.columnas[sis]}
               texto={f.celdas[sis]}

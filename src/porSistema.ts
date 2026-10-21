@@ -180,7 +180,10 @@ export const TABLA4_POR_SISTEMA: Record<string, BloqueSistema[][]> = {
     [
       {
         rotulo: "Hiperglucemia tardía",
-        piezas: [s9("b6", [0]), s9("b6", [1], /En Control-IQ el bolo extendido[^;]*/)],
+        // 0.96.0 (16.ª ronda, R3): sin «En Control-IQ el bolo extendido es limitado…», que repetía
+        // la casilla de la Tabla 4 justo encima («bolo extendido (hasta 2 h; Control-IQ+: de 15 min
+        // a 8 h)»), como se hizo con CamAPS FX.
+        piezas: [s9("b6", [0])],
       },
     ],
     [
