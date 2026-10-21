@@ -912,7 +912,7 @@ export function Preguntas({ id }: { id?: string }) {
           </a>
           <span className="text-xs text-slate-500">{f.tema}</span>
         </div>
-        <CabeceraEditorial titulo={f.pregunta} hex={hex} level={1} />
+        <CabeceraEditorial titulo={f.pregunta} hex={hex} level={1} frase />
         {estado === "cargando" && <p className="text-sm text-slate-600">Cargando los pasajes…</p>}
         {estado === "error" && (
           <p className="flex flex-wrap items-center gap-2 text-sm text-slate-700">

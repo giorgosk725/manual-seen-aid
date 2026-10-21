@@ -685,7 +685,17 @@ function botonDe(ruta: Ruta): Boton {
 function Inferior({ ruta, onMas }: { ruta: Ruta; onMas: () => void }) {
   const actual = botonDe(ruta);
   const clase = (on: boolean) =>
-    `flex min-h-14 w-full flex-col items-center justify-center gap-0.5 py-1.5 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`;
+    `relative flex min-h-14 w-full flex-col items-center justify-center gap-0.5 py-1.5 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`;
+  // 0.94.0 (rediseño, fase 2): el destino activo, además de en burdeos, con un filete de 2 px arriba
+  // (el color solo no basta para distinguirlo; 1.4.1).
+  const filete = (on: boolean) =>
+    on && (
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-5 top-0 h-0.5 rounded-b"
+        style={{ background: "var(--acento-texto)" }}
+      />
+    );
   return (
     <nav
       aria-label="Barra inferior"
@@ -705,6 +715,7 @@ function Inferior({ ruta, onMas }: { ruta: Ruta; onMas: () => void }) {
                   className={clase(on)}
                   style={on ? { color: SEEN.burdeos } : undefined}
                 >
+                  {filete(on)}
                   <I size={20} aria-hidden="true" />
                   {it.etiqueta}
                 </a>
@@ -717,6 +728,7 @@ function Inferior({ ruta, onMas }: { ruta: Ruta; onMas: () => void }) {
                   className={clase(on)}
                   style={on ? { color: SEEN.burdeos } : undefined}
                 >
+                  {filete(on)}
                   <I size={20} aria-hidden="true" />
                   {it.etiqueta}
                 </button>
