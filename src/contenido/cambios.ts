@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-21",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — Resumen filtrado y portada`,
+    titulo: `Complemento interactivo ${VERSION_APP} — revisión del diseño de las tarjetas`,
+    detalle: [
+      "Fichas de los sistemas: el rótulo encima del dato y en una línea (el dato a todo el ancho en el móvil); accesos del Resumen como enlaces, sin «Funciona» repetido; menciones del capítulo por apartado y sin páginas; cabecera de la ficha más discreta; rejillas sin huecos; Modos con el rótulo más ancho en el ordenador.",
+      "Resto de apartados: seis tipos de tarjeta (lista, contenido, sistema, casilla, aviso clínico, nota complementaria); un único «Véase también»; sin plecas de color donde no hay un sistema; títulos de tarjeta de un solo tamaño; buscador sin marcos burdeos; calculadora con un solo estilo de opciones; situaciones con un orden fijo (selector, sistema, lo común); plan del paciente con una sola receta de urgencia.",
+      "Detalles: «Los cuatro» junto al selector de la situación; CamAPS FX sin la frase repetida en comida grasa; «Cambiar» con su flecha en la ficha del móvil.",
+    ],
+  },
+  {
+    fecha: "2026-10-21",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.91.2 — Resumen filtrado y portada",
     detalle: [
       "Sistemas AID, Resumen: al marcar un sistema (o varios), solo sus tarjetas, sin cambiar de pantalla; sin marcar, las cuatro.",
       "Ejercicio anaeróbico o de alta intensidad (Tabla 4, celda común): al comparar sin CamAPS FX, sin la frase «En CamAPS FX, no usar Boost de rutina…»; con los cuatro o con CamAPS FX, la celda entera.",
