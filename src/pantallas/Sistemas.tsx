@@ -372,6 +372,18 @@ function gruposDeMenciones<T extends { titulo: string; sub?: string }>(xs: T[]) 
   return grupos;
 }
 
+/* Los parámetros en el orden de las filas de la Tabla 3 (objetivo, basal, ratio, factor, insulina
+   activa); lo que no está en ella, al final y en su orden. */
+const ORDEN_T3 = [
+  "Objetivo glucémico",
+  "Tasa basal programada",
+  "Ratio I/HC",
+  "Factor de sensibilidad",
+  "Duración de la insulina activa",
+];
+const enOrdenDeTabla3 = <T extends { r: string }>(xs: T[]) =>
+  [...xs].sort((a, b) => (ORDEN_T3.indexOf(a.r) + 1 || 99) - (ORDEN_T3.indexOf(b.r) + 1 || 99));
+
 /* Los accesos de cada tarjeta de la entrada: botones en el móvil, enlaces de texto desde sm. */
 // 0.92.0 (revisión de tarjetas, sistemas): enlaces de texto también en el móvil (la rejilla de
 // botones ocupaba 119 px por tarjeta).
@@ -770,7 +782,10 @@ export function FichaSistema({
           </TituloSeccion>
           {/* 0.77.0: cada parámetro con lo que hace en automático y cómo se usa, en una fila
               (Tablas 1 y 3; src/fichaOperativa.ts). */}
-          <FilasDatos c={c} datos={PARAMETROS[c]} titulo="Parámetros" />
+          {/* 0.92.2 (decisión delegada, 21-10-2026): en el orden de la Tabla 3 en los cuatro
+              sistemas (cada parámetro en el mismo sitio de una ficha a otra); la insignia marca
+              lo que actúa en automático. */}
+          <FilasDatos c={c} datos={enOrdenDeTabla3(PARAMETROS[c])} titulo="Parámetros" />
         </section>
       }
 

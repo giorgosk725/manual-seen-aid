@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-21",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — segunda revisión de las tarjetas`,
+    titulo: `Complemento interactivo ${VERSION_APP} — Parámetros en el orden de la Tabla 3`,
+    detalle: [
+      "Ficha de cada sistema, Parámetros: el mismo orden en los cuatro, el de la Tabla 3 (objetivo, basal, ratio, factor de sensibilidad, insulina activa); la insignia marca lo que actúa en automático.",
+      "Preguntas frecuentes: en el ordenador, los temas abiertos; en el móvil, plegados con su número (y «Ver todas las preguntas» los abre).",
+    ],
+  },
+  {
+    fecha: "2026-10-21",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.92.1 — segunda revisión de las tarjetas",
     detalle: [
       "Sistemas: los accesos del Resumen en una línea en el móvil; la pestaña «Características» también en el móvil (antes, «Tabla 1»); la fuente de Modos agrupa las referencias del mismo apartado y página; una mención de un solo párrafo enlaza el propio apartado.",
       "Resto: «Véase también» dentro de una caja con el título como rótulo; «Preguntas relacionadas» con la misma lista; opciones de la calculadora al mismo ancho; «Más pasajes» al ancho de su texto; el aviso de cetonemia de Interrupción con el radio de los avisos.",

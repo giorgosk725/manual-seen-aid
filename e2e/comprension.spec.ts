@@ -70,8 +70,14 @@ test.describe("Comprensión", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: "Preguntas frecuentes" }),
     ).toBeVisible();
-    // Los temas van plegados: se abre el suyo.
-    await page.getByText("Educación y plan de seguridad", { exact: true }).click();
+    // 0.92.2: en el ordenador los temas salen abiertos (en el móvil, plegados): se abre el suyo
+    // solo si está cerrado.
+    const tema = page.locator("details", {
+      has: page.getByText("Educación y plan de seguridad", { exact: true }),
+    });
+    await expect(tema).toHaveAttribute("open", "");
+    if (!(await tema.evaluate((d) => (d as HTMLDetailsElement).open)))
+      await tema.locator("summary").click();
     await page.getByRole("link", { name: /¿Qué debe incluir el plan de seguridad\?/ }).click();
     const frecuente = page.getByRole("region", { name: "Pregunta frecuente" });
     await expect(frecuente).toContainText("Glucagón.");

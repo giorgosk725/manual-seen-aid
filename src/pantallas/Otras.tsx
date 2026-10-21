@@ -868,7 +868,12 @@ function TemaPreguntas({ tema, abierto }: { tema: string; abierto: boolean }) {
 
 export function Preguntas({ id }: { id?: string }) {
   const { motor, estado, reintentar } = useBuscador(true);
-  const [todas, setTodas] = useState(false);
+  // 0.92.2 (decisión delegada, 21-10-2026): en el ordenador, los temas abiertos (a dos columnas
+  // se leen de un vistazo); en el móvil, plegados con su número, como índice (abiertos serían
+  // unas diez pantallas de enlaces). «Ver todas las preguntas» / «Plegar los temas», igual.
+  const [todas, setTodas] = useState(
+    () => window.matchMedia?.("(min-width: 1024px)").matches ?? false,
+  );
   const [filtro, setFiltro] = useState("");
   const nf = normalizar(filtro).trim();
   const filtradas =
