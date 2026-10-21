@@ -19,6 +19,7 @@ import { href } from "../rutas";
 import { Texto } from "../texto";
 import { ponerConsulta } from "../consultaBuscar";
 import { SISTEMA_HEX } from "../tokens";
+import { CORTO_SISTEMA } from "../ampliacion/ids";
 
 function Marcado({ texto, q }: { texto: string; q: string }) {
   return (
@@ -198,6 +199,13 @@ function Chip({
 }
 /* La columna (0-3) de una casilla por su nombre de sistema («MiniMed 780G», «Omnipod 5»…). */
 const columnaDe = (nombre: string) => PREFIJO_SISTEMA.findIndex((re) => re.test(nombre.trim()));
+/* 0.96.0 (16.ª ronda, adjunto, visual y R5): en chips y casillas, el nombre corto de toda la app
+   («Control-IQ / Control-IQ+», «CamAPS FX»), no la cabecera de la tabla («Tandem Control-IQ»,
+   «myLoop CamAPS»); lo que no es un sistema, tal cual. */
+const nombreDeCasilla = (nombre: string) => {
+  const c = columnaDe(nombre);
+  return c >= 0 ? CORTO_SISTEMA[c] : nombre;
+};
 
 function Tarjeta({
   r: inicial,
@@ -272,7 +280,7 @@ function Tarjeta({
     >
       {casilla && !fijo && (
         <p className="text-xs">
-          <span className="insignia">{casilla.nombre}</span>
+          <span className="insignia">{nombreDeCasilla(casilla.nombre)}</span>
         </p>
       )}
       {titulo && (
@@ -310,7 +318,7 @@ function Tarjeta({
               sis={columnaDe(c.nombre)}
               onClick={() => setSel(sel === i ? null : i)}
             >
-              {c.nombre}
+              {nombreDeCasilla(c.nombre)}
             </Chip>
           ))}
         </div>
@@ -408,8 +416,13 @@ function Tarjeta({
                 className={`casilla px-2.5 py-1.5 ${c >= 0 ? "casilla-sistema" : ""}`}
                 style={c >= 0 ? { ["--sis" as string]: SISTEMA_HEX[c].strong } : undefined}
               >
-                <dt className="rotulo" style={c >= 0 ? { color: SISTEMA_HEX[c].ink } : undefined}>
-                  {s.nombre}
+                {/* 0.96.0 (16.ª ronda): el nombre con su grafía, en la tinta del sistema (antes, en
+                    MAYÚSCULAS). */}
+                <dt
+                  className={c >= 0 ? "rotulo-sistema text-[13px]" : "rotulo"}
+                  style={c >= 0 ? { color: SISTEMA_HEX[c].ink } : undefined}
+                >
+                  {nombreDeCasilla(s.nombre)}
                 </dt>
                 <dd className="mt-0.5 whitespace-pre-line text-slate-900">
                   <Marcado texto={sinCortes(s.texto)} q={q} />

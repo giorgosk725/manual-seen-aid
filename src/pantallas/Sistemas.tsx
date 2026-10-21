@@ -1674,7 +1674,8 @@ function Comparacion({
                         className={`titulo-tarjeta tap-44 inline-block min-h-6 hover:underline ${cols.length > 2 ? "xl:min-h-10" : ""}`}
                         style={{ color: h.ink }}
                       >
-                        <NombreSistema n={CATALOGO_SISTEMAS[c].name} />
+                        {/* 0.96.0 (16.ª ronda, R5): nombre corto en las tarjetas de la comparación. */}
+                        <NombreSistema n={CORTO_SISTEMA[c]} />
                       </a>
                       {/* 0.94.0 (rediseño): cada grupo abre con su línea capilar, como los datos
                           de las fichas. */}

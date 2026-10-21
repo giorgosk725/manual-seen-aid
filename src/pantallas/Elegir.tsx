@@ -7,7 +7,7 @@
    El explorador anterior por criterios (eleccion.ts) se conserva fuera de esta edición; una
    dirección antigua con criterios abre esta consulta y no reutiliza ni guarda sus valores. */
 import { useEffect, useState } from "react";
-import { CATALOGO_SISTEMAS, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CATALOGO_SISTEMAS, CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { ArrowRight, Check, X } from "lucide-react";
 import { SISTEMA_HEX } from "../tokens";
 import { APARTADOS, F2, TABLAS, rutaDeTabla } from "../contenido";
@@ -190,7 +190,8 @@ function PorCaracteristicas() {
                     height={32}
                     className="foto-sistema h-8 w-8 shrink-0 rounded-md bg-white object-cover"
                   />
-                  <NombreSistema n={CATALOGO_SISTEMAS[c].name} />
+                  {/* 0.96.0 (16.ª ronda, R5): nombre corto en las tarjetas (el comercial, en la ficha). */}
+                  <NombreSistema n={CORTO_SISTEMA[c]} />
                 </a>
                 {fuera && (
                   <span className="insignia mt-0.5 inline-flex w-fit items-center gap-1">

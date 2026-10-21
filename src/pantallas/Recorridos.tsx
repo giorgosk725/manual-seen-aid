@@ -789,7 +789,10 @@ export function SituacionSistema({
                               className="foto-sistema h-7 w-7 shrink-0 rounded-md bg-white object-cover"
                             />
                             <span className="titulo-tarjeta" style={{ color: SISTEMA_HEX[c].ink }}>
-                              <NombreSistema n={CATALOGO_SISTEMAS[c]?.name ?? nombre} />
+                              {/* 0.96.0 (16.ª ronda, R5): el nombre corto de toda la app en
+                                  tarjetas y casillas; el comercial, en la ficha y el selector de
+                                  Sistemas. */}
+                              <NombreSistema n={CORTO_SISTEMA[c] ?? nombre} />
                             </span>
                           </div>
                           <p className="px-4 py-2.5 text-[15px] text-slate-800">
@@ -825,7 +828,7 @@ export function SituacionSistema({
                     style={{ ["--sis" as string]: SISTEMA_HEX[sisIdx].strong }}
                   >
                     <div className="titulo-tarjeta" style={{ color: SISTEMA_HEX[sisIdx].ink }}>
-                      <NombreSistema n={CATALOGO_SISTEMAS[sisIdx].name} />
+                      <NombreSistema n={CORTO_SISTEMA[sisIdx]} />
                     </div>
                     <dl className="mt-1.5 grid gap-y-1 text-[15px] sm:grid-cols-[8rem_1fr]">
                       <dt className="rotulo pt-0.5">Formato</dt>
