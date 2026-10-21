@@ -555,6 +555,7 @@ export function CalculadoraInicio({
                 )}
                 <Opciones
                   etiqueta="Ratio y factor de sensibilidad"
+                  rejilla
                   opciones={[
                     { v: "no", t: "Sin ratio ni factor propios: reglas del 450 y del 1700" },
                     { v: "si", t: "Con ratio y factor propios ya ajustados" },
@@ -756,6 +757,7 @@ export function CalculadoraInicio({
                 {ev.calcula.ratioFactor && (
                   <Opciones
                     etiqueta="Factor de sensibilidad"
+                    rejilla
                     marca={<Marca modificado={d.tocado.regla} />}
                     opciones={[
                       { v: 1700 as const, t: "Regla del 1700" },

@@ -1344,7 +1344,7 @@ function InterrupcionLinea() {
       {cetonemia && (
         <a
           href={href("consultar", "figura-3")}
-          className="no-imprimir flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border px-3 py-2 text-sm text-slate-900 transition hover:border-slate-500 sm:w-fit"
+          className="no-imprimir flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 rounded-md border px-3 py-2 text-sm text-slate-900 transition hover:border-slate-500 sm:w-fit"
           style={{ borderColor: TRAMO_HEX.rojo.border, background: TRAMO_HEX.rojo.soft }}
         >
           <Droplets size={16} aria-hidden="true" style={{ color: TRAMO_HEX.rojo.strong }} />

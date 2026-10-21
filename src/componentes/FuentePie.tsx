@@ -57,6 +57,56 @@ export function FuentePie({
     .map((f) => ({ ...f, texto: f.texto.replace(/\b(Apartado|Tabla|Figura) /g, "$1\u00a0") }))
     .sort((a, b) => orden(a.texto) - orden(b.texto));
   if (!unicas.length) return null;
+  // 0.92.1 (segunda revisión de tarjetas, sistemas): las del mismo apartado y página, juntas, con
+  // cada entradilla enlazada (antes, «Apartado 9, p. 14 (…)» tres veces seguidas).
+  const grupos: { base: string; partes: Fuente[]; sola?: Fuente }[] = [];
+  for (const f of unicas) {
+    const m = /^(.*?) \((.+)\)$/.exec(f.texto);
+    const previo = grupos[grupos.length - 1];
+    if (m && f.ruta && previo && previo.base === m[1] && !previo.sola)
+      previo.partes.push({ texto: m[2], ruta: f.ruta });
+    else if (m && f.ruta) grupos.push({ base: m[1], partes: [{ texto: m[2], ruta: f.ruta }] });
+    else grupos.push({ base: f.texto, partes: [], sola: f });
+  }
+  const juntos = grupos.some((g) => g.partes.length > 1);
+  if (juntos)
+    return (
+      <p className={`fuente-pie ${className}`}>
+        Fuente:{" "}
+        {grupos.map((g, k) => (
+          <span key={g.base + k}>
+            {k > 0 && "\u00a0· "}
+            {g.sola ? (
+              g.sola.ruta ? (
+                <a href={g.sola.ruta} onClick={onIr} className="tap-44 inline py-1">
+                  <Referencia t={g.sola.texto} />
+                </a>
+              ) : (
+                <Referencia t={g.sola.texto} />
+              )
+            ) : g.partes.length === 1 ? (
+              <a href={g.partes[0].ruta} onClick={onIr} className="tap-44 inline py-1">
+                <Referencia t={`${g.base} (${g.partes[0].texto})`} />
+              </a>
+            ) : (
+              <>
+                <span className="whitespace-nowrap">{g.base}</span> (
+                {g.partes.map((x, i) => (
+                  <span key={x.ruta}>
+                    {i > 0 && "; "}
+                    <a href={x.ruta} onClick={onIr} className="tap-44 inline py-1">
+                      <span>{x.texto}</span>
+                    </a>
+                  </span>
+                ))}
+                )
+              </>
+            )}
+          </span>
+        ))}
+        {nota && <> · {nota}</>}
+      </p>
+    );
   return (
     <p className={`fuente-pie ${className}`}>
       Fuente:{" "}

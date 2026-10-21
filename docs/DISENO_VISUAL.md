@@ -342,12 +342,17 @@ Situaciones).
 - **Portada, tarjeta del título**: esquinas de 4 px (`rounded-[4px]`), como la cubierta del Manual;
   es la única tarjeta con otro radio.
 - **Figura 3, tramos de β-OHB**: botones con el tinte y el borde de su tramo (`TRAMO_HEX`) y
-  esquinas de 12 px: son señal clínica, no tarjetas de contenido.
+  esquinas de 8 px: son señal clínica, no tarjetas de contenido.
 - **Interrupción, cabeceras de caso**: banda tintada con el color de su riesgo y filete superior de
   4 px (verde, amarillo, rojo; gris en las programadas).
 - **Portada, «Hiperglucemia y cetonemia»**: el chip (y la fila en el móvil) con el tinte naranja
   de la Figura 3.
 - **Situaciones, fila elegida**: fondo burdeos con texto blanco (estado de selección, no tarjeta).
+- **Tarjeta de pantalla** (el paso de la descarga, la fase de Iniciación): la tarjeta que es la
+  pantalla misma lleva su título a 17/700 (`.titulo-seccion`), no a 15/700: es el título de la
+  pantalla, no el de un bloque dentro de ella.
+- **Plan del paciente, selector a 360 px**: las cuatro casillas en una fila (decisión previa,
+  con prueba); «MiniMed 780G» puede ir en dos líneas dentro de su casilla.
 - **Comparación de sistemas y selector**: los fondos tintados por sistema (§1) se mantienen.
 - **Fichas de los sistemas** (`FichaOperativa`, `ComoFuncionaOperativo`, Resumen y Parámetros):
   fuera de esta revisión (se revisan aparte).

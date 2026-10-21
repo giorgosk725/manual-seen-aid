@@ -677,22 +677,15 @@ export function RespuestasCapitulo({
   });
   const Relacionadas =
     !compacta && relacionadas && relacionadas.length > 0 ? (
-      <nav aria-label="Preguntas relacionadas" className="mt-3">
-        <p className="rotulo text-slate-500">Preguntas relacionadas</p>
-        <ul className="mt-1 space-y-0.5">
-          {relacionadas.map((f) => (
-            <li key={f.id}>
-              <a
-                href={href("preguntas", f.id)}
-                onClick={onIr}
-                className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
-              >
-                {f.pregunta}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      // 0.92.1 (segunda revisión de tarjetas): la misma lista que «Véase también» (antes, otra
+      // forma: rótulo y enlaces sueltos).
+      <VeaseTambien
+        titulo="Preguntas relacionadas"
+        enCaja
+        nivel={3}
+        onIr={onIr}
+        filas={relacionadas.map((f) => ({ href: href("preguntas", f.id), t: f.pregunta }))}
+      />
     ) : null;
   // 0.74.2 (nada útil plegado): hasta tres pasajes más, abiertos; si son más, plegados.
   const masPasajes = (lista: Respuesta[], enCaja = false) =>
@@ -701,7 +694,8 @@ export function RespuestasCapitulo({
         <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
           Más pasajes del capítulo ({lista.length})
         </summary>
-        <div className={`mt-2 ${enCaja ? "space-y-3" : "space-y-2"}`}>
+        {/* 0.92.1 (segunda revisión de tarjetas): al ancho de su texto (75ch), sin media tarjeta vacía. */}
+        <div className={`mt-2 max-w-3xl ${enCaja ? "space-y-3" : "space-y-2"}`}>
           {lista.map((o, k) => (
             <Tarjeta
               key={`${o.id}|${o.sistema ?? ""}`}

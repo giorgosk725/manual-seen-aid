@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-21",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — revisión del diseño de las tarjetas`,
+    titulo: `Complemento interactivo ${VERSION_APP} — segunda revisión de las tarjetas`,
+    detalle: [
+      "Sistemas: los accesos del Resumen en una línea en el móvil; la pestaña «Características» también en el móvil (antes, «Tabla 1»); la fuente de Modos agrupa las referencias del mismo apartado y página; una mención de un solo párrafo enlaza el propio apartado.",
+      "Resto: «Véase también» dentro de una caja con el título como rótulo; «Preguntas relacionadas» con la misma lista; opciones de la calculadora al mismo ancho; «Más pasajes» al ancho de su texto; el aviso de cetonemia de Interrupción con el radio de los avisos.",
+    ],
+  },
+  {
+    fecha: "2026-10-21",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.92.0 — revisión del diseño de las tarjetas",
     detalle: [
       "Fichas de los sistemas: el rótulo encima del dato y en una línea (el dato a todo el ancho en el móvil); accesos del Resumen como enlaces, sin «Funciona» repetido; menciones del capítulo por apartado y sin páginas; cabecera de la ficha más discreta; rejillas sin huecos; Modos con el rótulo más ancho en el ordenador.",
       "Resto de apartados: seis tipos de tarjeta (lista, contenido, sistema, casilla, aviso clínico, nota complementaria); un único «Véase también»; sin plecas de color donde no hay un sistema; títulos de tarjeta de un solo tamaño; buscador sin marcos burdeos; calculadora con un solo estilo de opciones; situaciones con un orden fijo (selector, sistema, lo común); plan del paciente con una sola receta de urgencia.",

@@ -392,7 +392,7 @@ const TODAS_LAS_SECCIONES = [
 /* La comparación (0.70.0): la Tabla 1 y la Tabla 3, sin «Cómo funciona» comparado (repetía la
    Tabla 1). */
 const SECCIONES_COMPARACION = [
-  { id: "esencial", t: "Características", corto: "Tabla 1" },
+  { id: "esencial", t: "Características", corto: "Características" },
   { id: "parametros", t: "Parámetros" },
   // 0.78.1 (segunda ronda, adjunto): «Los cuatro» desde Modos se queda en Modos (la Tabla 4).
   { id: "modos", t: "Modos y funciones", corto: "Modos" },
@@ -840,10 +840,26 @@ export function FichaSistema({
             <ul className="filas">
               {gruposDeMenciones(parrafos).map((g) => (
                 <li key={g.clave} className="py-2 text-sm leading-relaxed text-slate-800">
-                  <span className="font-semibold">{g.titulo}</span>
-                  {g.sub && <span className="font-semibold"> · {g.sub}</span>}
-                  <span className="text-slate-600">: </span>
-                  {g.items.map((p, k) => (
+                  {g.items.length === 1 && !g.items[0].b.lead ? (
+                    // 0.92.1 (segunda revisión de tarjetas): un solo párrafo sin entradilla: el
+                    // enlace es el propio apartado (antes, «…: párrafo»).
+                    <a
+                      href={href("capitulo", g.items[0].slug, g.items[0].ancla)}
+                      className="tap-44 inline py-1 font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700"
+                    >
+                      <span>
+                        {g.titulo}
+                        {g.sub && ` · ${g.sub}`}
+                      </span>
+                    </a>
+                  ) : (
+                    <>
+                      <span className="font-semibold">{g.titulo}</span>
+                      {g.sub && <span className="font-semibold"> · {g.sub}</span>}
+                      <span className="text-slate-600">: </span>
+                    </>
+                  )}
+                  {(g.items.length === 1 && !g.items[0].b.lead ? [] : g.items).map((p, k) => (
                     <span key={p.slug + p.ancla}>
                       {k > 0 && <span aria-hidden="true">{"\u00a0· "}</span>}
                       <a
@@ -1330,7 +1346,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                   aria-label={`Ficha de ${s.name}`}
                   // 0.89.1 (13.ª ronda, adjunto): desde xl (dos columnas), con los rótulos cortos en
                   // una línea: a 1366 × 768 los cuatro objetivos entran sin desplazarse.
-                  className="separador flex flex-wrap gap-x-4 gap-y-0 border-t px-4 py-1 xl:gap-x-3 xl:py-0.5"
+                  className="separador flex flex-wrap justify-between gap-x-2 gap-y-0 border-t px-4 py-1 sm:justify-start sm:gap-x-4 xl:gap-x-3 xl:py-0.5"
                 >
                   {accesos.map(([t, corto, ruta]) => (
                     <a key={t} href={ruta} className={accesoTarjeta}>

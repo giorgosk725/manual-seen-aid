@@ -15,7 +15,10 @@ export function VeaseTambien({
   nivel = 2,
   onIr,
   className = "",
+  titulo = "Véase también",
 }: {
+  /* 0.92.1: la misma lista para «Preguntas relacionadas» del buscador. */
+  titulo?: string;
   filas: Destino[];
   enCaja?: boolean;
   nivel?: 2 | 3 | 4;
@@ -26,10 +29,12 @@ export function VeaseTambien({
   const H = `h${nivel}` as "h2" | "h3" | "h4";
   return (
     <section
-      aria-label="Véase también"
+      aria-label={titulo}
       className={`${enCaja ? "separador mt-3 border-t" : "tarjeta overflow-hidden"} ${className}`}
     >
-      <H className={`titulo-tarjeta pb-1.5 pt-3 ${enCaja ? "" : "px-3"}`}>Véase también</H>
+      {/* 0.92.1 (segunda revisión de tarjetas): dentro de una caja, el título como rótulo (a
+          15/700, sobre filas a 14/600, se leían dos títulos seguidos). */}
+      <H className={enCaja ? "rotulo pb-1 pt-3" : "titulo-tarjeta px-3 pb-1.5 pt-3"}>{titulo}</H>
       <ul className={`filas ${enCaja ? "-mx-3" : ""}`}>
         {filas.map((f) => (
           <li key={f.href}>
