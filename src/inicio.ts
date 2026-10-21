@@ -236,11 +236,25 @@ export function hojaDeComprobacion(sis?: number) {
   return {
     // El plan de seguridad (p. 7) ya empieza por la pauta de respaldo: la fila «Plan de
     // respaldo» de la Tabla 2 lo repetiría (sigue en la fase «Inicio»).
+    // 0.96.0 (16.ª ronda, R5): `pieza`, la del recorrido de la fase Inicio que dice lo mismo (el
+    // recorrido enseña cada cosa en su paso; la hoja impresa, todo junto).
     antes: [
-      ...plan.items.map((texto) => ({ texto, pagina: plan.pagina })),
-      { texto: nucleo.frases[0], pagina: nucleo.pagina },
-      ...lineasInicializacion(sis).map((texto) => ({ texto, pagina: 10 })),
-      { texto: plano(TABLAS.T2.filas[8].celdas[0]), pagina: 10 },
+      ...plan.items.map((texto) => ({ texto, pagina: plan.pagina, pieza: undefined })),
+      {
+        texto: nucleo.frases[0],
+        pagina: nucleo.pagina,
+        pieza: { t: "frase", apartado: "08-iniciacion", bloque: "b6", k: [0] } as Pieza,
+      },
+      ...lineasInicializacion(sis).map((texto) => ({
+        texto,
+        pagina: 10,
+        pieza: { t: "inicializacion" } as Pieza,
+      })),
+      {
+        texto: plano(TABLAS.T2.filas[8].celdas[0]),
+        pagina: 10,
+        pieza: { t: "fila", tabla: "T2", fila: 8 } as Pieza,
+      },
     ],
     planIntro: plan.intro,
     // De dónde sale cada elemento de la lista (V50-08): al pie del bloque, sin página por línea.
@@ -406,6 +420,31 @@ export function textosDePieza(pieza: Pieza, sis?: number): string[] {
       return [];
   }
 }
+
+/* 0.96.0 (16.ª ronda, R5): con un sistema elegido en Iniciación, una frase (o el inciso de una
+   casilla, entre «; ») que habla SOLO de otro sistema («Con CamAPS FX, el objetivo…», «en Tandem
+   Control-IQ, el perfil basal sí interviene…») no se enseña; la que nombra a varios o a ninguno,
+   sí. Solo se omite: el texto que queda es literal. */
+const NOMBRES_SISTEMA = [
+  /^(?:MiniMed(?: 780G)?|780G)\b/,
+  /^(?:Tandem(?: Control-IQ\+?)?|Control-IQ\+?)/,
+  /^(?:myLoop )?CamAPS(?: FX)?\b/,
+  /^Omnipod(?: 5)?\b/,
+];
+export function soloDeOtroSistema(texto: string, sis: number): boolean {
+  const m = /^(?:y\s+)?(?:con|en)\s+(.+)$/i.exec(texto.trim());
+  if (!m) return false;
+  const c = NOMBRES_SISTEMA.findIndex((re) => re.test(m[1]));
+  if (c < 0 || c === sis) return false;
+  // «en MiniMed 780G y CamAPS FX…»: si nombra también al elegido, se queda.
+  const antesDeLaComa = m[1].split(",")[0];
+  return !NOMBRES_SISTEMA[sis].test(antesDeLaComa.replace(/^.*?\by\s+/, ""));
+}
+export const incisosDelSistema = (texto: string, sis: number) =>
+  texto
+    .split(/;\s+/)
+    .filter((x) => !soloDeOtroSistema(x, sis))
+    .join("; ");
 
 /* En las pantallas de consulta, todas menos «UI»: es obvia y, pulsable, partía la cifra de la
    dosis («0,1 UI/kg») que se destaca en negrita (0.72.0). */

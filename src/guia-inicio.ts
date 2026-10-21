@@ -34,7 +34,11 @@ export interface PasoGuia {
   /* Lista de la hoja de comprobación que se marca en este paso. */
   comprobar?: "antes" | "citas";
   enlace?: (sis?: number, resp?: Record<string, string>) => { texto: string; ruta: string } | null;
+  /* 0.96.0 (16.ª ronda, R5): otras continuaciones, según lo elegido (el cambio desde otro AID). */
+  masEnlaces?: (sis?: number, resp?: Record<string, string>) => { texto: string; ruta: string }[];
 }
+/* El sistema en la ruta de la calculadora (como en situaciones.ts, SIS_IDS). */
+const SLUG_CALCULADORA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 
 const I = "08-iniciacion";
 const titulo = (id: string) => tituloDeTarea("inicio", id) ?? id;
@@ -94,6 +98,25 @@ export const PASOS_GUIA: PasoGuia[] = [
       resp?.pauta === "mdi" || !resp?.pauta
         ? { texto: "Transición desde MDI (Tabla 2)", ruta: href("consultar", "tablas", "T2") }
         : { texto: "Explorar criterios de elección", ruta: href("sistemas", "elegir") },
+    // Desde otro sistema de asa cerrada: el cálculo en modo cambio (la pauta previa elegida aquí
+    // pasa a la calculadora) y los parámetros de los cuatro, lado a lado.
+    masEnlaces: (sis, resp) =>
+      resp?.pauta === "aid"
+        ? [
+            {
+              texto: "Cálculo de parámetros iniciales: cambio desde otro sistema AID",
+              ruta: href(
+                "consultar",
+                "inicio",
+                sis !== undefined ? `calculadora:${SLUG_CALCULADORA[sis]}` : "calculadora",
+              ),
+            },
+            {
+              texto: "Comparar los parámetros (Tabla 3)",
+              ruta: href("sistemas", "todos", "parametros"),
+            },
+          ]
+        : [],
   },
   {
     id: "parametros",
@@ -125,9 +148,12 @@ export const PASOS_GUIA: PasoGuia[] = [
       { t: "fila", tabla: "T2", fila: 6 },
       { t: "fila", tabla: "T2", fila: 7 },
       { t: "casilla", tabla: "T1", fila: 6 },
-      // Modos y funciones temporales de cada sistema (Tabla 3) y la gestación (p. 17).
-      { t: "casilla", tabla: "T3", fila: 0 },
+      // Modos y funciones temporales de cada sistema (Tabla 3) y la gestación (p. 17). 0.96.0
+      // (16.ª ronda, R5): la gestación entre las dos casillas del objetivo (Tabla 1 y Tabla 3, dos
+      // tablas literales distintas que se conservan): seguidas, con el mismo aspecto y las mismas
+      // cifras, se leían como una fila repetida.
       { t: "frase", apartado: "10-situaciones", bloque: "b6", k: [0, 2] },
+      { t: "casilla", tabla: "T3", fila: 0 },
     ],
     enlace: () => ({
       texto: "Objetivos de MCG por población (figura)",
@@ -159,6 +185,29 @@ export const PASOS_GUIA: PasoGuia[] = [
     piezas: [{ t: "inicializacion" }, { t: "casilla", tabla: "T1", fila: 3 }],
   },
 ];
+
+/* 0.96.0 (16.ª ronda, R5): cada pieza, una vez en el recorrido. Una pieza que un paso enseña por
+   una de sus preguntas y que otro paso tiene como propia (fija) va en ese otro paso; aquí, un
+   enlace a él. Devuelve el número (1-5) de ese paso o null. */
+const clavePieza = (p: Pieza) => JSON.stringify(p, (_, v) => (v instanceof RegExp ? String(v) : v));
+export function pasoPropioDe(pieza: Pieza, paso: number): number | null {
+  if (PASOS_GUIA[paso].piezas.some((x) => clavePieza(x) === clavePieza(pieza))) return null;
+  const k = PASOS_GUIA.findIndex(
+    (x, i) => i !== paso && x.piezas.some((y) => clavePieza(y) === clavePieza(pieza)),
+  );
+  return k >= 0 ? k + 1 : null;
+}
+/* Si la pieza (o una que la contiene: las frases de un mismo párrafo) se enseña en el paso `k`
+   con esas respuestas. */
+export function seEnsenaEnPaso(pieza: Pieza, k: number, resp: Record<string, string>): boolean {
+  return piezasDePaso(PASOS_GUIA[k], resp).some((x) =>
+    x.t === "frase" && pieza.t === "frase"
+      ? x.apartado === pieza.apartado &&
+        x.bloque === pieza.bloque &&
+        pieza.k.every((i) => x.k.includes(i))
+      : clavePieza(x) === clavePieza(pieza),
+  );
+}
 
 /* El paso pedido en la ruta: su id, su número (1-5) o el de la guía antigua («pauta», 1-6). */
 export function pasoDeRuta(x?: string): number {

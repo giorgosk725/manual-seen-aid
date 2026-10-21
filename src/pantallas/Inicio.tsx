@@ -24,9 +24,12 @@ import {
   PASOS_GUIA,
   limpiarRespuestas,
   pasoDeRuta,
+  pasoPropioDe,
   piezasDePaso,
   preguntasActivas,
+  seEnsenaEnPaso,
 } from "../guia-inicio";
+import { SistemaDelRecorrido } from "../componentes/piezasContexto";
 import { TABLAS } from "../contenido";
 import { ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { SIS_IDS } from "../situaciones";
@@ -50,6 +53,7 @@ import {
   tareasDe,
   siglasPorPiezas,
   type Fase,
+  type Pieza,
   type Tarea,
 } from "../inicio";
 import { fuentesDePiezas } from "../fuentesPiezas";
@@ -293,6 +297,15 @@ function Hoja({ sis }: { sis?: number }) {
 const detalleDe = (f: string, s: number | undefined, t: string | null) =>
   [f, s !== undefined ? SIS_IDS[s] : "", t ?? ""].join(":").replace(/:+$/, "");
 
+/* La lista del plan de seguridad (apartado 7, p. 7). */
+const esPlanDeSeguridad = (p: Pieza) =>
+  p.t === "lista" && p.apartado === "07-educacion" && p.bloque === "b4";
+/* El rótulo de una pieza que se enlaza en vez de enseñarse: el de su fila de tabla (literal). */
+const rotuloDePieza = (p: Pieza) =>
+  p.t === "casilla" || p.t === "fila"
+    ? TABLAS[p.tabla].filas[p.fila].etiqueta.split("\n")[0]
+    : "Este pasaje";
+
 /* Una tarea: título que expresa la necesidad; dentro, sus piezas, la procedencia una sola vez,
    la explicación de la app si la hay y, como mucho, una continuación. */
 function TareaVista({
@@ -335,13 +348,28 @@ function TareaVista({
       </h3>
       {abierta && (
         <div id={id} className="pb-4">
-          <div className="divide-y">
-            {tarea.piezas.map((i, k) => (
-              <div key={i} id={`pieza-${i}`} className="py-2.5 first:pt-0">
-                <PiezaVista pieza={fase.piezas[i]} sis={sis} compacta siglas={siglasDe[k]} />
-              </div>
-            ))}
-          </div>
+          <SistemaDelRecorrido.Provider value={sis}>
+            <div className="divide-y">
+              {tarea.piezas.map((i, k) => (
+                <div key={i} id={`pieza-${i}`} className="py-2.5 first:pt-0 empty:hidden">
+                  {fase.id === "preparacion" && esPlanDeSeguridad(fase.piezas[i]) ? (
+                    // 0.96.0 (16.ª ronda, R5): la lista del plan de seguridad, una vez: en el paso
+                    // de la fase Inicio en el que se entrega y se marca (antes de activar el modo
+                    // automático); aquí, un enlace a él.
+                    <a
+                      href={href("consultar", "inicio", detalleDe("inicio", sis, "respaldo"))}
+                      className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+                    >
+                      Contenido del plan de seguridad: en la fase Inicio, paso 4
+                      <ArrowRight size={14} aria-hidden="true" />
+                    </a>
+                  ) : (
+                    <PiezaVista pieza={fase.piezas[i]} sis={sis} compacta siglas={siglasDe[k]} />
+                  )}
+                </div>
+              ))}
+            </div>
+          </SistemaDelRecorrido.Provider>
           <LineaFuente fuentes={fuentes} />
           {/* 0.92.0 (revisión de tarjetas, ★1): la misma lista de «Véase también» que en el resto. */}
           {siguiente && (
@@ -385,13 +413,26 @@ function PasosInicio({
   const piezas = piezasDePaso(p, resp);
   const siglas = siglasPorPiezas(piezas, sis);
   const hoja = hojaDeComprobacion(sis);
+  // 0.96.0 (16.ª ronda, R5): en el paso 4, lo que ya enseña otro paso (el núcleo común, la línea
+  // de inicialización, el solapamiento con las basales ultralargas) no se repite: un enlace a su
+  // paso. La hoja impresa («Hoja») sigue con todo.
+  const enOtro = (x: (typeof hoja.antes)[number]) => {
+    if (!x.pieza) return -1;
+    const pieza = x.pieza;
+    return PASOS_GUIA.findIndex((_, k) => k !== n - 1 && seEnsenaEnPaso(pieza, k, resp));
+  };
   const lista =
     p.comprobar === "antes"
-      ? hoja.antes.map((x) => x.texto)
+      ? hoja.antes.filter((x) => enOtro(x) < 0).map((x) => x.texto)
       : p.comprobar === "citas"
         ? hoja.citas
         : [];
+  const pasosConElResto =
+    p.comprobar === "antes"
+      ? [...new Set(hoja.antes.map(enOtro).filter((k) => k >= 0))].sort((a, b) => a - b)
+      : [];
   const enlace = p.enlace?.(sis, resp) ?? null;
+  const enlaces = [...(p.masEnlaces?.(sis, resp) ?? []), ...(enlace ? [enlace] : [])];
   const marcar = (k: string) =>
     setHechos((prev) => {
       const s = new Set(prev);
@@ -483,13 +524,33 @@ function PasosInicio({
         </div>
       ))}
       {piezas.length > 0 && (
-        <div className="mt-3 divide-y">
-          {piezas.map((pz, k) => (
-            <div key={k} className="py-3 first:pt-0">
-              <PiezaVista pieza={pz} sis={sis} compacta siglas={siglas[k]} />
-            </div>
-          ))}
-        </div>
+        <SistemaDelRecorrido.Provider value={sis}>
+          <div className="mt-3 divide-y">
+            {piezas.map((pz, k) => {
+              // 0.96.0 (16.ª ronda, R5): la pieza que es propia de otro paso, como enlace a él.
+              const otro = pasoPropioDe(pz, n - 1);
+              return (
+                <div key={k} className="py-3 first:pt-0 empty:hidden">
+                  {otro ? (
+                    <a
+                      href={href(
+                        "consultar",
+                        "inicio",
+                        detalleDe("inicio", sis, PASOS_GUIA[otro - 1].id),
+                      )}
+                      className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+                    >
+                      {rotuloDePieza(pz)}: en el paso {otro}
+                      <ArrowRight size={14} aria-hidden="true" />
+                    </a>
+                  ) : (
+                    <PiezaVista pieza={pz} sis={sis} compacta siglas={siglas[k]} />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </SistemaDelRecorrido.Provider>
       )}
       {lista.length > 0 && (
         <ul className="casilla mt-3 space-y-1.5 p-3" aria-label="Para marcar en la consulta">
@@ -508,9 +569,26 @@ function PasosInicio({
           ))}
         </ul>
       )}
+      {pasosConElResto.length > 0 && (
+        <p className="mt-2 text-sm text-slate-600">
+          El resto de lo que debe quedar hecho antes de activar el modo automático, en su paso:{" "}
+          {pasosConElResto.map((k, i) => (
+            <span key={k}>
+              {i > 0 && <span aria-hidden="true">{"\u00a0· "}</span>}
+              <a
+                href={href("consultar", "inicio", detalleDe("inicio", sis, PASOS_GUIA[k].id))}
+                className="tap-44 inline-block min-h-6 py-0.5 font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700"
+              >
+                paso {k + 1}
+              </a>
+            </span>
+          ))}
+          .
+        </p>
+      )}
       <LineaFuente
         fuentes={[
-          ...fuentesDePiezas(piezas),
+          ...fuentesDePiezas(piezas.filter((pz) => !pasoPropioDe(pz, n - 1))),
           ...(p.comprobar === "antes"
             ? hoja.fuentesAntes
             : p.comprobar === "citas"
@@ -518,7 +596,9 @@ function PasosInicio({
               : []),
         ]}
       />
-      {enlace && <VeaseTambien enCaja nivel={4} filas={[{ href: enlace.ruta, t: enlace.texto }]} />}
+      {enlaces.length > 0 && (
+        <VeaseTambien enCaja nivel={4} filas={enlaces.map((x) => ({ href: x.ruta, t: x.texto }))} />
+      )}
       <div className="no-imprimir mt-4 flex items-center justify-between gap-2">
         <button
           type="button"
