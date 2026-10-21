@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-21",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — rediseño, primera fase`,
+    titulo: `Complemento interactivo ${VERSION_APP} — fichas con un solo estilo de filas`,
+    detalle: [
+      "Cómo funciona e Indicación y material, con el estilo de filas de Modos y Parámetros: rótulo a la izquierda, en minúscula y negrita; el dato a la derecha; una línea fina entre filas (antes, una rejilla con rótulos en versalitas).",
+      "Parámetros de los cuatro: cada grupo con la etiqueta de la ficha y un parámetro por línea (antes, rótulos en mayúsculas partidos en dos líneas).",
+    ],
+  },
+  {
+    fecha: "2026-10-21",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.94.0 — rediseño, primera fase",
     detalle: [
       "Tablas comparativas (Características, Parámetros, Modos y Tablas): cabecera con el filete, la foto y el nombre de cada sistema en su color; celdas blancas con líneas finas (antes, un mosaico de tintes); la comparación impresa pasa de 3 a 2 caras.",
       "Ficha de cada sistema: cabecera con la regla de pantalla, accesos discretos separados por «·», selector y pestañas sin caja; datos en rejilla con una línea fina en cada uno, como una hoja técnica.",

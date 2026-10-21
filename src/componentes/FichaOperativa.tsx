@@ -57,12 +57,15 @@ const MODO = {
   // tarjetas vecinas.
   // 0.94.0 (rediseño): cada dato abre con una línea capilar a todo su ancho: las filas de la
   // rejilla quedan alineadas, como en una hoja técnica (antes, casillas sueltas).
+  // 0.94.1 (petición del responsable: «este estilo sigue sin convencerme»): en las fichas, el
+  // mismo estilo de filas que Modos y Parámetros (rótulo a la izquierda, en minúscula y negrita;
+  // el dato a la derecha; una línea fina entre filas), en vez de la rejilla con rótulos en
+  // versalitas.
   rejilla: {
-    // En papel, más juntas (la ficha de CamAPS no pasa de tres caras).
-    dl: "grid gap-y-3 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-3 print:gap-y-1.5",
-    fila: "min-w-0 border-t border-[var(--linea-suave)] pt-2.5 print:pt-1",
+    dl: "divide-y divide-[var(--linea-suave)]",
+    fila: "grid min-w-0 gap-x-6 gap-y-1 py-3 first:pt-1 last:pb-0 sm:grid-cols-[minmax(10rem,15rem)_1fr] print:gap-y-0 print:py-0.5",
     dt: "",
-    dd: "mt-1",
+    dd: "",
   },
   resumen: {
     dl: "grid gap-y-3 sm:grid-cols-3 sm:gap-x-5 xl:row-span-3 xl:grid-cols-1 xl:grid-rows-subgrid xl:gap-y-2",
@@ -70,19 +73,6 @@ const MODO = {
     dt: "xl:pt-0.5",
     dd: "mt-1 xl:mt-0",
   },
-};
-/* 0.92.0 (revisión de tarjetas, sistemas): rejillas sin huecos: la última casilla ocupa lo que
-   queda de su fila (en «Paso a modo automático», dos casillas en una rejilla de tres). Solo
-   cuando ninguna casilla ocupa ya dos columnas. */
-const resto = (k: number, datos: Dato[]) => {
-  if (k !== datos.length - 1 || datos.some((d) => d.partes)) return "";
-  const n = datos.length;
-  return [
-    n % 2 ? "sm:col-span-2" : "",
-    n % 3 === 1 ? "lg:col-span-3" : n % 3 === 2 ? "lg:col-span-2" : "lg:col-span-1",
-  ]
-    .filter(Boolean)
-    .join(" ");
 };
 export function CasillasDatos({
   c,
@@ -96,20 +86,26 @@ export function CasillasDatos({
   const m = MODO[modo];
   return (
     <dl className={m.dl}>
-      {datos.map((d, k) => {
+      {datos.map((d) => {
         // 0.81.1 (quinta ronda, senior): como en Parámetros y Modos, el rótulo lleva al texto
         // literal con la fila marcada (no en las tarjetas de la entrada, que llevan a la ficha).
         const ruta = modo === "rejilla" ? literalDe(d.f[0], c) : undefined;
         return (
           <div
             key={d.r}
-            className={`${m.fila} ${d.partes ? "sm:col-span-2" : ""} ${modo === "rejilla" ? resto(k, datos) : ""}`}
+            className={`${m.fila} ${modo === "resumen" && d.partes ? "sm:col-span-2" : ""}`}
           >
-            <dt className={`rotulo pt-0.5 leading-tight ${m.dt}`}>
+            <dt
+              className={
+                modo === "rejilla"
+                  ? "text-[15px] font-semibold leading-snug text-slate-900"
+                  : `rotulo pt-0.5 leading-tight ${m.dt}`
+              }
+            >
               {ruta ? (
                 <a
                   href={ruta}
-                  className="tap-44 -my-[5px] inline-block py-[5px] underline decoration-slate-300 decoration-dotted decoration-1 underline-offset-[3px] hover:decoration-solid hover:decoration-slate-700"
+                  className="tap-44 inline-block min-h-6 py-0.5 underline decoration-slate-400 decoration-dotted decoration-1 underline-offset-4 hover:decoration-solid hover:decoration-slate-700"
                   title="Texto del capítulo"
                 >
                   {d.r}
@@ -119,7 +115,9 @@ export function CasillasDatos({
               )}
             </dt>
             <dd className={`min-w-0 ${m.dd}`}>
-              <span className="block text-[15px] font-semibold leading-snug text-slate-900">
+              <span
+                className={`block text-[15px] leading-snug ${modo === "rejilla" ? "text-slate-800" : "font-semibold text-slate-900"}`}
+              >
                 {d.partes ? (
                   d.v.split(" · ").map((x) => (
                     <span key={x} className="block">
@@ -139,7 +137,7 @@ export function CasillasDatos({
               {/* 0.92.3 (15.ª ronda, guardia): en las fichas, la variante con el cuerpo del dato
                   (Control-IQ+ parecía secundario en letra menor); en el Resumen, discreta. */}
               <span
-                className={`block leading-snug ${modo === "rejilla" ? "text-[15px] font-semibold text-slate-900" : "text-[13px] text-slate-800"}`}
+                className={`block leading-snug ${modo === "rejilla" ? "text-[15px] text-slate-800" : "text-[13px] text-slate-800"}`}
               >
                 <Variante c={c} d={d} />
               </span>
