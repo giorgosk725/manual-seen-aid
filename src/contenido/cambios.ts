@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-21",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — tarjetas más limpias y vuelta a las preguntas`,
+    titulo: `Complemento interactivo ${VERSION_APP} — rediseño, primera fase`,
+    detalle: [
+      "Tablas comparativas (Características, Parámetros, Modos y Tablas): cabecera con el filete, la foto y el nombre de cada sistema en su color; celdas blancas con líneas finas (antes, un mosaico de tintes); la comparación impresa pasa de 3 a 2 caras.",
+      "Ficha de cada sistema: cabecera con la regla de pantalla, accesos discretos separados por «·», selector y pestañas sin caja; datos en rejilla con una línea fina en cada uno, como una hoja técnica.",
+    ],
+  },
+  {
+    fecha: "2026-10-21",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.93.1 — tarjetas más limpias y vuelta a las preguntas",
     detalle: [
       "Fichas: los rótulos que llevan al texto del capítulo, con subrayado de puntos (como las remisiones); los enlaces de cada fila, con su flecha y sin subrayado; más aire entre filas.",
       "Resumen de Sistemas: cada dato en su banda, con una línea fina entre filas; los accesos de cada tarjeta, en una línea separada por «·» y sin subrayados.",
