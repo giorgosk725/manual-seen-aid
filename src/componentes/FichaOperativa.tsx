@@ -50,18 +50,35 @@ function Variante({ c, d }: { c: number; d: Dato }) {
 /* `resumen` (tarjetas de la entrada de Sistemas AID): filas en el móvil, tres casillas en una
    fila desde sm y, a dos tarjetas por fila (xl), otra vez filas. */
 const MODO = {
+  // 0.92.0 (revisión de tarjetas, sistemas): el rótulo encima del valor y en una línea (en el
+  // móvil, a la izquierda en 6,5 rem, bajaba a 3–5 líneas y el valor se quedaba en 216 px); en el
+  // Resumen desde xl, a la izquierda en 9,25 rem (dos líneas como mucho) por la alineación entre
+  // tarjetas vecinas.
   rejilla: {
-    dl: "grid gap-y-2.5 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-3 lg:grid-cols-3",
-    fila: "grid min-w-0 grid-cols-[6.5rem_1fr] gap-x-3 sm:block",
-    dt: "sm:pt-0",
-    dd: "sm:mt-0.5",
+    dl: "grid gap-y-3 sm:grid-cols-2 sm:gap-x-5 lg:grid-cols-3",
+    fila: "min-w-0",
+    dt: "",
+    dd: "mt-1",
   },
   resumen: {
-    dl: "grid gap-y-2.5 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-3 xl:row-span-3 xl:grid-cols-1 xl:grid-rows-subgrid xl:gap-y-2.5",
-    fila: "grid min-w-0 grid-cols-[6.5rem_1fr] gap-x-3 sm:block xl:grid xl:grid-cols-[8.5rem_1fr]",
-    dt: "sm:pt-0 xl:pt-0.5",
-    dd: "sm:mt-0.5 xl:mt-0",
+    dl: "grid gap-y-3 sm:grid-cols-3 sm:gap-x-5 xl:row-span-3 xl:grid-cols-1 xl:grid-rows-subgrid xl:gap-y-2",
+    fila: "min-w-0 xl:grid xl:grid-cols-[9.25rem_1fr] xl:gap-x-3",
+    dt: "xl:pt-0.5",
+    dd: "mt-1 xl:mt-0",
   },
+};
+/* 0.92.0 (revisión de tarjetas, sistemas): rejillas sin huecos: la última casilla ocupa lo que
+   queda de su fila (en «Paso a modo automático», dos casillas en una rejilla de tres). Solo
+   cuando ninguna casilla ocupa ya dos columnas. */
+const resto = (k: number, datos: Dato[]) => {
+  if (k !== datos.length - 1 || datos.some((d) => d.partes)) return "";
+  const n = datos.length;
+  return [
+    n % 2 ? "sm:col-span-2" : "",
+    n % 3 === 1 ? "lg:col-span-3" : n % 3 === 2 ? "lg:col-span-2" : "lg:col-span-1",
+  ]
+    .filter(Boolean)
+    .join(" ");
 };
 export function CasillasDatos({
   c,
@@ -75,17 +92,20 @@ export function CasillasDatos({
   const m = MODO[modo];
   return (
     <dl className={m.dl}>
-      {datos.map((d) => {
+      {datos.map((d, k) => {
         // 0.81.1 (quinta ronda, senior): como en Parámetros y Modos, el rótulo lleva al texto
         // literal con la fila marcada (no en las tarjetas de la entrada, que llevan a la ficha).
         const ruta = modo === "rejilla" ? literalDe(d.f[0], c) : undefined;
         return (
-          <div key={d.r} className={`${m.fila} ${d.partes ? "sm:col-span-2" : ""}`}>
+          <div
+            key={d.r}
+            className={`${m.fila} ${d.partes ? "sm:col-span-2" : ""} ${modo === "rejilla" ? resto(k, datos) : ""}`}
+          >
             <dt className={`rotulo pt-0.5 leading-tight ${m.dt}`}>
               {ruta ? (
                 <a
                   href={ruta}
-                  className="tap-44 -my-[5px] inline-block py-[5px] underline decoration-slate-400 decoration-1 underline-offset-4 hover:decoration-slate-700"
+                  className="tap-44 -my-[5px] inline-block py-[5px] underline decoration-slate-400 decoration-1 underline-offset-[3px] hover:decoration-slate-700"
                   title="Texto del capítulo"
                 >
                   {d.r}
@@ -207,20 +227,24 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                 key={d.r}
                 // 0.82.1 (sexta ronda, guardia): la fila a la que lleva un atajo («modos:agua»).
                 data-dato={slugDato(d.r)}
-                className="grid gap-x-5 gap-y-1 px-4 py-3 sm:grid-cols-[minmax(11rem,16rem)_1fr]"
+                // 0.92.0 (revisión de tarjetas): desde lg, rótulo en 20 rem (en 16, los de Modos
+                // iban a 3–4 líneas); el valor sigue limitado a 72ch.
+                className="grid gap-x-5 gap-y-1 px-4 py-3 sm:grid-cols-[minmax(11rem,16rem)_1fr] lg:grid-cols-[minmax(11rem,20rem)_1fr]"
               >
                 <dt className="min-w-0">
                   {ruta ? (
                     <a
                       href={ruta}
                       // 0.78.1 (segunda ronda): zona táctil de 24 px como mínimo (tap-44 la amplía).
-                      className="tap-44 inline-block min-h-6 py-0.5 text-[15px] font-bold leading-snug text-slate-900 underline decoration-slate-300 decoration-1 underline-offset-4 hover:decoration-slate-700"
+                      className="tap-44 inline-block min-h-6 py-0.5 text-[15px] font-semibold leading-snug text-slate-900 underline decoration-slate-400 decoration-1 underline-offset-[3px] hover:decoration-slate-700"
                       title="Texto del capítulo"
                     >
                       {d.r}
                     </a>
                   ) : (
-                    <span className="text-[15px] font-bold leading-snug text-slate-900">{d.r}</span>
+                    <span className="text-[15px] font-semibold leading-snug text-slate-900">
+                      {d.r}
+                    </span>
                   )}
                   {d.auto && (
                     <span

@@ -71,7 +71,6 @@ import {
 import { CasillasDatos, FilasDatos, GruposDatos } from "../componentes/FichaOperativa";
 import { ComoFuncionaOperativo } from "../componentes/ComoFuncionaOperativo";
 import { FuentePie } from "../componentes/FuentePie";
-import { paginasDe } from "../paginas";
 
 const hex = CATEGORIA_HEX.consultar;
 
@@ -355,12 +354,29 @@ const sinNombreDelSistema = (q: string) =>
   );
 
 /* Enlace de acceso en la cabecera de la ficha: texto con subrayado fino. */
+// 0.92.0 (revisión de tarjetas, sistemas): 13 px y gris medio, para que no se lean como otra fila
+// de pestañas.
 const accesoFicha =
-  "tap-44 inline-flex min-h-11 items-center px-0.5 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9";
+  "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-600 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9";
+
+/* 0.92.0 (revisión de tarjetas, sistemas): las menciones del capítulo, agrupadas por apartado
+   (y subapartado), en el orden en que aparecen. */
+function gruposDeMenciones<T extends { titulo: string; sub?: string }>(xs: T[]) {
+  const grupos: { clave: string; titulo: string; sub?: string; items: T[] }[] = [];
+  for (const x of xs) {
+    const clave = `${x.titulo}|${x.sub ?? ""}`;
+    const g = grupos.find((y) => y.clave === clave);
+    if (g) g.items.push(x);
+    else grupos.push({ clave, titulo: x.titulo, sub: x.sub, items: [x] });
+  }
+  return grupos;
+}
 
 /* Los accesos de cada tarjeta de la entrada: botones en el móvil, enlaces de texto desde sm. */
+// 0.92.0 (revisión de tarjetas, sistemas): enlaces de texto también en el móvil (la rejilla de
+// botones ocupaba 119 px por tarjeta).
 const accesoTarjeta =
-  "flex min-h-11 items-center justify-center rounded-md border border-[var(--linea)] px-1 text-center text-[13px] font-semibold text-slate-700 hover:border-slate-400 hover:text-slate-900 sm:border-0 sm:inline-flex sm:min-h-9 sm:justify-start sm:rounded-none sm:bg-transparent sm:px-0.5 sm:text-sm sm:text-slate-700 sm:underline sm:decoration-slate-300 sm:underline-offset-4 sm:hover:text-slate-900 sm:hover:decoration-slate-700";
+  "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9 sm:text-sm";
 
 /* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
 const TODAS_LAS_SECCIONES = [
@@ -669,7 +685,7 @@ export function FichaSistema({
         </div>
         {/* Sistema visual: los tres accesos como enlaces de texto en una fila (en el móvil eran tres
             botones apilados antes del contenido). */}
-        <div className="no-imprimir col-span-2 mt-0.5 flex flex-wrap gap-x-1.5 gap-y-0 max-sm:[&>*]:px-0 sm:col-span-1 sm:col-start-2 sm:mt-0 sm:gap-x-4">
+        <div className="no-imprimir col-span-2 mt-0.5 flex flex-wrap gap-x-3 gap-y-0 max-sm:[&>*]:px-0 sm:col-span-1 sm:col-start-2 sm:mt-0 sm:gap-x-4">
           <a
             // I61-04: al principio del recorrido (preparación), con el sistema; no al paso 5.
             href={href("consultar", "inicio", `preparacion:${slug}`)}
@@ -818,32 +834,32 @@ export function FichaSistema({
           <Foldable title="Menciones en el capítulo" count={parrafos.length} open>
             {/* 0.73.0: enlaces a cada párrafo (antes, los párrafos enteros: repetían el
                 capítulo dentro de la ficha). */}
+            {/* 0.92.0 (revisión de tarjetas, sistemas): por apartado, con el apartado una sola vez
+                y sus párrafos en línea, sin páginas (antes, 9–13 filas con la miga repetida y
+                «p. N» en cada una). */}
             <ul className="filas">
-              {parrafos.map((p) => (
-                <li key={p.slug + p.ancla}>
-                  <a
-                    href={href("capitulo", p.slug, p.ancla)}
-                    className="flex min-h-11 items-center gap-2 py-1.5 text-sm text-slate-800 hover:underline"
-                  >
-                    <span className="min-w-0 flex-1">
-                      <span className="font-semibold">{p.titulo}</span>
-                      {p.sub && <span className="font-semibold"> · {p.sub}</span>}
-                      {p.n && (
-                        <span className="text-slate-600">
-                          {" "}
-                          · párrafo{"\u00a0"}
-                          {p.n}
+              {gruposDeMenciones(parrafos).map((g) => (
+                <li key={g.clave} className="py-2 text-sm leading-relaxed text-slate-800">
+                  <span className="font-semibold">{g.titulo}</span>
+                  {g.sub && <span className="font-semibold"> · {g.sub}</span>}
+                  <span className="text-slate-600">: </span>
+                  {g.items.map((p, k) => (
+                    <span key={p.slug + p.ancla}>
+                      {k > 0 && <span aria-hidden="true">{"\u00a0· "}</span>}
+                      <a
+                        href={href("capitulo", p.slug, p.ancla)}
+                        className="tap-44 inline py-1 text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700"
+                      >
+                        <span>
+                          {p.b.lead
+                            ? p.b.lead.replace(/[.:]$/, "")
+                            : p.n
+                              ? `párrafo\u00a0${p.n}`
+                              : "párrafo"}
                         </span>
-                      )}
-                      {p.b.lead && (
-                        // 0.83.1 (séptima ronda, senior): sin el punto final de la entradilla.
-                        <span className="text-slate-600"> · {p.b.lead.replace(/[.:]$/, "")}</span>
-                      )}
+                      </a>
                     </span>
-                    <span className="shrink-0 text-xs text-slate-500">
-                      {paginasDe(p.b.p, p.b.p2)}
-                    </span>
-                  </a>
+                  ))}
                 </li>
               ))}
             </ul>
@@ -1259,7 +1275,6 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
           const slug = SLUG_TABLA[c];
           // [rótulo, rótulo corto del móvil, ruta]
           const accesos: [string, string, string][] = [
-            ["Cómo funciona", "Funciona", href("sistemas", s.id, "funciona")],
             ["Indicación y material", "Indicación", href("sistemas", s.id, "esencial")],
             ["Parámetros", "Parámetros", href("sistemas", s.id, "parametros")],
             ["Modos y funciones", "Modos", href("sistemas", s.id, "modos")],
@@ -1315,7 +1330,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                   aria-label={`Ficha de ${s.name}`}
                   // 0.89.1 (13.ª ronda, adjunto): desde xl (dos columnas), con los rótulos cortos en
                   // una línea: a 1366 × 768 los cuatro objetivos entran sin desplazarse.
-                  className="separador grid grid-cols-3 gap-1.5 border-t p-3 sm:flex sm:flex-wrap sm:gap-x-4 sm:gap-y-0 sm:px-4 sm:py-1 xl:gap-x-3 xl:py-0.5"
+                  className="separador flex flex-wrap gap-x-4 gap-y-0 border-t px-4 py-1 xl:gap-x-3 xl:py-0.5"
                 >
                   {accesos.map(([t, corto, ruta]) => (
                     <a key={t} href={ruta} className={accesoTarjeta}>
@@ -1333,9 +1348,12 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
       </ul>
       <a
         href={href("sistemas", "elegir")}
-        className="tarjeta fila focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500"
+        // 0.92.0 (revisión de tarjetas, sistemas): un enlace con su flecha (como caja-fila suelta
+        // parecía un panel plegado).
+        className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700"
       >
-        <span className="min-w-0 flex-1">Elección del sistema</span>
+        Elección del sistema por características
+        <ArrowRight size={14} aria-hidden="true" />
       </a>
       <FuentePie fuentes={fuentesDeDatos(todos)} />
     </div>
@@ -1467,7 +1485,7 @@ function Comparacion({
                     PARAMETROS[c].filter((d) => d.auto === a).map((d) => d.r);
                   const grupos = [
                     { r: "Actúan en automático", xs: de("si"), fuerte: true },
-                    { r: "Sobre todo en bolos o modo manual", xs: de("no"), fuerte: false },
+                    { r: "Sobre todo en bolos o manual", xs: de("no"), fuerte: false },
                     { r: "Solo al inicio y en manual", xs: de("inicio"), fuerte: false },
                     { r: "Solo en manual o de respaldo", xs: de("manual"), fuerte: false },
                     { r: "No configurable", xs: de("fijo"), fuerte: false },
@@ -1480,7 +1498,9 @@ function Comparacion({
                     >
                       <a
                         href={href("sistemas", ORDEN_SISTEMAS[c], "parametros")}
-                        className="titulo-tarjeta tap-44 inline-block min-h-6 hover:underline"
+                        // 0.92.0 (revisión de tarjetas): en cuatro columnas, dos líneas de alto
+                        // para todos (el de Tandem, en dos, bajaba su tarjeta 18 px).
+                        className={`titulo-tarjeta tap-44 inline-block min-h-6 hover:underline ${cols.length > 2 ? "xl:min-h-10" : ""}`}
                         style={{ color: h.ink }}
                       >
                         <NombreSistema n={CATALOGO_SISTEMAS[c].name} />
