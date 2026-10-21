@@ -240,9 +240,8 @@ function Cabecera({ herramienta = false }: { herramienta?: boolean }) {
   if (herramienta)
     return (
       <div className="mb-3">
-        <TituloBloque className="text-sm font-semibold text-slate-800">
-          {FIGURA3.cabecera}
-        </TituloBloque>
+        {/* 0.92.0 (revisión de tarjetas, ★4): título de tarjeta (15/700), no 14/600. */}
+        <TituloBloque className="titulo-tarjeta">{FIGURA3.cabecera}</TituloBloque>
       </div>
     );
   return (
@@ -251,9 +250,7 @@ function Cabecera({ herramienta = false }: { herramienta?: boolean }) {
         <div className="rotulo" style={{ color: "#15324f" }}>
           Figura 3
         </div>
-        <TituloBloque className="text-sm font-semibold text-slate-800">
-          {FIGURA3.cabecera}
-        </TituloBloque>
+        <TituloBloque className="titulo-tarjeta">{FIGURA3.cabecera}</TituloBloque>
       </div>
       <PaginaBadge p={FIGURA3.pagina} />
     </div>

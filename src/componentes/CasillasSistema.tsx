@@ -23,7 +23,12 @@ export function CasillasSistema({
   extra,
   unico = false,
   desactivado,
+  enFila = false,
 }: {
+  /* 0.92.0 (revisión de tarjetas, ★12): en el móvil, las cuatro en una fila (marca y punto arriba,
+     nombre debajo) en vez de 2 × 2: el plan del paciente las quiere a la vista sin ocupar dos
+     filas (decisión previa, prueba de 360 px). */
+  enFila?: boolean;
   /* 0.89.1 (13.ª ronda, R5): una columna que no se puede elegir (en la calculadora, el sistema
      actual no puede ser el de destino). */
   desactivado?: number;
@@ -54,7 +59,7 @@ export function CasillasSistema({
           : "sm:flex sm:flex-wrap sm:items-center sm:gap-1.5"
       }
     >
-      <div className="grid grid-cols-2 gap-1.5 sm:contents">
+      <div className={`grid sm:contents ${enFila ? "grid-cols-4 gap-1" : "grid-cols-2 gap-1.5"}`}>
         {TABLAS.T1.columnas.map((nombre, c) => {
           const on = seleccion.includes(c);
           const h = SISTEMA_HEX[c];
@@ -67,7 +72,7 @@ export function CasillasSistema({
               onClick={() => onToggle(c)}
               disabled={fuera}
               title={fuera ? "Es el sistema de destino" : undefined}
-              className="tap-44 flex disabled:cursor-not-allowed disabled:opacity-50 min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[13px] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-9 sm:px-2.5 sm:text-sm sm:leading-normal"
+              className={`${enFila ? "max-sm:flex-col max-sm:items-start" : ""} tap-44 flex disabled:cursor-not-allowed disabled:opacity-50 min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[13px] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-9 sm:px-2.5 sm:text-sm sm:leading-normal`}
               style={
                 on
                   ? { borderColor: SEEN.burdeos, background: "#f7eff3" }
@@ -108,7 +113,11 @@ export function CasillasSistema({
                   style={{ ["--sis" as string]: h.strong, background: "var(--sis)" }}
                 />
               </span>
-              {nombres ? (
+              {nombres && enFila ? (
+                // En la fila de cuatro del móvil, el nombre puede partirse («MiniMed ⏎ 780G»), pero
+                // no por el guion («Control-⏎IQ»): guion duro.
+                <span className="max-sm:text-xs">{nombres[c].replace(/-/g, "\u2011")}</span>
+              ) : nombres ? (
                 <span>
                   <NombreSistema n={pegarFinal(nombres[c])} />
                 </span>

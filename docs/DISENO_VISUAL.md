@@ -274,3 +274,80 @@ las tarjetas se imprimen con borde y sin sombra; la pleca de sistema se imprime 
 - **Papel**: `.tarjeta-datos` y las filas de `.filas-datos` no se parten; los títulos no se
   quedan solos al pie; bajo cada pregunta frecuente, solo los párrafos (las filas de las Tablas
   1–4 ya las resumen las tarjetas).
+
+## 15. Revisión de tarjetas fuera de las fichas (0.92.0, 21-10-2026)
+
+Revisión de diseño de las tarjetas de todo lo que no son las fichas de los sistemas (Situaciones,
+Iniciación, Interrupción, Buscar, Preguntas, Figuras y diagramas, Material para el paciente,
+portada). Solo diseño y estructura: ningún texto clínico cambia.
+
+### Inventario: seis tipos de tarjeta, y nada más
+
+| Tipo                 | Receta                                                                                                                                                                                                  | Dónde                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Tarjeta de lista     | `.tarjeta overflow-hidden` + `h2/h3.titulo-tarjeta px-3 pt-3 pb-1.5` (en `--tinta`) + `ul.filas` de `.fila` sin flecha.                                                                                 | Grupos de Situaciones y de diagramas, «Véase también», bloques de la portada.                   |
+| Tarjeta de contenido | `.tarjeta p-4` (p-3 en el móvil si lleva otra caja dentro), título `.titulo-tarjeta` 15/700, cuerpo 15 px, fuente al pie.                                                                               | Cabecera y conducta de una situación, guion, fases, diagramas, Figura 3, pregunta frecuente.    |
+| Tarjeta de sistema   | `.tarjeta.tarjeta-sistema` con `--sis`: solo si el enlace o el dato es de ese sistema; nombre en `SISTEMA_HEX[c].ink`.                                                                                  | Casilla de la Tabla 4 del sistema, bloques de `porSistema.ts`, temas de sistema en Preguntas.   |
+| Casilla gris         | `.casilla` (gris, sin borde); `.casilla-sistema` solo si el dato es de un sistema y nunca igual que la pleca del contenedor.                                                                            | «Recomendación orientativa», lo común a los cuatro, lo añadido al sistema dentro de su tarjeta. |
+| Aviso clínico        | Una receta por nivel. Ámbar: `rounded-md border` `#f3d38a` sobre `#fffbeb`, texto ámbar 900. Rojo: `rounded-md border border-red-200 bg-red-50 text-red-900` (`UrgenciaF3`; en papel, `.hoja-urgente`). | Comprobaciones previas, notas de la calculadora; urgencia de la Figura 3 y de las hojas.        |
+| Nota complementaria  | Borde discontinuo (`border-dashed`), 13 px.                                                                                                                                                             | Notas por pasaje, correcciones.                                                                 |
+
+Retirados: el borde de 2 px burdeos en tarjetas (queda solo como foco de la caja de búsqueda),
+el borde gris pizarra y el azul de los pasajes, la pleca burdeos en lo que no es un sistema
+(cabecera de situación, infografía, «Todos los sistemas», primera columna de una fila de la
+Tabla 2) y la pleca y el título en color de área (grupos de Figuras y diagramas, grupos de
+Situaciones).
+
+### Reglas aplicadas
+
+- **«Véase también», una forma** (`componentes/VeaseTambien.tsx`): la tarjeta de lista. Dentro de
+  otra tarjeta (una tarea, un paso de Iniciación, una respuesta de Buscar), `enCaja`: la misma lista
+  sin marco, tras una línea y alineada con el texto de la caja; el nivel del título, uno por debajo
+  del de la caja. Sustituye al rótulo con chips con flecha y a la línea «Véase también: X →».
+- **Títulos dentro de tarjetas, 15/700** (`.titulo-tarjeta`): cabecera de situación, Figura 3,
+  objetivos de MCG por población, título de un diagrama, figuras de la galería, portada. 17 px
+  (`.titulo-seccion`) solo fuera de las tarjetas («Preguntas por sistema», títulos de sección).
+- **Situación, orden fijo**: selector → tarjeta del sistema (con lo que los apartados 9 y 10
+  añaden para él, en casillas grises dentro de ella) → lo común a los cuatro en casilla gris sin
+  pleca. Las comprobaciones previas del ejercicio siguen antes de todo (S61-01).
+- **Guion de una situación**: números en gris (en burdeos solo el paso activo de un recorrido,
+  como en la descarga) y sin chevrón (cada momento va abierto; el título lo sigue plegando).
+- **Iniciación, fases**: el título del paso (h3) solo para el lector de pantalla (repetía el paso
+  marcado y su «2.» se confundía con el de la fase); las casillas de las piezas sin pleca dentro de
+  una tarea (la pantalla ya es del sistema).
+- **Fuentes sin repetir** (`fuentesDePiezas`): la entradilla solo distingue dos sitios que se
+  escriben igual si todos la tienen; sin paréntesis dentro del paréntesis («Configuración
+  inicial (v. Tabla 2)» → «Configuración inicial»).
+- **Interrupción**: sin alto fijo en la cabecera de color. Cada caso ocupa dos filas de una
+  subrejilla (`md:row-span-2 md:grid-rows-subgrid`): las cabeceras de una fila toman la altura de
+  la más alta (61 px en la fila de tres, donde una va en dos líneas; 41 px en la de dos, antes 58)
+  y el cuerpo acaba con su texto (`self-start`); la tarjeta se dibuja en sus dos partes.
+- **Buscar**: pregunta frecuente, «Abrir» y pasajes, la misma `.tarjeta` con su rótulo en burdeos;
+  los pasajes de dentro, separados por líneas (sin marco dentro de marco). En una fila por sistema,
+  los chips son el filtro (con el punto del sistema) y las casillas, `casilla casilla-sistema` con
+  el nombre en su color.
+- **Calculadora**: «Pauta previa» como chips de dos líneas (`.chip`, mismo marcado que el resto de
+  opciones) en tres columnas iguales; los objetivos del calculador apilados al mismo ancho.
+- **Plan del paciente**: el selector de toda la app (`CasillasSistema unico enFila`: en el móvil,
+  las cuatro en una fila, marca arriba y nombre debajo); una sola receta de urgencia y 15 px en
+  toda la hoja.
+- **Preguntas frecuentes**: «Preguntas por sistema» (h2, 17 px) a todo lo ancho antes de los cuatro
+  temas de sistema, que van como tarjeta de sistema con el nombre en su color. Los catorce grupos
+  siguen plegados (decisión pendiente del autor).
+- **Portada en el móvil**: las tres situaciones con pantalla propia como filas a todo lo ancho;
+  desde sm, chips con las demás.
+
+### Excepciones documentadas
+
+- **Portada, tarjeta del título**: esquinas de 4 px (`rounded-[4px]`), como la cubierta del Manual;
+  es la única tarjeta con otro radio.
+- **Figura 3, tramos de β-OHB**: botones con el tinte y el borde de su tramo (`TRAMO_HEX`) y
+  esquinas de 12 px: son señal clínica, no tarjetas de contenido.
+- **Interrupción, cabeceras de caso**: banda tintada con el color de su riesgo y filete superior de
+  4 px (verde, amarillo, rojo; gris en las programadas).
+- **Portada, «Hiperglucemia y cetonemia»**: el chip (y la fila en el móvil) con el tinte naranja
+  de la Figura 3.
+- **Situaciones, fila elegida**: fondo burdeos con texto blanco (estado de selección, no tarjeta).
+- **Comparación de sistemas y selector**: los fondos tintados por sistema (§1) se mantienen.
+- **Fichas de los sistemas** (`FichaOperativa`, `ComoFuncionaOperativo`, Resumen y Parámetros):
+  fuera de esta revisión (se revisan aparte).

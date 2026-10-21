@@ -82,7 +82,11 @@ function Opciones<T extends string | number>({
   valor,
   onChange,
   marca,
+  rejilla = false,
 }: {
+  /* 0.92.0 (revisión de tarjetas, ★9): las opciones apiladas, todas del mismo ancho (antes, cada
+     una con el de su texto). */
+  rejilla?: boolean;
   etiqueta: string;
   opciones: { v: T; t: ReactNode }[];
   /* null: ninguna elegida. */
@@ -97,7 +101,11 @@ function Opciones<T extends string | number>({
         {etiqueta}
         {marca}
       </div>
-      <div role="group" aria-label={etiqueta} className="flex flex-wrap gap-1.5">
+      <div
+        role="group"
+        aria-label={etiqueta}
+        className={rejilla ? "grid gap-1.5" : "flex flex-wrap gap-1.5"}
+      >
         {opciones.map((o) => {
           const on = o.v === valor;
           return (
@@ -456,7 +464,9 @@ export function CalculadoraInicio({
       <div className="space-y-5 xl:grid xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start xl:gap-6 xl:space-y-0">
         <div className="min-w-0 space-y-5">
           <Paso n={1} titulo="Pauta previa">
-            <div className="grid grid-cols-3 gap-2">
+            {/* 0.92.0 (revisión de tarjetas, ★9): chips de dos líneas en tres columnas iguales, con el
+                mismo marcado que el resto de opciones (antes, tarjetas con su propio borde). */}
+            <div role="group" aria-label="Pauta previa" className="grid grid-cols-3 gap-1.5">
               {(
                 [
                   { v: "mdi", t: "MDI", dd: "Plumas: basal y rápida" },
@@ -471,17 +481,10 @@ export function CalculadoraInicio({
                     type="button"
                     aria-pressed={on}
                     onClick={() => set({ origen: o.v })}
-                    className="tarjeta flex min-h-16 flex-col items-center justify-center gap-0.5 px-1 py-2.5 text-center transition hover:border-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                    style={
-                      on
-                        ? { borderColor: hex.strong, boxShadow: `inset 0 0 0 1px ${hex.strong}` }
-                        : undefined
-                    }
+                    className="chip flex-col items-start justify-center gap-0 px-2 py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-3"
                   >
-                    <span className="text-sm font-bold leading-tight text-slate-900 sm:text-base">
-                      {o.t}
-                    </span>
-                    <span className="text-xs leading-tight text-slate-600">{o.dd}</span>
+                    <span>{o.t}</span>
+                    <span className="text-xs font-normal opacity-80">{o.dd}</span>
                   </button>
                 );
               })}
@@ -766,6 +769,7 @@ export function CalculadoraInicio({
                   <Opciones
                     etiqueta="Objetivo del calculador de bolos manual"
                     marca={<Marca modificado={d.tocado.objetivo} />}
+                    rejilla
                     opciones={OBJETIVOS_CALCULADOR.map((o) => ({
                       v: o.mgdl,
                       t: (

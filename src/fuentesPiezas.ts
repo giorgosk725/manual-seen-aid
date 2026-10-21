@@ -71,9 +71,18 @@ export function fuentesDePiezas(piezas: Pieza[]): { texto: string; ruta: string 
     .filter((f) => !vistas.has(f.ruta) && !!vistas.add(f.ruta));
   const veces = new Map<string, number>();
   for (const f of unicas) veces.set(f.texto, (veces.get(f.texto) ?? 0) + 1);
+  // 0.92.0 (revisión de tarjetas, ★6): la entradilla distingue dos sitios que se escriben igual
+  // solo si todos la tienen; si a alguno le falta, «Apartado 8, p. 12 (Configuración inicial) ·
+  // Apartado 8, p. 12» repetía la referencia: queda una sola (FuentePie no repite un texto), que
+  // lleva al primero. Sin paréntesis dentro del paréntesis: la entradilla, sin su remisión final
+  // («Configuración inicial (v. Tabla 2)» → «Configuración inicial»).
+  const entradilla = (ruta: string) => entradillaDe(ruta)?.replace(/\s*\([^()]*\)$/, "");
+  const todasCon = (texto: string) =>
+    unicas.filter((x) => x.texto === texto).every((x) => !!entradilla(x.ruta));
   return unicas.map((f) => {
     const e =
-      ((veces.get(f.texto) ?? 0) > 1 ? entradillaDe(f.ruta) : undefined) ?? contextoDe(f.ruta);
+      ((veces.get(f.texto) ?? 0) > 1 && todasCon(f.texto) ? entradilla(f.ruta) : undefined) ??
+      contextoDe(f.ruta);
     // 0.83.1 (séptima ronda, senior y R3): entre paréntesis (con «·» parecía otra fuente).
     return e ? { ...f, texto: `${f.texto} (${e})` } : f;
   });

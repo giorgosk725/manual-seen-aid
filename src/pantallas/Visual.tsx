@@ -10,7 +10,7 @@ import { DiagramaVista } from "../componentes/Diagramas";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { href } from "../rutas";
 import { CabeceraEditorial } from "../ui";
-import { CATEGORIA_HEX, SEEN } from "../tokens";
+import { CATEGORIA_HEX } from "../tokens";
 
 const hex = CATEGORIA_HEX.consultar;
 
@@ -21,28 +21,22 @@ const FIGURAS_GALERIA = [
   { fig: INFO, extra: null },
 ];
 
-/* La galería de diagramas por temas (13-10-2026): cuatro grupos, cada uno con el color de la
-   paleta del Manual; en cada tarjeta, el apartado y las páginas de donde sale. */
-const GRUPOS: { id: string; titulo: string; color: string; tinte: string; ids: DiagramaId[] }[] = [
+/* La galería de diagramas por temas (13-10-2026). 0.92.0 (revisión de tarjetas, ★2): tarjetas de
+   lista como las demás, sin la pleca ni el título en el color de un área (no son sistemas). */
+const GRUPOS: { id: string; titulo: string; ids: DiagramaId[] }[] = [
   {
     id: "inicio",
     titulo: "Sistemas, inicio y seguimiento",
-    color: SEEN.azulOsc,
-    tinte: "#eef3f9",
     ids: ["algoritmos", "seguimiento", "objetivos-mcg"],
   },
   {
     id: "seguridad",
     titulo: "Seguridad en el uso habitual",
-    color: SEEN.burdeos,
-    tinte: "#f7eff3",
     ids: ["cetonemia", "hipoglucemia", "interrupcion"],
   },
   {
     id: "situaciones",
     titulo: "Situaciones especiales",
-    color: CATEGORIA_HEX.confiar.ink,
-    tinte: CATEGORIA_HEX.confiar.soft,
     ids: ["ejercicio", "gestacion-sistemas", "hospital"],
   },
 ];
@@ -52,17 +46,8 @@ function GaleriaDiagramas() {
     // 0.78.1: las tres tarjetas de una fila, a la misma altura (antes 129, 139 y 129 px).
     <div className="grid gap-3 lg:grid-cols-3">
       {GRUPOS.map((g) => (
-        <section
-          key={g.id}
-          aria-labelledby={`diag-${g.id}`}
-          className="tarjeta tarjeta-sistema overflow-hidden"
-          style={{ ["--sis" as string]: g.color }}
-        >
-          <h2
-            id={`diag-${g.id}`}
-            className="titulo-tarjeta px-4 pb-1.5 pt-3"
-            style={{ color: g.color }}
-          >
+        <section key={g.id} aria-labelledby={`diag-${g.id}`} className="tarjeta overflow-hidden">
+          <h2 id={`diag-${g.id}`} className="titulo-tarjeta px-3 pb-1.5 pt-3">
             {g.titulo}
           </h2>
           <ul className="filas">
@@ -73,7 +58,7 @@ function GaleriaDiagramas() {
                   <a
                     // Con un solo hogar en consulta, la galería lleva allí (0.72.2-0.73.0).
                     href={rutaDeDiagrama(d.id)}
-                    className="fila pl-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-600"
+                    className="fila focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-600"
                   >
                     <span className="min-w-0 flex-1">{d.titulo}</span>
                   </a>
@@ -127,9 +112,8 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                 </AbrirEnVisor>
                 {/* 0.79.1: la línea de fuente, al pie de la tarjeta (a la misma altura en las cuatro). */}
                 <div className="separador p-3 max-sm:min-w-0 max-sm:flex-1 max-sm:border-l sm:flex sm:flex-1 sm:flex-col sm:border-t">
-                  <div className="text-sm font-bold leading-snug text-slate-900">
-                    {fig.titulo.replace(/\.$/, "")}
-                  </div>
+                  {/* 0.92.0 (revisión de tarjetas, ★4): título de tarjeta (15/700). */}
+                  <div className="titulo-tarjeta">{fig.titulo.replace(/\.$/, "")}</div>
                   {extra && (
                     <a
                       href={extra.href}
