@@ -13,7 +13,7 @@ import {
 import { elegirRuta, href } from "../rutas";
 import { sistemaReciente } from "../sistemaReciente";
 import { CORTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
-import { BotonImprimir, CabeceraEditorial, PaginaBadge, Revelar } from "../ui";
+import { BotonImprimir, CabeceraEditorial, ColofonImpreso, PaginaBadge, Revelar } from "../ui";
 import { pestanaALaVista } from "../disposicion";
 import { CATEGORIA_HEX } from "../tokens";
 import { TablaVista } from "../componentes/TablaVista";
@@ -126,6 +126,8 @@ function TablaPantalla({
             onSeleccion={(x) => elegirRuta("consultar", "tablas", x ? `${tid}:${x}` : tid)}
           />
         </NivelTitulo.Provider>
+        {/* 0.96.0 (16.ª ronda, visual): en papel, el mismo pie que las demás hojas de la app. */}
+        <ColofonImpreso />
         <div className="separador no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3">
           <BotonImprimir objetivo={ref} compacto>
             Imprimir la tabla

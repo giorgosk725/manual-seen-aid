@@ -39,7 +39,7 @@ import {
   type Sistema,
 } from "../ampliacion";
 import { elegirRuta, href, fueNavegacionNueva } from "../rutas";
-import { BotonImprimir, CabeceraEditorial, Foldable } from "../ui";
+import { BotonImprimir, CabeceraEditorial, ColofonImpreso, Foldable } from "../ui";
 import { pestanaALaVista } from "../disposicion";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
@@ -56,7 +56,6 @@ import { Elegir } from "./Elegir";
 
 export { Elegir };
 import { recordarSistema } from "../sistemaReciente";
-import { VERSION_APP } from "../version";
 import { FRECUENTES } from "../frecuentes";
 import { NombreSistema } from "../componentes/NombreSistema";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
@@ -858,11 +857,8 @@ export function FichaSistema({
               </li>
             ))}
           </ul>
-          {preguntas.some((f) => !impresas.get(f.id)?.length) && (
-            <p className="mt-1 hidden text-[13px] text-slate-600 print:block">
-              Las demás preguntas de esta ficha se responden con sus tarjetas.
-            </p>
-          )}
+          {/* 0.96.0 (16.ª ronda, visual): sin «Las demás preguntas de esta ficha se responden con
+              sus tarjetas» en papel (sobraba: las tarjetas van impresas encima). */}
           <FuentePie
             className="mt-1 hidden print:block"
             fuentes={fuentesDePiezas(
@@ -933,11 +929,7 @@ export function FichaSistema({
 
       {CON_AMPLIACION && <Ampliacion s={sistemaPorId(s.id)!} />}
       {/* En papel, de dónde sale la hoja (0.78.1, auditoría R3). */}
-      <p className="colofon mt-6 hidden border-t pt-2 text-xs text-slate-600 print:mt-2 print:block print:pt-1">
-        Manual de Endocrinología y Nutrición (SEEN) · Capítulo 89 · Complemento interactivo{" "}
-        {VERSION_APP}
-        {"\u00a0· "}impreso el {new Date().toLocaleDateString("es-ES")}
-      </p>
+      <ColofonImpreso />
     </div>
   );
 }
@@ -1808,6 +1800,8 @@ function Comparacion({
           )}
         </section>
       )}
+      {/* 0.96.0 (16.ª ronda, visual): en papel, el mismo pie que la ficha. */}
+      <ColofonImpreso />
     </div>
   );
 }

@@ -4,7 +4,6 @@
    - Interpretación de la descarga: la Tabla 5 paso a paso (8 pasos), con el patrón relacionado.
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
-import { VERSION_APP } from "../version";
 import { ponerConsulta } from "../consultaBuscar";
 import { useEffect, useRef, useState } from "react";
 import { AlertTriangle, ArrowRight, Check, ChevronLeft, ChevronRight, Siren } from "lucide-react";
@@ -33,7 +32,7 @@ import { kDe, siglasPorPiezas, type Pieza } from "../inicio";
 import { elegirRuta, fueNavegacionNueva, href } from "../rutas";
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
-import { BotonImprimir, CabeceraEditorial } from "../ui";
+import { BotonImprimir, CabeceraEditorial, ColofonImpreso } from "../ui";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
 import { recordarSistema, sistemaReciente } from "../sistemaReciente";
 import { CasillasSistema } from "../componentes/CasillasSistema";
@@ -1385,11 +1384,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
         </p>
       )}
       {/* 0.92.3 (15.ª ronda, R3): en papel, de dónde sale la hoja (como en la ficha). */}
-      <p className="colofon mt-6 hidden border-t pt-2 text-xs text-slate-600 print:mt-2 print:block print:pt-1">
-        Manual de Endocrinología y Nutrición (SEEN) · Capítulo 89 · Complemento interactivo{" "}
-        {VERSION_APP}
-        {"\u00a0· "}impreso el {new Date().toLocaleDateString("es-ES")}
-      </p>
+      <ColofonImpreso />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { esFalloDeTrozo, recargarUnaVez } from "./recarga";
 import { createPortal } from "react-dom";
 import { AlertTriangle, ChevronDown, Printer, RotateCcw, X, type LucideIcon } from "lucide-react";
 import { imprimirRegion } from "./imprimir";
+import { VERSION_APP } from "./version";
 
 /* Enlace de ruta hash: un <a> normal (accesible, abre en pestaña nueva con Ctrl). */
 export function Enlace({
@@ -547,5 +548,18 @@ export function CabeceraEditorial({
         <span className="flex-1" />
       </div>
     </div>
+  );
+}
+
+/* 0.96.0 (16.ª ronda, visual): el pie de las hojas que se imprimen desde la app (ficha, comparación,
+   tabla, paso de la descarga), con el mismo formato en todas y en una línea. Las hojas para el
+   paciente aprobadas llevan el suyo (materiales.ts) y no cambian. */
+export function ColofonImpreso() {
+  return (
+    <p className="colofon mt-6 hidden border-t pt-2 text-xs text-slate-600 print:mt-2 print:block print:max-w-none print:pt-1 print:text-[8pt]">
+      Manual de Endocrinología y Nutrición (SEEN) · Capítulo 89 · Complemento interactivo{" "}
+      {VERSION_APP}
+      {"\u00a0· "}impreso el {new Date().toLocaleDateString("es-ES")}
+    </p>
   );
 }

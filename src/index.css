@@ -1882,6 +1882,18 @@ html.night *:focus-visible {
   }
 }
 
+/* 0.96.0 (16.ª ronda, R3): el paso de la descarga, algo más compacto en papel: el 4 llegaba a
+   14 pt del margen y, con otros márgenes de impresión, pasaba dos líneas y la fuente a otra cara. */
+@media print {
+  .imprimible #paso-descarga {
+    padding: 0.5rem 0.75rem;
+  }
+  .imprimible #paso-descarga dd {
+    font-size: 10.5pt;
+    line-height: 1.4;
+  }
+}
+
 /* 0.77.1 (auditoría R3): en la ficha impresa, las tarjetas operativas y las filas de Parámetros y
    Modos no se parten entre caras, y un título no se queda solo al pie. */
 @media print {
@@ -2004,6 +2016,15 @@ html.night *:focus-visible {
     break-inside: auto;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
+  }
+  /* 0.96.0 (16.ª ronda, visual): en papel, las filas de Parámetros y Modos sin el marco de la
+     tarjeta (una línea arriba y las de entre filas): partida entre caras, el marco se alargaba
+     hasta el pie de la cara con una cola vacía, porque las filas no se parten. */
+  .imprimible section.tarjeta:has(> .filas-datos) {
+    border-color: transparent;
+    border-top-color: #d4d4d4;
+    border-radius: 0;
+    box-shadow: none !important;
   }
   .imprimible .tarjeta-datos dl > div {
     break-inside: avoid;
