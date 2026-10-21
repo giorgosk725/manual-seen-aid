@@ -12,6 +12,7 @@ import { DESTINOS, MAPA_CONSULTA } from "../nav";
 import { CATEGORIA_HEX, SISTEMA_HEX, TRAMO_HEX } from "../tokens";
 import { CORTO_CASILLA, CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
+import { ALGORITMO } from "../fichaAlgoritmo";
 
 const foco =
   "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500";
@@ -23,10 +24,13 @@ export function TarjetaPortada({
   icono: Icono,
   hex,
   nivel = 3,
+  grande = false,
   children,
 }: {
   id: string;
   nivel?: 2 | 3;
+  /* 0.94.0 (rediseño, fase 2): el bloque de los sistemas, con el título a 17 px (primer nivel). */
+  grande?: boolean;
   titulo: string;
   icono: LucideIcon;
   hex: { soft: string; strong: string; ink: string };
@@ -35,10 +39,10 @@ export function TarjetaPortada({
   const Titulo = nivel === 2 ? "h2" : "h3";
   return (
     <section aria-labelledby={id} className="tarjeta flex h-full min-w-0 flex-col overflow-hidden">
-      <header className="flex items-center gap-2.5 px-4 py-2.5">
+      <header className={`flex items-center gap-2.5 px-4 ${grande ? "py-3" : "py-2.5"}`}>
         <Icono size={18} aria-hidden="true" className="shrink-0" style={{ color: hex.strong }} />
         {/* 0.92.0 (revisión de tarjetas, ★4): 15/700 como todo título de tarjeta (antes, 16). */}
-        <Titulo id={id} className="titulo-tarjeta min-w-0">
+        <Titulo id={id} className={`${grande ? "titulo-seccion" : "titulo-tarjeta"} min-w-0`}>
           {titulo}
         </Titulo>
       </header>
@@ -84,17 +88,22 @@ const SLUG_INICIO = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 
 function Sistemas() {
   const b = MAPA_CONSULTA.find((x) => x.id === "sistemas")!;
-  const enlace = `foco-dentro flex min-h-9 items-center justify-center px-2 text-[12px] xl:flex-auto font-semibold text-slate-700 transition hover:bg-slate-50 hover:underline ${foco}`;
+  // 0.94.0 (rediseño, fase 2): accesos al pie de cada tarjeta, en una fila de tres tercios.
+  const enlace = `foco-dentro flex min-h-10 flex-1 items-center justify-center px-1.5 text-[13px] font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 hover:underline ${foco}`;
   return (
     <TarjetaPortada
       id="mapa-sistemas"
       titulo={b.titulo}
       icono={SlidersHorizontal}
       hex={CATEGORIA_HEX.consultar}
+      grande
     >
+      {/* 0.94.0 (rediseño, fase 2): el bloque más usado, con más presencia: foto mayor, el nombre
+          a 16/800 y, desde sm, el dato que identifica cada sistema (su algoritmo, el mismo de la
+          tarjeta del Resumen). */}
       <ul
         aria-label="Los cuatro sistemas"
-        className="grid grid-cols-2 gap-2 p-2 sm:grid-cols-4 sm:p-3"
+        className="grid grid-cols-2 gap-2 p-2 sm:gap-3 sm:p-3 2xl:grid-cols-4"
       >
         {ORDEN_SISTEMAS.map((id, c) => {
           const h = SISTEMA_HEX[c];
@@ -106,27 +115,32 @@ function Sistemas() {
             >
               <a
                 href={href("sistemas", id)}
-                className={`foco-dentro flex min-h-11 flex-1 items-center gap-2 p-1.5 pl-2.5 text-left transition hover:bg-slate-50 sm:gap-2.5 sm:p-2 sm:pl-3 ${foco}`}
+                className={`foco-dentro group flex min-h-11 flex-1 items-center gap-2 p-1.5 pl-2.5 text-left transition hover:bg-slate-50 sm:gap-3 sm:p-3 sm:pl-4 ${foco}`}
               >
                 <img
                   src={FOTO_SISTEMA[id]}
                   decoding="async"
                   alt=""
-                  width={48}
-                  height={48}
-                  className="foto-sistema h-10 w-10 shrink-0 rounded-md bg-white object-cover sm:h-12 sm:w-12"
+                  width={64}
+                  height={64}
+                  className="foto-sistema h-10 w-10 shrink-0 rounded-md border border-[var(--linea-suave)] bg-white object-cover sm:h-16 sm:w-16"
                 />
-                {/* El nombre corto de la casilla («Control-IQ»): en una línea. */}
-                <span
-                  className="min-w-0 text-[13px] font-bold leading-tight sm:text-sm"
-                  style={{ color: h.ink }}
-                >
-                  {CORTO_CASILLA[c]}
+                <span className="min-w-0">
+                  {/* El nombre corto de la casilla («Control-IQ»): en una línea. */}
+                  <span
+                    className="block text-[13px] font-bold leading-tight group-hover:underline sm:text-base sm:font-extrabold"
+                    style={{ color: h.ink }}
+                  >
+                    {CORTO_CASILLA[c]}
+                  </span>
+                  <span className="mt-1 hidden text-[13px] font-semibold leading-snug text-slate-600 sm:block">
+                    {ALGORITMO[c][0].v}
+                  </span>
                 </span>
               </a>
               {/* Desde la tablet, los accesos más usados de cada ficha (en el móvil, la ficha
-                  los tiene en sus pestañas): en columna y, en pantalla ancha, en una fila. */}
-              <div className="separador hidden border-t sm:flex sm:flex-col sm:divide-y xl:flex-row xl:divide-x xl:divide-y-0">
+                  los tiene en sus pestañas). */}
+              <div className="separador hidden divide-x divide-[var(--linea-suave)] border-t sm:flex">
                 <a
                   href={href("sistemas", id, "parametros")}
                   aria-label={`Parámetros de ${CORTO_SISTEMA[c]}`}
@@ -345,16 +359,18 @@ export function MapaConsulta() {
       <h2 id="mapa-consulta" tabIndex={-1} className="sr-only scroll-mt-4">
         Consultar
       </h2>
-      <div className="grid gap-3">
+      {/* 0.94.0 (rediseño, fase 2): tres niveles. Primero los sistemas (lo más usado); después la
+          consulta (iniciación y situaciones, a la par); al final, la lectura y el paciente. */}
+      <div className="grid gap-3 sm:gap-4">
         <Sistemas />
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2">
           <Iniciacion />
-          <Lectura />
-          <div className="md:col-span-2 xl:col-span-1">
-            <Paciente />
-          </div>
+          <Situaciones />
         </div>
-        <Situaciones />
+        <div className="grid gap-3 md:grid-cols-2">
+          <Lectura />
+          <Paciente />
+        </div>
       </div>
     </section>
   );
