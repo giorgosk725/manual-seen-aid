@@ -915,13 +915,13 @@ export function CalculadoraInicio({
             className="tarjeta tarjeta-sistema overflow-hidden"
             style={{ ["--sis" as string]: h!.strong }}
           >
-            <p className="px-3 py-2 text-sm font-semibold" style={{ color: h!.ink }}>
+            <p className="px-4 py-2.5 text-sm font-semibold" style={{ color: h!.ink }}>
               {INICIALIZACION[sis].previo.charAt(0).toUpperCase() +
                 INICIALIZACION[sis].previo.slice(1)}
               .
             </p>
             {!ev.lista && (
-              <p className="separador border-t px-3 py-2 text-sm font-semibold text-slate-700">
+              <p className="separador max-w-none border-t px-4 py-2.5 text-sm font-semibold text-slate-700">
                 {ev.indicacion.fuera.length
                   ? "Sin propuesta: hay un dato fuera de la indicación (paso 4)."
                   : "Sin cifras hasta completar los datos del paso 3."}
@@ -936,18 +936,22 @@ export function CalculadoraInicio({
               destacado
             />
             <div className="separador border-t">
-              <div className="rotulo px-3 pt-2" style={{ color: h!.ink }}>
+              <div className="rotulo px-4 pt-3" style={{ color: h!.ink }}>
                 Modos y funciones de {CORTOS[sis]}
               </div>
-              <ul className="divide-y">
+              {/* 0.94.0 (rediseño, fase 2): la situación a la izquierda, como las filas de arriba. */}
+              <ul className="divide-y divide-[var(--linea-suave)]">
                 {modosDe(sis).map((m) => {
                   return (
-                    <li key={m.situacion} className="flex gap-2.5 px-3 py-2">
-                      <div className="min-w-0">
-                        <div className="text-xs font-semibold text-slate-600">{m.situacion}</div>
-                        <div className="text-sm text-slate-900">
-                          <Lineas>{m.texto}</Lineas>
-                        </div>
+                    <li
+                      key={m.situacion}
+                      className="grid gap-x-5 gap-y-0.5 px-4 py-2.5 sm:grid-cols-[minmax(10rem,14rem)_1fr]"
+                    >
+                      <div className="text-sm font-semibold leading-snug text-slate-700">
+                        {m.situacion}
+                      </div>
+                      <div className="min-w-0 max-w-[72ch] text-sm text-slate-900">
+                        <Lineas>{m.texto}</Lineas>
                       </div>
                     </li>
                   );
@@ -961,7 +965,7 @@ export function CalculadoraInicio({
               valorDe={valorDe}
               color="#94a3b8"
             />
-            <div className="separador border-t px-3 py-2">
+            <div className="separador border-t px-4 py-2.5">
               <div className="rotulo">Adaptación posterior del algoritmo</div>
               <p className="mt-0.5 text-sm text-slate-800">{aprendizajeDe(sis)}</p>
               {sis === COLUMNA_DE_NOTA["T1/3"] && (
@@ -970,7 +974,7 @@ export function CalculadoraInicio({
                 </p>
               )}
             </div>
-            <p className="separador border-t px-3 py-2 text-xs text-slate-600">
+            <p className="separador max-w-none border-t px-4 py-2.5 text-xs text-slate-600">
               {NUCLEO_COMUN.texto}.{" "}
               <a
                 href={href("sistemas", ORDEN_SISTEMAS[sis], "parametros")}
@@ -1042,24 +1046,29 @@ function Lista({
 }) {
   return (
     <div className="separador border-t">
-      <div className="rotulo px-3 pt-2" style={destacado ? { color } : undefined}>
+      <div className="rotulo px-4 pt-3" style={destacado ? { color } : undefined}>
         {titulo}
       </div>
-      {nota && <div className="px-3 text-xs text-slate-500">{nota}</div>}
-      <ul className="divide-y">
+      {nota && <div className="px-4 text-xs text-slate-500">{nota}</div>}
+      {/* 0.94.0 (rediseño, fase 2): como una hoja de programación: el parámetro a la izquierda y
+          su cifra a la derecha, en negrita y con cifras tabulares (antes, un punto de color y las
+          dos líneas apiladas). */}
+      <ul className="divide-y divide-[var(--linea-suave)]">
         {claves.map((k) => {
           const papel = k === "ia" || k === "objetivoAlg" ? null : papelEnAutomatico(k, sis);
           return (
-            <li key={k} className="flex gap-2.5 px-3 py-2">
-              <span
-                aria-hidden="true"
-                className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
-                style={{ background: color }}
-              />
+            <li
+              key={k}
+              className="grid gap-x-5 gap-y-0.5 px-4 py-2.5 sm:grid-cols-[minmax(10rem,14rem)_1fr]"
+            >
+              <div className="text-sm font-semibold leading-snug text-slate-700">
+                {NOMBRE_CLAVE[k]}
+              </div>
               <div className="min-w-0">
-                <div className="text-sm text-slate-700">{NOMBRE_CLAVE[k]}</div>
-                <div className="text-sm font-bold text-slate-900">{valorDe(k, sis)}</div>
-                {papel && <div className="mt-0.5 text-xs text-slate-500">{papel}</div>}
+                <div className="text-[15px] font-bold leading-snug tabular-nums text-slate-900">
+                  {valorDe(k, sis)}
+                </div>
+                {papel && <div className="mt-0.5 max-w-[72ch] text-xs text-slate-600">{papel}</div>}
               </div>
             </li>
           );
