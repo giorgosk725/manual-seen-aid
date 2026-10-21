@@ -510,6 +510,14 @@ export function TablaVista({
   const [sel, setSelInterna] = useState<number[]>(() =>
     columnasFijas ? columnasFijas : desdeRuta(seleccionInicial),
   );
+  // 0.96.0 (16.ª ronda, R5): las columnas decididas fuera (la comparación de Sistemas), al día
+  // cuando cambian sin cambiar de pantalla (marcar o desmarcar un sistema).
+  const fijas = columnasFijas?.join("+");
+  useEffect(() => {
+    if (fijas === undefined) return;
+    const n = fijas ? fijas.split("+").map(Number) : [];
+    setSelInterna((p) => (p.join("+") === fijas ? p : n));
+  }, [fijas]);
   // 0.72.0: con la pantalla ya abierta, la ruta manda (Atrás, un enlace a «T4:<sistema>»).
   useEffect(() => {
     if (columnasFijas) return;

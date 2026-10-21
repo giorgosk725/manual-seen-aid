@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { FIGURA3, type PasoTramo, type Tramo, type TramoFigura3 } from "../contenido";
 import { Texto } from "../texto";
-import { sinCortes } from "../sinCortes";
+import { sinCortes, sinViuda } from "../sinCortes";
 import { PaginaBadge } from "../ui";
 import { TRAMO_HEX } from "../tokens";
 import { elegirRuta, href, fueNavegacionNueva } from "../rutas";
@@ -269,7 +269,8 @@ function SospecharComprobar() {
         </div>
         <ul className="list-disc space-y-1 pl-5 text-sm text-slate-700">
           {FIGURA3.sospechar.items.map((it, i) => (
-            <li key={i}>{sinCortes(it)}</li>
+            // 0.96.0 (16.ª ronda, visual): sin «≥2 h.» solo en la última línea.
+            <li key={i}>{sinViuda(sinCortes(it))}</li>
           ))}
         </ul>
       </div>
@@ -284,7 +285,7 @@ function SospecharComprobar() {
           {FIGURA3.comprobar.items.map((it, i) => (
             <li key={i} className="flex gap-2">
               <Check size={15} aria-hidden="true" className="mt-0.5 shrink-0 text-emerald-700" />
-              {sinCortes(it)}
+              {sinViuda(sinCortes(it))}
             </li>
           ))}
         </ul>

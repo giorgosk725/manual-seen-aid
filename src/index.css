@@ -1352,6 +1352,22 @@ html.night ::highlight(frase-citada) {
     border-radius: 6px;
   }
 }
+/* 0.96.0 (16.ª ronda, senior): el bloque de destino, con un filete fijo a la izquierda (fuera de su
+   caja, sin mover el texto) hasta el siguiente clic. Solo en pantalla. */
+@media screen {
+  .bloque-destino {
+    box-shadow: -0.625rem 0 0 -0.4375rem var(--acento);
+  }
+}
+/* Con «Volver a la consulta» pegado arriba, el destino de un enlace queda por debajo del chip. */
+html:has(.volver-pegado) {
+  scroll-padding-top: 7.5rem;
+}
+@media (min-width: 1024px) {
+  html:has(.volver-pegado) {
+    scroll-padding-top: 4.25rem;
+  }
+}
 
 /* Impresión de la lectura: columna completa, sin cromo, insignias de página visibles. */
 @media print {

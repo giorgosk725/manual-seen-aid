@@ -1,3 +1,8 @@
+/* 0.96.0 (16.ª ronda, visual): sin viuda al final de una línea corta de lista («≥2 h.» solo en la
+   última línea de «Glucosa del sensor ≥250 mg/dl persistente ≥2 h.»): el último espacio, duro,
+   si lo que le sigue es breve. Solo cambia el espacio. */
+export const sinViuda = (t: string) => t.replace(/ ([^ ]{1,10})$/u, "\u00a0$1");
+
 /* Espacios duros entre cifra y unidad (componentes/SinCortes.tsx): la función de texto, aparte
    para pasarla a <Lineas> o <Texto> (que ya llevan su marcado y sus siglas). */
 const NBSP = "\u00a0";

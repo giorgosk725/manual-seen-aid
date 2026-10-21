@@ -1167,10 +1167,14 @@ function BarraSistemas({
     if (!el) return;
     const medir = () =>
       el.setAttribute("data-mas", el.scrollLeft + el.clientWidth < el.scrollWidth - 2 ? "1" : "0");
-    el.querySelector<HTMLElement>("[aria-current]")?.scrollIntoView?.({
-      block: "nearest",
-      inline: "nearest",
-    });
+    // 0.96.0 (16.ª ronda, R5): solo a lo ancho de la tira (scrollIntoView movía también la
+    // página: al marcar o desmarcar un sistema en el móvil, la lectura subía cientos de px).
+    const activa = el.querySelector<HTMLElement>("[aria-current]");
+    if (activa) {
+      const izq = activa.offsetLeft - el.offsetLeft;
+      if (izq < el.scrollLeft || izq + activa.offsetWidth > el.scrollLeft + el.clientWidth)
+        el.scrollLeft = izq - (el.clientWidth - activa.offsetWidth) / 2;
+    }
     medir();
     el.addEventListener("scroll", medir, { passive: true });
     window.addEventListener("resize", medir);
