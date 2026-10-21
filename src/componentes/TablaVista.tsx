@@ -162,18 +162,23 @@ function TablaHTML({
         </caption>
         <thead>
           <tr>
-            <th scope="col" className="rotulo px-3 py-2 text-left text-white">
+            <th scope="col" className="rotulo px-3 py-2 text-left align-middle">
               {tabla.cabeceraEtiqueta}
             </th>
+            {/* 0.94.0 (rediseño): cabecera en el papel, no en marino; cada sistema con su filete
+                superior de 3 px (`--sis`, que el nocturno aclara), su foto y su nombre con su
+                grafía («myLoop CamAPS», no «MYLOOP CAMAPS»), en su tinta. */}
             {columnas.map((c) => (
               <th
                 key={c}
                 scope="col"
-                className="rotulo px-3 py-2 text-left text-white"
-                style={
+                className={
                   tabla.porSistema
-                    ? { boxShadow: `inset 0 -3px 0 0 ${SISTEMA_HEX[c].strong}` }
-                    : undefined
+                    ? "cabeza-sistema px-3 pb-2 pt-2.5 text-left"
+                    : "rotulo px-3 py-2 text-left"
+                }
+                style={
+                  tabla.porSistema ? { ["--sis" as string]: SISTEMA_HEX[c].strong } : undefined
                 }
               >
                 {tabla.porSistema ? (
@@ -181,9 +186,14 @@ function TablaHTML({
                     <img
                       src={FOTO_SISTEMA[ORDEN_SISTEMAS[c]]}
                       alt=""
-                      className="foto-sistema h-7 w-7 rounded-md bg-white object-cover"
+                      className="foto-sistema h-7 w-7 shrink-0 rounded-md border border-[var(--linea-suave)] bg-white object-cover"
                     />
-                    <NombreSistema n={tabla.columnas[c]} porPalabra />
+                    <span
+                      className="text-sm font-bold leading-tight"
+                      style={{ color: SISTEMA_HEX[c].ink }}
+                    >
+                      <NombreSistema n={tabla.columnas[c]} porPalabra />
+                    </span>
                   </span>
                 ) : (
                   <NombreSistema n={tabla.columnas[c]} porPalabra />
@@ -236,21 +246,18 @@ function TablaHTML({
               {f.unida ? (
                 <td
                   colSpan={columnas.length}
-                  className="separador border-t px-3 py-2 text-slate-700"
+                  className="separador border-l border-t px-3 py-2 text-slate-800"
                 >
                   <Lineas>{sinCortes(celdaUnida(tabla, f.celdas[0], columnas))}</Lineas>
                 </td>
               ) : (
                 columnas.map((c) => (
+                  // 0.94.0 (rediseño): celdas blancas con líneas capilares (antes, un mosaico de
+                  // cajas tintadas con 2 px de blanco); la identidad, en la cabecera.
                   <td
                     key={c}
-                    className="separador border-t px-3 py-2 text-slate-700"
-                    style={{
-                      minWidth: tabla.porSistema ? "9.25rem" : "10rem",
-                      ...(tabla.porSistema
-                        ? { background: SISTEMA_HEX[c].soft, boxShadow: "inset 0 0 0 2px #fff" }
-                        : {}),
-                    }}
+                    className="separador border-l border-t px-3 py-2 text-slate-800"
+                    style={{ minWidth: tabla.porSistema ? "9.25rem" : "10rem" }}
                   >
                     <Lineas>
                       {sinCortes(
