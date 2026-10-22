@@ -152,21 +152,24 @@ test.describe("Ronda 22 · plan, iniciación y papel", () => {
     ).toBeVisible();
   });
 
-  test("R3: f104 sin «[…]»; Omnipod 5 en papel sin una cara con solo el colofón", async ({
+  test("R3: f104 sin «[…]»; el colofón de la ficha, en el margen de cada cara", async ({
     page,
   }) => {
     await page.goto("/#/preguntas/f104");
     await expect(page.locator("main")).not.toContainText("[…]");
+    // El colofón, en el margen de abajo de cada cara (@page), no como párrafo final: ya no puede
+    // quedarse solo en una cara más. Sin contar caras: dependen de la letra de cada sistema
+    // operativo (en GitHub, Linux, una más que en Windows).
     await page.goto("/#/sistemas/op5/completa");
     await expect(page.getByRole("heading", { name: /Modos y funciones/ }).first()).toBeVisible();
-    await page.evaluate(() => document.documentElement.classList.add("imprimiendo"));
-    await page.emulateMedia({ media: "print" });
-    await page.evaluate(async () => {
-      document.body.getBoundingClientRect();
-      await document.fonts.ready;
-    });
-    const pdf = await page.pdf({ format: "A4", printBackground: true });
-    expect((pdf.toString("latin1").match(/\/Type\s*\/Page[^s]/g) || []).length).toBe(3);
+    await expect(page.locator("main .colofon")).toHaveCount(0);
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () => document.querySelector("style[data-cabecera-impresa]")?.textContent ?? "",
+        ),
+      )
+      .toContain("@bottom-left");
   });
 
   test("R3: Atrás desde un enlace del lateral devuelve el foco a ese enlace", async ({ page }) => {
