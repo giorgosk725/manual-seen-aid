@@ -355,6 +355,20 @@ export function destinoActivo(
   return sub ? ruta.sub === sub : true;
 }
 
+/* 0.96.1 (revisión de Codex, V95-05): las conductas que no tienen entrada propia en el menú
+   (Figura 3, Interrupción, Hipoglucemia) son de «Situaciones»: el lateral y la barra de abajo la
+   marcan como contexto («location»); la lista de situaciones, como página («page»). */
+export function contextoSituaciones(ruta: {
+  seccion: string;
+  sub?: string;
+}): "page" | "location" | null {
+  if (ruta.seccion === "consultar" && ruta.sub === "situacion") return "page";
+  if (ruta.seccion === "consultar" && ["figura-3", "interrupcion"].includes(ruta.sub ?? ""))
+    return "location";
+  if (ruta.seccion === "visual" && ruta.sub === "hipoglucemia") return "location";
+  return null;
+}
+
 export const ICONO_CAPITULO = BookOpen;
 /* Icono de cada apartado (índice en mosaico de la portada y cabecera del apartado). */
 export const ICONO_APARTADO: Record<string, LucideIcon> = {

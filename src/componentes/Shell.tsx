@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import { APARTADOS, CAPITULO } from "../contenido";
 import { contextoDeRuta } from "../contexto";
-import { DESTINOS, MENU, areaDe, destinoActivo } from "../nav";
+import { DESTINOS, MENU, areaDe, contextoSituaciones, destinoActivo } from "../nav";
 import {
   consumirNavegacionNueva,
   href,
@@ -406,7 +406,7 @@ function MenuNavegacion({
   // capítulo» estando ya en ella lo pliega (y vuelve a desplegarlo).
   const [indiceAbierto, setIndiceAbierto] = useState(true);
   const enlace = (
-    on: boolean,
+    on: boolean | "location",
     color: string,
     contenido: ReactNode,
     destino: string,
@@ -418,7 +418,7 @@ function MenuNavegacion({
         onClick?.(e);
         if (!e.defaultPrevented) onIr?.();
       }}
-      aria-current={on ? "page" : undefined}
+      aria-current={on === "location" ? "location" : on ? "page" : undefined}
       className={`relative flex min-h-11 items-center gap-2.5 rounded-md px-3 py-1 text-[13.5px] lg:min-h-10 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"}`}
     >
       {on && (
@@ -439,7 +439,9 @@ function MenuNavegacion({
     return (
       <li key={id}>
         {enlace(
-          destinoActivo(id, ruta),
+          id === "situacion" && contextoSituaciones(ruta) === "location"
+            ? "location"
+            : destinoActivo(id, ruta),
           cat.strong,
           <>
             <I size={16} aria-hidden="true" style={{ color: cat.strong }} className="shrink-0" />
@@ -673,17 +675,19 @@ function botonDe(ruta: Ruta): Boton {
   if (ruta.seccion === "") return "inicio";
   if (ruta.seccion === "sistemas") return "sistemas";
   if (ruta.seccion === "buscar") return "buscar";
-  if (
-    (ruta.seccion === "consultar" &&
-      ["situacion", "figura-3", "interrupcion"].includes(ruta.sub ?? "")) ||
-    (ruta.seccion === "visual" && ruta.sub === "hipoglucemia")
-  )
-    return "situaciones";
+  if (contextoSituaciones(ruta)) return "situaciones";
   return "mas";
 }
 
 function Inferior({ ruta, onMas }: { ruta: Ruta; onMas: () => void }) {
   const actual = botonDe(ruta);
+  // La conducta abierta (Figura 3, Interrupción, Hipoglucemia) es contexto de «Situaciones».
+  const actualComo = (id: Boton) =>
+    id !== actual
+      ? undefined
+      : id === "situaciones" && contextoSituaciones(ruta) === "location"
+        ? ("location" as const)
+        : ("page" as const);
   const clase = (on: boolean) =>
     `relative flex min-h-14 w-full flex-col items-center justify-center gap-0.5 py-1.5 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`;
   // 0.94.0 (rediseño, fase 2): el destino activo, además de en burdeos, con un filete de 2 px arriba
@@ -711,7 +715,7 @@ function Inferior({ ruta, onMas }: { ruta: Ruta; onMas: () => void }) {
               {it.href ? (
                 <a
                   href={it.href}
-                  aria-current={on ? "page" : undefined}
+                  aria-current={actualComo(it.id)}
                   className={clase(on)}
                   style={on ? { color: SEEN.burdeos } : undefined}
                 >
@@ -724,7 +728,7 @@ function Inferior({ ruta, onMas }: { ruta: Ruta; onMas: () => void }) {
                   type="button"
                   onClick={onMas}
                   aria-haspopup="dialog"
-                  aria-current={on ? "page" : undefined}
+                  aria-current={actualComo(it.id)}
                   className={clase(on)}
                   style={on ? { color: SEEN.burdeos } : undefined}
                 >
@@ -862,6 +866,10 @@ export function Shell({
   // Iniciar, Buscar, un caso…), un botón para volver justo donde se estaba (historial).
   const previa = useRef<{ seccion: string; titulo: string }>({ seccion: "", titulo: "" });
   const [volver, setVolver] = useState<string | null>(null);
+  // 0.96.1 (revisión de Codex, V95-06): tras una navegación nueva a otra pantalla, el foco va a su
+  // título (antes se quedaba en el enlace de la barra y Tab seguía por la navegación).
+  const enfocarTitulo = useRef(false);
+  const primeraRuta = useRef(true);
   useLayoutEffect(() => {
     const nueva = consumirNavegacionNueva();
     const desdeHerramienta =
@@ -877,6 +885,10 @@ export function Shell({
       (ruta.seccion === "sistemas" && !!ruta.detalle) ||
       (ruta.seccion === "bibliografia" && !!ruta.sub);
     const guardada = posiciones.current.get(clavePantalla);
+    // Ni al abrir la app (el primer Tab ofrece «Saltar al contenido»), ni con Atrás (se vuelve
+    // a lo que se estaba viendo), ni en un enlace profundo (la pantalla lleva a su destino).
+    enfocarTitulo.current = nueva && !primeraRuta.current && !destinoProfundo;
+    primeraRuta.current = false;
     // Enlace profundo: la pantalla hace su propio scroll; al volver atrás, se restaura.
     if (destinoProfundo && (nueva || guardada == null)) return;
     // Al volver atrás, la guardada aquí (la restauración del navegador está desactivada). 0.72.2:
@@ -899,6 +911,28 @@ export function Shell({
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clavePantalla]);
+
+  useEffect(() => {
+    if (!enfocarTitulo.current) return undefined;
+    enfocarTitulo.current = false;
+    let intentos = 0;
+    let t: ReturnType<typeof setTimeout>;
+    const intentar = () => {
+      const main = mainRef.current;
+      const activo = document.activeElement;
+      // Solo si el foco se ha quedado en la navegación (lateral, barra de abajo, menú) o perdido:
+      // un campo o un control de la pantalla nueva no se le quita al lector.
+      if (main && activo && activo !== document.body && main.contains(activo)) return;
+      const h1 = main?.querySelector<HTMLElement>("h1");
+      if (h1) {
+        if (!h1.hasAttribute("tabindex")) h1.setAttribute("tabindex", "-1");
+        h1.focus({ preventScroll: true });
+      } else if (++intentos < 40) t = setTimeout(intentar, 50);
+    };
+    // Después del cierre del menú del móvil, que devuelve el foco a «Más» al cerrarse.
+    t = setTimeout(intentar, 0);
+    return () => clearTimeout(t);
   }, [clavePantalla]);
 
   useEffect(() => {

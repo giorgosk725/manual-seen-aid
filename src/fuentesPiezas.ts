@@ -100,3 +100,36 @@ export function literalDe(p: Pieza | undefined, c: number): string | undefined {
     return href("consultar", "tablas", `${p.tabla}:${SLUG_TABLA[c]}:${p.fila}`);
   return fuentesDePieza(p)[0]?.ruta;
 }
+
+/* 0.96.1 (revisión de Codex, V95-11): cada sitio del capítulo de un dato que sale de varios
+   (el rótulo lleva al primero). En el orden del dato y sin repetir destino; la casilla, con la
+   columna del sistema y, si hay dos de la misma tabla, con el rótulo de su fila. Vacía si el dato
+   tiene un solo destino. */
+export function literalesDe(fs: Pieza[], c: number): { texto: string; ruta: string }[] {
+  const deTabla = (p: Pieza) => (p.t === "casilla" || p.t === "fila" ? p.tabla : null);
+  const veces = new Map<string, number>();
+  for (const p of fs) {
+    const t = deTabla(p);
+    if (t) veces.set(t, (veces.get(t) ?? 0) + 1);
+  }
+  // Las del texto, con la entradilla que las distingue si dos se escriben igual.
+  const textoDe = new Map(
+    fuentesDePiezas(fs.filter((p) => !deTabla(p))).map((f) => [f.ruta, f.texto]),
+  );
+  const vistas = new Set<string>();
+  const out: { texto: string; ruta: string }[] = [];
+  for (const p of fs) {
+    const ruta = literalDe(p, c);
+    if (!ruta || vistas.has(ruta)) continue;
+    vistas.add(ruta);
+    const t = deTabla(p);
+    if (t && (p.t === "casilla" || p.t === "fila")) {
+      const fila = TABLAS[t].filas[p.fila].etiqueta.split(/[:\n.]/)[0].trim();
+      out.push({
+        texto: `Tabla\u00a0${TABLAS[t].numero}${(veces.get(t) ?? 0) > 1 ? ` (${fila})` : ""}`,
+        ruta,
+      });
+    } else out.push({ texto: textoDe.get(ruta) ?? fuentesDePieza(p)[0]?.texto ?? "", ruta });
+  }
+  return out.length > 1 ? out : [];
+}

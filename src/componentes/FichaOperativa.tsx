@@ -2,8 +2,8 @@
    lo de la variante (Control-IQ+, Liberty) junto al dato y la fuente al pie, que lleva al texto
    literal del capítulo. Dos formas: casillas (datos cortos, en rejilla) y filas (parámetros y
    modos, con el rótulo a la izquierda). */
-import { ArrowRight } from "lucide-react";
-import type { ReactNode } from "react";
+import { ArrowRight, BookOpen } from "lucide-react";
+import { Fragment, type ReactNode } from "react";
 import { FuentePie } from "./FuentePie";
 import { SinCortes } from "./SinCortes";
 import {
@@ -14,7 +14,37 @@ import {
   type GrupoFicha,
 } from "../fichaOperativa";
 import { SISTEMA_HEX } from "../tokens";
-import { literalDe } from "../fuentesPiezas";
+import { literalDe, literalesDe } from "../fuentesPiezas";
+
+/* 0.96.1 (revisión de Codex, V95-10): señal a la vista (también en el móvil, sin «title») de que
+   el rótulo abre el texto del capítulo. */
+const SenalLiteral = () => (
+  <BookOpen
+    size={12}
+    aria-hidden="true"
+    className="ml-1 inline-block shrink-0 align-[-1px] text-slate-400 print:hidden"
+  />
+);
+
+/* 0.96.1 (revisión de Codex, V95-11): un dato de varios sitios del capítulo, con cada uno a mano
+   (el rótulo lleva al primero). En papel, la fuente al pie de la tarjeta. */
+function EnElCapitulo({ c, d }: { c: number; d: Dato }) {
+  const sitios = literalesDe(d.f, c);
+  if (!sitios.length) return null;
+  return (
+    <span className="fuente-pie mt-1 block print:hidden">
+      En el capítulo:{" "}
+      {sitios.map((s, k) => (
+        <Fragment key={s.ruta}>
+          {k > 0 && "\u00a0· "}
+          <a href={s.ruta} className="tap-44">
+            <span>{s.texto}</span>
+          </a>
+        </Fragment>
+      ))}
+    </span>
+  );
+}
 
 /* La variante, siempre igual: la insignia a la izquierda y su texto al lado, aunque ocupe dos
    líneas (0.77.1, auditoría visual: con flex-wrap la insignia quedaba sola en su línea). */
@@ -99,6 +129,7 @@ export function CasillasDatos({
                   title="Texto del capítulo"
                 >
                   {d.r}
+                  <SenalLiteral />
                 </a>
               ) : (
                 d.r
@@ -131,6 +162,7 @@ export function CasillasDatos({
               >
                 <Variante c={c} d={d} />
               </span>
+              {modo === "rejilla" && <EnElCapitulo c={c} d={d} />}
             </dd>
           </div>
         );
@@ -239,6 +271,7 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                       title="Texto del capítulo"
                     >
                       {d.r}
+                      <SenalLiteral />
                     </a>
                   ) : (
                     <span className="text-[15px] font-semibold leading-snug text-slate-900">
@@ -284,6 +317,7 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                   <span className="block text-[14px]">
                     <Variante c={c} d={d} />
                   </span>
+                  <EnElCapitulo c={c} d={d} />
                   {d.enlace && (
                     <a
                       href={d.enlace.ruta}
