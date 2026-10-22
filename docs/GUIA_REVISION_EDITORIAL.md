@@ -1,6 +1,6 @@
-# Guía de revisión editorial · Manual SEEN · AID 1.0.7
+# Guía de revisión editorial · Manual SEEN · AID 1.0.9
 
-Edición que se revisa: **1.0.7**, publicada el 22-10-2026 en https://manual-seen-aid.pages.dev (el número y la fecha están en «Sobre este complemento» → «Esta versión»). Durante la revisión no se cambia el contenido de esta edición; las correcciones se reúnen y van en una versión siguiente.
+Edición que se revisa: **1.0.9**, publicada el 22-10-2026 en https://manual-seen-aid.pages.dev (el número y la fecha están en «Sobre este complemento» → «Esta versión»). Durante la revisión no se cambia el contenido de esta edición; las correcciones se reúnen y van en una versión siguiente.
 
 ## Qué es
 
@@ -17,7 +17,7 @@ Complemento interactivo del capítulo 89 del Manual SEEN («Tratamiento insulín
 ## Recorrido sugerido (unos 20 minutos)
 
 1. Portada → ficha de un sistema → «Parámetros».
-2. «Comparar los parámetros» (en el móvil, la vista «Por parámetro»).
+2. «Comparar los parámetros» (en el móvil, la vista «Por parámetro»), y la pestaña «Ajuste práctico» (Tabla 3).
 3. Una situación con un sistema elegido (por ejemplo, Resonancia magnética con Omnipod 5).
 4. Desde cualquier bloque, la línea «Fuente» o el libro: el texto del capítulo, y «Volver a la consulta».
 5. «Iniciación del sistema»: la ayuda de cálculo con datos ficticios y la hoja de comprobación.
@@ -26,7 +26,7 @@ Complemento interactivo del capítulo 89 del Manual SEEN («Tratamiento insulín
 ## Lo que sigue pendiente de revisión (registro en `src/materiales.ts`)
 
 - **Ayuda de cálculo:** revisión clínica del contrato de la 0.63.0 (lectura de entradas, límites 1–400 UI/día, rutas de pauta previa y reglas del 450 y del 1700); después, sin revisión propia, la comparación de lo que actúa en automático al cambiar de sistema y los recambios por formato del paso 4.
-- **Plan de seguridad:** revisado el 14-10-2026; modificado el 22-10-2026 (recambios solo del formato del sistema, por decisión del responsable). Falta revisar esa redacción adaptada.
+- **Plan de seguridad:** revisado el 14-10-2026; modificado el 22-10-2026 (recambios, regla de oro y cara de cetonas según el formato del sistema, por decisión del responsable). Falta revisar esa redacción adaptada.
 - **Notas complementarias:** hay decisiones de contenido registradas; falta la aprobación registrada del texto que se enseña.
 - **«Cómo funciona» de cada sistema, de un vistazo:** nueva disposición de piezas literales, sin revisión registrada.
 

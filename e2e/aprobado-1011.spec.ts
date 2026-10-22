@@ -18,6 +18,8 @@ test.describe("Aprobado el 11-10 (0.37.0)", () => {
       "Resumen",
       /Características$/,
       "Parámetros",
+      // 1.0.9: la Tabla 3 en su pestaña.
+      /Ajuste práctico$/,
       /Modos y funciones$/,
     ]);
     await expect(page.getByRole("region", { name: "Características" })).toBeVisible();

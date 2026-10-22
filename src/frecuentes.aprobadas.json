@@ -145,6 +145,12 @@
       "version": "0.12.0",
       "evidencia": "Revisión una a una del autor en la página de revisión (colección «frecuentes»); docs/FRECUENTES.md",
       "huella": "vju3eu1bte0uc"
+    },
+    {
+      "fecha": "2026-10-22",
+      "version": "1.0.9",
+      "evidencia": "Corrección de grafía en el pasaje de la Tabla 2 (fila 8): «U-300» con guion, como en el capítulo publicado (antes «U–300»); decisión del autor del 22-10-2026 («revisa tú todo»). Sin cambio de contenido.",
+      "huella": "g4nddkqmscai"
     }
   ],
   "f18": [
@@ -955,6 +961,12 @@
       "version": "0.99.0",
       "evidencia": "Decisión del autor en la sesión del 22-10-2026 («me fío de ti haz los cambios») sobre la propuesta de la 17.ª ronda de auditorías (R3, P3): f83 solo enfermedad leve; f104 nueva, comida grasa en MiniMed 780G; f103 con el pasaje del apartado 9 (pp. 14). Pasajes literales ya existentes, sin texto nuevo.",
       "huella": "1pp68uzc2173t"
+    },
+    {
+      "fecha": "2026-10-22",
+      "version": "1.0.9",
+      "evidencia": "Decisión del autor en la sesión del 22-10-2026 («revisa tú todo») sobre la 22.ª ronda de auditorías (R3, P7): f104 con la frase 1 del apartado 9 (b6), a la que remite «En los demás sistemas…»; sin «[…]». Pasajes literales ya existentes, sin texto nuevo.",
+      "huella": "or3ly31yp022h"
     }
   ],
   "f105": [

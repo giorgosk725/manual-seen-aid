@@ -10,13 +10,18 @@ export const esFalloDeTrozo = (e: unknown) =>
     String((e as { message?: string } | null)?.message ?? e),
   );
 
-/* Recarga una vez; devuelve false si ya se recargó por esto en esta pestaña. */
+/* Recarga una vez; devuelve false si ya se recargó por esto en esta pestaña. 1.0.9 (revisión
+   externa D108-04): solo si la marca se ha podido guardar y leer de vuelta; sin almacenamiento
+   (bloqueado o sin persistir), no se recarga sola —un fallo que se repitiera recargaría sin fin—
+   y queda la salida manual («Recargar la página» del aviso de fallo). */
 export function recargarUnaVez(): boolean {
   try {
     if (sessionStorage.getItem(MARCA)) return false;
-    sessionStorage.setItem(MARCA, String(Date.now()));
+    const marca = String(Date.now());
+    sessionStorage.setItem(MARCA, marca);
+    if (sessionStorage.getItem(MARCA) !== marca) return false;
   } catch {
-    /* sin almacenamiento: se recarga igual (como mucho una vez por carga de página) */
+    return false;
   }
   window.location.reload();
   return true;

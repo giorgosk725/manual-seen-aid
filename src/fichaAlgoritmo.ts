@@ -49,7 +49,7 @@ export function tipoBajoNombre(c: number, nombre: string): string {
 export const ALGORITMO: Dato[][] = [
   [
     { r: "Tipo", v: "SmartGuard · PID + lógica difusa", f: [t1(3)] },
-    { r: "Funciona en", v: "La bomba", f: [t1(2)] },
+    { r: "Localización del algoritmo", v: "La bomba", f: [t1(2)] },
     { r: "Administra", v: "Microbolos cada 5 min", f: [t1(4)] },
     { r: "Objetivo", v: "100, 110 o 120 mg/dl", f: [t1(6)] },
     {
@@ -67,7 +67,7 @@ export const ALGORITMO: Dato[][] = [
   ],
   [
     { r: "Tipo", v: "Control-IQ · MPC, predicción a 30 min", f: [t1(3)] },
-    { r: "Funciona en", v: "La bomba", f: [t1(2)] },
+    { r: "Localización del algoritmo", v: "La bomba", f: [t1(2)] },
     {
       r: "Administra",
       v: "Modula la basal programada cada 5 min",
@@ -96,7 +96,7 @@ export const ALGORITMO: Dato[][] = [
   ],
   [
     { r: "Tipo", v: "CamAPS FX · MPC adaptativo, predicción a 2,5–4 h", f: [t1(3), t1(4)] },
-    { r: "Funciona en", v: "La app del smartphone", f: [t1(2)] },
+    { r: "Localización del algoritmo", v: "La app del smartphone", f: [t1(2)] },
     { r: "Administra", v: "Bolos extendidos cada 8–12 min", f: [t1(4)] },
     {
       r: "Objetivo",
@@ -120,7 +120,7 @@ export const ALGORITMO: Dato[][] = [
   [
     { r: "Tipo", v: "SmartAdjust · MPC, predicción a 60 min", f: [t1(3), t1(4)] },
     {
-      r: "Funciona en",
+      r: "Localización del algoritmo",
       v: "El pod",
       n: "Control mediante el controlador (Europa) o la app del smartphone (EE. UU.)",
       f: [t1(2)],

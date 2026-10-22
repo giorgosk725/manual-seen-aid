@@ -805,10 +805,13 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                 h?.focus({ preventScroll: true });
               }, 0);
             }}
+            // 1.0.9 (22.ª ronda, R5; decisión del autor del 22-10-2026): vacía los datos y deja el
+            // sistema elegido (otro paciente con el mismo sistema es lo habitual); se dice.
+            aria-label="Nuevo inicio: vaciar los datos; el sistema elegido se mantiene"
             className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2 text-sm font-semibold text-slate-700 hover:underline"
           >
             <RotateCcw size={14} aria-hidden="true" />
-            <span className="hidden sm:inline">Nuevo inicio (vaciar datos)</span>
+            <span className="hidden sm:inline">Nuevo inicio (vaciar datos, mismo sistema)</span>
             <span className="sm:hidden">Nuevo inicio</span>
           </button>
         )}

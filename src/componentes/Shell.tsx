@@ -829,7 +829,9 @@ export function Shell({
       const a = (e.target as Element | null)?.closest?.('a[href^="#/"]');
       if (!a) return;
       marcarNavegacionNueva();
-      if (mainRef.current?.contains(a))
+      // 1.0.9 (22.ª ronda, R3): también los del lateral y de la barra de abajo (antes, solo los del
+      // contenido: al volver desde «Sistemas AID» del lateral, el foco quedaba en el documento).
+      if (!a.closest('[role="dialog"]'))
         origenes.set(window.location.hash, {
           href: a.getAttribute("href")!,
           texto: (a.textContent ?? "").trim(),
@@ -846,12 +848,23 @@ export function Shell({
         const activo = document.activeElement;
         if (main && activo && activo !== document.body && main.contains(activo)) return;
         // Varios enlaces pueden ir al mismo sitio (dos rótulos a la misma fila): el del mismo texto.
+        const sel = `a[href="${CSS.escape(destino.href)}"]`;
+        // Primero en el contenido; si no está, el del lateral o la barra (visibles).
         const todos = [
-          ...(main?.querySelectorAll<HTMLElement>(`a[href="${CSS.escape(destino.href)}"]`) ?? []),
+          ...(main?.querySelectorAll<HTMLElement>(sel) ?? []),
+          ...[...document.querySelectorAll<HTMLElement>(sel)].filter(
+            (x) => !main?.contains(x) && x.offsetParent !== null,
+          ),
         ];
         const a = todos.find((x) => (x.textContent ?? "").trim() === destino.texto) ?? todos[0];
         if (a) a.focus({ preventScroll: true });
         else if (++n < 30) t = setTimeout(intentar, 50);
+        else {
+          // Sin el enlace (pantalla que ya no lo tiene), al título de la pantalla.
+          const h1 = main?.querySelector<HTMLElement>("h1");
+          if (h1 && !h1.hasAttribute("tabindex")) h1.setAttribute("tabindex", "-1");
+          h1?.focus({ preventScroll: true });
+        }
       };
       t = setTimeout(intentar, 120);
     };

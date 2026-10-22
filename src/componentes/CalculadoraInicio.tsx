@@ -199,10 +199,16 @@ function Campo({
     // 0.72.0: la etiqueta ocupa lo que sobre y las cajas quedan alineadas en su fila aunque
     // unas lleven ayuda y otras no.
     <div className="flex flex-col">
+      {/* 1.0.9 (revisión externa D108-02): etiqueta breve; la unidad, la ayuda y el error, con
+          su id y unidos al campo (aria-describedby): al enfocarlo se anuncian todos. */}
       <label htmlFor={id} className="mb-1 block flex-1 text-sm font-semibold text-slate-800">
         {etiqueta}
-        {ayuda && <span className="block text-[13px] font-normal text-slate-600">{ayuda}</span>}
       </label>
+      {ayuda && (
+        <span id={`${id}-ayuda`} className="-mt-1 mb-1 block text-[13px] text-slate-600">
+          {ayuda}
+        </span>
+      )}
       <div className="flex items-center gap-2">
         <input
           id={id}
@@ -211,15 +217,19 @@ function Campo({
           value={valor}
           onChange={(e) => onChange(e.target.value)}
           aria-invalid={error ? true : undefined}
-          aria-describedby={error ? `${id}-error` : undefined}
+          aria-describedby={[`${id}-unidad`, ayuda && `${id}-ayuda`, error && `${id}-error`]
+            .filter(Boolean)
+            .join(" ")}
           placeholder="—"
           className="h-12 w-full min-w-0 rounded-md border bg-white px-3 text-lg tabular-nums text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           style={{ borderColor: error ? "#b91c1c" : "#cbd5e1" }}
         />
-        <span className="shrink-0 text-sm text-slate-600">{unidad}</span>
+        <span id={`${id}-unidad`} className="shrink-0 text-sm text-slate-600">
+          {unidad}
+        </span>
       </div>
       {error && (
-        <p id={`${id}-error`} className="mt-1 text-xs font-semibold text-red-800">
+        <p id={`${id}-error`} className="mt-1 text-sm font-semibold text-red-800">
           {error}
         </p>
       )}
@@ -369,15 +379,24 @@ export function CalculadoraInicio({
   const color = h?.ink ?? "#1f2f5c";
   const resultados = useRef<HTMLDivElement>(null);
   const [resultadosVisibles, setResultadosVisibles] = useState(true);
+  // 1.0.9 (22.ª ronda, R5): con los resultados ya por encima (programación, recambios), sin la
+  // barra: las mismas cifras están en la programación y la barra tapaba dos líneas.
+  const [resultadosPasados, setResultadosPasados] = useState(false);
   // 0.90.1 (14.ª ronda, R5 y visual): con el enlace al resultado a la vista, sin la barra
   // flotante (las mismas cifras dos veces, y la barra lo tapaba).
   const [enlaceVisible, setEnlaceVisible] = useState(false);
   useEffect(() => {
     const el = resultados.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(([e]) => setResultadosVisibles(e.isIntersecting), {
-      rootMargin: "0px 0px -80px 0px",
-    });
+    const io = new IntersectionObserver(
+      ([e]) => {
+        setResultadosVisibles(e.isIntersecting);
+        setResultadosPasados(!e.isIntersecting && e.boundingClientRect.top < 0);
+      },
+      {
+        rootMargin: "0px 0px -80px 0px",
+      },
+    );
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -396,10 +415,31 @@ export function CalculadoraInicio({
       [fase, sis !== undefined ? SIS_IDS[sis] : "", tarea].join(":").replace(/:+$/, ""),
     );
 
+  // 1.0.9 (22.ª ronda, R5; decisión del autor del 22-10-2026): al trasladar desde otro AID, lo que
+  // en el sistema actual no actúa en automático pero en el de destino sí (la basal y el factor de
+  // 780G a Control-IQ) puede no estar revisado: se dice junto al valor.
+  const PARAMETRO_DE: Partial<Record<Clave, string>> = {
+    basal: "Tasa basal programada",
+    factor: "Factor de sensibilidad",
+    ratio: "Ratio I/HC",
+    objetivo: "Objetivo glucémico",
+  };
+  const revisarAntes = (k: Clave) => {
+    const r = PARAMETRO_DE[k];
+    if (!r || d.origen !== "aid" || d.sistemaPrevio === null || sis === undefined) return false;
+    const enDestino = PARAMETROS[sis].find((x) => x.r === r)?.auto;
+    const enActual = PARAMETROS[d.sistemaPrevio].find((x) => x.r === r)?.auto;
+    return enDestino === "si" && !["si", "fijo"].includes(enActual ?? "");
+  };
   const valorDe = (k: Clave, c: number): ReactNode => {
     const traslado = (
       <span className="font-normal italic text-slate-600">
         {k === "basal" ? "la" : "el"} {previa}
+        {revisarAntes(k) && (
+          <span className="block not-italic text-slate-700">
+            Revisar antes de trasladar: en {CORTOS[d.sistemaPrevio!]} no actúa en automático
+          </span>
+        )}
       </span>
     );
     const sinPropuesta = <span className="font-normal text-slate-500">—</span>;
@@ -478,6 +518,7 @@ export function CalculadoraInicio({
           quedara dentro de ella. */}
       {resumen.length > 0 &&
         !resultadosVisibles &&
+        !resultadosPasados &&
         !enlaceVisible &&
         !editando &&
         createPortal(

@@ -44,7 +44,7 @@ import { useRegistroSinRespuesta } from "../consultas";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
 import { RecursosPedidos } from "../componentes/RecursosPedidos";
-import { MODOS, slugDato } from "../fichaOperativa";
+import { datoDeModos } from "../fichaOperativa";
 import { Autocompletar } from "../componentes/Autocompletar";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
 import { SinResultados } from "../componentes/SinResultados";
@@ -68,11 +68,13 @@ const TIPO: Record<string, string> = {
 
 /* 1.0.6 (21.ª ronda, R1): un acceso a una fila de Modos de una ficha («#/sistemas/op5/
    modos:alcohol»), con el dato operativo de esa fila debajo del título. */
-function lineaDeFicha(ruta: string): string | undefined {
+function lineaDeFicha(ruta: string) {
   const m = ruta.match(/^#\/sistemas\/([\w-]+)\/modos:([\w-]+)$/);
   if (!m) return undefined;
   const c = ORDEN_SISTEMAS.indexOf(m[1] as (typeof ORDEN_SISTEMAS)[number]);
-  return c < 0 ? undefined : MODOS[c]?.find((d) => slugDato(d.r) === m[2])?.v;
+  // 1.0.9 (revisión externa D108-03): el dato entero (condición, lo previo, la respuesta y su
+  // nota), por la misma regla que la ficha.
+  return c < 0 ? undefined : datoDeModos(c, m[2]);
 }
 
 function ListaResultados({ res, q, fuera }: { res: Resultado[]; q: string; fuera?: boolean }) {
@@ -764,7 +766,8 @@ export function Sobre() {
           <dl className="mt-2 grid gap-x-4 gap-y-1 sm:grid-cols-[12rem_1fr]">
             <dt className="font-semibold text-slate-700">Capítulo</dt>
             <dd>
-              Publicado en el Manual SEEN el {BUILD.fuente.fecha} · ISBN {BUILD.fuente.isbn}
+              Publicado en el Manual SEEN el {BUILD.fuente.fecha} · ISBN{" "}
+              <span className="whitespace-nowrap">{BUILD.fuente.isbn}</span>
             </dd>
             <dt className="font-semibold text-slate-700">Información para pacientes</dt>
             <dd>PDF publicado, fechado el {BUILD.pacientes.fecha}</dd>

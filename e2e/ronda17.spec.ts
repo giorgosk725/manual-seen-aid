@@ -8,7 +8,7 @@ test.describe("Ronda 17", () => {
   }) => {
     for (const w of [1024, 1366, 1440]) {
       await page.setViewportSize({ width: w, height: 900 });
-      for (const r of ["sistemas/todos/parametros", "sistemas/todos/esencial"]) {
+      for (const r of ["sistemas/todos/ajuste", "sistemas/todos/esencial"]) {
         await page.goto(`/#/${r}`);
         await expect(page.locator(".tabla-capitulo").first()).toBeVisible();
         const fuera = await page.evaluate(() =>

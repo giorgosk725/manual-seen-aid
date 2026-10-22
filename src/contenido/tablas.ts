@@ -195,7 +195,7 @@ export const T2: Tabla = {
       ],
     },
     {
-      etiqueta: "Solapamiento con glargina U–300 o degludec",
+      etiqueta: "Solapamiento con glargina U-300 o degludec",
       celdas: [
         "Las basales ultralargas mantienen un efecto residual durante los primeros días; coordinar la última dosis y el inicio del sistema",
         "Posible riesgo de hipoglucemia en personas con buen control previo; vigilar estrechamente, sobre todo las primeras 48 h",

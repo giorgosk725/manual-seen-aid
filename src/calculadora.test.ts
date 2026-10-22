@@ -29,7 +29,7 @@ describe("calculadora de inicio: texto del capítulo", () => {
       ["Cálculo inicial de ratio I/HC (g de HC por 1 UI)", REGLAS.ratio],
       ["Cálculo inicial del factor de sensibilidad", REGLAS.factor],
       ["Objetivo del calculador de bolos manual", REGLAS.objetivo],
-      ["Solapamiento con glargina U–300 o degludec", REGLAS.solapamiento],
+      ["Solapamiento con glargina U-300 o degludec", REGLAS.solapamiento],
       ["Plan de respaldo antes del inicio", REGLAS.respaldo],
     ];
     for (const [e, r] of pares) expect([r.texto, r.nota], e).toEqual(t2(e));

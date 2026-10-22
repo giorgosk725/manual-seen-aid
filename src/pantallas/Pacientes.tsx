@@ -22,7 +22,7 @@ import { sinCortes } from "../sinCortes";
 import { imprimirRegion } from "../imprimir";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
 import { VERSION_APP } from "../version";
-import { recambiosDe } from "../calculadora";
+import { delFormato, recambiosDe } from "../calculadora";
 import { fechaCorta, material, materialListo } from "../materiales";
 
 const hex = CATEGORIA_HEX.pacientes;
@@ -253,7 +253,17 @@ export function HojaPacientes({ id }: { id?: string }) {
 }
 
 /* El cuerpo de una hoja escrita por la app (hojas.ts): secciones con puntos y huecos. */
-function CuerpoHoja({ hoja, titulo = false }: { hoja: HojaExtra; titulo?: boolean }) {
+function CuerpoHoja({
+  hoja,
+  titulo = false,
+  c,
+}: {
+  hoja: HojaExtra;
+  titulo?: boolean;
+  /* 1.0.9: dentro del plan de un sistema, «set o pod» según su formato (delFormato). */
+  c?: number;
+}) {
+  const f = (t: string) => delFormato(t, c);
   return (
     <>
       {titulo && (
@@ -261,7 +271,7 @@ function CuerpoHoja({ hoja, titulo = false }: { hoja: HojaExtra; titulo?: boolea
       )}
       {hoja.intro && (
         <p className="mb-3 text-[15px] leading-relaxed text-slate-800">
-          <SinCortes texto={hoja.intro} />
+          <SinCortes texto={f(hoja.intro)} />
         </p>
       )}
       {hoja.secciones.map((sec) => (
@@ -281,14 +291,14 @@ function CuerpoHoja({ hoja, titulo = false }: { hoja: HojaExtra; titulo?: boolea
           </h3>
           {sec.parrafos?.map((par, i) => (
             <p key={i} className="mt-1 text-[15px] leading-relaxed text-slate-800">
-              <SinCortes texto={par} />
+              <SinCortes texto={f(par)} />
             </p>
           ))}
           {sec.items && (
             <ul className="mt-1 list-disc space-y-1 pl-5 text-[15px] leading-relaxed text-slate-800">
               {sec.items.map((it, i) => (
                 <li key={i}>
-                  <SinCortes texto={it} />
+                  <SinCortes texto={f(it)} />
                 </li>
               ))}
             </ul>
@@ -431,7 +441,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
   // Lo que hay que tener (sin el último punto, la Figura 3: va en la segunda cara).
   const items =
     plan && plan.t === "lista"
-      ? plan.items.filter((x) => !/Figura 3/.test(x)).map((x) => recambiosDe(x, c))
+      ? plan.items.filter((x) => !/Figura 3/.test(x)).map((x) => delFormato(recambiosDe(x, c), c))
       : [];
   const hipo = [
     fraseCon(textoDe("07-educacion", "b7"), "como orientación"),
@@ -532,7 +542,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
           </ul>
         </section>
         <p className="hoja-seccion mb-3 text-[15px] font-semibold text-slate-900">
-          <Texto>{sinCortes(FIGURA3.reglaDeOro)}</Texto>
+          <Texto>{sinCortes(delFormato(FIGURA3.reglaDeOro, c))}</Texto>
         </p>
         <section className="hoja-seccion mb-1">
           <h2 className="text-base font-extrabold" style={{ color: SISTEMA_HEX[c].ink }}>
@@ -561,7 +571,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
         {/* Segunda cara: la hoja de cetonas (aprobada), entera. */}
         {cetonas && materialListo("hoja-cetonas") && (
           <div className="separador cara-2 mt-5 border-t-2 pt-4">
-            <CuerpoHoja hoja={cetonas} titulo />
+            <CuerpoHoja hoja={cetonas} titulo c={c} />
           </div>
         )}
       </Hoja>

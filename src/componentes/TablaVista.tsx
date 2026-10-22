@@ -509,7 +509,11 @@ export function TablaVista({
       ...(raiz.current?.querySelectorAll<HTMLElement>(`[data-fila="${resaltarFila}"]`) ?? []),
     ].find((x) => x.offsetParent !== null);
     if (!el) return;
-    const barra = document.querySelector(".barra-pegada")?.getBoundingClientRect().bottom ?? 0;
+    // 1.0.9 (22.ª ronda, adjunto y R3): también por debajo de «Volver a la consulta», que va
+    // pegado arriba (tapaba la fila de destino y su rótulo).
+    const bajoDe = (sel: string) =>
+      document.querySelector(sel)?.getBoundingClientRect().bottom ?? 0;
+    const barra = Math.max(bajoDe(".barra-pegada"), bajoDe(".volver-pegado"));
     window.scrollTo({
       top: Math.max(0, window.scrollY + el.getBoundingClientRect().top - barra - 12),
     });

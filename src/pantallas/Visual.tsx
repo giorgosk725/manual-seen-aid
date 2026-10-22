@@ -1,6 +1,7 @@
 /* «Figuras y diagramas» (#/visual, 0.70.0): una sola pantalla, las figuras originales con visor y
    zoom arriba y los diagramas hechos con el texto del capítulo debajo, por temas. Sin los tres que
    redibujaban una tabla o una figura (diagramasRetirados.ts). */
+import { OtraSituacion } from "../componentes/OtraSituacion";
 import { Maximize2 } from "lucide-react";
 import { diagramaEnEdicion, rutaDeDiagrama } from "../diagramasRetirados";
 import { DIAGRAMAS, type DiagramaId } from "../contenido/diagramas";
@@ -165,6 +166,7 @@ export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }
       {/* 0.78.1: el título, con la cabecera editorial de todas las pantallas (antes, un h1 oculto
           y el título a 16 px dentro de la tarjeta). */}
       <CabeceraEditorial titulo={d.titulo} hex={hex} level={1} />
+      {id === "hipoglucemia" && <OtraSituacion />}
       {/* 0.92.3 (15.ª ronda, visual): en su pantalla, el cuerpo de lectura a 14 px (13 en la
           galería), como en Interrupción. */}
       <div className="diagrama-grande">

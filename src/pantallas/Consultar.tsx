@@ -1,4 +1,5 @@
 /* Consultar: tablas (filtrables), Figura 3 (recorrido) e infografía (mapa). El hub es la portada; «Comparar» y «Parámetros» viven en Sistemas. */
+import { OtraSituacion } from "../componentes/OtraSituacion";
 import { useRef } from "react";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
 import { ArrowRight, Printer } from "lucide-react";
@@ -152,6 +153,7 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
   return (
     <div>
       <CabeceraEditorial titulo="Hiperglucemia y cetonemia" hex={hex} level={1} />
+      <OtraSituacion />
       {/* 0.72.2: lo que más se busca aquí es la hoja para entregar: arriba, a un toque. 0.96.0
           (16.ª ronda, visual): los dos en una fila que se parte; en el móvil, el plan debajo y
           alineado con el botón (antes, con 12 px de sangría). */}
@@ -198,11 +200,32 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
           <Figura3Recorrido tramoInicial={tramo} />
         </NivelTitulo.Provider>
         <div className="separador no-imprimir mt-4 border-t pt-3">
+          {/* 1.0.9 (22.ª ronda, R1): al pie de la rama, otra vez la hoja y el plan (arriba quedaban
+              a unos 1000 px tras bajar a la rama). */}
+          <p className="mb-1 flex flex-wrap items-center gap-x-4 text-sm">
+            <a href={href("pacientes", "hoja", "cetonas")} className={enlacePlan}>
+              Hoja para el paciente: cetonas
+            </a>
+            <a
+              href={
+                sistemaReciente() !== undefined
+                  ? href("pacientes", "plan", ORDEN_SISTEMAS[sistemaReciente()!])
+                  : href("pacientes")
+              }
+              className={enlacePlan}
+            >
+              {sistemaReciente() !== undefined
+                ? `Plan de seguridad · ${CORTO_SISTEMA[sistemaReciente()!]}`
+                : "Planes de seguridad"}
+            </a>
+          </p>
+          {/* 1.0.9 (22.ª ronda, visual): «Leer en el capítulo», con el nombre corto del apartado,
+              como en las demás pantallas. */}
           <a
             href={href("capitulo", "07-educacion", "b5")}
             className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
           >
-            Leer en el capítulo: 7. Educación terapéutica y plan de seguridad{" "}
+            Leer en el capítulo: 7. Educación y plan de seguridad{" "}
             <ArrowRight size={14} aria-hidden="true" />
           </a>
         </div>

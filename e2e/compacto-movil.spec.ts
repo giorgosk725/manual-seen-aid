@@ -106,7 +106,8 @@ test.describe("Móvil compacto, segunda tanda (360 px)", () => {
     ] as const) {
       await page.goto(ruta);
       // 0.71.0: en la lista de sistemas, la barra empieza en una línea.
-      if (ruta === "/#/sistemas") await page.getByRole("button", { name: /Comparar$/ }).click();
+      if (ruta === "/#/sistemas")
+        await page.getByRole("button", { name: /Elegir sistemas$/ }).click();
       // 0.77.1: en Iniciar, elección única (botones de opción).
       const unico = ruta.startsWith("/#/consultar/inicio");
       const b = page

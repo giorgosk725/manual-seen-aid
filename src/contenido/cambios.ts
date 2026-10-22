@@ -15,7 +15,21 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-22",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — portada`,
+    titulo: `Complemento interactivo ${VERSION_APP} — vigesimosegunda ronda y revisión de la 1.0.8`,
+    detalle: [
+      "Sistemas: la Tabla 3 en su pestaña, «Ajuste práctico»; en el móvil, «Los cuatro» empieza plegado también en Parámetros y Modos (un solo rótulo, «Elegir sistemas»), la vista «Por sistema» queda en la dirección y sus parámetros llevan a su fila de la ficha. El Resumen dice «Localización del algoritmo» (antes, «Funciona en»), con el rótulo encima del dato y sin huecos dentro de las tarjetas.",
+      "Situaciones: Figura 3, Hipoglucemia e Interrupción con «‹ Otra situación», que conserva el sistema; Interrupción lleva a «Según el formato» desde «Ir a»; al pie de la Figura 3, otra vez la hoja de cetonas y el plan. En hospital, la condición de los objetivos encima de las franjas, sin repetir sus cifras.",
+      "Desconexión de la bomba con catéter, más concreta (para qué se suspende, qué hacer al reconectar y la desconexión programada de hasta 2-3 h). En «Los cuatro», lo que dicen igual los sistemas sobre el alcohol, una vez.",
+      "Plan de seguridad: la regla de oro y la cara de cetonas dicen solo «set» o solo «pod» según el sistema. Iniciación: al trasladar desde otro sistema, «Revisar antes de trasladar» junto a lo que en el sistema actual no actúa en automático; «Nuevo inicio» dice que mantiene el sistema; sin la barra de cifras sobre la programación.",
+      "Buscar: el acceso a una fila de la ficha trae también su condición y su nota («agua 780g» ya lo hace); dos líneas de una casilla, separadas. f104, con la frase a la que remite (sin «[…]»).",
+      "Accesibilidad y robustez: el selector de un sistema se maneja con las flechas; la unidad y la ayuda de cada campo de la calculadora se anuncian al enfocarlo; Atrás devuelve el foco también a un enlace del lateral; sin recarga automática si el navegador bloquea el almacenamiento (queda «Recargar la página»).",
+      "Detalles: «U-300» con guion, como el capítulo; «Leer en el capítulo» con una sola forma; «Volver a la consulta» ya no tapa el destino; la ficha impresa lleva el pie en el margen (sin una cara con una sola línea); accesos de la ficha en el móvil con «·» y «Cambiar» aparte; ISBN sin partir.",
+    ],
+  },
+  {
+    fecha: "2026-10-22",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.8 — portada",
     detalle: [
       "Portada: en las tarjetas de los sistemas, sin el tipo de algoritmo debajo del nombre; desde la tableta, el nombre comercial completo (Tandem Control-IQ / Control-IQ+, myLoop powered by CamAPS FX).",
     ],

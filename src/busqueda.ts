@@ -170,7 +170,11 @@ export function posiciones(n: string, v: string): number[] {
 }
 
 /* Trozos del fragmento con los términos marcados (para <mark>). */
-export function marcar(fragmento: string, consulta: string): { t: string; hit: boolean }[] {
+export function marcar(texto: string, consulta: string): { t: string; hit: boolean }[] {
+  // 1.0.9 (22.ª ronda, adjunto y visual): dos líneas de una casilla de la Tabla 4 que la
+  // transcripción une («…franja horaria configurable Objetivo: …»), separadas al enseñarlas, como
+  // en las tablas.
+  const fragmento = texto.replace(/configurable Objetivo:/g, "configurable · Objetivo:");
   const variantes = terminosDe(consulta).flat();
   if (!variantes.length) return [{ t: fragmento, hit: false }];
   const n = normalizar(fragmento);

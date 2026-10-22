@@ -7,7 +7,7 @@ test.describe("Ronda 19", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 768, height: 1024 });
-    await page.goto("/#/sistemas/todos/parametros");
+    await page.goto("/#/sistemas/todos/ajuste");
     const th = page.locator(".tabla-capitulo thead th").nth(1);
     await expect(th).toBeVisible();
     await page.evaluate(() => {

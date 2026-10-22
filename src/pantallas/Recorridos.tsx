@@ -4,6 +4,7 @@
    - Interpretación de la descarga: la Tabla 5 paso a paso (8 pasos), con el patrón relacionado.
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
+import { OtraSituacion } from "../componentes/OtraSituacion";
 import { ponerConsulta } from "../consultaBuscar";
 import { useEffect, useRef, useState } from "react";
 import { AlertTriangle, ArrowRight, Check, ChevronLeft, ChevronRight, Siren } from "lucide-react";
@@ -1115,8 +1116,10 @@ export function SituacionSistema({
                       : []),
                   ]}
                 />
+                {/* 1.0.9 (22.ª ronda, visual): con la letra y el peso de las otras pantallas (antes,
+                    gris de 13 px como la fuente). */}
                 {sit.leer.length > 0 && (
-                  <p className="fuente-pie">
+                  <p className="text-sm font-semibold text-slate-700">
                     Leer en el capítulo:{" "}
                     {sit.leer.map((l, k) => (
                       <span key={l.slug + (l.ancla ?? "")}>
@@ -1522,6 +1525,7 @@ export function Interrupcion(_props: { tramo?: string }) {
   return (
     <div>
       <CabeceraEditorial titulo="Interrupción del sistema" hex={hex} level={1} />
+      <OtraSituacion />
       {/* 0.94.0 (rediseño, fase 2): «pantalla-interrupcion» pone el cuerpo a la letra de consulta. */}
       <div className="diagrama-grande pantalla-interrupcion">
         <InterrupcionPantalla />

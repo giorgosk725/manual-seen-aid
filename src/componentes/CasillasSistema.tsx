@@ -3,7 +3,7 @@
    el nombre corto en el móvil y el completo en pantallas grandes, salvo que se den nombres.
    En el móvil, las cuatro en una fila (marca y punto arriba, nombre debajo) y lo demás («Los
    cuatro», la pista) en la fila siguiente; desde sm, todo seguido como antes (sm:contents). */
-import type { ReactNode } from "react";
+import { useRef, type KeyboardEvent, type ReactNode } from "react";
 import { Check } from "lucide-react";
 import { TABLAS } from "../contenido";
 import { SEEN, SISTEMA_HEX } from "../tokens";
@@ -50,8 +50,40 @@ export function CasillasSistema({
   /* Un control más dentro del grupo (p. ej. «Los cuatro»). */
   extra?: ReactNode;
 }) {
+  // 1.0.9 (revisión externa D108-01): en la elección única, el patrón de grupo de opciones: Tab
+  // entra y sale del grupo (solo la elegida, o la primera disponible, está en el orden de Tab) y
+  // las flechas cambian la elección y el foco, saltando la desactivada.
+  const grupo = useRef<HTMLDivElement>(null);
+  const columnas = TABLAS.T1.columnas.map((_, c) => c).filter((c) => c !== desactivado);
+  const conFoco = seleccion.find((c) => columnas.includes(c)) ?? columnas[0];
+  const alPulsar = (e: KeyboardEvent<HTMLButtonElement>, c: number) => {
+    const paso =
+      e.key === "ArrowRight" || e.key === "ArrowDown"
+        ? 1
+        : e.key === "ArrowLeft" || e.key === "ArrowUp"
+          ? -1
+          : 0;
+    const i = columnas.indexOf(c);
+    const destino =
+      e.key === "Home"
+        ? columnas[0]
+        : e.key === "End"
+          ? columnas[columnas.length - 1]
+          : paso
+            ? columnas[(i + paso + columnas.length) % columnas.length]
+            : undefined;
+    if (destino === undefined) return;
+    e.preventDefault();
+    if (!seleccion.includes(destino)) onToggle(destino);
+    const enfocar = () =>
+      grupo.current?.querySelector<HTMLButtonElement>(`[data-columna="${destino}"]`)?.focus();
+    enfocar();
+    // Si elegir cambia de pantalla, el foco vuelve a la opción cuando se pinta de nuevo.
+    window.setTimeout(enfocar, 0);
+  };
   return (
     <div
+      ref={grupo}
       role={unico ? "radiogroup" : "group"}
       aria-label={etiqueta}
       // 0.82.1 (sexta ronda, adjunto y visual): en la elección única, cuatro columnas iguales desde
@@ -76,7 +108,15 @@ export function CasillasSistema({
             <button
               key={nombre}
               type="button"
-              {...(unico ? { role: "radio", "aria-checked": on } : { "aria-pressed": on })}
+              {...(unico
+                ? {
+                    role: "radio",
+                    "aria-checked": on,
+                    tabIndex: c === conFoco ? 0 : -1,
+                    onKeyDown: (e: KeyboardEvent<HTMLButtonElement>) => alPulsar(e, c),
+                  }
+                : { "aria-pressed": on })}
+              data-columna={c}
               onClick={() => onToggle(c)}
               disabled={fuera}
               title={fuera ? "Es el sistema de destino" : undefined}

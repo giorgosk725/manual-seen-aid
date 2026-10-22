@@ -1404,9 +1404,11 @@ html.night ::highlight(frase-citada) {
 html:has(.volver-pegado) {
   scroll-padding-top: 7.5rem;
 }
+/* 1.0.9 (22.ª ronda, adjunto): en el ordenador, con margen para el chip entero (4,25 rem dejaba
+   la primera línea del destino bajo él). */
 @media (min-width: 1024px) {
   html:has(.volver-pegado) {
-    scroll-padding-top: 4.25rem;
+    scroll-padding-top: 5.5rem;
   }
 }
 

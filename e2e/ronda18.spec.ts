@@ -7,7 +7,7 @@ test.describe("Ronda 18", () => {
     for (const w of [768, 1024]) {
       await page.setViewportSize({ width: w, height: 900 });
       for (const r of [
-        "sistemas/todos/parametros",
+        "sistemas/todos/ajuste",
         "sistemas/todos/modos",
         "sistemas/todos/esencial",
       ]) {

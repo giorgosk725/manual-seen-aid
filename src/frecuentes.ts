@@ -892,7 +892,9 @@ export const TODAS: Frecuente[] = [
     pregunta: "MiniMed 780G: ¿qué hacer con una comida grasa?",
     variantes: ["780G comida grasa", "MiniMed comida rica en grasa"],
     // La fila de la Tabla 4 y el pasaje del apartado 9 que usa la ficha (3–5 h; individualizar).
-    pasajes: ["T4/5", "t/09-descarga/b6/0", "t/09-descarga/b6/2"],
+    // 1.0.9 (22.ª ronda, R3; decisión del autor del 22-10-2026): con la frase 1, a la que se
+    // refiere «En los demás sistemas…» (antes, «[…]» y la frase sin referente).
+    pasajes: ["T4/5", "t/09-descarga/b6/0", "t/09-descarga/b6/1", "t/09-descarga/b6/2"],
     sistema: 0,
   },
   {

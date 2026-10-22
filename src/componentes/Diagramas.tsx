@@ -19,7 +19,6 @@ import {
 import {
   ArrowDown,
   ArrowRight,
-  BookOpen,
   Droplets,
   Cpu,
   Images,
@@ -190,12 +189,14 @@ export function MarcoDiagrama({
         )}
         <div className="separador no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3">
           {!enApartado && donde && (
+            // 1.0.9 (22.ª ronda, visual): la misma receta que en la Figura 3 (texto con flecha),
+            // no un chip con libro.
             <a
               href={href("capitulo", donde.apartado.slug, donde.ancla)}
-              className="chip tap-44 min-h-9 text-xs sm:min-h-8"
+              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
             >
-              <BookOpen size={12} aria-hidden="true" /> Leer en el capítulo: {donde.apartado.n}.{" "}
-              {donde.apartado.corto}
+              Leer en el capítulo: {donde.apartado.n}. {donde.apartado.corto}{" "}
+              <ArrowRight size={14} aria-hidden="true" />
             </a>
           )}
           {enApartado && (
@@ -217,7 +218,13 @@ function Escalera({ i, yaEnTexto }: { i: number; yaEnTexto?: (t: string) => bool
   const p = OBJETIVOS_MCG[i];
   // 1.0.0 (18.ª ronda, adjunto y senior): en una situación, sin las frases que su texto literal ya
   // trae palabra por palabra justo debajo (HbA1c en la gestación; el aviso pediátrico del ingreso).
-  const extras = p.extras.filter((e) => !yaEnTexto?.(e.texto));
+  const extras = p.extras.filter((e) => !yaEnTexto?.(e.texto) && !e.encabeza);
+  // 1.0.9 (22.ª ronda, adjunto): la frase que repetía las cifras de las franjas, encima y solo
+  // hasta su condición («…fundamentalmente a partir de consenso de expertos, objetivos
+  // orientativos:»); el resto, ya en las franjas. La frase entera, a un toque en la fuente.
+  const encabezan = p.extras
+    .filter((e) => e.encabeza && e.texto.includes(e.encabeza))
+    .map((e) => `${e.texto.slice(0, e.texto.indexOf(e.encabeza!) + e.encabeza!.length)}:`);
   const aviso = p.aviso && !yaEnTexto?.(p.aviso) ? p.aviso : null;
   return (
     <div>
@@ -225,6 +232,11 @@ function Escalera({ i, yaEnTexto }: { i: number; yaEnTexto?: (t: string) => bool
         {/* 0.92.0 (revisión de tarjetas, ★4): título de tarjeta, no 14/700. */}
         <Sub className="titulo-tarjeta">{p.nombre}</Sub>
       </div>
+      {encabezan.map((t) => (
+        <p key={t} className="mb-1.5 text-[13px] leading-snug text-slate-700">
+          <SinCortes texto={t} />
+        </p>
+      ))}
       <ol className="space-y-1">
         {/* Solo los objetivos del capítulo: el TAR > 180 de adultos va sin cifra (A07). */}
         {p.franjas.map((f, j) => {
@@ -1428,6 +1440,8 @@ function InterrupcionLinea() {
           [
             ["interrupcion-no-programada", "Si no estaba programada"],
             ["interrupcion-programada", "Si está programada"],
+            // 1.0.9 (22.ª ronda, R1): lo propio de la bomba o del pod quedaba a unos 2400 px.
+            ["interrupcion-formato", "Según el formato"],
           ] as const
         ).map(([id, t], k) => (
           <span key={id} className="inline-flex items-center gap-x-2">
@@ -1446,7 +1460,7 @@ function InterrupcionLinea() {
             >
               {t}
             </button>
-            {k === 0 && (
+            {k < 2 && (
               <span aria-hidden="true" className="text-slate-300">
                 ·
               </span>
@@ -1502,7 +1516,10 @@ function InterrupcionLinea() {
       </section>
       {/* 1.0.1 (19.ª ronda, R1): el formato, después de los casos (antes, primero: lo que decide
           la conducta, programada o no, quedaba por debajo de la primera pantalla). */}
-      <section className="tarjeta grid gap-x-6 gap-y-3 p-4 md:grid-cols-2">
+      <section
+        id="interrupcion-formato"
+        className="tarjeta grid scroll-mt-20 gap-x-6 gap-y-3 p-4 md:grid-cols-2 lg:scroll-mt-6"
+      >
         <Sub className="sr-only">Según el formato</Sub>
         <div className="text-sm leading-snug text-slate-800">
           <span className="rotulo mb-1 block">Pod</span>

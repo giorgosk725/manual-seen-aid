@@ -132,13 +132,17 @@ test.describe("Entrega C · recorridos móviles", () => {
           .first(),
       ).toBeVisible();
     await expect(
-      page.locator("main a[href='#/sistemas/ciq/parametros:tasa-basal-programada']"),
+      page
+        .locator("main a[href='#/sistemas/ciq/parametros:tasa-basal-programada']")
+        .filter({ visible: true }),
     ).toHaveCount(1);
-    // Por sistema: las tarjetas de siempre.
+    // Por sistema: las tarjetas de siempre (1.0.9: en la ruta, y la Tabla 3 en su pestaña).
     await page.getByRole("button", { name: "Por sistema" }).click();
+    await expect(page).toHaveURL(/parametros:por-sistema$/);
     await expect(page.getByText("Actúan en automático").first()).toBeVisible();
-    await page.getByRole("button", { name: "Tabla 3 completa" }).click();
-    await expect(page.locator("#tabla-3-comparada")).toBeInViewport();
+    await page.getByRole("link", { name: /Tabla 3: ajuste práctico/ }).click();
+    await expect(page).toHaveURL(/#\/sistemas\/todos\/ajuste$/);
+    await expect(page.locator("#tabla-3-comparada")).toBeVisible();
   });
   test("V95-08: la calculadora lleva a Programación y vuelve a los datos", async ({ page }) => {
     await page.goto("/#/consultar/inicio/calculadora:camaps");

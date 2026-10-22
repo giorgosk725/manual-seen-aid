@@ -64,7 +64,7 @@ export const CONTROLES: { id: Control; texto: string; reduccion: number; regla: 
   { id: "deficiente", texto: "Control deficiente (HbA1c > 8 %)", reduccion: 0, regla: 1700 },
 ];
 /* La reducción de partida (decisión del responsable, 13-10-2026): la de cada control y, con
-   buen control previo y basal ultralarga (glargina U–300 o degludec), el 20 %: es el caso en
+   buen control previo y basal ultralarga (glargina U-300 o degludec), el 20 %: es el caso en
    que la Tabla 2 avisa de «posible riesgo de hipoglucemia en personas con buen control previo». */
 export const reduccionDePartida = (c: Control, ultralarga: boolean) =>
   c === "bueno" && ultralarga ? 20 : CONTROLES.find((k) => k.id === c)!.reduccion;
@@ -244,6 +244,26 @@ export const recambiosDe = (texto: string, c?: number) =>
     : c === 3
       ? "Recambios de pods, sensores y baterías/cargadores."
       : "Recambios de set, cánula, reservorio, sensores y baterías/cargadores.";
+/* 1.0.9 (decisión del autor del 22-10-2026): en el plan de seguridad de un sistema, «set o pod»
+   según su formato (Omnipod 5, pod; los demás, bomba con catéter: set y reservorio), como los
+   recambios. Solo se quita la alternativa que no aplica; sin sistema, el texto tal cual. */
+const POR_FORMATO: [RegExp, string, string][] = [
+  [/el reservorio o el pod/g, "el pod", "el reservorio"],
+  [
+    /el set o el pod, el reservorio y la insulina/g,
+    "el pod y la insulina",
+    "el set, el reservorio y la insulina",
+  ],
+  [/el set o el pod, el reservorio, /g, "el pod, ", "el set, el reservorio, "],
+  [/el set o el pod/g, "el pod", "el set"],
+  [/set o pod/g, "pod", "set"],
+  [/set\/pod, reservorio \(si aplica\)/g, "pod", "set, reservorio (si aplica)"],
+  [/set\/pod/g, "pod", "set"],
+];
+export const delFormato = (texto: string, c?: number) =>
+  c === undefined || c < 0
+    ? texto
+    : POR_FORMATO.reduce((t, [re, pod, set]) => t.replace(re, c === 3 ? pod : set), texto);
 export const indicacionDe = (c: number) => celda("T1", "Indicación", c);
 export const objetivoAlgoritmoDe = (c: number) =>
   celda("T1", "Objetivo glucémico en modo automático", c);

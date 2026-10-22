@@ -374,8 +374,12 @@ const NECESIDAD = "Intensificar la monitorización, vigilar cetonemia y mantener
 const FALLO = "Medir cetonemia, corregir con pluma y recambiar el set según el plan de seguridad";
 /* 0.79.1 (tercera ronda, guardia): la Figura 3, a un toque desde la fila. */
 const FIGURA_3 = { texto: "Hiperglucemia y cetonemia (Figura 3)", ruta: "#/consultar/figura-3" };
+/* 1.0.9 (decisión del autor del 22-10-2026, «revisa para ser más concretos»): lo que el apartado 7
+   dice de la bomba con catéter, entero (para qué se suspende y qué hacer al reconectar). El
+   capítulo no nombra la función de cada fabricante: «según las instrucciones del fabricante». */
 const PAUSAR =
-  "Suspender o pausar la administración al desconectar la bomba, según las instrucciones del fabricante";
+  "Al desconectar, suspender o pausar la administración según el fabricante (que no cuente como administrada insulina no infundida) y reanudarla al reconectar. " +
+  "Programada y de hasta 2-3 h (deporte, baño): valorar un bolo previo que cubra la basal prevista, si no hay riesgo de hipoglucemia";
 /* El umbral operativo de la interrupción (apartado 7) y su herramienta. */
 const UMBRAL_1H =
   "A partir de aproximadamente 1 h sin insulina, actuar: glucemia capilar, cetonemia según el contexto y reposición de la insulina no administrada";
@@ -472,7 +476,11 @@ export const MODOS: Dato[][] = [
       v: PAUSAR,
       n: UMBRAL_1H,
       enlace: INTERRUPCION,
-      f: [DESCONEXION, fr("07-educacion", "b11", [4])],
+      f: [
+        fr("07-educacion", "b11", [1, 2, 3]),
+        fr("07-educacion", "b12", [1]),
+        fr("07-educacion", "b11", [4]),
+      ],
     },
   ],
   [
@@ -528,7 +536,11 @@ export const MODOS: Dato[][] = [
       v: PAUSAR,
       n: UMBRAL_1H,
       enlace: INTERRUPCION,
-      f: [DESCONEXION, fr("07-educacion", "b11", [4])],
+      f: [
+        fr("07-educacion", "b11", [1, 2, 3]),
+        fr("07-educacion", "b12", [1]),
+        fr("07-educacion", "b11", [4]),
+      ],
     },
   ],
   [
@@ -583,7 +595,11 @@ export const MODOS: Dato[][] = [
       v: PAUSAR,
       n: UMBRAL_1H,
       enlace: INTERRUPCION,
-      f: [DESCONEXION, fr("07-educacion", "b11", [4])],
+      f: [
+        fr("07-educacion", "b11", [1, 2, 3]),
+        fr("07-educacion", "b12", [1]),
+        fr("07-educacion", "b11", [4]),
+      ],
     },
   ],
   [
@@ -647,7 +663,13 @@ export const MODOS: Dato[][] = [
 
 /* La tarjeta de cada sistema en la entrada de Sistemas AID: tres datos del algoritmo y, en una
    línea, lo que añade su variante. */
-export const RESUMEN = ["Funciona en", "Objetivo", "Bolos automáticos de corrección"] as const;
+// 1.0.9 (petición del autor del 22-10-2026): «Localización del algoritmo», el rótulo del capítulo
+// (antes, «Funciona en», que no decía qué se localizaba).
+export const RESUMEN = [
+  "Localización del algoritmo",
+  "Objetivo",
+  "Bolos automáticos de corrección",
+] as const;
 export const VARIANTE_RESUMEN: (Dato | null)[] = [
   null,
   {
@@ -679,4 +701,14 @@ export const ASPECTOS_PARAMETRO = [
   },
 ] as const;
 
+/* 1.0.9 (revisión externa D108-03): el dato de una fila de Modos por el aspecto de su ruta
+   («#/sistemas/mm780/modos:agua»), con la misma regla que la ficha al resaltarla (el aspecto es
+   el comienzo del rótulo: «agua» → «Agua y deportes de contacto»). Lo usan el buscador (anticipo
+   bajo el acceso) y la ficha: el anticipo y el destino son siempre el mismo dato. */
+export function datoDeModos(c: number, aspecto: string): Dato | undefined {
+  return MODOS[c]?.find((d) => {
+    const s = slugDato(d.r);
+    return s === aspecto || s.startsWith(`${aspecto}-`);
+  });
+}
 export const fuentesDeDatos = (datos: Dato[]) => fuentesDePiezas(datos.flatMap((d) => d.f));

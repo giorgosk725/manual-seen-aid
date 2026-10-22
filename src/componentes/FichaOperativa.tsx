@@ -125,11 +125,15 @@ const MODO = {
   // 0.96.0 (16.ª ronda, visual): en el Resumen, el rótulo de la ficha (minúscula y negrita, 14 px)
   // y la línea fina entre datos también en el móvil (antes, MAYÚSCULAS grises de 12 px); desde xl,
   // la misma subrejilla entre tarjetas vecinas.
+  // 1.0.9 (petición del autor del 22-10-2026, «mejorar las tarjetas visualmente»): desde xl, el
+  // rótulo también encima del dato (a la izquierda en 9,25 rem, «Localización del algoritmo» y
+  // «Bolos automáticos de corrección» iban en dos líneas) y sin la subrejilla entre tarjetas
+  // vecinas, que abría huecos dentro de la más corta; los accesos siguen alineados al pie.
   resumen: {
-    dl: "grid gap-y-2.5 sm:grid-cols-3 sm:gap-x-5 xl:row-span-3 xl:grid-cols-1 xl:grid-rows-subgrid xl:gap-y-1.5",
-    fila: "min-w-0 border-t border-[var(--linea-suave)] pt-2.5 first:border-t-0 first:pt-0 sm:border-t-0 sm:pt-0 xl:grid xl:grid-cols-[9.25rem_1fr] xl:gap-x-3 xl:border-t xl:pt-1.5 xl:first:border-t-0 xl:first:pt-0",
-    dt: "",
-    dd: "mt-0.5 xl:mt-0",
+    dl: "grid gap-y-2.5 sm:grid-cols-3 sm:gap-x-5 xl:grid-cols-1 xl:gap-y-2",
+    fila: "min-w-0 border-t border-[var(--linea-suave)] pt-2.5 first:border-t-0 first:pt-0 sm:border-t-0 sm:pt-0 xl:border-t xl:pt-2 xl:first:border-t-0 xl:first:pt-0",
+    dt: "text-slate-600",
+    dd: "mt-0.5",
   },
 };
 export function CasillasDatos({
@@ -158,7 +162,7 @@ export function CasillasDatos({
               className={
                 modo === "rejilla"
                   ? "text-[15px] font-semibold leading-snug text-slate-900"
-                  : `text-sm font-semibold leading-snug text-slate-900 ${m.dt}`
+                  : `text-sm font-semibold leading-snug ${m.dt || "text-slate-900"}`
               }
             >
               {ruta ? (

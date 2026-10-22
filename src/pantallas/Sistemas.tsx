@@ -16,7 +16,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
-import { ArrowDown, ArrowRight, Check, ChevronDown, ExternalLink, Minus, X } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, ExternalLink, Minus, X } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, type Tabla } from "../contenido";
 import type { TablaId } from "../contenido/tipos";
 import type { Pieza } from "../inicio";
@@ -40,6 +40,7 @@ import {
 } from "../ampliacion";
 import { elegirRuta, href, fueNavegacionNueva, navegar } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, ColofonImpreso, Foldable } from "../ui";
+import { VERSION_APP } from "../version";
 import { pestanaALaVista } from "../disposicion";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
@@ -421,6 +422,9 @@ const TODAS_LAS_SECCIONES = [
 const SECCIONES_COMPARACION = [
   { id: "esencial", t: "Características", corto: "Características" },
   { id: "parametros", t: "Parámetros" },
+  // 1.0.9 (petición del autor del 22-10-2026): la Tabla 3 entera, en su pestaña (antes, debajo
+  // de las tarjetas de Parámetros: la pantalla se hacía muy larga y parecía repetir).
+  { id: "ajuste", t: "Ajuste práctico", corto: "Ajuste" },
   // 0.78.1 (segunda ronda, adjunto): «Los cuatro» desde Modos se queda en Modos (la Tabla 4).
   { id: "modos", t: "Modos y funciones", corto: "Modos" },
 ] as const;
@@ -617,7 +621,10 @@ export function FichaSistema({
     const st = document.createElement("style");
     st.dataset.cabeceraImpresa = "";
     const nombre = nombreImpreso;
-    st.textContent = `@page { @top-left { content: "${nombre} · Ficha del sistema"; font: 8pt "Open Sans Variable", "Open Sans", sans-serif; color: #6b6b6b; vertical-align: bottom; padding-bottom: 3mm; } @top-right { content: "Página " counter(page) " de " counter(pages); font: 8pt "Open Sans Variable", "Open Sans", sans-serif; color: #6b6b6b; vertical-align: bottom; padding-bottom: 3mm; } }`;
+    // 1.0.9 (22.ª ronda, R3): el colofón, en el margen de abajo de cada cara (antes, un párrafo
+    // al final: a veces pasaba solo a una cara más).
+    const colofon = `Manual de Endocrinología y Nutrición (SEEN) · Capítulo 89 · Complemento interactivo ${VERSION_APP} · impreso el ${new Date().toLocaleDateString("es-ES")}`;
+    st.textContent = `@page { @top-left { content: "${nombre} · Ficha del sistema"; font: 8pt "Open Sans Variable", "Open Sans", sans-serif; color: #6b6b6b; vertical-align: bottom; padding-bottom: 3mm; } @top-right { content: "Página " counter(page) " de " counter(pages); font: 8pt "Open Sans Variable", "Open Sans", sans-serif; color: #6b6b6b; vertical-align: bottom; padding-bottom: 3mm; } @bottom-left { content: "${colofon}"; font: 7.5pt "Open Sans Variable", "Open Sans", sans-serif; color: #6b6b6b; vertical-align: top; padding-top: 3mm; } }`;
     document.head.append(st);
     return () => st.remove();
   }, [nombreImpreso]);
@@ -750,7 +757,7 @@ export function FichaSistema({
         </div>
         {/* Sistema visual: los tres accesos como enlaces de texto en una fila (en el móvil eran tres
             botones apilados antes del contenido). */}
-        <div className="no-imprimir col-span-2 mt-0.5 flex flex-wrap gap-x-3 gap-y-0 max-sm:[&>*]:px-0 sm:col-span-1 sm:col-start-2 sm:mt-0 sm:gap-x-2">
+        <div className="no-imprimir col-span-2 mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0 max-sm:[&>a]:px-0 sm:col-span-1 sm:col-start-2 sm:mt-0 sm:gap-x-2">
           <a
             // I61-04: al principio del recorrido (preparación), con el sistema; no al paso 5.
             href={href("consultar", "inicio", `preparacion:${slug}`)}
@@ -759,7 +766,7 @@ export function FichaSistema({
             <span className="sm:hidden">Iniciación</span>
             <span className="hidden sm:inline">Iniciación del sistema</span>
           </a>
-          <span aria-hidden="true" className="hidden self-center text-slate-300 sm:inline">
+          <span aria-hidden="true" className="self-center text-slate-300">
             ·
           </span>
           {/* 0.88.1 (duodécima ronda, R5): el cálculo de parámetros iniciales del sistema, directo
@@ -767,7 +774,7 @@ export function FichaSistema({
           <a href={href("consultar", "inicio", `calculadora:${slug}`)} className={accesoFicha}>
             Cálculo
           </a>
-          <span aria-hidden="true" className="hidden self-center text-slate-300 sm:inline">
+          <span aria-hidden="true" className="self-center text-slate-300">
             ·
           </span>
           <a href={href("pacientes", "plan", s.id)} className={accesoFicha}>
@@ -777,7 +784,7 @@ export function FichaSistema({
             </span>
             <span className="sr-only sm:not-sr-only">Plan de seguridad</span>
           </a>
-          <span aria-hidden="true" className="hidden self-center text-slate-300 sm:inline">
+          <span aria-hidden="true" className="self-center text-slate-300">
             ·
           </span>
           <a href={href("consultar", "situacion", `:${slug}`)} className={accesoFicha}>
@@ -801,11 +808,14 @@ export function FichaSistema({
             // 0.89.1 (13.ª ronda, guardia): «Cambiar», como en la barra plegada; las cinco en una
             // línea a 360 px (antes, «Otro sistema» sola en una segunda línea).
             aria-label="Cambiar de sistema o comparar"
-            className={`${accesoFicha} gap-0.5 sm:hidden`}
+            // 1.0.9 (22.ª ronda, visual): un control, no un acceso más: a la derecha y con borde
+            // (los accesos llevan a otras pantallas; este cambia de sistema).
+            className="chip tap-44 ml-auto min-h-9 gap-0.5 px-2 text-[13px] max-[379px]:px-1.5 sm:hidden"
           >
-            {/* 0.91.3 (14.ª ronda, guardia): con su flecha, que despliega el selector. */}
+            {/* 0.91.3 (14.ª ronda, guardia): con su flecha, que despliega el selector (a 360 px,
+                sin ella, para que quepa en la misma línea). */}
             Cambiar
-            <ChevronDown size={14} aria-hidden="true" className="shrink-0" />
+            <ChevronDown size={14} aria-hidden="true" className="shrink-0 max-[379px]:hidden" />
           </button>
         </div>
       </header>
@@ -971,8 +981,8 @@ export function FichaSistema({
       )}
 
       {CON_AMPLIACION && <Ampliacion s={sistemaPorId(s.id)!} />}
-      {/* En papel, de dónde sale la hoja (0.78.1, auditoría R3). */}
-      <ColofonImpreso />
+      {/* En papel, de dónde sale la hoja (0.78.1, auditoría R3); 1.0.9: en el margen de abajo
+          (@page, arriba), no como párrafo final. */}
     </div>
   );
 }
@@ -1018,11 +1028,16 @@ export function Sistemas({ sel, seccion: pedida }: { sel?: string; seccion?: str
   // Dirección antigua de la ampliación técnica: aviso de alcance y la ficha del capítulo.
   if (seccion === "ampliacion" && retirado("ampliacion")) return <AmpliacionRetirada ids={ids} />;
   if (sel !== undefined && sel !== "todos" && !ids.length) return <Comparacion ids={[]} />;
+  // 1.0.9: «ajuste» (la Tabla 3) es solo de la comparación; en la ficha de un sistema, a Parámetros.
   const sec = SECCIONES_FICHA.some((x) => x.id === seccion)
     ? seccion
-    : seccion === "completa"
-      ? "completa"
-      : undefined;
+    : seccion === "ajuste"
+      ? ids.length === 1
+        ? "parametros"
+        : "ajuste"
+      : seccion === "completa"
+        ? "completa"
+        : undefined;
   if (ids.length === 1)
     return <FichaSistema id={ids[0]} seccion={sec} fila={filaPedida || undefined} />;
   return (
@@ -1179,12 +1194,18 @@ function BarraSistemas({
     return () => mq.removeEventListener?.("change", alCambiar);
   }, []);
   // Plegada de entrada en la ficha de un sistema y en la lista (las tarjetas ya eligen).
-  const deEntrada = ids.length === 1 || (ids.length === 0 && !seccion);
+  // 1.0.9 (22.ª ronda, visual y R3; revisión externa D108-05): también en «Los cuatro» de una
+  // sección (Parámetros, Modos…): entrando desde la portada, desplegada, el primer dato quedaba a
+  // mitad de la pantalla (y ≈ 513 px); desde el Resumen, plegada.
+  const deEntrada = ids.length <= 1;
   const [plegada, setPlegada] = useState(movil && deEntrada);
   // Al pasar al ordenador, desplegada (la barra plegada es solo del móvil).
+  // 1.0.9 (22.ª ronda, R1): y al volver al móvil sin recargar, plegada otra vez donde empieza así
+  // (antes se quedaba abierta tapando el contenido).
   useEffect(() => {
     if (!movil) setPlegada(false);
-  }, [movil]);
+    else if (deEntrada) setPlegada(true);
+  }, [movil]); // eslint-disable-line react-hooks/exhaustive-deps
   const [abierta, setAbierta] = useState(() => Date.now() - seguirAbierta < 1500);
   // 0.81.1 (quinta ronda, visual): tras cambiar de pestaña en la comparación del móvil, la barra
   // sigue plegada (al desplegarse después de colocar la sección, la tapaba 100 px).
@@ -1286,10 +1307,12 @@ function BarraSistemas({
             {ids.length === 1 ? "" : resumen}
           </span>
           <span className="shrink-0 text-sm font-semibold" style={{ color: SEEN.burdeos }}>
+            {/* 1.0.9 (22.ª ronda, R3): un solo rótulo para los cuatro en cualquier sección (antes,
+                «Comparar» en el Resumen y «Cambiar» en las demás). */}
             {ids.length === 1
               ? "Otro sistema o comparación"
-              : ids.length === 0 && !seccion
-                ? "Comparar"
+              : ids.length === 0
+                ? "Elegir sistemas"
                 : "Cambiar"}
           </span>
         </button>
@@ -1438,7 +1461,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
           objetivos sin desplazarse. */}
       {/* 0.88.1 (duodécima ronda, adjunto): desde xl, las filas de las tarjetas vecinas a la misma
           altura (subgrid: cabecera, tres datos, variante y accesos). */}
-      <ul className="grid gap-3 xl:grid-cols-2 xl:gap-y-0">
+      <ul className="grid gap-3 xl:grid-cols-2">
         {visibles.map(({ s, c }) => {
           const h = SISTEMA_HEX[c];
           const variante = VARIANTE_RESUMEN[c];
@@ -1452,10 +1475,10 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
             ["Plan de seguridad", "Plan", href("pacientes", "plan", s.id)],
           ];
           return (
-            <li key={s.id} className="min-w-0 xl:row-span-6 xl:mb-3 xl:grid xl:grid-rows-subgrid">
+            <li key={s.id} className="min-w-0">
               <article
                 aria-label={s.name}
-                className="tarjeta tarjeta-sistema flex h-full flex-col overflow-hidden xl:row-span-6 xl:grid xl:grid-rows-subgrid xl:gap-y-0"
+                className="tarjeta tarjeta-sistema flex h-full flex-col overflow-hidden"
                 style={{ ["--sis" as string]: h.strong }}
               >
                 <a
@@ -1484,7 +1507,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                     </span>
                   </span>
                 </a>
-                <div className="flex-1 px-4 py-2.5 xl:row-span-4 xl:grid xl:grid-rows-subgrid xl:gap-y-1.5 xl:py-2">
+                <div className="flex-1 px-4 py-2.5 xl:py-3">
                   <CasillasDatos c={c} datos={datosDe(c)} modo="resumen" />
                   {variante && (
                     <p className="mt-3 grid grid-cols-[auto_1fr] items-baseline gap-x-2 text-sm leading-snug text-slate-800">
@@ -1595,7 +1618,18 @@ function OtrasSituaciones({ cols, aLaVista }: { cols: number[]; aLaVista?: boole
     }
     const rotulos = [...new Set(datos.map((x) => x.d.r))];
     const rotulo = rotulos.length > 1 && g.varios ? g.varios : rotulos[0];
-    return { rotulo, grupos, nota: notaComun ? nota : undefined };
+    // 1.0.9 (22.ª ronda, adjunto): lo que dicen igual todos al principio («Anticipar hipoglucemia
+    // diferida hasta 12–24 h tras la ingesta»), una vez; debajo, solo lo que añade cada sistema
+    // (antes, la misma frase en las tres filas de sistema). Solo se reparte el texto: nada se quita.
+    const partes = grupos.map((x) => x.d.v.split("; "));
+    const comun =
+      grupos.length > 1 &&
+      datos.length === cols.length &&
+      partes.every((p) => p[0] === partes[0][0])
+        ? partes[0][0]
+        : undefined;
+    const resto = (v: string) => (comun ? v.split("; ").slice(1).join("; ") : v);
+    return { rotulo, grupos, nota: notaComun ? nota : undefined, comun, resto };
   }).filter((f) => f.grupos.length);
   if (!filas.length) return null;
   return (
@@ -1634,8 +1668,13 @@ function OtrasSituaciones({ cols, aLaVista }: { cols: number[]; aLaVista?: boole
               })()}
             </dt>
             <dd className="min-w-0 max-w-[72ch] space-y-2 text-[15px] leading-snug text-slate-800">
+              {f.comun && (
+                <p>
+                  <SinCortes texto={f.comun} />
+                </p>
+              )}
               {f.grupos.map(({ cs, d }) => (
-                <div key={cs.join("-")}>
+                <div key={cs.join("-")} hidden={!!f.comun && !f.resto(d.v) && !(d.n && !f.nota)}>
                   {f.grupos.length > 1 || cs.length < cols.length ? (
                     <span className="mb-0.5 flex flex-wrap gap-x-3 text-[13px] font-semibold">
                       {cs.map((c) => (
@@ -1658,9 +1697,11 @@ function OtrasSituaciones({ cols, aLaVista }: { cols: number[]; aLaVista?: boole
                     </span>
                   ) : null}
                   {/* 0.96.0 (16.ª ronda, visual): intervalos sin partir («12–24 h»). */}
-                  <span className="block">
-                    <SinCortes texto={d.v} />
-                  </span>
+                  {f.resto(d.v) && (
+                    <span className="block">
+                      <SinCortes texto={f.resto(d.v).replace(/^./, (x) => x.toUpperCase())} />
+                    </span>
+                  )}
                   {/* 1.0.1 (19.ª ronda, senior): las notas llevan umbrales y riesgos («más de 1 h…»):
                       14 px y texto oscuro (antes, 13 px en gris, como una fuente). */}
                   {d.n && !f.nota && (
@@ -1752,12 +1793,20 @@ function Comparacion({
   const seccion = pedida === "funciona" ? "esencial" : enComparacion(pedida) ? pedida : undefined;
   // 0.96.1 (revisión de Codex, V95-07): por debajo de xl, Parámetros empieza por un parámetro en
   // los sistemas elegidos («parametros:basal», enlazable); «Por sistema», las tarjetas de siempre.
-  const [porSistema, setPorSistema] = useState(false);
+  // 1.0.9 (22.ª ronda, R3): la vista, en la ruta («parametros:por-sistema»), como el parámetro:
+  // con Atrás desde una ficha se vuelve a la misma vista (antes, a «Por parámetro» y a media
+  // Tabla 3).
+  const porSistema = fila === "por-sistema";
+  const verVista = (sistema: boolean) =>
+    elegirRuta(
+      "sistemas",
+      ids.length ? ids.join("+") : "todos",
+      `parametros:${sistema ? "por-sistema" : ASPECTOS_PARAMETRO[aspecto].id}`,
+    );
   const aspecto = Math.max(
     0,
     ASPECTOS_PARAMETRO.findIndex((x) => x.id === fila),
   );
-  const tabla3 = useRef<HTMLDivElement>(null);
   // Un conmutador ligero (texto subrayado): la elección fuerte es la del parámetro.
   const conmutador = (on: boolean) =>
     `tap-44 inline-flex min-h-11 items-center px-1 text-[14px] underline-offset-[6px] ${on ? "font-semibold text-slate-900 underline decoration-2" : "text-slate-600 hover:text-slate-900"}`;
@@ -1817,7 +1866,7 @@ function Comparacion({
                     <button
                       type="button"
                       aria-pressed={!porSistema}
-                      onClick={() => setPorSistema(false)}
+                      onClick={() => verVista(false)}
                       className={conmutador(!porSistema)}
                     >
                       Por parámetro
@@ -1825,22 +1874,19 @@ function Comparacion({
                     <button
                       type="button"
                       aria-pressed={porSistema}
-                      onClick={() => setPorSistema(true)}
+                      onClick={() => verVista(true)}
                       className={conmutador(porSistema)}
                     >
                       Por sistema
                     </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      tabla3.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-                    }
+                  <a
+                    href={href("sistemas", ids.length ? ids.join("+") : "todos", "ajuste")}
                     className="tap-44 ml-auto inline-flex min-h-11 items-center gap-1 text-[13px] font-semibold text-slate-600 hover:text-slate-900 hover:underline"
                   >
-                    Tabla 3 completa
-                    <ArrowDown size={14} aria-hidden="true" />
-                  </button>
+                    Tabla 3: ajuste práctico
+                    <ArrowRight size={14} aria-hidden="true" />
+                  </a>
                 </div>
                 {!porSistema && (
                   <AspectoEntreSistemas
@@ -1915,8 +1961,21 @@ function Comparacion({
                               <ul
                                 className={`space-y-0.5 text-[15px] leading-snug ${g.fuerte ? "font-semibold text-slate-900" : "text-slate-800"}`}
                               >
+                                {/* 1.0.9 (22.ª ronda, senior): cada parámetro, a su fila de la
+                                    ficha, con el valor (antes, solo el nombre). */}
                                 {g.xs.map((x) => (
-                                  <li key={x}>{x}</li>
+                                  <li key={x}>
+                                    <a
+                                      href={href(
+                                        "sistemas",
+                                        ORDEN_SISTEMAS[c],
+                                        `parametros:${slugDato(x)}`,
+                                      )}
+                                      className="tap-44 inline-block min-h-6 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700"
+                                    >
+                                      {x}
+                                    </a>
+                                  </li>
                                 ))}
                               </ul>
                             </dd>
@@ -1931,12 +1990,21 @@ function Comparacion({
                 className="-mt-2 mb-4"
                 fuentes={fuentesDeDatos(cols.flatMap((c) => PARAMETROS[c]))}
               />
-              <div ref={tabla3} id="tabla-3-comparada" className="scroll-mt-36">
-                <NivelTitulo.Provider value={2}>
-                  <TablaVista tabla={TABLAS.T3} columnasFijas={cols} herramienta />
-                </NivelTitulo.Provider>
-              </div>
+              <a
+                href={href("sistemas", ids.length ? ids.join("+") : "todos", "ajuste")}
+                className="no-imprimir hidden min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline xl:inline-flex"
+              >
+                Cómo se ajusta cada parámetro en cada sistema (Tabla 3, ajuste práctico)
+                <ArrowRight size={14} aria-hidden="true" />
+              </a>
             </>
+          )}
+          {seccion === "ajuste" && (
+            <div id="tabla-3-comparada">
+              <NivelTitulo.Provider value={2}>
+                <TablaVista tabla={TABLAS.T3} columnasFijas={cols} herramienta />
+              </NivelTitulo.Provider>
+            </div>
           )}
           {seccion === "modos" && (
             <>

@@ -93,10 +93,12 @@ export const MATERIALES: Material[] = [
       fecha: "2026-10-22",
       version: "1.0.5",
       cambio:
-        "Los recambios, solo los del formato del sistema (con Omnipod 5, pods; con bomba con catéter, set, cánula y reservorio): la frase del capítulo deja de ser literal en esa línea",
-      evidencia: "Decisión del responsable del 22-10-2026 («sí, solo lo que aplica al sistema»)",
+        "Los recambios, solo los del formato del sistema (con Omnipod 5, pods; con bomba con catéter, set, cánula y reservorio), y en la regla de oro y la cara de cetonas, «set o pod» según el formato (1.0.9): esas líneas dejan de ser literales",
+      evidencia:
+        "Decisiones del responsable del 22-10-2026 («sí, solo lo que aplica al sistema»; «sí, adapta» para set/pod)",
     },
-    pendiente: "Revisión de la redacción adaptada de la línea de recambios (1.0.5)",
+    pendiente:
+      "Revisión de la redacción adaptada por formato: recambios (1.0.5), regla de oro y cara de cetonas (1.0.9)",
   },
   {
     id: "calculadora",

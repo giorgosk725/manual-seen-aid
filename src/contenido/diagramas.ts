@@ -150,7 +150,9 @@ export interface PoblacionObjetivos {
   pagina: number;
   franjas: FranjaObjetivo[];
   /* Frases literales; `p` si son de otra página que la de la población. */
-  extras: { texto: string; p?: number }[];
+  /* `encabeza`: la frase va encima de las franjas solo hasta esas palabras (su condición), sin
+     las cifras que las franjas ya dan (1.0.9, como en la hipoglucemia). */
+  extras: { texto: string; p?: number; encabeza?: string }[];
   aviso?: string;
 }
 
@@ -238,6 +240,7 @@ export const OBJETIVOS_MCG: PoblacionObjetivos[] = [
       {
         texto:
           "En personas hospitalizadas que mantienen la MCG, este posicionamiento propone, fundamentalmente a partir de consenso de expertos, objetivos orientativos de TIR 70–180 mg/dl >60 %, TAR >180 mg/dl <25 %, TAR >250 mg/dl <5 % y TBR <70 mg/dl 0 %.",
+        encabeza: "objetivos orientativos",
       },
       {
         texto:

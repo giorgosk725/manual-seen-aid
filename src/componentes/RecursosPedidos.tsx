@@ -14,7 +14,7 @@ export function RecursosPedidos({
 }: {
   items: Resultado[];
   onIr?: () => void;
-  linea?: (ruta: string) => string | undefined;
+  linea?: (ruta: string) => { v: string; n?: string; cond?: string; antes?: string } | undefined;
 }) {
   if (!items.length) return null;
   return (
@@ -30,11 +30,22 @@ export function RecursosPedidos({
               Abrir
             </span>
             {r.entrada.titulo}
-            {linea?.(r.entrada.ruta) && (
-              <span className="mt-0.5 block font-normal leading-snug text-slate-700">
-                {linea(r.entrada.ruta)}
-              </span>
-            )}
+            {(() => {
+              // 1.0.9 (revisión externa D108-03): el dato con lo que lo acompaña en la ficha (la
+              // condición, lo previo y la nota), no solo la respuesta.
+              const d = linea?.(r.entrada.ruta);
+              if (!d) return null;
+              return (
+                <span className="mt-0.5 block font-normal leading-snug text-slate-700">
+                  {d.cond && <span className="block italic text-slate-600">{d.cond}</span>}
+                  <span className="block">
+                    {d.antes ? `${d.antes}. ` : ""}
+                    {d.v}
+                  </span>
+                  {d.n && <span className="mt-0.5 block text-[13px] text-slate-600">{d.n}</span>}
+                </span>
+              );
+            })()}
           </a>
         </li>
       ))}
