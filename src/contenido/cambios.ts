@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-22",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — buscador`,
+    titulo: `Complemento interactivo ${VERSION_APP} — revisión externa de la 1.0.5`,
+    detalle: [
+      "Buscar: al elegir una sugerencia, el historial del navegador guarda solo una marca, no lo escrito; Atrás y Adelante siguen funcionando y, al recargar, Buscar se abre vacío.",
+      "Impresión: la letra de reserva tiene las medidas de la del complemento; si al imprimir no ha terminado de cargar, la hoja de comprobación sigue en una cara (en Linux pasaba a veces a dos).",
+      "Sobre: qué es literal (lectura, tablas y pasajes citados), qué es resumen operativo (fichas, comparación por parámetro y vistas adaptadas al sistema elegido) y qué es complementario.",
+      "Exploraciones: el resto de la nota de la Tabla 6, rotulado «Nota general de la Tabla 6», debajo de la conducta.",
+      "Registro de la edición: 105 preguntas frecuentes con sus aprobaciones; el plan de seguridad dice cuándo se revisó y cuándo se modificó; lo que sigue pendiente de revisión, descrito.",
+    ],
+  },
+  {
+    fecha: "2026-10-22",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.6 — buscador",
     detalle: [
       "Buscar: el acceso a una fila de la ficha de un sistema («alcohol omnipod», «agua con 780G», «ducha con Control-IQ») trae debajo su dato operativo, sin abrirlo.",
       "Buscar: «hipoglucemia» con un sistema («hipoglucemia 780g», «tratar una hipoglucemia con Omnipod 5») da primero cómo se trata en asa cerrada, sin la fila del ejercicio aeróbico ni su acceso.",

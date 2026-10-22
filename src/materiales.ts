@@ -12,11 +12,15 @@ export interface Material {
   estado: "aprobado" | "pendiente";
   nombre: string;
   tipo: TipoMaterial;
-  /* Fecha de publicación o de la última aprobación; vacía si está pendiente. */
+  /* Fecha de publicación (lo publicado) o de la última revisión o aprobación registrada (lo del
+     complemento); vacía si está pendiente. */
   fecha: string;
   version: string;
   evidencia: string;
   pendiente?: string;
+  /* 1.0.7 (revisión R105-03): un cambio posterior a esa revisión, con su versión y lo que lo
+     autoriza. No la sustituye: el pie de la hoja dice las dos fechas. */
+  modificado?: { fecha: string; version: string; cambio: string; evidencia: string };
   /* Huella del texto revisado (V54-05). Si el archivo publicado cambia y ya no coincide, el
      material deja de estar listo hasta una revisión nueva; hoy, las hojas adaptadas. */
   huella?: string;
@@ -85,6 +89,14 @@ export const MATERIALES: Material[] = [
     version: "0.70.0",
     evidencia:
       "Solo texto literal del capítulo (pp. 7-9, Figura 3 y Tabla 4); revisión clínica y visual del 13-10-2026 (delegada), a letra grande; el 13-10-2026 el responsable aprobó el título operativo y el recuadro de urgencia en la primera cara; el 14-10-2026, que el registro de los hidratos en CamAPS FX vaya solo en su plan, y la simplificación (0.70.0, «sí a todo»): una cara con lo esencial y la hoja de cetonas aprobada como segunda cara",
+    modificado: {
+      fecha: "2026-10-22",
+      version: "1.0.5",
+      cambio:
+        "Los recambios, solo los del formato del sistema (con Omnipod 5, pods; con bomba con catéter, set, cánula y reservorio): la frase del capítulo deja de ser literal en esa línea",
+      evidencia: "Decisión del responsable del 22-10-2026 («sí, solo lo que aplica al sistema»)",
+    },
+    pendiente: "Revisión de la redacción adaptada de la línea de recambios (1.0.5)",
   },
   {
     id: "calculadora",
@@ -96,7 +108,7 @@ export const MATERIALES: Material[] = [
     evidencia:
       "Función decidida por el responsable el 13-10-2026 (opción C del borrador de inicio); reglas literales de la Tabla 2 y del apartado 8 (calculadora.test.ts); puntos de partida 10/20/0 % y 20 % con buen control y basal ultralarga, decididos el 13-10-2026",
     pendiente:
-      "Revisión clínica del contrato de la 0.63.0: lectura de entradas, límites de la ayuda (1–400 UI/día), rutas de pauta previa (MDI con o sin referencia, bomba u otro AID) y reglas del 450 y del 1700 sobre la DTD de inicio",
+      "Revisión clínica del contrato de la 0.63.0, sin registro hasta hoy (docs/AUDITORIA_061_RESPUESTA.md, punto 1): lectura de entradas, límites de la ayuda (1–400 UI/día), rutas de pauta previa (MDI con o sin referencia, bomba u otro AID) y reglas del 450 y del 1700 sobre la DTD de inicio. Después, sin revisión propia: la comparación de lo que actúa en automático al cambiar de sistema (0.96.0, también en el paso 1 de Fases desde la 1.0.5) y los recambios por formato del paso 4 (1.0.5)",
   },
   {
     id: "como-interpretar",
@@ -130,22 +142,26 @@ export const MATERIALES: Material[] = [
   {
     id: "notas-complementarias",
     estado: "pendiente",
-    nombre: "Notas complementarias (edad de CamAPS Liberty; «autoaprendizaje» de Omnipod 5)",
+    nombre:
+      "Notas complementarias (edad de CamAPS Liberty; «autoaprendizaje» de Omnipod 5; recomendaciones de Tandem para la gestación)",
     tipo: "explicacion",
     fecha: "",
-    version: "0.65.1",
+    version: "0.76.3",
     evidencia:
-      "Decisiones del responsable del 13-10-2026 (Liberty) y del 14-10-2026 (Omnipod 5; Brown SA et al. Diabetes Care 2021;44:1630-40)",
+      "Decisiones de contenido del responsable: 13-10-2026 (Liberty), 14-10-2026 (Omnipod 5; Brown SA et al. Diabetes Care 2021;44:1630-40) y 19-10-2026 (folleto de Tandem MAT-2075_1 V4, texto literal, 0.76.3); fuentes en Bibliografía, «Fuentes complementarias»",
+    pendiente:
+      "Aprobación registrada del texto que se enseña de cada nota (las decisiones registradas son de contenido)",
   },
   {
     id: "frecuentes",
     estado: "aprobado",
-    nombre: "Preguntas frecuentes (103)",
+    // 1.0.7 (revisión R105-03): el número lo comprueba edicion-editorial.test.ts contra los datos.
+    nombre: "Preguntas frecuentes (105)",
     tipo: "preguntas",
-    fecha: "2026-10-13",
-    version: "0.51.0",
+    fecha: "2026-10-22",
+    version: "1.0.1",
     evidencia:
-      "f01–f50 aprobadas el 8-10-2026, f51–f61 el 11-10-2026 y f62–f103 el 13-10-2026 (revisión delegada); títulos de f70, f77 y f90 el 14-10-2026, docs/FRECUENTES.md",
+      "f01–f50 aprobadas el 8-10-2026, f51–f61 el 11-10-2026 y f62–f103 el 13-10-2026 (revisión delegada); títulos de f70, f77 y f90 el 14-10-2026, docs/FRECUENTES.md; f83, f103 y f104 (nueva) el 22-10-2026 en la 0.99.0, y f94 y f105 (nueva) el 22-10-2026 en la 1.0.1, por decisión del responsable, con pasajes literales ya existentes (src/frecuentes.aprobadas.json)",
   },
   {
     id: "autoevaluacion",

@@ -42,6 +42,19 @@
     U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/* 1.0.7 (revisión R105-02): Arial (o Liberation Sans, con las mismas medidas, en Linux) ajustada
+   a las medidas de Open Sans. Mientras la letra web carga —o se vuelve a cargar al pasar a
+   imprimir—, el texto ocupa lo mismo y la hoja de una cara no salta a dos (en Linux, la de
+   reserva del sistema es más ancha). Valores de ajuste habituales para Open Sans sobre Arial. */
+@font-face {
+  font-family: "Open Sans Respaldo";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Helvetica");
+  size-adjust: 105.18%;
+  ascent-override: 101.55%;
+  descent-override: 27.83%;
+  line-gap-override: 0%;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

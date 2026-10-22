@@ -16,6 +16,7 @@ import { APARTADOS, FIGURA3, idDeBloque } from "./contenido";
 import { CON_CASOS, CON_REPASO, EDICION, RETIRADOS, migrarPrivacidad } from "./edicion";
 import { MATERIALES, material, materialListo } from "./materiales";
 import { hojaExtraPorId } from "./hojas";
+import APROBADAS_FAQ from "./frecuentes.aprobadas.json";
 import { imprimirRegion } from "./imprimir";
 import { pedirParecidos } from "./semantica";
 import { registrarSinRespuesta } from "./consultas";
@@ -255,6 +256,15 @@ describe("V50-02 · solo se imprime un material aprobado", () => {
     expect(materialListo("no-existe")).toBe(false);
     for (const m of MATERIALES) expect(materialListo(m.id)).toBe(m.estado === "aprobado");
     expect(material("planes")?.estado).toBe("aprobado");
+    // 1.0.7 (revisión R105-03): el recuento del registro, el de los datos; cada pregunta, con su
+    // aprobación registrada; un cambio posterior, con fecha posterior y su evidencia.
+    expect(material("frecuentes")?.nombre).toBe(`Preguntas frecuentes (${FRECUENTES.length})`);
+    for (const f of FRECUENTES) expect(Object.keys(APROBADAS_FAQ)).toContain(f.id);
+    for (const m of MATERIALES)
+      if (m.modificado) {
+        expect(m.modificado.fecha > m.fecha).toBe(true);
+        expect(m.modificado.evidencia.length).toBeGreaterThan(0);
+      }
   });
 });
 

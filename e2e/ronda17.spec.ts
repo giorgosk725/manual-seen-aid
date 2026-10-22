@@ -28,6 +28,12 @@ test.describe("Ronda 17", () => {
     await page.evaluate(() => window.dispatchEvent(new Event("beforeprint")));
     await expect(page.locator("html")).toHaveClass(/imprimiendo/);
     await page.emulateMedia({ media: "print" });
+    // 1.0.7 (revisión R105-02): al pasar a impresión, Chromium vuelve a cargar la letra; se espera
+    // a que termine (como el navegador al imprimir) antes de generar el PDF.
+    await page.evaluate(async () => {
+      document.body.getBoundingClientRect();
+      await document.fonts.ready;
+    });
     const pdf = await page.pdf({ format: "A4", preferCSSPageSize: true, printBackground: true });
     expect((pdf.toString("latin1").match(/\/Type\s*\/Page[^s]/g) || []).length).toBe(1);
   });

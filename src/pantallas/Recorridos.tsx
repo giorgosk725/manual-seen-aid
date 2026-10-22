@@ -1074,10 +1074,18 @@ export function SituacionSistema({
                             <Texto>{umbral}</Texto> {enlace}
                           </p>
                         )}
-                        <p className="max-w-[75ch] text-sm leading-snug text-slate-700">
-                          <Texto>{resto}</Texto>
-                          {!umbral && <> {enlace}</>}
-                        </p>
+                        {/* 1.0.7 (revisión R105-06): el resto de la nota, rotulado como lo que es
+                            (general de la tabla, no de esta prueba), en el mismo sitio y con su
+                            texto; sin el «Nota:» inicial, que dice el rótulo. */}
+                        <div className="separador max-w-[75ch] border-t pt-2">
+                          <span className="rotulo mb-0.5 block">Nota general de la Tabla 6</span>
+                          <p className="text-sm leading-snug text-slate-700">
+                            <Texto>
+                              {resto.replace(/^Nota:\s*/, "").replace(/^./, (x) => x.toUpperCase())}
+                            </Texto>
+                            {!umbral && <> {enlace}</>}
+                          </p>
+                        </div>
                       </>
                     );
                   })()}

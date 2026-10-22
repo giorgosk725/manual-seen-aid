@@ -21,6 +21,29 @@ export function irABuscar(q: string) {
   if (!window.location.hash.startsWith("#/buscar")) navegar("buscar");
 }
 
+/* 1.0.7 (revisión R105-01): para Atrás y Adelante dentro de Buscar, el historial del navegador
+   lleva solo un identificador opaco; el texto se queda en esta memoria (algunos navegadores
+   guardan `history.state` al restaurar la sesión). Tras recargar, el identificador ya no tiene
+   texto y Buscar se abre vacío. Sin almacenamiento local ni de sesión. */
+const enMemoria = new Map<string, string>();
+const sesion = Math.random().toString(36).slice(2, 8);
+let siguiente = 0;
+export function marcaDeConsulta(q: string): string {
+  const id = `${sesion}-${++siguiente}`;
+  enMemoria.set(id, q);
+  return id;
+}
+export const consultaDeMarca = (id: unknown): string | undefined =>
+  typeof id === "string" ? enMemoria.get(id) : undefined;
+/* Una copia del estado del historial sin el texto que guardaban versiones anteriores
+   (`mseenConsulta`): no se propaga al escribir estados nuevos. */
+export function estadoSinConsulta(estado: unknown): Record<string, unknown> {
+  if (!estado || typeof estado !== "object") return {};
+  const { mseenConsulta: _fuera, ...resto } = estado as Record<string, unknown>;
+  void _fuera;
+  return resto;
+}
+
 export function alCambiarConsulta(fn: () => void) {
   window.addEventListener(EVENTO, fn);
   return () => window.removeEventListener(EVENTO, fn);

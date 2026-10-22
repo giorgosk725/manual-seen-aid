@@ -20,7 +20,14 @@ import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
 import { BUILD } from "../build";
 import { PREGUNTAS } from "../contenido/test";
 import { anularNavegacionNueva, elegirRuta, fueNavegacionNueva, href } from "../rutas";
-import { alCambiarConsulta, consultaBuscar, ponerConsulta } from "../consultaBuscar";
+import {
+  alCambiarConsulta,
+  consultaBuscar,
+  consultaDeMarca,
+  estadoSinConsulta,
+  marcaDeConsulta,
+  ponerConsulta,
+} from "../consultaBuscar";
 import { Badge, CabeceraEditorial, Revelar, Segmented, ToneCard } from "../ui";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import {
@@ -167,19 +174,23 @@ export function Buscar({ inicial }: { inicial?: string }) {
   useEffect(() => alCambiarConsulta(() => setQ(consultaBuscar())), []);
   useEffect(() => ponerConsulta(q), [q]);
   // 0.97.1 (17.ª ronda, senior): elegir una sugerencia (una pregunta) deja una entrada en el
-  // historial, en memoria y con la misma dirección (la consulta no va en la URL): Atrás vuelve a lo
-  // escrito («ducha») en vez de salir de Buscar.
+  // historial con la misma dirección (la consulta no va en la URL): Atrás vuelve a lo escrito
+  // («ducha») en vez de salir de Buscar. 1.0.7 (revisión R105-01): en el historial, solo una
+  // marca opaca; el texto, en memoria (consultaBuscar.ts).
   const elegirSugerencia = (t: string) => {
     if (q.trim() && t !== q) {
-      window.history.replaceState({ ...window.history.state, mseenConsulta: q }, "");
-      window.history.pushState({ mseenConsulta: t }, "");
+      window.history.replaceState(
+        { ...estadoSinConsulta(window.history.state), mseenBusqueda: marcaDeConsulta(q) },
+        "",
+      );
+      window.history.pushState({ mseenBusqueda: marcaDeConsulta(t) }, "");
     }
     setQ(t);
   };
   useEffect(() => {
     const onPop = (e: PopStateEvent) => {
-      const c = (e.state as { mseenConsulta?: unknown } | null)?.mseenConsulta;
-      if (typeof c === "string") setQ(c);
+      const c = consultaDeMarca((e.state as { mseenBusqueda?: unknown } | null)?.mseenBusqueda);
+      if (c !== undefined) setQ(c);
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
@@ -695,21 +706,27 @@ export function Sobre() {
             {/* 0.97.1 (17.ª ronda, adjunto): qué es literal, qué es resumen y qué es
                 complementario (antes, «el contenido clínico es el texto del capítulo», inexacto
                 para las tarjetas de los sistemas). */}
+            {/* 1.0.7 (revisión R105-04): las comparaciones de «Los cuatro» no son todas literales
+                (la vista «Por parámetro» usa los resúmenes de las fichas) y hay vistas adaptadas
+                al sistema elegido. */}
             <li>
-              <strong>Texto del capítulo, literal:</strong> las Tablas, la lectura del capítulo, el
-              texto de cada situación y las comparaciones de «Los cuatro» (Tablas 1, 3 y 4). Una
-              corrección posterior a la publicación se aplica en el texto y se señala en un recuadro
-              junto a él, con lo que dice el capítulo publicado.
+              <strong>Texto del capítulo, literal:</strong> la lectura del capítulo, las Tablas y
+              los pasajes citados, con su página.
             </li>
             <li>
-              <strong>Resumen operativo:</strong> las tarjetas de cada sistema, con datos cortos
-              tomados del capítulo; el rótulo con el libro abre su texto literal y cada bloque lleva
-              su fuente al pie.
+              <strong>Resumen operativo:</strong> las fichas de cada sistema, la comparación por
+              parámetro y las vistas adaptadas al sistema elegido (en una exploración, solo lo de la
+              bomba o lo del pod), con datos cortos tomados del capítulo y acceso a su texto
+              original: el rótulo con el libro lo abre y cada bloque lleva su fuente al pie.
             </li>
             <li>
               <strong>Complementario:</strong> las preguntas frecuentes, la autoevaluación, las
               hojas adaptadas y los recuadros de marco discontinuo, basados en el capítulo y
               señalados como tales.
+            </li>
+            <li>
+              Una corrección posterior a la publicación se aplica en el texto y se señala en un
+              recuadro junto a él, con lo que dice el capítulo publicado.
             </li>
             <li>
               La búsqueda funciona en el propio dispositivo: no se envía ni se guarda nada. Se puede

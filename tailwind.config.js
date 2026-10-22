@@ -14,6 +14,9 @@ export default {
         sans: [
           '"Open Sans Variable"',
           '"Open Sans"',
+          // 1.0.7 (revisión R105-02): respaldo con las medidas de Open Sans (index.css): si la
+          // letra web no está cargada al imprimir, la hoja ocupa lo mismo.
+          '"Open Sans Respaldo"',
           "ui-sans-serif",
           "system-ui",
           "-apple-system",

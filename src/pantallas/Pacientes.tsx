@@ -108,6 +108,13 @@ function Hoja({
           <>
             {" · Revisada el "}
             <span className="whitespace-nowrap">{fechaCorta(m.fecha)}</span>
+            {/* 1.0.7 (revisión R105-03): un cambio posterior a esa revisión, con su fecha. */}
+            {m.modificado && m.modificado.fecha > m.fecha && (
+              <>
+                {" · modificada el "}
+                <span className="whitespace-nowrap">{fechaCorta(m.modificado.fecha)}</span>
+              </>
+            )}
           </>
         ) : (
           ""
