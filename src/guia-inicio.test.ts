@@ -1,3 +1,4 @@
+import { recambiosDe } from "./calculadora";
 import { describe, expect, it } from "vitest";
 import {
   OBJETIVO_T1_EN_T3,
@@ -200,7 +201,8 @@ describe("la hoja de comprobación conserva todos los requisitos", () => {
     it(`con ${s === undefined ? "ningún sistema" : `el sistema ${s}`}`, () => {
       const h = hojaDeComprobacion(s);
       const textos = h.antes.map((x) => x.texto);
-      for (const item of plan.items) expect(textos).toContain(item);
+      // 1.0.5 (decisión del autor): los recambios, solo los del formato del sistema elegido.
+      for (const item of plan.items) expect(textos).toContain(recambiosDe(item, s));
       expect(textos).toContain(frasesDe(I, "b6", [0]).frases[0]);
       for (const l of lineasInicializacion(s)) expect(textos).toContain(l);
       expect(h.antes.some((x) => x.pieza?.t === "fila" && x.pieza.fila === 8)).toBe(true);

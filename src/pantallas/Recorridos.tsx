@@ -385,15 +385,34 @@ function GuionVista({
   );
 }
 
+/* 1.0.5 (21.ª ronda, R1; decisión del autor del 22-10-2026, «solo lo que aplica al sistema»): en
+   la Tabla 6, con un sistema elegido, la columna de la bomba o el pod dice solo lo de su formato
+   (Omnipod 5, pod; los otros tres, bomba con catéter): se quita la alternativa que no aplica
+   («set o pod», «con bomba con catéter, …»). Sin sistema, la casilla tal cual. */
+function segunFormato(tabla: string, c: number, sis: number, nombre: string, texto: string) {
+  if (tabla !== "T6" || c !== 0 || sis < 0) return { nombre, texto };
+  const pod = sis === 3;
+  return {
+    nombre: pod ? "Pod" : "Bomba",
+    texto: pod
+      ? texto
+          .replace(/; con bomba con catéter, retirar también el set si la cánula es metálica/, "")
+          .replace(/reconectar o colocar un set o pod nuevo/, "colocar un pod nuevo")
+      : texto
+          .replace(/con bomba con catéter, retirar también/, "retirar también")
+          .replace(/set o pod nuevo/, "set nuevo"),
+  };
+}
+
 /* La situación elegida, arriba y una sola vez: su icono, su nombre y «Cambiar» (en el móvil). */
 function CabeceraSituacion({
   id,
   etiqueta,
-  onCambiar,
+  sistema,
 }: {
   id: string;
   etiqueta: string;
-  onCambiar: () => void;
+  sistema?: string;
 }) {
   void id;
   return (
@@ -404,9 +423,14 @@ function CabeceraSituacion({
       <div className="min-w-0 flex-1">
         <h2 className="titulo-seccion">{etiqueta}</h2>
       </div>
-      <button type="button" onClick={onCambiar} className="chip shrink-0 lg:hidden">
-        Cambiar
-      </button>
+      {/* 1.0.5 (21.ª ronda, R1): «Otra situación», a la lista con el sistema elegido (antes,
+          «Cambiar», que se confundía con cambiar de sistema y abría la lista debajo del detalle). */}
+      <a
+        href={href("consultar", "situacion", sistema ? `:${sistema}` : undefined)}
+        className="chip shrink-0 lg:hidden"
+      >
+        ‹ Otra situación
+      </a>
     </div>
   );
 }
@@ -602,16 +626,7 @@ export function SituacionSistema({
   const [cambiarSistema, setCambiarSistema] = useState(false);
   const sit = SITUACIONES.find((s) => s.id === situacion) || null;
   const guia = SITUACIONES_GUIA.find((s) => s.id === situacion) || null;
-  // En el móvil, con una situación elegida el catálogo se pliega; «Cambiar» lo vuelve a abrir.
-  const [verLista, setVerLista] = useState(false);
-  useEffect(() => setVerLista(false), [situacion]);
-  const cambiar = () => {
-    setVerLista(true);
-    window.setTimeout(
-      () => document.getElementById("lista-situaciones")?.scrollIntoView({ block: "start" }),
-      0,
-    );
-  };
+  // En el móvil, con una situación elegida el catálogo se pliega; «Otra situación» lleva a él.
   // Elegida otra situación (sobre todo una de las últimas de la lista), al principio de su texto.
   useSubirAlElegir(situacion ?? "", "detalle-situacion");
   // 0.97.1 (17.ª ronda, R1): con Atrás desde una situación, la lista donde se dejó (desde la barra
@@ -695,7 +710,7 @@ export function SituacionSistema({
       <CabeceraEditorial titulo="Situaciones" hex={hex} level={1} />
       {/* Sin situación elegida, la lista a todo el ancho; con una, lista a la izquierda (0.71.0). */}
       <div className={`grid gap-4 ${sit || guia ? "lg:grid-cols-[18rem_1fr]" : ""}`}>
-        <div className={(sit || guia) && !verLista ? "hidden lg:block" : undefined}>
+        <div className={sit || guia ? "hidden lg:block" : undefined}>
           {/* 0.96.0 (16.ª ronda, R3): desde la ficha de un sistema (#/consultar/situacion/:camaps),
               qué sistema va ya elegido en las situaciones que se abran, y cómo cambiarlo. */}
           {!sit && !guia && sisIdx >= 0 && (
@@ -757,7 +772,7 @@ export function SituacionSistema({
         >
           {guia && (
             <div key={guia.id} className="pantalla-in space-y-4">
-              <CabeceraSituacion id={guia.id} etiqueta={guia.etiqueta} onCambiar={cambiar} />
+              <CabeceraSituacion id={guia.id} etiqueta={guia.etiqueta} sistema={sistema} />
               {/* 0.72.0: sin la frase de entrada (la regla de la 0.70.0; queda en la búsqueda). */}
               <div id="conducta-situacion" className="scroll-mb-28 scroll-mt-4" />
               {/* 0.73.0: primero lo de cada sistema (frases literales, src/porSistema.ts);
@@ -851,7 +866,7 @@ export function SituacionSistema({
           )}
           {sit && tabla && fila && (
             <div key={sit.id} className="pantalla-in space-y-4">
-              <CabeceraSituacion id={sit.id} etiqueta={sit.etiqueta} onCambiar={cambiar} />
+              <CabeceraSituacion id={sit.id} etiqueta={sit.etiqueta} sistema={sistema} />
               {/* En el ejercicio, las comprobaciones antes de empezar van antes de la conducta de
                   cada sistema (S61-01): pueden obligar a retrasar o a no hacer el ejercicio. */}
               {/* Decisión del responsable (15-10-2026, S61-01 revisada): sigue antes de la
@@ -1013,14 +1028,15 @@ export function SituacionSistema({
                   <>
                     <dl className="sm:columns-2 sm:gap-3 [&>div]:mb-3 [&>div]:break-inside-avoid">
                       {tabla.columnas.map((nombre, c) => {
+                        const f = segunFormato(sit.tabla, c, sisIdx, nombre, fila.celdas[c]);
                         return (
                           <div key={c} className="tarjeta p-3">
                             <dt className="rotulo mb-1" style={{ color: hex.ink }}>
-                              {nombre}
+                              {f.nombre}
                             </dt>
                             <dd className="text-base text-slate-800">
                               <Lineas>
-                                {fila.celdas[c].replace(
+                                {f.texto.replace(
                                   /configurable Objetivo:/,
                                   "configurable\nObjetivo:",
                                 )}

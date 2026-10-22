@@ -18,6 +18,7 @@ import { frases } from "./frases";
 import { href } from "./rutas";
 import { materialListo } from "./materiales";
 import { siglasEn } from "./siglas";
+import { recambiosDe } from "./calculadora";
 /* Solo «para entregar» si las plantillas del plan están aprobadas (V50-02). */
 const TEXTO_PLAN = materialListo("planes")
   ? "Plan de seguridad (hoja para el paciente)"
@@ -239,7 +240,11 @@ export function hojaDeComprobacion(sis?: number) {
     // 0.96.0 (16.ª ronda, R5): `pieza`, la del recorrido de la fase Inicio que dice lo mismo (el
     // recorrido enseña cada cosa en su paso; la hoja impresa, todo junto).
     antes: [
-      ...plan.items.map((texto) => ({ texto, pagina: plan.pagina, pieza: undefined })),
+      ...plan.items.map((texto) => ({
+        texto: recambiosDe(texto, sis),
+        pagina: plan.pagina,
+        pieza: undefined,
+      })),
       {
         texto: nucleo.frases[0],
         pagina: nucleo.pagina,

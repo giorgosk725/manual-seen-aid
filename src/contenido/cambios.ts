@@ -15,7 +15,20 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-22",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — vigésima ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — vigesimoprimera ronda de auditorías de uso`,
+    detalle: [
+      "Sistemas: en «Los cuatro» de una sección, una sola pestaña marcada (la 1.0.4 marcaba también «Resumen»); «Ver la ficha», como botón secundario.",
+      "Iniciación: desde otro sistema de asa cerrada, el paso 1 enseña el sistema actual y qué parámetros actúan en automático en uno y otro (como la calculadora, con el mismo dato); «Pauta previa» y «Basal previa», con la opción elegida en borde burdeos.",
+      "Material: la hoja de comprobación, el plan de seguridad y la calculadora dicen solo los recambios del formato del sistema (con Omnipod 5, pods; con bomba con catéter, set, cánula y reservorio).",
+      "Situaciones: «Otra situación» lleva a la lista con el sistema elegido (antes, «Cambiar»). En la resonancia y las demás exploraciones, con un sistema elegido, la columna de la bomba o el pod dice solo lo de su formato.",
+      "Hipoglucemia en asa cerrada: la condición del capítulo encima de las dos cantidades, sin repetir debajo la frase entera (a un toque en la fuente).",
+      "Fichas en papel: tampoco se imprimen las preguntas que ya responden sus tarjetas (en Omnipod 5, nadar con el pod y el pod que se despega).",
+    ],
+  },
+  {
+    fecha: "2026-10-22",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.4 — vigésima ronda de auditorías de uso",
     detalle: [
       "Calculadora: la opción elegida vuelve a verse con borde burdeos (en la 1.0.2 se había quedado casi igual que las no elegidas).",
       "Sistemas: en «Los cuatro» de Parámetros, Modos o cualquier sección, marcar uno lo deja marcado con «Ver la ficha» y marcar un segundo abre su comparación en esa misma sección. Desde Elección, los modos de los cuatro se abren arriba. En las fichas, «Cuándo» y «Programar» llevan a la fila de la inicialización en la Tabla 2, resaltada.",

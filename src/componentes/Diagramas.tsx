@@ -835,8 +835,18 @@ function Algoritmos() {
 /* La frase entera de la p. 8, con sus condiciones, arriba y con el mismo peso que las cifras;
    las dos cantidades como orientación, sin flechas de árbol (no cubre todos los casos). */
 function Hipoglucemia() {
+  // 1.0.5 (decisión del autor del 22-10-2026; 21.ª ronda, R1): sin la frase entera debajo de las
+  // tarjetas (repetía sus cifras); queda encima su condición, literal y sin las cifras («En
+  // determinados episodios… pueden bastar cantidades menores que la regla clásica de 15 g:»). La
+  // frase entera, a un toque en la fuente.
+  const [condicion, resto] = HIPOGLUCEMIA.orientacion.split(/:\s*(?=como orientación)/);
   return (
     <div>
+      {resto ? (
+        <p className="mb-2 max-w-[72ch] text-[15px] leading-snug text-slate-800">
+          <Texto>{`${condicion}:`}</Texto>
+        </p>
+      ) : null}
       {/* 0.72.0: primero las dos cantidades, en grande; debajo, la frase literal de la que salen.
           Sin el párrafo que empieza «La primera es…» (fuera de su contexto no se entendía). */}
       <div className="grid gap-2 sm:grid-cols-2">
@@ -855,12 +865,14 @@ function Hipoglucemia() {
           </p>
         ))}
       </div>
-      <p
-        className="mt-3 max-w-[72ch] border-l-2 pl-3 text-sm text-slate-700"
-        style={{ borderColor: "#cbd5e1" }}
-      >
-        <Texto>{HIPOGLUCEMIA.orientacion}</Texto>
-      </p>
+      {!resto && (
+        <p
+          className="mt-3 max-w-[72ch] border-l-2 pl-3 text-sm text-slate-700"
+          style={{ borderColor: "#cbd5e1" }}
+        >
+          <Texto>{HIPOGLUCEMIA.orientacion}</Texto>
+        </p>
+      )}
       {/* 0.97.1 (17.ª ronda, visual; DISENO_VISUAL §5 y §15): las notas, filas sobre el papel con
           línea fina (antes, cada una en su tarjeta con un cuadro de icono). */}
       <ul className="mt-3 max-w-[72ch] divide-y divide-[var(--linea-suave)] text-sm text-slate-800">

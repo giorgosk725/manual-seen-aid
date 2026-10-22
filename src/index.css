@@ -1208,7 +1208,10 @@ h3[tabindex="-1"]:focus-visible,
    sistema (el relleno se apilaba con el chip del parámetro elegido). */
 /* 1.0.4 (20.ª ronda, visual): la calculadora vuelve a esta receta (en la 1.0.2 quedó, por error,
    con la neutra de las fases: lo elegido apenas se distinguía de lo no elegido). */
+/* 1.0.5 (21.ª ronda, R5): las preguntas de Fases («Pauta previa», «Basal previa»), igual que la
+   calculadora (antes, relleno burdeos con letra blanca). */
 .formulario-calc .chip[aria-pressed="true"],
+.preguntas-guia .chip[aria-pressed="true"],
 .barra-pegada .chip[aria-pressed="true"] {
   background: var(--acento-suave);
   border-color: var(--acento);

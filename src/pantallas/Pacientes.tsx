@@ -22,6 +22,7 @@ import { sinCortes } from "../sinCortes";
 import { imprimirRegion } from "../imprimir";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
 import { VERSION_APP } from "../version";
+import { recambiosDe } from "../calculadora";
 import { fechaCorta, material, materialListo } from "../materiales";
 
 const hex = CATEGORIA_HEX.pacientes;
@@ -421,7 +422,10 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
   const nombre = TABLAS.T1.columnas[c];
   const plan = bloque("07-educacion", "b4");
   // Lo que hay que tener (sin el último punto, la Figura 3: va en la segunda cara).
-  const items = plan && plan.t === "lista" ? plan.items.filter((x) => !/Figura 3/.test(x)) : [];
+  const items =
+    plan && plan.t === "lista"
+      ? plan.items.filter((x) => !/Figura 3/.test(x)).map((x) => recambiosDe(x, c))
+      : [];
   const hipo = [
     fraseCon(textoDe("07-educacion", "b7"), "como orientación"),
     fraseCon(textoDe("07-educacion", "b7"), "Debe reevaluarse con glucosa capilar"),

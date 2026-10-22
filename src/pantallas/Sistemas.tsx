@@ -459,7 +459,31 @@ function respuestasImpresas(
   c: number,
 ): Map<string, TrozoImpreso[]> {
   const vistos = new Set<string>();
-  return new Map(preguntas.map((f) => [f.id, trozosDe(f, c, vistos)]));
+  const enTarjetas = frasesDeTarjetas(c);
+  return new Map(
+    preguntas.map((f) => [
+      f.id,
+      // 1.0.5 (21.ª ronda, R3): tampoco la que responden solo frases que ya citan las tarjetas
+      // de la ficha («¿Se puede nadar con el pod?» = la fila Agua de Modos).
+      f.pasajes.every((x) => enTarjetas.has(x)) ? [] : trozosDe(f, c, vistos),
+    ]),
+  );
+}
+/* Las frases del capítulo («t/apartado/bloque/k») que citan las tarjetas de la ficha de un
+   sistema (Cómo funciona, Indicación, Parámetros y Modos). */
+function frasesDeTarjetas(c: number): Set<string> {
+  const out = new Set<string>();
+  const recorrer = (x: unknown) => {
+    if (Array.isArray(x)) x.forEach(recorrer);
+    else if (x && typeof x === "object") {
+      const o = x as { t?: string; apartado?: string; bloque?: string; k?: number[] };
+      if (o.t === "frase" && o.apartado && o.bloque && Array.isArray(o.k))
+        o.k.forEach((k) => out.add(`t/${o.apartado}/${o.bloque}/${k}`));
+      else Object.values(o).forEach(recorrer);
+    }
+  };
+  recorrer([ALGORITMO[c], INDICACION[c], PARAMETROS[c], MODOS[c]]);
+  return out;
 }
 /* 0.81.1 (quinta ronda, R3 y visual): una pregunta que se responde con filas de las Tablas 1–4
    no se imprime (sin ellas, «¿Qué diferencia hay entre Control-IQ y Control-IQ+?» salía sin las
@@ -1298,8 +1322,10 @@ function BarraSistemas({
                       : rutaCon(marcados)
                   }
                   onClick={() => window.scrollTo({ top: 0 })}
-                  className="tap-44 inline-flex min-h-9 shrink-0 items-center gap-1 whitespace-nowrap rounded-md px-3 py-1 text-sm font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                  style={{ background: SEEN.burdeos }}
+                  // 1.0.5 (21.ª ronda, visual): botón secundario (borde capilar, sin relleno): con
+                  // la casilla marcada y la pestaña, el relleno burdeos apilaba cinco marcas.
+                  className="tap-44 inline-flex min-h-9 shrink-0 items-center gap-1 whitespace-nowrap rounded-md border bg-[var(--papel)] px-3 py-1 text-sm font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                  style={{ borderColor: "var(--acento)", color: "var(--tinta)" }}
                 >
                   {marcados.length === 1 ? "Ver la ficha" : `Comparar (${marcados.length})`}
                   <ArrowRight size={13} aria-hidden="true" />
@@ -1356,7 +1382,9 @@ function BarraSistemas({
           // los cuatro sin nada marcado).
           <a
             href={selStr.includes("+") ? href("sistemas", selStr) : href("sistemas")}
-            aria-current={entrada || (ids.length > 1 && !sec) ? "location" : undefined}
+            // 1.0.5 (21.ª ronda, senior): solo sin sección (desde la 1.0.4, «entrada» vale también
+            // en «Los cuatro» de una sección, y salían dos pestañas marcadas).
+            aria-current={ids.length !== 1 && !sec ? "location" : undefined}
             onFocus={pestanaALaVista}
             className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >

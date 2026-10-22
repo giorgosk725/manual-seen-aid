@@ -235,6 +235,15 @@ export const RECAMBIOS = {
   educacion: "Recambio de set, reservorio, pod y sensor.",
   plan: "Recambios de set, cánula, reservorio o pods, sensores y baterías/cargadores.",
 };
+/* 1.0.5 (decisión del autor del 22-10-2026): de los recambios del plan (p. 7), solo los del
+   formato del sistema: con Omnipod 5 (pod), sin set, cánula ni reservorio; con bomba con catéter,
+   sin pods. Sin sistema, o con otro texto, la frase tal cual. */
+export const recambiosDe = (texto: string, c?: number) =>
+  c === undefined || c < 0 || texto !== RECAMBIOS.plan
+    ? texto
+    : c === 3
+      ? "Recambios de pods, sensores y baterías/cargadores."
+      : "Recambios de set, cánula, reservorio, sensores y baterías/cargadores.";
 export const indicacionDe = (c: number) => celda("T1", "Indicación", c);
 export const objetivoAlgoritmoDe = (c: number) =>
   celda("T1", "Objetivo glucémico en modo automático", c);

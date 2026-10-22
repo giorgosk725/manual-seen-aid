@@ -12,6 +12,7 @@ import { AlertTriangle, ArrowDown, Calculator, ChevronUp } from "lucide-react";
 import { Lineas } from "../texto";
 import {
   RECAMBIOS,
+  recambiosDe,
   CONTROLES,
   DESDE_ISCI,
   INICIALIZACION,
@@ -1076,7 +1077,7 @@ export function CalculadoraInicio({
             <p className="text-sm text-slate-900">
               {/* 0.83.1 (séptima ronda, R5): sin «Recambios… Recambios». */}
               <span className="font-semibold">Tener siempre: </span>
-              {RECAMBIOS.plan}
+              {recambiosDe(RECAMBIOS.plan, sis)}
             </p>
           </div>
         </Paso>
@@ -1173,7 +1174,7 @@ const CON_ARTICULO: Record<string, string> = {
   "Factor de sensibilidad": "el factor de sensibilidad",
   "Duración de la insulina activa": "la duración de la insulina activa",
 };
-function PasanAAutomatico({ actual, destino }: { actual: number; destino: number }) {
+export function PasanAAutomatico({ actual, destino }: { actual: number; destino: number }) {
   const nuevos = PARAMETROS[destino].filter(
     // 0.92.3 (15.ª ronda, senior): un objetivo fijo (Control-IQ) actúa, aunque no se configure.
     (d) =>
@@ -1195,7 +1196,7 @@ function PasanAAutomatico({ actual, destino }: { actual: number; destino: number
   );
 }
 
-function CambioDeSistema({ actual, destino }: { actual: number; destino: number }) {
+export function CambioDeSistema({ actual, destino }: { actual: number; destino: number }) {
   const columnas = [
     { c: actual, rotulo: "Sistema actual" },
     { c: destino, rotulo: "Sistema de destino" },

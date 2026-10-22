@@ -12,7 +12,11 @@ import {
   Printer,
   RotateCcw,
 } from "lucide-react";
-import { CalculadoraInicio } from "../componentes/CalculadoraInicio";
+import {
+  CalculadoraInicio,
+  CambioDeSistema,
+  PasanAAutomatico,
+} from "../componentes/CalculadoraInicio";
 import {
   cambiarCalculadora,
   cambiarHechos,
@@ -431,7 +435,7 @@ function PasosInicio({
 }) {
   const n = Math.min(PASOS_GUIA.length, Math.max(1, paso + 1));
   const p = PASOS_GUIA[n - 1];
-  const { resp, hechos } = useTrabajo();
+  const { resp, hechos, calc } = useTrabajo();
   const setResp = (r: Record<string, string>) => cambiarRespuestas(limpiarRespuestas(r));
   const setHechos = (f: (prev: Set<string>) => Set<string>) => cambiarHechos(f(hechos));
   const ir = (k: number) =>
@@ -533,7 +537,7 @@ function PasosInicio({
       </h3>
       {p.intro && <p className="text-sm text-slate-600">{p.intro}</p>}
       {preguntas.map((q) => (
-        <div key={q.id} className="mt-3">
+        <div key={q.id} className="preguntas-guia mt-3">
           <div className="mb-1 text-sm font-semibold text-slate-800">{q.rotulo}</div>
           <div role="group" aria-label={q.rotulo} className="flex flex-wrap gap-1.5">
             {q.opciones.map((o) => {
@@ -553,6 +557,30 @@ function PasosInicio({
           </div>
         </div>
       ))}
+      {/* 1.0.5 (21.ª ronda, R5): desde otro sistema de asa cerrada, el paso 1 quedaba casi vacío
+          (lo demás va en el paso 2): el sistema actual y lo que cuenta en automático en uno y otro,
+          como en la calculadora (el mismo dato compartido). */}
+      {p.id === "transicion" && resp.pauta === "aid" && sis !== undefined && (
+        <div className="mt-3 space-y-3">
+          <div>
+            <div className="mb-1 text-sm font-semibold text-slate-800">Sistema actual</div>
+            <CasillasSistema
+              unico
+              etiqueta="Sistema actual"
+              seleccion={calc.sistemaPrevio !== null ? [calc.sistemaPrevio] : []}
+              onToggle={(v) => cambiarCalculadora({ sistemaPrevio: v })}
+              nombres={CORTOS}
+              desactivado={sis}
+            />
+          </div>
+          {calc.sistemaPrevio !== null && calc.sistemaPrevio !== sis && (
+            <>
+              <CambioDeSistema actual={calc.sistemaPrevio} destino={sis} />
+              <PasanAAutomatico actual={calc.sistemaPrevio} destino={sis} />
+            </>
+          )}
+        </div>
+      )}
       {piezas.length > 0 && (
         <SistemaDelRecorrido.Provider value={sis}>
           <div className="mt-3 divide-y">
