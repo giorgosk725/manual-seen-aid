@@ -12,11 +12,7 @@ import {
   Printer,
   RotateCcw,
 } from "lucide-react";
-import {
-  CalculadoraInicio,
-  CambioDeSistema,
-  PasanAAutomatico,
-} from "../componentes/CalculadoraInicio";
+import { CalculadoraInicio, CambioDeSistema } from "../componentes/CalculadoraInicio";
 import {
   cambiarCalculadora,
   cambiarHechos,
@@ -505,7 +501,10 @@ function PasosInicio({
       {/* 0.96.0 (16.ª ronda, visual): el paso activo, sin banda rellena: en el ordenador, subrayado
           como una pestaña; en el móvil, su título como texto (paso-tab, index.css). Menos burdeos
           apilado: la fase sigue marcada, el paso y su número ya no van rellenos. */}
-      <ol className="mb-1 grid gap-1.5 sm:mb-3 sm:grid-cols-5" aria-label="Pasos de la fase">
+      <ol
+        className="mb-1 grid gap-1.5 sm:mb-3 sm:grid-cols-5 sm:gap-1 sm:border-b sm:border-[var(--linea)]"
+        aria-label="Pasos de la fase"
+      >
         {PASOS_GUIA.map((x, i) => {
           const on = i === n - 1;
           return (
@@ -574,10 +573,9 @@ function PasosInicio({
             />
           </div>
           {calc.sistemaPrevio !== null && calc.sistemaPrevio !== sis && (
-            <>
-              <CambioDeSistema actual={calc.sistemaPrevio} destino={sis} />
-              <PasanAAutomatico actual={calc.sistemaPrevio} destino={sis} />
-            </>
+            // 1.0.10 (23.ª ronda, R5): solo el cuadro (la frase de debajo lo repetía; en la
+            // calculadora se queda, junto a la pregunta de la programación: decisión del autor).
+            <CambioDeSistema actual={calc.sistemaPrevio} destino={sis} />
           )}
         </div>
       )}

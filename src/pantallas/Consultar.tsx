@@ -202,22 +202,36 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
         <div className="separador no-imprimir mt-4 border-t pt-3">
           {/* 1.0.9 (22.ª ronda, R1): al pie de la rama, otra vez la hoja y el plan (arriba quedaban
               a unos 1000 px tras bajar a la rama). */}
-          <p className="mb-1 flex flex-wrap items-center gap-x-4 text-sm">
+          {/* 1.0.10 (23.ª ronda, R1 y visual): solo en el móvil y la tableta (en el ordenador la
+              pantalla es corta y los de arriba se ven a la vez); sin sistema, los cuatro planes,
+              como arriba (antes, un «Planes de seguridad» genérico: un toque más). */}
+          <p className="mb-1 flex flex-wrap items-center gap-x-4 text-sm lg:hidden">
             <a href={href("pacientes", "hoja", "cetonas")} className={enlacePlan}>
               Hoja para el paciente: cetonas
             </a>
-            <a
-              href={
-                sistemaReciente() !== undefined
-                  ? href("pacientes", "plan", ORDEN_SISTEMAS[sistemaReciente()!])
-                  : href("pacientes")
-              }
-              className={enlacePlan}
-            >
-              {sistemaReciente() !== undefined
-                ? `Plan de seguridad · ${CORTO_SISTEMA[sistemaReciente()!]}`
-                : "Planes de seguridad"}
-            </a>
+            {sistemaReciente() !== undefined ? (
+              <a
+                href={href("pacientes", "plan", ORDEN_SISTEMAS[sistemaReciente()!])}
+                className={enlacePlan}
+              >
+                {`Plan de seguridad · ${CORTO_SISTEMA[sistemaReciente()!]}`}
+              </a>
+            ) : (
+              <span className="flex w-full flex-wrap items-center gap-x-4 text-slate-700">
+                <span className="w-full">Plan de seguridad:</span>
+                <span className="grid w-full grid-cols-2 gap-x-4">
+                  {CORTO_SISTEMA.map((n, c) => (
+                    <a
+                      key={c}
+                      href={href("pacientes", "plan", ORDEN_SISTEMAS[c])}
+                      className={enlacePlan}
+                    >
+                      {n}
+                    </a>
+                  ))}
+                </span>
+              </span>
+            )}
           </p>
           {/* 1.0.9 (22.ª ronda, visual): «Leer en el capítulo», con el nombre corto del apartado,
               como en las demás pantallas. */}

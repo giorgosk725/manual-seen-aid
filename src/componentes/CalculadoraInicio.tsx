@@ -73,7 +73,10 @@ function Paso({
   accion?: ReactNode;
 }) {
   return (
-    <section aria-labelledby={`calc-paso-${n}`} className="scroll-mt-20 space-y-2 lg:scroll-mt-6">
+    <section
+      aria-labelledby={`calc-paso-${n}`}
+      className="order-1 min-w-0 scroll-mt-20 space-y-2 lg:scroll-mt-6 xl:order-none"
+    >
       {/* 0.72.0: cabecera de paso ligera (círculo burdeos); el foco visual, en los resultados. */}
       <div className="separador flex items-center gap-2 border-b pb-1.5">
         <h2 id={`calc-paso-${n}`} tabIndex={-1} className="titulo-seccion flex items-center gap-2">
@@ -546,25 +549,25 @@ export function CalculadoraInicio({
             [5, "Programación"],
             ...(sis !== undefined ? ([[6, "Recambios"]] as const) : []),
           ] as const
-        ).map(([n, t], k, todos) => (
+        ).map(([n, t]) => (
           // 0.97.1 (17.ª ronda, visual y R5): el «·» detrás de cada uno (al partirse la fila, no
           // empieza línea).
           <span key={n} className="inline-flex items-center gap-x-2">
             <button type="button" onClick={() => irAPaso(n)} className={botonIr}>
               {t}
             </button>
-            {k < todos.length - 1 && (
-              <span aria-hidden="true" className="text-slate-300">
-                ·
-              </span>
-            )}
+            {/* 1.0.10 (23.ª ronda, visual): sin «·» (al partirse la fila a 360 px, quedaba
+                colgando al final de la línea); el hueco los separa. */}
           </span>
         ))}
       </nav>
       {/* 0.72.0: en pantallas anchas, los datos a la izquierda y los parámetros de partida a la
           derecha, a la vista mientras se cambian los datos. */}
-      <div className="space-y-5 xl:grid xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start xl:gap-6 xl:space-y-0">
-        <div className="min-w-0 space-y-5">
+      {/* 1.0.10 (revisión de Codex, «datos, opciones y resultado»; 22.ª ronda, R5): por debajo de
+          xl, los datos, el resultado y, debajo, las opciones aplicadas (antes, unos 1400 px de
+          opciones entre los datos y el resultado en el móvil). Desde xl, dos columnas como antes. */}
+      <div className="flex flex-col gap-5 xl:grid xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start xl:gap-6">
+        <div className="contents xl:block xl:min-w-0 xl:space-y-5">
           <Paso n={1} titulo="Pauta previa">
             {/* 0.92.0 (revisión de tarjetas, ★9): chips de dos líneas en tres columnas iguales, con el
                 mismo marcado que el resto de opciones (antes, tarjetas con su propio borde). */}
@@ -646,105 +649,8 @@ export function CalculadoraInicio({
                     max={LIMITES.peso}
                   />
                 </div>
-                {/* 0.88.1 (duodécima ronda, R5): en el móvil, con los datos completos, el resultado a un
-                    toque desde aquí (queda unos 950 px más abajo). */}
-                {resumen.length > 0 && (
-                  <IrAResultado
-                    texto={`Parámetros iniciales: ${resumen.join(" · ")}`}
-                    onIr={() => resultados.current?.scrollIntoView({ block: "start" })}
-                    onVisible={setEnlaceVisible}
-                  />
-                )}
-                <Opciones
-                  etiqueta="Ratio y factor de sensibilidad"
-                  rejilla
-                  opciones={[
-                    { v: "no", t: "Sin ratio ni factor propios: reglas del 450 y del 1700" },
-                    { v: "si", t: "Con ratio y factor propios ya ajustados" },
-                  ]}
-                  valor={d.referencia ? "si" : "no"}
-                  onChange={(v) => set({ referencia: v === "si" })}
-                />
-                {d.referencia && <p className="text-xs text-slate-600">{PARTIDA_MDI}.</p>}
-                <Opciones
-                  etiqueta="Control previo"
-                  opciones={CONTROLES.map((c) => ({ v: c.id, t: c.texto }))}
-                  valor={d.control}
-                  onChange={elegirControl}
-                />
-                <div>
-                  <label
-                    htmlFor="calc-reduccion"
-                    className="mb-1 flex flex-wrap items-baseline justify-between gap-x-2 text-sm font-semibold text-slate-800"
-                  >
-                    <span>
-                      Reducción de la DTD{" "}
-                      <Marca
-                        modificado={d.tocado.reduccion}
-                        onRestablecer={() =>
-                          set({
-                            reduccion: reduccionDePartida(d.control, d.ultralarga),
-                            tocado: { ...d.tocado, reduccion: false },
-                          })
-                        }
-                      />
-                    </span>
-                    <span className="text-lg font-extrabold tabular-nums text-slate-900">
-                      {d.reduccion} %
-                    </span>
-                  </label>
-                  <input
-                    id="calc-reduccion"
-                    type="range"
-                    min={0}
-                    max={20}
-                    step={5}
-                    value={d.reduccion}
-                    onChange={(e) =>
-                      set({
-                        reduccion: Number(e.target.value),
-                        tocado: { ...d.tocado, reduccion: true },
-                      })
-                    }
-                    className="h-11 w-full"
-                    // 1.0.1 (19.ª ronda, visual): en gris oscuro (el burdeos se sumaba a lo elegido).
-                    style={{ accentColor: "#404040" }}
-                  />
-                  <div
-                    className="flex justify-between text-xs tabular-nums text-slate-500"
-                    aria-hidden="true"
-                  >
-                    <span>0 %</span>
-                    <span>5 %</span>
-                    <span>10 %</span>
-                    <span>15 %</span>
-                    <span>20 %</span>
-                  </div>
-                  <p className="mt-1 text-sm text-slate-700">{REGLAS.reduccion.texto}.</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-700">
-                    Punto de partida dentro del intervalo del capítulo; puede ajustarse.
-                    {d.control === "bueno" &&
-                      d.ultralarga &&
-                      !d.tocado.reduccion &&
-                      " Con glargina U-300 o degludec y buen control previo, se parte del 20 %, por el riesgo de hipoglucemia de los primeros días."}
-                  </p>
-                </div>
-                <label className="flex min-h-11 items-center gap-2 text-sm text-slate-800">
-                  <input
-                    type="checkbox"
-                    checked={d.ultralarga}
-                    onChange={(e) =>
-                      set({
-                        ultralarga: e.target.checked,
-                        ...(d.control === "bueno" && !d.tocado.reduccion
-                          ? { reduccion: reduccionDePartida("bueno", e.target.checked) }
-                          : {}),
-                      })
-                    }
-                    className="h-6 w-6 shrink-0 accent-[#8E254E]"
-                  />
-                  La basal previa es glargina U-300 o degludec
-                </label>
+                {/* 1.0.10 (revisión de Codex y 22.ª ronda, R5): sin el anticipo del resultado: por
+                    debajo de la pantalla ancha, el resultado va ya justo debajo de los datos. */}
               </div>
             ) : (
               <div className="space-y-4">
@@ -844,7 +750,7 @@ export function CalculadoraInicio({
                 )}
               </div>
             )}
-            {(ev.calcula.basal || ev.calcula.ratioFactor || pideObjetivo) && (
+            {!mdi && (ev.calcula.basal || ev.calcula.ratioFactor || pideObjetivo) && (
               <div className="grid gap-3 sm:grid-cols-3">
                 {ev.calcula.basal && (
                   <Opciones
@@ -888,10 +794,159 @@ export function CalculadoraInicio({
               </div>
             )}
           </Paso>
+          {mdi && (
+            <section
+              id="calc-opciones"
+              aria-labelledby="calc-opciones-titulo"
+              className="order-3 min-w-0 scroll-mt-20 space-y-4 lg:scroll-mt-6 xl:order-none"
+            >
+              <div className="separador border-b pb-1.5">
+                <h2 id="calc-opciones-titulo" tabIndex={-1} className="titulo-seccion">
+                  Opciones aplicadas al cálculo
+                </h2>
+              </div>
+              <Opciones
+                etiqueta="Ratio y factor de sensibilidad"
+                rejilla
+                opciones={[
+                  { v: "no", t: "Sin ratio ni factor propios: reglas del 450 y del 1700" },
+                  { v: "si", t: "Con ratio y factor propios ya ajustados" },
+                ]}
+                valor={d.referencia ? "si" : "no"}
+                onChange={(v) => set({ referencia: v === "si" })}
+              />
+              {d.referencia && <p className="text-xs text-slate-600">{PARTIDA_MDI}.</p>}
+              <Opciones
+                etiqueta="Control previo"
+                opciones={CONTROLES.map((c) => ({ v: c.id, t: c.texto }))}
+                valor={d.control}
+                onChange={elegirControl}
+              />
+              {/* 1.0.10 (23.ª ronda, R5): la casilla, antes de la reducción que cambia al marcarla. */}
+              <label className="flex min-h-11 items-center gap-2 text-sm text-slate-800">
+                <input
+                  type="checkbox"
+                  checked={d.ultralarga}
+                  onChange={(e) =>
+                    set({
+                      ultralarga: e.target.checked,
+                      ...(d.control === "bueno" && !d.tocado.reduccion
+                        ? { reduccion: reduccionDePartida("bueno", e.target.checked) }
+                        : {}),
+                    })
+                  }
+                  className="h-6 w-6 shrink-0 accent-[#8E254E]"
+                />
+                La basal previa es glargina U-300 o degludec
+              </label>
+              <div>
+                <label
+                  htmlFor="calc-reduccion"
+                  className="mb-1 flex flex-wrap items-baseline justify-between gap-x-2 text-sm font-semibold text-slate-800"
+                >
+                  <span>
+                    Reducción de la DTD{" "}
+                    <Marca
+                      modificado={d.tocado.reduccion}
+                      onRestablecer={() =>
+                        set({
+                          reduccion: reduccionDePartida(d.control, d.ultralarga),
+                          tocado: { ...d.tocado, reduccion: false },
+                        })
+                      }
+                    />
+                  </span>
+                  <span className="text-lg font-extrabold tabular-nums text-slate-900">
+                    {d.reduccion} %
+                  </span>
+                </label>
+                <input
+                  id="calc-reduccion"
+                  type="range"
+                  min={0}
+                  max={20}
+                  step={5}
+                  value={d.reduccion}
+                  onChange={(e) =>
+                    set({
+                      reduccion: Number(e.target.value),
+                      tocado: { ...d.tocado, reduccion: true },
+                    })
+                  }
+                  className="h-11 w-full"
+                  // 1.0.1 (19.ª ronda, visual): en gris oscuro (el burdeos se sumaba a lo elegido).
+                  style={{ accentColor: "#404040" }}
+                />
+                <div
+                  className="flex justify-between text-xs tabular-nums text-slate-500"
+                  aria-hidden="true"
+                >
+                  <span>0 %</span>
+                  <span>5 %</span>
+                  <span>10 %</span>
+                  <span>15 %</span>
+                  <span>20 %</span>
+                </div>
+                <p className="mt-1 text-sm text-slate-700">{REGLAS.reduccion.texto}.</p>
+                <p className="mt-1 text-sm font-semibold text-slate-700">
+                  Punto de partida dentro del intervalo del capítulo; puede ajustarse.
+                  {d.control === "bueno" &&
+                    d.ultralarga &&
+                    !d.tocado.reduccion &&
+                    " Con glargina U-300 o degludec y buen control previo, se parte del 20 %, por el riesgo de hipoglucemia de los primeros días."}
+                </p>
+              </div>
+              {(ev.calcula.basal || ev.calcula.ratioFactor || pideObjetivo) && (
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {ev.calcula.basal && (
+                    <Opciones
+                      etiqueta="Basal, % de la DTD"
+                      opciones={[40, 45, 50].map((v) => ({ v, t: `${v} %` }))}
+                      valor={d.basalPct}
+                      onChange={(v) => set({ basalPct: v })}
+                    />
+                  )}
+                  {ev.calcula.ratioFactor && (
+                    <Opciones
+                      etiqueta="Factor de sensibilidad"
+                      rejilla
+                      marca={<Marca modificado={d.tocado.regla} />}
+                      opciones={[
+                        { v: 1700 as const, t: "Regla del 1700" },
+                        { v: 1800 as const, t: "Regla del 1800" },
+                      ]}
+                      valor={d.regla}
+                      onChange={(v) => set({ regla: v, tocado: { ...d.tocado, regla: true } })}
+                    />
+                  )}
+                  {pideObjetivo && (
+                    <Opciones
+                      etiqueta="Objetivo del calculador de bolos manual"
+                      marca={<Marca modificado={d.tocado.objetivo} />}
+                      rejilla
+                      opciones={OBJETIVOS_CALCULADOR.map((o) => ({
+                        v: o.mgdl,
+                        t: (
+                          <span>
+                            {o.mgdl} mg/dl
+                            <span className="block text-xs font-normal opacity-80">{o.texto}</span>
+                          </span>
+                        ),
+                      }))}
+                      valor={d.objetivo}
+                      onChange={(v) =>
+                        set({ objetivo: v, tocado: { ...d.tocado, objetivo: true } })
+                      }
+                    />
+                  )}
+                </div>
+              )}
+            </section>
+          )}
         </div>
         <div
           ref={resultados}
-          className="min-w-0 scroll-mt-4 xl:sticky xl:top-6 xl:max-h-[calc(100vh-3rem)] xl:overflow-y-auto"
+          className="order-2 min-w-0 scroll-mt-4 xl:order-none xl:sticky xl:top-6 xl:max-h-[calc(100vh-3rem)] xl:overflow-y-auto"
         >
           <Paso
             n={4}
@@ -978,6 +1033,35 @@ export function CalculadoraInicio({
             {ev.lista && !ev.calcula.basal && !ev.calcula.ratioFactor && (
               <p className="casilla px-3 py-2 text-sm text-slate-800">
                 Se traslada la programación {previa}: no hay nada que calcular.
+              </p>
+            )}
+            {/* 1.0.10 (revisión de Codex): las opciones con que sale el resultado, a la vista y con
+                su vía de edición (en el móvil, las opciones van debajo del resultado). */}
+            {mdi && ev.lista && (
+              <p className="casilla px-3 py-2 text-sm leading-snug text-slate-800">
+                <span className="font-semibold">Opciones aplicadas: </span>
+                {[
+                  CONTROLES.find((x) => x.id === d.control)?.texto.toLowerCase(),
+                  `reducción del ${d.reduccion} %`,
+                  d.ultralarga ? "basal previa glargina U-300 o degludec" : null,
+                  ev.calcula.basal ? `basal ${d.basalPct} % de la DTD` : null,
+                  ev.calcula.ratioFactor
+                    ? `reglas del 450 y del ${d.regla}`
+                    : "ratio y factor propios",
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+                .{" "}
+                <button
+                  type="button"
+                  onClick={() => {
+                    document.getElementById("calc-opciones")?.scrollIntoView({ block: "start" });
+                    document.getElementById("calc-opciones-titulo")?.focus({ preventScroll: true });
+                  }}
+                  className="tap-44 inline font-semibold underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700 xl:hidden"
+                >
+                  Cambiar opciones
+                </button>
               </p>
             )}
             {ev.lista && ev.calcula.ratioFactor && (

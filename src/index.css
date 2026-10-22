@@ -249,6 +249,26 @@
       font-weight: 700;
     }
   }
+  /* 1.0.10 (22.ª ronda, visual, P4): desde sm, los pasos de una fase como pestañas (subrayado
+     sobre una línea capilar), no cajas iguales a las del sistema y la fase: tres niveles se
+     distinguen (caja, caja, pestaña). */
+  @media (min-width: 640px) {
+    .chip.paso-tab {
+      border-color: transparent;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .chip.paso-tab:hover {
+      background: var(--superficie);
+    }
+    .chip.paso-tab[aria-current] {
+      border-color: transparent;
+      background: transparent;
+      box-shadow: inset 0 -2px 0 var(--acento);
+      font-weight: 700;
+    }
+  }
   /* Número de paso. */
   .num {
     display: inline-flex;
@@ -1225,6 +1245,7 @@ h3[tabindex="-1"]:focus-visible,
    calculadora (antes, relleno burdeos con letra blanca). */
 .formulario-calc .chip[aria-pressed="true"],
 .preguntas-guia .chip[aria-pressed="true"],
+.chip-sistema[aria-pressed="true"],
 .barra-pegada .chip[aria-pressed="true"] {
   background: var(--acento-suave);
   border-color: var(--acento);

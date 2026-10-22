@@ -103,7 +103,8 @@ test.describe("Propuestas del 12-10 (0.43.0)", () => {
     // 0.74.2: todos los momentos abiertos de entrada, cada uno con su línea de fuente.
     const hipo = guion.locator("h3 button", { hasText: /Hipoglucemia: hidratos/ });
     await expect(hipo).toHaveAttribute("aria-expanded", "true");
-    await expect(guion.getByText(/suele requerir menos hidratos/)).toBeVisible();
+    // 1.0.10 (23.ª ronda, adjunto): el párrafo b7 (sin el b6, «Dos reglas operativas…»).
+    await expect(guion.getByText(/cantidades menores que la regla clásica/)).toBeVisible();
     await expect(guion.getByText(/^Fuente:/)).toHaveCount(6);
   });
 

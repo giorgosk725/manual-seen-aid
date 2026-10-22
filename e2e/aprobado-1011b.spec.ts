@@ -6,6 +6,8 @@ import { retirado } from "../src/edicion";
 test.describe("Cierre de la tanda del 11-10 (0.39.0)", () => {
   test("Comparar los parámetros: sin «Cómo leer esta tabla» ni «borrador»", async ({ page }) => {
     await page.goto("/#/sistemas/todos/parametros");
+    // 1.0.10: en el ordenador también empieza «Por parámetro»; las tarjetas, en «Por sistema».
+    await page.getByRole("button", { name: "Por sistema" }).click();
     await expect(page.getByText(/Tasa basal programada/).first()).toBeVisible();
     await expect(page.getByText("Cómo leer esta tabla")).toHaveCount(0);
     await expect(page.getByText(/borrador pendiente de revisión/)).toHaveCount(0);

@@ -13,9 +13,21 @@ export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-23",
+    ambito: "app",
+    titulo: `Complemento interactivo ${VERSION_APP} — Iniciación por partes y vigesimotercera ronda`,
+    detalle: [
+      "Iniciación: en el móvil y la tableta, el resultado justo después de los datos y las opciones del cálculo debajo, con una línea «Opciones aplicadas» y «Cambiar opciones» (antes, unos 1400 px de opciones entre los datos y el resultado); en el ordenador, como antes. La casilla de U-300, antes de la reducción que cambia. En Fases, los pasos de cada fase como pestañas.",
+      "Gestación: sin las franjas de objetivos cuando el texto del capítulo, justo debajo, da las mismas cifras.",
+      "Sistemas: en el ordenador, «Comparar los parámetros» empieza también «Por parámetro» (con los valores); sin el enlace que repetía la pestaña «Ajuste práctico»; el nombre de cada sistema en «Por parámetro», con aspecto de enlace a su ficha. El selector de un sistema conserva el foco al cambiar con las flechas.",
+      "Situaciones: «Según el formato», con título visible en Interrupción; filas «Ir a» sin el «·» que quedaba colgando; en la Figura 3, la hoja y el plan al pie solo en el móvil y con los cuatro planes; en el ejercicio, sin el párrafo «Dos reglas operativas…» que dejaba la segunda sin decir.",
+      "Buscar: el sistema elegido en las respuestas, con fondo suave y borde (se veía el punto de su color). Fases: sin repetir el objetivo fijo de Control-IQ ni la frase bajo el cuadro del cambio de sistema. Bibliografía: la cita de Brown 2021 completa, con título y doi.",
+    ],
+  },
+  {
     fecha: "2026-10-22",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — vigesimosegunda ronda y revisión de la 1.0.8`,
+    titulo: "Complemento interactivo 1.0.9 — vigesimosegunda ronda y revisión de la 1.0.8",
     detalle: [
       "Sistemas: la Tabla 3 en su pestaña, «Ajuste práctico»; en el móvil, «Los cuatro» empieza plegado también en Parámetros y Modos (un solo rótulo, «Elegir sistemas»), la vista «Por sistema» queda en la dirección y sus parámetros llevan a su fila de la ficha. El Resumen dice «Localización del algoritmo» (antes, «Funciona en»), con el rótulo encima del dato y sin huecos dentro de las tarjetas.",
       "Situaciones: Figura 3, Hipoglucemia e Interrupción con «‹ Otra situación», que conserva el sistema; Interrupción lleva a «Según el formato» desde «Ir a»; al pie de la Figura 3, otra vez la hoja de cetonas y el plan. En hospital, la condición de los objetivos encima de las franjas, sin repetir sus cifras.",

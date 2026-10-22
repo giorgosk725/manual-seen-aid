@@ -3,7 +3,7 @@
    el nombre corto en el móvil y el completo en pantallas grandes, salvo que se den nombres.
    En el móvil, las cuatro en una fila (marca y punto arriba, nombre debajo) y lo demás («Los
    cuatro», la pista) en la fila siguiente; desde sm, todo seguido como antes (sm:contents). */
-import { useRef, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useRef, type KeyboardEvent, type ReactNode } from "react";
 import { Check } from "lucide-react";
 import { TABLAS } from "../contenido";
 import { SEEN, SISTEMA_HEX } from "../tokens";
@@ -13,6 +13,11 @@ import { NombreSistema } from "./NombreSistema";
 /* En la casilla estrecha del móvil, el nombre puede ir en dos líneas, pero un final corto
    («Omnipod 5», «CamAPS FX») no se queda solo: espacio duro antes de él. */
 const pegarFinal = (t: string) => t.replace(/ (\S{1,2})$/, "\u00a0$1");
+
+/* 1.0.10 (23.ª ronda, R3): la opción elegida con una flecha, para devolverle el foco cuando el
+   cambio de ruta vuelve a pintar el selector (antes, el foco acababa en el título de la pantalla
+   y las flechas siguientes ya no hacían nada). */
+let focoPendiente: { etiqueta: string; c: number } | null = null;
 
 export function CasillasSistema({
   seleccion,
@@ -74,6 +79,7 @@ export function CasillasSistema({
             : undefined;
     if (destino === undefined) return;
     e.preventDefault();
+    focoPendiente = { etiqueta, c: destino };
     if (!seleccion.includes(destino)) onToggle(destino);
     const enfocar = () =>
       grupo.current?.querySelector<HTMLButtonElement>(`[data-columna="${destino}"]`)?.focus();
@@ -81,6 +87,18 @@ export function CasillasSistema({
     // Si elegir cambia de pantalla, el foco vuelve a la opción cuando se pinta de nuevo.
     window.setTimeout(enfocar, 0);
   };
+  // Antes que la pantalla (los efectos del hijo van primero), el foco a la opción pendiente: así
+  // la Shell ve el foco dentro del contenido y no lo lleva al título.
+  useEffect(() => {
+    if (!focoPendiente || focoPendiente.etiqueta !== etiqueta) return;
+    const b = grupo.current?.querySelector<HTMLButtonElement>(
+      `[data-columna="${focoPendiente.c}"]`,
+    );
+    if (b) {
+      b.focus({ preventScroll: true });
+      focoPendiente = null;
+    }
+  });
   return (
     <div
       ref={grupo}

@@ -932,3 +932,11 @@ export const ELECCION_TEXTO = {
     "No puede basarse solo en la eficacia media de los ensayos ni en una jerarquía tecnológica rígida.",
   p: 6,
 };
+
+/* 1.0.10 (22.ª ronda, adjunto): ¿dice ya el texto literal de debajo todas las franjas de una
+   población, cifra a cifra? (gestación: «TIRp 63–140 mg/dl >70 %…» en el apartado 10). Entonces
+   las franjas sobran: el texto va justo debajo, con sus cifras destacadas. */
+export function franjasEnTexto(id: string, yaEnTexto: (t: string) => boolean): boolean {
+  const p = OBJETIVOS_MCG.find((x) => x.id === id);
+  return !!p && p.franjas.every((f) => yaEnTexto(f.franja) && yaEnTexto(f.objetivo));
+}

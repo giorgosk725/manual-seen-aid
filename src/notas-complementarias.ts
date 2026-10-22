@@ -133,7 +133,8 @@ export const TANDEM_GESTACION: Complemento = {
    donde se usan (sin DOI: no consta en el proyecto). */
 export const FUENTES_COMPLEMENTARIAS: { cita: string; uso: string }[] = [
   {
-    cita: "Brown SA, et al. Diabetes Care 2021;44(7):1630-40.",
+    // 1.0.10 (23.ª ronda, adjunto): la cita completa, comprobada en PubMed (PMID 34099518).
+    cita: "Brown SA, Forlenza GP, Bode BW, Pinsker JE, Levy CJ, Criego AB, et al. Multicenter trial of a tubeless, on-body automated insulin delivery system with customizable glycemic targets in pediatric and adult participants with type 1 diabetes. Diabetes Care. 2021;44(7):1630–1640. doi:10.2337/dc21-0172.",
     uso: "Nota sobre la basal adaptativa de Omnipod 5 (SmartAdjust), junto a la Tabla 1.",
   },
   {

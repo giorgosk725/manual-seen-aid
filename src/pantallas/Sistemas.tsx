@@ -1860,7 +1860,9 @@ function Comparacion({
             <>
               {/* 0.77.0: qué parámetros actúan en automático en cada sistema, en una tarjeta
                   por sistema (Tablas 1 y 3; src/fichaOperativa.ts); debajo, la Tabla 3. */}
-              <div className="no-imprimir mb-4 xl:hidden">
+              {/* 1.0.10 (23.ª ronda, senior): el conmutador también en el ordenador, con «Por
+                  parámetro» de entrada (antes, solo las tarjetas, sin cifras). */}
+              <div className="no-imprimir mb-4">
                 <div className="mb-3 flex flex-wrap items-center gap-1.5">
                   <div role="group" aria-label="Ver los parámetros" className="flex gap-3">
                     <button
@@ -1880,13 +1882,8 @@ function Comparacion({
                       Por sistema
                     </button>
                   </div>
-                  <a
-                    href={href("sistemas", ids.length ? ids.join("+") : "todos", "ajuste")}
-                    className="tap-44 ml-auto inline-flex min-h-11 items-center gap-1 text-[13px] font-semibold text-slate-600 hover:text-slate-900 hover:underline"
-                  >
-                    Tabla 3: ajuste práctico
-                    <ArrowRight size={14} aria-hidden="true" />
-                  </a>
+                  {/* 1.0.10 (23.ª ronda, visual y senior): sin el enlace a la Tabla 3: su pestaña,
+                      «Ajuste práctico», va justo encima. */}
                 </div>
                 {!porSistema && (
                   <AspectoEntreSistemas
@@ -1909,7 +1906,7 @@ function Comparacion({
               </div>
               {/* 0.87.1 (undécima ronda, adjunto): con dos sistemas, dos columnas (antes, media fila vacía). */}
               <ul
-                className={`mb-4 gap-3 sm:grid-cols-2 ${cols.length > 2 ? "xl:grid-cols-4" : ""} ${porSistema ? "grid" : "hidden xl:grid print:grid"}`}
+                className={`mb-4 gap-3 sm:grid-cols-2 ${cols.length > 2 ? "xl:grid-cols-4" : ""} ${porSistema ? "grid" : "hidden print:grid"}`}
               >
                 {cols.map((c) => {
                   const h = SISTEMA_HEX[c];
@@ -1990,13 +1987,6 @@ function Comparacion({
                 className="-mt-2 mb-4"
                 fuentes={fuentesDeDatos(cols.flatMap((c) => PARAMETROS[c]))}
               />
-              <a
-                href={href("sistemas", ids.length ? ids.join("+") : "todos", "ajuste")}
-                className="no-imprimir hidden min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline xl:inline-flex"
-              >
-                Cómo se ajusta cada parámetro en cada sistema (Tabla 3, ajuste práctico)
-                <ArrowRight size={14} aria-hidden="true" />
-              </a>
             </>
           )}
           {seccion === "ajuste" && (

@@ -39,7 +39,7 @@ test.describe("Ronda 19", () => {
     await page.goto("/#/consultar/situacion/gestacion:control-iq");
     await expect(
       page
-        .getByText("Control-IQ / Control-IQ+: Objetivo fijo no configurable (Tabla 3)")
+        .getByText("Control-IQ / Control-IQ+: Objetivo fijo no configurable")
         .filter({ visible: true }),
     ).toBeVisible();
   });

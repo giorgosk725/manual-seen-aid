@@ -34,11 +34,25 @@ test.describe("V95-03 · selector de sistemas al cambiar de anchura", () => {
         );
       // En el móvil, la ficha de un sistema empieza con el selector plegado (decisión previa).
       await expect(page.locator(".barra-pegada")).toBeVisible();
-      for (const w of [768, 1440, 393]) {
+      for (const w of [768, 1440]) {
         await page.setViewportSize({ width: w, height: 852 });
         await expect.poll(visibles, `${w} px`).toBeGreaterThanOrEqual(4);
         expect(page.url()).toBe(url);
       }
+      // 1.0.9 (22.ª ronda, R1): de vuelta al móvil, plegado otra vez como al entrar, y usable: el
+      // control que lo abre está a la vista y al tocarlo salen los sistemas.
+      await page.setViewportSize({ width: 393, height: 852 });
+      const abrir = page
+        .getByRole("button", { name: /Cambiar de sistema o comparar|Cambiar$|Elegir sistemas/ })
+        .filter({ visible: true })
+        .first();
+      await page.waitForTimeout(300);
+      if ((await visibles()) < 4) {
+        await expect(abrir).toBeVisible();
+        await abrir.click();
+      }
+      await expect.poll(visibles, "393 px tras abrir").toBeGreaterThanOrEqual(4);
+      expect(page.url()).toBe(url);
     });
 });
 
@@ -140,7 +154,11 @@ test.describe("Entrega C · recorridos móviles", () => {
     await page.getByRole("button", { name: "Por sistema" }).click();
     await expect(page).toHaveURL(/parametros:por-sistema$/);
     await expect(page.getByText("Actúan en automático").first()).toBeVisible();
-    await page.getByRole("link", { name: /Tabla 3: ajuste práctico/ }).click();
+    // 1.0.10: la Tabla 3, por su pestaña (sin el enlace que la repetía).
+    await page
+      .getByRole("navigation", { name: "Sección" })
+      .getByRole("link", { name: /^Ajuste/ })
+      .click();
     await expect(page).toHaveURL(/#\/sistemas\/todos\/ajuste$/);
     await expect(page.locator("#tabla-3-comparada")).toBeVisible();
   });

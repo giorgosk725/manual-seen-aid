@@ -77,6 +77,8 @@ test.describe("Ronda 22 · situaciones y comparación", () => {
     await page.goto("/#/consultar/interrupcion");
     await page.getByRole("button", { name: "Según el formato" }).click();
     await expect(page.locator("#interrupcion-formato")).toBeInViewport();
+    // 1.0.10: al pie, solo en el móvil (en el ordenador se ven los de arriba a la vez).
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/#/consultar/figura-3");
     await expect(page.getByRole("link", { name: "Hoja para el paciente: cetonas" })).toHaveCount(2);
   });

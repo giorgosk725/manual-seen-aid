@@ -11,6 +11,7 @@ import { AlertTriangle, ArrowRight, Check, ChevronLeft, ChevronRight, Siren } fr
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, rutaDeTabla } from "../contenido";
 import { INTERRUPCION_LINEA } from "../contenido/diagramas";
 import { InterrupcionPantalla, ObjetivosDePoblacion } from "../componentes/Diagramas";
+import { franjasEnTexto } from "../contenido/diagramas";
 import {
   GUION,
   SIS_IDS,
@@ -834,22 +835,24 @@ export function SituacionSistema({
                 </section>
               )}
               {/* Los objetivos de MCG de esa población, a la vista (antes, un enlace al pie). */}
-              {guia.enlaces
-                .map((l) => /^#\/visual\/objetivos-mcg\/([a-z-]+)$/.exec(l.ruta)?.[1])
-                .filter((x): x is string => !!x)
-                .map((pob) => (
-                  <section key={pob} aria-label="Objetivos de MCG" className="tarjeta p-4">
-                    <ObjetivosDePoblacion
-                      id={pob}
-                      yaEnTexto={(t) => {
-                        const literal = guia.guion
-                          .flatMap((m) => piezasDe(m).flatMap((pz) => textosDePieza(pz)))
-                          .join(" ");
-                        return literal.toLowerCase().includes(t.replace(/\.$/, "").toLowerCase());
-                      }}
-                    />
-                  </section>
-                ))}
+              {(() => {
+                // Sin espacios ni mayúsculas para comparar («> 70 %» = «>70 %»).
+                const plano = (t: string) => t.toLowerCase().replace(/\s+/g, "");
+                const literal = plano(
+                  guia.guion
+                    .flatMap((m) => piezasDe(m).flatMap((pz) => textosDePieza(pz)))
+                    .join(" "),
+                );
+                const yaEnTexto = (t: string) => literal.includes(plano(t.replace(/\.$/, "")));
+                return guia.enlaces
+                  .map((l) => /^#\/visual\/objetivos-mcg\/([a-z-]+)$/.exec(l.ruta)?.[1])
+                  .filter((x): x is string => !!x && !franjasEnTexto(x, yaEnTexto))
+                  .map((pob) => (
+                    <section key={pob} aria-label="Objetivos de MCG" className="tarjeta p-4">
+                      <ObjetivosDePoblacion id={pob} yaEnTexto={yaEnTexto} />
+                    </section>
+                  ));
+              })()}
               <GuionVista
                 momentos={guia.guion}
                 clave={guia.id}

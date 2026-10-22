@@ -437,12 +437,17 @@ export function AspectoEntreSistemas({
               style={{ ["--sis" as string]: h.strong }}
             >
               <dt className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                {/* 1.0.10 (23.ª ronda, R3): que se vea que lleva a la ficha (antes, sin subrayado
+                    ni flecha) y con zona de toque de 44 px. */}
                 <a
                   href={ficha(c, d)}
-                  className="titulo-tarjeta tap-44 inline-block hover:underline"
+                  className="titulo-tarjeta tap-44 inline-flex min-h-11 items-center gap-1 underline decoration-[var(--linea-fuerte)] decoration-dotted underline-offset-4 hover:decoration-solid"
                   style={{ color: h.ink }}
                 >
                   {nombre(c)}
+                  <span aria-hidden="true" className="no-underline">
+                    ›
+                  </span>
                 </a>
                 {d.auto && (
                   <span

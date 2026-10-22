@@ -23,9 +23,9 @@ test.describe("Ronda 21", () => {
     await paso.getByRole("button", { name: "Otro sistema de asa cerrada" }).click();
     await paso.getByRole("radio", { name: /MiniMed 780G/ }).click();
     await expect(paso.locator("#calc-cambio")).toBeVisible();
-    await expect(
-      paso.getByText("no actúan en automático; en Control-IQ / Control-IQ+, sí."),
-    ).toBeVisible();
+    await expect(paso.locator('section[aria-labelledby="calc-cambio"]')).toContainText(
+      "Factor de sensibilidad",
+    );
   });
 
   test("situación en el móvil: «Otra situación» lleva a la lista con el sistema", async ({

@@ -196,11 +196,12 @@ const EJERCICIO_COMUN: Momento[] = [
   { rotulo: "Efecto según el tipo de ejercicio", apartado: S, bloque: "b19", k: [1] },
 ];
 const EJERCICIO_FINAL: Momento[] = [
+  // 1.0.10 (23.ª ronda, adjunto): sin el párrafo b6 («Dos reglas operativas merecen mención…
+  // La primera es…»: en el ejercicio la segunda regla no salía); el b7 se entiende solo.
   {
     rotulo: "Hipoglucemia: hidratos de carbono y conducta en asa cerrada",
     apartado: E,
-    bloque: "b6",
-    mas: [{ apartado: E, bloque: "b7" }],
+    bloque: "b7",
   },
   {
     rotulo: "Deportes de contacto, acuáticos y desconexión",

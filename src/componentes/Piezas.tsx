@@ -234,12 +234,16 @@ function PiezaVistaBase({
                 {/* 1.0.1 (19.ª ronda, adjunto): con un sistema cuyo objetivo no se configura
                     (Control-IQ, Tabla 3), dicho aquí: la recomendación general parecía decir que
                     sí (la ficha y la hoja ya lo dicen). */}
-                {objetivoNoConfigurable(f.etiqueta, sis ?? delRecorrido) && (
-                  <p className="mt-1.5 text-sm font-semibold text-slate-800">
-                    {CORTO_SISTEMA[(sis ?? delRecorrido)!]}:{" "}
-                    {objetivoNoConfigurable(f.etiqueta, sis ?? delRecorrido)} (Tabla 3)
-                  </p>
-                )}
+                {/* 1.0.10 (23.ª ronda, R5 y adjunto): no en Fases, donde la fila de la Tabla 3
+                    va en el mismo paso (salía tres veces); sin «(Tabla 3)» en línea: la fuente
+                    va al pie. */}
+                {delRecorrido === undefined &&
+                  sis !== undefined &&
+                  objetivoNoConfigurable(f.etiqueta, sis) && (
+                    <p className="mt-1.5 text-sm font-semibold text-slate-800">
+                      {CORTO_SISTEMA[sis]}: {objetivoNoConfigurable(f.etiqueta, sis)}
+                    </p>
+                  )}
               </div>
             )}
             {t.columnas.slice(1).map((col, k) => (

@@ -1433,7 +1433,7 @@ function InterrupcionLinea() {
           guardia, quedaba a unas 2,4 pantallas). */}
       <nav
         aria-label="Casos de la interrupción"
-        className="no-imprimir -my-1 flex flex-wrap items-center gap-x-2 gap-y-0 text-[13px]"
+        className="no-imprimir -my-1 flex flex-wrap items-center gap-x-3 gap-y-0 text-[13px]"
       >
         <span className="text-slate-600">Ir a:</span>
         {(
@@ -1443,7 +1443,7 @@ function InterrupcionLinea() {
             // 1.0.9 (22.ª ronda, R1): lo propio de la bomba o del pod quedaba a unos 2400 px.
             ["interrupcion-formato", "Según el formato"],
           ] as const
-        ).map(([id, t], k) => (
+        ).map(([id, t]) => (
           <span key={id} className="inline-flex items-center gap-x-2">
             <button
               type="button"
@@ -1460,11 +1460,6 @@ function InterrupcionLinea() {
             >
               {t}
             </button>
-            {k < 2 && (
-              <span aria-hidden="true" className="text-slate-300">
-                ·
-              </span>
-            )}
           </span>
         ))}
       </nav>
@@ -1520,7 +1515,9 @@ function InterrupcionLinea() {
         id="interrupcion-formato"
         className="tarjeta grid scroll-mt-20 gap-x-6 gap-y-3 p-4 md:grid-cols-2 lg:scroll-mt-6"
       >
-        <Sub className="sr-only">Según el formato</Sub>
+        {/* 1.0.10 (23.ª ronda, R1 y visual): título visible, como los otros dos casos (desde
+            «Ir a» se llegaba a una caja sin encabezado). */}
+        <Sub className="md:col-span-2">Según el formato</Sub>
         <div className="text-sm leading-snug text-slate-800">
           <span className="rotulo mb-1 block">Pod</span>
           <p>

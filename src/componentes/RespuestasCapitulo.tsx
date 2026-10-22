@@ -188,7 +188,14 @@ function Chip({
   children: ReactNode;
 }) {
   return (
-    <button type="button" aria-pressed={on} onClick={onClick} className="chip tap-44 text-xs">
+    // 1.0.10 (23.ª ronda, visual): el sistema elegido, con la receta del selector de sistemas
+    // (fondo suave y borde burdeos): sobre el relleno no se veía el punto de su color.
+    <button
+      type="button"
+      aria-pressed={on}
+      onClick={onClick}
+      className="chip chip-sistema tap-44 text-xs"
+    >
       {sis !== undefined && sis >= 0 && (
         <span
           aria-hidden="true"
