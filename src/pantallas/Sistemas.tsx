@@ -585,6 +585,18 @@ export function FichaSistema({
   const ref = useRef<HTMLDivElement>(null);
   // 0.85.1 (novena ronda, R3): Ctrl+P imprime la ficha igual que «Imprimir la ficha».
   useImprimirConTeclado(ref);
+  // 1.0.0 (18.ª ronda, senior): en papel, cada cara dice de qué sistema es (en el margen de
+  // arriba, con @page; suelta del grapado, la cara 2 o 3 no lo decía).
+  const nombreImpreso = s?.name.replace(/"/g, "") ?? "";
+  useEffect(() => {
+    if (!nombreImpreso) return undefined;
+    const st = document.createElement("style");
+    st.dataset.cabeceraImpresa = "";
+    const nombre = nombreImpreso;
+    st.textContent = `@page { @top-left { content: "${nombre} · Ficha del sistema"; font: 8pt "Open Sans Variable", "Open Sans", sans-serif; color: #6b6b6b; vertical-align: bottom; padding-bottom: 3mm; } @top-right { content: "Página " counter(page) " de " counter(pages); font: 8pt "Open Sans Variable", "Open Sans", sans-serif; color: #6b6b6b; vertical-align: bottom; padding-bottom: 3mm; } }`;
+    document.head.append(st);
+    return () => st.remove();
+  }, [nombreImpreso]);
   // 0.82.1 (sexta ronda, guardia): con una fila pedida, marcada y justo bajo la barra pegada.
   useEffect(() => {
     if (!fila) return;
@@ -1405,7 +1417,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
             ["Plan de seguridad", "Plan", href("pacientes", "plan", s.id)],
           ];
           return (
-            <li key={s.id} className="min-w-0 xl:row-span-6 xl:mb-1 xl:grid xl:grid-rows-subgrid">
+            <li key={s.id} className="min-w-0 xl:row-span-6 xl:mb-3 xl:grid xl:grid-rows-subgrid">
               <article
                 aria-label={s.name}
                 className="tarjeta tarjeta-sistema flex h-full flex-col overflow-hidden xl:row-span-6 xl:grid xl:grid-rows-subgrid xl:gap-y-0"

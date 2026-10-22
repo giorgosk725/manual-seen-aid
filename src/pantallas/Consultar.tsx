@@ -173,8 +173,10 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
             {`Plan de seguridad · ${CORTO_SISTEMA[sistemaReciente()!]}`}
           </a>
         ) : (
-          <span className="flex flex-wrap items-center gap-x-3 gap-y-0 text-sm text-slate-700">
-            <span>Plan de seguridad:</span>
+          // 1.0.0 (18.ª ronda, R1): el rótulo en su línea y los cuatro debajo (antes, el primero
+          // se quedaba junto al rótulo y los otros tres en la línea siguiente).
+          <span className="flex w-full flex-wrap items-center gap-x-4 gap-y-0 text-sm text-slate-700 sm:w-auto">
+            <span className="w-full sm:w-auto">Plan de seguridad:</span>
             {CORTO_SISTEMA.map((n, c) => (
               <a key={c} href={href("pacientes", "plan", ORDEN_SISTEMAS[c])} className={enlacePlan}>
                 {n}

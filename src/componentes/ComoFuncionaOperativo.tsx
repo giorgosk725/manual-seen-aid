@@ -1,7 +1,8 @@
 /* «Cómo funciona» de un sistema (0.77.0): el algoritmo en datos cortos y, si la tiene, su
    variante (Control-IQ+, CamAPS Liberty) con lo que cambia. Una sola línea de fuente, que lleva
    al texto literal de la Tabla 1 y de los apartados. */
-import { ALGORITMO, VARIANTE_OPERATIVA, fuentesDeDatos } from "../fichaOperativa";
+import { ALGORITMO, VARIANTE_OPERATIVA, fuentesDeDatos, tipoBajoNombre } from "../fichaOperativa";
+import { CORTO_SISTEMA } from "../ampliacion/ids";
 import { CasillasDatos, TarjetaDatos } from "./FichaOperativa";
 import { FuentePie } from "./FuentePie";
 import { NotaCorreccion } from "./NotaCorreccion";
@@ -17,7 +18,15 @@ export function ComoFuncionaOperativo({ c }: { c: number }) {
       {/* 0.87.1 (undécima ronda, visual): en papel, la fuente dentro de la última tarjeta, como en
           las demás secciones. */}
       <TarjetaDatos c={c} titulo="Algoritmo" pie={!variante && fuente}>
-        <CasillasDatos c={c} datos={ALGORITMO[c]} />
+        {/* 0.99.1 (petición del responsable): «Tipo» sin repetir el nombre del sistema
+            («Control-IQ · MPC…» en la ficha de Control-IQ), como en la portada; el nombre propio
+            del algoritmo (SmartGuard, SmartAdjust) se queda. */}
+        <CasillasDatos
+          c={c}
+          datos={ALGORITMO[c].map((d, i) =>
+            i === 0 ? { ...d, v: tipoBajoNombre(c, CORTO_SISTEMA[c]) } : d,
+          )}
+        />
       </TarjetaDatos>
       {variante && (
         <TarjetaDatos c={c} titulo={variante.titulo} pie={fuente}>

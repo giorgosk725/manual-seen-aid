@@ -1197,7 +1197,10 @@ h3[tabindex="-1"]:focus-visible,
 /* 0.97.1 (17.ª ronda, visual): en los datos de la calculadora, la opción elegida con borde burdeos
    y fondo suave (como el selector de sistemas); el relleno burdeos queda para la navegación. */
 .formulario-calc .chip[aria-pressed="true"],
-.opciones-ligeras .chip[aria-current] {
+.opciones-ligeras .chip[aria-current],
+/* 1.0.0 (18.ª ronda, visual): «Los cuatro» del selector de Sistemas, igual que las casillas de
+   sistema (el relleno se apilaba con el chip del parámetro elegido). */
+.barra-pegada .chip[aria-pressed="true"] {
   background: var(--acento-suave);
   border-color: var(--acento);
   box-shadow: inset 0 0 0 1px var(--acento);

@@ -27,7 +27,7 @@ import { DosColumnas } from "../componentes/DosColumnas";
 import { NombreSistema } from "../componentes/NombreSistema";
 import { GUIA_POR_SISTEMA, TABLA4_POR_SISTEMA } from "../porSistema";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
-import { kDe, siglasPorPiezas, type Pieza } from "../inicio";
+import { kDe, siglasPorPiezas, textosDePieza, type Pieza } from "../inicio";
 
 import { anularNavegacionNueva, elegirRuta, fueNavegacionNueva, href, navegar } from "../rutas";
 
@@ -467,7 +467,7 @@ function ListaSituaciones({
     <>
       <span className="min-w-0 flex-1 leading-snug">{texto}</span>
       {/* 0.77.1 (auditoría R3): las que abren otra pantalla lo dicen (el capítulo, una figura). */}
-      {destino && <span className="shrink-0 text-xs font-normal text-slate-500">{destino}</span>}
+      {destino && <span className="shrink-0 text-xs font-normal text-slate-600">{destino}</span>}
       {on && <Check size={15} className="shrink-0" aria-hidden="true" />}
     </>
   );
@@ -823,7 +823,15 @@ export function SituacionSistema({
                 .filter((x): x is string => !!x)
                 .map((pob) => (
                   <section key={pob} aria-label="Objetivos de MCG" className="tarjeta p-4">
-                    <ObjetivosDePoblacion id={pob} />
+                    <ObjetivosDePoblacion
+                      id={pob}
+                      yaEnTexto={(t) => {
+                        const literal = guia.guion
+                          .flatMap((m) => piezasDe(m).flatMap((pz) => textosDePieza(pz)))
+                          .join(" ");
+                        return literal.toLowerCase().includes(t.replace(/\.$/, "").toLowerCase());
+                      }}
+                    />
                   </section>
                 ))}
               <GuionVista
@@ -1395,6 +1403,17 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
               className="no-imprimir mt-4 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 hover:underline"
             >
               Herramientas del sistema ante situaciones clínicas{" "}
+              <ArrowRight size={14} aria-hidden="true" />
+            </a>
+          )}
+          {/* 1.0.0 (18.ª ronda, R3): en los pasos que piden ajustar «según el sistema» (2) o
+              remiten a la Tabla 3 (5), el ajuste de cada sistema, a un toque. */}
+          {(n === 2 || n === 5) && (
+            <a
+              href={href("sistemas", "todos", "parametros")}
+              className="no-imprimir mt-2 flex min-h-11 w-fit items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+            >
+              Ajuste de los parámetros por sistema (Tabla 3)
               <ArrowRight size={14} aria-hidden="true" />
             </a>
           )}

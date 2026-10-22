@@ -29,6 +29,7 @@ import {
   piezasDePaso,
   preguntasActivas,
   seEnsenaEnPaso,
+  sinObjetivoRepetido,
 } from "../guia-inicio";
 import { SistemaDelRecorrido } from "../componentes/piezasContexto";
 import { TABLAS } from "../contenido";
@@ -79,6 +80,13 @@ const capitalizar = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
    No se guarda nada. */
 /* Hoja de comprobación: una cara A4, casillas para marcar en papel (en pantalla se pueden
    marcar, pero no se guarda nada: ni datos del paciente ni de la consulta). */
+/* La primera línea de la Tabla 3 («Objetivo glucémico y funciones temporales…») si dice que el
+   objetivo no se configura. */
+const objetivoFijo = (sis: number) => {
+  const l = (TABLAS.T3.filas[0].celdas[sis] ?? "").split("\n")[0].trim();
+  return /no configurable/i.test(l) ? l : null;
+};
+
 function Hoja({ sis }: { sis?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   // 0.97.1 (17.ª ronda, visual): con Ctrl+P, la misma hoja de una cara que con el botón (antes, sin
@@ -210,6 +218,11 @@ function Hoja({ sis }: { sis?: number }) {
                 </dt>
                 <dd className="text-sm text-slate-800">
                   <Lineas>{h.sistema.objetivo.texto}</Lineas>
+                  {/* 1.0.0 (18.ª ronda, R5): si la Tabla 3 dice que no se configura (Control-IQ),
+                      aquí también (bajo «Qué se programa» parecía programable). */}
+                  {objetivoFijo(sis!) && (
+                    <span className="mt-0.5 block font-semibold">{objetivoFijo(sis!)}</span>
+                  )}
                 </dd>
               </div>
               {(
@@ -414,7 +427,7 @@ function PasosInicio({
     elegirRuta("consultar", "inicio", detalleDe("inicio", sis, PASOS_GUIA[k - 1].id));
   const alPaso = useIrAlCambiar(String(n), "paso-guia");
   const preguntas = preguntasActivas(p, resp);
-  const piezas = piezasDePaso(p, resp);
+  const piezas = sinObjetivoRepetido(piezasDePaso(p, resp), sis);
   const siglas = siglasPorPiezas(piezas, sis);
   const hoja = hojaDeComprobacion(sis);
   // 0.96.0 (16.ª ronda, R5): en el paso 4, lo que ya enseña otro paso (el núcleo común, la línea

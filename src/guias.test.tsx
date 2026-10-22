@@ -69,7 +69,8 @@ describe("Guías por referencias: «Cómo funciona»", () => {
     ).toBeInTheDocument();
     // 0.77.0: datos operativos (src/fichaOperativa.ts), no casillas literales.
     expect(screen.getByLabelText("Algoritmo")).toHaveTextContent(
-      /CamAPS FX · MPC adaptativo.*La app del smartphone.*80–198 mg\/dl/,
+      // 1.0.0: «Tipo» sin repetir el nombre del sistema («CamAPS FX · MPC…» → «MPC…»).
+      /Tipo\s*MPC adaptativo.*La app del smartphone.*80–198 mg\/dl/,
     );
     expect(screen.getByLabelText("CamAPS Liberty")).toHaveTextContent(/Asa cerrada completa/);
     expect(await axe(container, AXE)).toHaveNoViolations();

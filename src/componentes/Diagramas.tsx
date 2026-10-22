@@ -213,8 +213,12 @@ export function MarcoDiagrama({
 }
 
 /* ---------- 1. Objetivos de MCG ---------- */
-function Escalera({ i }: { i: number }) {
+function Escalera({ i, yaEnTexto }: { i: number; yaEnTexto?: (t: string) => boolean }) {
   const p = OBJETIVOS_MCG[i];
+  // 1.0.0 (18.ª ronda, adjunto y senior): en una situación, sin las frases que su texto literal ya
+  // trae palabra por palabra justo debajo (HbA1c en la gestación; el aviso pediátrico del ingreso).
+  const extras = p.extras.filter((e) => !yaEnTexto?.(e.texto));
+  const aviso = p.aviso && !yaEnTexto?.(p.aviso) ? p.aviso : null;
   return (
     <div>
       <div className="mb-2 flex items-baseline justify-between gap-2">
@@ -248,7 +252,7 @@ function Escalera({ i }: { i: number }) {
         })}
       </ol>
       <ul className="mt-2 space-y-1 text-xs text-slate-700">
-        {p.extras.map((e) => (
+        {extras.map((e) => (
           <li key={e.texto} className="flex gap-1.5">
             <span aria-hidden="true">·</span>
             <span>
@@ -256,9 +260,9 @@ function Escalera({ i }: { i: number }) {
             </span>
           </li>
         ))}
-        {p.aviso && (
+        {aviso && (
           <li className="font-semibold text-slate-800">
-            <SinCortes texto={p.aviso} />
+            <SinCortes texto={aviso} />
           </li>
         )}
       </ul>
@@ -274,14 +278,20 @@ const APARTADO_DE_POBLACION: Record<string, number> = {
   hospital: 10,
   fragilidad: 10,
 };
-export function ObjetivosDePoblacion({ id }: { id: string }) {
+export function ObjetivosDePoblacion({
+  id,
+  yaEnTexto,
+}: {
+  id: string;
+  yaEnTexto?: (t: string) => boolean;
+}) {
   const i = OBJETIVOS_MCG.findIndex((p) => p.id === id);
   if (i < 0) return null;
   const o = OBJETIVOS_MCG[i];
   const ps = [o.pagina, ...o.extras.map((e) => e.p).filter((x): x is number => !!x)];
   return (
     <NivelDiagrama.Provider value={1}>
-      <Escalera i={i} />
+      <Escalera i={i} yaEnTexto={yaEnTexto} />
       {/* El apartado propio de cada población: las pp. 4, 17 y 20 son límite de dos apartados
           (0.73.0: salía «Apartado 9, p. 17» en la gestación). */}
       <FuentePie
@@ -1395,6 +1405,43 @@ function InterrupcionLinea() {
           <ArrowRight size={14} aria-hidden="true" className="shrink-0 text-slate-500" />
         </a>
       )}
+      {/* 1.0.0 (18.ª ronda, R1): a los dos casos de un toque (el programado, el más habitual en la
+          guardia, quedaba a unas 2,4 pantallas). */}
+      <nav
+        aria-label="Casos de la interrupción"
+        className="no-imprimir -my-1 flex flex-wrap items-center gap-x-2 gap-y-0 text-[13px]"
+      >
+        <span className="text-slate-600">Ir a:</span>
+        {(
+          [
+            ["interrupcion-no-programada", "Si no estaba programada"],
+            ["interrupcion-programada", "Si está programada"],
+          ] as const
+        ).map(([id, t], k) => (
+          <span key={id} className="inline-flex items-center gap-x-2">
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById(id);
+                el?.scrollIntoView({ block: "start" });
+                const h = el?.querySelector<HTMLElement>("h2, h3, h4");
+                if (h) {
+                  h.setAttribute("tabindex", "-1");
+                  h.focus({ preventScroll: true });
+                }
+              }}
+              className="tap-44 inline-flex min-h-11 items-center px-1 font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline sm:min-h-8"
+            >
+              {t}
+            </button>
+            {k === 0 && (
+              <span aria-hidden="true" className="text-slate-300">
+                ·
+              </span>
+            )}
+          </span>
+        ))}
+      </nav>
       {/* 0.72.0: el formato, antes de los casos (qué se puede desconectar y qué no). */}
       <section className="tarjeta grid gap-x-6 gap-y-3 p-4 md:grid-cols-2">
         <Sub className="sr-only">Según el formato</Sub>
@@ -1415,7 +1462,7 @@ function InterrupcionLinea() {
       </section>
       {/* Dos caminos que no son una sola línea de tiempo: lo programado se decide antes de
           desconectar; lo no programado se actúa a partir de aproximadamente 1 h sin insulina. */}
-      <section>
+      <section id="interrupcion-no-programada" className="scroll-mt-20 lg:scroll-mt-6">
         <Sub className="titulo-tarjeta mb-1.5">Si no estaba programada</Sub>
         <ol className="grid gap-3 md:grid-cols-3 md:gap-y-0">
           <Tramo cuando={L.tramos[0].cuando} tono={TRAMO_HEX.verde}>
@@ -1439,7 +1486,7 @@ function InterrupcionLinea() {
           </Tramo>
         </ol>
       </section>
-      <section>
+      <section id="interrupcion-programada" className="scroll-mt-20 lg:scroll-mt-6">
         <Sub className="titulo-tarjeta mb-1.5">
           Si está programada: se decide antes de desconectar
         </Sub>

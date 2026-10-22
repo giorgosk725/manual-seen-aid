@@ -245,3 +245,14 @@ export function piezasDePaso(paso: PasoGuia, resp: Record<string, string>): Piez
     return !vistas.has(k) && !!vistas.add(k);
   });
 }
+
+/* 1.0.0 (18.ª ronda, R5): en el paso de objetivos, con MiniMed 780G u Omnipod 5, la casilla de la
+   Tabla 1 (objetivo en automático) va dentro de la de la Tabla 3, que dice lo mismo y algo más
+   (las funciones temporales): una sola. Con Control-IQ y CamAPS FX, la de la Tabla 1 añade el
+   rango o el valor de fábrica y se quedan las dos. La prueba (guia-inicio.test.ts) comprueba
+   que cada cifra de la que se quita está en la que queda. */
+export const OBJETIVO_T1_EN_T3 = [0, 3];
+export const sinObjetivoRepetido = (piezas: Pieza[], sis?: number): Pieza[] =>
+  sis !== undefined && OBJETIVO_T1_EN_T3.includes(sis)
+    ? piezas.filter((p) => !(p.t === "casilla" && p.tabla === "T1" && p.fila === 6))
+    : piezas;

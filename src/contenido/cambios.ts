@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-22",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — decisiones pendientes de la decimoséptima ronda`,
+    titulo: `Complemento interactivo ${VERSION_APP} — decimoctava ronda de auditorías de uso`,
+    detalle: [
+      "Tablas comparativas: caben enteras también entre 768 y 1279 px (portátil pequeño y tableta; antes se cortaba la columna de Omnipod 5).",
+      "Fichas: los rótulos que abren el capítulo, con una sola señal (el libro); «Tipo» sin repetir el nombre del sistema; «En el capítulo», con nombres cortos y solo donde añade algo a la fuente al pie; en papel, cada cara dice de qué sistema es.",
+      "Situaciones: sin repeticiones en Gestación e Ingreso (las frases que ya están en el texto del capítulo, una vez); Interrupción con saltos a «Si no estaba programada» y «Si está programada»; Elección enlaza la gestación.",
+      "Buscar: botón para borrar la búsqueda; «ducha» o «bañarse» llevan al agua y la desconexión de cada sistema; las preguntas relacionadas, solo las que tratan lo buscado.",
+      "Iniciación: las fases recogen la pauta previa y la basal ultralarga de la calculadora; la hoja de Control-IQ dice que su objetivo no es configurable; el objetivo, una vez en el paso de objetivos (MiniMed 780G y Omnipod 5); la descarga enlaza el ajuste de cada sistema. Al volver desde una tabla, la ficha vuelve a donde estaba.",
+    ],
+  },
+  {
+    fecha: "2026-10-22",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.99.0 — decisiones pendientes de la decimoséptima ronda",
     detalle: [
       "Ficha de un sistema: tocar otro sistema abre su ficha en la misma pestaña (Atrás vuelve); «Comparar», al lado, abre la comparación de los cuatro. Quitar uno de una comparación y marcar otro sigue cambiando uno por otro.",
       "Programación inicial: sin la fila de funciones temporales cuando repite la de ejercicio (MiniMed 780G y Omnipod 5).",

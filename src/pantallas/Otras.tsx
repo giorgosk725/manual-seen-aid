@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ExternalLink,
+  X,
   XCircle,
 } from "lucide-react";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
@@ -105,6 +106,40 @@ function ListaResultados({ res, q, fuera }: { res: Resultado[]; q: string; fuera
     </ol>
   );
 }
+
+const normalizarTermino = (t: string) =>
+  t
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+const NO_CUENTAN = new Set([
+  "que",
+  "con",
+  "para",
+  "los",
+  "las",
+  "del",
+  "una",
+  "uno",
+  "como",
+  "hacer",
+  "por",
+  "sin",
+  "ante",
+  "omnipod",
+  "minimed",
+  "780g",
+  "control",
+  "control-iq",
+  "control-iq+",
+  "tandem",
+  "camaps",
+  "myloop",
+  "sistema",
+  "sistemas",
+  "aid",
+  "bomba",
+]);
 
 export function Buscar({ inicial }: { inicial?: string }) {
   // Lo escrito vive en memoria (consultaBuscar.ts), no en la URL: al volver con Atrás desde un
@@ -275,14 +310,25 @@ export function Buscar({ inicial }: { inicial?: string }) {
   useEffect(() => {
     if (sistemaQ >= 0) recordarSistema(sistemaQ);
   }, [sistemaQ]);
-  const relacionadas = motor
-    ? motor.frecuentesRelacionadas(
-        [...(frecuente?.respuestas ?? []), ...respuestas].map((r) => r.id),
-        frecuente?.id,
-        3,
-        sistemaQ >= 0 ? sistemaQ : undefined,
-      )
-    : [];
+  // 1.0.0 (18.ª ronda, adjunto): solo las que comparten un término de la consulta (sin contar
+  // nombres de sistema ni palabras vacías); antes, por compartir un pasaje, «tac omnipod» traía
+  // preguntas de ejercicio. Si ninguna lo comparte, no hay sección.
+  const terminos = normalizarTermino(qEf)
+    .split(/[^a-z0-9+]+/)
+    .filter((w) => w.length >= 3 && !NO_CUENTAN.has(w));
+  const relacionadas = (
+    motor
+      ? motor.frecuentesRelacionadas(
+          [...(frecuente?.respuestas ?? []), ...respuestas].map((r) => r.id),
+          frecuente?.id,
+          3,
+          sistemaQ >= 0 ? sistemaQ : undefined,
+        )
+      : []
+  ).filter((f) => {
+    const t = normalizarTermino([f.pregunta, ...(f.variantes ?? [])].join(" "));
+    return terminos.some((w) => t.includes(w.slice(0, 5)));
+  });
   // Una respuesta de las Tablas 2 o 3 sigue en la tarea de Iniciar que la trabaja (si la
   // pregunta frecuente ya trae su continuación, esa manda).
   const continuacion =
@@ -313,21 +359,38 @@ export function Buscar({ inicial }: { inicial?: string }) {
       <label className="sr-only" htmlFor="buscar-q">
         Texto a buscar
       </label>
-      <input
-        id="buscar-q"
-        autoFocus
-        // 0.84.1 (octava ronda, guardia): en el móvil, Intro cierra el teclado (la respuesta
-        // quedaba debajo) y la tecla dice «Buscar».
-        enterKeyHint="search"
-        onKeyDown={(e) => {
-          if (e.key === "Enter") e.currentTarget.blur();
-        }}
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        placeholder="Buscar: cetonas, modo sueño, TBR…"
-        className="w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8E254E] [&::-webkit-search-cancel-button]:hidden"
-        autoComplete="off"
-      />
+      {/* 1.0.0 (18.ª ronda, R1): «×» para borrar la búsqueda (en el móvil había que borrar letra a
+          letra y lo nuevo se pegaba a lo anterior). */}
+      <div className="relative">
+        <input
+          id="buscar-q"
+          autoFocus
+          // 0.84.1 (octava ronda, guardia): en el móvil, Intro cierra el teclado (la respuesta
+          // quedaba debajo) y la tecla dice «Buscar».
+          enterKeyHint="search"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") e.currentTarget.blur();
+          }}
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Buscar: cetonas, modo sueño, TBR…"
+          className="w-full rounded-md border border-slate-300 bg-white py-3 pl-4 pr-12 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8E254E] [&::-webkit-search-cancel-button]:hidden"
+          autoComplete="off"
+        />
+        {q && (
+          <button
+            type="button"
+            aria-label="Borrar la búsqueda"
+            onClick={() => {
+              setQ("");
+              document.getElementById("buscar-q")?.focus();
+            }}
+            className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+          >
+            <X size={18} aria-hidden="true" />
+          </button>
+        )}
+      </div>
       {/* 0.72.0 (4.1.3): lo que ha encontrado, dicho al lector cuando se deja de escribir. */}
       <Anuncio
         texto={

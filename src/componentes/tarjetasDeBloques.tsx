@@ -7,6 +7,16 @@ import { siglasPorPiezas, textosDePieza } from "../inicio";
 import type { BloqueSistema } from "../porSistema";
 import { SISTEMA_HEX } from "../tokens";
 import { lineasDe } from "../disposicion";
+import { TABLAS } from "../contenido";
+
+/* 1.0.0 (18.ª ronda, adjunto): si la primera pieza es una casilla o fila cuya etiqueta ya dice el
+   rótulo del bloque («Gestación: autorización y evidencia» bajo «Autorización y evidencia»), el
+   rótulo solo para el lector de pantalla (salían los dos seguidos). */
+const repiteRotulo = (b: BloqueSistema) => {
+  const p = b.piezas[0];
+  if (!p || (p.t !== "casilla" && p.t !== "fila")) return false;
+  return TABLAS[p.tabla].filas[p.fila].etiqueta.toLowerCase().includes(b.rotulo.toLowerCase());
+};
 
 /* Las tarjetas de los bloques de un sistema, con su altura estimada: ColumnaTabla las reparte
    en las mismas dos columnas que las filas de la tabla (una sola rejilla por sección). */
@@ -37,7 +47,9 @@ export function tarjetasDeBloques(
           {/* 0.96.0 (16.ª ronda, visual y R3): el rótulo del bloque en minúscula y negrita, como los
               de las fichas (en MAYÚSCULAS, «· MINIMED 780G Y OMNIPOD 5» perdía la grafía). */}
           <dt
-            className="text-[13px] font-semibold leading-snug text-slate-600"
+            className={
+              repiteRotulo(b) ? "sr-only" : "text-[13px] font-semibold leading-snug text-slate-600"
+            }
             style={forma === "sistema" ? { color: h.ink } : undefined}
           >
             {b.rotulo}

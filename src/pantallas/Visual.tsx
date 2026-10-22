@@ -149,16 +149,19 @@ export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }
   if (!d || !diagramaEnEdicion(d.id)) return <Visual />;
   return (
     <div>
-      {/* 0.97.1 (17.ª ronda, R1 y visual): la hipoglucemia es una conducta de Situaciones (el
-          lateral y la barra de abajo la marcan ahí): la vuelta, a Situaciones. */}
-      <div className="no-imprimir mb-3 flex items-center gap-2 text-xs text-slate-500">
-        <a
-          href={id === "hipoglucemia" ? href("consultar", "situacion") : href("visual")}
-          className="inline-flex min-h-11 items-center gap-1 font-semibold hover:underline"
-        >
-          {id === "hipoglucemia" ? "Situaciones" : "Figuras y diagramas"}
-        </a>
-      </div>
+      {/* 1.0.0 (18.ª ronda, R1): la hipoglucemia es una conducta de Situaciones, como la Figura 3
+          y la Interrupción, que no llevan miga: tampoco ella (el lateral y la barra de abajo ya
+          dicen dónde se está). Los demás diagramas, con la vuelta a Figuras y diagramas. */}
+      {id !== "hipoglucemia" && (
+        <div className="no-imprimir mb-3 flex items-center gap-2 text-xs text-slate-500">
+          <a
+            href={href("visual")}
+            className="inline-flex min-h-11 items-center gap-1 font-semibold hover:underline"
+          >
+            Figuras y diagramas
+          </a>
+        </div>
+      )}
       {/* 0.78.1: el título, con la cabecera editorial de todas las pantallas (antes, un h1 oculto
           y el título a 16 px dentro de la tarjeta). */}
       <CabeceraEditorial titulo={d.titulo} hex={hex} level={1} />

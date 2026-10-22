@@ -882,12 +882,21 @@ export function Shell({
       pendiente = setTimeout(() => posiciones.current.set(k, y), 80);
     };
     const onHash = () => clearTimeout(pendiente);
+    // 1.0.0 (18.ª ronda, R3): la posición, también al pulsar un enlace (sin desplazarse antes no
+    // había ninguna guardada y al volver la pantalla quedaba donde la dejaba la de destino).
+    const onClic = (e: MouseEvent) => {
+      if (!(e.target as Element | null)?.closest?.('a[href^="#/"]')) return;
+      clearTimeout(pendiente);
+      posiciones.current.set(claveDePantalla(parseHash(window.location.hash)), window.scrollY);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("hashchange", onHash);
+    document.addEventListener("click", onClic, true);
     return () => {
       clearTimeout(pendiente);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("hashchange", onHash);
+      document.removeEventListener("click", onClic, true);
     };
   }, []);
 

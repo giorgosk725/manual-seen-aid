@@ -177,7 +177,10 @@ function TablaHTML({
         className={`tabla-capitulo w-full border-collapse text-sm ${tabla.porSistema ? "tabla-iguales" : ""}`}
         style={
           tabla.porSistema
-            ? { minWidth: `calc(${anchoRotulos(tabla)} + ${columnas.length} * 9.25rem)` }
+            ? // 1.0.0 (18.ª ronda, senior y visual): 8,25 rem por sistema (antes, 9,25): con los
+              // cuatro, 720 px, que caben en la columna de las comparaciones (726 px) entre 768 y 1279 px (antes la de
+              // Omnipod 5 quedaba cortada, sin pista de desplazamiento).
+              { minWidth: `calc(${anchoRotulos(tabla)} + ${columnas.length} * 8.25rem)` }
             : undefined
         }
       >
@@ -226,7 +229,9 @@ function TablaHTML({
                     >
                       {/* Con el nombre corto, la línea solo cambia en la barra («Control-IQ / ⏎
                           Control-IQ+»). */}
-                      <NombreSistema n={nombreColumna(tabla, c, literal)} porPalabra={literal} />
+                      {/* 1.0.0: por palabra también con el nombre corto: a 720 px de tabla,
+                          «MiniMed 780G» con su foto no cabía en su columna. */}
+                      <NombreSistema n={nombreColumna(tabla, c, literal)} porPalabra />
                     </span>
                   </span>
                 ) : (

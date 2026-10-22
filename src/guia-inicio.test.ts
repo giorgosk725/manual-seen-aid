@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { PASOS_GUIA, pasoPropioDe, piezasDePaso, seEnsenaEnPaso } from "./guia-inicio";
+import {
+  OBJETIVO_T1_EN_T3,
+  PASOS_GUIA,
+  pasoPropioDe,
+  piezasDePaso,
+  seEnsenaEnPaso,
+  sinObjetivoRepetido,
+} from "./guia-inicio";
+import { TABLAS } from "./contenido";
 import {
   frasesDe,
   hojaDeComprobacion,
@@ -198,4 +206,23 @@ describe("la hoja de comprobación conserva todos los requisitos", () => {
       expect(h.antes.some((x) => x.pieza?.t === "fila" && x.pieza.fila === 8)).toBe(true);
       expect(h.citas).toHaveLength(4);
     });
+});
+
+describe("sinObjetivoRepetido (1.0.0)", () => {
+  const cifras = (t: string) => t.match(/\d+(?:,\d+)?/g) ?? [];
+  it("solo se quita donde cada cifra de la Tabla 1 está en la Tabla 3", () => {
+    for (const s of OBJETIVO_T1_EN_T3) {
+      const t3 = cifras(TABLAS.T3.filas[0].celdas[s]);
+      for (const x of cifras(TABLAS.T1.filas[6].celdas[s])) expect(t3, `${s}: ${x}`).toContain(x);
+    }
+  });
+  it("en el paso de objetivos, una casilla menos con 780G y Omnipod 5; igual con los otros", () => {
+    const paso = PASOS_GUIA.find((p) => p.id === "objetivos")!;
+    const todas = piezasDePaso(paso, {});
+    expect(sinObjetivoRepetido(todas, 0)).toHaveLength(todas.length - 1);
+    expect(sinObjetivoRepetido(todas, 3)).toHaveLength(todas.length - 1);
+    expect(sinObjetivoRepetido(todas, 1)).toHaveLength(todas.length);
+    expect(sinObjetivoRepetido(todas, 2)).toHaveLength(todas.length);
+    expect(sinObjetivoRepetido(todas, undefined)).toHaveLength(todas.length);
+  });
 });

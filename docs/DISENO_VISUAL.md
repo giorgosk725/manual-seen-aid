@@ -438,11 +438,14 @@ comercial completo, en la ficha y en el selector de Sistemas. En la tabla tal co
 del capítulo, la cabecera literal publicada («Tandem Control-IQ», «myLoop CamAPS»): es texto de la
 tabla y se conserva (TablaVista, `nombreColumna`).
 
-**Del dato al texto (0.96.1, revisión de Codex V95-10/11).** El rótulo de un dato que abre el texto
-del capítulo lleva, además del subrayado de puntos, un libro de 12 px en `slate-400` (la señal tiene
-que verse en el móvil; `title` no basta). Si el dato sale de varios sitios, debajo, en el cuerpo de
-la fuente al pie: «En el capítulo: Tabla 3 · Tabla 1 · Apartado 8, p. 12», cada uno con su enlace
-(`literalesDe`); el rótulo sigue llevando al primero. En papel, solo la fuente al pie.
+**Del dato al texto (0.96.1, revisión de Codex V95-10/11; 1.0.0).** El rótulo de un dato que abre
+el texto del capítulo lleva un libro de 12 px en `slate-500`, unido a su última palabra (la señal
+tiene que verse en el móvil; `title` no basta). Desde la 1.0.0, es la única señal: sin subrayado de
+puntos (subrayado al pasar el ratón). Si el dato sale de varios sitios, debajo, en el cuerpo de la
+fuente al pie: «En el capítulo: Tabla 3 · Apartado 8», con nombres cortos y sin páginas (las
+páginas, en la fuente al pie); no sale en las filas cuya combinación es la más repetida de la
+tarjeta (ya la dice la fuente al pie). El rótulo sigue llevando al primero. En papel, solo la fuente
+al pie, y la ficha lleva en el margen de cada cara el nombre del sistema y la página.
 
 **Comparar un parámetro (V95-07).** Por debajo de xl, Parámetros de varios sistemas empieza por un
 parámetro elegido (chips) en los sistemas, uno debajo de otro, con su nombre y su color; «Por

@@ -65,13 +65,29 @@ export function cambiarCalculadora(cambio: Partial<DatosCalculadora>) {
   const base = cambio.origen ? conOrigen(trabajo.calc, cambio.origen) : trabajo.calc;
   trabajo.calc = { ...base, ...cambio };
   if (cambio.origen) trabajo.resp = { ...trabajo.resp, pauta: cambio.origen };
+  // 1.0.0 (18.ª ronda, R5): con el primer dato, la pauta previa de la calculadora (aunque sea la
+  // que viene marcada, MDI) pasa también al paso 1; y la basal ultralarga, a «Basal previa».
+  const c = trabajo.calc;
+  if (!trabajo.resp.pauta && (c.basal || c.rapida || c.dtd || c.peso || c.ultralarga))
+    trabajo.resp = { ...trabajo.resp, pauta: c.origen };
+  if (cambio.ultralarga !== undefined && c.origen === "mdi") {
+    const { basal: previa, ...resto } = trabajo.resp;
+    trabajo.resp = cambio.ultralarga
+      ? { ...resto, basal: "larga" }
+      : previa === "larga"
+        ? resto
+        : trabajo.resp;
+  }
   avisar();
 }
-/* Las respuestas de los pasos; la pauta elegida allí pasa a la calculadora. */
+/* Las respuestas de los pasos; la pauta elegida allí pasa a la calculadora (y la basal previa,
+   a la casilla de basal ultralarga). */
 export function cambiarRespuestas(resp: Record<string, string>) {
   trabajo.resp = resp;
   const p = resp.pauta;
   if (p === "mdi" || p === "isci" || p === "aid") trabajo.calc = conOrigen(trabajo.calc, p);
+  if (resp.basal === "larga" || resp.basal === "u100")
+    trabajo.calc = { ...trabajo.calc, ultralarga: resp.basal === "larga" };
   avisar();
 }
 export function cambiarHechos(hechos: Set<string>) {
@@ -95,6 +111,14 @@ export const hayTrabajo = () => {
     c.origen !== d.origen ||
     c.referencia !== d.referencia ||
     c.sistemaPrevio !== d.sistemaPrevio ||
+    // 1.0.0 (18.ª ronda, R5): también lo elegido sin escribir nada (control previo, reducción,
+    // regla, objetivo, basal ultralarga).
+    c.control !== d.control ||
+    c.reduccion !== d.reduccion ||
+    c.basalPct !== d.basalPct ||
+    c.regla !== d.regla ||
+    c.objetivo !== d.objetivo ||
+    c.ultralarga !== d.ultralarga ||
     Object.keys(trabajo.resp).length > 0 ||
     trabajo.hechos.size > 0
   );

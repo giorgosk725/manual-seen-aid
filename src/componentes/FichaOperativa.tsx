@@ -18,7 +18,8 @@ import { literalDe, literalesDe } from "../fuentesPiezas";
 import { ASPECTOS_PARAMETRO } from "../fichaOperativa";
 
 /* 0.96.1 (revisión de Codex, V95-10): señal a la vista (también en el móvil, sin «title») de que
-   el rótulo abre el texto del capítulo. */
+   el rótulo abre el texto del capítulo. 0.99.1 (petición del responsable): la única señal (antes,
+   además, el subrayado de puntos: dos marcas por rótulo y tres trazos por fila con la línea fina). */
 const SenalLiteral = () => (
   <BookOpen
     size={12}
@@ -43,12 +44,44 @@ function RotuloConSenal({ t }: { t: string }) {
 
 /* 0.96.1 (revisión de Codex, V95-11): un dato de varios sitios del capítulo, con cada uno a mano
    (el rótulo lleva al primero). En papel, la fuente al pie de la tarjeta. */
-function EnElCapitulo({ c, d }: { c: number; d: Dato }) {
+function EnElCapitulo({ c, d, comun }: { c: number; d: Dato; comun?: string }) {
   const sitios = literalesDe(d.f, c);
   if (!sitios.length) return null;
-  // 0.97.1 (17.ª ronda, adjunto): con el orden y la agrupación de la fuente al pie («Apartado 9,
-  // p. 14 (Hipoglucemia nocturna; Hiperglucemia matutina)»).
-  return <FuentePie rotulo="En el capítulo:" fuentes={sitios} className="mt-1 print:hidden" />;
+  // 1.0.0 (18.ª ronda, adjunto, visual y R3): si la tarjeta cita lo mismo en casi todas sus filas
+  // («Tabla 1 · Tabla 3» en Parámetros), la línea sobra: ya lo dice la fuente al pie.
+  if (comun && firmaDe(sitios) === comun) return null;
+  const vistos = new Set<string>();
+  const unicos = sitios
+    .map((x) => ({ ...x, texto: corto(x.texto) }))
+    .filter((x) => !vistos.has(x.texto) && !!vistos.add(x.texto));
+  return (
+    <span className="fuente-pie mt-1 block print:hidden">
+      En el capítulo:{" "}
+      {unicos.map((x, k) => (
+        <span key={x.ruta}>
+          {k > 0 && "\u00a0· "}
+          <a href={x.ruta} className="tap-44 inline py-1">
+            <span>{x.texto}</span>
+          </a>
+        </span>
+      ))}
+    </span>
+  );
+}
+/* Nombres cortos, sin páginas (las páginas, en la fuente al pie): la tabla, o el título del
+   párrafo («Hipoglucemia nocturna»), o el apartado. */
+const corto = (t: string) =>
+  t.startsWith("Tabla") ? t : (/\(([^()]+)\)$/.exec(t)?.[1] ?? /^Apartado\s\d+/.exec(t)?.[0] ?? t);
+const firmaDe = (sitios: { texto: string }[]) => sitios.map((x) => corto(x.texto)).join("|");
+/* La combinación de sitios más repetida en una tarjeta, si la repiten dos o más filas. */
+function firmaComun(c: number, datos: Dato[]): string | undefined {
+  const veces = new Map<string, number>();
+  for (const d of datos) {
+    const s = literalesDe(d.f, c);
+    if (s.length) veces.set(firmaDe(s), (veces.get(firmaDe(s)) ?? 0) + 1);
+  }
+  const [firma, n] = [...veces.entries()].sort((a, b) => b[1] - a[1])[0] ?? [];
+  return n !== undefined && n >= 2 ? firma : undefined;
 }
 
 /* La variante, siempre igual: la insignia a la izquierda y su texto al lado, aunque ocupe dos
@@ -109,6 +142,7 @@ export function CasillasDatos({
   modo?: keyof typeof MODO;
 }) {
   const m = MODO[modo];
+  const comun = firmaComun(c, datos);
   return (
     <dl className={m.dl}>
       {datos.map((d) => {
@@ -130,7 +164,7 @@ export function CasillasDatos({
               {ruta ? (
                 <a
                   href={ruta}
-                  className="tap-44 inline-block min-h-6 py-0.5 underline decoration-slate-400 decoration-dotted decoration-1 underline-offset-4 hover:decoration-solid hover:decoration-slate-700"
+                  className="tap-44 inline-block min-h-6 py-0.5 underline-offset-4 hover:underline hover:decoration-slate-700"
                   title="Texto del capítulo"
                 >
                   <RotuloConSenal t={d.r} />
@@ -166,7 +200,7 @@ export function CasillasDatos({
               >
                 <Variante c={c} d={d} />
               </span>
-              {modo === "rejilla" && <EnElCapitulo c={c} d={d} />}
+              {modo === "rejilla" && <EnElCapitulo c={c} d={d} comun={comun} />}
             </dd>
           </div>
         );
@@ -244,6 +278,7 @@ const EN_AUTOMATICO: Record<EnAutomatico, string> = {
    primera línea (0.77.1, auditoría visual: en la del rótulo dejaba huecos de 200 px). */
 export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; titulo: string }) {
   const h = SISTEMA_HEX[c];
+  const comun = firmaComun(c, datos);
   return (
     <div className="space-y-3">
       <section
@@ -271,7 +306,7 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                       // 0.78.1 (segunda ronda): zona táctil de 24 px como mínimo (tap-44 la amplía).
                       // 0.93.1: subrayado de puntos, como las remisiones del capítulo (los
                       // subrayados continuos de todas las filas hacían ruido).
-                      className="tap-44 inline-block min-h-6 py-0.5 text-[15px] font-semibold leading-snug text-slate-900 underline decoration-slate-300 decoration-dotted decoration-1 underline-offset-4 hover:decoration-solid hover:decoration-slate-700"
+                      className="tap-44 inline-block min-h-6 py-0.5 text-[15px] font-semibold leading-snug text-slate-900 underline-offset-4 hover:underline hover:decoration-slate-700"
                       title="Texto del capítulo"
                     >
                       <RotuloConSenal t={d.r} />
@@ -320,7 +355,7 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                   <span className="block text-[14px]">
                     <Variante c={c} d={d} />
                   </span>
-                  <EnElCapitulo c={c} d={d} />
+                  <EnElCapitulo c={c} d={d} comun={comun} />
                   {d.enlace && (
                     <a
                       href={d.enlace.ruta}

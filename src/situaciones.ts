@@ -310,10 +310,8 @@ export const SITUACIONES_GUIA: SituacionGuia[] = [
     ],
     enlaces: [
       { texto: "Objetivos de la gestación (figura)", ruta: "#/visual/objetivos-mcg/gestacion" },
-      {
-        texto: "Objetivo del calculador de bolos en la gestación (Tabla 2)",
-        ruta: "#/consultar/tablas/T2",
-      },
+      // 1.0.0 (18.ª ronda, senior): sin «Objetivo del calculador de bolos en la gestación (Tabla
+      // 2)»: la misma pantalla ya lo enseña («Objetivos de inicio»).
       { texto: "Explorar criterios de elección", ruta: "#/sistemas/elegir" },
     ],
   },

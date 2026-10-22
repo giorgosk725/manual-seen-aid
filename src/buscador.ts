@@ -726,6 +726,29 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         TABLAS.T4.paginas[0],
       ),
     );
+  // 1.0.0 (18.ª ronda, senior): ducharse o bañarse con un sistema, su fila «Desconexión»; sin
+  // sistema, el bloque de los cuatro («Agua, alcohol y desconexión»).
+  if (sis >= 0 && /\b(ducha|duchar\w*)\b/.test(n))
+    out.push(
+      atajo(
+        `recurso/desconexion/${SIS_IDS[sis]}`,
+        `Desconexión · Modos y funciones de ${CATALOGO_SISTEMAS[sis].name}`,
+        href("sistemas", CATALOGO_SISTEMAS[sis].id, "modos:desconexion"),
+        TABLAS.T4.paginas[0],
+      ),
+    );
+  if (
+    sis < 0 &&
+    /\b(agua|ducha|duchar\w*|nadar|natacion|piscina|ban(o|ar|arse)|playa|acuatic\w*)\b/.test(n)
+  )
+    out.push(
+      atajo(
+        "recurso/agua/todos",
+        "Agua, alcohol y desconexión de los cuatro (Sistemas AID)",
+        href("sistemas", "todos", "modos:otras"),
+        TABLAS.T4.paginas[0],
+      ),
+    );
   // 0.78.1 (segunda ronda, adjunto): «objetivo(s) de los (cuatro) sistemas»: la fila de la
   // Tabla 1 con los cuatro, comparados.
   if (

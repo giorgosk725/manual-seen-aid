@@ -270,6 +270,16 @@ function PorCaracteristicas() {
         Agua, alcohol y desconexión de los cuatro
         <ArrowRight size={14} aria-hidden="true" />
       </a>
+      {/* 1.0.0 (18.ª ronda, senior y adjunto): la gestación, a un toque (la fila de la Tabla 1 va
+          al final de cada tarjeta; la situación la da para los cuatro arriba). Sin filtro por
+          datos de la persona (A02, decisión del autor del 15-10-2026). */}
+      <a
+        href={href("consultar", "situacion", "gestacion")}
+        className="mt-3 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 underline sm:ml-4 decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700"
+      >
+        Gestación, parto y posparto
+        <ArrowRight size={14} aria-hidden="true" />
+      </a>
     </section>
   );
 }
