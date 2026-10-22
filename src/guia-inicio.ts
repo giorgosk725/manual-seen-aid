@@ -140,6 +140,18 @@ export const PASOS_GUIA: PasoGuia[] = [
             texto: "Comparar los parámetros (Tabla 3)",
             ruta: href("sistemas", "todos", "parametros"),
           },
+    // 1.0.4 (20.ª ronda, R5): las cifras de este paciente, en la calculadora (antes había que
+    // volver a mano a la pestaña Cálculo).
+    masEnlaces: (sis) => [
+      {
+        texto: "Cálculo de parámetros iniciales con los datos del paciente",
+        ruta: href(
+          "consultar",
+          "inicio",
+          sis !== undefined ? `calculadora:${SLUG_CALCULADORA[sis]}` : "calculadora",
+        ),
+      },
+    ],
   },
   {
     id: "objetivos",

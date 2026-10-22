@@ -932,7 +932,10 @@ export function Shell({
     previa.current = { seccion: ruta.seccion, titulo: titulo ?? "" };
     const destinoProfundo =
       (ruta.seccion === "capitulo" && !!ruta.detalle) ||
-      (ruta.seccion === "sistemas" && !!ruta.detalle) ||
+      // 1.0.4 (20.ª ronda, adjunto): en Sistemas, profundo solo con una fila («modos:alcohol»);
+      // una sección sin fila («#/sistemas/todos/modos» desde Elección) empieza arriba (antes se
+      // quedaba a la altura de la pantalla anterior).
+      (ruta.seccion === "sistemas" && !!ruta.detalle?.includes(":")) ||
       (ruta.seccion === "bibliografia" && !!ruta.sub);
     const guardada = posiciones.current.get(clavePantalla);
     // Ni al abrir la app (el primer Tab ofrece «Saltar al contenido»), ni con Atrás (se vuelve

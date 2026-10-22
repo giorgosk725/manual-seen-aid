@@ -91,12 +91,18 @@ export function BloquesPorSistema({
     <div>
       {/* 0.76: el mismo selector de sistema de toda la app (uno marcado). */}
       <div className="mb-3">
+        {/* 1.0.4 (20.ª ronda, senior): sin sistema elegido, encima y legible lo que se ve al elegir
+            (antes, «Elegir el sistema» debajo, a 13 px en gris). */}
+        {c < 0 && (
+          <p className="mb-1.5 text-[15px] font-semibold text-slate-800">
+            Elegir el sistema para ver lo propio de cada uno:
+          </p>
+        )}
         <CasillasSistema
           seleccion={c >= 0 ? [c] : []}
           onToggle={onElegir}
           nombres={CORTO_SISTEMA}
           unico
-          pista={c < 0 ? "Elegir el sistema" : undefined}
         />
       </div>
       {c >= 0 && <Bloques c={c} bloques={propios} />}

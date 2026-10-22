@@ -16,6 +16,9 @@ test.describe("Tablas y sistemas", () => {
       .getByRole("group", { name: "Sistemas" })
       .getByRole("button", { name: /Omnipod 5/ })
       .click();
+    // 1.0.4 (20.ª ronda, senior): marcar uno lo deja marcado; «Ver la ficha» abre la suya.
+    await expect(page).toHaveURL(/#\/sistemas\/todos\/parametros$/);
+    await page.getByRole("link", { name: "Ver la ficha" }).click();
     await expect(page).toHaveURL(/#\/sistemas\/op5\/parametros$/);
     await expect(
       page.getByRole("heading", { level: 2, name: /^Parámetros · Omnipod 5/ }),

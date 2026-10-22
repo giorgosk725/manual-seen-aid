@@ -11,6 +11,9 @@ test.describe("Entrega 3 (0.34.0)", () => {
       "true",
     );
     await grupo.getByRole("button", { name: /Omnipod 5/ }).click();
+    // 1.0.4: marcar uno lo deja marcado en la misma sección, con «Ver la ficha».
+    await expect(page).toHaveURL(/#\/sistemas\/todos\/parametros$/);
+    await page.getByRole("link", { name: "Ver la ficha" }).click();
     await expect(page).toHaveURL(/#\/sistemas\/op5\/parametros$/);
     // 0.70.0: la ficha es una página; arriba del todo, la barra está abierta.
     await page.goto("/#/sistemas/op5");

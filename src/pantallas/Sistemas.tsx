@@ -1076,7 +1076,10 @@ function BarraSistemas({
           );
   // En la entrada (los cuatro), las casillas se van marcando sin cambiar de pantalla; con dos
   // o más, «Comparar» (0.72.0: la primera casilla llevaba a la ficha).
-  const entrada = ids.length === 0 && !sec;
+  // 1.0.4 (20.ª ronda, senior): también en «Los cuatro» de una sección (Parámetros, Modos…): marcar
+  // uno lo deja marcado en la misma pestaña, con «Ver la ficha» al lado; con dos o más, su
+  // comparación en esa sección (antes, el primero llevaba a su ficha y no se podía comparar dos).
+  const entrada = ids.length === 0;
   const propios = useState<string[]>([]);
   const [marcados, setMarcados] = marcadosEntrada ?? propios;
   // 0.81.1 (quinta ronda, R5): en la entrada, las pestañas llevan lo ya marcado (antes, «Los
@@ -1092,7 +1095,9 @@ function BarraSistemas({
       if (nuevos.length >= 2) {
         if (abierta) seguirAbierta = Date.now();
         setMarcados([]);
-        window.location.replace(href("sistemas", nuevos.join("+")));
+        window.location.replace(
+          sec ? href("sistemas", nuevos.join("+"), sec) : href("sistemas", nuevos.join("+")),
+        );
         return;
       }
       setMarcados(nuevos);
@@ -1288,7 +1293,9 @@ function BarraSistemas({
                   // 0.84.1 (octava ronda, adjunto): desde el Resumen, al Resumen de los marcados
                   // (antes, a Características).
                   href={
-                    marcados.length > 1 ? href("sistemas", marcados.join("+")) : rutaCon(marcados)
+                    marcados.length > 1
+                      ? href("sistemas", marcados.join("+"), sec)
+                      : rutaCon(marcados)
                   }
                   onClick={() => window.scrollTo({ top: 0 })}
                   className="tap-44 inline-flex min-h-9 shrink-0 items-center gap-1 whitespace-nowrap rounded-md px-3 py-1 text-sm font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"

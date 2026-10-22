@@ -98,6 +98,8 @@ export function literalDe(p: Pieza | undefined, c: number): string | undefined {
   if (!p) return undefined;
   if (p.t === "casilla")
     return href("consultar", "tablas", `${p.tabla}:${SLUG_TABLA[c]}:${p.fila}`);
+  // 1.0.4 (20.ª ronda, R3): la inicialización, a su fila de la Tabla 2, resaltada.
+  if (p.t === "inicializacion") return href("consultar", "tablas", "T2::1");
   return fuentesDePieza(p)[0]?.ruta;
 }
 

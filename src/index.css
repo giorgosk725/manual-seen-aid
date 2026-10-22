@@ -1196,7 +1196,6 @@ h3[tabindex="-1"]:focus-visible,
 }
 /* 0.97.1 (17.ª ronda, visual): en los datos de la calculadora, la opción elegida con borde burdeos
    y fondo suave (como el selector de sistemas); el relleno burdeos queda para la navegación. */
-.formulario-calc .chip[aria-pressed="true"],
 /* 1.0.1 (19.ª ronda, visual): la fase activa de Iniciación, con borde neutro y sin fondo: el
    burdeos, solo en su número (eran seis señales burdeos en los primeros 300 px). */
 .opciones-ligeras .chip[aria-current] {
@@ -1207,6 +1206,9 @@ h3[tabindex="-1"]:focus-visible,
 }
 /* 1.0.0 (18.ª ronda, visual): «Los cuatro» del selector de Sistemas, igual que las casillas de
    sistema (el relleno se apilaba con el chip del parámetro elegido). */
+/* 1.0.4 (20.ª ronda, visual): la calculadora vuelve a esta receta (en la 1.0.2 quedó, por error,
+   con la neutra de las fases: lo elegido apenas se distinguía de lo no elegido). */
+.formulario-calc .chip[aria-pressed="true"],
 .barra-pegada .chip[aria-pressed="true"] {
   background: var(--acento-suave);
   border-color: var(--acento);

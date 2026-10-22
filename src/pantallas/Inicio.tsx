@@ -227,12 +227,13 @@ function Hoja({ sis }: { sis?: number }) {
                   {h.sistema.objetivo.etiqueta}
                 </dt>
                 <dd className="text-sm text-slate-800">
-                  <Lineas>{h.sistema.objetivo.texto}</Lineas>
                   {/* 1.0.0 (18.ª ronda, R5): si la Tabla 3 dice que no se configura (Control-IQ),
-                      aquí también (bajo «Qué se programa» parecía programable). */}
+                      aquí también (bajo «Qué se programa» parecía programable). 1.0.4 (20.ª
+                      ronda, R5): primero, antes del rango. */}
                   {objetivoFijo(sis!) && (
-                    <span className="mt-0.5 block font-semibold">{objetivoFijo(sis!)}</span>
+                    <span className="mb-0.5 block font-semibold">{objetivoFijo(sis!)}</span>
                   )}
+                  <Lineas>{h.sistema.objetivo.texto}</Lineas>
                 </dd>
               </div>
               {(
@@ -855,9 +856,9 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
           >
             <div className="mb-2 flex items-start justify-between gap-3">
               <h2 id="fase-titulo" className="titulo-seccion min-w-0 flex-1">
-                <span className="mr-2 tabular-nums" style={{ color: hex.strong }}>
-                  {n + 1}.
-                </span>
+                {/* 1.0.4 (20.ª ronda, visual): el número, en gris (repite el de la fase marcada
+                    encima; en burdeos se sumaba a las demás marcas). */}
+                <span className="mr-2 tabular-nums text-slate-500">{n + 1}.</span>
                 {capitalizar(fase.nombre)}
               </h2>
               {fase.id !== "inicio" && (

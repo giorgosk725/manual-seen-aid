@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-22",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — Control-IQ nocturno y umbral de la RM`,
+    titulo: `Complemento interactivo ${VERSION_APP} — vigésima ronda de auditorías de uso`,
+    detalle: [
+      "Calculadora: la opción elegida vuelve a verse con borde burdeos (en la 1.0.2 se había quedado casi igual que las no elegidas).",
+      "Sistemas: en «Los cuatro» de Parámetros, Modos o cualquier sección, marcar uno lo deja marcado con «Ver la ficha» y marcar un segundo abre su comparación en esa misma sección. Desde Elección, los modos de los cuatro se abren arriba. En las fichas, «Cuándo» y «Programar» llevan a la fila de la inicialización en la Tabla 2, resaltada.",
+      "Buscar: al volver con una búsqueda anterior, lo que se escribe la sustituye en vez de añadirse detrás.",
+      "Iniciación: el paso de parámetros enlaza la calculadora con el sistema elegido; en la hoja de Control-IQ, «Objetivo fijo no configurable» va antes del rango; el número de la fase, en gris.",
+      "Situaciones: sin sistema elegido, el aviso para elegirlo va encima del selector y en letra legible.",
+    ],
+  },
+  {
+    fecha: "2026-10-22",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.3 — Control-IQ nocturno y umbral de la RM",
     detalle: [
       "Ficha de Control-IQ: «Hipoglucemia nocturna» con lo propio de Tandem (el modo sueño no autocorrige, pero ajusta basal), como en los otros tres sistemas.",
       "Exploraciones (Tabla 6): la retirada de más de aproximadamente 1 h, en su propia línea con su herramienta; el resto de la nota, debajo.",

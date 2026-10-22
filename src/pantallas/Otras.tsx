@@ -145,6 +145,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
   // Lo escrito vive en memoria (consultaBuscar.ts), no en la URL: al volver con Atrás desde un
   // resultado, la búsqueda sigue ahí, pero no queda en el historial ni en enlaces guardados.
   const [q, setQ] = useState(() => inicial ?? consultaBuscar());
+  const primerFoco = useRef(true);
+  const seleccionarAlTocar = useRef(!!(inicial ?? consultaBuscar()));
   // Dirección antigua con el texto (#/buscar/<texto>): se toma una vez y se quita de la URL.
   useEffect(() => {
     if (inicial == null) return;
@@ -369,6 +371,19 @@ export function Buscar({ inicial }: { inicial?: string }) {
         <input
           id="buscar-q"
           autoFocus
+          // 1.0.4 (20.ª ronda, R1): al volver con una consulta anterior, el primer foco (y el primer
+          // toque, que en el móvil recoloca el cursor) la selecciona entera: lo que se escribe la
+          // sustituye (antes se pegaba detrás: «alcohol omnipodmodo sueño…»).
+          onFocus={(e) => {
+            if (!primerFoco.current) return;
+            primerFoco.current = false;
+            e.currentTarget.select();
+          }}
+          onPointerUp={(e) => {
+            if (!seleccionarAlTocar.current) return;
+            seleccionarAlTocar.current = false;
+            e.currentTarget.select();
+          }}
           // 0.84.1 (octava ronda, guardia): en el móvil, Intro cierra el teclado (la respuesta
           // quedaba debajo) y la tecla dice «Buscar».
           enterKeyHint="search"
