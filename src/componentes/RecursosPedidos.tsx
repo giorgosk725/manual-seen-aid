@@ -5,7 +5,17 @@
    burdeos e icono de enlace externo, aunque lleva a otra pantalla de la app). */
 import type { Resultado } from "../busqueda";
 
-export function RecursosPedidos({ items, onIr }: { items: Resultado[]; onIr?: () => void }) {
+/* 1.0.6 (21.ª ronda, R1): `linea`, la respuesta corta del destino bajo su título (la fila de una
+   ficha: «Alcohol · Modos y funciones de Omnipod 5» salía sin texto). Solo la da Buscar. */
+export function RecursosPedidos({
+  items,
+  onIr,
+  linea,
+}: {
+  items: Resultado[];
+  onIr?: () => void;
+  linea?: (ruta: string) => string | undefined;
+}) {
   if (!items.length) return null;
   return (
     <ul className="mt-2 space-y-1" aria-label="Abrir">
@@ -20,6 +30,11 @@ export function RecursosPedidos({ items, onIr }: { items: Resultado[]; onIr?: ()
               Abrir
             </span>
             {r.entrada.titulo}
+            {linea?.(r.entrada.ruta) && (
+              <span className="mt-0.5 block font-normal leading-snug text-slate-700">
+                {linea(r.entrada.ruta)}
+              </span>
+            )}
           </a>
         </li>
       ))}

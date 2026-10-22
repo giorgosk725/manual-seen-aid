@@ -1027,7 +1027,12 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         .replace(/\bno [a-zñ]+/g, " ")
         .split(/[^a-z0-9ñ]+/)
         .map(raiz);
-      return { r, f: terminos.filter((x) => t.includes(raiz(x))).length / terminos.length };
+      const hits = terminos.filter((x) => t.includes(raiz(x))).length;
+      // 1.0.6 (21.ª ronda, R1): con otro «Abrir» ya pedido, no el que casa por una sola palabra
+      // de un título largo («hipoglucemia 780g» abría «Ejercicio aeróbico… mayor riesgo de
+      // hipoglucemia»).
+      const debil = out.length > 0 && hits < 2 && t.filter((w) => w.length > 3).length > 5;
+      return { r, f: debil ? 0 : hits / terminos.length };
     })
     .filter((x) => x.f >= 0.6)
     .sort((a, b) => b.f - a.f || b.r.puntos - a.r.puntos)

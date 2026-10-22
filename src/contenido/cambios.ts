@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-22",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — vigesimoprimera ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — buscador`,
+    detalle: [
+      "Buscar: el acceso a una fila de la ficha de un sistema («alcohol omnipod», «agua con 780G», «ducha con Control-IQ») trae debajo su dato operativo, sin abrirlo.",
+      "Buscar: «hipoglucemia» con un sistema («hipoglucemia 780g», «tratar una hipoglucemia con Omnipod 5») da primero cómo se trata en asa cerrada, sin la fila del ejercicio aeróbico ni su acceso.",
+    ],
+  },
+  {
+    fecha: "2026-10-22",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.5 — vigesimoprimera ronda de auditorías de uso",
     detalle: [
       "Sistemas: en «Los cuatro» de una sección, una sola pestaña marcada (la 1.0.4 marcaba también «Resumen»); «Ver la ficha», como botón secundario.",
       "Iniciación: desde otro sistema de asa cerrada, el paso 1 enseña el sistema actual y qué parámetros actúan en automático en uno y otro (como la calculadora, con el mismo dato); «Pauta previa» y «Basal previa», con la opción elegida en borde burdeos.",

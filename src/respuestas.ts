@@ -1653,6 +1653,20 @@ export const pideSospechaDeFallo = (n: string) =>
   /\b(set|cateter|canula|pod|reservorio|infusion|bomba)\b/.test(n) &&
   /fallo|falla|no funciona|no va|obstru|no baja|hiperglu|glucosa alta|glucemia alta|cetona/.test(n);
 
+/* La pregunta es solo «hipoglucemia», con o sin sistema y palabras de relleno («tratar», «leve»,
+   «en modo automático»). Con otra palabra («nocturna», «ejercicio») no. */
+const RELLENO_HIPO = new Set(
+  "con en el la un una de del paciente que hacer hago como se trata tratar tratamiento leve modo automatico asa cerrada sistema aid fx iq plus 5".split(
+    " ",
+  ),
+);
+function soloHipoglucemia(pregunta: string): boolean {
+  const ws = palabras(pregunta).filter(
+    (w) => ALIAS_SISTEMA[w] === undefined && !RELLENO_HIPO.has(w),
+  );
+  return ws.length === 1 && /^hipoglucemias?$/.test(ws[0]);
+}
+
 export function responder(pregunta: string, opciones: { max?: number } = {}): Respuesta[] {
   const base = fundirBM25(pregunta, responderBase(pregunta, { max: 10 }), opciones.max ?? 3);
   const q = normalizar(pregunta);
@@ -1663,6 +1677,20 @@ export function responder(pregunta: string, opciones: { max?: number } = {}): Re
   if (pideSospechaDeFallo(q)) {
     const resto = base.filter((x) => !/sin sospecha de fallo/i.test(x.titulo ?? ""));
     return resto.length ? resto : base;
+  }
+  // 1.0.6 (21.ª ronda, R1): «hipoglucemia 780g», «tratar una hipoglucemia con Omnipod»: cómo se
+  // trata en asa cerrada (apartado 7) primero; antes salía la fila de ejercicio («situación
+  // previsible de mayor riesgo de hipoglucemia»), que un residente podía aplicar a tratarla.
+  if (soloHipoglucemia(pregunta)) {
+    const h = atomos().find((x) => x.r.id === "t/07-educacion/b7/0");
+    if (h) {
+      // Si el motor ya da primero otra frase del mismo párrafo (con CamAPS FX, registrarlos como
+      // «tratamiento de hipoglucemia»), se queda esa.
+      const r = base[0]?.id?.startsWith("t/07-educacion/b7/") ? base[0] : resolver(h, undefined, 9);
+      // Sin las filas de ejercicio (la pregunta no lo nombra).
+      const resto = base.filter((x) => x.id !== r.id && !/^T4\/[01]/.test(x.id ?? ""));
+      return [r, ...resto].slice(0, opciones.max ?? 3);
+    }
   }
   const paso = numeroDePaso(pregunta);
   if (!paso || !/descarga|tabla 5/.test(q)) return base;

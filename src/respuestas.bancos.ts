@@ -191,6 +191,10 @@ export const CIEGO: [string, RegExp | null][] = [
   ["cetonas 0,8", /F3\/amarillo/],
   ["cetonemia de 3,2 con vómitos", /F3\/rojo/],
   ["hipoglucemia leve con camaps", /5-10 g|tratamiento de hipoglucemia/],
+  // 1.0.6 (21.ª ronda, R1): sin «leve», tampoco la fila de ejercicio.
+  ["hipoglucemia 780g", /5-10 g/],
+  ["hipoglucemia con omnipod 5", /5-10 g/],
+  ["tratar hipoglucemia control iq", /5-10 g/],
   ["cuánto azúcar tomo si tengo una hipo", /5-10 g|15 g/],
   ["control iq en el embarazo", /Control-IQ\+|T1\/8|CIRCUIT/],
   ["objetivo nocturno de camaps en el embarazo", /81 mg\/dl|noche/],

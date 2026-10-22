@@ -85,3 +85,22 @@ test.describe("Ronda 21", () => {
     await expect(nadar).toBeHidden();
   });
 });
+
+test.describe("Ronda 21 · buscador (1.0.6)", () => {
+  test("«alcohol omnipod»: el acceso a la fila de la ficha trae su respuesta", async ({ page }) => {
+    await page.goto("/#/buscar");
+    await page.locator("#buscar-q").fill("alcohol omnipod");
+    await page.keyboard.press("Enter");
+    const abrir = page.getByRole("list", { name: "Abrir" }).first();
+    await expect(abrir).toContainText("Alcohol · Modos y funciones de Omnipod 5");
+    await expect(abrir).toContainText("Anticipar hipoglucemia diferida");
+  });
+
+  test("«hipoglucemia 780g»: primero cómo se trata, sin el ejercicio", async ({ page }) => {
+    await page.goto("/#/buscar");
+    await page.locator("#buscar-q").fill("hipoglucemia 780g");
+    await page.keyboard.press("Enter");
+    await expect(page.getByText(/como orientación, 5-10\s?g/).first()).toBeVisible();
+    await expect(page.getByText(/Ejercicio aeróbico planificado/)).toHaveCount(0);
+  });
+});

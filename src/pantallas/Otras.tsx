@@ -37,6 +37,7 @@ import { useRegistroSinRespuesta } from "../consultas";
 import { AvisosBusqueda } from "../componentes/AvisosBusqueda";
 import { RespuestasCapitulo } from "../componentes/RespuestasCapitulo";
 import { RecursosPedidos } from "../componentes/RecursosPedidos";
+import { MODOS, slugDato } from "../fichaOperativa";
 import { Autocompletar } from "../componentes/Autocompletar";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
 import { SinResultados } from "../componentes/SinResultados";
@@ -57,6 +58,15 @@ const TIPO: Record<string, string> = {
 };
 
 /* ---------- Buscar ---------- */
+
+/* 1.0.6 (21.ª ronda, R1): un acceso a una fila de Modos de una ficha («#/sistemas/op5/
+   modos:alcohol»), con el dato operativo de esa fila debajo del título. */
+function lineaDeFicha(ruta: string): string | undefined {
+  const m = ruta.match(/^#\/sistemas\/([\w-]+)\/modos:([\w-]+)$/);
+  if (!m) return undefined;
+  const c = ORDEN_SISTEMAS.indexOf(m[1] as (typeof ORDEN_SISTEMAS)[number]);
+  return c < 0 ? undefined : MODOS[c]?.find((d) => slugDato(d.r) === m[2])?.v;
+}
 
 function ListaResultados({ res, q, fuera }: { res: Resultado[]; q: string; fuera?: boolean }) {
   return (
@@ -450,6 +460,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
       >
         {motor && qEf.trim().length >= 2 && (
           <RecursosPedidos
+            linea={lineaDeFicha}
             items={atajos.filter(
               (a) => !(frecuente && a.entrada.id === `recurso/frecuente/${frecuente.id}`),
             )}
