@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-21",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — rediseño, segunda fase`,
+    titulo: `Complemento interactivo ${VERSION_APP} — decimosexta ronda de auditorías de uso`,
+    detalle: [
+      "Tablas comparativas: columnas de sistema iguales, el nombre corto de cada sistema en cabeceras, casillas y fichas (nunca en mayúsculas), la fila común sin el color de un sistema; columna de rótulos más ancha en las Tablas 3 y 4.",
+      "Resumen y Elección con los rótulos de la ficha; en Elección, enlace a «Agua, alcohol y desconexión»; en la portada, el algoritmo sin repetir el nombre, «Modos» en las tarjetas de sistema y «Resumen de los cuatro sistemas».",
+      "Situaciones: la herramienta del sistema en filas, sin «Véase también» que la repita, lo que comparten varios sistemas una vez, el sistema preseleccionado a la vista, «Hipoglucemia nocturna» junto a Sueño y con el tratamiento a mano. Iniciación: cada pieza una vez en el recorrido, sin las frases de otro sistema y con menos burdeos.",
+      "Preguntas frecuentes: una pregunta de un sistema vuelve a su ficha; la lista recuerda el filtro, los temas abiertos y la posición. Lectura: filete fijo en el bloque de destino y «Volver a la consulta» a mano. Impresión: un mismo pie, filas sin marco, el paso de la descarga en una cara. Cifras e intervalos sin partir.",
+    ],
+  },
+  {
+    fecha: "2026-10-22",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.95.0 — rediseño, segunda fase",
     detalle: [
       "Portada en tres niveles: los sistemas (cada uno con su foto, su nombre y su algoritmo), la consulta (Iniciación y seguimiento, Situaciones clínicas) y la lectura y el material para el paciente.",
       "Situaciones: el asunto como título de sección; el selector, la tarjeta del sistema y lo común, sobre el papel, sin cajas dentro de cajas.",
