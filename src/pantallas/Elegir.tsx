@@ -280,6 +280,14 @@ function PorCaracteristicas() {
         Gestación, parto y posparto
         <ArrowRight size={14} aria-hidden="true" />
       </a>
+      {/* 1.0.1 (19.ª ronda, adjunto): el deportista, a los modos temporales de los cuatro. */}
+      <a
+        href={href("sistemas", "todos", "modos")}
+        className="mt-3 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:ml-4"
+      >
+        Ejercicio y modos temporales de los cuatro
+        <ArrowRight size={14} aria-hidden="true" />
+      </a>
     </section>
   );
 }

@@ -1442,24 +1442,6 @@ function InterrupcionLinea() {
           </span>
         ))}
       </nav>
-      {/* 0.72.0: el formato, antes de los casos (qué se puede desconectar y qué no). */}
-      <section className="tarjeta grid gap-x-6 gap-y-3 p-4 md:grid-cols-2">
-        <Sub className="sr-only">Según el formato</Sub>
-        <div className="text-sm leading-snug text-slate-800">
-          <span className="rotulo mb-1 block">Pod</span>
-          <p>
-            <TS>{pod}</TS>
-          </p>
-          <DesconexionEnFicha cols={[3]} />
-        </div>
-        <div className="text-sm leading-snug text-slate-800">
-          <span className="rotulo mb-1 block">Bomba con catéter</span>
-          <p>
-            <TS>{bomba}</TS>
-          </p>
-          <DesconexionEnFicha cols={[0, 1, 2]} />
-        </div>
-      </section>
       {/* Dos caminos que no son una sola línea de tiempo: lo programado se decide antes de
           desconectar; lo no programado se actúa a partir de aproximadamente 1 h sin insulina. */}
       <section id="interrupcion-no-programada" className="scroll-mt-20 lg:scroll-mt-6">
@@ -1505,6 +1487,25 @@ function InterrupcionLinea() {
             </Tramo>
           ))}
         </ul>
+      </section>
+      {/* 1.0.1 (19.ª ronda, R1): el formato, después de los casos (antes, primero: lo que decide
+          la conducta, programada o no, quedaba por debajo de la primera pantalla). */}
+      <section className="tarjeta grid gap-x-6 gap-y-3 p-4 md:grid-cols-2">
+        <Sub className="sr-only">Según el formato</Sub>
+        <div className="text-sm leading-snug text-slate-800">
+          <span className="rotulo mb-1 block">Pod</span>
+          <p>
+            <TS>{pod}</TS>
+          </p>
+          <DesconexionEnFicha cols={[3]} />
+        </div>
+        <div className="text-sm leading-snug text-slate-800">
+          <span className="rotulo mb-1 block">Bomba con catéter</span>
+          <p>
+            <TS>{bomba}</TS>
+          </p>
+          <DesconexionEnFicha cols={[0, 1, 2]} />
+        </div>
       </section>
       {L.detalles
         .filter((d) => d !== respaldo && d !== reinicio && d !== cetonemia)

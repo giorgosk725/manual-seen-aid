@@ -1,3 +1,4 @@
+import { CORTO_SISTEMA } from "../ampliacion/ids";
 import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
 /* Pinta una «pieza» por referencia (inicio.ts): frases de un párrafo, una lista, una fila de
    tabla, la casilla de un sistema, la línea de inicialización, un hito o un enlace. La usan «Iniciación del sistema» y las guías por referencias (guias/) de la ficha
@@ -72,9 +73,14 @@ function Casilla({
       className={`casilla p-3 text-sm text-slate-800 ${sinPleca ? "" : "casilla-sistema"}`}
       style={sinPleca ? undefined : { ["--sis" as string]: SISTEMA_HEX[c].strong }}
     >
+      {/* 1.0.1 (19.ª ronda, visual; §16 y §18): el nombre corto con su grafía, en la tinta del
+          sistema (antes, «TANDEM CONTROL-IQ» en versalitas). */}
       {nombre && (
-        <span className="rotulo mb-1 block" style={{ color: SISTEMA_HEX[c].ink }}>
-          {nombre}
+        <span
+          className="rotulo-sistema mb-1 block text-[13px]"
+          style={{ color: SISTEMA_HEX[c].ink }}
+        >
+          {CORTO_SISTEMA[c] ?? nombre}
         </span>
       )}
       <Lineas siglas={siglas}>{texto}</Lineas>
@@ -100,6 +106,14 @@ function notaDePieza(pieza: Pieza, sis?: number): string | null {
       return NOTAS_POR_PASAJE[clave] ?? null;
   }
   return null;
+}
+
+/* La primera línea de la Tabla 3 del sistema, si dice que su objetivo no se configura, junto a la
+   fila «Objetivo del algoritmo…» de la Tabla 2. */
+function objetivoNoConfigurable(etiqueta: string, c?: number): string | null {
+  if (c === undefined || c < 0 || !/^Objetivo del algoritmo/.test(etiqueta)) return null;
+  const l = (TABLAS.T3.filas[0].celdas[c] ?? "").split(/\n/)[0].trim();
+  return /no configurable/i.test(l) ? l : null;
 }
 
 export function PiezaVista(props: Parameters<typeof PiezaVistaBase>[0]) {
@@ -217,6 +231,15 @@ function PiezaVistaBase({
                 <div className="text-[15px] font-medium text-slate-900">
                   <Lineas siglas={pend(f.celdas[0])}>{f.celdas[0]}</Lineas>
                 </div>
+                {/* 1.0.1 (19.ª ronda, adjunto): con un sistema cuyo objetivo no se configura
+                    (Control-IQ, Tabla 3), dicho aquí: la recomendación general parecía decir que
+                    sí (la ficha y la hoja ya lo dicen). */}
+                {objetivoNoConfigurable(f.etiqueta, sis ?? delRecorrido) && (
+                  <p className="mt-1.5 text-sm font-semibold text-slate-800">
+                    {CORTO_SISTEMA[(sis ?? delRecorrido)!]}:{" "}
+                    {objetivoNoConfigurable(f.etiqueta, sis ?? delRecorrido)} (Tabla 3)
+                  </p>
+                )}
               </div>
             )}
             {t.columnas.slice(1).map((col, k) => (

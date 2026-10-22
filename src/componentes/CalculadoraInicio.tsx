@@ -43,13 +43,12 @@ import { PARAMETROS, fuentesDeDatos } from "../fichaOperativa";
 import { SETS_INFUSION } from "../ampliacion/datos";
 import { SIS_IDS } from "../situaciones";
 import { href } from "../rutas";
-import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
+import { SISTEMA_HEX } from "../tokens";
 import { FuentePie } from "./FuentePie";
 import { CasillasSistema } from "./CasillasSistema";
 import { sinCortes } from "../sinCortes";
 import { cambiarCalculadora, useTrabajo } from "../trabajo-inicio";
 
-const hex = CATEGORIA_HEX.consultar;
 const CORTOS = ["MiniMed 780G", "Control-IQ / Control-IQ+", "CamAPS FX", "Omnipod 5"];
 /* La pauta previa, por origen: lo que se traslada y lo que se calcula (apartado 8, p. 12). */
 const PREVIA: Record<Origen, string> = {
@@ -496,7 +495,8 @@ export function CalculadoraInicio({
         aria-label="Pasos de la calculadora"
         className="no-imprimir -my-2 flex flex-wrap items-center gap-x-2 gap-y-0"
       >
-        <span className="text-[13px] text-slate-600">Ir a:</span>
+        {/* 1.0.1 (19.ª ronda, visual): sin «Ir a:» en el móvil, la fila cabe en una línea. */}
+        <span className="hidden text-[13px] text-slate-600 sm:inline">Ir a:</span>
         {(
           [
             [3, "Datos"],
@@ -647,10 +647,7 @@ export function CalculadoraInicio({
                         }
                       />
                     </span>
-                    <span
-                      className="text-lg font-extrabold tabular-nums"
-                      style={{ color: hex.strong }}
-                    >
+                    <span className="text-lg font-extrabold tabular-nums text-slate-900">
                       {d.reduccion} %
                     </span>
                   </label>
@@ -668,7 +665,8 @@ export function CalculadoraInicio({
                       })
                     }
                     className="h-11 w-full"
-                    style={{ accentColor: hex.strong }}
+                    // 1.0.1 (19.ª ronda, visual): en gris oscuro (el burdeos se sumaba a lo elegido).
+                    style={{ accentColor: "#404040" }}
                   />
                   <div
                     className="flex justify-between text-xs tabular-nums text-slate-500"

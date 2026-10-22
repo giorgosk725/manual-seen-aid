@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-22",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — preguntas frecuentes de CamAPS FX`,
+    titulo: `Complemento interactivo ${VERSION_APP} — decimonovena ronda de auditorías de uso`,
+    detalle: [
+      "Tablas: en la tableta, la cabecera con los sistemas se ve al bajar; en la pantalla Tablas, todas caben entre 768 y 1279 px.",
+      "Situaciones: en la gestación con Control-IQ, el objetivo del algoritmo dice que no es configurable; Interrupción pone primero los casos (programada o no) y después el formato.",
+      "Buscar: «ease-off», «boost» o «basal adaptativa» llevan ya al sistema que los tiene; «programar», «configurar» o «primer día» con un sistema, a su programación inicial; sin repetir en las relacionadas una pregunta que ya sale arriba.",
+      "Iniciación: «3 primeros meses» enlaza el plan de seguridad; la hoja dice si la basal previa es ultralarga y su casilla sale solo si aplica; en CamAPS FX, la programación no repite Ease-off; las casillas de los sistemas, con su nombre corto; fases, deslizador y cifra de la calculadora sin burdeos apilado.",
+      "Fichas: «Comparar» en la misma fila que los sistemas. Notas de agua y desconexión con umbrales en letra mayor. Elección enlaza el ejercicio. Sobre explica cómo se señalan las correcciones posteriores a la publicación.",
+    ],
+  },
+  {
+    fecha: "2026-10-22",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.1 — preguntas frecuentes de CamAPS FX",
     detalle: [
       "CamAPS FX separa el ejercicio intenso y la comida grasa en dos preguntas; la de la comida grasa incluye el pasaje del apartado 9 (3–5 h; individualizar), como las de MiniMed 780G y Omnipod 5.",
     ],

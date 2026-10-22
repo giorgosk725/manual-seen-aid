@@ -327,6 +327,10 @@ export function Buscar({ inicial }: { inicial?: string }) {
       : []
   ).filter((f) => {
     const t = normalizarTermino([f.pregunta, ...(f.variantes ?? [])].join(" "));
+    // 1.0.1 (19.ª ronda, senior): sin la que ya sale arriba como acceso directo («ducha»).
+    if (res.some((r) => r.entrada.ruta === href("preguntas", f.id))) return false;
+    if (sugerencias.some((x) => x.ruta === href("preguntas", f.id) || x.texto === f.pregunta))
+      return false;
     return terminos.some((w) => t.includes(w.slice(0, 5)));
   });
   // Una respuesta de las Tablas 2 o 3 sigue en la tarea de Iniciar que la trabaja (si la
@@ -667,7 +671,9 @@ export function Sobre() {
                 para las tarjetas de los sistemas). */}
             <li>
               <strong>Texto del capítulo, literal:</strong> las Tablas, la lectura del capítulo, el
-              texto de cada situación y las comparaciones de «Los cuatro» (Tablas 1, 3 y 4).
+              texto de cada situación y las comparaciones de «Los cuatro» (Tablas 1, 3 y 4). Una
+              corrección posterior a la publicación se aplica en el texto y se señala en un recuadro
+              junto a él, con lo que dice el capítulo publicado.
             </li>
             <li>
               <strong>Resumen operativo:</strong> las tarjetas de cada sistema, con datos cortos

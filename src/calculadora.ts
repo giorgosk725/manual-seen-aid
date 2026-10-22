@@ -200,18 +200,20 @@ export function modosDe(
     .split("\n")
     .map((x) => x.trim())
     .filter(Boolean);
-  const repiteEjercicio =
-    temporales !== objetivo &&
-    trozosTemporales.length > 0 &&
-    trozosTemporales.every((x) => {
-      const n = nombreDe(x);
-      return !!n && t4(0).includes(n);
-    });
+  // 1.0.1 (19.ª ronda, R5): línea a línea: se quitan las funciones que la fila de ejercicio ya
+  // describe («Ease-off eleva el objetivo» en CamAPS FX) y queda lo demás (Boost).
+  const enEjercicio = (x: string) => {
+    const n = nombreDe(x);
+    return !!n && t4(0).includes(n);
+  };
+  const quedan =
+    temporales !== objetivo ? trozosTemporales.filter((x) => !enEjercicio(x)) : trozosTemporales;
+  const repiteEjercicio = temporales !== objetivo && quedan.length === 0;
   return [
     {
       situacion:
         temporales === objetivo ? "Objetivo y funciones temporales" : "Funciones temporales",
-      texto: repiteEjercicio ? "" : temporales,
+      texto: repiteEjercicio ? "" : temporales === objetivo ? temporales : quedan.join("\n"),
       tabla: "T3" as const,
     },
     { situacion: "Ejercicio aeróbico planificado", texto: t4(0), tabla: "T4" as const },

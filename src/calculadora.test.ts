@@ -236,7 +236,8 @@ describe("calculadora de inicio: auditoría de usuarios (19-10-2026)", () => {
     const m = modosDe(2);
     expect(m[0].situacion).toBe("Funciones temporales");
     expect(m.map((x) => x.texto).join(" ")).not.toMatch(/80–198|Objetivo configurable/);
-    expect(m[0].texto).toBe("Boost intensifica la administración\nEase-off eleva el objetivo");
+    // 1.0.1: Ease-off, en la fila de ejercicio (que lo describe entero), no aquí.
+    expect(m[0].texto).toBe("Boost intensifica la administración");
     expect(m.find((x) => x.situacion.startsWith("Sueño"))!.texto).toBe(
       "Sin modo nocturno específico",
     );
@@ -255,6 +256,9 @@ describe("0.99.0 · modos sin repetir la fila de ejercicio", () => {
     expect(filas(0)).not.toContain("Funciones temporales");
     expect(filas(3)).not.toContain("Funciones temporales");
     expect(filas(2)).toContain("Funciones temporales");
+    // 1.0.1: en CamAPS FX, solo Boost (Ease-off está en la fila de ejercicio).
+    expect(modosDe(2)[0].texto).toBe("Boost intensifica la administración");
+    expect(modosDe(2).find((m) => m.situacion.startsWith("Ejercicio"))!.texto).toMatch(/Ease-off/);
     expect(filas(1)).toContain("Objetivo y funciones temporales");
     // Lo quitado está en la fila de ejercicio.
     expect(modosDe(0).find((m) => m.situacion.startsWith("Ejercicio"))!.texto).toMatch(

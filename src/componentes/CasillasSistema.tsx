@@ -59,7 +59,11 @@ export function CasillasSistema({
       // líneas dentro de su casilla.
       className={
         unico
-          ? "sm:grid sm:grid-cols-4 sm:gap-1.5"
+          ? // 1.0.1 (19.ª ronda, visual y adjunto): con algo al lado («Comparar» en la ficha), en la
+            // misma fila (antes bajaba solo a otra de 48 px).
+            extra
+            ? "sm:grid sm:grid-cols-[repeat(4,minmax(0,1fr))_auto] sm:items-stretch sm:gap-1.5"
+            : "sm:grid sm:grid-cols-4 sm:gap-1.5"
           : "sm:flex sm:flex-wrap sm:items-center sm:gap-1.5"
       }
     >
@@ -160,7 +164,7 @@ export function CasillasSistema({
       </div>
       {(extra || pista) && (
         <div
-          className={`mt-1.5 flex items-center gap-2 empty:hidden ${unico ? "sm:col-span-4" : "sm:contents"}`}
+          className={`mt-1.5 flex items-center gap-2 empty:hidden ${unico ? (extra ? "sm:mt-0" : "sm:col-span-4") : "sm:contents"}`}
         >
           {extra}
           {pista && <span className="text-xs text-slate-500">{pista}</span>}

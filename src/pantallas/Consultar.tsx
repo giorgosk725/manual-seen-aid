@@ -177,11 +177,19 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
           // se quedaba junto al rótulo y los otros tres en la línea siguiente).
           <span className="flex w-full flex-wrap items-center gap-x-4 gap-y-0 text-sm text-slate-700 sm:w-auto">
             <span className="w-full sm:w-auto">Plan de seguridad:</span>
-            {CORTO_SISTEMA.map((n, c) => (
-              <a key={c} href={href("pacientes", "plan", ORDEN_SISTEMAS[c])} className={enlacePlan}>
-                {n}
-              </a>
-            ))}
+            {/* 1.0.1 (19.ª ronda, R1): en el móvil, los cuatro en dos columnas (el último se
+                quedaba solo en otra línea). */}
+            <span className="grid w-full grid-cols-2 gap-x-4 sm:flex sm:w-auto sm:gap-x-4">
+              {CORTO_SISTEMA.map((n, c) => (
+                <a
+                  key={c}
+                  href={href("pacientes", "plan", ORDEN_SISTEMAS[c])}
+                  className={enlacePlan}
+                >
+                  {n}
+                </a>
+              ))}
+            </span>
           </span>
         )}
       </div>

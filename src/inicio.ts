@@ -371,7 +371,13 @@ export const TAREAS: Record<string, Tarea[]> = {
     },
   ],
   "primeros-meses": [
-    { id: "calendario", titulo: "Calendario de revisiones", piezas: [0, 1, 2, 3] },
+    {
+      id: "calendario",
+      titulo: "Calendario de revisiones",
+      piezas: [0, 1, 2, 3],
+      // 1.0.1 (19.ª ronda, R5): lo que se entrega o se revisa en esas citas, a mano.
+      siguiente: planDeSeguridad,
+    },
     { id: "vigilar", titulo: "Vigilancia en las primeras descargas", piezas: [6, 7] },
     {
       id: "ajustes",

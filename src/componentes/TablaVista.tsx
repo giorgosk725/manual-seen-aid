@@ -45,7 +45,12 @@ const slugDe = (c: number) => CORTOS[c].toLowerCase().replace(/\s/g, "-");
 const nombreColumna = (tabla: Tabla, c: number, literal: boolean) =>
   tabla.porSistema && !literal ? CORTO_SISTEMA[c] : tabla.columnas[c];
 /* La columna de rótulos (0.95.1: más ancha en las tablas de rótulo largo, 3 y 4). */
-const anchoRotulos = (tabla: Tabla) => (tabla.id === "T4" || tabla.id === "T3" ? "12rem" : "10rem");
+/* 1.0.1 (19.ª ronda, visual): la de las Tablas 3 y 4, 10 rem por debajo de 1280 px
+   (--ancho-rotulos-34, index.css): en la pantalla Tablas la columna mide 692 px. */
+const anchoRotulos = (tabla: Tabla) =>
+  tabla.id === "T4" || tabla.id === "T3"
+    ? "var(--ancho-rotulos-34, 12rem)"
+    : "var(--ancho-celda-tabla, 10rem)";
 
 /* «Viendo: MiniMed 780G y Omnipod 5»: qué selección está activa, con palabras. */
 const listaNombres = (n: string[]) =>
@@ -298,7 +303,9 @@ function TablaHTML({
                   <td
                     key={c}
                     className="separador border-l border-t px-3 py-2 text-slate-800"
-                    style={tabla.porSistema ? undefined : { minWidth: "10rem" }}
+                    style={
+                      tabla.porSistema ? undefined : { minWidth: "var(--ancho-celda-tabla, 10rem)" }
+                    }
                   >
                     <Lineas>
                       {sinCortes(

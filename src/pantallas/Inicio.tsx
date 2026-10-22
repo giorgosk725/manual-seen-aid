@@ -117,7 +117,8 @@ function Hoja({ sis }: { sis?: number }) {
   const pauta = !ev.lista
     ? null
     : mdi
-      ? `MDI, ${coma(redondea(ev.dtdPrevia!, 1))} UI/día; reducción del ${calc.reduccion} %`
+      ? // 1.0.1 (19.ª ronda, R5): con la basal ultralarga, dicho (antes solo «MDI»).
+        `MDI${calc.ultralarga ? " con glargina U-300 o degludec" : ""}, ${coma(redondea(ev.dtdPrevia!, 1))} UI/día; reducción del ${calc.reduccion} %`
       : [
           calc.origen === "isci"
             ? "Bomba de insulina"
@@ -190,19 +191,28 @@ function Hoja({ sis }: { sis?: number }) {
           Antes de activar el modo automático
         </h3>
         <ul className="mt-1 space-y-1">
-          {h.antes.map((it) => (
-            <li key={it.texto}>
-              <label className="flex gap-2 text-sm text-slate-800">
-                <input
-                  type="checkbox"
-                  checked={hechos.has(it.texto)}
-                  onChange={() => marcar(it.texto)}
-                  className="h-7 w-7 shrink-0 accent-[#8E254E]"
-                />
-                <span>{it.texto}</span>
-              </label>
-            </li>
-          ))}
+          {/* 1.0.1 (19.ª ronda, R5): la casilla de las basales ultralargas, solo si aplica (con la
+              U-300 marcada, o sin datos en la calculadora: la hoja en blanco lleva todo). */}
+          {h.antes
+            .filter(
+              (it) =>
+                !(it.pieza?.t === "fila" && it.pieza.fila === 8) ||
+                !ev.lista ||
+                (mdi && calc.ultralarga),
+            )
+            .map((it) => (
+              <li key={it.texto}>
+                <label className="flex gap-2 text-sm text-slate-800">
+                  <input
+                    type="checkbox"
+                    checked={hechos.has(it.texto)}
+                    onChange={() => marcar(it.texto)}
+                    className="h-7 w-7 shrink-0 accent-[#8E254E]"
+                  />
+                  <span>{it.texto}</span>
+                </label>
+              </li>
+            ))}
         </ul>
         {h.sistema && (
           <>

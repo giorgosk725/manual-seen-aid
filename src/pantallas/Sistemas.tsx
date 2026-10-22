@@ -776,7 +776,7 @@ export function FichaSistema({
             }}
             // 0.89.1 (13.ª ronda, guardia): «Cambiar», como en la barra plegada; las cinco en una
             // línea a 360 px (antes, «Otro sistema» sola en una segunda línea).
-            aria-label="Otro sistema o comparación"
+            aria-label="Cambiar de sistema o comparar"
             className={`${accesoFicha} gap-0.5 sm:hidden`}
           >
             {/* 0.91.3 (14.ª ronda, guardia): con su flecha, que despliega el selector. */}
@@ -1231,7 +1231,7 @@ function BarraSistemas({
       // 0.94.0 (rediseño): sin caja desde sm (borde y esquinas la hacían parecer un formulario):
       // las casillas y, debajo, la tira de pestañas apoyada en una línea a todo lo ancho, como en el
       // móvil.
-      className={`barra-pegada separador no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 sm:mx-0 sm:px-0 sm:pt-2.5 ${ids.length === 1 ? "" : "lg:static"} ${compacta && ids.length === 1 ? "" : "pt-2"}`}
+      className={`barra-pegada separador no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 sm:mx-0 sm:px-0 sm:pt-2.5 ${ids.length === 1 ? "" : "md:static"} ${compacta && ids.length === 1 ? "" : "pt-2"}`}
     >
       {compacta && ids.length === 1 ? null : compacta ? (
         <button
@@ -1626,15 +1626,17 @@ function OtrasSituaciones({ cols, aLaVista }: { cols: number[]; aLaVista?: boole
                   <span className="block">
                     <SinCortes texto={d.v} />
                   </span>
+                  {/* 1.0.1 (19.ª ronda, senior): las notas llevan umbrales y riesgos («más de 1 h…»):
+                      14 px y texto oscuro (antes, 13 px en gris, como una fuente). */}
                   {d.n && !f.nota && (
-                    <span className="mt-0.5 block text-[13px] text-slate-600">
+                    <span className="mt-0.5 block text-sm text-slate-700">
                       <SinCortes texto={d.n} />
                     </span>
                   )}
                 </div>
               ))}
               {f.nota && (
-                <p className="text-[13px] text-slate-600">
+                <p className="text-sm text-slate-700">
                   <SinCortes texto={f.nota} />
                 </p>
               )}

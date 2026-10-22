@@ -726,6 +726,17 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         TABLAS.T4.paginas[0],
       ),
     );
+  // 1.0.1 (19.ª ronda, senior): «programar 780G», «configurar Omnipod», «primer día con…»: la
+  // programación inicial de ese sistema (paso 5 de la calculadora, con o sin datos).
+  if (sis >= 0 && /\b(program\w*|configur\w*|primer dia)\b/.test(n))
+    out.push(
+      atajo(
+        `recurso/programacion/${SIS_IDS[sis]}`,
+        `Programación inicial en ${CATALOGO_SISTEMAS[sis].name} (Cálculo inicial)`,
+        href("consultar", "inicio", `calculadora:${SIS_IDS[sis]}`),
+        TABLAS.T2.paginas[0],
+      ),
+    );
   // 1.0.0 (18.ª ronda, senior): ducharse o bañarse con un sistema, su fila «Desconexión»; sin
   // sistema, el bloque de los cuatro («Agua, alcohol y desconexión»).
   if (sis >= 0 && /\b(ducha|duchar\w*)\b/.test(n))
@@ -1106,9 +1117,19 @@ function destinoDe(crudo: string, dos: number[]): number {
     ) ?? dos[dos.length - 1]
   );
 }
+/* 1.0.1 (19.ª ronda, adjunto): sin nombre de sistema, una función que solo tiene uno lo dice
+   («ease-off» → CamAPS FX; «basal adaptativa» → Omnipod 5): los accesos lo llevan ya elegido. */
+const PROPIO_DE: [RegExp, number][] = [
+  [/\b(ease\W?off|boost)\b/, 2],
+  [/\bsmartguard\b/, 0],
+  [/\b(smartadjust|basal adaptativa)\b/, 3],
+];
 function sistemaDeConsulta(consulta: string): number {
   const palabras = palabrasDeSistema(consulta);
-  return ALIAS_SISTEMA.findIndex((re) => palabras.some((w) => re.test(w)));
+  const i = ALIAS_SISTEMA.findIndex((re) => palabras.some((w) => re.test(w)));
+  if (i >= 0) return i;
+  const n = normalizar(consulta);
+  return PROPIO_DE.find(([re]) => re.test(n))?.[1] ?? -1;
 }
 /* Todos los sistemas que nombra la consulta (índices de columna, en el orden de la Tabla 1). */
 function sistemasDeConsulta(consulta: string): number[] {

@@ -1197,7 +1197,14 @@ h3[tabindex="-1"]:focus-visible,
 /* 0.97.1 (17.ª ronda, visual): en los datos de la calculadora, la opción elegida con borde burdeos
    y fondo suave (como el selector de sistemas); el relleno burdeos queda para la navegación. */
 .formulario-calc .chip[aria-pressed="true"],
-.opciones-ligeras .chip[aria-current],
+/* 1.0.1 (19.ª ronda, visual): la fase activa de Iniciación, con borde neutro y sin fondo: el
+   burdeos, solo en su número (eran seis señales burdeos en los primeros 300 px). */
+.opciones-ligeras .chip[aria-current] {
+  background: var(--papel);
+  border-color: var(--tinta-3);
+  box-shadow: inset 0 0 0 1px var(--tinta-3);
+  color: var(--tinta);
+}
 /* 1.0.0 (18.ª ronda, visual): «Los cuatro» del selector de Sistemas, igual que las casillas de
    sistema (el relleno se apilaba con el chip del parámetro elegido). */
 .barra-pegada .chip[aria-pressed="true"] {
@@ -2166,5 +2173,20 @@ html.night .decoration-slate-300 {
 @media print {
   .tarjeta-sistema dt a {
     text-decoration: none !important;
+  }
+}
+
+/* 1.0.1 (19.ª ronda, visual): entre 768 y 1279 px, la columna de rótulos de las Tablas 3 y 4 más
+   estrecha, para que la tabla quepa también en la pantalla Tablas (692 px). */
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+  :root {
+    --ancho-rotulos-34: 10rem;
+    /* Las tablas que no van por sistema (Tabla 5: cinco columnas de 10 rem eran 800 px). */
+    --ancho-celda-tabla: 8rem;
+  }
+  .tabla-capitulo td,
+  .tabla-capitulo th {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
 }
