@@ -68,3 +68,4 @@ sustituido 9 minutos después por la 0.92.2 (09eaaab), que es su commit exacto. 
 | 2026-10-22 05:30 | main | 0.96.0 | 3b5b554a29e3 | index-BpYbGkq_.js | 0.95.0 (4dd80dcfc6b2) |
 
 Nota (22-10-2026): la 0.96.0 se desplegó bien, pero la comprobación final de `npm run publicar` falló por el retraso de propagación (la web aún servía la 0.95.0); 20 s después servía la 0.96.0 (index-BpYbGkq_.js) y esta línea se anotó a mano.
+| 2026-10-22 06:29 | main | 0.97.0 | 265735686f29 | index-CfGTAHg0.js | 0.96.0 (3b5b554a29e3) |
