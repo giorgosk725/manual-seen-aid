@@ -15,7 +15,15 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-22",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — decimoctava ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — preguntas frecuentes de CamAPS FX`,
+    detalle: [
+      "CamAPS FX separa el ejercicio intenso y la comida grasa en dos preguntas; la de la comida grasa incluye el pasaje del apartado 9 (3–5 h; individualizar), como las de MiniMed 780G y Omnipod 5.",
+    ],
+  },
+  {
+    fecha: "2026-10-22",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.0 — decimoctava ronda de auditorías de uso",
     detalle: [
       "Tablas comparativas: caben enteras también entre 768 y 1279 px (portátil pequeño y tableta; antes se cortaba la columna de Omnipod 5).",
       "Fichas: los rótulos que abren el capítulo, con una sola señal (el libro); «Tipo» sin repetir el nombre del sistema; «En el capítulo», con nombres cortos y solo donde añade algo a la fuente al pie; en papel, cada cara dice de qué sistema es.",

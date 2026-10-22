@@ -857,6 +857,12 @@
       "version": "0.51.0",
       "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
       "huella": "1okn9gc16e7mzi"
+    },
+    {
+      "fecha": "2026-10-22",
+      "version": "1.0.1",
+      "evidencia": "Decisión del autor en la sesión del 22-10-2026 («sí, separa f94»), como f83/f104 en la 0.99.0: f94 solo ejercicio intenso; f105 nueva, comida grasa en CamAPS FX con el pasaje del apartado 9 (b6, frases 0 y 1, los de la ficha). Pasajes literales ya existentes, sin texto nuevo.",
+      "huella": "1ydjrya4kkjq8"
     }
   ],
   "f95": [
@@ -949,6 +955,14 @@
       "version": "0.99.0",
       "evidencia": "Decisión del autor en la sesión del 22-10-2026 («me fío de ti haz los cambios») sobre la propuesta de la 17.ª ronda de auditorías (R3, P3): f83 solo enfermedad leve; f104 nueva, comida grasa en MiniMed 780G; f103 con el pasaje del apartado 9 (pp. 14). Pasajes literales ya existentes, sin texto nuevo.",
       "huella": "1pp68uzc2173t"
+    }
+  ],
+  "f105": [
+    {
+      "fecha": "2026-10-22",
+      "version": "1.0.1",
+      "evidencia": "Decisión del autor en la sesión del 22-10-2026 («sí, separa f94»), como f83/f104 en la 0.99.0: f94 solo ejercicio intenso; f105 nueva, comida grasa en CamAPS FX con el pasaje del apartado 9 (b6, frases 0 y 1, los de la ficha). Pasajes literales ya existentes, sin texto nuevo.",
+      "huella": "2xw7w41ktjdo6"
     }
   ]
 }

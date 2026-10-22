@@ -130,11 +130,11 @@ describe("A03 · privacidad", () => {
 describe("A04 · circuito de aprobación de las preguntas frecuentes", () => {
   const pendientes = FRECUENTES_TODAS.filter((f) => f.revision.estado !== "aprobada");
   // 0.99.0: f104 (comida grasa en MiniMed 780G), junto a f83 en su tema; f83 y f103 revisadas el
-  // 22-10-2026 por decisión del autor.
-  it("las 104 aprobadas, cada una con fecha y registro de su revisión", () => {
+  // 22-10-2026 por decisión del autor. 1.0.1: f105 (comida grasa en CamAPS FX), junto a f94.
+  it("las 105 aprobadas, cada una con fecha y registro de su revisión", () => {
     expect(
       FRECUENTES.map((f) => f.id).sort((a, b) => Number(a.slice(1)) - Number(b.slice(1))),
-    ).toEqual(Array.from({ length: 104 }, (_, i) => `f${String(i + 1).padStart(2, "0")}`));
+    ).toEqual(Array.from({ length: 105 }, (_, i) => `f${String(i + 1).padStart(2, "0")}`));
     for (const f of FRECUENTES) {
       expect(f.revision.fecha, f.id).toMatch(/^2026-10-(08|11|13|14|15|22)$/);
       expect(f.revision.registro.length, f.id).toBeGreaterThan(20);

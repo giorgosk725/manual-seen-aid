@@ -230,3 +230,13 @@ Decisión del autor en la sesión del 22-10-2026 sobre la propuesta de la 17.ª 
 - **f103** (Omnipod 5): añade esos dos pasajes del apartado 9.
 
 Solo pasajes literales que ya estaban en la app; ningún texto nuevo.
+
+### Revisión del 22-10-2026 (1.0.1)
+
+Decisión del autor en la sesión del 22-10-2026 («sí, separa f94»), como f83/f104 en la 0.99.0:
+
+- **f94** (CamAPS FX): solo el ejercicio intenso («¿qué hacer con un ejercicio intenso?», T4/1).
+- **f105** (nueva, CamAPS FX): «¿qué hacer con una comida grasa?»: T4/5 y el apartado 9 (b6, frases
+  0 y 1), los mismos pasajes que la ficha de CamAPS FX.
+
+Solo pasajes literales que ya estaban en la app; ningún texto nuevo.

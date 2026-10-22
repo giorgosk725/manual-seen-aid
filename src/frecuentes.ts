@@ -984,9 +984,20 @@ export const TODAS: Frecuente[] = [
   {
     id: "f94",
     tema: "myLoop CamAPS FX",
-    pregunta: "CamAPS FX: ¿qué hacer con una comida grasa o un ejercicio intenso?",
-    variantes: ["comida de absorción lenta CamAPS", "Boost en el ejercicio"],
-    pasajes: ["T4/5", "T4/1"],
+    // 1.0.1 (decisión del autor del 22-10-2026, como f83 en la 0.99.0): el ejercicio intenso,
+    // solo; la comida grasa, en f105.
+    pregunta: "CamAPS FX: ¿qué hacer con un ejercicio intenso?",
+    variantes: ["Boost en el ejercicio", "CamAPS ejercicio intenso"],
+    pasajes: ["T4/1"],
+    sistema: 2,
+  },
+  {
+    id: "f105",
+    tema: "myLoop CamAPS FX",
+    pregunta: "CamAPS FX: ¿qué hacer con una comida grasa?",
+    variantes: ["comida de absorción lenta CamAPS", "CamAPS comida grasa"],
+    // La fila de la Tabla 4 y el pasaje del apartado 9 que usa la ficha de CamAPS FX.
+    pasajes: ["T4/5", "t/09-descarga/b6/0", "t/09-descarga/b6/1"],
     sistema: 2,
   },
   {
