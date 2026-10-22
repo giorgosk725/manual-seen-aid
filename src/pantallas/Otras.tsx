@@ -586,10 +586,22 @@ export function Sobre() {
             automatización de la insulinoterapia, para su uso en consulta.
           </p>
           <ul className="list-disc space-y-1 pl-5 text-sm text-slate-700">
+            {/* 0.97.1 (17.ª ronda, adjunto): qué es literal, qué es resumen y qué es
+                complementario (antes, «el contenido clínico es el texto del capítulo», inexacto
+                para las tarjetas de los sistemas). */}
             <li>
-              El contenido clínico es el texto del capítulo, con su página. Las preguntas
-              frecuentes, la autoevaluación y las hojas adaptadas son materiales complementarios
-              basados en él.
+              <strong>Texto del capítulo, literal:</strong> las Tablas, la lectura del capítulo, el
+              texto de cada situación y las comparaciones de «Los cuatro» (Tablas 1, 3 y 4).
+            </li>
+            <li>
+              <strong>Resumen operativo:</strong> las tarjetas de cada sistema, con datos cortos
+              tomados del capítulo; el rótulo con el libro abre su texto literal y cada bloque lleva
+              su fuente al pie.
+            </li>
+            <li>
+              <strong>Complementario:</strong> las preguntas frecuentes, la autoevaluación, las
+              hojas adaptadas y los recuadros de marco discontinuo, basados en el capítulo y
+              señalados como tales.
             </li>
             <li>
               La búsqueda funciona en el propio dispositivo: no se envía ni se guarda nada. Se puede
@@ -597,9 +609,9 @@ export function Sobre() {
             </li>
             <li>
               La ayuda de cálculo de «Iniciación del sistema» aplica las reglas de la Tabla 2 y del
-              apartado 8 y unos puntos de partida del responsable de este complemento (no del Manual
-              SEEN). Da un punto de partida para revisión profesional, no una pauta, y no guarda ni
-              envía las cifras. No deben introducirse datos que identifiquen a una persona.
+              apartado 8 y unos puntos de partida propios de este complemento (no del Manual SEEN).
+              Da un punto de partida para revisión profesional, no una pauta, y no guarda ni envía
+              las cifras. No deben introducirse datos que identifiquen a una persona.
             </li>
             <li>
               No sustituye las instrucciones de cada sistema, los protocolos del centro ni el juicio

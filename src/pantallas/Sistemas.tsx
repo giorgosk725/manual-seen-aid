@@ -1492,10 +1492,25 @@ function OtrasSituaciones({ cols, aLaVista }: { cols: number[]; aLaVista?: boole
   const caja = useRef<HTMLElement>(null);
   useEffect(() => {
     if (!aLaVista || !caja.current) return;
-    const barra = document.querySelector(".barra-pegada")?.getBoundingClientRect().bottom ?? 0;
-    window.scrollTo({
-      top: Math.max(0, window.scrollY + caja.current.getBoundingClientRect().top - barra - 12),
-    });
+    const colocar = () => {
+      if (!caja.current) return;
+      // La barra solo cuenta si está pegada arriba (en el ordenador se va con la página).
+      const barra = Math.max(
+        0,
+        document.querySelector(".barra-pegada")?.getBoundingClientRect().bottom ?? 0,
+      );
+      const arriba = caja.current.getBoundingClientRect().top - barra - 12;
+      if (Math.abs(arriba) > 4) window.scrollTo({ top: Math.max(0, window.scrollY + arriba) });
+    };
+    colocar();
+    // 0.97.1 (17.ª ronda, adjunto): otra vez cuando la tabla de encima ya ha terminado de medirse
+    // (a 1366 × 768 el título quedaba 45 px bajo la barra).
+    const t1 = setTimeout(colocar, 250);
+    const t2 = setTimeout(colocar, 800);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
   }, [aLaVista]);
   // Sin repeticiones: los sistemas que dicen lo mismo, juntos, con el texto una vez. 0.96.0 (16.ª
   // ronda, senior): la nota que es la misma en todos (la prudencia con los bolos en el alcohol, el

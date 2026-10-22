@@ -4,6 +4,7 @@ import { sinCortes } from "../sinCortes";
 import { paginasPorApartado } from "../paginasApartado";
 import { NOTA_ADAPTA_OMNIPOD } from "../notas-complementarias";
 import { FuentePie } from "./FuentePie";
+import { VeaseTambien } from "./VeaseTambien";
 import { SinCortes } from "./SinCortes";
 import { BloquesPorSistema } from "./BloquesPorSistema";
 import { GUIA_POR_SISTEMA } from "../porSistema";
@@ -174,6 +175,19 @@ export function MarcoDiagrama({
             },
           ]}
         />
+        {/* 0.97.1 (17.ª ronda, visual; §15): por dónde seguir, en la lista de «Véase también» de
+            toda la app (antes, chips con flecha). */}
+        {!enApartado && SEGUIR_DIAGRAMA[id] && (
+          <VeaseTambien
+            enCaja
+            nivel={3}
+            className="no-imprimir mt-4"
+            filas={SEGUIR_DIAGRAMA[id]!.map(planDelSistema).map((l) => ({
+              href: l.ruta,
+              t: l.texto,
+            }))}
+          />
+        )}
         <div className="separador no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3">
           {!enApartado && donde && (
             <a
@@ -189,12 +203,6 @@ export function MarcoDiagrama({
               <Images size={12} aria-hidden="true" /> Abrir a pantalla completa
             </a>
           )}
-          {!enApartado &&
-            (SEGUIR_DIAGRAMA[id] ?? []).map(planDelSistema).map((l) => (
-              <a key={l.ruta} href={l.ruta} className="chip tap-44 min-h-9 text-xs sm:min-h-8">
-                {l.texto} <ArrowRight size={12} aria-hidden="true" />
-              </a>
-            ))}
           <BotonImprimir objetivo={ref} compacto>
             Imprimir
           </BotonImprimir>
@@ -843,25 +851,15 @@ function Hipoglucemia() {
       >
         <Texto>{HIPOGLUCEMIA.orientacion}</Texto>
       </p>
-      <ul className="mt-3 space-y-2 text-sm text-slate-800">
-        {HIPOGLUCEMIA.despues.map((d) => {
-          const I = /15 min/.test(d.texto) ? Timer : /comida/.test(d.texto) ? Utensils : RefreshCw;
-          return (
-            <li key={d.texto} className="flex w-fit max-w-full gap-2.5 tarjeta p-3">
-              <span
-                aria-hidden="true"
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
-                style={{ background: "#f1f5f9", color: "#475569" }}
-              >
-                <I size={15} />
-              </span>
-              <span className="min-w-0 max-w-[72ch]">
-                {"tema" in d && d.tema && <strong>{d.tema}: </strong>}
-                <Texto>{d.texto}</Texto>
-              </span>
-            </li>
-          );
-        })}
+      {/* 0.97.1 (17.ª ronda, visual; DISENO_VISUAL §5 y §15): las notas, filas sobre el papel con
+          línea fina (antes, cada una en su tarjeta con un cuadro de icono). */}
+      <ul className="mt-3 max-w-[72ch] divide-y divide-[var(--linea-suave)] text-sm text-slate-800">
+        {HIPOGLUCEMIA.despues.map((d) => (
+          <li key={d.texto} className="py-2.5 first:pt-1">
+            {"tema" in d && d.tema && <strong>{d.tema}: </strong>}
+            <Texto>{d.texto}</Texto>
+          </li>
+        ))}
       </ul>
     </div>
   );

@@ -53,7 +53,10 @@ No hay texto de interfaz por debajo de 12 px (antes había 10 y 11 px).
 
 - `.chip`: selector de opción (una entre varias o varias): borde capilar, esquinas de 6 px,
   44 px de alto en el móvil (36 desde `sm`); marcado = fondo burdeos y texto blanco
-  (`aria-pressed="true"`). Sin píldoras.
+  (`aria-pressed="true"`). Sin píldoras. 0.98 (17.ª ronda): en los formularios (datos de la
+  calculadora, `.formulario-calc`) y en las fases de Iniciación (`.opciones-ligeras`), lo marcado
+  con borde burdeos y fondo `--acento-suave` (texto oscuro), como el selector de sistemas: el
+  relleno burdeos apilado en una misma pantalla pesaba demasiado.
 - `.num`: número de paso en círculo de 24 px; activo en burdeos.
 - Botón principal: burdeos, esquinas de 6 px, 44 px. Secundario: borde capilar, blanco.
 - Pestañas (secciones de la ficha, Resumen/Características/Parámetros): texto con subrayado

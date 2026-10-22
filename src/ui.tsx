@@ -8,6 +8,7 @@ import { createPortal } from "react-dom";
 import { AlertTriangle, ChevronDown, Printer, RotateCcw, X, type LucideIcon } from "lucide-react";
 import { imprimirRegion } from "./imprimir";
 import { VERSION_APP } from "./version";
+import { CATEGORIA_HEX } from "./tokens";
 
 /* Enlace de ruta hash: un <a> normal (accesible, abre en pestaña nueva con Ctrl). */
 export function Enlace({
@@ -538,7 +539,9 @@ export function CabeceraEditorial({
               ? "text-balance text-xl font-bold leading-snug sm:text-[1.375rem]"
               : "font-display text-xl font-medium uppercase leading-tight tracking-[0.04em]"
           }
-          style={{ color: hex.ink }}
+          // 0.97.1 (17.ª ronda, visual; DISENO_VISUAL §3): el título, en burdeos en todas las
+          // pantallas (los colores de área son acentos pequeños: el cuadro del número y la regla).
+          style={{ color: CATEGORIA_HEX.consultar.ink }}
         >
           {titulo}
         </H>

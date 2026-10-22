@@ -167,7 +167,14 @@ function PorCaracteristicas() {
           </button>
         )}
       </div>
-      <ul className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-live="polite">
+      {/* 0.97.1 (17.ª ronda, adjunto): se anuncia un resumen corto (antes, la lista entera de las
+          cuatro tarjetas era la región que se leía con cada casilla). */}
+      <p role="status" className="sr-only">
+        {hayAlgo && reunen.length > 0
+          ? `Reúnen lo marcado: ${reunen.map((c) => CORTO_SISTEMA[c]).join(", ")}.`
+          : ""}
+      </p>
+      <ul className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {ORDEN_SISTEMAS.map((id, c) => {
           const h = SISTEMA_HEX[c];
           const fuera = hayAlgo && !reunen.includes(c);
@@ -205,7 +212,8 @@ function PorCaracteristicas() {
                   </span>
                 )}
               </div>
-              <dl className="mt-1 space-y-1.5 text-[13px] sm:contents">
+              {/* 0.97.1 (17.ª ronda, senior): 14 px (antes, 13). */}
+              <dl className="mt-1 space-y-1.5 text-sm sm:contents">
                 {CRITERIOS.map((cr) => {
                   const r = casa(cr, c);
                   return (
@@ -269,7 +277,7 @@ function PorCaracteristicas() {
 /* 0.96.0 (16.ª ronda, visual): el rótulo de un dato, como en las fichas (minúscula y negrita, sobre
    una línea fina), no en MAYÚSCULAS grises. */
 const ROTULO_DATO =
-  "separador mt-1.5 border-t pt-1.5 text-[13px] font-semibold leading-snug text-slate-900 sm:mt-0";
+  "separador mt-1.5 border-t pt-1.5 text-sm font-semibold leading-snug text-slate-900 sm:mt-0";
 /* En la subrejilla (desde sm) el dato va en la fila siguiente: sin el hueco de la rejilla. */
 const DATO_PEGADO = "sm:-mt-2";
 

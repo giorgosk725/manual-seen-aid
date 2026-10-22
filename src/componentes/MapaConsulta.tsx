@@ -169,7 +169,8 @@ function Sistemas() {
                   aria-label={`Cálculo de parámetros iniciales de ${CORTO_SISTEMA[c]}`}
                   className={enlace}
                 >
-                  Cálculo
+                  {/* 0.97.1 (17.ª ronda, senior): «Cálculo» solo no decía de qué. */}
+                  Cálculo inicial
                 </a>
                 <a
                   href={href("sistemas", id, "preguntas")}

@@ -87,13 +87,31 @@ export function Texto({ children, siglas }: { children: string; siglas?: Set<str
 
 /* Trozos ya partidos (Remisiones.tsx): los que llevan `sigla` se pintan como sigla pulsable,
    dentro de su negrita o cursiva si la tenían. */
-export function Trozos({ trozos }: { trozos: TrozoSigla[] }) {
+export function Trozos({ trozos: originales }: { trozos: TrozoSigla[] }) {
   const cifras = React.useContext(CifrasCtx);
+  // 0.97.1 (17.ª ronda, R1): el signo que sigue a una sigla pulsable va con ella («PET,»): la
+  // sigla es un botón y la coma podía empezar la línea siguiente.
+  const trozos = originales.map((x) => ({ ...x }));
+  const pegado: (string | undefined)[] = [];
+  trozos.forEach((tr, i) => {
+    const sig = trozos[i + 1];
+    if (tr.sigla && sig && !sig.sigla && /^[,.;:)»]/.test(sig.t)) {
+      pegado[i] = sig.t[0];
+      sig.t = sig.t.slice(1);
+    }
+  });
   return (
     <>
       {trozos.map((tr, i) => {
         const nodo = tr.sigla ? (
-          <SiglaPulsable sigla={tr.sigla} />
+          pegado[i] ? (
+            <span className="whitespace-nowrap">
+              <SiglaPulsable sigla={tr.sigla} />
+              {pegado[i]}
+            </span>
+          ) : (
+            <SiglaPulsable sigla={tr.sigla} />
+          )
         ) : cifras && !tr.b ? (
           <ConCifrasTexto t={tr.t} />
         ) : (

@@ -3,6 +3,7 @@ import { PASOS_GUIA, pasoPropioDe, piezasDePaso, seEnsenaEnPaso } from "./guia-i
 import {
   frasesDe,
   hojaDeComprobacion,
+  frasePorSistema,
   incisosDelSistema,
   lineasInicializacion,
   listaDe,
@@ -52,6 +53,39 @@ describe("soloDeOtroSistema / incisosDelSistema", () => {
     expect(incisosDelSistema(t, 1)).toBe("Común a todos; en Tandem Control-IQ, sí interviene");
     expect(incisosDelSistema(t, 2)).toBe("Común a todos; con CamAPS FX, se reduce");
     expect(incisosDelSistema("Sin incisos de sistema", 3)).toBe("Sin incisos de sistema");
+  });
+});
+
+describe("frasePorSistema (0.97.1)", () => {
+  const t =
+    "Su peso varía por sistema: en Control-IQ interviene directamente en el modo automático; en MiniMed 780G y CamAPS FX actúa sobre todo en modo manual; y en Omnipod 5 contribuye al inicio y luego cede ante la basal adaptativa.";
+  it("deja el inciso del sistema elegido, con el principio literal", () => {
+    expect(frasePorSistema(t, 1)).toBe(
+      "Su peso varía por sistema: en Control-IQ interviene directamente en el modo automático.",
+    );
+    expect(frasePorSistema(t, 0)).toBe(
+      "Su peso varía por sistema: en MiniMed 780G y CamAPS FX actúa sobre todo en modo manual.",
+    );
+    expect(frasePorSistema(t, 2)).toBe(frasePorSistema(t, 0));
+    expect(frasePorSistema(t, 3)).toBe(
+      "Su peso varía por sistema: en Omnipod 5 contribuye al inicio y luego cede ante la basal adaptativa.",
+    );
+  });
+  it("entera si tras los dos puntos hay algo común o no hay incisos por sistema", () => {
+    const comun = "Conviene revisar: el set; en Omnipod 5, el pod";
+    expect(frasePorSistema(comun, 0)).toBe(comun);
+    const sinDosPuntos = "En Control-IQ interviene; en Omnipod 5 contribuye";
+    expect(frasePorSistema(sinDosPuntos, 0)).toBe(sinDosPuntos);
+    expect(frasePorSistema("Objetivo: 100 mg/dl", 2)).toBe("Objetivo: 100 mg/dl");
+  });
+  it("la frase del capítulo está y se filtra así en el paso de parámetros", () => {
+    const paso = PASOS_GUIA.findIndex((p) => p.id === "parametros");
+    const frases = piezasDePaso(PASOS_GUIA[paso], {}).flatMap((pz) =>
+      pz.t === "frase" ? frasesDe(pz.apartado, pz.bloque, pz.k).frases : [],
+    );
+    const peso = frases.find((x) => x.startsWith("Su peso varía por sistema:"));
+    expect(peso).toBeDefined();
+    for (const s of SISTEMAS) expect(frasePorSistema(peso!, s)).not.toBe(peso);
   });
 });
 

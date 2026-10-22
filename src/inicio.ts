@@ -440,6 +440,19 @@ export function soloDeOtroSistema(texto: string, sis: number): boolean {
   const antesDeLaComa = m[1].split(",")[0];
   return !NOMBRES_SISTEMA[sis].test(antesDeLaComa.replace(/^.*?\by\s+/, ""));
 }
+/* 0.97.1 (17.ª ronda, R5): una frase que, tras los dos puntos, es SOLO una serie de incisos por
+   sistema («Su peso varía por sistema: en Control-IQ …; en MiniMed 780G y CamAPS FX …; y en
+   Omnipod 5 …») se queda con el del elegido. Si algún inciso no empieza por «en/con» (una condición
+   común), la frase va entera. Solo se omite (y la «y» que enlazaba el último). */
+export function frasePorSistema(texto: string, sis: number): string {
+  const m = /^([^:;]+:\s)(.+?)(\.?)$/s.exec(texto.trim());
+  if (!m) return texto;
+  const partes = m[2].split(/;\s+/);
+  if (partes.length < 2 || !partes.every((p) => /^(?:y\s+)?(?:con|en)\s/i.test(p))) return texto;
+  const quedan = partes.filter((p) => !soloDeOtroSistema(p, sis));
+  if (!quedan.length || quedan.length === partes.length) return texto;
+  return `${m[1]}${quedan.join("; ").replace(/^y\s+/i, "")}${m[3]}`;
+}
 export const incisosDelSistema = (texto: string, sis: number) =>
   texto
     .split(/;\s+/)

@@ -16,6 +16,7 @@ import {
   lineasInicializacion,
   listaDe,
   soloDeOtroSistema,
+  frasePorSistema,
   textosDePieza,
   type Pieza,
 } from "../inicio";
@@ -163,7 +164,9 @@ function PiezaVistaBase({
       const frases =
         delRecorrido === undefined
           ? f.frases
-          : f.frases.filter((x) => !soloDeOtroSistema(x, delRecorrido));
+          : f.frases
+              .filter((x) => !soloDeOtroSistema(x, delRecorrido))
+              .map((x) => frasePorSistema(x, delRecorrido));
       if (!frases.length) return null;
       return (
         <p className={compacta ? "text-[15px] leading-relaxed text-slate-800" : "prosa"}>

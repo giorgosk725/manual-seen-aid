@@ -318,18 +318,20 @@ function GuionVista({
             <li
               key={`${m.bloque}-${i}`}
               id={`momento-${i}`}
-              className="relative scroll-mt-4 pb-1 pl-10"
+              // 0.97.1 (17.ª ronda, visual): en el móvil, sin la sangría de 40 px (el texto iba en
+              // ~31 caracteres por línea a 360 px); el número, en la línea del título.
+              className="relative scroll-mt-4 pb-1 pl-10 max-sm:pl-0"
             >
               {i < momentos.length - 1 && (
                 <span
                   aria-hidden="true"
-                  className="absolute bottom-0 left-[13px] top-8 w-0.5"
+                  className="absolute bottom-0 left-[13px] top-8 w-0.5 max-sm:hidden"
                   style={{ background: "#e6dfe3" }}
                 />
               )}
               {/* 0.92.0 (revisión de tarjetas, ★8): el número, en gris (en burdeos solo el paso
                   activo de un recorrido, como en la descarga); aquí van todos abiertos. */}
-              <span aria-hidden="true" className="num absolute left-0 top-2.5">
+              <span aria-hidden="true" className="num absolute left-0 top-2.5 max-sm:hidden">
                 {i - desde + 1}
               </span>
               <h3>
@@ -341,9 +343,14 @@ function GuionVista({
                 >
                   {/* Sin el chevrón: cada momento va abierto de entrada (0.74.2); el título sigue
                       plegándolo. */}
-                  <span>
-                    <span className="sr-only">{i - desde + 1}. </span>
-                    {m.rotulo}
+                  <span className="flex items-center gap-2">
+                    <span aria-hidden="true" className="num sm:hidden">
+                      {i - desde + 1}
+                    </span>
+                    <span>
+                      <span className="sr-only">{i - desde + 1}. </span>
+                      {m.rotulo}
+                    </span>
                   </span>
                 </button>
               </h3>

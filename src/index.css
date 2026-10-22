@@ -177,7 +177,7 @@
     display: inline-block;
     border-radius: 0.25rem;
     padding: 0.0625rem 0.375rem;
-    font-size: 0.75rem;
+    font-size: 0.8125rem; /* 0.97.1 (17.ª ronda, senior): 13 px (antes, 12) */
     line-height: 1.25rem;
     font-weight: 600;
     background: var(--papel-2);

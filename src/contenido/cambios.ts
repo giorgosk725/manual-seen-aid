@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-22",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — continuidad, orientación y consulta en el móvil`,
+    titulo: `Complemento interactivo ${VERSION_APP} — decimoséptima ronda de auditorías de uso`,
+    detalle: [
+      "Tablas 1 y 3: las series de cifras («110, 120, 130, 140 o 150 mg/dl») se parten entre cifras y ya no se recortan. La hoja de comprobación sale en una cara también con Ctrl+P.",
+      "Navegación: en Situaciones, Atrás desde una situación vuelve a la lista (donde se dejó) y la barra la abre desde arriba; al llegar a una fila o un párrafo, el foco va a él, y con Atrás vuelve al enlace de origen; «Volver a la consulta» también al abrir una tabla; en Buscar, Atrás tras elegir una sugerencia vuelve a lo escrito.",
+      "Consulta: Interrupción lleva a la desconexión de cada sistema según su formato; Gestación sin sistema elegido muestra la autorización y la evidencia de los cuatro; en Iniciación, la frase que reparte un dato por sistema se queda con el del sistema elegido; la Figura 3 y la hipoglucemia ofrecen el plan de cada sistema.",
+      "Diseño: en la calculadora y en las fases, lo elegido con borde y fondo suave (sin bloques burdeos); títulos de pantalla en un solo color; Hipoglucemia con filas y «Véase también»; insignias y textos de Elección y de la calculadora algo mayores; en el móvil, el texto de cada situación más ancho; «Sobre» explica qué es literal, qué es resumen y qué es complementario.",
+    ],
+  },
+  {
+    fecha: "2026-10-22",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.97.0 — continuidad, orientación y consulta en el móvil",
     detalle: [
       "Errores corregidos: «Nuevo inicio» aparece con el primer dato; el selector de sistemas sigue a la vista al cambiar la anchura de la ventana; una dirección de la descarga con un paso inválido lleva al paso 1, y una pantalla con un fallo se recupera al ir a otra; la hoja de comprobación se imprime cuando la letra ya ha cargado (una cara).",
       "Orientación: Figura 3, Interrupción e Hipoglucemia se marcan dentro de Situaciones en el menú y en la barra de abajo; tras ir a otra pantalla, el foco pasa a su título.",
