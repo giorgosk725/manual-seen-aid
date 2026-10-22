@@ -79,3 +79,4 @@ Nota (22-10-2026): la 0.96.0 se desplegó bien, pero la comprobación final de `
 | 2026-10-22 15:22 | main | 1.0.5 | aad60c60d2e1 | index-CH4zSR1F.js | 1.0.4 (1dd04ef16577) |
 | 2026-10-22 16:46 | main | 1.0.6 | a9bf65f89854 | index-_FgKy273.js | 1.0.5 (aad60c60d2e1) |
 | 2026-10-22 18:34 | main | 1.0.7 | 1b19f7130a3a | index-BlHSmK5q.js | 1.0.6 (a9bf65f89854) |
+| 2026-10-22 18:53 | main | 1.0.8 | c2f10223d8f0 | index-CMzdmpI7.js | 1.0.7 (1b19f7130a3a) |
