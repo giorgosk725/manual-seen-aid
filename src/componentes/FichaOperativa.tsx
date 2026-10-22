@@ -15,6 +15,7 @@ import {
 } from "../fichaOperativa";
 import { SISTEMA_HEX } from "../tokens";
 import { literalDe, literalesDe } from "../fuentesPiezas";
+import { ASPECTOS_PARAMETRO } from "../fichaOperativa";
 
 /* 0.96.1 (revisión de Codex, V95-10): señal a la vista (también en el móvil, sin «title») de que
    el rótulo abre el texto del capítulo. */
@@ -151,7 +152,7 @@ export function CasillasDatos({
                 )}
               </span>
               {d.n && (
-                <span className="mt-0.5 block text-[13px] leading-snug text-slate-600">
+                <span className="mt-0.5 block text-[14px] leading-snug text-slate-700">
                   <SinCortes texto={d.n} />
                 </span>
               )}
@@ -289,7 +290,7 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                 </dt>
                 <dd className="min-w-0 max-w-[72ch] text-[15px] leading-snug text-slate-800">
                   {d.cond && (
-                    <span className="mb-0.5 block text-[13px] italic leading-snug text-slate-600">
+                    <span className="mb-0.5 block text-[14px] italic leading-snug text-slate-700">
                       <SinCortes texto={d.cond} />
                     </span>
                   )}
@@ -310,7 +311,7 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                     <SinCortes texto={d.v} />
                   )}
                   {d.n && (
-                    <span className="mt-0.5 block text-[13px] text-slate-600">
+                    <span className="mt-0.5 block text-[14px] text-slate-700">
                       <SinCortes texto={d.n} />
                     </span>
                   )}
@@ -343,6 +344,101 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
         </dl>
       </section>
       <FuentePie className="mt-2 print:hidden" fuentes={fuentesDeDatos(datos)} />
+    </div>
+  );
+}
+
+/* 0.96.1 (revisión de Codex, V95-07): un parámetro, en los sistemas elegidos, uno debajo de otro
+   (en el móvil, las cuatro tarjetas por sistema obligaban a recordar un dato de cada una). Los
+   mismos datos de la ficha (fichaOperativa.ts), sin resumir nada; cada sistema, con su nombre, su
+   color y el enlace a su fila de la ficha. */
+export function AspectoEntreSistemas({
+  cols,
+  datos,
+  nombre,
+  ficha,
+  aspecto,
+  onAspecto,
+}: {
+  cols: number[];
+  datos: Dato[][];
+  nombre: (c: number) => ReactNode;
+  ficha: (c: number, d: Dato) => string;
+  aspecto: number;
+  onAspecto: (i: number) => void;
+}) {
+  const a = ASPECTOS_PARAMETRO[aspecto] ?? ASPECTOS_PARAMETRO[0];
+  return (
+    <div>
+      <div role="group" aria-label="Parámetro que se compara" className="flex flex-wrap gap-1.5">
+        {ASPECTOS_PARAMETRO.map((x, i) => (
+          <button
+            key={x.id}
+            type="button"
+            aria-pressed={i === aspecto}
+            onClick={() => onAspecto(i)}
+            className="chip tap-44"
+          >
+            {x.corto}
+          </button>
+        ))}
+      </div>
+      <h2 className="titulo-tarjeta mt-3">{a.t}</h2>
+      <dl className="mt-2 space-y-2.5" aria-label={a.t}>
+        {cols.map((c) => {
+          const d = datos[c].find((x) => a.re.test(x.r));
+          if (!d) return null;
+          const h = SISTEMA_HEX[c];
+          return (
+            <div
+              key={c}
+              className="tarjeta tarjeta-sistema min-w-0 px-4 py-3"
+              style={{ ["--sis" as string]: h.strong }}
+            >
+              <dt className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <a
+                  href={ficha(c, d)}
+                  className="titulo-tarjeta tap-44 inline-block hover:underline"
+                  style={{ color: h.ink }}
+                >
+                  {nombre(c)}
+                </a>
+                {d.auto && (
+                  <span
+                    className="insignia"
+                    style={d.auto === "si" ? { background: h.soft, color: h.ink } : undefined}
+                  >
+                    {EN_AUTOMATICO[d.auto]}
+                  </span>
+                )}
+              </dt>
+              <dd className="mt-1 min-w-0 text-[15px] leading-snug text-slate-800">
+                {d.cond && (
+                  <span className="mb-0.5 block text-[14px] italic leading-snug text-slate-700">
+                    <SinCortes texto={d.cond} />
+                  </span>
+                )}
+                {d.antes && (
+                  <span className="mb-1.5 block">
+                    <SinCortes texto={d.antes} />
+                  </span>
+                )}
+                <span className={d.antes ? "block font-semibold text-slate-900" : "block"}>
+                  <SinCortes texto={d.v} />
+                </span>
+                {d.n && (
+                  <span className="mt-0.5 block text-[14px] text-slate-700">
+                    <SinCortes texto={d.n} />
+                  </span>
+                )}
+                <span className="block text-[14px]">
+                  <Variante c={c} d={d} />
+                </span>
+              </dd>
+            </div>
+          );
+        })}
+      </dl>
     </div>
   );
 }

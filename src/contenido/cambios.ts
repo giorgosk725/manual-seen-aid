@@ -13,9 +13,20 @@ export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-10-22",
+    ambito: "app",
+    titulo: `Complemento interactivo ${VERSION_APP} — continuidad, orientación y consulta en el móvil`,
+    detalle: [
+      "Errores corregidos: «Nuevo inicio» aparece con el primer dato; el selector de sistemas sigue a la vista al cambiar la anchura de la ventana; una dirección de la descarga con un paso inválido lleva al paso 1, y una pantalla con un fallo se recupera al ir a otra; la hoja de comprobación se imprime cuando la letra ya ha cargado (una cara).",
+      "Orientación: Figura 3, Interrupción e Hipoglucemia se marcan dentro de Situaciones en el menú y en la barra de abajo; tras ir a otra pantalla, el foco pasa a su título.",
+      "Fuentes: un libro pequeño junto a cada rótulo que abre el texto del capítulo; un dato de varios sitios del capítulo enlaza cada uno («En el capítulo: Tabla 3 · Tabla 1 · Apartado 8»). En Buscar, el ámbito del pasaje (p. ej. «Gestación») va antes del texto.",
+      "En el móvil: Parámetros de varios sistemas por parámetro (objetivo, basal, ratio, sensibilidad o insulina activa en todos a la vez), con las tarjetas por sistema y la Tabla 3 a un toque; en la calculadora, «Ir a» Datos, Parámetros, Programación y Recambios, y «Editar datos» junto a los resultados; condiciones y excepciones clínicas en letra mayor.",
+    ],
+  },
+  {
     fecha: "2026-10-21",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — decimosexta ronda de auditorías de uso`,
+    titulo: "Complemento interactivo 0.96.0 — decimosexta ronda de auditorías de uso",
     detalle: [
       "Tablas comparativas: columnas de sistema iguales, el nombre corto de cada sistema en cabeceras, casillas y fichas (nunca en mayúsculas), la fila común sin el color de un sistema; columna de rótulos más ancha en las Tablas 3 y 4.",
       "Resumen y Elección con los rótulos de la ficha; en Elección, enlace a «Agua, alcohol y desconexión»; en la portada, el algoritmo sin repetir el nombre, «Modos» en las tarjetas de sistema y «Resumen de los cuatro sistemas».",

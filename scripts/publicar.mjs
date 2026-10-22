@@ -72,13 +72,28 @@ paso(
   "Desplegar",
   `npx wrangler pages deploy dist --project-name=manual-seen-aid --branch=${canal} --commit-hash=${sha} --commit-dirty=false`,
 );
+// 0.96.1 (revisión de Codex): la propagación de Cloudflare puede tardar más de un minuto (en la
+// 0.96.0 se leyó la versión anterior y la línea del registro se anotó a mano). Espera acotada
+// (unos 3,5 min, primero cada 5 s y después cada 10 s), sin volver a desplegar; un fallo de red
+// cuenta como lectura sin la versión nueva.
 let servido = "";
-for (let i = 0; i < 12 && servido !== indice; i++) {
-  const html = await (await fetch(`${URL_CANAL}/?v=${Date.now()}`)).text();
-  servido = html.match(/index-[A-Za-z0-9_-]+\.js/)?.[0] ?? "";
-  if (servido !== indice) await new Promise((r) => setTimeout(r, 5000));
+for (let i = 0; i < 24 && servido !== indice; i++) {
+  try {
+    const html = await (await fetch(`${URL_CANAL}/?v=${Date.now()}`)).text();
+    servido = html.match(/index-[A-Za-z0-9_-]+\.js/)?.[0] ?? "";
+  } catch {
+    servido = "";
+  }
+  if (servido !== indice) {
+    if (i > 0 && i % 6 === 0)
+      console.log(`  … aún se sirve ${servido || "otra versión"}; esperando`);
+    await new Promise((r) => setTimeout(r, i < 6 ? 5000 : 10000));
+  }
 }
-if (servido !== indice) fallar(`La web sirve ${servido}, no ${indice}.`);
+if (servido !== indice)
+  fallar(
+    `La web sirve ${servido}, no ${indice}. El despliegue está hecho: comprobar más tarde y anotar el registro a mano.`,
+  );
 const js = await (await fetch(`${URL_CANAL}/assets/${indice}`)).text();
 if (!js.includes(`"${version}"`)) fallar(`El build servido no lleva la versión ${version}.`);
 for (const api of ["pasajes", "sin-respuesta"]) {

@@ -662,4 +662,19 @@ export const VARIANTE_RESUMEN: (Dato | null)[] = [
 ];
 
 /* La línea de fuente de unos datos: las piezas del capítulo de las que salen, sin repetir. */
+/* 0.96.1 (revisión de Codex, V95-07): los parámetros que se comparan uno a uno entre sistemas
+   (Comparación · Parámetros, por debajo de xl). `re`, sobre el rótulo del dato. */
+export const ASPECTOS_PARAMETRO = [
+  { id: "objetivo", corto: "Objetivo", t: "Objetivo glucémico", re: /^Objetivo/ },
+  { id: "basal", corto: "Basal", t: "Tasa basal programada", re: /basal/i },
+  { id: "ratio", corto: "Ratio I/HC", t: "Ratio I/HC", re: /^Ratio/ },
+  { id: "factor", corto: "Sensibilidad", t: "Factor de sensibilidad", re: /^Factor/ },
+  {
+    id: "duracion",
+    corto: "Insulina activa",
+    t: "Duración de la insulina activa",
+    re: /^Duración/,
+  },
+] as const;
+
 export const fuentesDeDatos = (datos: Dato[]) => fuentesDePiezas(datos.flatMap((d) => d.f));

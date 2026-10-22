@@ -426,3 +426,33 @@ la cabecera del móvil y la barra lateral.
 
 Excepción nueva: **un h1 que es una frase** (pregunta frecuente) va en Open Sans con su grafía, no en
 Oswald en mayúsculas.
+
+## 18. Nombres de sistema y patrones de la 0.96 (22-10-2026)
+
+**Nombres.** En las herramientas (comparaciones, Tablas con selector, casillas, buscador), el nombre
+corto de toda la app: «MiniMed 780G», «Control-IQ / Control-IQ+», «CamAPS FX», «Omnipod 5». El
+comercial completo, en la ficha y en el selector de Sistemas. En la tabla tal como va en la lectura
+del capítulo, la cabecera literal publicada («Tandem Control-IQ», «myLoop CamAPS»): es texto de la
+tabla y se conserva (TablaVista, `nombreColumna`).
+
+**Del dato al texto (0.96.1, revisión de Codex V95-10/11).** El rótulo de un dato que abre el texto
+del capítulo lleva, además del subrayado de puntos, un libro de 12 px en `slate-400` (la señal tiene
+que verse en el móvil; `title` no basta). Si el dato sale de varios sitios, debajo, en el cuerpo de
+la fuente al pie: «En el capítulo: Tabla 3 · Tabla 1 · Apartado 8, p. 12», cada uno con su enlace
+(`literalesDe`); el rótulo sigue llevando al primero. En papel, solo la fuente al pie.
+
+**Comparar un parámetro (V95-07).** Por debajo de xl, Parámetros de varios sistemas empieza por un
+parámetro elegido (chips) en los sistemas, uno debajo de otro, con su nombre y su color; «Por
+sistema» (las tarjetas de siempre) y «Tabla 3 completa» a un toque. El conmutador es de texto
+subrayado: la elección rellena es la del parámetro (no apilar dos filas de chips en burdeos). El
+parámetro va en la dirección (`parametros:basal`).
+
+**Pantallas largas (V95-08).** Una fila «Ir a:» de enlaces grises separados por «·» (no una barra
+flotante más) y «Editar datos» a la derecha del título de los resultados.
+
+**Condiciones clínicas (V95-09).** Condiciones, excepciones y reglas que acompañan a una cifra, a
+14 px en `slate-700` (la condición de una fila, en cursiva). Fuentes, fechas y ámbitos siguen
+discretos (12–13 px, `slate-500/600`).
+
+**Ámbito antes del pasaje (V95-12).** En Buscar, el ámbito de un pasaje del texto («Gestación»)
+va encima, en 13 px seminegrita; la fuente entera, al pie.

@@ -108,3 +108,58 @@ test.describe("V95-05/06 · contexto y foco", () => {
     await expect(page.getByRole("button", { name: "Saltar al contenido" })).toBeFocused();
   });
 });
+
+test.describe("Entrega C · recorridos móviles", () => {
+  test.beforeEach(({ page }) => page.setViewportSize({ width: 393, height: 852 }));
+  test("V95-07: Parámetros por parámetro, enlazable, con la tabla y por sistema a mano", async ({
+    page,
+  }) => {
+    await page.goto("/#/sistemas/todos/parametros");
+    const grupo = page.getByRole("group", { name: "Parámetro que se compara" });
+    await expect(grupo.getByRole("button", { name: "Objetivo" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await grupo.getByRole("button", { name: "Basal" }).click();
+    await expect(page).toHaveURL(/parametros:basal$/);
+    await expect(page.getByRole("heading", { name: "Tasa basal programada" })).toBeVisible();
+    // Los cuatro sistemas, identificados, con su enlace a la fila de la ficha.
+    for (const n of ["MiniMed 780G", "Control-IQ", "CamAPS FX", "Omnipod 5"])
+      await expect(
+        page
+          .locator("main")
+          .getByRole("link", { name: new RegExp(n) })
+          .first(),
+      ).toBeVisible();
+    await expect(
+      page.locator("main a[href='#/sistemas/ciq/parametros:tasa-basal-programada']"),
+    ).toHaveCount(1);
+    // Por sistema: las tarjetas de siempre.
+    await page.getByRole("button", { name: "Por sistema" }).click();
+    await expect(page.getByText("Actúan en automático").first()).toBeVisible();
+    await page.getByRole("button", { name: "Tabla 3 completa" }).click();
+    await expect(page.locator("#tabla-3-comparada")).toBeInViewport();
+  });
+  test("V95-08: la calculadora lleva a Programación y vuelve a los datos", async ({ page }) => {
+    await page.goto("/#/consultar/inicio/calculadora:camaps");
+    await page.getByLabel("Insulina basal").fill("20");
+    await page
+      .getByRole("navigation", { name: "Pasos de la calculadora" })
+      .getByRole("button", { name: "Programación" })
+      .click();
+    await expect(
+      page.getByRole("heading", { name: /Programación inicial en CamAPS FX/ }),
+    ).toBeInViewport();
+    await page.getByRole("button", { name: "Editar datos" }).last().click();
+    await expect(page.getByLabel("Insulina basal")).toBeFocused();
+    await expect(page.getByLabel("Insulina basal")).toHaveValue("20");
+  });
+  test("V95-12: en Buscar, el ámbito va antes del pasaje", async ({ page }) => {
+    await page.goto("/#/buscar/modo%20sue%C3%B1o%20control%20iq");
+    const pasaje = page.getByText(/Puede utilizarse el modo sueño de forma continuada/).first();
+    await expect(pasaje).toBeVisible();
+    const ambito = page.getByText("Gestación", { exact: true }).first();
+    const [a, p] = await Promise.all([ambito.boundingBox(), pasaje.boundingBox()]);
+    expect(a!.y).toBeLessThan(p!.y);
+  });
+});

@@ -41,7 +41,7 @@ const slugDe = (c: number) => CORTOS[c].toLowerCase().replace(/\s/g, "-");
    («MiniMed 780G», «Control-IQ / Control-IQ+», «CamAPS FX», «Omnipod 5»; el comercial completo
    va en la ficha y en el selector de Sistemas). En la tabla tal como va en la lectura del
    capítulo, la cabecera literal de la tabla publicada («Tandem Control-IQ», «myLoop CamAPS»): es
-   texto de la tabla y allí se conserva. Regla en docs/DISENO_VISUAL.md §18. */
+   texto de la tabla y allí se conserva. Regla en docs/DISENO_VISUAL.md, §18. */
 const nombreColumna = (tabla: Tabla, c: number, literal: boolean) =>
   tabla.porSistema && !literal ? CORTO_SISTEMA[c] : tabla.columnas[c];
 /* La columna de rótulos (0.95.1: más ancha en las tablas de rótulo largo, 3 y 4). */

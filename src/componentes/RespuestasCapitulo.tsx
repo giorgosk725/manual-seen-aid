@@ -291,6 +291,14 @@ function Tarjeta({
           <Marcado texto={titulo} q={q} />
         </p>
       )}
+      {/* 0.96.1 (revisión de Codex, V95-12): de qué parte del capítulo es el pasaje, antes de
+          leerlo («Gestación»: el uso continuado del modo sueño es de la gestación). La fuente
+          entera sigue al pie. */}
+      {!titulo && ambitoDe(r.fuente) && (
+        <p className="mt-0.5 text-[13px] font-semibold leading-snug text-slate-600">
+          {ambitoDe(r.fuente)}
+        </p>
+      )}
       {/* 0.77.1 (auditoría del adjunto): la segunda línea del rótulo de la fila (Tabla 4: «Activar
           la función temporal 1–2 h antes…»), también cuando se enseña la casilla de un sistema. */}
       {casilla && r.porSistema && r.texto && (
@@ -497,6 +505,9 @@ function Tarjeta({
     </div>
   );
 }
+
+/* El ámbito de un pasaje del texto: lo que sigue a «Apartado N · » en su fuente. */
+const ambitoDe = (fuente: string) => /^Apartado \d+ · (.+)$/s.exec(fuente)?.[1]?.trim() ?? "";
 
 /* «Pregunta frecuente»: la pregunta revisada que se parece a la búsqueda, con sus pasajes. */
 function BloqueFrecuente({

@@ -8,7 +8,7 @@ import { Anuncio } from "./Anuncio";
 import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { AlertTriangle, ArrowDown, Calculator } from "lucide-react";
+import { AlertTriangle, ArrowDown, Calculator, ChevronUp } from "lucide-react";
 import { Lineas } from "../texto";
 import {
   RECAMBIOS,
@@ -60,21 +60,51 @@ const PREVIA: Record<Origen, string> = {
 const PARTIDA_MDI =
   "La fuente de partida es la pauta previa del paciente, trasladada al esquema del sistema elegido";
 
-function Paso({ n, titulo, children }: { n: number; titulo: string; children: ReactNode }) {
+function Paso({
+  n,
+  titulo,
+  children,
+  accion,
+}: {
+  n: number;
+  titulo: string;
+  children: ReactNode;
+  /* 0.96.1: «Editar datos», a la derecha del título. */
+  accion?: ReactNode;
+}) {
   return (
-    <section aria-labelledby={`calc-paso-${n}`} className="space-y-2">
+    <section aria-labelledby={`calc-paso-${n}`} className="scroll-mt-20 space-y-2 lg:scroll-mt-6">
       {/* 0.72.0: cabecera de paso ligera (círculo burdeos); el foco visual, en los resultados. */}
-      <h2
-        id={`calc-paso-${n}`}
-        className="titulo-seccion separador flex items-center gap-2 border-b pb-1.5"
-      >
-        <span className="num num-on">{n}</span>
-        {titulo}
-      </h2>
+      <div className="separador flex items-center gap-2 border-b pb-1.5">
+        <h2 id={`calc-paso-${n}`} tabIndex={-1} className="titulo-seccion flex items-center gap-2">
+          <span className="num num-on">{n}</span>
+          {titulo}
+        </h2>
+        {accion && <span className="no-imprimir ml-auto shrink-0">{accion}</span>}
+      </div>
       {children}
     </section>
   );
 }
+
+/* 0.96.1 (revisión de Codex, V95-08): ir a un paso de la calculadora (la pantalla mide miles de px
+   en el móvil). Con `editar`, al primer campo de los datos. */
+function irAPaso(n: number, editar = false) {
+  const h = document.getElementById(`calc-paso-${n}`);
+  h?.closest("section")?.scrollIntoView({ block: "start" });
+  const campo = editar
+    ? h?.closest("section")?.querySelector<HTMLElement>("input, select, textarea")
+    : null;
+  (campo ?? h)?.focus({ preventScroll: true });
+}
+const botonIr =
+  "tap-44 inline-flex min-h-11 items-center px-1 text-[13px] font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline sm:min-h-8";
+const EditarDatos = () => (
+  <button type="button" onClick={() => irAPaso(3, true)} className={`${botonIr} gap-1`}>
+    <ChevronUp size={14} aria-hidden="true" />
+    Editar datos
+  </button>
+);
 
 function Opciones<T extends string | number>({
   etiqueta,
@@ -220,7 +250,7 @@ function Cifra({
         <span className="text-sm font-semibold text-slate-600">{unidad}</span>
       </div>
       <div className="mt-0.5 text-xs tabular-nums text-slate-600">{sinCortes(cuenta)}</div>
-      <div className="mt-1 text-xs text-slate-500">{regla}</div>
+      <div className="mt-1 text-[13px] text-slate-600">{regla}</div>
     </div>
   );
 }
@@ -459,6 +489,31 @@ export function CalculadoraInicio({
           </button>,
           document.body,
         )}
+      <nav
+        aria-label="Pasos de la calculadora"
+        className="no-imprimir -my-2 flex flex-wrap items-center gap-x-2 gap-y-0"
+      >
+        <span className="text-[13px] text-slate-500">Ir a:</span>
+        {(
+          [
+            [3, "Datos"],
+            [4, "Parámetros"],
+            [5, "Programación"],
+            ...(sis !== undefined ? ([[6, "Recambios"]] as const) : []),
+          ] as const
+        ).map(([n, t], k) => (
+          <span key={n} className="inline-flex items-center gap-x-2">
+            {k > 0 && (
+              <span aria-hidden="true" className="text-slate-300">
+                ·
+              </span>
+            )}
+            <button type="button" onClick={() => irAPaso(n)} className={botonIr}>
+              {t}
+            </button>
+          </span>
+        ))}
+      </nav>
       {/* 0.72.0: en pantallas anchas, los datos a la izquierda y los parámetros de partida a la
           derecha, a la vista mientras se cambian los datos. */}
       <div className="space-y-5 xl:grid xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start xl:gap-6 xl:space-y-0">
@@ -502,7 +557,7 @@ export function CalculadoraInicio({
               nombres={CORTOS}
             />
             {sis === 2 && (
-              <p className="text-xs text-slate-600">
+              <p className="text-sm text-slate-700">
                 Los pasos de inicio son los de CamAPS FX. Para la modalidad Liberty, el capítulo
                 indica «&gt; 13 años».
               </p>
@@ -620,8 +675,8 @@ export function CalculadoraInicio({
                     <span>15 %</span>
                     <span>20 %</span>
                   </div>
-                  <p className="mt-1 text-xs text-slate-600">{REGLAS.reduccion.texto}.</p>
-                  <p className="mt-1 text-xs font-semibold text-slate-700">
+                  <p className="mt-1 text-sm text-slate-700">{REGLAS.reduccion.texto}.</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-700">
                     Punto de partida dentro del intervalo del capítulo; puede ajustarse.
                     {d.control === "bueno" &&
                       d.ultralarga &&
@@ -793,7 +848,15 @@ export function CalculadoraInicio({
           ref={resultados}
           className="min-w-0 scroll-mt-4 xl:sticky xl:top-6 xl:max-h-[calc(100vh-3rem)] xl:overflow-y-auto"
         >
-          <Paso n={4} titulo="Parámetros iniciales">
+          <Paso
+            n={4}
+            titulo="Parámetros iniciales"
+            accion={
+              <span className="xl:hidden">
+                <EditarDatos />
+              </span>
+            }
+          >
             <Anuncio
               texto={
                 ev.indicacion.fuera.length > 0 && sis !== undefined
@@ -873,7 +936,7 @@ export function CalculadoraInicio({
               </p>
             )}
             {ev.lista && ev.calcula.ratioFactor && (
-              <p className="text-xs text-slate-600">
+              <p className="text-sm text-slate-700">
                 Las reglas se aplican a la DTD de inicio, la misma con la que se calcula la basal.
               </p>
             )}
@@ -882,7 +945,7 @@ export function CalculadoraInicio({
               gestación, la variante del sistema y la experiencia previa, no.
             </p>
             {pideObjetivo && (
-              <p className="text-xs text-slate-600">
+              <p className="text-sm text-slate-700">
                 Objetivo del calculador de bolos manual: <strong>{d.objetivo} mg/dl</strong>.{" "}
                 {REGLAS.objetivo.nota.replace(" (v. Tabla 1)", "")}.
               </p>
@@ -907,6 +970,7 @@ export function CalculadoraInicio({
         titulo={
           sis !== undefined ? `Programación inicial en ${CORTOS[sis]}` : "Programación inicial"
         }
+        accion={<EditarDatos />}
       >
         {sis === undefined ? (
           <p className="text-sm text-slate-600">Sistema no seleccionado (paso 2).</p>
@@ -978,7 +1042,7 @@ export function CalculadoraInicio({
                 </p>
               )}
             </div>
-            <p className="separador max-w-none border-t px-4 py-2.5 text-xs text-slate-600">
+            <p className="separador max-w-none border-t px-4 py-2.5 text-sm text-slate-700">
               {NUCLEO_COMUN.texto}.{" "}
               <a
                 href={href("sistemas", ORDEN_SISTEMAS[sis], "parametros")}
@@ -1072,7 +1136,7 @@ function Lista({
                 <div className="text-[15px] font-bold leading-snug tabular-nums text-slate-900">
                   {valorDe(k, sis)}
                 </div>
-                {papel && <div className="mt-0.5 max-w-[72ch] text-xs text-slate-600">{papel}</div>}
+                {papel && <div className="mt-0.5 max-w-[72ch] text-sm text-slate-700">{papel}</div>}
               </div>
             </li>
           );

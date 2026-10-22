@@ -67,9 +67,16 @@ import {
   PARAMETROS,
   RESUMEN,
   VARIANTE_RESUMEN,
+  ASPECTOS_PARAMETRO,
   fuentesDeDatos,
+  slugDato,
 } from "../fichaOperativa";
-import { CasillasDatos, FilasDatos, GruposDatos } from "../componentes/FichaOperativa";
+import {
+  AspectoEntreSistemas,
+  CasillasDatos,
+  FilasDatos,
+  GruposDatos,
+} from "../componentes/FichaOperativa";
 import { literalDe } from "../fuentesPiezas";
 import { SinCortes } from "../componentes/SinCortes";
 import { ComoFuncionaOperativo } from "../componentes/ComoFuncionaOperativo";
@@ -1661,6 +1668,17 @@ function Comparacion({
   // Preguntas) vuelve al Resumen (0.77.1: antes, la pantalla quedaba vacía).
   const enComparacion = (x?: string) => SECCIONES_COMPARACION.some((y) => y.id === x);
   const seccion = pedida === "funciona" ? "esencial" : enComparacion(pedida) ? pedida : undefined;
+  // 0.96.1 (revisión de Codex, V95-07): por debajo de xl, Parámetros empieza por un parámetro en
+  // los sistemas elegidos («parametros:basal», enlazable); «Por sistema», las tarjetas de siempre.
+  const [porSistema, setPorSistema] = useState(false);
+  const aspecto = Math.max(
+    0,
+    ASPECTOS_PARAMETRO.findIndex((x) => x.id === fila),
+  );
+  const tabla3 = useRef<HTMLDivElement>(null);
+  // Un conmutador ligero (texto subrayado): la elección fuerte es la del parámetro.
+  const conmutador = (on: boolean) =>
+    `tap-44 inline-flex min-h-11 items-center px-1 text-[14px] underline-offset-[6px] ${on ? "font-semibold text-slate-900 underline decoration-2" : "text-slate-600 hover:text-slate-900"}`;
   // 0.80.1 (cuarta ronda, visual): como en la ficha, al cambiar de pestaña desde abajo la sección
   // empieza justo bajo la barra pegada.
   useEffect(() => {
@@ -1711,9 +1729,59 @@ function Comparacion({
             <>
               {/* 0.77.0: qué parámetros actúan en automático en cada sistema, en una tarjeta
                   por sistema (Tablas 1 y 3; src/fichaOperativa.ts); debajo, la Tabla 3. */}
+              <div className="no-imprimir mb-4 xl:hidden">
+                <div className="mb-3 flex flex-wrap items-center gap-1.5">
+                  <div role="group" aria-label="Ver los parámetros" className="flex gap-3">
+                    <button
+                      type="button"
+                      aria-pressed={!porSistema}
+                      onClick={() => setPorSistema(false)}
+                      className={conmutador(!porSistema)}
+                    >
+                      Por parámetro
+                    </button>
+                    <button
+                      type="button"
+                      aria-pressed={porSistema}
+                      onClick={() => setPorSistema(true)}
+                      className={conmutador(porSistema)}
+                    >
+                      Por sistema
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      tabla3.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+                    }
+                    className="tap-44 ml-auto inline-flex min-h-11 items-center gap-1 text-[13px] font-semibold text-slate-600 hover:text-slate-900 hover:underline"
+                  >
+                    Tabla 3 completa
+                    <ChevronDown size={14} aria-hidden="true" />
+                  </button>
+                </div>
+                {!porSistema && (
+                  <AspectoEntreSistemas
+                    cols={cols}
+                    datos={PARAMETROS}
+                    nombre={(c) => <NombreSistema n={CORTO_SISTEMA[c]} />}
+                    ficha={(c, d) =>
+                      href("sistemas", ORDEN_SISTEMAS[c], `parametros:${slugDato(d.r)}`)
+                    }
+                    aspecto={aspecto}
+                    onAspecto={(i) =>
+                      elegirRuta(
+                        "sistemas",
+                        ids.length ? ids.join("+") : "todos",
+                        `parametros:${ASPECTOS_PARAMETRO[i].id}`,
+                      )
+                    }
+                  />
+                )}
+              </div>
               {/* 0.87.1 (undécima ronda, adjunto): con dos sistemas, dos columnas (antes, media fila vacía). */}
               <ul
-                className={`mb-4 grid gap-3 sm:grid-cols-2 ${cols.length > 2 ? "xl:grid-cols-4" : ""}`}
+                className={`mb-4 gap-3 sm:grid-cols-2 ${cols.length > 2 ? "xl:grid-cols-4" : ""} ${porSistema ? "grid" : "hidden xl:grid print:grid"}`}
               >
                 {cols.map((c) => {
                   const h = SISTEMA_HEX[c];
@@ -1781,9 +1849,11 @@ function Comparacion({
                 className="-mt-2 mb-4"
                 fuentes={fuentesDeDatos(cols.flatMap((c) => PARAMETROS[c]))}
               />
-              <NivelTitulo.Provider value={2}>
-                <TablaVista tabla={TABLAS.T3} columnasFijas={cols} herramienta />
-              </NivelTitulo.Provider>
+              <div ref={tabla3} id="tabla-3-comparada" className="scroll-mt-36">
+                <NivelTitulo.Provider value={2}>
+                  <TablaVista tabla={TABLAS.T3} columnasFijas={cols} herramienta />
+                </NivelTitulo.Provider>
+              </div>
             </>
           )}
           {seccion === "modos" && (
