@@ -9,7 +9,9 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
+  // En CI, también el informe de GitHub: un fallo, o una prueba que solo pasa al repetirla
+  // («flaky»), queda como anotación pública en la ejecución, sin abrir el registro.
+  reporter: process.env.CI ? [["list"], ["github"], ["html", { open: "never" }]] : "list",
   use: {
     baseURL: "http://localhost:5180",
     trace: "on-first-retry",
