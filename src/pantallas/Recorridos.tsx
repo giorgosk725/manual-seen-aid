@@ -1034,17 +1034,37 @@ export function SituacionSistema({
                 )}
                 {/* 0.80.1 (cuarta ronda, R5): la nota de la Tabla 6 sobre retiradas de más de 1 h,
                     con su herramienta; 0.81.1 (quinta ronda, R5): después de la conducta. */}
-                {sit.tabla === "T6" && tabla.notas[0] && (
-                  <p className="max-w-[75ch] text-sm leading-snug text-slate-700">
-                    <Texto>{tabla.notas[0]}</Texto>{" "}
-                    <a
-                      href={href("consultar", "interrupcion")}
-                      className="tap-44 inline-block min-h-6 py-0.5 font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4"
-                    >
-                      Interrupción del sistema y pauta alternativa
-                    </a>
-                  </p>
-                )}
+                {/* 1.0.3 (19.ª ronda, R1; decisión del autor del 22-10-2026): la frase del umbral
+                    («más de aproximadamente 1 h»), en su propia línea, con su herramienta; el resto
+                    de la nota, debajo. Texto literal, solo separado. */}
+                {sit.tabla === "T6" &&
+                  tabla.notas[0] &&
+                  (() => {
+                    const frases = tabla.notas[0].split(/(?<=\.)\s+(?=[A-ZÁÉÍÓÚ])/);
+                    const umbral = frases.find((f) => /aproximadamente 1\s?h\b/.test(f));
+                    const resto = frases.filter((f) => f !== umbral).join(" ");
+                    const enlace = (
+                      <a
+                        href={href("consultar", "interrupcion")}
+                        className="tap-44 inline-block min-h-6 py-0.5 font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4"
+                      >
+                        Interrupción del sistema y pauta alternativa
+                      </a>
+                    );
+                    return (
+                      <>
+                        {umbral && (
+                          <p className="max-w-[75ch] border-l-2 border-[var(--linea-fuerte)] pl-3 text-[15px] font-semibold leading-snug text-slate-900">
+                            <Texto>{umbral}</Texto> {enlace}
+                          </p>
+                        )}
+                        <p className="max-w-[75ch] text-sm leading-snug text-slate-700">
+                          <Texto>{resto}</Texto>
+                          {!umbral && <> {enlace}</>}
+                        </p>
+                      </>
+                    );
+                  })()}
                 {/* 0.77.1 (auditoría de guardia): la sospecha de fallo se resuelve con la Figura 3;
                     su algoritmo, a un toque (antes, «Figura 3» llevaba a la lectura). */}
                 {sit.id === "hiperglucemia-persistente" && (

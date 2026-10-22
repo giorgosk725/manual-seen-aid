@@ -491,11 +491,13 @@ export const MODOS: Dato[][] = [
       f: [t4(2)],
     },
     {
-      // 0.96.0 (16.ª ronda, R3): sin «El modo sueño no autocorrige, pero ajusta la basal»
-      // (apartado 9), que repetía la fila de encima («Mantiene la modulación basal, sin bolos de
-      // autocorrección», Tabla 4); queda lo que se revisa antes, como dato de la fila.
+      // 1.0.3 (19.ª ronda, adjunto; decisión del autor del 22-10-2026): como en los otros tres, lo
+      // que se revisa antes y, después, lo propio de Tandem (apartado 9, p. 14): el texto general
+      // habla de subir objetivos y en Control-IQ el objetivo es fijo. (En la 0.96.0 se había
+      // quitado por repetir la fila «Sueño».)
       r: "Hipoglucemia nocturna",
-      v: C_NOCTURNA,
+      antes: C_NOCTURNA,
+      v: "El modo sueño no autocorrige, pero ajusta basal",
       // 0.88.1 (duodécima ronda, R3): como la comida grasa (paso 6), su paso de la descarga.
       enlace: { texto: "Patrón nocturno: descarga, paso 5", ruta: "#/consultar/descarga/5" },
       f: [NOCHE],

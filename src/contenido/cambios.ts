@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-22",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — decimonovena ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — Control-IQ nocturno y umbral de la RM`,
+    detalle: [
+      "Ficha de Control-IQ: «Hipoglucemia nocturna» con lo propio de Tandem (el modo sueño no autocorrige, pero ajusta basal), como en los otros tres sistemas.",
+      "Exploraciones (Tabla 6): la retirada de más de aproximadamente 1 h, en su propia línea con su herramienta; el resto de la nota, debajo.",
+    ],
+  },
+  {
+    fecha: "2026-10-22",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.2 — decimonovena ronda de auditorías de uso",
     detalle: [
       "Tablas: en la tableta, la cabecera con los sistemas se ve al bajar; en la pantalla Tablas, todas caben entre 768 y 1279 px.",
       "Situaciones: en la gestación con Control-IQ, el objetivo del algoritmo dice que no es configurable; Interrupción pone primero los casos (programada o no) y después el formato.",
