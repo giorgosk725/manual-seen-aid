@@ -113,10 +113,13 @@ test.describe("Móvil compacto, segunda tanda (360 px)", () => {
         .getByRole(unico ? "radiogroup" : "group", { name: grupo, exact: true })
         .getByRole(unico ? "radio" : "button");
       await expect(b.first(), ruta).toBeVisible();
-      // Sistema visual (tercera vuelta): 2 × 2 en el móvil (los nombres no se parten).
+      // Sistema visual (tercera vuelta): 2 × 2 en el móvil (los nombres no se parten). 0.96.0
+      // (16.ª ronda, visual): en Iniciar, las cuatro en una fila (el texto del paso empieza antes).
       await mismaFila(b.nth(0), b.nth(1));
       await mismaFila(b.nth(2), b.nth(3));
-      expect(Math.abs((await centro(b.nth(0))) - (await centro(b.nth(2))))).toBeGreaterThan(20);
+      if (unico) await mismaFila(b.nth(1), b.nth(2));
+      else
+        expect(Math.abs((await centro(b.nth(0))) - (await centro(b.nth(2))))).toBeGreaterThan(20);
       // Ningún nombre se sale de su casilla.
       const fuera = await b.evaluateAll((bs) =>
         bs.slice(0, 4).some((x) => {

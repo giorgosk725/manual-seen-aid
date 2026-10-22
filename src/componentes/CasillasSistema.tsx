@@ -76,6 +76,9 @@ export function CasillasSistema({
               onClick={() => onToggle(c)}
               disabled={fuera}
               title={fuera ? "Es el sistema de destino" : undefined}
+              // Con el nombre breve en el móvil, el nombre accesible es el de siempre (sin el guion
+              // duro de la presentación).
+              aria-label={cortoEnMovil && enFila && nombres ? nombres[c] : undefined}
               className={`${enFila ? "max-sm:flex-col max-sm:items-start" : ""} tap-44 flex disabled:cursor-not-allowed disabled:opacity-50 min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[13px] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-9 sm:px-2.5 sm:text-sm sm:leading-normal`}
               style={
                 on
