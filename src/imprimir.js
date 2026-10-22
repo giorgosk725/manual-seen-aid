@@ -38,7 +38,10 @@ export function abrirPlegables(region) {
 export function imprimirRegion(getRegion, win = typeof window !== "undefined" ? window : null) {
   if (!win || typeof win.print !== "function") return () => {};
   const region = typeof getRegion === "function" ? getRegion() : getRegion;
-  const ocupada = () => !!region?.querySelector?.('[aria-busy="true"]');
+  // 0.96.1 (revisión de Codex, N96-01): también mientras se carga la letra. Con la de reserva
+  // (más ancha), la hoja de comprobación de Omnipod 5 salía a veces en dos caras.
+  const ocupada = () =>
+    !!region?.querySelector?.('[aria-busy="true"]') || win.document?.fonts?.status === "loading";
   if (!ocupada()) return imprimirYa(region, win);
   let cancelado = false;
   let aviso = null;
@@ -64,7 +67,7 @@ export function imprimirRegion(getRegion, win = typeof window !== "undefined" ? 
       "aviso-impresion no-imprimir fixed inset-x-3 bottom-32 z-50 mx-auto max-w-md rounded-xl border border-amber-400 bg-white p-3 text-sm text-slate-800 shadow-xl md:bottom-4";
     const p = doc.createElement("p");
     p.textContent =
-      "Todavía se está cargando parte del contenido (figuras o diagramas). Si se imprime ahora, saldría incompleto.";
+      "Todavía se está cargando parte del contenido (letra, figuras o diagramas). Si se imprime ahora, saldría incompleto.";
     const fila = doc.createElement("div");
     fila.className = "mt-2 flex gap-2";
     const boton = (texto, accion, clase) => {

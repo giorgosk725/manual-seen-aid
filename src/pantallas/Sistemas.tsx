@@ -1108,10 +1108,25 @@ function BarraSistemas({
   // 0.71.0: en escritorio la barra no se pliega (hay sitio). En el móvil, al bajar se pliega a
   // una línea («Control-IQ + Omnipod 5 · Cambiar») y, en la ficha de un sistema, empieza plegada:
   // el contenido queda en la primera pantalla. «Cambiar» la abre hasta el siguiente desplazamiento.
-  const [movil] = useState(() => window.matchMedia?.("(max-width: 639px)").matches ?? false);
+  // 0.96.1 (revisión de Codex, V95-03): el ancho, suscrito (antes se leía al montar: de 393 a
+  // 768 px sin recargar, la barra se quedaba plegada sin botones de sistema).
+  const [movil, setMovil] = useState(
+    () => window.matchMedia?.("(max-width: 639px)").matches ?? false,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia?.("(max-width: 639px)");
+    if (!mq) return;
+    const alCambiar = () => setMovil(mq.matches);
+    mq.addEventListener?.("change", alCambiar);
+    return () => mq.removeEventListener?.("change", alCambiar);
+  }, []);
   // Plegada de entrada en la ficha de un sistema y en la lista (las tarjetas ya eligen).
   const deEntrada = ids.length === 1 || (ids.length === 0 && !seccion);
   const [plegada, setPlegada] = useState(movil && deEntrada);
+  // Al pasar al ordenador, desplegada (la barra plegada es solo del móvil).
+  useEffect(() => {
+    if (!movil) setPlegada(false);
+  }, [movil]);
   const [abierta, setAbierta] = useState(() => Date.now() - seguirAbierta < 1500);
   // 0.81.1 (quinta ronda, visual): tras cambiar de pestaña en la comparación del móvil, la barra
   // sigue plegada (al desplegarse después de colocar la sección, la tapaba 100 px).

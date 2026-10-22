@@ -1141,7 +1141,10 @@ function parrafosConLead(leads: string[]) {
 
 export function RevisarDescarga({ paso }: { paso?: string }) {
   const t = TABLAS.T5;
-  const n = Math.min(8, Math.max(1, Number(paso) || 1));
+  // 0.96.1 (revisión de Codex, V95-04): un entero del 1 al 8; cualquier otra cosa («4.5», «x»,
+  // «-2», «12»), el paso 1 (antes, «4.5» rompía la pantalla).
+  const pedido = Number(paso);
+  const n = Number.isInteger(pedido) && pedido >= 1 && pedido <= 8 ? pedido : 1;
   const fila = t.filas[n - 1];
   const patrones = parrafosConLead(PATRON_DEL_PASO[n] || []);
   const ir = (k: number) => elegirRuta("consultar", "descarga", String(k));

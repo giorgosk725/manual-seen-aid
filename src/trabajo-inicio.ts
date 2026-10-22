@@ -106,3 +106,6 @@ const suscribir = (f: () => void) => {
 };
 /* El trabajo actual, para pintar (se vuelve a pintar al cambiar). */
 export const useTrabajo = () => useSyncExternalStore(suscribir, () => instantanea);
+/* 0.96.1 (revisión de Codex, V95-01): ¿hay trabajo?, suscrito al almacén (antes, «Nuevo inicio» se
+   leía con hayTrabajo() en el padre, que no se volvía a pintar al escribir el primer dato). */
+export const useHayTrabajo = () => useSyncExternalStore(suscribir, hayTrabajo);

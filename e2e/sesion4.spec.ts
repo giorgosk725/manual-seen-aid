@@ -5,8 +5,12 @@ import { auditar } from "./axe";
    pantallas nuevas, búsqueda con el grupo «fuera del capítulo» y enlace profundo a la versión
    extendida. */
 
-/* Imprime la región como lo hace el botón (clase `imprimiendo`) y cuenta las páginas del PDF. */
+/* Imprime la región como lo hace el botón (clase `imprimiendo`, y solo con la letra y las figuras
+   ya cargadas) y cuenta las páginas del PDF. 0.96.1 (N96-01): sin esperar a la letra, la hoja de
+   Omnipod 5 salía a veces en dos caras en la integración continua (con la letra de reserva). */
 const paginasAlImprimir = async (page: Page) => {
+  await page.evaluate(() => document.fonts.ready);
+  await expect(page.locator('.imprimible [aria-busy="true"]')).toHaveCount(0);
   await page.emulateMedia({ media: "print" });
   await page.evaluate(() => document.documentElement.classList.add("imprimiendo"));
   const pdf = await page.pdf({ format: "A4", preferCSSPageSize: true, printBackground: true });

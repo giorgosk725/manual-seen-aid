@@ -16,7 +16,7 @@ import {
   cambiarCalculadora,
   cambiarHechos,
   cambiarRespuestas,
-  hayTrabajo,
+  useHayTrabajo,
   nuevoTrabajo,
   useTrabajo,
 } from "../trabajo-inicio";
@@ -631,6 +631,7 @@ function PasosInicio({
 }
 
 export function IniciarSistema({ detalle }: { detalle?: string }) {
+  const conTrabajo = useHayTrabajo();
   const [faseId, sisId, tareaId] = (detalle ?? "").split(":");
   const sisIdx = sisId ? SIS_IDS.indexOf(sisId) : -1;
   const sis = sisIdx >= 0 ? sisIdx : undefined;
@@ -735,7 +736,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
           ))}
         </div>
         {/* «Nuevo inicio» en la misma fila: aparece al escribir el primer dato sin mover nada. */}
-        {hayTrabajo() && (
+        {conTrabajo && (
           <button
             type="button"
             onClick={nuevoTrabajo}

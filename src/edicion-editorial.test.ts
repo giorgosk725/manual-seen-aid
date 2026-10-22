@@ -355,6 +355,23 @@ describe("V54-09 · no se imprime en silencio una versión incompleta", () => {
     expect(print).not.toHaveBeenCalled();
     region.remove();
   });
+  it("0.96.1 (N96-01): espera a la letra antes de imprimir", () => {
+    const { region, hueco, print, win } = preparar();
+    hueco.removeAttribute("aria-busy");
+    const fuentes = { status: "loading" };
+    Object.defineProperty(document, "fonts", { value: fuentes, configurable: true });
+    try {
+      imprimirRegion(() => region, win);
+      vi.advanceTimersByTime(1000);
+      expect(print).not.toHaveBeenCalled();
+      fuentes.status = "loaded";
+      vi.advanceTimersByTime(200);
+      expect(print).toHaveBeenCalledTimes(1);
+    } finally {
+      delete (document as unknown as { fonts?: unknown }).fonts;
+      region.remove();
+    }
+  });
   it("«Reintentar», ya cargado, imprime", () => {
     const { region, hueco, print, win } = preparar();
     imprimirRegion(() => region, win);

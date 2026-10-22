@@ -342,10 +342,18 @@ export function Foldable({
 }
 
 /* Red de seguridad: un fallo en una pantalla no deja la app en blanco. */
-export class ErrorBoundary extends React.Component<{ children: ReactNode }, { hasError: boolean }> {
+export class ErrorBoundary extends React.Component<
+  { children: ReactNode; clave?: string },
+  { hasError: boolean }
+> {
   state = { hasError: false };
   static getDerivedStateFromError() {
     return { hasError: true };
+  }
+  // 0.96.1 (revisión de Codex, V95-04): al pasar a otra ruta, la pantalla se vuelve a intentar
+  // (antes, corregir una dirección inválida dejaba el aviso hasta pulsar «Reintentar»).
+  componentDidUpdate(prev: { clave?: string }) {
+    if (this.state.hasError && prev.clave !== this.props.clave) this.setState({ hasError: false });
   }
   componentDidCatch(error: unknown) {
     console.error("Fallo en una pantalla:", error);

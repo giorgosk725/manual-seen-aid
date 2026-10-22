@@ -995,7 +995,7 @@ export function Shell({
             </div>
           )}
           {/* Un fallo en una pantalla deja en pie la barra lateral y la navegación. */}
-          <ErrorBoundary>
+          <ErrorBoundary clave={window.location.hash}>
             <Suspense fallback={<CargandoPantalla />}>
               {/* Las cifras con unidad, destacadas en las pantallas de consulta (no en la
                   lectura del capítulo ni en las hojas del paciente). */}
