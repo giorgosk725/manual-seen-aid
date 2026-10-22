@@ -951,7 +951,11 @@ export function CalculadoraInicio({
                         {m.situacion}
                       </div>
                       <div className="min-w-0 max-w-[72ch] text-sm text-slate-900">
-                        <Lineas>{m.texto}</Lineas>
+                        {/* 0.96.0 (16.ª ronda, visual y R5): «…franja horaria configurable» y
+                            «Objetivo: …» en dos líneas, como en las tablas (solo presentación). */}
+                        <Lineas>
+                          {m.texto.replace(/configurable Objetivo:/, "configurable\nObjetivo:")}
+                        </Lineas>
                       </div>
                     </li>
                   );

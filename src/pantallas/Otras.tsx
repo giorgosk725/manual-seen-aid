@@ -17,7 +17,7 @@ import { FRECUENTES } from "../frecuentes";
 import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
 import { BUILD } from "../build";
 import { PREGUNTAS } from "../contenido/test";
-import { elegirRuta, href } from "../rutas";
+import { anularNavegacionNueva, elegirRuta, fueNavegacionNueva, href } from "../rutas";
 import { alCambiarConsulta, consultaBuscar, ponerConsulta } from "../consultaBuscar";
 import { Badge, CabeceraEditorial, Revelar, Segmented, ToneCard } from "../ui";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
@@ -449,7 +449,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
             open={!hayRespuesta && !intencionClara}
             data-testid="todos-los-resultados"
           >
-            <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-9">
+            <summary className="con-chevron min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-9">
               Todos los resultados (
               {Math.max(res.length, busqueda.totalCapitulo + busqueda.totalFuera)})
             </summary>
@@ -603,7 +603,7 @@ export function Sobre() {
         {/* Fuentes y revisión, para el lector; las huellas completas, los commits y el registro
             de publicación están en la documentación técnica (docs/PUBLICACIONES.md) (V54-10). */}
         <details className="mt-3 text-sm" open>
-          <summary className="min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-8">
+          <summary className="con-chevron min-h-11 cursor-pointer font-semibold text-slate-700 sm:min-h-8">
             Fuentes y revisión
           </summary>
           <dl className="mt-2 grid gap-x-4 gap-y-1 sm:grid-cols-[12rem_1fr]">
@@ -839,6 +839,21 @@ function IconoTema({ tema }: { tema: string }) {
   return null;
 }
 
+/* 0.96.0 (16.ª ronda, R3): la lista de preguntas recuerda, mientras dura la sesión de la pestaña
+   (en memoria, nunca en la URL ni en el almacenamiento), el filtro escrito, los temas abiertos y
+   la pregunta que se abrió: al volver de ella, la lista está como se dejó, en la misma posición
+   (la restaura la Shell) y con el foco en esa pregunta. */
+const memoriaPreguntas: {
+  filtro: string;
+  todas?: boolean;
+  temas: Set<string>;
+  abierta?: string;
+  desdeLista?: string;
+} = { filtro: "", temas: new Set() };
+const alAbrirDesdeLista = (id: string) => {
+  memoriaPreguntas.desdeLista = id;
+};
+
 /* Un tema de preguntas, plegado (decisión pendiente del autor sobre los 14 grupos). Los de sistema,
    con la pleca y el nombre en el color del sistema. */
 function TemaPreguntas({ tema, abierto }: { tema: string; abierto: boolean }) {
@@ -846,7 +861,12 @@ function TemaPreguntas({ tema, abierto }: { tema: string; abierto: boolean }) {
   const h = k >= 0 ? SISTEMA_HEX[k] : null;
   return (
     <details
-      open={abierto || undefined}
+      open={abierto || memoriaPreguntas.temas.has(tema) || undefined}
+      onToggle={(e) => {
+        if (abierto) return;
+        if (e.currentTarget.open) memoriaPreguntas.temas.add(tema);
+        else memoriaPreguntas.temas.delete(tema);
+      }}
       className={`tarjeta group ${h ? "tarjeta-sistema" : ""}`}
       style={h ? { ["--sis" as string]: h.strong } : undefined}
     >
@@ -869,6 +889,7 @@ function TemaPreguntas({ tema, abierto }: { tema: string; abierto: boolean }) {
           <li key={x.id}>
             <a
               href={href("preguntas", x.id)}
+              onClick={() => alAbrirDesdeLista(x.id)}
               className="fila font-normal focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
             >
               <span className="flex-1">{x.pregunta}</span>
@@ -885,10 +906,27 @@ export function Preguntas({ id }: { id?: string }) {
   // 0.92.2 (decisión delegada, 21-10-2026): en el ordenador, los temas abiertos (a dos columnas
   // se leen de un vistazo); en el móvil, plegados con su número, como índice (abiertos serían
   // unas diez pantallas de enlaces). «Ver todas las preguntas» / «Plegar los temas», igual.
-  const [todas, setTodas] = useState(
-    () => window.matchMedia?.("(min-width: 1024px)").matches ?? false,
+  const [todas, setTodasEstado] = useState(
+    () => memoriaPreguntas.todas ?? window.matchMedia?.("(min-width: 1024px)").matches ?? false,
   );
-  const [filtro, setFiltro] = useState("");
+  const setTodas = (f: (v: boolean) => boolean) =>
+    setTodasEstado((v) => (memoriaPreguntas.todas = f(v)));
+  const [filtro, setFiltroEstado] = useState(() => memoriaPreguntas.filtro);
+  const setFiltro = (v: string) => {
+    memoriaPreguntas.filtro = v;
+    setFiltroEstado(v);
+  };
+  // Al volver de una pregunta (Atrás o «‹ Preguntas frecuentes»), el foco en ella, sin mover la
+  // página (la posición la restaura la Shell).
+  useEffect(() => {
+    if (id) return;
+    const abierta = memoriaPreguntas.abierta;
+    memoriaPreguntas.abierta = undefined;
+    if (!abierta || fueNavegacionNueva()) return;
+    document
+      .querySelector<HTMLElement>(`main a[href="${href("preguntas", abierta)}"]`)
+      ?.focus({ preventScroll: true });
+  }, [id]);
   const nf = normalizar(filtro).trim();
   const filtradas =
     nf.length >= 2
@@ -898,7 +936,17 @@ export function Preguntas({ id }: { id?: string }) {
       : null;
   const f = FRECUENTES.find((x) => x.id === id);
   const hex = CATEGORIA_HEX.consultar;
+  if (f) memoriaPreguntas.abierta = f.id;
   if (f) {
+    // Si se llegó desde la lista, volver a ella es volver atrás (misma posición y filtro).
+    const desdeLista = memoriaPreguntas.desdeLista === f.id;
+    const aLaLista = (e: React.MouseEvent) => {
+      if (!desdeLista || window.history.length < 2) return;
+      e.preventDefault();
+      anularNavegacionNueva();
+      memoriaPreguntas.desdeLista = undefined;
+      window.history.back();
+    };
     const r = motor?.respuestaDeFrecuente(f.id) ?? null;
     const hermanas = FRECUENTES.filter((x) => x.tema === f.tema && x.id !== f.id);
     // 0.95.1 (16.ª ronda, guardia): una pregunta de un sistema vuelve a las preguntas de su ficha
@@ -920,7 +968,7 @@ export function Preguntas({ id }: { id?: string }) {
             {deFicha.t}
           </a>
         )}
-        <a href={href("preguntas")} className="chip tap-44 gap-1">
+        <a href={href("preguntas")} onClick={aLaLista} className="chip tap-44 gap-1">
           {!deFicha && <ChevronLeft size={14} aria-hidden="true" />}
           {deFicha ? "Todas las preguntas" : "Preguntas frecuentes"}
         </a>
@@ -990,6 +1038,7 @@ export function Preguntas({ id }: { id?: string }) {
             <li key={x.id}>
               <a
                 href={href("preguntas", x.id)}
+                onClick={() => alAbrirDesdeLista(x.id)}
                 className="fila font-normal focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
                 <span className="flex-1">{x.pregunta}</span>

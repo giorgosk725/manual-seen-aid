@@ -535,11 +535,12 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
                   {f.etiqueta.split("\n")[0].replace(/\.$/, "")}
                 </dt>
                 <dd className="text-slate-800">
+                  {/* 0.96.0 (16.ª ronda, R5): «…franja horaria configurable» y «Objetivo: …» de
+                      Control-IQ separados como las demás líneas de la casilla (solo presentación). */}
                   <SinCortes
-                    texto={(f.unida ? celdaUnidaDelSistema(f.celdas[0], c) : f.celdas[c]).replace(
-                      /\n/g,
-                      " · ",
-                    )}
+                    texto={(f.unida ? celdaUnidaDelSistema(f.celdas[0], c) : f.celdas[c])
+                      .replace(/configurable Objetivo:/, "configurable\nObjetivo:")
+                      .replace(/\n/g, " · ")}
                   />
                 </dd>
               </div>

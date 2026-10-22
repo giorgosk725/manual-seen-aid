@@ -95,8 +95,10 @@ export const DESTINOS: Destino[] = [
   },
   {
     id: "comparar",
-    etiqueta: "Comparación de sistemas",
-    corto: "Comparar",
+    // 0.96.0 (16.ª ronda, adjunto): lleva al Resumen; «Comparación de sistemas» se confundía con
+    // «Comparar los parámetros».
+    etiqueta: "Resumen de los cuatro sistemas",
+    corto: "Resumen",
     // 0.72.2: a las tarjetas lado a lado («Resumen»); la tabla entera, en su pestaña (en el
     // móvil, la tabla de entrada era muy larga).
     href: href("sistemas"),

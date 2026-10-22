@@ -208,8 +208,31 @@ export const Bloques = memo(function Bloques({
     const plegable = el.closest("details");
     if (plegable) plegable.open = true;
     el.scrollIntoView({ block: "start" });
+    // 0.96.0 (16.ª ronda, senior): con «Volver a la consulta» pegado arriba (lo pinta la Shell
+    // justo después), otra vez, ya con su margen (scroll-padding), para que no tape el destino.
+    const otraVez = requestAnimationFrame(() => {
+      if (document.querySelector(".volver-pegado")) el.scrollIntoView({ block: "start" });
+    });
     // Lo perezoso de antes (Figura 3, diagramas) no lo saca de la vista al cargar.
-    const soltar = mantenerEnVista(el);
+    const soltarVista = mantenerEnVista(el);
+    // 0.96.0 (16.ª ronda, senior): además del destello, un filete fijo a la izquierda del bloque de
+    // destino, hasta el siguiente clic o el cambio de pantalla (el destello se iba en 1,5 s y,
+    // al volver la vista, ya no se sabía qué párrafo era).
+    el.classList.add("bloque-destino");
+    const quitarDestino = () => el.classList.remove("bloque-destino");
+    const alPulsar = () => {
+      quitarDestino();
+      document.removeEventListener("pointerdown", alPulsar, true);
+    };
+    // Después de este clic (el que trajo aquí ya pasó; uno con el teclado no cuenta).
+    const espera = setTimeout(() => document.addEventListener("pointerdown", alPulsar, true), 0);
+    const soltar = () => {
+      cancelAnimationFrame(otraVez);
+      soltarVista();
+      clearTimeout(espera);
+      document.removeEventListener("pointerdown", alPulsar, true);
+      quitarDestino();
+    };
     const texto = frase !== undefined ? textoCitado(apartado, bloque, frase) : null;
     const quitar = texto ? resaltarFrase(el, texto) : null;
     if (quitar) {

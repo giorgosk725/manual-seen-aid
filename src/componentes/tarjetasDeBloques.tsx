@@ -34,12 +34,20 @@ export function tarjetasDeBloques(
         style={forma === "sistema" ? { ["--sis" as string]: h.strong } : undefined}
       >
         <PiezasSinTitulos.Provider value={true}>
-          <dt className="rotulo" style={forma === "sistema" ? { color: h.ink } : undefined}>
+          {/* 0.96.0 (16.ª ronda, visual y R3): el rótulo del bloque en minúscula y negrita, como los
+              de las fichas (en MAYÚSCULAS, «· MINIMED 780G Y OMNIPOD 5» perdía la grafía). */}
+          <dt
+            className="text-[13px] font-semibold leading-snug text-slate-600"
+            style={forma === "sistema" ? { color: h.ink } : undefined}
+          >
             {b.rotulo}
           </dt>
-          <dd className="mt-1 space-y-1.5 text-[15px] leading-snug text-slate-900">
+          {/* 0.96.0 (16.ª ronda, adjunto): una pieza por fila, separadas por una línea fina. */}
+          <dd className="mt-1 space-y-2 text-[15px] leading-snug text-slate-900 [&>*+*]:border-t [&>*+*]:border-[var(--linea-suave)] [&>*+*]:pt-2">
             {b.piezas.map((p, j) => (
-              <PiezaVista key={j} pieza={p} sis={c} compacta siglas={sg[desde[i] + j]} />
+              <div key={j}>
+                <PiezaVista pieza={p} sis={c} compacta siglas={sg[desde[i] + j]} />
+              </div>
             ))}
           </dd>
         </PiezasSinTitulos.Provider>

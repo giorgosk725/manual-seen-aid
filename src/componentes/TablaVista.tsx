@@ -12,7 +12,7 @@ import type { Tabla, TablaId } from "../contenido";
 import { Lineas, Texto } from "../texto";
 import { Enlace, PaginaBadge } from "../ui";
 import { BRAND_ACCENT, SISTEMA_HEX } from "../tokens";
-import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
 import { CasillasSistema } from "./CasillasSistema";
 import { NombreSistema } from "./NombreSistema";
@@ -35,6 +35,17 @@ const HERRAMIENTA_DE_TABLA: Record<string, { texto: string; ruta: string }> = {
   T6: { texto: "Situaciones", ruta: href("consultar", "situacion") },
 };
 const slugDe = (c: number) => CORTOS[c].toLowerCase().replace(/\s/g, "-");
+
+/* 0.96.0 (16.ª ronda, adjunto, visual y R5): el nombre de la columna de un sistema. En las
+   herramientas (comparación de Sistemas, Tablas con selector), el nombre corto de toda la app
+   («MiniMed 780G», «Control-IQ / Control-IQ+», «CamAPS FX», «Omnipod 5»; el comercial completo
+   va en la ficha y en el selector de Sistemas). En la tabla tal como va en la lectura del
+   capítulo, la cabecera literal de la tabla publicada («Tandem Control-IQ», «myLoop CamAPS»): es
+   texto de la tabla y allí se conserva. Regla en docs/DISENO_VISUAL.md §18. */
+const nombreColumna = (tabla: Tabla, c: number, literal: boolean) =>
+  tabla.porSistema && !literal ? CORTO_SISTEMA[c] : tabla.columnas[c];
+/* La columna de rótulos (0.95.1: más ancha en las tablas de rótulo largo, 3 y 4). */
+const anchoRotulos = (tabla: Tabla) => (tabla.id === "T4" || tabla.id === "T3" ? "12rem" : "10rem");
 
 /* «Viendo: MiniMed 780G y Omnipod 5»: qué selección está activa, con palabras. */
 const listaNombres = (n: string[]) =>
@@ -127,12 +138,15 @@ function TablaHTML({
   columnas,
   iconoFila,
   resaltar,
+  literal,
 }: {
   tabla: Tabla;
   columnas: number[];
   iconoFila?: (i: number) => ReactNode;
   /* 0.85.1 (novena ronda, R5): la fila pedida, marcada (comparación de varios sistemas). */
   resaltar?: number;
+  /* La tabla en la lectura del capítulo: cabeceras literales. */
+  literal: boolean;
 }) {
   // 0.72.0: si la tabla cabe a lo ancho, sin caja de desplazamiento propia (clase «cabe»): la
   // cabecera se queda pegada al bajar por la página. Si no cabe, se desplaza a lo ancho.
@@ -156,10 +170,28 @@ function TablaHTML({
       role="region"
       aria-label={`Tabla ${tabla.numero}, desplazable`}
     >
-      <table className="tabla-capitulo w-full border-collapse text-sm">
+      {/* 0.96.0 (16.ª ronda, adjunto, visual y R3): en las tablas por sistema, columnas de sistema
+          iguales (`table-layout: fixed`, la de rótulos con su ancho), también con dos sistemas; el
+          ancho mínimo hace que, si no cabe (1024 px), se desplace dentro de su caja como antes. */}
+      <table
+        className={`tabla-capitulo w-full border-collapse text-sm ${tabla.porSistema ? "tabla-iguales" : ""}`}
+        style={
+          tabla.porSistema
+            ? { minWidth: `calc(${anchoRotulos(tabla)} + ${columnas.length} * 9.25rem)` }
+            : undefined
+        }
+      >
         <caption className="sr-only">
           Tabla {tabla.numero}. {tabla.titulo}
         </caption>
+        {tabla.porSistema && (
+          <colgroup>
+            <col style={{ width: anchoRotulos(tabla) }} />
+            {columnas.map((c) => (
+              <col key={c} />
+            ))}
+          </colgroup>
+        )}
         <thead>
           <tr>
             <th scope="col" className="rotulo px-3 py-2 text-left align-middle">
@@ -192,7 +224,9 @@ function TablaHTML({
                       className="text-sm font-bold leading-tight"
                       style={{ color: SISTEMA_HEX[c].ink }}
                     >
-                      <NombreSistema n={tabla.columnas[c]} porPalabra />
+                      {/* Con el nombre corto, la línea solo cambia en la barra («Control-IQ / ⏎
+                          Control-IQ+»). */}
+                      <NombreSistema n={nombreColumna(tabla, c, literal)} porPalabra={literal} />
                     </span>
                   </span>
                 ) : (
@@ -217,7 +251,7 @@ function TablaHTML({
                 // 0.80.1: en la Tabla 4, rótulos largos: columna más ancha (6–7 líneas a 1920).
                 // 0.95.1: rótulos de fila más anchos en las tablas de rótulo largo (en la Tabla 3, «Objetivo
                 // glucémico y funciones temporales…» iba en seis líneas).
-                style={{ minWidth: tabla.id === "T4" || tabla.id === "T3" ? "12rem" : "10rem" }}
+                style={{ minWidth: anchoRotulos(tabla) }}
               >
                 <span className="flex items-start gap-1.5">
                   {iconoFila?.(i)}
@@ -259,7 +293,7 @@ function TablaHTML({
                   <td
                     key={c}
                     className="separador border-l border-t px-3 py-2 text-slate-800"
-                    style={{ minWidth: tabla.porSistema ? "9.25rem" : "10rem" }}
+                    style={tabla.porSistema ? undefined : { minWidth: "10rem" }}
                   >
                     <Lineas>
                       {sinCortes(
@@ -283,11 +317,13 @@ function Fichas({
   columnas,
   filas,
   resaltar,
+  literal = false,
 }: {
   tabla: Tabla;
   columnas: number[];
   filas?: number[];
   resaltar?: number;
+  literal?: boolean;
 }) {
   const idx = filas ?? tabla.filas.map((_, i) => i);
   return (
@@ -332,18 +368,25 @@ function Fichas({
                   key={c}
                   className="border-l-[3px] py-0.5 pl-2.5"
                   // 0.78.1: el filete del sistema lee `--sis` (en nocturno, su tinta clara).
+                  // 0.96.0 (16.ª ronda, visual): la fila común de la Tabla 4 (`unida`), con pleca
+                  // y rótulo neutros (llevaba los de MiniMed 780G, la primera columna).
                   style={
-                    tabla.porSistema
+                    tabla.porSistema && !f.unida
                       ? { ["--sis" as string]: SISTEMA_HEX[c].strong, borderColor: "var(--sis)" }
-                      : { borderColor: "#cbd5e1" }
+                      : { borderColor: "var(--linea-fuerte)" }
                   }
                 >
-                  <dt
-                    className="rotulo"
-                    style={tabla.porSistema ? { color: SISTEMA_HEX[c].ink } : undefined}
-                  >
-                    {f.unida ? "Todos los sistemas" : tabla.columnas[c]}
-                  </dt>
+                  {/* 0.96.0 (16.ª ronda, visual y adjunto): el nombre del sistema con su grafía y
+                      en su tinta, 14/700 (antes, en MAYÚSCULAS grises de 12 px). */}
+                  {f.unida ? (
+                    <dt className="rotulo-sistema text-slate-600">Todos los sistemas</dt>
+                  ) : tabla.porSistema ? (
+                    <dt className="rotulo-sistema" style={{ color: SISTEMA_HEX[c].ink }}>
+                      {nombreColumna(tabla, c, literal)}
+                    </dt>
+                  ) : (
+                    <dt className="rotulo">{tabla.columnas[c]}</dt>
+                  )}
                   <dd className="mt-0.5 text-[15px] text-slate-800">
                     <Lineas>
                       {sinCortes(
@@ -375,7 +418,7 @@ function FichaSistema({ tabla, c, resaltar }: { tabla: Tabla; c: number; resalta
   return (
     <div className="tarjeta tarjeta-sistema" style={{ ["--sis" as string]: hex.strong }}>
       <div className="titulo-seccion px-4 pt-4" style={{ color: hex.ink }}>
-        {tabla.columnas[c]}
+        {nombreColumna(tabla, c, false)}
       </div>
       <dl className="divide-y px-4 pb-2">
         {tabla.filas.map((f, i) => (
@@ -467,6 +510,14 @@ export function TablaVista({
   const [sel, setSelInterna] = useState<number[]>(() =>
     columnasFijas ? columnasFijas : desdeRuta(seleccionInicial),
   );
+  // 0.96.0 (16.ª ronda, R5): las columnas decididas fuera (la comparación de Sistemas), al día
+  // cuando cambian sin cambiar de pantalla (marcar o desmarcar un sistema).
+  const fijas = columnasFijas?.join("+");
+  useEffect(() => {
+    if (fijas === undefined) return;
+    const n = fijas ? fijas.split("+").map(Number) : [];
+    setSelInterna((p) => (p.join("+") === fijas ? p : n));
+  }, [fijas]);
   // 0.72.0: con la pantalla ya abierta, la ruta manda (Atrás, un enlace a «T4:<sistema>»).
   useEffect(() => {
     if (columnasFijas) return;
@@ -491,6 +542,7 @@ export function TablaVista({
     setSel((s) => (s.includes(c) ? s.filter((x) => x !== c) : [...s, c].sort()));
 
   const interactiva = modo === "interactiva";
+  const literal = !interactiva && !columnasFijas && !herramienta;
   return (
     <section ref={raiz} aria-label={`Tabla ${tabla.numero}`} className="bloque-papel">
       <CabeceraTabla
@@ -518,7 +570,9 @@ export function TablaVista({
             }
           />
           <p className="mt-1.5 text-xs text-slate-600" aria-live="polite">
-            {sel.length ? `Viendo ${listaNombres(sel.map((c) => tabla.columnas[c]))}` : ""}
+            {sel.length
+              ? `Viendo ${listaNombres(sel.map((c) => nombreColumna(tabla, c, false)))}`
+              : ""}
           </p>
         </div>
       )}
@@ -562,10 +616,11 @@ export function TablaVista({
               columnas={columnas}
               iconoFila={iconoFila}
               resaltar={resaltarFila}
+              literal={literal}
             />
           </div>
           <div className="vista-fichas md:hidden">
-            <Fichas tabla={tabla} columnas={columnas} resaltar={resaltarFila} />
+            <Fichas tabla={tabla} columnas={columnas} resaltar={resaltarFila} literal={literal} />
           </div>
         </>
       )}

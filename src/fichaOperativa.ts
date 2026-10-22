@@ -10,7 +10,7 @@ import { fuentesDePiezas } from "./fuentesPiezas";
 
 export type { Dato, EnAutomatico, GrupoFicha } from "./fichaAlgoritmo";
 import type { Dato, GrupoFicha } from "./fichaAlgoritmo";
-export { ALGORITMO } from "./fichaAlgoritmo";
+export { ALGORITMO, tipoBajoNombre } from "./fichaAlgoritmo";
 
 /* El rótulo de una fila, como clave de dirección («Agua y deportes de contacto» → «agua-y-…»). */
 export const slugDato = (r: string) =>
@@ -491,9 +491,11 @@ export const MODOS: Dato[][] = [
       f: [t4(2)],
     },
     {
+      // 0.96.0 (16.ª ronda, R3): sin «El modo sueño no autocorrige, pero ajusta la basal»
+      // (apartado 9), que repetía la fila de encima («Mantiene la modulación basal, sin bolos de
+      // autocorrección», Tabla 4); queda lo que se revisa antes, como dato de la fila.
       r: "Hipoglucemia nocturna",
-      antes: C_NOCTURNA,
-      v: "El modo sueño no autocorrige, pero ajusta la basal",
+      v: C_NOCTURNA,
       // 0.88.1 (duodécima ronda, R3): como la comida grasa (paso 6), su paso de la descarga.
       enlace: { texto: "Patrón nocturno: descarga, paso 5", ruta: "#/consultar/descarga/5" },
       f: [NOCHE],

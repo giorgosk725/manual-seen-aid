@@ -35,6 +35,16 @@ export interface GrupoFicha {
 const t1 = (fila: number): Pieza => ({ t: "casilla", tabla: "T1", fila });
 const t3 = (fila: number): Pieza => ({ t: "casilla", tabla: "T3", fila });
 
+/* 0.96.0 (16.ª ronda, adjunto y visual): el «Tipo» bajo el nombre del sistema (portada, Resumen)
+   sin repetir el nombre: «Control-IQ · MPC, predicción a 30 min» bajo Control-IQ se lee
+   «MPC, predicción a 30 min». Solo se omite el primer tramo cuando es el nombre que ya está encima
+   («SmartGuard», «SmartAdjust», que no lo son, se quedan). */
+export function tipoBajoNombre(c: number, nombre: string): string {
+  const v = ALGORITMO[c][0].v;
+  const [primero, ...resto] = v.split(" · ");
+  return resto.length && nombre.includes(primero) ? resto.join(" · ") : v;
+}
+
 /* ---------- Cómo funciona: el algoritmo ---------- */
 export const ALGORITMO: Dato[][] = [
   [

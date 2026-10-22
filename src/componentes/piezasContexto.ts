@@ -4,6 +4,10 @@ import { createContext } from "react";
 
 export const PiezasSinTitulos = createContext(false);
 
+/* 0.96.0 (16.ª ronda, R5): el sistema elegido en un recorrido (Iniciación): las frases que hablan
+   solo de otro sistema no se enseñan (inicio.ts, soloDeOtroSistema). */
+export const SistemaDelRecorrido = createContext<number | undefined>(undefined);
+
 /* En esos bloques, el recorte de una frase va sin los puntos suspensivos de los extremos y con
    mayúscula inicial (0.74.1, a petición del responsable: «ponlos directamente»); la fuente al pie
    sigue llevando a la frase entera. */

@@ -138,6 +138,40 @@
     text-transform: uppercase;
     color: var(--tinta-3);
   }
+  /* 0.96.0 (16.ª ronda, visual y adjunto): el nombre de un sistema como rótulo de un dato (fichas
+     de las tablas en el móvil, casillas del buscador): con su grafía, nunca en mayúsculas; el
+     color, la tinta del sistema (en línea). */
+  .rotulo-sistema {
+    font-size: 0.875rem;
+    line-height: 1.3;
+    font-weight: 700;
+    color: var(--tinta-2);
+  }
+  /* 0.96.0 (16.ª ronda, visual): un desplegable con el mismo chevrón que el resto de la app (el
+     de los apartados: a la derecha cerrado, hacia abajo abierto), no el triángulo nativo. */
+  summary.con-chevron {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+  }
+  summary.con-chevron::-webkit-details-marker {
+    display: none;
+  }
+  summary.con-chevron::before {
+    content: "";
+    flex-shrink: 0;
+    width: 0.4375rem;
+    height: 0.4375rem;
+    margin: 0 0.125rem 0 0.1875rem;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 0.15s;
+  }
+  details[open] > summary.con-chevron::before {
+    transform: translateY(-0.125rem) rotate(45deg);
+  }
   /* Insignia de dato (no de interacción): esquinas de 4 px, gris o del sistema (`--sis-soft`). */
   .insignia {
     display: inline-block;
@@ -181,6 +215,25 @@
   @media (min-width: 640px) {
     .chip {
       min-height: 2.25rem;
+    }
+  }
+  /* 0.96.0 (16.ª ronda, visual): el paso activo de Iniciación, sin relleno burdeos: subrayado como
+     una pestaña; en el móvil (solo se ve el activo, bajo la fila de números), su título como
+     texto. */
+  .chip.paso-tab[aria-current] {
+    background: var(--superficie);
+    border-color: var(--linea-fuerte);
+    color: var(--tinta);
+    box-shadow: inset 0 -2px 0 var(--acento);
+  }
+  @media (max-width: 639px) {
+    .chip.paso-tab[aria-current] {
+      padding: 0.25rem 0 0;
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
+      font-size: 0.9375rem;
+      font-weight: 700;
     }
   }
   /* Número de paso. */
@@ -1059,6 +1112,11 @@ html[data-letra="2"] .prosa {
   z-index: 1;
   background: var(--papel-2);
 }
+/* 0.96.0 (16.ª ronda, adjunto 3 y visual P12): en las tablas por sistema, las columnas de
+   sistema del mismo ancho (el `colgroup` de TablaVista da el de los rótulos). */
+.tabla-capitulo.tabla-iguales {
+  table-layout: fixed;
+}
 
 /* 0.72.0 (accesibilidad, 2.4.11 y 1.4.11): lo enfocado no queda bajo la cabecera ni la barra
    de abajo al moverse con el teclado, y el anillo de foco contrasta también de noche. */
@@ -1293,9 +1351,29 @@ html.night ::highlight(frase-citada) {
     border-radius: 6px;
   }
 }
+/* 0.96.0 (16.ª ronda, senior): el bloque de destino, con un filete fijo a la izquierda (fuera de su
+   caja, sin mover el texto) hasta el siguiente clic. Solo en pantalla. */
+@media screen {
+  .bloque-destino {
+    box-shadow: -0.625rem 0 0 -0.4375rem var(--acento);
+  }
+}
+/* Con «Volver a la consulta» pegado arriba, el destino de un enlace queda por debajo del chip. */
+html:has(.volver-pegado) {
+  scroll-padding-top: 7.5rem;
+}
+@media (min-width: 1024px) {
+  html:has(.volver-pegado) {
+    scroll-padding-top: 4.25rem;
+  }
+}
 
 /* Impresión de la lectura: columna completa, sin cromo, insignias de página visibles. */
 @media print {
+  /* El chevrón de los desplegables no se imprime (en papel todo va abierto). */
+  summary.con-chevron::before {
+    display: none;
+  }
   .prosa {
     max-width: none;
     font-size: 11pt;
@@ -1341,6 +1419,12 @@ html.night ::highlight(frase-citada) {
     font-size: 8.5pt;
     table-layout: fixed;
     width: 100%;
+    /* 0.96.0: el ancho mínimo y la columna de rótulos de pantalla (TablaVista), fuera en papel:
+       las columnas, iguales como antes. */
+    min-width: 0 !important;
+  }
+  .tabla-capitulo col {
+    width: auto !important;
   }
   .tabla-capitulo th,
   .tabla-capitulo td {
@@ -1586,6 +1670,16 @@ html.night .titulo-manual {
 html.night .regla-seccion > span:last-child {
   background: #334155;
 }
+/* 0.96.0 (16.ª ronda, visual): el tramo de la regla, visible de noche: el burdeos, en la tinta del
+   acento; el color de un área, aclarado. Solo en pantalla. */
+@media screen {
+  html.night .tramo-regla[style*="--tramo"] {
+    background: color-mix(in srgb, var(--tramo) 45%, #fff) !important;
+  }
+  html.night .tramo-regla[data-acento] {
+    background: var(--acento-texto) !important;
+  }
+}
 
 /* Nocturno: bordes finos en línea, tintes suaves y tintas de las categorías nuevas. */
 /* 0.90.1 (14.ª ronda, R5): solo en pantalla (en papel, desde el modo nocturno, los rótulos
@@ -1787,6 +1881,18 @@ html.night *:focus-visible {
   }
 }
 
+/* 0.96.0 (16.ª ronda, R3): el paso de la descarga, algo más compacto en papel: el 4 llegaba a
+   14 pt del margen y, con otros márgenes de impresión, pasaba dos líneas y la fuente a otra cara. */
+@media print {
+  .imprimible #paso-descarga {
+    padding: 0.5rem 0.75rem;
+  }
+  .imprimible #paso-descarga dd {
+    font-size: 10.5pt;
+    line-height: 1.4;
+  }
+}
+
 /* 0.77.1 (auditoría R3): en la ficha impresa, las tarjetas operativas y las filas de Parámetros y
    Modos no se parten entre caras, y un título no se queda solo al pie. */
 @media print {
@@ -1909,6 +2015,15 @@ html.night *:focus-visible {
     break-inside: auto;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
+  }
+  /* 0.96.0 (16.ª ronda, visual): en papel, las filas de Parámetros y Modos sin el marco de la
+     tarjeta (una línea arriba y las de entre filas): partida entre caras, el marco se alargaba
+     hasta el pie de la cara con una cola vacía, porque las filas no se parten. */
+  .imprimible section.tarjeta:has(> .filas-datos) {
+    border-color: transparent;
+    border-top-color: #d4d4d4;
+    border-radius: 0;
+    box-shadow: none !important;
   }
   .imprimible .tarjeta-datos dl > div {
     break-inside: avoid;

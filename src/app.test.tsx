@@ -60,7 +60,11 @@ describe("App", () => {
       screen.getAllByText(/^pp\. 3–4$/).some((el) => el.textContent === "pp. 3–4 del capítulo"),
     ).toBe(true);
     expect(screen.getByRole("table", { name: /Tabla 1/ })).toBeInTheDocument();
-    expect(screen.getAllByText(/peso 9–200 kg, DTD 5–200 UI\/día/).length).toBeGreaterThan(0);
+    // 0.96.0 (16.ª ronda, visual): los intervalos van en su pieza sin partir (otro elemento): se
+    // busca en el texto de la tabla, no en un solo nodo.
+    expect(
+      (screen.getByRole("table", { name: /Tabla 1/ }).textContent ?? "").replace(/\s+/g, " "),
+    ).toMatch(/peso 9–200 kg, DTD 5–200 UI\/día/);
   });
 
   it("la Figura 3 como recorrido muestra solo la rama elegida", async () => {

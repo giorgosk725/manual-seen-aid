@@ -4,13 +4,21 @@ import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
    de cada sistema. Aquí no hay texto propio: todo sale del capítulo con su página. */
 import { ArrowRight } from "lucide-react";
 import { useContext } from "react";
-import { PiezasSinTitulos, sinPuntos } from "./piezasContexto";
+import { PiezasSinTitulos, SistemaDelRecorrido, sinPuntos } from "./piezasContexto";
 import { TABLAS } from "../contenido";
 import { PaginaBadge } from "../ui";
 import { Lineas, Texto } from "../texto";
 import { siglasPorTexto } from "../siglas";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
-import { frasesDe, lineasInicializacion, listaDe, textosDePieza, type Pieza } from "../inicio";
+import {
+  frasesDe,
+  incisosDelSistema,
+  lineasInicializacion,
+  listaDe,
+  soloDeOtroSistema,
+  textosDePieza,
+  type Pieza,
+} from "../inicio";
 
 const hex = CATEGORIA_HEX.consultar;
 
@@ -131,6 +139,9 @@ function PiezaVistaBase({
     <Texto siglas={pend(children)}>{children}</Texto>
   );
   const sinTitulos = useContext(PiezasSinTitulos);
+  const delRecorrido = useContext(SistemaDelRecorrido);
+  const deEste = (t: string) =>
+    delRecorrido === undefined ? t : incisosDelSistema(t, delRecorrido);
   const caja = compacta ? "" : "tarjeta p-3";
   const borde = undefined;
   const Rotulo = ({ tabla, etiqueta }: { tabla: keyof typeof TABLAS; etiqueta: string }) =>
@@ -148,13 +159,19 @@ function PiezaVistaBase({
   switch (pieza.t) {
     case "frase": {
       const f = frasesDe(pieza.apartado, pieza.bloque, pieza.k, pieza.trozo);
+      const sg = pend(f.frases.join(" "));
+      const frases =
+        delRecorrido === undefined
+          ? f.frases
+          : f.frases.filter((x) => !soloDeOtroSistema(x, delRecorrido));
+      if (!frases.length) return null;
       return (
         <p className={compacta ? "text-[15px] leading-relaxed text-slate-800" : "prosa"}>
           {f.lead && !sinTitulos && <strong>{f.lead} </strong>}
           {sinTitulos ? (
-            <Texto siglas={pend(f.frases.join(" "))}>{sinPuntos(f.frases.join(" "))}</Texto>
+            <Texto siglas={sg}>{sinPuntos(frases.join(" "))}</Texto>
           ) : (
-            <T>{f.frases.join(" ")}</T>
+            <Texto siglas={sg}>{frases.join(" ")}</Texto>
           )}
           {!compacta && <EnlacePagina ruta={f.ruta} p={f.pagina} />}
         </p>
@@ -205,7 +222,7 @@ function PiezaVistaBase({
                 {/* 0.78.1 (segunda ronda, R5): las líneas de la casilla, separadas («; » si la
                     línea no acaba en punto); antes se pegaban. */}
                 <Texto siglas={pend(f.celdas[k + 1])}>
-                  {f.celdas[k + 1].replace(/([^.;:])\n/g, "$1; ").replace(/\n/g, " ")}
+                  {deEste(f.celdas[k + 1].replace(/([^.;:])\n/g, "$1; ").replace(/\n/g, " "))}
                 </Texto>
               </p>
             ))}
@@ -234,7 +251,14 @@ function PiezaVistaBase({
       return (
         <div className={caja} style={borde}>
           <Rotulo tabla={pieza.tabla} etiqueta={f.etiqueta} />
-          {sis !== undefined ? (
+          {sis !== undefined && compacta && sinTitulos ? (
+            // 0.96.0 (16.ª ronda, adjunto): dentro de la tarjeta de un bloque (la herramienta del
+            // sistema en una situación, los bloques de la ficha), la casilla como dato de una fila,
+            // sin caja gris dentro de la tarjeta; las filas las separa una línea fina.
+            <p className="text-[15px] leading-snug text-slate-800">
+              <Lineas siglas={pend(f.celdas[sis])}>{f.celdas[sis]}</Lineas>
+            </p>
+          ) : sis !== undefined ? (
             <Casilla
               nombre={compacta ? "" : t.columnas[sis]}
               texto={f.celdas[sis]}

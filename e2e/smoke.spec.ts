@@ -46,7 +46,9 @@ test.describe("Recorrido básico (escritorio)", () => {
     const cabeceras = page.getByRole("table").locator("thead th");
     await expect(cabeceras).toHaveCount(3);
     await expect(cabeceras.nth(1)).toHaveText("MiniMed 780G");
-    await expect(cabeceras.nth(2)).toHaveText("myLoop CamAPS");
+    // 0.96.0 (16.ª ronda, R5): en la herramienta, el nombre corto de toda la app (la cabecera
+    // literal de la tabla, «myLoop CamAPS», se queda en la lectura del capítulo).
+    await expect(cabeceras.nth(2)).toHaveText("CamAPS FX");
     // La fila unida (ejercicio anaeróbico) sigue entera.
     await expect(page.getByRole("table").getByText(/no usar Boost de rutina/)).toBeVisible();
   });

@@ -13,7 +13,7 @@ import {
 import { elegirRuta, href } from "../rutas";
 import { sistemaReciente } from "../sistemaReciente";
 import { CORTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
-import { BotonImprimir, CabeceraEditorial, PaginaBadge, Revelar } from "../ui";
+import { BotonImprimir, CabeceraEditorial, ColofonImpreso, PaginaBadge, Revelar } from "../ui";
 import { pestanaALaVista } from "../disposicion";
 import { CATEGORIA_HEX } from "../tokens";
 import { TablaVista } from "../componentes/TablaVista";
@@ -126,6 +126,8 @@ function TablaPantalla({
             onSeleccion={(x) => elegirRuta("consultar", "tablas", x ? `${tid}:${x}` : tid)}
           />
         </NivelTitulo.Provider>
+        {/* 0.96.0 (16.ª ronda, visual): en papel, el mismo pie que las demás hojas de la app. */}
+        <ColofonImpreso />
         <div className="separador no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3">
           <BotonImprimir objetivo={ref} compacto>
             Imprimir la tabla
@@ -148,27 +150,31 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
   return (
     <div>
       <CabeceraEditorial titulo="Hiperglucemia y cetonemia" hex={hex} level={1} />
-      {/* 0.72.2: lo que más se busca aquí es la hoja para entregar: arriba, a un toque. */}
-      <a
-        href={href("pacientes", "hoja", "cetonas")}
-        className="no-imprimir mb-3 inline-flex min-h-11 items-center gap-2 rounded-md px-4 text-sm font-bold text-white"
-        style={{ background: hex.strong }}
-      >
-        <Printer size={16} aria-hidden="true" /> Hoja para el paciente: cetonas
-      </a>
-      {/* 0.79.1 (tercera ronda, guardia): el plan de seguridad del último sistema consultado. */}
-      <a
-        href={href(
-          "pacientes",
-          "plan",
-          sistemaReciente() !== undefined ? ORDEN_SISTEMAS[sistemaReciente()!] : undefined,
-        )}
-        className="no-imprimir mb-3 ml-3 inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900"
-      >
-        {sistemaReciente() !== undefined
-          ? `Plan de seguridad · ${CORTO_SISTEMA[sistemaReciente()!]}`
-          : "Plan de seguridad"}
-      </a>
+      {/* 0.72.2: lo que más se busca aquí es la hoja para entregar: arriba, a un toque. 0.96.0
+          (16.ª ronda, visual): los dos en una fila que se parte; en el móvil, el plan debajo y
+          alineado con el botón (antes, con 12 px de sangría). */}
+      <div className="no-imprimir mb-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+        <a
+          href={href("pacientes", "hoja", "cetonas")}
+          className="inline-flex min-h-11 items-center gap-2 rounded-md px-4 text-sm font-bold text-white"
+          style={{ background: hex.strong }}
+        >
+          <Printer size={16} aria-hidden="true" /> Hoja para el paciente: cetonas
+        </a>
+        {/* 0.79.1 (tercera ronda, guardia): el plan de seguridad del último sistema consultado. */}
+        <a
+          href={href(
+            "pacientes",
+            "plan",
+            sistemaReciente() !== undefined ? ORDEN_SISTEMAS[sistemaReciente()!] : undefined,
+          )}
+          className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900"
+        >
+          {sistemaReciente() !== undefined
+            ? `Plan de seguridad · ${CORTO_SISTEMA[sistemaReciente()!]}`
+            : "Plan de seguridad"}
+        </a>
+      </div>
       <div className="tarjeta p-4">
         <NivelTitulo.Provider value={2}>
           <Figura3Recorrido tramoInicial={tramo} />

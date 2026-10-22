@@ -4,7 +4,6 @@
    - Interpretación de la descarga: la Tabla 5 paso a paso (8 pasos), con el patrón relacionado.
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
-import { VERSION_APP } from "../version";
 import { ponerConsulta } from "../consultaBuscar";
 import { useEffect, useRef, useState } from "react";
 import { AlertTriangle, ArrowRight, Check, ChevronLeft, ChevronRight, Siren } from "lucide-react";
@@ -27,13 +26,13 @@ import { AnadidoDelSistema, BloquesPorSistema } from "../componentes/BloquesPorS
 import { DosColumnas } from "../componentes/DosColumnas";
 import { NombreSistema } from "../componentes/NombreSistema";
 import { GUIA_POR_SISTEMA, TABLA4_POR_SISTEMA } from "../porSistema";
-import { CATALOGO_SISTEMAS, CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { kDe, siglasPorPiezas, type Pieza } from "../inicio";
 
 import { elegirRuta, fueNavegacionNueva, href } from "../rutas";
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
-import { BotonImprimir, CabeceraEditorial } from "../ui";
+import { BotonImprimir, CabeceraEditorial, ColofonImpreso } from "../ui";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
 import { recordarSistema, sistemaReciente } from "../sistemaReciente";
 import { CasillasSistema } from "../componentes/CasillasSistema";
@@ -396,6 +395,19 @@ function CabeceraSituacion({
   );
 }
 
+/* 0.96.0 (16.ª ronda, adjunto): un «Véase también» que lleva a la situación cuya fila de tabla ya
+   enseña arriba la herramienta del sistema (en la enfermedad intercurrente, «Enfermedad leve, sin
+   sospecha de fallo (Tabla 4)»), sobra mientras haya un sistema elegido. */
+function yaArriba(guia: SituacionGuia, ruta: string, sis: number | undefined): boolean {
+  if (sis === undefined || sis < 0) return false;
+  const id = /^#\/consultar\/situacion\/([a-z0-9-]+)$/.exec(ruta)?.[1];
+  const s = id && SITUACIONES.find((x) => x.id === id);
+  if (!s) return false;
+  return (GUIA_POR_SISTEMA[guia.id]?.bloques[sis] ?? []).some((b) =>
+    b.piezas.some((p) => p.t === "casilla" && p.tabla === s.tabla && p.fila === s.fila),
+  );
+}
+
 /* «Para seguir»: la hoja para el paciente, los apartados y la tabla entera. 0.92.0 (revisión de
    tarjetas, ★1): con VeaseTambien, la misma forma que en el resto de la app. */
 const ParaSeguir = ({ filas }: { filas: { href: string; t: string }[] }) => (
@@ -451,9 +463,8 @@ function ListaSituaciones({
         ? "Figura 3"
         : ruta.startsWith("#/visual")
           ? "Diagrama"
-          : ruta.startsWith("#/consultar/situacion")
-            ? "Situación"
-            : undefined;
+          : // 0.96.0 (16.ª ronda, adjunto y R1): sin «Situación» (todas lo son en esta lista).
+            undefined;
   const conFilas = visibles.filter((g) => g.sits.length || g.extras.length);
   return (
     <div
@@ -531,20 +542,28 @@ function ListaSituaciones({
               </li>
             );
           })}
-          {extras.map((x) => (
-            <li key={x.ruta}>
-              <a
-                href={
-                  sistema && x.ruta.startsWith(href("consultar", "situacion"))
-                    ? `${x.ruta}:${sistema}`
-                    : x.ruta
-                }
-                className={fila}
-              >
-                <Fila texto={x.t} destino={destinoDe(x.ruta)} />
-              </a>
-            </li>
-          ))}
+          {extras.map((x) => {
+            // 0.96.0 (16.ª ronda, R3): «Hipoglucemia nocturna» lleva a «Sueño/período nocturno»:
+            // con esa situación abierta, las dos filas se marcan como elegidas (es la misma). Las
+            // dos se quedan: cada una es el nombre con el que se busca.
+            const on = !!sit && x.ruta === href("consultar", "situacion", sit.id);
+            return (
+              <li key={x.ruta}>
+                <a
+                  href={
+                    sistema && x.ruta.startsWith(href("consultar", "situacion"))
+                      ? `${x.ruta}:${sistema}`
+                      : x.ruta
+                  }
+                  aria-current={on ? "true" : undefined}
+                  className={`${fila} ${on ? "text-white hover:!bg-[var(--acento)]" : ""}`}
+                  style={on ? { background: hex.strong } : undefined}
+                >
+                  <Fila texto={x.t} destino={destinoDe(x.ruta)} on={on} />
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </section>
     );
@@ -561,6 +580,7 @@ export function SituacionSistema({
   momento?: string;
 }) {
   const [filtro, setFiltro] = useState("");
+  const [cambiarSistema, setCambiarSistema] = useState(false);
   const sit = SITUACIONES.find((s) => s.id === situacion) || null;
   const guia = SITUACIONES_GUIA.find((s) => s.id === situacion) || null;
   // En el móvil, con una situación elegida el catálogo se pliega; «Cambiar» lo vuelve a abrir.
@@ -596,16 +616,41 @@ export function SituacionSistema({
     const enTodos = (p: Pieza) =>
       xs.every((bs) => bs.some((b) => b.piezas.some((q) => clave(q) === clave(p))));
     const comunes = (xs[0][0]?.piezas ?? []).filter(enTodos);
-    const ks = new Set(comunes.map(clave));
+    // 0.96.0 (16.ª ronda, R3): lo que dicen igual dos o tres sistemas (en la comida grasa, «la
+    // estrategia debe individualizarse…», de MiniMed 780G y Omnipod 5), también una vez, rotulado
+    // con sus sistemas (antes, en cada tarjeta).
+    const quien = new Map<string, { p: Pieza; cs: number[]; rotulo: string }>();
+    xs.forEach((bs, c) =>
+      bs.forEach((b) =>
+        b.piezas.forEach((p) => {
+          const k = clave(p);
+          const q = quien.get(k);
+          if (q) q.cs.push(c);
+          else quien.set(k, { p, cs: [c], rotulo: b.rotulo });
+        }),
+      ),
+    );
+    const compartidas = [...quien.values()].filter((q) => q.cs.length > 1 && !enTodos(q.p));
+    const ks = new Set([...comunes, ...compartidas.map((q) => q.p)].map(clave));
+    const nombres = (cs: number[]) =>
+      cs.length < 2
+        ? CORTO_SISTEMA[cs[0]]
+        : `${cs
+            .slice(0, -1)
+            .map((c) => CORTO_SISTEMA[c])
+            .join(", ")} y ${CORTO_SISTEMA[cs[cs.length - 1]]}`;
     return {
       propios: xs.map((bs) =>
         bs
           .map((b) => ({ ...b, piezas: b.piezas.filter((p) => !ks.has(clave(p))) }))
           .filter((b) => b.piezas.length),
       ),
-      comun: comunes.length
-        ? [{ rotulo: `${xs[0][0].rotulo} · todos los sistemas`, piezas: comunes }]
-        : [],
+      comun: [
+        ...(comunes.length
+          ? [{ rotulo: `${xs[0][0].rotulo} · todos los sistemas`, piezas: comunes }]
+          : []),
+        ...compartidas.map((q) => ({ rotulo: `${q.rotulo} · ${nombres(q.cs)}`, piezas: [q.p] })),
+      ],
     };
   })();
   // Al elegir el sistema, su casilla a la vista (en el móvil quedaba bajo la barra inferior).
@@ -624,6 +669,44 @@ export function SituacionSistema({
       {/* Sin situación elegida, la lista a todo el ancho; con una, lista a la izquierda (0.71.0). */}
       <div className={`grid gap-4 ${sit || guia ? "lg:grid-cols-[18rem_1fr]" : ""}`}>
         <div className={(sit || guia) && !verLista ? "hidden lg:block" : undefined}>
+          {/* 0.96.0 (16.ª ronda, R3): desde la ficha de un sistema (#/consultar/situacion/:camaps),
+              qué sistema va ya elegido en las situaciones que se abran, y cómo cambiarlo. */}
+          {!sit && !guia && sisIdx >= 0 && (
+            <div className="mb-3 text-sm text-slate-700">
+              <p className="flex flex-wrap items-center gap-x-1.5">
+                <span>
+                  Sistema: <span className="font-semibold">{CORTO_SISTEMA[sisIdx]}</span>
+                </span>
+                <span aria-hidden="true">·</span>
+                <button
+                  type="button"
+                  aria-expanded={cambiarSistema}
+                  onClick={() => setCambiarSistema((x) => !x)}
+                  className="tap-44 inline-flex min-h-11 items-center font-semibold underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700 sm:min-h-6"
+                >
+                  cambiar
+                </button>
+              </p>
+              {cambiarSistema && (
+                <div className="mt-1.5">
+                  <CasillasSistema
+                    unico
+                    etiqueta="Sistema"
+                    nombres={CORTO_SISTEMA}
+                    seleccion={[sisIdx]}
+                    onToggle={(c) => {
+                      setCambiarSistema(false);
+                      elegirRuta(
+                        "consultar",
+                        "situacion",
+                        c === sisIdx ? undefined : `:${SIS_IDS[c]}`,
+                      );
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
           <input
             type="search"
             aria-label="Filtrar situaciones"
@@ -695,6 +778,7 @@ export function SituacionSistema({
               <ParaSeguir
                 filas={guia.enlaces
                   .filter((l) => !l.ruta.startsWith("#/visual/objetivos-mcg/"))
+                  .filter((l) => !yaArriba(guia, l.ruta, sisIdx >= 0 ? sisIdx : sistemaReciente()))
                   .map((l) => ({ href: l.ruta, t: l.texto }))}
               />
             </div>
@@ -752,7 +836,9 @@ export function SituacionSistema({
                         <button
                           type="button"
                           onClick={() => elegirRuta("consultar", "situacion", sit.id)}
-                          className="tap-44 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700"
+                          // 0.96.0 (16.ª ronda, visual): 44 px de alto también a la vista en el
+                          // móvil (no solo la zona ampliada).
+                          className="tap-44 inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700 sm:min-h-0"
                         >
                           Los cuatro
                         </button>
@@ -789,7 +875,10 @@ export function SituacionSistema({
                               className="foto-sistema h-7 w-7 shrink-0 rounded-md bg-white object-cover"
                             />
                             <span className="titulo-tarjeta" style={{ color: SISTEMA_HEX[c].ink }}>
-                              <NombreSistema n={CATALOGO_SISTEMAS[c]?.name ?? nombre} />
+                              {/* 0.96.0 (16.ª ronda, R5): el nombre corto de toda la app en
+                                  tarjetas y casillas; el comercial, en la ficha y el selector de
+                                  Sistemas. */}
+                              <NombreSistema n={CORTO_SISTEMA[c] ?? nombre} />
                             </span>
                           </div>
                           <p className="px-4 py-2.5 text-[15px] text-slate-800">
@@ -825,7 +914,7 @@ export function SituacionSistema({
                     style={{ ["--sis" as string]: SISTEMA_HEX[sisIdx].strong }}
                   >
                     <div className="titulo-tarjeta" style={{ color: SISTEMA_HEX[sisIdx].ink }}>
-                      <NombreSistema n={CATALOGO_SISTEMAS[sisIdx].name} />
+                      <NombreSistema n={CORTO_SISTEMA[sisIdx]} />
                     </div>
                     <dl className="mt-1.5 grid gap-y-1 text-[15px] sm:grid-cols-[8rem_1fr]">
                       <dt className="rotulo pt-0.5">Formato</dt>
@@ -1153,14 +1242,16 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
               </BotonImprimir>
             </span>
           </div>
-          <dl className="mt-3 divide-y md:grid md:grid-cols-3 md:gap-4 md:divide-y-0 print:grid print:grid-cols-3 print:gap-4 print:divide-y-0">
+          <dl className="mt-3 md:grid md:grid-cols-3 md:gap-4 print:grid print:grid-cols-3 print:gap-4">
             {t.columnas.slice(1).map((col, j) => {
               return (
                 // 0.94.0 (rediseño, fase 2): desde md, cada columna abre con su línea capilar, como
-                // los datos de las fichas.
+                // los datos de las fichas. 0.96.0 (16.ª ronda, visual y R3): las tres (el
+                // `md:divide-y-0` de la lista quitaba la de la segunda y la tercera); en el móvil,
+                // una línea entre ellas.
                 <div
                   key={col}
-                  className="py-2.5 md:border-t md:border-[var(--linea-suave)] md:pb-0 md:pt-2.5"
+                  className="border-t border-[var(--linea-suave)] py-2.5 first:border-t-0 md:pb-0 md:pt-2.5 md:first:border-t print:first:border-t"
                 >
                   <dt className="rotulo mb-1">{col}</dt>
                   <dd className="text-[15px] text-slate-800">
@@ -1192,7 +1283,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           </div>
           {patrones.length > 0 && (
             <details className="mt-4" open>
-              <summary className="min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8 print:list-none">
+              <summary className="con-chevron min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
                 Patrones relacionados ({patrones.length})
               </summary>
               {/* 0.89.1 (13.ª ronda, R3): en papel, algo más compactos (el paso 4 dejaba una
@@ -1277,7 +1368,8 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                 alPaso();
                 ir(n + 1);
               }}
-              className={`inline-flex min-h-11 items-center gap-1 rounded-md px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-40 ${n === 8 ? "invisible" : ""}`}
+              // 0.96.0 (16.ª ronda, visual): a la altura del chip de «‹ Paso N» (44 px en el móvil, 36 desde sm).
+              className={`inline-flex min-h-11 items-center gap-1 rounded-md px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-40 sm:min-h-9 ${n === 8 ? "invisible" : ""}`}
               style={{ background: hex.strong }}
             >
               Paso {Math.min(8, n + 1)} <ChevronRight size={14} aria-hidden="true" />
@@ -1292,11 +1384,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
         </p>
       )}
       {/* 0.92.3 (15.ª ronda, R3): en papel, de dónde sale la hoja (como en la ficha). */}
-      <p className="colofon mt-6 hidden border-t pt-2 text-xs text-slate-600 print:mt-2 print:block print:pt-1">
-        Manual de Endocrinología y Nutrición (SEEN) · Capítulo 89 · Complemento interactivo{" "}
-        {VERSION_APP}
-        {"\u00a0· "}impreso el {new Date().toLocaleDateString("es-ES")}
-      </p>
+      <ColofonImpreso />
     </div>
   );
 }

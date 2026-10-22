@@ -766,6 +766,17 @@ function Cajon({ open, onClose, ruta }: { open: boolean; onClose: () => void; ru
 /* La ruta llega de App (una sola fuente): si la Shell tuviera su propia copia, durante un
    render la clave de la pantalla nueva iría con la pantalla vieja, que se volvía a montar y
    saltaba a su ancla (y guardaba ese punto como «seguir leyendo»). */
+/* La pantalla de una ruta, para la posición de scroll y para subir arriba al cambiar de pantalla.
+   En Buscar, el texto escrito viaja en la URL: no es otra pantalla. 0.96.0 (16.ª ronda, R5): una
+   comparación de Sistemas con otros sistemas marcados («mm780+op5» → «mm780+camaps») es la misma
+   pantalla: se sigue donde se leía (antes, marcar y desmarcar en el móvil volvía arriba). */
+function claveDePantalla(r: { seccion: string; sub?: string }): string {
+  const sub = r.seccion === "buscar" ? "" : (r.sub ?? "");
+  if (r.seccion === "sistemas" && (sub === "todos" || sub.includes("+")))
+    return "sistemas/comparacion";
+  return `${r.seccion}/${sub}`;
+}
+
 export function Shell({
   children,
   titulo,
@@ -825,8 +836,7 @@ export function Shell({
   useEffect(() => {
     let pendiente: ReturnType<typeof setTimeout> | undefined;
     const onScroll = () => {
-      const r = parseHash(window.location.hash);
-      const k = `${r.seccion}/${r.seccion === "buscar" ? "" : (r.sub ?? "")}`;
+      const k = claveDePantalla(parseHash(window.location.hash));
       const y = window.scrollY;
       clearTimeout(pendiente);
       // Se apunta un instante después: el desplazamiento que hace el navegador justo antes de
@@ -843,9 +853,7 @@ export function Shell({
     };
   }, []);
 
-  // En Buscar, el texto escrito viaja en la URL: no es otra pantalla.
-  const subPantalla = ruta.seccion === "buscar" ? "" : (ruta.sub ?? "");
-  const clavePantalla = `${ruta.seccion}/${subPantalla}`;
+  const clavePantalla = claveDePantalla(ruta);
 
   // Al cambiar de pantalla (no al elegir una opción dentro de ella): arriba del todo, salvo
   // enlace profundo (un bloque del capítulo, una referencia) o vuelta atrás (se restaura).
@@ -973,11 +981,13 @@ export function Shell({
           className={`pantalla-in mx-auto max-w-5xl px-3 pb-24 pt-4 sm:px-5 lg:pb-10 lg:pt-6 ${ruta.seccion === "capitulo" ? "" : "2xl:max-w-7xl"}`}
         >
           {volver && ruta.seccion === "capitulo" && (
-            <div className="no-imprimir mb-3">
+            // 0.96.0 (16.ª ronda, senior): pegado arriba al bajar (el párrafo de destino quedaba a
+            // miles de px del botón): discreto, sin franja, solo el chip con una sombra.
+            <div className="volver-pegado no-imprimir pointer-events-none sticky top-16 z-20 mb-3 lg:top-3">
               <button
                 type="button"
                 onClick={() => window.history.back()}
-                className="chip focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                className="chip pointer-events-auto shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
                 <ChevronLeft size={15} aria-hidden="true" /> Volver a la consulta
                 <span className="font-normal text-slate-600">· {volver}</span>

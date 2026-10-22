@@ -41,6 +41,12 @@ let navegacionNueva = false;
 export const marcarNavegacionNueva = () => {
   navegacionNueva = true;
 };
+/* 0.96.0 (16.ª ronda, R3): un enlace que en vez de navegar vuelve atrás en el historial (la
+   pregunta frecuente → su lista) quita la marca que puso el clic: así la Shell restaura la
+   posición, como con el botón Atrás. */
+export const anularNavegacionNueva = () => {
+  navegacionNueva = false;
+};
 let ultimaNueva = true;
 /* La primera pantalla de la sesión (pestaña nueva, enlace compartido, recarga) también es una
    llegada nueva: no hay posición que restaurar y un enlace profundo debe llevar a su destino

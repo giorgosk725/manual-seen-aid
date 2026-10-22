@@ -12,7 +12,7 @@ import { DESTINOS, MAPA_CONSULTA } from "../nav";
 import { CATEGORIA_HEX, SISTEMA_HEX, TRAMO_HEX } from "../tokens";
 import { CORTO_CASILLA, CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
-import { ALGORITMO } from "../fichaAlgoritmo";
+import { tipoBajoNombre } from "../fichaAlgoritmo";
 
 const foco =
   "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500";
@@ -25,8 +25,11 @@ export function TarjetaPortada({
   hex,
   nivel = 3,
   grande = false,
+  ajustada = false,
   children,
 }: {
+  /* 0.96.0 (16.ª ronda, visual): a la altura de lo que lleva, no a la de su vecina. */
+  ajustada?: boolean;
   id: string;
   nivel?: 2 | 3;
   /* 0.94.0 (rediseño, fase 2): el bloque de los sistemas, con el título a 17 px (primer nivel). */
@@ -38,7 +41,10 @@ export function TarjetaPortada({
 }) {
   const Titulo = nivel === 2 ? "h2" : "h3";
   return (
-    <section aria-labelledby={id} className="tarjeta flex h-full min-w-0 flex-col overflow-hidden">
+    <section
+      aria-labelledby={id}
+      className={`tarjeta flex min-w-0 flex-col overflow-hidden ${ajustada ? "" : "h-full"}`}
+    >
       <header className={`flex items-center gap-2.5 px-4 ${grande ? "py-3" : "py-2.5"}`}>
         <Icono size={18} aria-hidden="true" className="shrink-0" style={{ color: hex.strong }} />
         {/* 0.92.0 (revisión de tarjetas, ★4): 15/700 como todo título de tarjeta (antes, 16). */}
@@ -134,19 +140,27 @@ function Sistemas() {
                     {CORTO_CASILLA[c]}
                   </span>
                   <span className="mt-1 hidden text-[13px] font-semibold leading-snug text-slate-600 sm:block">
-                    {ALGORITMO[c][0].v}
+                    {tipoBajoNombre(c, CORTO_CASILLA[c])}
                   </span>
                 </span>
               </a>
               {/* Desde la tablet, los accesos más usados de cada ficha (en el móvil, la ficha
-                  los tiene en sus pestañas). */}
-              <div className="separador hidden divide-x divide-[var(--linea-suave)] border-t sm:flex">
+                  los tiene en sus pestañas). 0.96.0 (16.ª ronda, adjunto): también Modos, en
+                  cuartos; con las cuatro tarjetas en una fila (2xl) o en la tablet estrecha, 2 × 2. */}
+              <div className="separador hidden border-t sm:grid sm:grid-cols-2 md:grid-cols-4 2xl:grid-cols-2 [&>a]:border-[var(--linea-suave)] [&>a:not(:first-child)]:border-l max-md:[&>a:nth-child(3)]:border-l-0 max-md:[&>a:nth-child(n+3)]:border-t 2xl:[&>a:nth-child(3)]:border-l-0 2xl:[&>a:nth-child(n+3)]:border-t">
                 <a
                   href={href("sistemas", id, "parametros")}
                   aria-label={`Parámetros de ${CORTO_SISTEMA[c]}`}
                   className={enlace}
                 >
                   Parámetros
+                </a>
+                <a
+                  href={href("sistemas", id, "modos")}
+                  aria-label={`Modos y funciones de ${CORTO_SISTEMA[c]}`}
+                  className={enlace}
+                >
+                  Modos
                 </a>
                 <a
                   href={href("consultar", "inicio", `calculadora:${SLUG_INICIO[c]}`)}
@@ -190,6 +204,7 @@ function Iniciacion() {
       titulo={b.titulo}
       icono={PlayCircle}
       hex={CATEGORIA_HEX.consultar}
+      ajustada
     >
       <Filas>
         <li>
@@ -363,7 +378,9 @@ export function MapaConsulta() {
           consulta (iniciación y situaciones, a la par); al final, la lectura y el paciente. */}
       <div className="grid gap-3 sm:gap-4">
         <Sistemas />
-        <div className="grid gap-3 md:grid-cols-2">
+        {/* 0.96.0 (16.ª ronda, visual): cada tarjeta a su altura (la de Iniciación, estirada a la de
+            Situaciones, dejaba 60 px en blanco al pie a 1366). */}
+        <div className="grid items-start gap-3 md:grid-cols-2">
           <Iniciacion />
           <Situaciones />
         </div>
