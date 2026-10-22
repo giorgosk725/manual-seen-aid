@@ -65,3 +65,6 @@ sustituido 9 minutos después por la 0.92.2 (09eaaab), que es su commit exacto. 
 | 2026-10-21 20:22 | main | 0.94.0 | 4ec14a19ed53 | index-tXD4PolN.js | 0.93.1 (783729571289) |
 | 2026-10-21 20:44 | main | 0.94.1 | a6852c066851 | index-ogOGtxld.js | 0.94.0 (4ec14a19ed53) |
 | 2026-10-21 20:53 | main | 0.95.0 | 4dd80dcfc6b2 | index-C3pKouH9.js | 0.94.1 (a6852c066851) |
+| 2026-10-22 05:30 | main | 0.96.0 | 3b5b554a29e3 | index-BpYbGkq_.js | 0.95.0 (4dd80dcfc6b2) |
+
+Nota (22-10-2026): la 0.96.0 se desplegó bien, pero la comprobación final de `npm run publicar` falló por el retraso de propagación (la web aún servía la 0.95.0); 20 s después servía la 0.96.0 (index-BpYbGkq_.js) y esta línea se anotó a mano.
