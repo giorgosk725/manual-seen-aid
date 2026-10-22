@@ -216,3 +216,17 @@ columna de Tandem primero; f51 y f60 con una continuación).
 | f101 | Omnipod 5              | Omnipod 5: ¿qué hacer si el pod se despega o falla?                               | t/07-educacion/b11/1, t/07-educacion/b11/4                                                     |
 | f102 | Omnipod 5              | Omnipod 5: ¿se puede usar en la gestación?                                        | T1/8, t/10-situaciones/b3/3                                                                    |
 | f103 | Omnipod 5              | Omnipod 5: ¿qué hacer con una comida grasa?                                       | T4/5                                                                                           |
+
+### Revisión del 22-10-2026 (0.99.0)
+
+Decisión del autor en la sesión del 22-10-2026 sobre la propuesta de la 17.ª ronda de auditorías
+(R3, P3), registrada con `npm run aprobar:frecuentes` (src/frecuentes.aprobadas.json):
+
+- **f83** (MiniMed 780G): solo la enfermedad leve («¿qué hacer ante una enfermedad leve?»,
+  T4/3). Antes juntaba enfermedad leve y comida grasa y esta se quedaba en «sin función
+  específica».
+- **f104** (nueva, MiniMed 780G): «¿qué hacer con una comida grasa?»: T4/5 y el apartado 9
+  (b6, frases 0 y 2: ascenso a las 3–5 h; individualizar), los mismos pasajes que la ficha.
+- **f103** (Omnipod 5): añade esos dos pasajes del apartado 9.
+
+Solo pasajes literales que ya estaban en la app; ningún texto nuevo.

@@ -38,7 +38,7 @@ import {
   sistemaPorId,
   type Sistema,
 } from "../ampliacion";
-import { elegirRuta, href, fueNavegacionNueva } from "../rutas";
+import { elegirRuta, href, fueNavegacionNueva, navegar } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, ColofonImpreso, Foldable } from "../ui";
 import { pestanaALaVista } from "../disposicion";
 import { AbrirEnVisor } from "../componentes/Visor";
@@ -1086,6 +1086,16 @@ function BarraSistemas({
       setMarcados(nuevos);
       return;
     }
+    // 0.99.0 (17.ª ronda, R1; decisión del autor del 22-10-2026): en la ficha de un sistema, otro
+    // sistema abre su ficha en la misma pestaña (antes se sumaba a una comparación y hacían falta
+    // cuatro toques); comparar es la acción de al lado («Comparar»).
+    // Salvo justo después de quitar uno de una comparación («cambiar uno por otro», 0.89.1): ahí,
+    // el que se marca vuelve a la comparación.
+    const recienDeComparacion = !!deComparacion && Date.now() - deComparacion.t < 120000;
+    if (ids.length === 1 && id !== ids[0] && !recienDeComparacion) {
+      navegar("sistemas", id, completa ? "completa" : (sec ?? "funciona"));
+      return;
+    }
     const nuevos = ids.includes(id)
       ? ids.filter((x) => x !== id)
       : IDS_SISTEMA.filter((x) => ids.includes(x) || x === id);
@@ -1223,7 +1233,7 @@ function BarraSistemas({
             // El foco, a la primera casilla (2.4.3: el botón desaparece al abrirse), sin desplazar.
             requestAnimationFrame(() =>
               barra.current
-                ?.querySelector<HTMLElement>('[role="group"] button')
+                ?.querySelector<HTMLElement>('[role="group"] button, [role="radiogroup"] button')
                 ?.focus({ preventScroll: true }),
             );
           }}
@@ -1245,6 +1255,8 @@ function BarraSistemas({
       ) : (
         <CasillasSistema
           etiqueta="Sistemas"
+          // En la ficha, uno solo (botón de opción): tocar otro cambia de ficha.
+          unico={ids.length === 1}
           seleccion={(entrada ? marcados : ids).map((id) => columnaDeSistema(id as SistemaId))}
           onToggle={(c) => alternar(IDS_SISTEMA[c])}
           extra={
@@ -1286,10 +1298,16 @@ function BarraSistemas({
               <button
                 type="button"
                 aria-pressed={ids.length === 0}
-                onClick={() => window.location.replace(rutaCon([]))}
+                onClick={() =>
+                  ids.length === 1
+                    ? navegar("sistemas", "todos", !sec || sec === "funciona" ? "esencial" : sec)
+                    : window.location.replace(rutaCon([]))
+                }
                 className="chip tap-44 shrink-0 whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
-                Los cuatro
+                {/* 0.99.0: en la ficha, la acción aparte de comparar (los cuatro, en la misma
+                    sección); en la comparación, «Los cuatro». */}
+                {ids.length === 1 ? "Comparar" : "Los cuatro"}
               </button>
             )
           }

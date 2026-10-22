@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-22",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — decimoséptima ronda de auditorías de uso`,
+    titulo: `Complemento interactivo ${VERSION_APP} — decisiones pendientes de la decimoséptima ronda`,
+    detalle: [
+      "Ficha de un sistema: tocar otro sistema abre su ficha en la misma pestaña (Atrás vuelve); «Comparar», al lado, abre la comparación de los cuatro. Quitar uno de una comparación y marcar otro sigue cambiando uno por otro.",
+      "Programación inicial: sin la fila de funciones temporales cuando repite la de ejercicio (MiniMed 780G y Omnipod 5).",
+      "Preguntas frecuentes: MiniMed 780G separa enfermedad leve y comida grasa (pregunta nueva); la de comida grasa de MiniMed 780G y la de Omnipod 5 incluyen el pasaje del apartado 9 (3–5 h; individualizar).",
+      "Bibliografía: las referencias del capítulo y, aparte, las fuentes complementarias que cita el complemento.",
+    ],
+  },
+  {
+    fecha: "2026-10-22",
+    ambito: "app",
+    titulo: "Complemento interactivo 0.98.0 — decimoséptima ronda de auditorías de uso",
     detalle: [
       "Tablas 1 y 3: las series de cifras («110, 120, 130, 140 o 150 mg/dl») se parten entre cifras y ya no se recortan. La hoja de comprobación sale en una cara también con Ctrl+P.",
       "Navegación: en Situaciones, Atrás desde una situación vuelve a la lista (donde se dejó) y la barra la abre desde arriba; al llegar a una fila o un párrafo, el foco va a él, y con Atrás vuelve al enlace de origen; «Volver a la consulta» también al abrir una tabla; en Buscar, Atrás tras elegir una sugerencia vuelve a lo escrito.",

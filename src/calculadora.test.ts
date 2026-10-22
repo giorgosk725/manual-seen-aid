@@ -248,3 +248,20 @@ describe("calculadora de inicio: auditoría de usuarios (19-10-2026)", () => {
     expect(papelEnAutomatico("ia", 1)).toBe(TABLAS.T3.filas[4].celdas[1]);
   });
 });
+
+describe("0.99.0 · modos sin repetir la fila de ejercicio", () => {
+  it("780G y Omnipod 5 sin «Funciones temporales»; CamAPS FX y Control-IQ, con ella", () => {
+    const filas = (c: number) => modosDe(c).map((m) => m.situacion);
+    expect(filas(0)).not.toContain("Funciones temporales");
+    expect(filas(3)).not.toContain("Funciones temporales");
+    expect(filas(2)).toContain("Funciones temporales");
+    expect(filas(1)).toContain("Objetivo y funciones temporales");
+    // Lo quitado está en la fila de ejercicio.
+    expect(modosDe(0).find((m) => m.situacion.startsWith("Ejercicio"))!.texto).toMatch(
+      /^Objetivo temporal 150 mg\/dl/,
+    );
+    expect(modosDe(3).find((m) => m.situacion.startsWith("Ejercicio"))!.texto).toMatch(
+      /^Función Actividad/,
+    );
+  });
+});

@@ -12,6 +12,6 @@ for (const [desde, vuelta] of [
     const barra = page.locator(".barra-pegada");
     await barra.getByRole("button", { name: /Control-IQ/, pressed: true }).click();
     await expect(page).toHaveURL(/#\/sistemas\/camaps/);
-    await barra.getByRole("button", { name: /MiniMed/ }).click();
+    await barra.getByRole("radio", { name: /MiniMed/ }).click();
     await expect(page).toHaveURL(vuelta);
   });

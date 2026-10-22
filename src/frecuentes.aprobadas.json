@@ -745,6 +745,12 @@
       "version": "0.51.0",
       "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
       "huella": "lkjvu91uiow5v"
+    },
+    {
+      "fecha": "2026-10-22",
+      "version": "0.99.0",
+      "evidencia": "Decisión del autor en la sesión del 22-10-2026 («me fío de ti haz los cambios») sobre la propuesta de la 17.ª ronda de auditorías (R3, P3): f83 solo enfermedad leve; f104 nueva, comida grasa en MiniMed 780G; f103 con el pasaje del apartado 9 (pp. 14). Pasajes literales ya existentes, sin texto nuevo.",
+      "huella": "7l04o01nn3yxu"
     }
   ],
   "f84": [
@@ -929,6 +935,20 @@
       "version": "0.51.0",
       "evidencia": "Revisión pregunta por pregunta delegada por el autor el 13-10-2026 (versión 0.51.0); informe en docs/FRECUENTES.md",
       "huella": "r5njoi1eye56o"
+    },
+    {
+      "fecha": "2026-10-22",
+      "version": "0.99.0",
+      "evidencia": "Decisión del autor en la sesión del 22-10-2026 («me fío de ti haz los cambios») sobre la propuesta de la 17.ª ronda de auditorías (R3, P3): f83 solo enfermedad leve; f104 nueva, comida grasa en MiniMed 780G; f103 con el pasaje del apartado 9 (pp. 14). Pasajes literales ya existentes, sin texto nuevo.",
+      "huella": "61bhc0zciin6"
+    }
+  ],
+  "f104": [
+    {
+      "fecha": "2026-10-22",
+      "version": "0.99.0",
+      "evidencia": "Decisión del autor en la sesión del 22-10-2026 («me fío de ti haz los cambios») sobre la propuesta de la 17.ª ronda de auditorías (R3, P3): f83 solo enfermedad leve; f104 nueva, comida grasa en MiniMed 780G; f103 con el pasaje del apartado 9 (pp. 14). Pasajes literales ya existentes, sin texto nuevo.",
+      "huella": "1pp68uzc2173t"
     }
   ]
 }

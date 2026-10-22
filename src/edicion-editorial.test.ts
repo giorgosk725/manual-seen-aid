@@ -129,12 +129,14 @@ describe("A03 · privacidad", () => {
 
 describe("A04 · circuito de aprobación de las preguntas frecuentes", () => {
   const pendientes = FRECUENTES_TODAS.filter((f) => f.revision.estado !== "aprobada");
-  it("las 103 aprobadas, cada una con fecha y registro de su revisión", () => {
-    expect(FRECUENTES.map((f) => f.id)).toEqual(
-      Array.from({ length: 103 }, (_, i) => `f${String(i + 1).padStart(2, "0")}`),
-    );
+  // 0.99.0: f104 (comida grasa en MiniMed 780G), junto a f83 en su tema; f83 y f103 revisadas el
+  // 22-10-2026 por decisión del autor.
+  it("las 104 aprobadas, cada una con fecha y registro de su revisión", () => {
+    expect(
+      FRECUENTES.map((f) => f.id).sort((a, b) => Number(a.slice(1)) - Number(b.slice(1))),
+    ).toEqual(Array.from({ length: 104 }, (_, i) => `f${String(i + 1).padStart(2, "0")}`));
     for (const f of FRECUENTES) {
-      expect(f.revision.fecha, f.id).toMatch(/^2026-10-(08|11|13|14|15)$/);
+      expect(f.revision.fecha, f.id).toMatch(/^2026-10-(08|11|13|14|15|22)$/);
       expect(f.revision.registro.length, f.id).toBeGreaterThan(20);
     }
     // Solo las aprobadas salen: FRECUENTES es exactamente el filtro de FRECUENTES_TODAS.

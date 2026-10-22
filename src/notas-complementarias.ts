@@ -127,3 +127,17 @@ export const TANDEM_GESTACION: Complemento = {
   fuente:
     "Novalab (distribuidor de Tandem) · «Recomendaciones en el manejo de Control-IQ durante el embarazo», folleto MAT-2075_1, V4",
 };
+
+/* 0.99.0 (17.ª ronda, adjunto; decisión del autor del 22-10-2026): las fuentes que no son del
+   capítulo y que la app cita, en Bibliografía, aparte de las del capítulo. Mismo texto de cita que
+   donde se usan (sin DOI: no consta en el proyecto). */
+export const FUENTES_COMPLEMENTARIAS: { cita: string; uso: string }[] = [
+  {
+    cita: "Brown SA, et al. Diabetes Care 2021;44(7):1630-40.",
+    uso: "Nota sobre la basal adaptativa de Omnipod 5 (SmartAdjust), junto a la Tabla 1.",
+  },
+  {
+    cita: TANDEM_GESTACION.fuente + ".",
+    uso: "Recomendaciones complementarias de Control-IQ en la gestación (Situaciones · Gestación).",
+  },
+];

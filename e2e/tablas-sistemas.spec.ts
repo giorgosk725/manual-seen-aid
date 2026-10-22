@@ -50,7 +50,7 @@ test.describe("Tablas y sistemas", () => {
   // 0.70.0: la ficha es una sola página; la sección de la ruta es adónde se salta.
   // 0.70.0: la ficha es una sola página; la sección de la ruta es adónde se salta.
   // 0.73.0 (auditoría de uso): cada pestaña enseña solo su sección.
-  test("la ficha va por pestañas; el selector añade otro (comparación) o lo quita", async ({
+  test("la ficha va por pestañas; el selector cambia de ficha y «Comparar» compara", async ({
     page,
   }) => {
     await page.goto("/#/sistemas/op5/parametros");
@@ -61,18 +61,18 @@ test.describe("Tablas y sistemas", () => {
     // Arriba de la ficha, el selector está abierto.
     await page.goto("/#/sistemas/op5");
     await page.evaluate(() => window.scrollTo(0, 0));
-    const grupo = page.getByRole("group", { name: "Sistemas" });
-    await grupo.getByRole("button", { name: /CamAPS/ }).click();
-    await expect(page).toHaveURL(/#\/sistemas\/camaps\+op5\/esencial$/);
-    await expect(grupo.getByRole("button", { name: /CamAPS/ })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
-    await grupo.getByRole("button", { name: /Omnipod 5/ }).click();
-    await expect(page).toHaveURL(/#\/sistemas\/camaps\/esencial$/);
-    await expect(
-      page.getByRole("heading", { level: 2, name: /^Indicación y material · myLoop CamAPS/ }),
-    ).toBeVisible();
+    // 0.99.0 (17.ª ronda, R1): otro sistema abre su ficha en la misma pestaña; Atrás vuelve.
+    const ficha = page.getByRole("radiogroup", { name: "Sistemas" });
+    await ficha.getByRole("radio", { name: /CamAPS/ }).click();
+    await expect(page).toHaveURL(/#\/sistemas\/camaps\/funciona$/);
+    await page.goBack();
+    await expect(page).toHaveURL(/#\/sistemas\/op5$/);
+    // «Comparar»: los cuatro, desde donde se compara.
+    await page
+      .getByRole("radiogroup", { name: "Sistemas" })
+      .getByRole("button", { name: "Comparar" })
+      .click();
+    await expect(page).toHaveURL(/#\/sistemas\/todos\/esencial$/);
   });
 
   test("la ficha abre por «Cómo funciona»; «completa» enseña todo", async ({ page }) => {

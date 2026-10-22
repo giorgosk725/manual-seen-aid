@@ -879,9 +879,20 @@ export const TODAS: Frecuente[] = [
   {
     id: "f83",
     tema: "MiniMed 780G",
-    pregunta: "MiniMed 780G: ¿qué hacer ante enfermedad leve o una comida grasa?",
-    variantes: ["780G comida grasa", "MiniMed enfermedad leve"],
-    pasajes: ["T4/3", "T4/5"],
+    // 0.99.0 (17.ª ronda, R3; decisión del autor del 22-10-2026): la enfermedad leve, sola; la
+    // comida grasa, en f104 (juntas, la de la comida se quedaba en «sin función específica»).
+    pregunta: "MiniMed 780G: ¿qué hacer ante una enfermedad leve?",
+    variantes: ["MiniMed enfermedad leve", "780G enfermedad leve"],
+    pasajes: ["T4/3"],
+    sistema: 0,
+  },
+  {
+    id: "f104",
+    tema: "MiniMed 780G",
+    pregunta: "MiniMed 780G: ¿qué hacer con una comida grasa?",
+    variantes: ["780G comida grasa", "MiniMed comida rica en grasa"],
+    // La fila de la Tabla 4 y el pasaje del apartado 9 que usa la ficha (3–5 h; individualizar).
+    pasajes: ["T4/5", "t/09-descarga/b6/0", "t/09-descarga/b6/2"],
     sistema: 0,
   },
   {
@@ -1047,7 +1058,8 @@ export const TODAS: Frecuente[] = [
     tema: "Omnipod 5",
     pregunta: "Omnipod 5: ¿qué hacer con una comida grasa?",
     variantes: ["bolo extendido Omnipod", "Omnipod comida grasa"],
-    pasajes: ["T4/5"],
+    // 0.99.0 (17.ª ronda, R3; decisión del autor del 22-10-2026): con el pasaje del apartado 9.
+    pasajes: ["T4/5", "t/09-descarga/b6/0", "t/09-descarga/b6/2"],
     sistema: 3,
   },
 ];

@@ -1,3 +1,4 @@
+import { FUENTES_COMPLEMENTARIAS } from "../notas-complementarias";
 /* Buscar, Bibliografía, Sobre esta app, Autoevaluación y Preguntas frecuentes. */
 import { VeaseTambien } from "../componentes/VeaseTambien";
 import { recordarSistema } from "../sistemaReciente";
@@ -519,6 +520,9 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
   return (
     <div>
       <CabeceraEditorial titulo="Bibliografía" hex={CATEGORIA_HEX.confiar} level={1} />
+      {/* 0.99.0 (17.ª ronda, adjunto): las del capítulo y, aparte, las complementarias que cita la
+          app (antes no constaban aquí). */}
+      <h2 className="titulo-tarjeta mb-2">Del capítulo</h2>
       <ol className="space-y-2">
         {BIBLIOGRAFIA.map((r) => (
           <Revelar
@@ -566,6 +570,15 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
           </Revelar>
         ))}
       </ol>
+      <h2 className="titulo-tarjeta mb-2 mt-6">Fuentes complementarias (no son del capítulo)</h2>
+      <ul className="space-y-2">
+        {FUENTES_COMPLEMENTARIAS.map((f) => (
+          <li key={f.cita} className="tarjeta p-3">
+            <p className="text-sm text-slate-800">{f.cita}</p>
+            <p className="mt-1 text-[13px] text-slate-600">{f.uso}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

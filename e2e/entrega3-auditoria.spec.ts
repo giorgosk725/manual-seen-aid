@@ -15,11 +15,13 @@ test.describe("Entrega 3 (0.34.0)", () => {
     // 0.70.0: la ficha es una página; arriba del todo, la barra está abierta.
     await page.goto("/#/sistemas/op5");
     await page.evaluate(() => window.scrollTo(0, 0));
-    await expect(grupo.getByRole("button", { name: "Los cuatro" })).toHaveAttribute(
+    // 0.99.0: en la ficha, el selector es de uno (radiogroup) y la acción aparte es «Comparar».
+    const ficha = page.getByRole("radiogroup", { name: "Sistemas" });
+    await expect(ficha.getByRole("button", { name: "Comparar" })).toHaveAttribute(
       "aria-pressed",
       "false",
     );
-    await grupo.getByRole("button", { name: "Los cuatro" }).click();
+    await ficha.getByRole("button", { name: "Comparar" }).click();
     await expect(page).toHaveURL(/#\/sistemas\/todos\/esencial$/);
   });
 

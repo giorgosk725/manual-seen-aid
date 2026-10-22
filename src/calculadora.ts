@@ -190,11 +190,28 @@ export function modosDe(
     c,
   );
   const temporales = limpia(objetivo);
+  // 0.99.0 (17.ª ronda, senior y R5; decisión del autor del 22-10-2026): sin la fila de la Tabla 3
+  // si solo nombra funciones que la fila de ejercicio (Tabla 4) ya describe enteras («Objetivo
+  // temporal de 150 mg/dl…» en MiniMed 780G, «Función Actividad…» en Omnipod 5). Con algo más
+  // (Boost en CamAPS FX, el objetivo fijo de Control-IQ), se queda.
+  const nombreDe = (t: string) =>
+    /^(Objetivo temporal|Función \p{L}+|Modo \p{L}+|Boost|Ease-off)/u.exec(t)?.[1];
+  const trozosTemporales = temporales
+    .split("\n")
+    .map((x) => x.trim())
+    .filter(Boolean);
+  const repiteEjercicio =
+    temporales !== objetivo &&
+    trozosTemporales.length > 0 &&
+    trozosTemporales.every((x) => {
+      const n = nombreDe(x);
+      return !!n && t4(0).includes(n);
+    });
   return [
     {
       situacion:
         temporales === objetivo ? "Objetivo y funciones temporales" : "Funciones temporales",
-      texto: temporales,
+      texto: repiteEjercicio ? "" : temporales,
       tabla: "T3" as const,
     },
     { situacion: "Ejercicio aeróbico planificado", texto: t4(0), tabla: "T4" as const },
