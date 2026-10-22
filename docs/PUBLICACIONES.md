@@ -77,3 +77,4 @@ Nota (22-10-2026): la 0.96.0 se desplegó bien, pero la comprobación final de `
 | 2026-10-22 13:34 | main | 1.0.3 | fa8361062e09 | index-BxVQPBHr.js | 1.0.2 (f42d3bc62d88) |
 | 2026-10-22 14:10 | main | 1.0.4 | 1dd04ef16577 | index-BHDWAdoW.js | 1.0.3 (fa8361062e09) |
 | 2026-10-22 15:22 | main | 1.0.5 | aad60c60d2e1 | index-CH4zSR1F.js | 1.0.4 (1dd04ef16577) |
+| 2026-10-22 16:46 | main | 1.0.6 | a9bf65f89854 | index-_FgKy273.js | 1.0.5 (aad60c60d2e1) |
