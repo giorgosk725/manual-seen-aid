@@ -35,7 +35,10 @@ export function FuentePie({
   nota = "",
   className = "mt-2",
   onIr,
+  rotulo = "Fuente:",
 }: {
+  /* 0.97.1: «En el capítulo:» en las fuentes de un dato (FichaOperativa). */
+  rotulo?: string;
   /* Al seguir una fuente (p. ej. marcar el paso del guion en la ruta). */
   onIr?: () => void;
   fuentes: Fuente[];
@@ -75,7 +78,7 @@ export function FuentePie({
   if (juntos)
     return (
       <p className={`fuente-pie ${className}`}>
-        Fuente:{" "}
+        {rotulo}{" "}
         {grupos.map((g, k) => (
           <span key={g.base + k}>
             {k > 0 && "\u00a0· "}
@@ -112,7 +115,7 @@ export function FuentePie({
     );
   return (
     <p className={`fuente-pie ${className}`}>
-      Fuente:{" "}
+      {rotulo}{" "}
       {unicas.map((f, k) => (
         <span key={f.texto}>
           {/* 0.82.1 (sexta ronda, visual): espacio duro antes del punto: si la línea se parte, el

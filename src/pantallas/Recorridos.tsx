@@ -29,7 +29,16 @@ import { GUIA_POR_SISTEMA, TABLA4_POR_SISTEMA } from "../porSistema";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { kDe, siglasPorPiezas, type Pieza } from "../inicio";
 
-import { elegirRuta, fueNavegacionNueva, href } from "../rutas";
+import { anularNavegacionNueva, elegirRuta, fueNavegacionNueva, href, navegar } from "../rutas";
+
+/* Abre una situación desde la lista con su propia entrada en el historial, sin la marca de
+   navegación nueva (la pantalla es la misma: la Shell no debe moverla). */
+let posicionLista = 0;
+const apilarSituacion = (seccion: string, sub?: string, detalle?: string) => {
+  posicionLista = window.scrollY;
+  navegar(seccion, sub, detalle);
+  anularNavegacionNueva();
+};
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
 import { BotonImprimir, CabeceraEditorial, ColofonImpreso } from "../ui";
@@ -43,7 +52,7 @@ import { FuentePie } from "../componentes/FuentePie";
 import { VeaseTambien } from "../componentes/VeaseTambien";
 import { paginasPorApartado } from "../paginasApartado";
 import { paginasDe } from "../paginas";
-import { fuentesDePiezas } from "../fuentesPiezas";
+import { fuentesDePieza, fuentesDePiezas } from "../fuentesPiezas";
 import { CON_CASOS, CON_INTERPRETACIONES } from "../edicion";
 
 const hex = CATEGORIA_HEX.consultar;
@@ -528,7 +537,10 @@ function ListaSituaciones({
                   type="button"
                   aria-pressed={on}
                   onClick={() =>
-                    elegirRuta(
+                    // 0.97.1 (17.ª ronda, R1): de la lista a una situación, una entrada nueva del
+                    // historial (Atrás vuelve a la lista; antes, a la pantalla anterior a ella);
+                    // de una situación a otra, sin apilar.
+                    (sit ? elegirRuta : apilarSituacion)(
                       "consultar",
                       "situacion",
                       on ? undefined : s.id + (sistema ? ":" + sistema : ""),
@@ -595,6 +607,14 @@ export function SituacionSistema({
   };
   // Elegida otra situación (sobre todo una de las últimas de la lista), al principio de su texto.
   useSubirAlElegir(situacion ?? "", "detalle-situacion");
+  // 0.97.1 (17.ª ronda, R1): con Atrás desde una situación, la lista donde se dejó (desde la barra
+  // o el lateral, la Shell la abre arriba).
+  const situacionPrevia = useRef(situacion);
+  useEffect(() => {
+    const antes = situacionPrevia.current;
+    situacionPrevia.current = situacion;
+    if (antes && !situacion && !fueNavegacionNueva()) window.scrollTo({ top: posicionLista });
+  }, [situacion]);
   const sisIdx = sistema ? SIS_IDS.indexOf(sistema) : -1;
   // 0.87.1 (undécima ronda, guardia): el sistema de la situación, el último consultado (la
   // Figura 3 ofrece su plan de seguridad).
@@ -746,6 +766,37 @@ export function SituacionSistema({
                     <p className="mb-2 text-xs text-slate-600">
                       Sistema elegido: el último consultado ({CORTO_SISTEMA[sistemaReciente()!]}).
                     </p>
+                  )}
+                  {/* 0.97.1 (17.ª ronda, senior): sin sistema elegido, qué sistemas tienen
+                      autorización y evidencia en la gestación (Tabla 1, literal): antes había que
+                      pulsar los cuatro. */}
+                  {guia.id === "gestacion" && sisIdx < 0 && sistemaReciente() === undefined && (
+                    <div className="mb-3">
+                      <h2 className="titulo-tarjeta mb-2">{TABLAS.T1.filas[8].etiqueta}</h2>
+                      <dl className="grid gap-2 sm:grid-cols-2">
+                        {CORTO_SISTEMA.map((n, c) => (
+                          <div
+                            key={c}
+                            className="casilla casilla-sistema px-3 py-2"
+                            style={{ ["--sis" as string]: SISTEMA_HEX[c].strong }}
+                          >
+                            <dt
+                              className="rotulo-sistema text-[13px]"
+                              style={{ color: SISTEMA_HEX[c].ink }}
+                            >
+                              {n}
+                            </dt>
+                            <dd className="mt-0.5 whitespace-pre-line text-sm text-slate-800">
+                              <Lineas>{TABLAS.T1.filas[8].celdas[c]}</Lineas>
+                            </dd>
+                          </div>
+                        ))}
+                      </dl>
+                      <FuentePie
+                        className="mt-2"
+                        fuentes={fuentesDePieza({ t: "casilla", tabla: "T1", fila: 8 })}
+                      />
+                    </div>
                   )}
                   <BloquesPorSistema
                     key={guia.id}

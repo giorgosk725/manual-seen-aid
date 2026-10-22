@@ -77,7 +77,9 @@ function Paso({
       {/* 0.72.0: cabecera de paso ligera (círculo burdeos); el foco visual, en los resultados. */}
       <div className="separador flex items-center gap-2 border-b pb-1.5">
         <h2 id={`calc-paso-${n}`} tabIndex={-1} className="titulo-seccion flex items-center gap-2">
-          <span className="num num-on">{n}</span>
+          {/* 0.97.1 (17.ª ronda, visual): los números de paso, neutros (todos a la vista: ninguno
+            es «el activo»; en burdeos se sumaban al resto del énfasis). */}
+          <span className="num">{n}</span>
           {titulo}
         </h2>
         {accion && <span className="no-imprimir ml-auto shrink-0">{accion}</span>}
@@ -170,7 +172,7 @@ function Marca({ modificado, onRestablecer }: { modificado: boolean; onRestablec
       )}
     </span>
   ) : (
-    <span className="text-xs font-normal text-slate-500">punto de partida</span>
+    <span className="text-[13px] font-normal text-slate-600">punto de partida</span>
   );
 }
 
@@ -199,7 +201,7 @@ function Campo({
     <div className="flex flex-col">
       <label htmlFor={id} className="mb-1 block flex-1 text-sm font-semibold text-slate-800">
         {etiqueta}
-        {ayuda && <span className="block text-xs font-normal text-slate-500">{ayuda}</span>}
+        {ayuda && <span className="block text-[13px] font-normal text-slate-600">{ayuda}</span>}
       </label>
       <div className="flex items-center gap-2">
         <input
@@ -465,7 +467,8 @@ export function CalculadoraInicio({
 
   return (
     <div
-      className="space-y-5"
+      // 0.97.1 (17.ª ronda, visual): «formulario-calc», lo elegido sin relleno burdeos (index.css).
+      className="formulario-calc space-y-5"
       onFocus={(e) => setEditando(e.target.matches("input, select, textarea"))}
       onBlur={() => setEditando(false)}
     >
@@ -493,7 +496,7 @@ export function CalculadoraInicio({
         aria-label="Pasos de la calculadora"
         className="no-imprimir -my-2 flex flex-wrap items-center gap-x-2 gap-y-0"
       >
-        <span className="text-[13px] text-slate-500">Ir a:</span>
+        <span className="text-[13px] text-slate-600">Ir a:</span>
         {(
           [
             [3, "Datos"],
@@ -501,16 +504,18 @@ export function CalculadoraInicio({
             [5, "Programación"],
             ...(sis !== undefined ? ([[6, "Recambios"]] as const) : []),
           ] as const
-        ).map(([n, t], k) => (
+        ).map(([n, t], k, todos) => (
+          // 0.97.1 (17.ª ronda, visual y R5): el «·» detrás de cada uno (al partirse la fila, no
+          // empieza línea).
           <span key={n} className="inline-flex items-center gap-x-2">
-            {k > 0 && (
+            <button type="button" onClick={() => irAPaso(n)} className={botonIr}>
+              {t}
+            </button>
+            {k < todos.length - 1 && (
               <span aria-hidden="true" className="text-slate-300">
                 ·
               </span>
             )}
-            <button type="button" onClick={() => irAPaso(n)} className={botonIr}>
-              {t}
-            </button>
           </span>
         ))}
       </nav>
@@ -940,7 +945,7 @@ export function CalculadoraInicio({
                 Las reglas se aplican a la DTD de inicio, la misma con la que se calcula la basal.
               </p>
             )}
-            <p className="text-xs text-slate-500">
+            <p className="text-[13px] text-slate-600">
               Solo se comparan la DTD y el peso con la indicación del sistema; la edad, la
               gestación, la variante del sistema y la experiencia previa, no.
             </p>
@@ -996,7 +1001,7 @@ export function CalculadoraInicio({
               claves={gruposDeProgramar(sis).automatico}
               sis={sis}
               valorDe={valorDe}
-              color={h!.strong}
+              color={h!.ink}
               destacado
             />
             <div className="separador border-t">
@@ -1059,7 +1064,15 @@ export function CalculadoraInicio({
           a la vista, solo los sets de infusión (petición del responsable del 14-10-2026) y los
           recambios del plan de seguridad. */}
       {sis !== undefined && (
-        <Paso n={6} titulo={`Sets de infusión y recambios de ${CORTOS[sis]}`}>
+        <Paso
+          n={6}
+          titulo={
+            // 0.97.1 (17.ª ronda, senior): Omnipod 5 no lleva set de infusión.
+            ORDEN_SISTEMAS[sis] === "op5"
+              ? `Recambios de ${CORTOS[sis]}`
+              : `Sets de infusión y recambios de ${CORTOS[sis]}`
+          }
+        >
           <div className="space-y-2">
             <SetsDeInfusion sis={sis} />
             <p className="text-sm text-slate-900">
@@ -1083,8 +1096,8 @@ export function CalculadoraInicio({
         <p>{REGLAS.partida}</p>
         <p>
           Ayuda de cálculo orientativa: aplica a los datos introducidos las reglas del capítulo y
-          unos puntos de partida decididos por el responsable del complemento; la pauta la decide el
-          profesional. Nada de lo escrito se guarda ni se envía.
+          unos puntos de partida propios del complemento (marcados como «punto de partida»); la
+          pauta la decide el profesional. Nada de lo escrito se guarda ni se envía.
         </p>
       </div>
       <FuentePie fuentes={fuentes} />

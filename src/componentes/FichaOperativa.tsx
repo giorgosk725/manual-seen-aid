@@ -3,7 +3,7 @@
    literal del capítulo. Dos formas: casillas (datos cortos, en rejilla) y filas (parámetros y
    modos, con el rótulo a la izquierda). */
 import { ArrowRight, BookOpen } from "lucide-react";
-import { Fragment, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { FuentePie } from "./FuentePie";
 import { SinCortes } from "./SinCortes";
 import {
@@ -23,28 +23,32 @@ const SenalLiteral = () => (
   <BookOpen
     size={12}
     aria-hidden="true"
-    className="ml-1 inline-block shrink-0 align-[-1px] text-slate-400 print:hidden"
+    className="ml-1 inline-block shrink-0 align-[-1px] text-slate-500 print:hidden"
   />
 );
+/* 0.97.1 (17.ª ronda, adjunto y visual): el libro, unido a la última palabra del rótulo (solo en
+   su línea parecía otro elemento). */
+function RotuloConSenal({ t }: { t: string }) {
+  const i = t.lastIndexOf(" ");
+  return (
+    <>
+      {t.slice(0, i + 1)}
+      <span className="whitespace-nowrap">
+        {t.slice(i + 1)}
+        <SenalLiteral />
+      </span>
+    </>
+  );
+}
 
 /* 0.96.1 (revisión de Codex, V95-11): un dato de varios sitios del capítulo, con cada uno a mano
    (el rótulo lleva al primero). En papel, la fuente al pie de la tarjeta. */
 function EnElCapitulo({ c, d }: { c: number; d: Dato }) {
   const sitios = literalesDe(d.f, c);
   if (!sitios.length) return null;
-  return (
-    <span className="fuente-pie mt-1 block print:hidden">
-      En el capítulo:{" "}
-      {sitios.map((s, k) => (
-        <Fragment key={s.ruta}>
-          {k > 0 && "\u00a0· "}
-          <a href={s.ruta} className="tap-44">
-            <span>{s.texto}</span>
-          </a>
-        </Fragment>
-      ))}
-    </span>
-  );
+  // 0.97.1 (17.ª ronda, adjunto): con el orden y la agrupación de la fuente al pie («Apartado 9,
+  // p. 14 (Hipoglucemia nocturna; Hiperglucemia matutina)»).
+  return <FuentePie rotulo="En el capítulo:" fuentes={sitios} className="mt-1 print:hidden" />;
 }
 
 /* La variante, siempre igual: la insignia a la izquierda y su texto al lado, aunque ocupe dos
@@ -129,8 +133,7 @@ export function CasillasDatos({
                   className="tap-44 inline-block min-h-6 py-0.5 underline decoration-slate-400 decoration-dotted decoration-1 underline-offset-4 hover:decoration-solid hover:decoration-slate-700"
                   title="Texto del capítulo"
                 >
-                  {d.r}
-                  <SenalLiteral />
+                  <RotuloConSenal t={d.r} />
                 </a>
               ) : (
                 d.r
@@ -271,8 +274,7 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                       className="tap-44 inline-block min-h-6 py-0.5 text-[15px] font-semibold leading-snug text-slate-900 underline decoration-slate-300 decoration-dotted decoration-1 underline-offset-4 hover:decoration-solid hover:decoration-slate-700"
                       title="Texto del capítulo"
                     >
-                      {d.r}
-                      <SenalLiteral />
+                      <RotuloConSenal t={d.r} />
                     </a>
                   ) : (
                     <span className="text-[15px] font-semibold leading-snug text-slate-900">

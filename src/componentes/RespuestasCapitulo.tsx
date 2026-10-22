@@ -477,7 +477,12 @@ function Tarjeta({
           }: ${r.fuente.replace(/^(Tabla \d+)\..*$/s, "$1")}, ${paginas(r)}`}
           className="inline-flex min-h-11 items-center gap-1 text-[13px] font-semibold text-slate-600 hover:underline sm:min-h-8"
         >
-          {r.fuente.replace(/^(Tabla \d+)\..*$/s, "$1")}, {paginas(r)}
+          {/* 0.97.1 (17.ª ronda, visual): con el ámbito ya encima del pasaje, al pie solo el
+              apartado y la página («Apartado 10, p. 18»). */}
+          {!titulo && ambitoDe(r.fuente)
+            ? r.fuente.replace(/ · .*$/s, "")
+            : r.fuente.replace(/^(Tabla \d+)\..*$/s, "$1")}
+          , {paginas(r)}
           {/* 0.83.1 (séptima ronda, R3): el rótulo dice adónde lleva (una casilla de la Tabla 4
               lleva a su situación, no a la ficha). */}
           {r.tipo === "tabla" && casilla && !ruta.includes("/situacion/")

@@ -118,6 +118,24 @@ export function Buscar({ inicial }: { inicial?: string }) {
   }, [inicial]);
   useEffect(() => alCambiarConsulta(() => setQ(consultaBuscar())), []);
   useEffect(() => ponerConsulta(q), [q]);
+  // 0.97.1 (17.ª ronda, senior): elegir una sugerencia (una pregunta) deja una entrada en el
+  // historial, en memoria y con la misma dirección (la consulta no va en la URL): Atrás vuelve a lo
+  // escrito («ducha») en vez de salir de Buscar.
+  const elegirSugerencia = (t: string) => {
+    if (q.trim() && t !== q) {
+      window.history.replaceState({ ...window.history.state, mseenConsulta: q }, "");
+      window.history.pushState({ mseenConsulta: t }, "");
+    }
+    setQ(t);
+  };
+  useEffect(() => {
+    const onPop = (e: PopStateEvent) => {
+      const c = (e.state as { mseenConsulta?: unknown } | null)?.mseenConsulta;
+      if (typeof c === "string") setQ(c);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
   // Pocos resultados al principio (los mejores); el resto, con «Ver más resultados».
   const [tope, setTope] = useState(12);
   useEffect(() => setTope(12), [q]);
@@ -325,7 +343,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
         }
       />
       {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
-      {!frecuente && <Autocompletar items={sugerencias} onElegir={setQ} />}
+      {!frecuente && <Autocompletar items={sugerencias} onElegir={elegirSugerencia} />}
       {/* 0.82.1 (sexta ronda, guardia): «ciq+» leído como «control-iq+» no es un seguimiento. */}
       {qEf !== q && qEf !== motor?.reescribir(q) && (
         <p className="mt-2 text-xs text-slate-600" role="status">
@@ -1023,8 +1041,10 @@ export function Preguntas({ id }: { id?: string }) {
         <button
           type="button"
           onClick={() => setTodas((v) => !v)}
-          aria-pressed={todas}
-          className="chip"
+          aria-expanded={todas}
+          // 0.97.1 (17.ª ronda, visual): una acción de texto (en burdeos relleno parecía la acción
+          // principal de la pantalla).
+          className="tap-44 inline-flex min-h-11 items-center px-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700 sm:min-h-8"
         >
           {todas ? "Plegar los temas" : "Ver todas las preguntas"}
         </button>

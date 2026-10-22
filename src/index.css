@@ -1178,6 +1178,8 @@ h3[tabindex="-1"]:focus,
 h1[tabindex="-1"]:focus-visible,
 h2[tabindex="-1"]:focus-visible,
 h3[tabindex="-1"]:focus-visible,
+.fila-resaltada:focus,
+.bloque-destino:focus,
 [tabindex="-1"]:is(main, div, section):focus-visible {
   outline: none !important;
   box-shadow: none;
@@ -1188,6 +1190,18 @@ h3[tabindex="-1"]:focus-visible,
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+.cifra-serie {
+  white-space: normal;
+}
+/* 0.97.1 (17.ª ronda, visual): en los datos de la calculadora, la opción elegida con borde burdeos
+   y fondo suave (como el selector de sistemas); el relleno burdeos queda para la navegación. */
+.formulario-calc .chip[aria-pressed="true"],
+.opciones-ligeras .chip[aria-current] {
+  background: var(--acento-suave);
+  border-color: var(--acento);
+  box-shadow: inset 0 0 0 1px var(--acento);
+  color: var(--tinta);
 }
 
 /* Resaltado de la búsqueda (contraste AA en día y en nocturno). */
@@ -2141,5 +2155,13 @@ html.night .decoration-slate-300 {
   html.night {
     color-scheme: light;
     background: #fff;
+  }
+}
+
+/* 0.97.1 (17.ª ronda, R3 y visual): en papel, los rótulos que abren el capítulo sin el subrayado
+   de puntos (en pantalla dice «se puede tocar»; en papel no dice nada). */
+@media print {
+  .tarjeta-sistema dt a {
+    text-decoration: none !important;
   }
 }

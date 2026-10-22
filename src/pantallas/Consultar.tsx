@@ -147,6 +147,8 @@ function TablaPantalla({
 }
 
 export function Figura3Pantalla({ tramo }: { tramo?: string }) {
+  const enlacePlan =
+    "tap-44 inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900";
   return (
     <div>
       <CabeceraEditorial titulo="Hiperglucemia y cetonemia" hex={hex} level={1} />
@@ -161,19 +163,25 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
         >
           <Printer size={16} aria-hidden="true" /> Hoja para el paciente: cetonas
         </a>
-        {/* 0.79.1 (tercera ronda, guardia): el plan de seguridad del último sistema consultado. */}
-        <a
-          href={href(
-            "pacientes",
-            "plan",
-            sistemaReciente() !== undefined ? ORDEN_SISTEMAS[sistemaReciente()!] : undefined,
-          )}
-          className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900"
-        >
-          {sistemaReciente() !== undefined
-            ? `Plan de seguridad · ${CORTO_SISTEMA[sistemaReciente()!]}`
-            : "Plan de seguridad"}
-        </a>
+        {/* 0.79.1 (tercera ronda, guardia): el plan de seguridad del último sistema consultado.
+            0.97.1 (17.ª ronda, R1): sin ninguno, los cuatro a la vista (antes, la lista general). */}
+        {sistemaReciente() !== undefined ? (
+          <a
+            href={href("pacientes", "plan", ORDEN_SISTEMAS[sistemaReciente()!])}
+            className={enlacePlan}
+          >
+            {`Plan de seguridad · ${CORTO_SISTEMA[sistemaReciente()!]}`}
+          </a>
+        ) : (
+          <span className="flex flex-wrap items-center gap-x-3 gap-y-0 text-sm text-slate-700">
+            <span>Plan de seguridad:</span>
+            {CORTO_SISTEMA.map((n, c) => (
+              <a key={c} href={href("pacientes", "plan", ORDEN_SISTEMAS[c])} className={enlacePlan}>
+                {n}
+              </a>
+            ))}
+          </span>
+        )}
       </div>
       <div className="tarjeta p-4">
         <NivelTitulo.Provider value={2}>

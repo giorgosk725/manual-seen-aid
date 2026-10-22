@@ -822,12 +822,46 @@ export function Shell({
 
   // Un clic en un enlace interno es una navegación nueva (sube arriba); Atrás/Adelante no.
   useEffect(() => {
+    // 0.97.1 (17.ª ronda, R3): de qué enlace se salió de cada pantalla, para devolverle el foco al
+    // volver con Atrás (antes, el foco caía en el principio de la página).
+    const origenes = new Map<string, { href: string; texto: string }>();
     const onClick = (e: MouseEvent) => {
       const a = (e.target as Element | null)?.closest?.('a[href^="#/"]');
-      if (a) marcarNavegacionNueva();
+      if (!a) return;
+      marcarNavegacionNueva();
+      if (mainRef.current?.contains(a))
+        origenes.set(window.location.hash, {
+          href: a.getAttribute("href")!,
+          texto: (a.textContent ?? "").trim(),
+        });
+    };
+    let t: ReturnType<typeof setTimeout> | undefined;
+    const onPop = () => {
+      const destino = origenes.get(window.location.hash);
+      clearTimeout(t);
+      if (!destino) return;
+      let n = 0;
+      const intentar = () => {
+        const main = mainRef.current;
+        const activo = document.activeElement;
+        if (main && activo && activo !== document.body && main.contains(activo)) return;
+        // Varios enlaces pueden ir al mismo sitio (dos rótulos a la misma fila): el del mismo texto.
+        const todos = [
+          ...(main?.querySelectorAll<HTMLElement>(`a[href="${CSS.escape(destino.href)}"]`) ?? []),
+        ];
+        const a = todos.find((x) => (x.textContent ?? "").trim() === destino.texto) ?? todos[0];
+        if (a) a.focus({ preventScroll: true });
+        else if (++n < 30) t = setTimeout(intentar, 50);
+      };
+      t = setTimeout(intentar, 120);
     };
     document.addEventListener("click", onClick, true);
-    return () => document.removeEventListener("click", onClick, true);
+    window.addEventListener("popstate", onPop);
+    return () => {
+      clearTimeout(t);
+      document.removeEventListener("click", onClick, true);
+      window.removeEventListener("popstate", onPop);
+    };
   }, []);
 
   // Posición de scroll por pantalla, para restaurarla al volver con Atrás. La restaura la app,
@@ -869,13 +903,19 @@ export function Shell({
   // 0.96.1 (revisión de Codex, V95-06): tras una navegación nueva a otra pantalla, el foco va a su
   // título (antes se quedaba en el enlace de la barra y Tab seguía por la navegación).
   const enfocarTitulo = useRef(false);
+  const enfocarDestino = useRef(false);
   // La pantalla anterior (no un «primera vez»: en desarrollo, React repite el efecto al montar).
   const pantallaAnterior = useRef<string | null>(null);
   useLayoutEffect(() => {
     const nueva = consumirNavegacionNueva();
+    // 0.97.1 (17.ª ronda, adjunto y R3): también al abrir una tabla en su fila (el rótulo de una
+    // ficha lleva a «#/consultar/tablas/T3:control-iq:3»).
+    const enLiteral =
+      ruta.seccion === "capitulo" ||
+      (ruta.seccion === "consultar" && ruta.sub === "tablas" && !!ruta.detalle);
     const desdeHerramienta =
       nueva &&
-      ruta.seccion === "capitulo" &&
+      enLiteral &&
       ["consultar", "sistemas", "buscar", "casos", "preguntas", "visual"].includes(
         previa.current.seccion,
       );
@@ -890,7 +930,11 @@ export function Shell({
     // a lo que se estaba viendo), ni en un enlace profundo (la pantalla lleva a su destino).
     const cambio = pantallaAnterior.current !== null && pantallaAnterior.current !== clavePantalla;
     pantallaAnterior.current = clavePantalla;
-    enfocarTitulo.current = nueva && cambio && !destinoProfundo;
+    // 0.97.1 (17.ª ronda, R3): en un destino profundo (fila de una ficha o de una tabla, párrafo
+    // del capítulo), el foco al destino marcado; si no lo hay, al título sin mover la página.
+    const aFila = ruta.seccion === "consultar" && ruta.sub === "tablas" && !!ruta.detalle;
+    enfocarTitulo.current = nueva && cambio;
+    enfocarDestino.current = nueva && cambio && (destinoProfundo || aFila);
     // Enlace profundo: la pantalla hace su propio scroll; al volver atrás, se restaura.
     if (destinoProfundo && (nueva || guardada == null)) return;
     // Al volver atrás, la guardada aquí (la restauración del navegador está desactivada). 0.72.2:
@@ -915,22 +959,50 @@ export function Shell({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clavePantalla]);
 
+  // 0.97.1 (17.ª ronda, R1): un enlace a la misma pantalla sin detalle (la barra de abajo o el
+  // lateral: de una situación a la lista de Situaciones) la abre desde arriba (antes, a media
+  // altura, con la posición de la situación).
+  const detalleAnterior = useRef<{ clave: string; detalle?: string }>({ clave: "" });
+  useLayoutEffect(() => {
+    const antes = detalleAnterior.current;
+    detalleAnterior.current = { clave: clavePantalla, detalle: ruta.detalle };
+    if (antes.clave !== clavePantalla || !antes.detalle || ruta.detalle) return;
+    if (!consumirNavegacionNueva()) return;
+    window.scrollTo({ top: 0 });
+    const h1 = mainRef.current?.querySelector<HTMLElement>("h1");
+    if (h1 && !h1.hasAttribute("tabindex")) h1.setAttribute("tabindex", "-1");
+    h1?.focus({ preventScroll: true });
+  }, [clavePantalla, ruta.detalle]);
+
   useEffect(() => {
     if (!enfocarTitulo.current) return undefined;
     enfocarTitulo.current = false;
+    const aDestino = enfocarDestino.current;
+    enfocarDestino.current = false;
     let intentos = 0;
     let t: ReturnType<typeof setTimeout>;
+    const enfocar = (el: HTMLElement) => {
+      if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
+      el.focus({ preventScroll: true });
+    };
     const intentar = () => {
       const main = mainRef.current;
       const activo = document.activeElement;
       // Solo si el foco se ha quedado en la navegación (lateral, barra de abajo, menú) o perdido:
       // un campo o un control de la pantalla nueva no se le quita al lector.
       if (main && activo && activo !== document.body && main.contains(activo)) return;
+      const destino = aDestino
+        ? main?.querySelector<HTMLElement>(".fila-resaltada, .bloque-destino")
+        : null;
       const h1 = main?.querySelector<HTMLElement>("h1");
-      if (h1) {
-        if (!h1.hasAttribute("tabindex")) h1.setAttribute("tabindex", "-1");
-        h1.focus({ preventScroll: true });
-      } else if (++intentos < 40) t = setTimeout(intentar, 50);
+      // El destino marcado puede tardar (la pantalla lo busca y lo marca): se espera un poco.
+      if (destino) enfocar(destino);
+      else if (++intentos < 30) t = setTimeout(intentar, 50);
+      else if (h1) enfocar(h1);
+      if (!aDestino && h1 && !destino) {
+        clearTimeout(t);
+        enfocar(h1);
+      }
     };
     // Después del cierre del menú del móvil, que devuelve el foco a «Más» al cerrarse.
     t = setTimeout(intentar, 0);
@@ -1016,20 +1088,22 @@ export function Shell({
           // capítulo conserva su medida.
           className={`pantalla-in mx-auto max-w-5xl px-3 pb-24 pt-4 sm:px-5 lg:pb-10 lg:pt-6 ${ruta.seccion === "capitulo" ? "" : "2xl:max-w-7xl"}`}
         >
-          {volver && ruta.seccion === "capitulo" && (
-            // 0.96.0 (16.ª ronda, senior): pegado arriba al bajar (el párrafo de destino quedaba a
-            // miles de px del botón): discreto, sin franja, solo el chip con una sombra.
-            <div className="volver-pegado no-imprimir pointer-events-none sticky top-16 z-20 mb-3 lg:top-3">
-              <button
-                type="button"
-                onClick={() => window.history.back()}
-                className="chip pointer-events-auto shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-              >
-                <ChevronLeft size={15} aria-hidden="true" /> Volver a la consulta
-                <span className="font-normal text-slate-600">· {volver}</span>
-              </button>
-            </div>
-          )}
+          {volver &&
+            (ruta.seccion === "capitulo" ||
+              (ruta.seccion === "consultar" && ruta.sub === "tablas")) && (
+              // 0.96.0 (16.ª ronda, senior): pegado arriba al bajar (el párrafo de destino quedaba a
+              // miles de px del botón): discreto, sin franja, solo el chip con una sombra.
+              <div className="volver-pegado no-imprimir pointer-events-none sticky top-16 z-20 mb-3 lg:top-3">
+                <button
+                  type="button"
+                  onClick={() => window.history.back()}
+                  className="chip pointer-events-auto shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                >
+                  <ChevronLeft size={15} aria-hidden="true" /> Volver a la consulta
+                  <span className="font-normal text-slate-600">· {volver}</span>
+                </button>
+              </div>
+            )}
           {/* Un fallo en una pantalla deja en pie la barra lateral y la navegación. */}
           <ErrorBoundary clave={window.location.hash}>
             <Suspense fallback={<CargandoPantalla />}>

@@ -56,17 +56,24 @@ export function SinPartir({ t }: { t: string }) {
     </>
   );
 }
+/* 0.97.1 (17.ª ronda, adjunto, R3 y visual): una serie de cifras («110, 120, 130, 140 o 150 mg/dl»)
+   se puede partir entre cifras; solo la última, con su unidad, va unida. Entera sin partir se
+   salía de la celda de Omnipod 5 en las Tablas 1 y 3 y la tabla la recortaba («150 mg/»). */
+function Cifra({ t }: { t: string }) {
+  const m = /^(.*(?:,\s|\so\s|\sy\s))(\S+\s?\S*)$/s.exec(t);
+  if (!m) return <b className="cifra">{t}</b>;
+  return (
+    <b className="cifra cifra-serie">
+      {m[1]}
+      <span className="whitespace-nowrap">{m[2]}</span>
+    </b>
+  );
+}
 function ConCifrasTexto({ t }: { t: string }) {
   return (
     <>
       {partirCifras(t).map((x, i) =>
-        x.cifra ? (
-          <b key={i} className="cifra">
-            {x.t}
-          </b>
-        ) : (
-          <SinPartir key={i} t={x.t} />
-        ),
+        x.cifra ? <Cifra key={i} t={x.t} /> : <SinPartir key={i} t={x.t} />,
       )}
     </>
   );

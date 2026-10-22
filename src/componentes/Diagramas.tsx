@@ -50,7 +50,8 @@ import {
   type TonoFranja,
 } from "../contenido/diagramas";
 import { F2, FIGURA3, TABLAS, algoritmoDelCapitulo, ubicacionDeDiagrama } from "../contenido";
-import { FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { sistemaReciente } from "../sistemaReciente";
 import { elegirRuta, href } from "../rutas";
 import { BotonImprimir, Segmented } from "../ui";
 import { SISTEMA_HEX, TRAMO_HEX } from "../tokens";
@@ -111,6 +112,19 @@ const SEGUIR_DIAGRAMA: Partial<Record<DiagramaId, { texto: string; ruta: string 
     { texto: "Hipoglucemia nocturna", ruta: href("consultar", "situacion", "sueno") },
     { texto: "Tiempo por debajo del rango elevado", ruta: href("capitulo", "09-descarga", "b10") },
   ],
+};
+
+/* 0.97.1 (17.ª ronda, R1): el plan de seguridad, el del último sistema consultado; sin ninguno, el
+   enlace dice adónde lleva (la lista de material). */
+const planDelSistema = (l: { texto: string; ruta: string }) => {
+  if (l.ruta !== href("pacientes")) return l;
+  const c = sistemaReciente();
+  return c === undefined
+    ? { texto: "Material para el paciente", ruta: l.ruta }
+    : {
+        texto: `Plan de seguridad · ${CORTO_SISTEMA[c]}`,
+        ruta: href("pacientes", "plan", ORDEN_SISTEMAS[c]),
+      };
 };
 
 export function MarcoDiagrama({
@@ -176,7 +190,7 @@ export function MarcoDiagrama({
             </a>
           )}
           {!enApartado &&
-            (SEGUIR_DIAGRAMA[id] ?? []).map((l) => (
+            (SEGUIR_DIAGRAMA[id] ?? []).map(planDelSistema).map((l) => (
               <a key={l.ruta} href={l.ruta} className="chip tap-44 min-h-9 text-xs sm:min-h-8">
                 {l.texto} <ArrowRight size={12} aria-hidden="true" />
               </a>
@@ -1255,6 +1269,28 @@ function Eleccion() {
 /* ---------- 12. Interrupción del sistema según su duración ---------- */
 
 /* Como pantalla de consulta (Interrupción del sistema, bajo su h1): subtítulos en h2. */
+/* 0.97.1 (17.ª ronda, R1): qué sistemas son de cada formato (Tabla 1, «Formato») y la fila
+   «Desconexión» de su ficha (Modos), a un toque: en la guardia no hay que saber de memoria que
+   CamAPS FX es una bomba con catéter. */
+function DesconexionEnFicha({ cols }: { cols: number[] }) {
+  return (
+    <p className="no-imprimir mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-0 text-[13px] text-slate-600">
+      <span>Desconexión en la ficha:</span>
+      {cols.map((c) => (
+        <a
+          key={c}
+          href={href("sistemas", ORDEN_SISTEMAS[c], "modos:desconexion")}
+          className="tap-44 inline-flex min-h-11 items-center gap-1 font-semibold sm:min-h-6"
+          style={{ color: SISTEMA_HEX[c].ink }}
+        >
+          {CORTO_SISTEMA[c]}
+          <ArrowRight size={12} aria-hidden="true" />
+        </a>
+      ))}
+    </p>
+  );
+}
+
 export function InterrupcionPantalla() {
   return (
     <NivelDiagrama.Provider value={1}>
@@ -1364,14 +1400,20 @@ function InterrupcionLinea() {
       {/* 0.72.0: el formato, antes de los casos (qué se puede desconectar y qué no). */}
       <section className="tarjeta grid gap-x-6 gap-y-3 p-4 md:grid-cols-2">
         <Sub className="sr-only">Según el formato</Sub>
-        <p className="text-sm leading-snug text-slate-800">
+        <div className="text-sm leading-snug text-slate-800">
           <span className="rotulo mb-1 block">Pod</span>
-          <TS>{pod}</TS>
-        </p>
-        <p className="text-sm leading-snug text-slate-800">
+          <p>
+            <TS>{pod}</TS>
+          </p>
+          <DesconexionEnFicha cols={[3]} />
+        </div>
+        <div className="text-sm leading-snug text-slate-800">
           <span className="rotulo mb-1 block">Bomba con catéter</span>
-          <TS>{bomba}</TS>
-        </p>
+          <p>
+            <TS>{bomba}</TS>
+          </p>
+          <DesconexionEnFicha cols={[0, 1, 2]} />
+        </div>
       </section>
       {/* Dos caminos que no son una sola línea de tiempo: lo programado se decide antes de
           desconectar; lo no programado se actúa a partir de aproximadamente 1 h sin insulina. */}

@@ -60,6 +60,9 @@ export function useSubirAlElegir(clave: string, id: string) {
   useEffect(() => {
     if (previa.current === clave) return;
     previa.current = clave;
+    // 0.97.1 (17.ª ronda, R1): sin nada elegido (vuelta a la lista), no se mueve: la lista
+    // decide (arriba desde la barra, su posición con Atrás).
+    if (!clave) return;
     const el = document.getElementById(id);
     if (!el) return;
     const arriba = el.getBoundingClientRect().top;

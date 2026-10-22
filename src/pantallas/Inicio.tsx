@@ -3,6 +3,7 @@
    con el sistema elegido o los cuatro, y la hoja de comprobación como herramienta del recorrido.
    El contenido sale de inicio.ts (referencias al texto literal); aquí solo se pinta. */
 import { useEffect, useRef, useState } from "react";
+import { useImprimirConTeclado } from "../imprimirConTeclado";
 import {
   ArrowRight,
   ChevronDown,
@@ -80,6 +81,9 @@ const capitalizar = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
    marcar, pero no se guarda nada: ni datos del paciente ni de la consulta). */
 function Hoja({ sis }: { sis?: number }) {
   const ref = useRef<HTMLDivElement>(null);
+  // 0.97.1 (17.ª ronda, visual): con Ctrl+P, la misma hoja de una cara que con el botón (antes, sin
+  // marcar la región, salía la pantalla entera en dos caras).
+  useImprimirConTeclado(ref);
   // Las casillas son las mismas que las de la guía: lo marcado allí sale marcado aquí (y al
   // revés), mientras dura la consulta. No se guarda nada.
   const { hechos, calc } = useTrabajo();
@@ -473,11 +477,13 @@ function PasosInicio({
       {/* 0.96.0 (16.ª ronda, visual): el paso activo, sin banda rellena: en el ordenador, subrayado
           como una pestaña; en el móvil, su título como texto (paso-tab, index.css). Menos burdeos
           apilado: la fase sigue marcada, el paso y su número ya no van rellenos. */}
-      <ol className="mb-3 grid gap-1.5 sm:grid-cols-5" aria-label="Pasos de la fase">
+      <ol className="mb-1 grid gap-1.5 sm:mb-3 sm:grid-cols-5" aria-label="Pasos de la fase">
         {PASOS_GUIA.map((x, i) => {
           const on = i === n - 1;
           return (
-            <li key={x.id} className="min-w-0">
+            // 0.97.1 (17.ª ronda, visual y R5): en el móvil, el paso que no se ve, fuera de la rejilla
+            // (con el botón oculto, el «li» vacío sumaba sus huecos: 54 px en blanco).
+            <li key={x.id} className={`min-w-0 ${on ? "" : "max-sm:hidden"}`}>
               <button
                 type="button"
                 aria-current={on ? "step" : undefined}
@@ -739,7 +745,14 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
         {conTrabajo && (
           <button
             type="button"
-            onClick={nuevoTrabajo}
+            onClick={() => {
+              nuevoTrabajo();
+              // 0.97.1 (17.ª ronda, R5): el foco, al primer paso (el botón desaparece al vaciar).
+              setTimeout(() => {
+                const h = document.getElementById("calc-paso-1");
+                h?.focus({ preventScroll: true });
+              }, 0);
+            }}
             className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2 text-sm font-semibold text-slate-700 hover:underline"
           >
             <RotateCcw size={14} aria-hidden="true" />
@@ -777,7 +790,9 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
       {enFases && (
         <div className="no-imprimir mb-4 flex flex-col gap-2 sm:flex-row sm:items-start">
           <ol
-            className="grid w-full grid-cols-2 gap-1.5 sm:flex-1 sm:grid-cols-4"
+            // 0.97.1 (17.ª ronda, visual): la fase activa con borde y fondo suave (no rellena): el
+            // burdeos lleno se apilaba con el selector de sistema y la fila de pasos.
+            className="opciones-ligeras grid w-full grid-cols-2 gap-1.5 sm:flex-1 sm:grid-cols-4"
             aria-label="Fases"
           >
             {FASES.map((f, i) => {
@@ -790,7 +805,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                     onClick={() => ir(f.id)}
                     className="chip w-full px-2.5 py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                   >
-                    <span className={`num ${on ? "bg-white/20 text-white" : ""}`}>{i + 1}</span>
+                    <span className={`num ${on ? "num-on" : ""}`}>{i + 1}</span>
                     <span className="min-w-0">{f.corto}</span>
                   </button>
                 </li>

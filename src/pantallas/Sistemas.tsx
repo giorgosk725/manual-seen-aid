@@ -16,7 +16,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
-import { ArrowRight, Check, ChevronDown, ExternalLink, Minus, X } from "lucide-react";
+import { ArrowDown, ArrowRight, Check, ChevronDown, ExternalLink, Minus, X } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, type Tabla } from "../contenido";
 import type { TablaId } from "../contenido/tipos";
 import type { Pieza } from "../inicio";
@@ -1757,7 +1757,7 @@ function Comparacion({
                     className="tap-44 ml-auto inline-flex min-h-11 items-center gap-1 text-[13px] font-semibold text-slate-600 hover:text-slate-900 hover:underline"
                   >
                     Tabla 3 completa
-                    <ChevronDown size={14} aria-hidden="true" />
+                    <ArrowDown size={14} aria-hidden="true" />
                   </button>
                 </div>
                 {!porSistema && (
