@@ -74,3 +74,37 @@ test.describe("N96-02 · Iniciación: lo de otro sistema, fuera", () => {
     await expect(page.locator("main").getByText(camaps)).toHaveCount(0);
   });
 });
+
+test.describe("V95-05/06 · contexto y foco", () => {
+  test("en Interrupción, el lateral marca Situaciones como contexto", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    for (const [ruta, valor] of [
+      ["consultar/interrupcion", "location"],
+      ["consultar/figura-3", "location"],
+      ["visual/hipoglucemia", "location"],
+      ["consultar/situacion", "page"],
+    ]) {
+      await page.goto(`/#/${ruta}`);
+      await expect(
+        page.locator("aside").getByRole("link", { name: "Situaciones", exact: true }),
+        ruta,
+      ).toHaveAttribute("aria-current", valor);
+    }
+  });
+  test("en el móvil, ir a Sistemas desde la barra lleva el foco al título", async ({ page }) => {
+    await page.setViewportSize({ width: 393, height: 852 });
+    await page.goto("/#/consultar/interrupcion");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await page
+      .getByRole("navigation", { name: "Barra inferior" })
+      .getByRole("link", { name: "Sistemas" })
+      .click();
+    await expect(page.getByRole("heading", { level: 1, name: "Sistemas AID" })).toBeFocused();
+  });
+  test("al abrir la app, el primer Tab sigue ofreciendo saltar al contenido", async ({ page }) => {
+    await page.goto("/#/sistemas");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await page.keyboard.press("Tab");
+    await expect(page.getByRole("button", { name: "Saltar al contenido" })).toBeFocused();
+  });
+});

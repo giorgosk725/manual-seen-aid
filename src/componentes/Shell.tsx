@@ -869,7 +869,8 @@ export function Shell({
   // 0.96.1 (revisión de Codex, V95-06): tras una navegación nueva a otra pantalla, el foco va a su
   // título (antes se quedaba en el enlace de la barra y Tab seguía por la navegación).
   const enfocarTitulo = useRef(false);
-  const primeraRuta = useRef(true);
+  // La pantalla anterior (no un «primera vez»: en desarrollo, React repite el efecto al montar).
+  const pantallaAnterior = useRef<string | null>(null);
   useLayoutEffect(() => {
     const nueva = consumirNavegacionNueva();
     const desdeHerramienta =
@@ -887,8 +888,9 @@ export function Shell({
     const guardada = posiciones.current.get(clavePantalla);
     // Ni al abrir la app (el primer Tab ofrece «Saltar al contenido»), ni con Atrás (se vuelve
     // a lo que se estaba viendo), ni en un enlace profundo (la pantalla lleva a su destino).
-    enfocarTitulo.current = nueva && !primeraRuta.current && !destinoProfundo;
-    primeraRuta.current = false;
+    const cambio = pantallaAnterior.current !== null && pantallaAnterior.current !== clavePantalla;
+    pantallaAnterior.current = clavePantalla;
+    enfocarTitulo.current = nueva && cambio && !destinoProfundo;
     // Enlace profundo: la pantalla hace su propio scroll; al volver atrás, se restaura.
     if (destinoProfundo && (nueva || guardada == null)) return;
     // Al volver atrás, la guardada aquí (la restauración del navegador está desactivada). 0.72.2:

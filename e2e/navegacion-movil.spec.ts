@@ -68,8 +68,11 @@ test.describe("Navegación y portada (393 px)", () => {
         area === "Más"
           ? barra.getByRole("button", { name: area })
           : barra.getByRole("link", { name: area });
-      await expect(item, ruta).toHaveAttribute("aria-current", "page");
-      await expect(barra.locator('[aria-current="page"]'), ruta).toHaveCount(1);
+      // 0.96.1 (revisión de Codex, V95-05): Figura 3, Interrupción e Hipoglucemia son contexto
+      // de «Situaciones» («location»); la lista de situaciones, la página.
+      const contexto = /figura-3|interrupcion|hipoglucemia/.test(ruta);
+      await expect(item, ruta).toHaveAttribute("aria-current", contexto ? "location" : "page");
+      await expect(barra.locator("[aria-current]"), ruta).toHaveCount(1);
     }
   });
 });
