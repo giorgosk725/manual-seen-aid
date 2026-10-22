@@ -15,7 +15,15 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-22",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — revisión externa de la 1.0.5`,
+    titulo: `Complemento interactivo ${VERSION_APP} — portada`,
+    detalle: [
+      "Portada: en las tarjetas de los sistemas, sin el tipo de algoritmo debajo del nombre; desde la tableta, el nombre comercial completo (Tandem Control-IQ / Control-IQ+, myLoop powered by CamAPS FX).",
+    ],
+  },
+  {
+    fecha: "2026-10-22",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.7 — revisión externa de la 1.0.5",
     detalle: [
       "Buscar: al elegir una sugerencia, el historial del navegador guarda solo una marca, no lo escrito; Atrás y Adelante siguen funcionando y, al recargar, Buscar se abre vacío.",
       "Impresión: la letra de reserva tiene las medidas de la del complemento; si al imprimir no ha terminado de cargar, la hoja de comprobación sigue en una cara (en Linux pasaba a veces a dos).",

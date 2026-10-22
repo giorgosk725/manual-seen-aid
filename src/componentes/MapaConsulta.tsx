@@ -12,7 +12,14 @@ import { DESTINOS, MAPA_CONSULTA } from "../nav";
 import { CATEGORIA_HEX, SISTEMA_HEX, TRAMO_HEX } from "../tokens";
 import { CORTO_CASILLA, CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { href } from "../rutas";
-import { tipoBajoNombre } from "../fichaAlgoritmo";
+/* El nombre comercial de cada sistema en la portada (orden de la Tabla 1). */
+// Sin partir «Control-IQ+» por el guion ni dejar «FX» o «5» solos en una línea (tableta).
+const NOMBRE_PORTADA = [
+  "MiniMed\u00a0780G",
+  "Tandem Control\u2011IQ / Control\u2011IQ+",
+  "myLoop powered by CamAPS\u00a0FX",
+  "Omnipod\u00a05",
+];
 
 const foco =
   "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-500";
@@ -131,16 +138,16 @@ function Sistemas() {
                   height={64}
                   className="foto-sistema h-10 w-10 shrink-0 rounded-md border border-[var(--linea-suave)] bg-white object-cover sm:h-16 sm:w-16"
                 />
+                {/* 1.0.8 (petición del responsable, 22-10-2026): sin el tipo de algoritmo debajo
+                    y, desde la tablet, el nombre comercial completo; en el móvil (dos tarjetas
+                    por fila), el corto. */}
                 <span className="min-w-0">
-                  {/* El nombre corto de la casilla («Control-IQ»): en una línea. */}
                   <span
                     className="block text-[13px] font-bold leading-tight group-hover:underline sm:text-base sm:font-extrabold"
                     style={{ color: h.ink }}
                   >
-                    {CORTO_CASILLA[c]}
-                  </span>
-                  <span className="mt-1 hidden text-[13px] font-semibold leading-snug text-slate-600 sm:block">
-                    {tipoBajoNombre(c, CORTO_CASILLA[c])}
+                    <span className="sm:hidden">{CORTO_CASILLA[c]}</span>
+                    <span className="hidden sm:inline">{NOMBRE_PORTADA[c]}</span>
                   </span>
                 </span>
               </a>
