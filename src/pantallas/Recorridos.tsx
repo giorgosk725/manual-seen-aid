@@ -45,7 +45,7 @@ import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
 import { BotonImprimir, CabeceraEditorial, ColofonImpreso } from "../ui";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
-import { olvidarSistema, recordarSistema, sistemaReciente } from "../sistemaReciente";
+import { olvidarSistema, recordarSistema } from "../sistemaReciente";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { useIrAlCambiar, useSubirAlElegir } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
@@ -818,17 +818,12 @@ export function SituacionSistema({
                 // 0.94.0 (rediseño, fase 2): sin marco alrededor (el selector y la tarjeta del
                 // sistema iban dentro de otra tarjeta).
                 <section aria-label="Sistema a sistema">
-                  {/* 0.80.1 (cuarta ronda, adjunto): sin sistema en la dirección, se dice cuál se
-                      enseña y por qué. */}
-                  {sisIdx < 0 && sistemaReciente() !== undefined && (
-                    <p className="mb-2 text-xs text-slate-600">
-                      Sistema elegido: el último consultado ({CORTO_SISTEMA[sistemaReciente()!]}).
-                    </p>
-                  )}
+                  {/* 1.0.13 (25.ª ronda, adjunto y R1): sin sistema en la dirección, los cuatro (antes,
+                      el último consultado: un enlace copiado no enseñaba lo mismo). */}
                   {/* 0.97.1 (17.ª ronda, senior): sin sistema elegido, qué sistemas tienen
                       autorización y evidencia en la gestación (Tabla 1, literal): antes había que
                       pulsar los cuatro. */}
-                  {guia.id === "gestacion" && sisIdx < 0 && sistemaReciente() === undefined && (
+                  {guia.id === "gestacion" && sisIdx < 0 && (
                     <div className="mb-3">
                       <h2 className="titulo-tarjeta mb-2">{TABLAS.T1.filas[8].etiqueta}</h2>
                       <dl className="grid gap-2 sm:grid-cols-2">
@@ -862,7 +857,7 @@ export function SituacionSistema({
                     comun={GUIA_POR_SISTEMA[guia.id].comun}
                     comunDe={GUIA_POR_SISTEMA[guia.id].comunDe}
                     complementos={GUIA_POR_SISTEMA[guia.id].complementos}
-                    seleccion={sisIdx >= 0 ? sisIdx : (sistemaReciente() ?? -1)}
+                    seleccion={sisIdx}
                     onElegir={(i) =>
                       elegirRuta("consultar", "situacion", `${guia.id}:${SIS_IDS[i]}`)
                     }
@@ -902,7 +897,7 @@ export function SituacionSistema({
               <ParaSeguir
                 filas={guia.enlaces
                   .filter((l) => !l.ruta.startsWith("#/visual/objetivos-mcg/"))
-                  .filter((l) => !yaArriba(guia, l.ruta, sisIdx >= 0 ? sisIdx : sistemaReciente()))
+                  .filter((l) => !yaArriba(guia, l.ruta, sisIdx >= 0 ? sisIdx : undefined))
                   .map((l) => ({ href: l.ruta, t: l.texto }))}
               />
             </div>
@@ -1335,9 +1330,25 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
       {/* 0.72.0: los ocho pasos a la vista. Hasta el ordenador ancho, ocho botones numerados
           con el avance; en él, la lista con sus títulos a la izquierda. */}
       <nav ref={filaPasos} aria-label="Pasos de la descarga" className="no-imprimir mb-3 lg:hidden">
-        <div className="mb-1.5 text-sm font-semibold text-slate-900">
-          Paso {n} de {t.filas.length}
-        </div>
+        {/* 1.0.13 (25.ª ronda, R3): con el título de cada paso, para ir al que se busca sin tocarlos
+            uno a uno (antes, solo números). */}
+        <label className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold text-slate-900">
+          <span>
+            Paso {n} de {t.filas.length}
+          </span>
+          <select
+            value={n}
+            onChange={(e) => ir(Number(e.target.value))}
+            aria-label="Ir al paso"
+            className="min-h-11 min-w-0 flex-1 rounded-md border border-[var(--linea)] bg-[var(--superficie)] px-2 text-sm font-normal text-slate-900"
+          >
+            {t.filas.map((f, i) => (
+              <option key={i} value={i + 1}>
+                {i + 1}. {f.celdas[0]}
+              </option>
+            ))}
+          </select>
+        </label>
         {/* 44 px por botón: a menos de 390 px de ancho, la fila se desplaza de lado. */}
         <ol className="-mx-1 flex gap-0.5 overflow-x-auto px-1 pb-0.5">
           {t.filas.map((f, i) => {

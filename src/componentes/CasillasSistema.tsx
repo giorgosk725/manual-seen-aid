@@ -100,134 +100,141 @@ export function CasillasSistema({
     }
   });
   return (
-    <div
-      ref={grupo}
-      role={unico ? "radiogroup" : "group"}
-      aria-label={etiqueta}
-      // 0.82.1 (sexta ronda, adjunto y visual): en la elección única, cuatro columnas iguales desde
-      // sm (antes, Omnipod 5 bajaba solo a otra fila a 1366 y 1440); un nombre largo va en dos
-      // líneas dentro de su casilla.
-      className={
-        unico
-          ? // 1.0.1 (19.ª ronda, visual y adjunto): con algo al lado («Comparar» en la ficha), en la
-            // misma fila (antes bajaba solo a otra de 48 px).
-            extra
-            ? "sm:grid sm:grid-cols-[repeat(4,minmax(0,1fr))_auto] sm:items-stretch sm:gap-1.5"
-            : "sm:grid sm:grid-cols-4 sm:gap-1.5"
-          : "sm:flex sm:flex-wrap sm:items-center sm:gap-1.5"
-      }
-    >
-      <div className={`grid sm:contents ${enFila ? "grid-cols-4 gap-1" : "grid-cols-2 gap-1.5"}`}>
-        {TABLAS.T1.columnas.map((nombre, c) => {
-          const on = seleccion.includes(c);
-          const h = SISTEMA_HEX[c];
-          const fuera = desactivado === c;
-          return (
-            <button
-              key={nombre}
-              type="button"
-              {...(unico
-                ? {
-                    role: "radio",
-                    "aria-checked": on,
-                    tabIndex: c === conFoco ? 0 : -1,
-                    onKeyDown: (e: KeyboardEvent<HTMLButtonElement>) => alPulsar(e, c),
-                  }
-                : { "aria-pressed": on })}
-              data-columna={c}
-              onClick={() => onToggle(c)}
-              disabled={fuera}
-              title={fuera ? "Es el sistema de destino" : undefined}
-              // Con el nombre breve en el móvil, el nombre accesible es el de siempre (sin el guion
-              // duro de la presentación).
-              aria-label={cortoEnMovil && enFila && nombres ? nombres[c] : undefined}
-              className={`${enFila ? "max-sm:flex-col max-sm:items-start" : ""} tap-44 flex disabled:cursor-not-allowed disabled:opacity-50 min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[13px] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-9 sm:px-2.5 sm:text-sm sm:leading-normal`}
-              style={
-                on
-                  ? { borderColor: SEEN.burdeos, background: "#f7eff3" }
-                  : { borderColor: "#d4d4d4", background: "#fff" }
-              }
-            >
-              <span className="flex shrink-0 items-center gap-1 sm:contents">
-                {unico ? (
-                  <span
-                    aria-hidden="true"
-                    className={`casilla-opcion grid h-4 w-4 shrink-0 place-items-center rounded-full border ${on ? "marca-on" : ""}`}
-                    style={{ borderColor: on ? SEEN.burdeos : "#9ca3af" }}
-                  >
-                    {on && (
-                      <span
-                        className="marca-punto h-2 w-2 rounded-full"
-                        style={{ background: SEEN.burdeos }}
-                      />
-                    )}
-                  </span>
-                ) : (
-                  <span
-                    aria-hidden="true"
-                    className={`grid h-4 w-4 shrink-0 place-items-center rounded-sm border ${on ? "marca-caja" : ""}`}
-                    style={
-                      on
-                        ? { background: SEEN.burdeos, borderColor: SEEN.burdeos }
-                        : { background: "#fff", borderColor: "#9ca3af" }
+    // 1.0.13 (25.ª ronda, senior): el selector mide su propio ancho (container query, index.css):
+    // en una columna estrecha (Situaciones a 1024–1180 px, o con zoom), 2 × 2 en vez de cuartos
+    // que recortaban «MiniMed 780G» y «Control-IQ / Control-IQ+».
+    <div className={unico ? "casillas-medida" : undefined}>
+      <div
+        ref={grupo}
+        role={unico ? "radiogroup" : "group"}
+        aria-label={etiqueta}
+        // 0.82.1 (sexta ronda, adjunto y visual): en la elección única, cuatro columnas iguales desde
+        // sm (antes, Omnipod 5 bajaba solo a otra fila a 1366 y 1440); un nombre largo va en dos
+        // líneas dentro de su casilla.
+        className={
+          unico
+            ? // 1.0.1 (19.ª ronda, visual y adjunto): con algo al lado («Comparar» en la ficha), en la
+              // misma fila (antes bajaba solo a otra de 48 px).
+              // 1.0.13 (25.ª ronda, visual): desde xl, cada casilla a la medida de su nombre
+              // («Control-IQ / Control-IQ+» iba en dos líneas a 1366 y 1440).
+              extra
+              ? "casillas-unico sm:grid sm:grid-cols-[repeat(4,minmax(0,1fr))_auto] sm:items-stretch sm:gap-1.5 xl:grid-cols-[repeat(4,max-content)_auto] xl:[&_button]:whitespace-nowrap"
+              : "casillas-unico sm:grid sm:grid-cols-4 sm:gap-1.5"
+            : "sm:flex sm:flex-wrap sm:items-center sm:gap-1.5"
+        }
+      >
+        <div className={`grid sm:contents ${enFila ? "grid-cols-4 gap-1" : "grid-cols-2 gap-1.5"}`}>
+          {TABLAS.T1.columnas.map((nombre, c) => {
+            const on = seleccion.includes(c);
+            const h = SISTEMA_HEX[c];
+            const fuera = desactivado === c;
+            return (
+              <button
+                key={nombre}
+                type="button"
+                {...(unico
+                  ? {
+                      role: "radio",
+                      "aria-checked": on,
+                      tabIndex: c === conFoco ? 0 : -1,
+                      onKeyDown: (e: KeyboardEvent<HTMLButtonElement>) => alPulsar(e, c),
                     }
-                  >
-                    {on && <Check size={12} color="#fff" />}
+                  : { "aria-pressed": on })}
+                data-columna={c}
+                onClick={() => onToggle(c)}
+                disabled={fuera}
+                title={fuera ? "Es el sistema de destino" : undefined}
+                // Con el nombre breve en el móvil, el nombre accesible es el de siempre (sin el guion
+                // duro de la presentación).
+                aria-label={cortoEnMovil && enFila && nombres ? nombres[c] : undefined}
+                className={`${enFila ? "max-sm:flex-col max-sm:items-start" : ""} tap-44 flex disabled:cursor-not-allowed disabled:opacity-50 min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[13px] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-9 sm:px-2.5 sm:text-sm sm:leading-normal`}
+                style={
+                  on
+                    ? { borderColor: SEEN.burdeos, background: "#f7eff3" }
+                    : { borderColor: "#d4d4d4", background: "#fff" }
+                }
+              >
+                <span className="flex shrink-0 items-center gap-1 sm:contents">
+                  {unico ? (
+                    <span
+                      aria-hidden="true"
+                      className={`casilla-opcion grid h-4 w-4 shrink-0 place-items-center rounded-full border ${on ? "marca-on" : ""}`}
+                      style={{ borderColor: on ? SEEN.burdeos : "#9ca3af" }}
+                    >
+                      {on && (
+                        <span
+                          className="marca-punto h-2 w-2 rounded-full"
+                          style={{ background: SEEN.burdeos }}
+                        />
+                      )}
+                    </span>
+                  ) : (
+                    <span
+                      aria-hidden="true"
+                      className={`grid h-4 w-4 shrink-0 place-items-center rounded-sm border ${on ? "marca-caja" : ""}`}
+                      style={
+                        on
+                          ? { background: SEEN.burdeos, borderColor: SEEN.burdeos }
+                          : { background: "#fff", borderColor: "#9ca3af" }
+                      }
+                    >
+                      {on && <Check size={12} color="#fff" />}
+                    </span>
+                  )}
+                  <span
+                    aria-hidden="true"
+                    className="punto-sistema h-2 w-2 shrink-0 rounded-full"
+                    // 0.78.1: lee `--sis`; en nocturno, la tinta clara del sistema (≥ 3:1).
+                    style={{ ["--sis" as string]: h.strong, background: "var(--sis)" }}
+                  />
+                </span>
+                {nombres && enFila && cortoEnMovil ? (
+                  <>
+                    <span className="text-xs sm:hidden">
+                      {CORTO_SISTEMA[c]
+                        .replace(/-/g, "\u2011")
+                        .replace(/(Omnipod|CamAPS) /, "$1\u00a0")}
+                    </span>
+                    <span className="hidden sm:inline">
+                      <NombreSistema n={pegarFinal(nombres[c])} />
+                    </span>
+                  </>
+                ) : nombres && enFila ? (
+                  // En la fila de cuatro del móvil, el nombre puede partirse («MiniMed ⏎ 780G»), pero
+                  // no por el guion («Control-⏎IQ»): guion duro.
+                  <span className="max-sm:text-xs">
+                    {nombres[c].replace(/-/g, "\u2011").replace(/(Omnipod|CamAPS) /, "$1\u00a0")}
                   </span>
-                )}
-                <span
-                  aria-hidden="true"
-                  className="punto-sistema h-2 w-2 shrink-0 rounded-full"
-                  // 0.78.1: lee `--sis`; en nocturno, la tinta clara del sistema (≥ 3:1).
-                  style={{ ["--sis" as string]: h.strong, background: "var(--sis)" }}
-                />
-              </span>
-              {nombres && enFila && cortoEnMovil ? (
-                <>
-                  <span className="text-xs sm:hidden">
-                    {CORTO_SISTEMA[c]
-                      .replace(/-/g, "\u2011")
-                      .replace(/(Omnipod|CamAPS) /, "$1\u00a0")}
-                  </span>
-                  <span className="hidden sm:inline">
+                ) : nombres ? (
+                  <span>
                     <NombreSistema n={pegarFinal(nombres[c])} />
                   </span>
-                </>
-              ) : nombres && enFila ? (
-                // En la fila de cuatro del móvil, el nombre puede partirse («MiniMed ⏎ 780G»), pero
-                // no por el guion («Control-⏎IQ»): guion duro.
-                <span className="max-sm:text-xs">
-                  {nombres[c].replace(/-/g, "\u2011").replace(/(Omnipod|CamAPS) /, "$1\u00a0")}
-                </span>
-              ) : nombres ? (
-                <span>
-                  <NombreSistema n={pegarFinal(nombres[c])} />
-                </span>
-              ) : unico ? (
-                // 0.81.1 (quinta ronda, adjunto): en la elección única (paneles estrechos de
-                // Situaciones y la calculadora), el nombre corto también en el ordenador: las
-                // cuatro en una línea.
-                <span>{pegarFinal(CORTO_SISTEMA[c])}</span>
-              ) : (
-                <>
-                  <span className="sm:hidden">{pegarFinal(CORTO_SISTEMA[c])}</span>
-                  <span className="hidden sm:inline">
-                    <NombreSistema n={CATALOGO_SISTEMAS[c].name} />
-                  </span>
-                </>
-              )}
-            </button>
-          );
-        })}
-      </div>
-      {(extra || pista) && (
-        <div
-          className={`mt-1.5 flex items-center gap-2 empty:hidden ${unico ? (extra ? "sm:mt-0" : "sm:col-span-4") : "sm:contents"}`}
-        >
-          {extra}
-          {pista && <span className="text-xs text-slate-500">{pista}</span>}
+                ) : unico ? (
+                  // 0.81.1 (quinta ronda, adjunto): en la elección única (paneles estrechos de
+                  // Situaciones y la calculadora), el nombre corto también en el ordenador: las
+                  // cuatro en una línea.
+                  <span>{pegarFinal(CORTO_SISTEMA[c])}</span>
+                ) : (
+                  <>
+                    <span className="sm:hidden">{pegarFinal(CORTO_SISTEMA[c])}</span>
+                    <span className="hidden sm:inline">
+                      <NombreSistema n={CATALOGO_SISTEMAS[c].name} />
+                    </span>
+                  </>
+                )}
+              </button>
+            );
+          })}
         </div>
-      )}
+        {(extra || pista) && (
+          <div
+            className={`mt-1.5 flex items-center gap-2 empty:hidden ${unico ? (extra ? "sm:mt-0" : "sm:col-span-4") : "sm:contents"}`}
+          >
+            {extra}
+            {pista && <span className="text-xs text-slate-500">{pista}</span>}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

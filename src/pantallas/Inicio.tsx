@@ -60,12 +60,21 @@ import {
 } from "../inicio";
 import { fuentesDePiezas } from "../fuentesPiezas";
 import { FuentePie } from "../componentes/FuentePie";
+import { PARAMETROS } from "../fichaOperativa";
 import { VeaseTambien } from "../componentes/VeaseTambien";
 
 const hex = CATEGORIA_HEX.consultar;
 const NOMBRES = TABLAS.T1.columnas;
 /* En los botones, el nombre corto (el largo se cortaba en el móvil). */
 const CORTOS = ["MiniMed 780G", "Control-IQ / Control-IQ+", "CamAPS FX", "Omnipod 5"];
+/* Rótulo corto de cada paso de una fase, bajo su número en el móvil (1.0.13). */
+const CORTO_PASO: Record<string, string> = {
+  transicion: "Pauta",
+  parametros: "Parámetros",
+  objetivos: "Objetivos",
+  respaldo: "Respaldo",
+  arranque: "Activación",
+};
 const HOJA = "hoja";
 const GUIA = "guia";
 /* La calculadora de parámetros iniciales: lo primero al entrar (13-10-2026). */
@@ -139,15 +148,49 @@ function Hoja({ sis }: { sis?: number }) {
     ["Peso", peso],
     ["Objetivo del calculador de bolos manual", objetivo],
   ];
+  // 1.0.13 (25.ª ronda, R5): lo que se traslada, como en la calculadora («la del sistema actual»,
+  // con «Revisar antes de trasladar» si en el actual no actúa en automático y en el de destino sí);
+  // antes, «por rellenar» y sin el aviso.
+  const deActual = calc.origen === "isci" ? "de la bomba actual" : "del sistema actual";
+  const revisar = (r: string) => {
+    if (calc.origen !== "aid" || calc.sistemaPrevio === null || sis === undefined) return "";
+    const enDestino = PARAMETROS[sis].find((x) => x.r === r)?.auto;
+    const enActual = PARAMETROS[calc.sistemaPrevio].find((x) => x.r === r)?.auto;
+    return enDestino === "si" && !["si", "fijo"].includes(enActual ?? "")
+      ? `. Revisar antes de trasladar: en ${CORTOS[calc.sistemaPrevio]} no actúa en automático`
+      : "";
+  };
+  const trasladado = (articulo: "La" | "El", r: string) =>
+    ev.lista ? `${articulo} ${deActual}${revisar(r)}` : null;
   const partida: [string, string | null][] = [
     ["DTD de inicio", cifra(ev.dtdInicio, 1, "UI/día")],
-    ["Tasa basal", ev.calcula.basal ? cifra(ev.basalHora, 2, "UI/h", "≈ ") : null],
-    ["Ratio I/HC", ev.calcula.ratioFactor ? cifra(ev.ratio, 1, "g por 1 UI") : null],
+    [
+      "Tasa basal",
+      ev.calcula.basal
+        ? cifra(ev.basalHora, 2, "UI/h", "≈ ")
+        : trasladado("La", "Tasa basal programada"),
+    ],
+    [
+      "Ratio I/HC",
+      ev.calcula.ratioFactor
+        ? cifra(ev.ratio, 1, "g por 1 UI")
+        : mdi
+          ? ev.lista
+            ? "El de su pauta"
+            : null
+          : trasladado("El", "Ratio I/HC"),
+    ],
     [
       "Factor de sensibilidad",
       ev.calcula.ratioFactor && ev.factor !== null && ev.lista
         ? `${Math.round(ev.factor)} mg/dl por 1 UI`
-        : null,
+        : ev.calcula.ratioFactor
+          ? null
+          : mdi
+            ? ev.lista
+              ? "El de su pauta"
+              : null
+            : trasladado("El", "Factor de sensibilidad"),
     ],
   ];
   const marcar = (k: string) => {
@@ -490,9 +533,14 @@ function PasosInicio({
                   alPaso();
                   ir(i + 1);
                 }}
-                className="pestana -mb-px h-11 w-full justify-center text-[15px] tabular-nums focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                // 1.0.13 (25.ª ronda, R5): con un rótulo corto bajo el número (antes, solo «1 2 3 4 5»:
+                // había que tocar para saber qué era cada paso).
+                className="pestana -mb-px min-h-11 w-full flex-col justify-center gap-0 py-1 tabular-nums focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
-                {i + 1}
+                <span className="text-[15px] leading-tight">{i + 1}</span>
+                <span aria-hidden="true" className="text-[11px] font-normal leading-tight">
+                  {CORTO_PASO[x.id] ?? ""}
+                </span>
               </button>
             </li>
           );

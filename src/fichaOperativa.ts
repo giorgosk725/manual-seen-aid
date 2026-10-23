@@ -128,8 +128,9 @@ export const INDICACION: GrupoFicha[][] = [
         },
         {
           r: "Diabetes tipo 2",
-          v: "Control-IQ: no consta en el capítulo",
-          variante: { nombre: "Control-IQ+", v: "Autorizado (FDA y marcado CE)" },
+          // 1.0.13 (decisión del autor del 23-10-2026): solo la línea de Control-IQ+ (antes,
+          // «Control-IQ: no consta en el capítulo», metatexto en una ficha de manual).
+          v: "Control-IQ+: autorizado (FDA y marcado CE)",
           f: [t1(7)],
         },
         {

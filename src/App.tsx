@@ -8,7 +8,7 @@ import { Shell } from "./componentes/Shell";
 import { Portada } from "./pantallas/Portada";
 import { CapituloEntero, IndiceCapitulo } from "./pantallas/Capitulo";
 import { Apartado } from "./pantallas/Apartado";
-import { ORDEN_SISTEMAS } from "./ampliacion/ids";
+import { CORTO_SISTEMA, ORDEN_SISTEMAS } from "./ampliacion/ids";
 import type { SistemaId } from "./ampliacion/tipos";
 import { CON_CASOS, CON_CONSULTAS_ADMIN, CON_REPASO } from "./edicion";
 
@@ -104,7 +104,9 @@ const precargarPantallas = () => {
 /* Nombre de un sistema para el título de la pestaña: el de la Tabla 1 del capítulo. */
 const nombreDeSistema = (id: string | undefined) => {
   const c = ORDEN_SISTEMAS.indexOf(id as SistemaId);
-  return c >= 0 ? TABLAS.T1.columnas[c] : undefined;
+  // 1.0.13 (25.ª ronda, R3 y adjunto): el nombre de la app («Control-IQ / Control-IQ+»), también
+  // en «Volver a la consulta · …» (antes, «Tandem Control-IQ», el de la Tabla 1).
+  return c >= 0 ? CORTO_SISTEMA[c] : undefined;
 };
 
 /* Rutas antiguas que siguen en enlaces y favoritos: se sustituyen sin apilar historial. */

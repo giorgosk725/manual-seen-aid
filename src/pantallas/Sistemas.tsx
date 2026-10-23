@@ -19,7 +19,7 @@ import {
 import { ArrowRight, Check, ChevronDown, ExternalLink, Minus, X } from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, type Tabla } from "../contenido";
 import type { TablaId } from "../contenido/tipos";
-import type { Pieza } from "../inicio";
+import { nombraOtroSistema, type Pieza } from "../inicio";
 import { fuentesDePiezas } from "../fuentesPiezas";
 import {
   COMPAT_INSULINA,
@@ -503,8 +503,13 @@ function trozosDe(
   enTarjetas: Set<string> = new Set(),
 ): TrozoImpreso[] {
   const trozos: TrozoImpreso[] = [];
+  // 1.0.13 (25.ª ronda, R3): en las preguntas que citan también filas de las Tablas 1–4, solo las
+  // frases de este sistema (la de Omnipod 5 en la gestación imprimía la frase entera del apartado
+  // 10, que empieza por MiniMed 780G y sigue con Control-IQ+).
+  const conTabla = f.pasajes.some((x) => /^T[1-4]\//.test(x));
   const poner = (bloque: string, tipo: "p" | "li", texto: string) => {
     if (!texto || vistos.has(texto) || trozos.some((t) => t.texto === texto)) return;
+    if (conTabla && nombraOtroSistema(texto, c)) return;
     trozos.push({ bloque, tipo, texto });
   };
   for (const id of f.pasajes) {
@@ -709,7 +714,7 @@ export function FichaSistema({
     `${ver(id) ? "" : "hidden print:block"} ${id === "funciona" ? "" : "print:mt-7"}`;
   const mt = completa ? "mt-7" : "";
   return (
-    <div ref={ref} className="imprimible">
+    <div ref={ref} className="imprimible ficha-sistema">
       <div className="no-imprimir mb-2 hidden items-center gap-2 text-xs text-slate-500 sm:flex">
         <a
           href={href("sistemas")}
@@ -1085,10 +1090,12 @@ let seguirAbierta = 0;
 let deComparacion: { sec: string; t: number } | null = null;
 /* 1.0.12 (24.ª ronda, R3 y senior): uno solo marcado en «Los cuatro» se lleva a la pestaña que se
    abre (antes, las pestañas llevaban a la ficha de ese sistema; «Ajuste práctico», a Parámetros). */
-let unoMarcado: { id: string; t: number } | null = null;
+/* 1.0.13 (25.ª ronda, adjunto): solo en la pestaña que se abrió con él (antes, durante 3 s en
+   cualquier comparación: «… de los cuatro» de la Elección salía filtrado). */
+let unoMarcado: { id: string; t: number; destino: string } | null = null;
 function marcadoDeEntrada(): string[] {
   const m = unoMarcado;
-  return m && Date.now() - m.t < 3000 ? [m.id] : [];
+  return m && Date.now() - m.t < 3000 && window.location.hash === m.destino ? [m.id] : [];
 }
 function BarraSistemas({
   ids,
@@ -1149,8 +1156,9 @@ function BarraSistemas({
   // 1.0.12 (24.ª ronda, R3 y senior): con uno solo marcado, las pestañas siguen en «Los cuatro»
   // filtrado a ese (unoMarcado); antes llevaban a su ficha.
   const selStr = ids.length ? ids.join("+") : marcados.length > 1 ? marcados.join("+") : "todos";
-  const llevarMarcado = () => {
-    unoMarcado = entrada && marcados.length === 1 ? { id: marcados[0], t: Date.now() } : null;
+  const llevarMarcado = (destino: string) => {
+    unoMarcado =
+      entrada && marcados.length === 1 ? { id: marcados[0], t: Date.now(), destino } : null;
   };
   const alternar = (id: string) => {
     if (entrada) {
@@ -1442,7 +1450,7 @@ function BarraSistemas({
             // 1.0.5 (21.ª ronda, senior): solo sin sección (desde la 1.0.4, «entrada» vale también
             // en «Los cuatro» de una sección, y salían dos pestañas marcadas).
             aria-current={ids.length !== 1 && !sec ? "location" : undefined}
-            onClick={llevarMarcado}
+            onClick={(e) => llevarMarcado(e.currentTarget.getAttribute("href") ?? "")}
             onFocus={pestanaALaVista}
             className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
@@ -1454,7 +1462,7 @@ function BarraSistemas({
             key={x.id}
             href={href("sistemas", selStr, x.id)}
             aria-current={activa === x.id ? "location" : undefined}
-            onClick={llevarMarcado}
+            onClick={(e) => llevarMarcado(e.currentTarget.getAttribute("href") ?? "")}
             onFocus={pestanaALaVista}
             className="pestana tap-44 px-[3px] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-2"
           >
@@ -2022,8 +2030,21 @@ function Comparacion({
                   );
                 })}
               </ul>
+              {/* 1.0.13 (25.ª ronda, adjunto): en «Por parámetro», solo las fuentes del parámetro
+                  que se ve (antes, las de los cinco: bajo «Objetivo» salía el apartado 10 de la
+                  sensibilidad de CamAPS FX); en «Por sistema» y en papel, las de todos. */}
+              {!porSistema && (
+                <FuentePie
+                  className="-mt-2 mb-4 print:hidden"
+                  fuentes={fuentesDeDatos(
+                    cols.flatMap((c) =>
+                      PARAMETROS[c].filter((d) => ASPECTOS_PARAMETRO[aspecto].re.test(d.r)),
+                    ),
+                  )}
+                />
+              )}
               <FuentePie
-                className="-mt-2 mb-4"
+                className={`-mt-2 mb-4 ${porSistema ? "" : "hidden print:block"}`}
                 fuentes={fuentesDeDatos(cols.flatMap((c) => PARAMETROS[c]))}
               />
             </>

@@ -726,6 +726,17 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         TABLAS.T4.paginas[0],
       ),
     );
+  // 1.0.13 (25.ª ronda, R1): «modo sueño control iq», «sueño camaps»: la situación de la Tabla 4
+  // con ese sistema, como «alcohol omnipod» (antes, solo pasajes y un enlace «situación →»).
+  if (sis >= 0 && /\b(modo sueno|sueno|periodo nocturno)\b/.test(n))
+    out.push(
+      atajo(
+        `recurso/sueno/${SIS_IDS[sis]}`,
+        `Sueño/período nocturno · ${CATALOGO_SISTEMAS[sis].name}`,
+        href("consultar", "situacion", `sueno:${SIS_IDS[sis]}`),
+        TABLAS.T4.paginas[0],
+      ),
+    );
   // 1.0.1 (19.ª ronda, senior): «programar 780G», «configurar Omnipod», «primer día con…»: la
   // programación inicial de ese sistema (paso 5 de la calculadora, con o sin datos).
   if (sis >= 0 && /\b(program\w*|configur\w*|primer dia)\b/.test(n))

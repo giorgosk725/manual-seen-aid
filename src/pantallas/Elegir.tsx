@@ -287,7 +287,8 @@ function PorCaracteristicas() {
         href={href("consultar", "situacion", "gestacion")}
         className="mt-3 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 underline sm:ml-4 decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700"
       >
-        Gestación, parto y posparto
+        {/* 1.0.13 (25.ª ronda, adjunto): «de los cuatro», como los otros dos (y abre los cuatro). */}
+        Gestación, parto y posparto de los cuatro
         <ArrowRight size={14} aria-hidden="true" />
       </a>
       {/* 1.0.1 (19.ª ronda, adjunto): el deportista, a los modos temporales de los cuatro. */}

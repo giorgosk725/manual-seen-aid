@@ -118,7 +118,9 @@ const MODO = {
   // versalitas.
   rejilla: {
     dl: "divide-y divide-[var(--linea-suave)]",
-    fila: "grid min-w-0 gap-x-6 gap-y-1 py-3 first:pt-1 last:pb-0 sm:grid-cols-[minmax(10rem,15rem)_1fr] print:gap-y-0 print:py-0.5",
+    // 1.0.13 (25.ª ronda, visual): la columna de rótulos, la de Parámetros y Modos (16/19 rem):
+    // al cambiar de pestaña, los valores saltaban 64 px.
+    fila: "grid min-w-0 gap-x-6 gap-y-1 py-3 first:pt-1 last:pb-0 sm:grid-cols-[minmax(11rem,16rem)_1fr] lg:grid-cols-[minmax(11rem,19rem)_1fr] print:gap-y-0 print:py-0.5",
     dt: "",
     dd: "",
   },

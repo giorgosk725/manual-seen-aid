@@ -458,12 +458,17 @@ export function textosDePieza(pieza: Pieza, sis?: number): string[] {
    casilla, entre «; ») que habla SOLO de otro sistema («Con CamAPS FX, el objetivo…», «en Tandem
    Control-IQ, el perfil basal sí interviene…») no se enseña; la que nombra a varios o a ninguno,
    sí. Solo se omite: el texto que queda es literal. */
-const NOMBRES_SISTEMA = [
+/* 1.0.13: también para saber si una frase nombra otro sistema (ficha impresa). */
+export const NOMBRES_SISTEMA = [
   /^(?:MiniMed(?: 780G)?|780G)\b/,
   /^(?:Tandem(?: Control-IQ\+?)?|Control-IQ\+?)/,
   /^(?:myLoop )?CamAPS(?: FX)?\b/,
   /^Omnipod(?: 5)?\b/,
 ];
+/* Los mismos nombres en cualquier punto de la frase. */
+const NOMBRES_EN_FRASE = NOMBRES_SISTEMA.map((re) => new RegExp(re.source.replace(/^\^/, "")));
+export const nombraOtroSistema = (texto: string, sis: number) =>
+  NOMBRES_EN_FRASE.some((re, k) => k !== sis && re.test(texto));
 export function soloDeOtroSistema(texto: string, sis: number): boolean {
   const m = /^(?:y\s+)?(?:con|en)\s+(.+)$/i.exec(texto.trim());
   if (!m) return false;

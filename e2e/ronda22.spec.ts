@@ -66,7 +66,8 @@ test.describe("Ronda 22 · situaciones y comparación", () => {
       await page.evaluate((r) => (window.location.hash = r.slice(1)), ruta);
       await expect(page.getByRole("link", { name: /Otra situación/ })).toHaveAttribute(
         "href",
-        "#/consultar/situacion/:control-iq",
+        // 1.0.13 (25.ª ronda): a la lista de los cuatro, como la barra.
+        "#/consultar/situacion",
       );
     }
   });

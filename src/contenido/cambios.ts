@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-23",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — vigesimocuarta ronda`,
+    titulo: `Complemento interactivo ${VERSION_APP} — vigesimoquinta ronda`,
+    detalle: [
+      "Situaciones: sin sistema en la dirección, siempre los cuatro (antes, el último consultado), y «‹ Otra situación» lleva a la lista de los cuatro, como la barra. El selector de sistema pasa a 2 × 2 cuando la columna es estrecha (tableta en horizontal o zoom); en la ficha, desde 1280 px, cada nombre en una línea. Elección: «Gestación, parto y posparto de los cuatro».",
+      "Corregido de la 1.0.12: un sistema marcado en «Los cuatro» ya no se cuela en otros enlaces de los cuatro, y la ficha impresa de cada sistema no imprime frases de otros sistemas (Omnipod 5 vuelve a 3 caras).",
+      "Iniciación: la hoja de comprobación del cambio de sistema imprime lo que se traslada («La del sistema actual») con «Revisar antes de trasladar» cuando corresponde (antes, en blanco). En el móvil, cada paso de la fase con su rótulo corto bajo el número; la fase elegida, en tinta, sin el burdeos del sistema. Interpretación de la descarga: en el móvil, un desplegable con el título de los ocho pasos.",
+      "Buscar: «modo sueño» con un sistema abre la situación de ese sistema, como «alcohol omnipod». Sistemas: la fuente al pie de «Por parámetro», la del parámetro que se ve; en la ficha, los valores en la misma columna en todas las pestañas y, en papel, una sola forma de tarjeta. Control-IQ: en Indicación, «Diabetes tipo 2» solo con la línea de Control-IQ+ (decisión del responsable); «Volver a la consulta · Control-IQ / Control-IQ+».",
+    ],
+  },
+  {
+    fecha: "2026-10-23",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.12 — vigesimocuarta ronda",
     detalle: [
       "Sistemas: con un solo sistema marcado en «Los cuatro», cada pestaña enseña solo ese (antes seguían los cuatro y «Ajuste práctico» llevaba a su ficha); al marcar o quitar sistemas se conserva el parámetro y la vista («Por parámetro» o «Por sistema»). Elección del sistema: lo marcado se recuerda al volver con Atrás (solo mientras la pestaña siga abierta).",
       "Situaciones: «Los cuatro» también en gestación, enfermedad e ingreso (y tocar el sistema marcado vuelve a los cuatro); «Agua, alcohol y desconexión» en «Ejercicio y comidas», con el sistema elegido; el filtro ya no falla al dejar menos grupos. Gestación con Control-IQ, sin repetir el rango del modo sueño ni la fila del objetivo automático, que no se configura; con MiniMed 780G, sin «asimismo» (decisión del responsable).",

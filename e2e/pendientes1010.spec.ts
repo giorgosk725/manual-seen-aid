@@ -53,13 +53,15 @@ test.describe("Pendientes de la 1.0.10", () => {
       .toContain("Plan de seguridad · MiniMed 780G");
   });
 
-  test("Iniciación: la fase elegida, con la receta del selector de sistemas", async ({ page }) => {
+  // 1.0.13 (25.ª ronda, visual): la fase elegida, en tinta (sin el fondo burdeos del sistema).
+  test("Iniciación: la fase elegida, en tinta y sin fondo burdeos", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/#/consultar/inicio/inicio:control-iq");
     const fase = page.locator(".opciones-ligeras .chip[aria-current]").first();
     await expect(fase).toBeVisible();
-    expect(await fase.evaluate((e) => getComputedStyle(e).backgroundColor)).toBe(
-      "rgb(247, 239, 243)",
+    expect(await fase.evaluate((e) => getComputedStyle(e).fontWeight)).toBe("700");
+    expect(await fase.evaluate((e) => getComputedStyle(e).backgroundColor)).not.toBe(
+      "rgb(142, 37, 78)",
     );
   });
 });
