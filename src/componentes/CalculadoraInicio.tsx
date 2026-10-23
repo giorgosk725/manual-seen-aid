@@ -404,7 +404,19 @@ export function CalculadoraInicio({
       },
     );
     io.observe(el);
-    return () => io.disconnect();
+    // 1.0.15 (26.ª ronda, visual): un salto («Ir a › Programación») que pasa de los resultados
+    // por debajo a los resultados por encima no cruza la pantalla y el observador no avisa: también
+    // al desplazarse.
+    const alDesplazar = () => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom < 0) setResultadosPasados(true);
+      else if (r.top > 0) setResultadosPasados(false);
+    };
+    window.addEventListener("scroll", alDesplazar, { passive: true });
+    return () => {
+      io.disconnect();
+      window.removeEventListener("scroll", alDesplazar);
+    };
   }, []);
   const peso = leerCifra(d.peso, LIMITES.peso);
   const pideObjetivo = mdi || d.referencia === false;
@@ -1044,7 +1056,8 @@ export function CalculadoraInicio({
               <p className="casilla px-3 py-2 text-sm leading-snug text-slate-800">
                 <span className="font-semibold">Opciones aplicadas: </span>
                 {[
-                  CONTROLES.find((x) => x.id === d.control)?.texto.toLowerCase(),
+                  // 1.0.15 (26.ª ronda, R5): solo la primera letra (antes, «hba1c»).
+                  enMinuscula(CONTROLES.find((x) => x.id === d.control)?.texto ?? "") || null,
                   `reducción del ${d.reduccion} %`,
                   d.ultralarga ? "basal previa glargina U-300 o degludec" : null,
                   ev.calcula.basal ? `basal ${d.basalPct} % de la DTD` : null,

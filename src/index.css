@@ -2111,7 +2111,9 @@ html.night *:focus-visible {
   /* 1.0.13 (25.ª ronda, visual): en la ficha, una sola receta en papel para las cinco secciones:
      sin marco (como Parámetros y Modos, que se parten entre caras) y con la pleca del sistema
      junto al título de cada tarjeta (antes, tres secciones con marco y pleca y dos sin nada). */
-  .imprimible.ficha-sistema section.tarjeta-sistema {
+  /* 1.0.15 (26.ª ronda, visual y senior): también la lista de preguntas (antes, con marco). */
+  .imprimible.ficha-sistema section.tarjeta-sistema,
+  .imprimible.ficha-sistema ul.tarjeta-sistema {
     border-color: transparent;
     border-top-color: #d4d4d4;
     border-radius: 0;

@@ -604,6 +604,13 @@ function PasosInicio({
               );
             })}
           </div>
+          {/* 1.0.15 (26.ª ronda, R5): sin elegir, se ve lo de todas las opciones (nada plegado);
+              dicho, para que no se lea como lo de la primera. */}
+          {!resp[q.id] && (
+            <p className="mt-1 text-[13px] text-slate-600">
+              Sin elegir: abajo, lo de todas las opciones.
+            </p>
+          )}
         </div>
       ))}
       {/* 1.0.5 (21.ª ronda, R5): desde otro sistema de asa cerrada, el paso 1 quedaba casi vacío

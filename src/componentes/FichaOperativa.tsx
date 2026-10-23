@@ -50,13 +50,18 @@ function EnElCapitulo({ c, d, comun }: { c: number; d: Dato; comun?: string }) {
   // 1.0.0 (18.ª ronda, adjunto, visual y R3): si la tarjeta cita lo mismo en casi todas sus filas
   // («Tabla 1 · Tabla 3» en Parámetros), la línea sobra: ya lo dice la fuente al pie.
   if (comun && firmaDe(sitios) === comun) return null;
+  // 1.0.15 (26.ª ronda, adjunto): sin el sitio al que ya lleva el rótulo con el libro (salía tres
+  // veces: rótulo, esta línea y la fuente al pie); si no queda otro, sin la línea.
+  const delRotulo = literalDe(d.f[0], c);
   const vistos = new Set<string>();
   const unicos = sitios
     .map((x) => ({ ...x, texto: corto(x.texto) }))
+    .filter((x) => x.ruta !== delRotulo)
     .filter((x) => !vistos.has(x.texto) && !!vistos.add(x.texto));
+  if (!unicos.length) return null;
   return (
     <span className="fuente-pie mt-1 block print:hidden">
-      En el capítulo:{" "}
+      También en el capítulo:{" "}
       {unicos.map((x, k) => (
         <span key={x.ruta}>
           {k > 0 && "\u00a0· "}
@@ -91,7 +96,16 @@ function Variante({ c, d }: { c: number; d: Dato }) {
   const h = SISTEMA_HEX[c];
   return (
     <span className="mt-1 grid grid-cols-[auto_1fr] items-baseline gap-x-2">
-      <span className="insignia" style={{ background: h.soft, color: h.ink }}>
+      {/* 1.0.15 (26.ª ronda, visual): la variante con contorno, distinta de las insignias de efecto
+          («Actúa en automático»), que llevan el mismo fondo del sistema. */}
+      <span
+        className="insignia"
+        style={{
+          background: "var(--superficie)",
+          color: h.ink,
+          boxShadow: `inset 0 0 0 1px ${h.strong}`,
+        }}
+      >
         {d.variante.nombre}
       </span>
       <span className="min-w-0">
@@ -443,7 +457,7 @@ export function AspectoEntreSistemas({
                     ni flecha) y con zona de toque de 44 px. */}
                 <a
                   href={ficha(c, d)}
-                  className="titulo-tarjeta tap-44 inline-flex min-h-11 items-center gap-1 underline decoration-[var(--linea-fuerte)] decoration-dotted underline-offset-4 hover:decoration-solid"
+                  className="titulo-tarjeta tap-44 inline-flex min-h-11 items-center gap-1 underline decoration-[var(--linea-fuerte)] underline-offset-4 hover:decoration-slate-700"
                   style={{ color: h.ink }}
                 >
                   {nombre(c)}

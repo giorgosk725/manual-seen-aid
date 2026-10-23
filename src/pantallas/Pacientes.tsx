@@ -193,7 +193,9 @@ export function HubPacientes() {
                     className="foto-sistema h-9 w-9 shrink-0 rounded-md object-cover"
                   />
                   <span className="text-sm font-bold" style={{ color: SISTEMA_HEX[c].ink }}>
-                    {CORTO_SISTEMA[c]}
+                    {/* 1.0.15 (26.ª ronda, visual y senior): sin partir «Control-IQ+» por el guion;
+                        solo tras la barra. */}
+                    {CORTO_SISTEMA[c].replace(/-/g, "‑")}
                   </span>
                 </a>
               </li>

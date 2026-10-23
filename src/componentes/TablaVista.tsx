@@ -255,7 +255,9 @@ function TablaHTML({
             >
               <th
                 scope="row"
-                className="separador border-t px-3 py-2 text-left text-xs font-bold text-slate-800"
+                // 1.0.15 (26.ª ronda, senior): el rótulo de la fila a 14 px, como los datos (antes, a
+                // 12–13 px, más pequeño que las celdas).
+                className="separador border-t px-3 py-2 text-left text-sm font-bold text-slate-800"
                 // 0.77.1 (auditorías R3 y senior): columnas algo más estrechas, para que la tabla de
                 // los cuatro sistemas quepa entera en la columna de lectura (antes, 848 px en 734).
                 // 0.80.1: en la Tabla 4, rótulos largos: columna más ancha (6–7 líneas a 1920).
@@ -275,7 +277,7 @@ function TablaHTML({
                           className={
                             k === 0
                               ? "block"
-                              : "mt-1 block text-xs font-normal leading-snug text-slate-600"
+                              : "mt-1 block text-[13px] font-normal leading-snug text-slate-700"
                           }
                         >
                           <Texto>{sinCortes(l)}</Texto>

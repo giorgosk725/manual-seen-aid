@@ -495,7 +495,8 @@ function Tarjeta({
           {r.tipo === "tabla" && casilla && !ruta.includes("/situacion/")
             ? " · ficha del sistema"
             : ""}
-          {r.tipo === "tabla" && ruta.includes("/situacion/") ? " · situación" : ""}{" "}
+          {/* 1.0.15 (26.ª ronda, R1): dice qué hace (antes, «· situación»). */}
+          {r.tipo === "tabla" && ruta.includes("/situacion/") ? " · abrir la situación" : ""}{" "}
           <ArrowRight size={14} aria-hidden="true" />
         </a>
         {principal && r.tipo === "texto" && contexto && (

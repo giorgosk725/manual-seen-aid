@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-23",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — opcionales de la vigesimoquinta ronda`,
+    titulo: `Complemento interactivo ${VERSION_APP} — vigesimosexta ronda`,
+    detalle: [
+      "Buscar: «modo sueño» con un sistema abre la situación con su casilla de la Tabla 4 a la vista, como el alcohol; «· abrir la situación» en vez de «· situación». Situaciones: «Los cuatro» también en las de la Tabla 6 (RM, TC, cirugía…).",
+      "Ficha: «También en el capítulo» solo con lo que añade al rótulo con el libro (antes repetía su destino); la variante (Control-IQ+, Liberty) con contorno, distinta de las insignias de efecto; al pie de las preguntas, enlaces a la hipoglucemia nocturna de Modos, a la descarga y a las situaciones del sistema. En papel, la lista de preguntas sin marco, como el resto.",
+      "Iniciación: «HbA1c» con su mayúscula en «Opciones aplicadas»; en Fases, sin pauta elegida, se dice que abajo va lo de todas las opciones; la barra de resumen se oculta también tras «Ir a › Programación». Tablas comparativas: el rótulo de cada fila a 14 px, como los datos. Material para el paciente: «Control-IQ+» sin partir por el guion. Cifras en negrita también con «año» y «semana» en singular.",
+    ],
+  },
+  {
+    fecha: "2026-10-23",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.14 — opcionales de la vigesimoquinta ronda",
     detalle: [
       "Preguntas frecuentes: la fuente «Tabla 3 · ficha del sistema» lleva a la fila del parámetro en la ficha (antes, al principio de la pestaña). Interpretación de la descarga: «Ajuste de los parámetros por sistema (Tabla 3)» abre la Tabla 3, en «Ajuste práctico».",
       "Iniciación: el paso de objetivos enlaza a «Gestación, parto y posparto» con el sistema elegido; la hoja de comprobación nombra el sistema como el resto de la app («Control-IQ / Control-IQ+»); «Ir a» de la calculadora con aspecto de enlace y «Editar datos» con un lápiz.",

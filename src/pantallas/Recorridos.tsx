@@ -951,7 +951,8 @@ export function SituacionSistema({
                         suelto entre la tarjeta y la fuente). */}
                     <div className="mb-1 flex items-baseline justify-between gap-3">
                       <span className="rotulo">Sistema</span>
-                      {porSistema && sisIdx >= 0 && (
+                      {/* 1.0.15 (26.ª ronda, R1): también en las de la Tabla 6 (RM, cirugía…). */}
+                      {(porSistema || sit.tabla === "T6") && sisIdx >= 0 && (
                         <button
                           type="button"
                           onClick={() => elegirRuta("consultar", "situacion", sit.id)}

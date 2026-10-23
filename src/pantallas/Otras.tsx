@@ -16,7 +16,8 @@ import {
 } from "lucide-react";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { FRECUENTES } from "../frecuentes";
-import { BIBLIOGRAFIA, CAPITULO, apartadoPorSlug } from "../contenido";
+import { BIBLIOGRAFIA, CAPITULO, TABLAS, apartadoPorSlug } from "../contenido";
+import { SIS_IDS, SITUACIONES } from "../situaciones";
 import { BUILD } from "../build";
 import { PREGUNTAS } from "../contenido/test";
 import { anularNavegacionNueva, elegirRuta, fueNavegacionNueva, href } from "../rutas";
@@ -69,6 +70,23 @@ const TIPO: Record<string, string> = {
 /* 1.0.6 (21.ª ronda, R1): un acceso a una fila de Modos de una ficha («#/sistemas/op5/
    modos:alcohol»), con el dato operativo de esa fila debajo del título. */
 function lineaDeFicha(ruta: string) {
+  // 1.0.15 (26.ª ronda, R1): una situación de la Tabla 4 con sistema («sueno:control-iq»), con su
+  // casilla, como el dato de Modos (antes, solo el título).
+  const st = ruta.match(/^#\/consultar\/situacion\/([\w-]+):([\w-]+)$/);
+  if (st) {
+    const sit = SITUACIONES.find((x) => x.id === st[1]);
+    const col = SIS_IDS.indexOf(st[2]);
+    const celda =
+      sit && sit.tabla && col >= 0 ? TABLAS[sit.tabla]?.filas[sit.fila]?.celdas[col] : undefined;
+    return celda
+      ? {
+          v: celda
+            .replace(/\*/g, "")
+            .replace(/([^.;:])\n/g, "$1 · ")
+            .replace(/\n/g, " "),
+        }
+      : undefined;
+  }
   const m = ruta.match(/^#\/sistemas\/([\w-]+)\/modos:([\w-]+)$/);
   if (!m) return undefined;
   const c = ORDEN_SISTEMAS.indexOf(m[1] as (typeof ORDEN_SISTEMAS)[number]);

@@ -924,6 +924,43 @@ export function FichaSistema({
               </li>
             ))}
           </ul>
+          {/* 1.0.15 (26.ª ronda, R3): lo que se consulta como pregunta y está en otra parte de la
+              ficha o de la app (la hipoglucemia nocturna de 780G no tenía pregunta propia). Solo
+              enlaces: nada se repite. */}
+          {(() => {
+            const nocturna = MODOS[c].find((d) =>
+              slugDato(d.r).startsWith("hipoglucemia-nocturna"),
+            );
+            return (
+              <p className="no-imprimir mt-2 text-sm text-slate-700">
+                <span className="font-semibold">También en esta ficha y en la app: </span>
+                {nocturna && (
+                  <>
+                    <a
+                      href={href("sistemas", s.id, `modos:${slugDato(nocturna.r)}`)}
+                      className="tap-44 inline py-1 font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700"
+                    >
+                      Hipoglucemia nocturna (Modos y funciones)
+                    </a>
+                    <span aria-hidden="true">&nbsp;· </span>
+                  </>
+                )}
+                <a
+                  href={href("consultar", "descarga")}
+                  className="tap-44 inline py-1 font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700"
+                >
+                  Interpretación de la descarga
+                </a>
+                <span aria-hidden="true">&nbsp;· </span>
+                <a
+                  href={href("consultar", "situacion", `:${slug}`)}
+                  className="tap-44 inline py-1 font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700"
+                >
+                  Situaciones con {CORTO_SISTEMA[c]}
+                </a>
+              </p>
+            );
+          })()}
           {/* 0.96.0 (16.ª ronda, visual): sin «Las demás preguntas de esta ficha se responden con
               sus tarjetas» en papel (sobraba: las tarjetas van impresas encima). */}
           <FuentePie
