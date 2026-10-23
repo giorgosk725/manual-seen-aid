@@ -8,8 +8,19 @@ import { FuentePie } from "./FuentePie";
 import { NotaCorreccion } from "./NotaCorreccion";
 import { NOTA_ADAPTA_OMNIPOD } from "../notas-complementarias";
 
-export function ComoFuncionaOperativo({ c }: { c: number }) {
+/* 1.0.11 (23.ª ronda, adjunto): en la ficha entera y en papel, «Qué cambia» de Control-IQ+ remite a
+   las secciones que ya dan sus cifras (Indicación, Parámetros, Modos), sin repetirlas; en la
+   pestaña «Cómo funciona» sola, con las cifras. */
+const QUE_CAMBIA_REMITE =
+  "Indicación: edad, peso y DTD; diabetes tipo 2 y gestación (Indicación y material) · basal temporal (Parámetros) · bolo extendido (Modos y funciones)";
+
+export function ComoFuncionaOperativo({ c, completa = false }: { c: number; completa?: boolean }) {
   const variante = VARIANTE_OPERATIVA[c];
+  const remite = variante && {
+    ...variante,
+    datos: variante.datos.map((d) => (d.r === "Qué cambia" ? { ...d, v: QUE_CAMBIA_REMITE } : d)),
+  };
+  const cambia = variante?.datos.some((d) => d.r === "Qué cambia");
   const fuente = (
     <FuentePie fuentes={fuentesDeDatos([...ALGORITMO[c], ...(variante?.datos ?? [])])} />
   );
@@ -28,10 +39,19 @@ export function ComoFuncionaOperativo({ c }: { c: number }) {
           )}
         />
       </TarjetaDatos>
-      {variante && (
-        <TarjetaDatos c={c} titulo={variante.titulo} pie={fuente}>
-          <CasillasDatos c={c} datos={variante.datos} />
-        </TarjetaDatos>
+      {variante && (!completa || !cambia) && (
+        <div className={cambia ? "print:hidden" : undefined}>
+          <TarjetaDatos c={c} titulo={variante.titulo} pie={fuente}>
+            <CasillasDatos c={c} datos={variante.datos} />
+          </TarjetaDatos>
+        </div>
+      )}
+      {remite && cambia && (
+        <div className={completa ? undefined : "hidden print:block"}>
+          <TarjetaDatos c={c} titulo={remite.titulo} pie={fuente}>
+            <CasillasDatos c={c} datos={remite.datos} />
+          </TarjetaDatos>
+        </div>
       )}
       <div className="print:hidden">{fuente}</div>
       {/* Omnipod 5: el aprendizaje sigue la corrección posterior a la publicación (Tabla 1). */}

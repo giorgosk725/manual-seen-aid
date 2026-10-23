@@ -264,14 +264,20 @@ function Escalera({ i, yaEnTexto }: { i: number; yaEnTexto?: (t: string) => bool
         })}
       </ol>
       <ul className="mt-2 space-y-1 text-xs text-slate-700">
-        {extras.map((e) => (
-          <li key={e.texto} className="flex gap-1.5">
-            <span aria-hidden="true">·</span>
-            <span>
-              <SinCortes texto={e.texto} />
-            </span>
-          </li>
-        ))}
+        {/* 1.0.11 (23.ª ronda, adjunto): con `desde`, solo la parte que no repite una franja
+            («priorizando en el hospital…»; la de 70–100 mg/dl ya va arriba). */}
+        {extras.map((e) => {
+          const i = e.desde ? e.texto.indexOf(e.desde) : -1;
+          const t = i > 0 ? e.texto.slice(i).replace(/^./, (x) => x.toUpperCase()) : e.texto;
+          return (
+            <li key={e.texto} className="flex gap-1.5">
+              <span aria-hidden="true">·</span>
+              <span>
+                <SinCortes texto={t} />
+              </span>
+            </li>
+          );
+        })}
         {aviso && (
           <li className="font-semibold text-slate-800">
             <SinCortes texto={aviso} />

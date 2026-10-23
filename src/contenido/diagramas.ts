@@ -152,7 +152,8 @@ export interface PoblacionObjetivos {
   /* Frases literales; `p` si son de otra página que la de la población. */
   /* `encabeza`: la frase va encima de las franjas solo hasta esas palabras (su condición), sin
      las cifras que las franjas ya dan (1.0.9, como en la hipoglucemia). */
-  extras: { texto: string; p?: number; encabeza?: string }[];
+  /* `desde`: la frase, solo desde esas palabras (lo anterior ya lo dicen las franjas); 1.0.11. */
+  extras: { texto: string; p?: number; encabeza?: string; desde?: string }[];
   aviso?: string;
 }
 
@@ -245,6 +246,7 @@ export const OBJETIVOS_MCG: PoblacionObjetivos[] = [
       {
         texto:
           "Introduce además el tiempo próximo a hipoglucemia (70–100 mg/dl), que debería mantenerse <15 %, priorizando en el hospital la prevención de hipoglucemia y de complicaciones agudas frente a objetivos ambulatorios más estrictos.",
+        desde: "priorizando",
       },
     ],
     aviso: "No deben extrapolarse directamente a población pediátrica.",

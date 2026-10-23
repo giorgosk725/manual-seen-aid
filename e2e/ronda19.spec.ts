@@ -75,6 +75,8 @@ test.describe("Ronda 19", () => {
       grupo.getByRole("radio", { name: /Omnipod 5/ }).boundingBox(),
       grupo.getByRole("button", { name: "Comparar" }).boundingBox(),
     ]);
-    expect(Math.abs(a!.y - b!.y)).toBeLessThan(4);
+    // 1.0.11: en la misma fila (la casilla de Control-IQ / Control-IQ+ puede ir en dos líneas).
+    expect(b!.y).toBeLessThan(a!.y + a!.height);
+    expect(b!.y + b!.height).toBeGreaterThan(a!.y);
   });
 });

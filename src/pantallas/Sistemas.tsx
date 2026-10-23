@@ -836,7 +836,7 @@ export function FichaSistema({
         <TituloSeccion id="funciona" sistema={s.name} color={h.ink} visible={completa}>
           Cómo funciona
         </TituloSeccion>
-        <ComoFuncionaOperativo c={c} />
+        <ComoFuncionaOperativo c={c} completa={completa} />
       </section>
 
       {
@@ -1321,6 +1321,9 @@ function BarraSistemas({
           etiqueta="Sistemas"
           // En la ficha, uno solo (botón de opción): tocar otro cambia de ficha.
           unico={ids.length === 1}
+          // 1.0.11 (23.ª ronda, adjunto y visual): en la ficha, «Control-IQ / Control-IQ+», como
+          // en el resto de la ficha y las herramientas (antes, «Control-IQ» solo).
+          nombres={ids.length === 1 ? CORTO_SISTEMA : undefined}
           seleccion={(entrada ? marcados : ids).map((id) => columnaDeSistema(id as SistemaId))}
           onToggle={(c) => alternar(IDS_SISTEMA[c])}
           extra={

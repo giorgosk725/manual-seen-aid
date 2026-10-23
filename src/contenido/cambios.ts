@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-23",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — Iniciación por partes y vigesimotercera ronda`,
+    titulo: `Complemento interactivo ${VERSION_APP} — pendientes de la vigesimotercera ronda`,
+    detalle: [
+      "Ficha entera de Control-IQ (y en papel): «Qué cambia» con Control-IQ+ remite a Indicación, Parámetros y Modos, sin repetir sus cifras; en la pestaña «Cómo funciona», con ellas.",
+      "Hospital: bajo las franjas de objetivos, sin repetir la de 70–100 mg/dl (queda lo que añade: la prioridad de prevenir la hipoglucemia).",
+      "Ficha: el selector dice «Control-IQ / Control-IQ+», como el resto de la ficha. Plan de seguridad impreso: el sistema y la página en el margen de cada cara.",
+      "Iniciación: la fase elegida, con fondo suave y borde burdeos, como el sistema (una sola forma de «elegido»).",
+    ],
+  },
+  {
+    fecha: "2026-10-23",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.10 — Iniciación por partes y vigesimotercera ronda",
     detalle: [
       "Iniciación: en el móvil y la tableta, el resultado justo después de los datos y las opciones del cálculo debajo, con una línea «Opciones aplicadas» y «Cambiar opciones» (antes, unos 1400 px de opciones entre los datos y el resultado); en el ordenador, como antes. La casilla de U-300, antes de la reducción que cambia. En Fases, los pasos de cada fase como pestañas.",
       "Gestación: sin las franjas de objetivos cuando el texto del capítulo, justo debajo, da las mismas cifras.",

@@ -4,7 +4,7 @@
    PDF. El plan cabe en una cara (lo que hay que tener y rellenar, y qué función usar del sistema)
    y lleva como segunda cara la hoja de cetonas. Las hojas se imprimen con letra grande (12 pt);
    la app no guarda nada: solo líneas en blanco para el papel. */
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { Printer } from "lucide-react";
 import { UrgenciaF3 } from "../componentes/UrgenciaF3";
 import { CasillasSistema } from "../componentes/CasillasSistema";
@@ -435,6 +435,17 @@ function Casilla() {
 export function PlanSeguridad({ sistema }: { sistema?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const c = ORDEN_SISTEMAS.indexOf(sistema as SistemaId);
+  // 1.0.11 (23.ª ronda, senior): en papel, el sistema y la página en el margen de cada cara (las
+  // caras 2–4 no decían de qué sistema eran), como la ficha.
+  const nombreImpreso = c >= 0 ? TABLAS.T1.columnas[c] : null;
+  useEffect(() => {
+    if (!nombreImpreso) return undefined;
+    const st = document.createElement("style");
+    st.dataset.cabeceraImpresa = "";
+    st.textContent = `@page { @top-left { content: "Plan de seguridad · ${nombreImpreso}"; font: 8pt "Open Sans Variable", "Open Sans", sans-serif; color: #6b6b6b; vertical-align: bottom; padding-bottom: 3mm; } @top-right { content: "Página " counter(page) " de " counter(pages); font: 8pt "Open Sans Variable", "Open Sans", sans-serif; color: #6b6b6b; vertical-align: bottom; padding-bottom: 3mm; } }`;
+    document.head.append(st);
+    return () => st.remove();
+  }, [nombreImpreso]);
   if (c < 0) return <HubPacientes />;
   const nombre = TABLAS.T1.columnas[c];
   const plan = bloque("07-educacion", "b4");
