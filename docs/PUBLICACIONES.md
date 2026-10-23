@@ -86,3 +86,4 @@ Nota (22-10-2026): la 0.96.0 se desplegó bien, pero la comprobación final de `
 | 2026-10-23 06:37 | main | 1.0.12 | d2a54299171d | index-dHvjQqnS.js | 1.0.11 (8f3faf124767) |
 | 2026-10-23 08:03 | main | 1.0.13 | 795fbe9faa2a | index-B-OwqoT-.js | 1.0.12 (d2a54299171d) |
 | 2026-10-23 10:41 | main | 1.0.14 | 5fbccfda3c4e | index-CD8VPLQM.js | 1.0.13 (795fbe9faa2a) |
+| 2026-10-23 12:55 | main | 1.0.15 | 499a6b13324e | index-BNgkaFpB.js | 1.0.14 (5fbccfda3c4e) |
