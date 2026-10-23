@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-23",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — vigesimoquinta ronda`,
+    titulo: `Complemento interactivo ${VERSION_APP} — opcionales de la vigesimoquinta ronda`,
+    detalle: [
+      "Preguntas frecuentes: la fuente «Tabla 3 · ficha del sistema» lleva a la fila del parámetro en la ficha (antes, al principio de la pestaña). Interpretación de la descarga: «Ajuste de los parámetros por sistema (Tabla 3)» abre la Tabla 3, en «Ajuste práctico».",
+      "Iniciación: el paso de objetivos enlaza a «Gestación, parto y posparto» con el sistema elegido; la hoja de comprobación nombra el sistema como el resto de la app («Control-IQ / Control-IQ+»); «Ir a» de la calculadora con aspecto de enlace y «Editar datos» con un lápiz.",
+      "Ingreso hospitalario: la fuente de los objetivos en el hospital, enlazada a su párrafo, y sin el «·» suelto delante de la frase.",
+    ],
+  },
+  {
+    fecha: "2026-10-23",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.13 — vigesimoquinta ronda",
     detalle: [
       "Situaciones: sin sistema en la dirección, siempre los cuatro (antes, el último consultado), y «‹ Otra situación» lleva a la lista de los cuatro, como la barra. El selector de sistema pasa a 2 × 2 cuando la columna es estrecha (tableta en horizontal o zoom); en la ficha, desde 1280 px, cada nombre en una línea. Elección: «Gestación, parto y posparto de los cuatro».",
       "Corregido de la 1.0.12: un sistema marcado en «Los cuatro» ya no se cuela en otros enlaces de los cuatro, y la ficha impresa de cada sistema no imprime frases de otros sistemas (Omnipod 5 vuelve a 3 caras).",

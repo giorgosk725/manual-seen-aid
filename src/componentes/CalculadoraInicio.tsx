@@ -8,7 +8,7 @@ import { Anuncio } from "./Anuncio";
 import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { AlertTriangle, ArrowDown, Calculator, ChevronUp } from "lucide-react";
+import { AlertTriangle, ArrowDown, Calculator, Pencil } from "lucide-react";
 import { Lineas } from "../texto";
 import {
   RECAMBIOS,
@@ -102,11 +102,14 @@ function irAPaso(n: number, editar = false) {
     : null;
   (campo ?? h)?.focus({ preventScroll: true });
 }
+/* 1.0.14 (25.ª ronda, senior): con aspecto de enlace (subrayado fino, texto oscuro y, desde sm,
+   14 px), como los accesos de la ficha (antes, gris a 13 px sin subrayado). */
 const botonIr =
-  "tap-44 inline-flex min-h-11 items-center px-1 text-[13px] font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline sm:min-h-8";
+  "tap-44 inline-flex min-h-11 items-center px-1 text-[13px] font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-8 sm:text-[14px]";
 const EditarDatos = () => (
   <button type="button" onClick={() => irAPaso(3, true)} className={`${botonIr} gap-1`}>
-    <ChevronUp size={14} aria-hidden="true" />
+    {/* 1.0.14 (25.ª ronda, R5): un lápiz (la flecha hacia arriba se leía como «plegar»). */}
+    <Pencil size={13} aria-hidden="true" />
     Editar datos
   </button>
 );

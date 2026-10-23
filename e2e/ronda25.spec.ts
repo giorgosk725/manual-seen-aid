@@ -123,3 +123,26 @@ test.describe("Ronda 25 · buscar, ficha y nombres", () => {
     await expect(page.locator(".volver-pegado")).toContainText("Control-IQ / Control-IQ+");
   });
 });
+
+test.describe("Ronda 25 · opcionales (1.0.14)", () => {
+  test("R3: la fuente de Tabla 3 de una pregunta lleva a la fila de la ficha", async ({ page }) => {
+    await page.goto("/#/preguntas/f99");
+    await expect(page.locator('a[href^="#/sistemas/op5/parametros:"]').first()).toBeAttached();
+  });
+
+  test("R3 y R5: descarga a la Tabla 3; objetivos de Inicio a la gestación", async ({ page }) => {
+    await page.goto("/#/consultar/descarga/2");
+    await expect(page.locator('main a[href="#/sistemas/todos/ajuste"]').first()).toBeAttached();
+    await page.goto("/#/consultar/inicio/inicio:omnipod-5:objetivos");
+    await expect(
+      page.locator('main a[href="#/consultar/situacion/gestacion:omnipod-5"]').first(),
+    ).toBeAttached();
+  });
+
+  test("adjunto: la fuente de los objetivos del hospital, enlazada", async ({ page }) => {
+    await page.goto("/#/consultar/situacion/ingreso-hospitalario:camaps");
+    await expect(
+      page.locator('.fuente-pie a[href^="#/capitulo/10-situaciones/"]').first(),
+    ).toBeAttached();
+  });
+});

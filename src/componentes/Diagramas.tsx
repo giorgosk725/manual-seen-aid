@@ -49,7 +49,15 @@ import {
   type EstadoExploracion,
   type TonoFranja,
 } from "../contenido/diagramas";
-import { F2, FIGURA3, TABLAS, algoritmoDelCapitulo, ubicacionDeDiagrama } from "../contenido";
+import {
+  APARTADOS,
+  F2,
+  FIGURA3,
+  TABLAS,
+  algoritmoDelCapitulo,
+  idDeBloque,
+  ubicacionDeDiagrama,
+} from "../contenido";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { sistemaReciente } from "../sistemaReciente";
 import { elegirRuta, href } from "../rutas";
@@ -272,7 +280,8 @@ function Escalera({ i, yaEnTexto }: { i: number; yaEnTexto?: (t: string) => bool
           const t = i > 0 ? e.texto.slice(i).replace(/^./, (x) => x.toUpperCase()) : e.texto;
           return (
             <li key={e.texto} className="flex gap-1.5">
-              <span aria-hidden="true">·</span>
+              {/* 1.0.14 (25.ª ronda, adjunto): sin el «·» cuando la frase va sola (quedaba suelto). */}
+              {extras.length > 1 && <span aria-hidden="true">·</span>}
               <span>
                 <SinCortes texto={t} />
               </span>
@@ -297,6 +306,16 @@ const APARTADO_DE_POBLACION: Record<string, number> = {
   hospital: 10,
   fragilidad: 10,
 };
+/* El párrafo del capítulo que contiene una frase literal (sus primeras palabras). */
+function rutaDeFrase(texto?: string): string | undefined {
+  if (!texto) return undefined;
+  const inicio = texto.slice(0, 60);
+  for (const a of APARTADOS)
+    for (const [k, b] of a.bloques.entries())
+      if (b.t === "p" && b.texto.replace(/\s+/g, " ").includes(inicio))
+        return href("capitulo", a.slug, idDeBloque(b, k));
+  return undefined;
+}
 export function ObjetivosDePoblacion({
   id,
   yaEnTexto,
@@ -308,6 +327,9 @@ export function ObjetivosDePoblacion({
   if (i < 0) return null;
   const o = OBJETIVOS_MCG[i];
   const ps = [o.pagina, ...o.extras.map((e) => e.p).filter((x): x is number => !!x)];
+  // 1.0.14 (25.ª ronda, adjunto): la fuente, con enlace al párrafo del capítulo que da esos
+  // objetivos (antes, la única línea de fuente sin enlace de la pantalla).
+  const ruta = rutaDeFrase(o.extras[0]?.texto);
   return (
     <NivelDiagrama.Provider value={1}>
       <Escalera i={i} yaEnTexto={yaEnTexto} />
@@ -315,7 +337,7 @@ export function ObjetivosDePoblacion({
           (0.73.0: salía «Apartado 9, p. 17» en la gestación). */}
       <FuentePie
         className="mt-3"
-        fuentes={[{ texto: paginasPorApartado(ps, APARTADO_DE_POBLACION[o.id] ?? 10) }]}
+        fuentes={[{ texto: paginasPorApartado(ps, APARTADO_DE_POBLACION[o.id] ?? 10), ruta }]}
       />
     </NivelDiagrama.Provider>
   );

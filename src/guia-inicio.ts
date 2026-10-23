@@ -167,6 +167,17 @@ export const PASOS_GUIA: PasoGuia[] = [
       { t: "frase", apartado: "10-situaciones", bloque: "b6", k: [0, 2] },
       { t: "casilla", tabla: "T3", fila: 0 },
     ],
+    // 1.0.14 (25.ª ronda, R5): el paso dice «… y gestación»: a la situación, con el sistema.
+    masEnlaces: (sis) => [
+      {
+        texto: "Gestación, parto y posparto (Situaciones)",
+        ruta: href(
+          "consultar",
+          "situacion",
+          sis !== undefined ? `gestacion:${SLUG_CALCULADORA[sis]}` : "gestacion",
+        ),
+      },
+    ],
     enlace: () => ({
       texto: "Objetivos de MCG por población (figura)",
       ruta: href("visual", "objetivos-mcg"),

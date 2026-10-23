@@ -33,7 +33,7 @@ import {
 } from "../guia-inicio";
 import { SistemaDelRecorrido } from "../componentes/piezasContexto";
 import { TABLAS } from "../contenido";
-import { ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CORTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { SIS_IDS } from "../situaciones";
 import { elegirRuta, href } from "../rutas";
 import { imprimirRegion } from "../imprimir";
@@ -64,7 +64,9 @@ import { PARAMETROS } from "../fichaOperativa";
 import { VeaseTambien } from "../componentes/VeaseTambien";
 
 const hex = CATEGORIA_HEX.consultar;
-const NOMBRES = TABLAS.T1.columnas;
+/* 1.0.14 (25.ª ronda, R5): el nombre de la app («Control-IQ / Control-IQ+»), como la calculadora y
+   el plan (antes, «Tandem Control-IQ», el de la Tabla 1). */
+const NOMBRES = CORTO_SISTEMA;
 /* En los botones, el nombre corto (el largo se cortaba en el móvil). */
 const CORTOS = ["MiniMed 780G", "Control-IQ / Control-IQ+", "CamAPS FX", "Omnipod 5"];
 /* Rótulo corto de cada paso de una fase, bajo su número en el móvil (1.0.13). */

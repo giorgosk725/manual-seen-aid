@@ -1520,7 +1520,9 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
               remiten a la Tabla 3 (5), el ajuste de cada sistema, a un toque. */}
           {(n === 2 || n === 5) && (
             <a
-              href={href("sistemas", "todos", "parametros")}
+              // 1.0.14 (25.ª ronda, R3): a la Tabla 3, en su pestaña «Ajuste práctico» (antes, a
+              // Parámetros, que no es la tabla).
+              href={href("sistemas", "todos", "ajuste")}
               className="no-imprimir mt-2 flex min-h-11 w-fit items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
             >
               Ajuste de los parámetros por sistema (Tabla 3)

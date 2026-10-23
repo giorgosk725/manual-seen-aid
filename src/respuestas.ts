@@ -1008,6 +1008,15 @@ const SOLO_EXP = new Set<string>();
 let SONIDO: Map<string, string> | null = null;
 let SUPERFICIE: Map<string, string> | null = null;
 
+/* 1.0.14 (25.ª ronda, R3): la fila de la Tabla 3 en la ficha (Parámetros), por su rótulo en la ficha
+   (slugDato de fichaOperativa.ts; aquí a mano para no cargar las fichas en el buscador). */
+const FILA_T3_EN_FICHA = [
+  "objetivo-glucemico",
+  "tasa-basal-programada",
+  "ratio-i-hc",
+  "factor-de-sensibilidad",
+  "duracion-de-la-insulina-activa",
+];
 function rutaTabla(t: Tabla, fila: number, col?: number) {
   const st = SITUACIONES.find((x) => x.tabla === t.id && x.fila === fila);
   if (st)
@@ -1021,6 +1030,8 @@ function rutaTabla(t: Tabla, fila: number, col?: number) {
         : ["Formato", "Indicación", "Gestación: autorización y evidencia"].includes(e)
           ? "esencial"
           : "funciona";
+    if (t.id === "T3" && FILA_T3_EN_FICHA[fila])
+      return href("sistemas", ORDEN_SISTEMAS[col], `parametros:${FILA_T3_EN_FICHA[fila]}`);
     return href("sistemas", ORDEN_SISTEMAS[col], seccion);
   }
   return href("consultar", "tablas", t.id);

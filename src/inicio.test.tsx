@@ -85,7 +85,8 @@ describe("Iniciación del sistema: pantalla", () => {
     const { container } = render(<IniciarSistema detalle="hoja:control-iq" />);
     expect(
       screen.getByRole("heading", {
-        name: /Inicio de un sistema de asa cerrada · Tandem Control-IQ/,
+        // 1.0.14: el nombre de la app, como la calculadora y el plan.
+        name: "Inicio de un sistema de asa cerrada · Control-IQ / Control-IQ+",
       }),
     ).toBeInTheDocument();
     expect(screen.getAllByRole("checkbox").length).toBeGreaterThan(10);
