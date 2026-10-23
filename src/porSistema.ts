@@ -11,12 +11,19 @@ export interface BloqueSistema {
   piezas: Pieza[];
 }
 
-const fr = (apartado: string, bloque: string, k: number[], trozo?: RegExp): Pieza => ({
+const fr = (
+  apartado: string,
+  bloque: string,
+  k: number[],
+  trozo?: RegExp,
+  quitar?: RegExp,
+): Pieza => ({
   t: "frase",
   apartado,
   bloque,
   k,
   trozo,
+  ...(quitar ? { quitar } : {}),
 });
 const s10 = (bloque: string, k: number[], trozo?: RegExp) => fr("10-situaciones", bloque, k, trozo);
 const s9 = (bloque: string, k: number[], trozo?: RegExp) => fr("09-descarga", bloque, k, trozo);
@@ -37,7 +44,12 @@ const GESTACION: BloqueSistema[][] = [
   [
     {
       rotulo: "Autorización y evidencia",
-      piezas: [s10("b3", [3], /MiniMed 780G dispone asimismo[^;]*/), s10("b5", [1])],
+      // 1.0.12 (24.ª ronda, senior; decisión del autor del 23-10-2026): sin «asimismo», que fuera
+      // de su párrafo (tras CamAPS FX) se quedaba sin referente.
+      piezas: [
+        fr("10-situaciones", "b3", [3], /MiniMed 780G dispone asimismo[^;]*/, / asimismo(?= de)/),
+        s10("b5", [1]),
+      ],
     },
     { rotulo: "Objetivo del algoritmo", piezas: [s10("b8", [0]), casilla("T1", 6)] },
     { rotulo: "Estrategia de ajuste", piezas: [s10("b8", [1])] },
@@ -54,9 +66,11 @@ const GESTACION: BloqueSistema[][] = [
     // 0.92.3 (15.ª ronda, senior): con la variante en el rótulo (sin la frase que nombra
     // Control-IQ+, «No incorpora…» se leía como de Control-IQ).
     { rotulo: "Estrategia de intensificación (Control-IQ+)", piezas: [s10("b9", [1])] },
+    // 1.0.12 (24.ª ronda, adjunto): sin la casilla del objetivo de la Tabla 1, que repetía justo
+    // debajo el rango de 112,5–120 mg/dl que da la frase.
     {
       rotulo: "Modo sueño continuado (Control-IQ+)",
-      piezas: [s10("b9", [2, 3, 4]), casilla("T1", 6)],
+      piezas: [s10("b9", [2, 3, 4])],
     },
   ],
   [
@@ -89,6 +103,17 @@ const GESTACION_COMUN: BloqueSistema[] = [
   },
 ];
 
+/* 1.0.12 (24.ª ronda, adjunto): con Control-IQ, sin la fila del objetivo del algoritmo automático
+   (Tabla 2): su objetivo no se configura y ya lo dice la frase de la estrategia de intensificación
+   (salía tres veces, con dos notas «No confundir…» que se remitían la una a la otra). */
+function gestacionComun(c: number): BloqueSistema[] {
+  if (c !== 1) return GESTACION_COMUN;
+  return GESTACION_COMUN.map((b) => ({
+    ...b,
+    piezas: b.piezas.filter((p) => !(p.t === "fila" && p.tabla === "T2" && p.fila === 7)),
+  }));
+}
+
 /* ---------- Enfermedad intercurrente y glucocorticoides ---------- */
 const NECESIDAD: BloqueSistema[][] = [
   [{ rotulo: "Herramienta del sistema", piezas: [casilla("T4", 3)] }],
@@ -119,11 +144,18 @@ export const GUIA_POR_SISTEMA: Record<
   {
     bloques: BloqueSistema[][];
     comun?: BloqueSistema[];
+    /* Lo común según el sistema, si cambia (1.0.12). */
+    comunDe?: (c: number) => BloqueSistema[];
     /* Lo complementario de un sistema (no es del capítulo), tras lo suyo: índice → texto. */
     complementos?: Record<number, Complemento>;
   }
 > = {
-  gestacion: { bloques: GESTACION, comun: GESTACION_COMUN, complementos: { 1: TANDEM_GESTACION } },
+  gestacion: {
+    bloques: GESTACION,
+    comun: GESTACION_COMUN,
+    comunDe: gestacionComun,
+    complementos: { 1: TANDEM_GESTACION },
+  },
   "enfermedad-intercurrente": { bloques: NECESIDAD },
   glucocorticoides: { bloques: NECESIDAD },
   "ingreso-hospitalario": { bloques: INGRESO },

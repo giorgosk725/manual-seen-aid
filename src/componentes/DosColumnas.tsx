@@ -67,7 +67,7 @@ export function DosColumnas<T>({
     const n = items.length;
     if (alturas.length !== n || alturas.some((h) => !(h > 12))) return;
     const sin = (idx: number[]) => alturas.filter((_, k) => !idx.includes(k));
-    let anchas = reparto.anchas;
+    let anchas = reparto.anchas.filter((i) => i < n);
     let segunda: boolean[];
     if (anchas.length) {
       // Ya hay anchas: solo se recoloca el corte de las demás (su altura, medida ancha, ya no
@@ -107,12 +107,15 @@ export function DosColumnas<T>({
       setReparto({ segunda, anchas });
   }, [items, reparto, orden]);
   const con = items.map((x, i) => ({ x, i }));
-  const enColumnas = con.filter(({ i }) => !reparto.anchas.includes(i));
+  // 1.0.12: solo las anchas que siguen en la lista (al filtrar Situaciones quedaban menos
+  // elementos que el reparto anterior y la pantalla fallaba hasta el siguiente pintado).
+  const anchasVigentes = reparto.anchas.filter((i) => i < items.length);
+  const enColumnas = con.filter(({ i }) => !anchasVigentes.includes(i));
   // Las anchas conservan su sitio en el orden de lectura: las que van antes que todo lo que queda
   // en columnas se ponen encima; las demás, debajo.
   const primera = enColumnas.length ? enColumnas[0].i : -1;
-  const arriba = reparto.anchas.filter((i) => i < primera).map((i) => con[i]);
-  const abajo = reparto.anchas.filter((i) => i > primera).map((i) => con[i]);
+  const arriba = anchasVigentes.filter((i) => i < primera).map((i) => con[i]);
+  const abajo = anchasVigentes.filter((i) => i > primera).map((i) => con[i]);
   const columnas: { ancha: boolean; tarjetas: typeof con }[] =
     items.length < 2
       ? [{ ancha: false, tarjetas: con }]

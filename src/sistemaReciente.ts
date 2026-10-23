@@ -8,3 +8,8 @@ export const recordarSistema = (c: number) => {
 };
 
 export const sistemaReciente = () => ultimo;
+
+/* 1.0.12 (24.ª ronda, senior): «Los cuatro» en una situación: sin sistema preelegido. */
+export const olvidarSistema = () => {
+  ultimo = undefined;
+};

@@ -303,6 +303,8 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
 
       <nav
         aria-label="Apartado anterior y siguiente"
+        // 1.0.12 (24.ª ronda, adjunto): el título entero, en dos líneas si hace falta (antes, cortado
+        // con «…»).
         className="separador no-imprimir mt-10 grid gap-2 border-t pt-4 sm:grid-cols-2"
       >
         {prev ? (
@@ -313,7 +315,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
             <ArrowLeft size={16} className="shrink-0 text-slate-500" aria-hidden="true" />
             <span className="min-w-0">
               <span className="block text-xs text-slate-500">Anterior</span>
-              <span className="block truncate text-sm font-semibold text-slate-900">
+              <span className="block text-balance text-sm font-semibold leading-snug text-slate-900">
                 {prev.n}. {prev.titulo}
               </span>
             </span>
@@ -328,7 +330,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
           >
             <span className="min-w-0">
               <span className="block text-xs text-slate-500">Siguiente</span>
-              <span className="block truncate text-sm font-semibold text-slate-900">
+              <span className="block text-balance text-sm font-semibold leading-snug text-slate-900">
                 {next.n}. {next.titulo}
               </span>
             </span>
@@ -341,7 +343,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
           >
             <span className="min-w-0">
               <span className="block text-xs text-slate-500">Siguiente</span>
-              <span className="block truncate text-sm font-semibold text-slate-900">
+              <span className="block text-balance text-sm font-semibold leading-snug text-slate-900">
                 Bibliografía
               </span>
             </span>

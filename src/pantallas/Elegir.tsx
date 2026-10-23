@@ -77,13 +77,20 @@ const CRITERIOS: Criterio[] = [
   },
 ];
 
+/* 1.0.12 (24.ª ronda, adjunto): lo marcado se recuerda al ir a un enlace y volver con Atrás (antes,
+   la pantalla se montaba de nuevo, vacía). Solo en memoria, mientras la pestaña siga abierta: ni
+   en la dirección ni en el almacenamiento (son características del sistema, no de la persona). */
+let marcadoRecordado: Record<string, string[]> = {};
+
 function PorCaracteristicas() {
   const T1 = TABLAS.T1;
-  const [marcado, setMarcado] = useState<Record<string, string[]>>({});
+  const [marcado, setMarcado] = useState<Record<string, string[]>>(() => marcadoRecordado);
   const alternar = (id: string, t: string) =>
     setMarcado((m) => {
       const ya = m[id] ?? [];
-      return { ...m, [id]: ya.includes(t) ? ya.filter((x) => x !== t) : [...ya, t] };
+      const nuevo = { ...m, [id]: ya.includes(t) ? ya.filter((x) => x !== t) : [...ya, t] };
+      marcadoRecordado = nuevo;
+      return nuevo;
     });
   const casa = (cr: Criterio, c: number) => {
     const sel = marcado[cr.id] ?? [];
@@ -160,7 +167,10 @@ function PorCaracteristicas() {
         {hayAlgo && (
           <button
             type="button"
-            onClick={() => setMarcado({})}
+            onClick={() => {
+              marcadoRecordado = {};
+              setMarcado({});
+            }}
             className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-600 underline underline-offset-2 sm:min-h-8"
           >
             Quitar lo marcado

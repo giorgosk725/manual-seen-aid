@@ -9,7 +9,7 @@ import { Printer } from "lucide-react";
 import { UrgenciaF3 } from "../componentes/UrgenciaF3";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { CAPITULO, FIGURA3, TABLAS, apartadoPorSlug, idDeBloque } from "../contenido";
-import { CORTO_CASILLA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
+import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import type { SistemaId } from "../ampliacion/tipos";
 import { AUTOR_PACIENTES, RESUMEN_CAPITULO, TITULO_CAPITULO_PACIENTES } from "../pacientes/textos";
 import { elegirRuta, href } from "../rutas";
@@ -193,7 +193,7 @@ export function HubPacientes() {
                     className="foto-sistema h-9 w-9 shrink-0 rounded-md object-cover"
                   />
                   <span className="text-sm font-bold" style={{ color: SISTEMA_HEX[c].ink }}>
-                    {CORTO_CASILLA[c]}
+                    {CORTO_SISTEMA[c]}
                   </span>
                 </a>
               </li>
@@ -478,7 +478,10 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
           enFila
           seleccion={[c]}
           onToggle={(k) => elegirRuta("pacientes", "plan", ORDEN_SISTEMAS[k])}
-          nombres={CORTO_CASILLA}
+          // 1.0.12 (24.ª ronda, senior): desde sm, «Control-IQ / Control-IQ+», como en el resto de
+          // la app; en el móvil, el nombre breve (cuatro en una fila).
+          nombres={CORTO_SISTEMA}
+          cortoEnMovil
         />
       </div>
       <Acciones hoja={ref} materialId="planes" />

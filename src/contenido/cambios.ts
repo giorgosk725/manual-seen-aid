@@ -15,7 +15,18 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-10-23",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — pendientes de la vigesimotercera ronda`,
+    titulo: `Complemento interactivo ${VERSION_APP} — vigesimocuarta ronda`,
+    detalle: [
+      "Sistemas: con un solo sistema marcado en «Los cuatro», cada pestaña enseña solo ese (antes seguían los cuatro y «Ajuste práctico» llevaba a su ficha); al marcar o quitar sistemas se conserva el parámetro y la vista («Por parámetro» o «Por sistema»). Elección del sistema: lo marcado se recuerda al volver con Atrás (solo mientras la pestaña siga abierta).",
+      "Situaciones: «Los cuatro» también en gestación, enfermedad e ingreso (y tocar el sistema marcado vuelve a los cuatro); «Agua, alcohol y desconexión» en «Ejercicio y comidas», con el sistema elegido; el filtro ya no falla al dejar menos grupos. Gestación con Control-IQ, sin repetir el rango del modo sueño ni la fila del objetivo automático, que no se configura; con MiniMed 780G, sin «asimismo» (decisión del responsable).",
+      "Ficha impresa: las frases del capítulo de las preguntas que citan además una fila de las Tablas 1–4 (antes se perdían, entre ellas los objetivos de la gestación de CamAPS FX y la limitación de MiniMed 780G). Accesos de la ficha con aspecto de enlace.",
+      "«Volver a la consulta», en una franja propia que ya no tapa la línea de destino. Capítulo: los títulos de Anterior y Siguiente enteros. Portada en la tableta: accesos de cada sistema en 2 × 2. Plan de seguridad: «Control-IQ / Control-IQ+». «Según el formato» y «Leer en el capítulo», con la forma de las demás pantallas.",
+    ],
+  },
+  {
+    fecha: "2026-10-23",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.11 — pendientes de la vigesimotercera ronda",
     detalle: [
       "Ficha entera de Control-IQ (y en papel): «Qué cambia» con Control-IQ+ remite a Indicación, Parámetros y Modos, sin repetir sus cifras; en la pestaña «Cómo funciona», con ellas.",
       "Hospital: bajo las franjas de objetivos, sin repetir la de 70–100 mg/dl (queda lo que añade: la prioridad de prevenir la hipoglucemia).",

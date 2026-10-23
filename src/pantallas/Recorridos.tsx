@@ -45,7 +45,7 @@ import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
 import { BotonImprimir, CabeceraEditorial, ColofonImpreso } from "../ui";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
-import { recordarSistema, sistemaReciente } from "../sistemaReciente";
+import { olvidarSistema, recordarSistema, sistemaReciente } from "../sistemaReciente";
 import { CasillasSistema } from "../componentes/CasillasSistema";
 import { useIrAlCambiar, useSubirAlElegir } from "../irAlCambiar";
 import { Lineas, Texto } from "../texto";
@@ -64,7 +64,14 @@ const hex = CATEGORIA_HEX.consultar;
 /* Las situaciones, por tema (no por la tabla de la que salen): las filas de las Tablas 4 y 6 y
    los subapartados del apartado 10 que no tienen tabla, juntos. Los nombres de los temas son de
    la app; cada entrada conserva su rótulo del capítulo y su página o tabla. */
-type Extra = { t: string; fuente: string; ruta: string; alias?: string[] };
+type Extra = {
+  t: string;
+  fuente: string;
+  ruta: string;
+  alias?: string[];
+  /* Con un sistema elegido, el destino propio de ese sistema (1.0.12). */
+  conSistema?: (sistema: string) => string;
+};
 /* 0.63.0: cada entrada va en su tema por su id (no por palabras de su título: «Diálisis y
    enfermedad renal» caía en «enfermedad»); los subapartados del apartado 10 tienen ya su guía. */
 /* Séptima vuelta: el orden de los grupos es el que, partido en dos tramos contiguos, llena dos
@@ -145,6 +152,29 @@ const TEMAS_SITUACION: { t: string; ids: string[]; extras?: Extra[] }[] = [
   {
     t: "Ejercicio y comidas",
     ids: ["ejercicio-aerobico", "ejercicio-anaerobico", "comida-grasa"],
+    // 1.0.12 (24.ª ronda, adjunto): agua, alcohol y desconexión (antes solo en Sistemas › Modos y
+    // en la ficha; el filtro con «agua» o «natación» no daba nada).
+    extras: [
+      {
+        t: "Agua, alcohol y desconexión",
+        fuente: "Sistemas · Modos y funciones",
+        ruta: href("sistemas", "todos", "modos:otras"),
+        conSistema: (s) => href("sistemas", s, "modos:agua"),
+        alias: [
+          "agua",
+          "natacion",
+          "nadar",
+          "piscina",
+          "playa",
+          "bano",
+          "ducha",
+          "deporte de contacto",
+          "alcohol",
+          "desconexion",
+          "desconectar",
+        ],
+      },
+    ],
   },
   {
     t: "Exploraciones, cirugía e ingreso",
@@ -505,8 +535,10 @@ function ListaSituaciones({
         ? "Figura 3"
         : ruta.startsWith("#/visual")
           ? "Diagrama"
-          : // 0.96.0 (16.ª ronda, adjunto y R1): sin «Situación» (todas lo son en esta lista).
-            undefined;
+          : ruta.startsWith("#/sistemas")
+            ? "Sistemas"
+            : // 0.96.0 (16.ª ronda, adjunto y R1): sin «Situación» (todas lo son en esta lista).
+              undefined;
   const conFilas = visibles.filter((g) => g.sits.length || g.extras.length);
   return (
     <div
@@ -596,9 +628,11 @@ function ListaSituaciones({
               <li key={x.ruta}>
                 <a
                   href={
-                    sistema && x.ruta.startsWith(href("consultar", "situacion"))
-                      ? `${x.ruta}:${sistema}`
-                      : x.ruta
+                    sistema && x.conSistema
+                      ? x.conSistema(sistema)
+                      : sistema && x.ruta.startsWith(href("consultar", "situacion"))
+                        ? `${x.ruta}:${sistema}`
+                        : x.ruta
                   }
                   aria-current={on ? "true" : undefined}
                   className={`${fila} ${on ? "text-white hover:!bg-[var(--acento)]" : ""}`}
@@ -826,11 +860,16 @@ export function SituacionSistema({
                     key={guia.id}
                     bloques={GUIA_POR_SISTEMA[guia.id].bloques}
                     comun={GUIA_POR_SISTEMA[guia.id].comun}
+                    comunDe={GUIA_POR_SISTEMA[guia.id].comunDe}
                     complementos={GUIA_POR_SISTEMA[guia.id].complementos}
                     seleccion={sisIdx >= 0 ? sisIdx : (sistemaReciente() ?? -1)}
                     onElegir={(i) =>
                       elegirRuta("consultar", "situacion", `${guia.id}:${SIS_IDS[i]}`)
                     }
+                    onLosCuatro={() => {
+                      olvidarSistema();
+                      elegirRuta("consultar", "situacion", guia.id);
+                    }}
                   />
                 </section>
               )}
@@ -1137,7 +1176,17 @@ export function SituacionSistema({
                         >
                           {/* 0.90.1 (14.ª ronda, visual): en su span, por encima del área
                               ampliada del enlace de la línea de abajo (.fuente-pie a > span). */}
-                          <span>{l.titulo}</span>
+                          {/* 1.0.12 (24.ª ronda, visual): con su flecha, como en las demás
+                              pantallas. */}
+                          <span>
+                            {l.titulo}
+                            &nbsp;
+                            <ArrowRight
+                              size={13}
+                              aria-hidden="true"
+                              className="inline align-[-2px]"
+                            />
+                          </span>
                         </a>
                       </span>
                     ))}

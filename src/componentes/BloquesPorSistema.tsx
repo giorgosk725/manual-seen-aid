@@ -69,12 +69,17 @@ export function AnadidoDelSistema({
    ella (`onElegir`), así Atrás/Adelante y los enlaces compartidos enseñan el sistema de la URL. */
 export function BloquesPorSistema({
   bloques,
-  comun = [],
+  comun: comunBase = [],
   seleccion,
   onElegir,
   sinFuente = false,
   complementos = {},
+  onLosCuatro,
+  comunDe,
 }: {
+  comunDe?: (c: number) => BloqueSistema[];
+  /* 1.0.12 (24.ª ronda, senior): vuelta a la vista de los cuatro (antes, solo con Atrás). */
+  onLosCuatro?: () => void;
   bloques: BloqueSistema[][];
   comun?: BloqueSistema[];
   complementos?: Record<number, Complemento>;
@@ -86,6 +91,7 @@ export function BloquesPorSistema({
   // 0.81.1 (quinta ronda, R5): sin sistema elegido (−1), ninguno marcado ni preelegido.
   const c = seleccion;
   const propios = c >= 0 ? bloques[c] : [];
+  const comun = comunDe && c >= 0 ? comunDe(c) : comunBase;
   const todas = [...propios, ...comun].flatMap((b) => b.piezas);
   return (
     <div>
@@ -98,9 +104,23 @@ export function BloquesPorSistema({
             Elegir el sistema para ver lo propio de cada uno:
           </p>
         )}
+        {/* 1.0.12 (24.ª ronda, senior): «Los cuatro», junto al selector, como en las situaciones de
+            las Tablas 4–6; tocar el sistema marcado también vuelve a los cuatro. */}
+        {c >= 0 && onLosCuatro && (
+          <div className="mb-1 flex items-baseline justify-between gap-3">
+            <span className="rotulo">Sistema</span>
+            <button
+              type="button"
+              onClick={onLosCuatro}
+              className="tap-44 inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700 sm:min-h-0"
+            >
+              Los cuatro
+            </button>
+          </div>
+        )}
         <CasillasSistema
           seleccion={c >= 0 ? [c] : []}
-          onToggle={onElegir}
+          onToggle={(i) => (i === c && onLosCuatro ? onLosCuatro() : onElegir(i))}
           nombres={CORTO_SISTEMA}
           unico
         />

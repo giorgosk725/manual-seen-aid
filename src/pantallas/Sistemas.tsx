@@ -369,8 +369,10 @@ const sinNombreDelSistema = (q: string) =>
 // de pestañas.
 // 0.94.0 (rediseño): sin subrayado en reposo y separados por «·» desde sm, como los accesos de las
 // tarjetas del Resumen (subrayados, se leían como una segunda fila de pestañas).
+/* 1.0.12 (24.ª ronda, senior): con aspecto de enlace (subrayado fino, texto oscuro y, desde sm,
+   14 px); antes, gris a 13 px sin subrayado, se leían como un dato y no como un acceso. */
 const accesoFicha =
-  "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-medium text-slate-500 underline-offset-4 hover:text-slate-900 hover:underline sm:min-h-9";
+  "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-medium text-slate-800 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9 sm:text-[14px]";
 /* «Ficha entera», junto a Imprimir: enlace suelto, con su subrayado fino. */
 const accesoSuelto =
   "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-600 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9";
@@ -469,7 +471,7 @@ function respuestasImpresas(
       f.id,
       // 1.0.5 (21.ª ronda, R3): tampoco la que responden solo frases que ya citan las tarjetas
       // de la ficha («¿Se puede nadar con el pod?» = la fila Agua de Modos).
-      f.pasajes.every((x) => enTarjetas.has(x)) ? [] : trozosDe(f, c, vistos),
+      f.pasajes.every((x) => enTarjetas.has(x)) ? [] : trozosDe(f, c, vistos, enTarjetas),
     ]),
   );
 }
@@ -489,18 +491,26 @@ function frasesDeTarjetas(c: number): Set<string> {
   recorrer([ALGORITMO[c], INDICACION[c], PARAMETROS[c], MODOS[c]]);
   return out;
 }
-/* 0.81.1 (quinta ronda, R3 y visual): una pregunta que se responde con filas de las Tablas 1–4
-   no se imprime (sin ellas, «¿Qué diferencia hay entre Control-IQ y Control-IQ+?» salía sin las
-   diferencias; con ellas, la ficha pasaba de 4 a 5 caras): esas filas ya van en las tarjetas. */
-function trozosDe(f: (typeof FRECUENTES)[number], c: number, vistos: Set<string>): TrozoImpreso[] {
+/* 0.81.1 (quinta ronda, R3 y visual): las filas de las Tablas 1–4 de una pregunta no se imprimen
+   (ya van en las tarjetas; con ellas, la ficha pasaba de 4 a 5 caras).
+   1.0.12 (24.ª ronda, senior): las frases del capítulo de esa pregunta sí (antes se descartaba la
+   pregunta entera: la ficha impresa de CamAPS FX perdía los objetivos de la gestación por
+   trimestre, y la de MiniMed 780G, su limitación práctica en la gestación). */
+function trozosDe(
+  f: (typeof FRECUENTES)[number],
+  c: number,
+  vistos: Set<string>,
+  enTarjetas: Set<string> = new Set(),
+): TrozoImpreso[] {
   const trozos: TrozoImpreso[] = [];
-  let conTabla = false;
   const poner = (bloque: string, tipo: "p" | "li", texto: string) => {
     if (!texto || vistos.has(texto) || trozos.some((t) => t.texto === texto)) return;
     trozos.push({ bloque, tipo, texto });
   };
   for (const id of f.pasajes) {
     const p = id.split("/");
+    // 1.0.12: la frase que ya cita una tarjeta de la ficha va impresa en ella.
+    if (enTarjetas.has(id)) continue;
     if (p[0] === "t" || p[0] === "l") {
       const a = APARTADOS.find((x) => x.slug === p[1]);
       const i = a?.bloques.findIndex((b, k) => idDeBloque(b, k) === p[2]) ?? -1;
@@ -515,7 +525,7 @@ function trozosDe(f: (typeof FRECUENTES)[number], c: number, vistos: Set<string>
         else b.items.forEach((x) => poner(bloque, "li", plano(x)));
       }
     } else if (/^T[1-4]$/.test(p[0])) {
-      conTabla = true;
+      continue;
     } else if (/^T\d+$/.test(p[0])) {
       const t = TABLAS[p[0] as keyof typeof TABLAS];
       if (!t) continue;
@@ -523,7 +533,6 @@ function trozosDe(f: (typeof FRECUENTES)[number], c: number, vistos: Set<string>
       else poner(`${p[0]}/${p[1]}`, "p", textoDeFila(t, Number(p[1]), c));
     }
   }
-  if (conTabla) return [];
   trozos.forEach((t) => vistos.add(t.texto));
   return trozos;
 }
@@ -766,7 +775,7 @@ export function FichaSistema({
             <span className="sm:hidden">Iniciación</span>
             <span className="hidden sm:inline">Iniciación del sistema</span>
           </a>
-          <span aria-hidden="true" className="self-center text-slate-300">
+          <span aria-hidden="true" className="self-center text-slate-400">
             ·
           </span>
           {/* 0.88.1 (duodécima ronda, R5): el cálculo de parámetros iniciales del sistema, directo
@@ -774,7 +783,7 @@ export function FichaSistema({
           <a href={href("consultar", "inicio", `calculadora:${slug}`)} className={accesoFicha}>
             Cálculo
           </a>
-          <span aria-hidden="true" className="self-center text-slate-300">
+          <span aria-hidden="true" className="self-center text-slate-400">
             ·
           </span>
           <a href={href("pacientes", "plan", s.id)} className={accesoFicha}>
@@ -784,13 +793,13 @@ export function FichaSistema({
             </span>
             <span className="sr-only sm:not-sr-only">Plan de seguridad</span>
           </a>
-          <span aria-hidden="true" className="self-center text-slate-300">
+          <span aria-hidden="true" className="self-center text-slate-400">
             ·
           </span>
           <a href={href("consultar", "situacion", `:${slug}`)} className={accesoFicha}>
             Situaciones
           </a>
-          <span aria-hidden="true" className="hidden self-center text-slate-300 sm:inline">
+          <span aria-hidden="true" className="hidden self-center text-slate-400 sm:inline">
             ·
           </span>
           <a
@@ -1074,15 +1083,26 @@ let seguirAbierta = 0;
    selector abierto; al marcar el otro, de vuelta a la pestaña de la comparación de la que se venía
    (antes, a «Cómo funciona» con el selector cerrado y luego a Características). */
 let deComparacion: { sec: string; t: number } | null = null;
+/* 1.0.12 (24.ª ronda, R3 y senior): uno solo marcado en «Los cuatro» se lleva a la pestaña que se
+   abre (antes, las pestañas llevaban a la ficha de ese sistema; «Ajuste práctico», a Parámetros). */
+let unoMarcado: { id: string; t: number } | null = null;
+function marcadoDeEntrada(): string[] {
+  const m = unoMarcado;
+  return m && Date.now() - m.t < 3000 ? [m.id] : [];
+}
 function BarraSistemas({
   ids,
   seccion,
   abrir = 0,
   completa = false,
   marcadosEntrada,
+  fila,
 }: {
   ids: string[];
   seccion?: string;
+  /* 1.0.12 (24.ª ronda, R3): el parámetro o la vista de la sección («parametros:sensibilidad»,
+     «parametros:por-sistema»), que se conserva al marcar o quitar sistemas. */
+  fila?: string;
   /* 0.91.2 (petición del responsable, 21-10-2026): en la entrada, lo marcado lo comparte la
      pantalla (las tarjetas del Resumen se quedan solo con lo marcado). */
   marcadosEntrada?: [string[], Dispatch<SetStateAction<string[]>>];
@@ -1101,6 +1121,9 @@ function BarraSistemas({
       : sec;
   // 0.85.1 (novena ronda, adjunto): desde el Resumen de una comparación, se sigue en el Resumen
   // (antes, marcar o desmarcar llevaba a Características; «Los cuatro», a la Tabla 1).
+  // 1.0.12 (24.ª ronda, R3): en la comparación, con el parámetro o la vista que se estaba viendo
+  // (antes, marcar dos volvía a «Objetivo» y a «Por parámetro»).
+  const conFila = (s: string) => (fila && ids.length !== 1 ? `${s}:${fila}` : s);
   const rutaCon = (nuevos: string[]) =>
     nuevos.length === 1
       ? href("sistemas", nuevos[0], sec ?? "funciona")
@@ -1111,7 +1134,7 @@ function BarraSistemas({
         : href(
             "sistemas",
             nuevos.length ? nuevos.join("+") : "todos",
-            !sec || sec === "funciona" ? "esencial" : sec,
+            !sec || sec === "funciona" ? "esencial" : conFila(sec),
           );
   // En la entrada (los cuatro), las casillas se van marcando sin cambiar de pantalla; con dos
   // o más, «Comparar» (0.72.0: la primera casilla llevaba a la ficha).
@@ -1123,7 +1146,12 @@ function BarraSistemas({
   const [marcados, setMarcados] = marcadosEntrada ?? propios;
   // 0.81.1 (quinta ronda, R5): en la entrada, las pestañas llevan lo ya marcado (antes, «Los
   // cuatro» aunque se hubieran marcado dos).
-  const selStr = ids.length ? ids.join("+") : marcados.length ? marcados.join("+") : "todos";
+  // 1.0.12 (24.ª ronda, R3 y senior): con uno solo marcado, las pestañas siguen en «Los cuatro»
+  // filtrado a ese (unoMarcado); antes llevaban a su ficha.
+  const selStr = ids.length ? ids.join("+") : marcados.length > 1 ? marcados.join("+") : "todos";
+  const llevarMarcado = () => {
+    unoMarcado = entrada && marcados.length === 1 ? { id: marcados[0], t: Date.now() } : null;
+  };
   const alternar = (id: string) => {
     if (entrada) {
       const nuevos = marcados.includes(id)
@@ -1135,7 +1163,9 @@ function BarraSistemas({
         if (abierta) seguirAbierta = Date.now();
         setMarcados([]);
         window.location.replace(
-          sec ? href("sistemas", nuevos.join("+"), sec) : href("sistemas", nuevos.join("+")),
+          sec
+            ? href("sistemas", nuevos.join("+"), conFila(sec))
+            : href("sistemas", nuevos.join("+")),
         );
         return;
       }
@@ -1270,8 +1300,9 @@ function BarraSistemas({
     };
   }, [ids, sec]);
   const compacta = plegada && !abierta;
-  const resumen = ids.length
-    ? ids.map((id) => SLUG_CORTO[columnaDeSistema(id as SistemaId)]).join(" · ")
+  const vistos = ids.length ? ids : marcados;
+  const resumen = vistos.length
+    ? vistos.map((id) => SLUG_CORTO[columnaDeSistema(id as SistemaId)]).join(" · ")
     : "Los cuatro sistemas";
   return (
     <div
@@ -1311,7 +1342,7 @@ function BarraSistemas({
                 «Comparar» en el Resumen y «Cambiar» en las demás). */}
             {ids.length === 1
               ? "Otro sistema o comparación"
-              : ids.length === 0
+              : vistos.length === 0
                 ? "Elegir sistemas"
                 : "Cambiar"}
           </span>
@@ -1411,6 +1442,7 @@ function BarraSistemas({
             // 1.0.5 (21.ª ronda, senior): solo sin sección (desde la 1.0.4, «entrada» vale también
             // en «Los cuatro» de una sección, y salían dos pestañas marcadas).
             aria-current={ids.length !== 1 && !sec ? "location" : undefined}
+            onClick={llevarMarcado}
             onFocus={pestanaALaVista}
             className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
@@ -1422,6 +1454,7 @@ function BarraSistemas({
             key={x.id}
             href={href("sistemas", selStr, x.id)}
             aria-current={activa === x.id ? "location" : undefined}
+            onClick={llevarMarcado}
             onFocus={pestanaALaVista}
             className="pestana tap-44 px-[3px] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-2"
           >
@@ -1787,8 +1820,11 @@ function Comparacion({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   useImprimirConTeclado(ref);
-  const marcadosEntrada = useState<string[]>([]);
-  const cols = ids.length ? ids.map((id) => columnaDeSistema(id as SistemaId)) : [0, 1, 2, 3];
+  const marcadosEntrada = useState<string[]>(() => (ids.length ? [] : marcadoDeEntrada()));
+  // 1.0.12 (24.ª ronda, R3 y senior): uno marcado en «Los cuatro» filtra también las secciones
+  // (antes, solo el Resumen: en Parámetros seguían los cuatro).
+  const vistos = ids.length ? ids : marcadosEntrada[0];
+  const cols = vistos.length ? vistos.map((id) => columnaDeSistema(id as SistemaId)) : [0, 1, 2, 3];
   // «Cómo funciona» comparado ya no está (0.70.0): esa dirección lleva a la Tabla 1.
   // «Cómo funciona» comparado lleva a la Tabla 1; una sección sin vista de varios (Modos,
   // Preguntas) vuelve al Resumen (0.77.1: antes, la pantalla quedaba vacía).
@@ -1839,7 +1875,7 @@ function Comparacion({
           </BotonImprimir>
         }
       />
-      <BarraSistemas ids={ids} seccion={seccion} marcadosEntrada={marcadosEntrada} />
+      <BarraSistemas ids={ids} seccion={seccion} marcadosEntrada={marcadosEntrada} fila={fila} />
       {!seccion ? (
         <EntradaSistemas ids={ids.length ? ids : marcadosEntrada[0]} />
       ) : (

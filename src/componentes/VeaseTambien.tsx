@@ -16,6 +16,7 @@ export function VeaseTambien({
   onIr,
   className = "",
   titulo = "Véase también",
+  sinSangrar = false,
 }: {
   /* 0.92.1: la misma lista para «Preguntas relacionadas» del buscador. */
   titulo?: string;
@@ -24,6 +25,9 @@ export function VeaseTambien({
   nivel?: 2 | 3 | 4;
   onIr?: () => void;
   className?: string;
+  /* 1.0.12 (24.ª ronda, visual): fuera de una caja con relleno (al pie de un diagrama), las filas
+     a lo ancho del título y de su línea (con -mx-3 sobresalían 12 px por la izquierda). */
+  sinSangrar?: boolean;
 }) {
   if (!filas.length) return null;
   const H = `h${nivel}` as "h2" | "h3" | "h4";
@@ -35,7 +39,7 @@ export function VeaseTambien({
       {/* 0.92.1 (segunda revisión de tarjetas): dentro de una caja, el título como rótulo (a
           15/700, sobre filas a 14/600, se leían dos títulos seguidos). */}
       <H className={enCaja ? "rotulo pb-1 pt-3" : "titulo-tarjeta px-3 pb-1.5 pt-3"}>{titulo}</H>
-      <ul className={`filas ${enCaja ? "-mx-3" : ""}`}>
+      <ul className={`filas ${enCaja ? (sinSangrar ? "[&_.fila]:px-0" : "-mx-3") : ""}`}>
         {filas.map((f) => (
           <li key={f.href}>
             <a href={f.href} onClick={onIr} className="fila">

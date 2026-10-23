@@ -1430,6 +1430,16 @@ html:has(.volver-pegado) {
     scroll-padding-top: 5.5rem;
   }
 }
+/* 1.0.12 (24.ª ronda, adjunto): «Volver a la consulta» va en una franja pegada arriba (3,25 rem):
+   la cabecera de las tablas se pega justo debajo, no bajo la franja. */
+html:has(.volver-pegado) .tabla-capitulo thead th {
+  top: 6.75rem;
+}
+@media (min-width: 1024px) {
+  html:has(.volver-pegado) .tabla-capitulo thead th {
+    top: 3.25rem;
+  }
+}
 
 /* Impresión de la lectura: columna completa, sin cromo, insignias de página visibles. */
 @media print {

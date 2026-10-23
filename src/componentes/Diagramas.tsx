@@ -179,6 +179,7 @@ export function MarcoDiagrama({
         {!enApartado && SEGUIR_DIAGRAMA[id] && (
           <VeaseTambien
             enCaja
+            sinSangrar
             nivel={3}
             className="no-imprimir mt-4"
             filas={SEGUIR_DIAGRAMA[id]!.map(planDelSistema).map((l) => ({
@@ -959,6 +960,7 @@ function GestacionSistemas({ opcion }: { opcion?: string }) {
       <BloquesPorSistema
         bloques={g.bloques}
         comun={g.comun}
+        comunDe={g.comunDe}
         seleccion={sel}
         onElegir={(i) => elegirRuta("visual", "gestacion-sistemas", ORDEN_SISTEMAS[i])}
         sinFuente
@@ -1523,7 +1525,8 @@ function InterrupcionLinea() {
       >
         {/* 1.0.10 (23.ª ronda, R1 y visual): título visible, como los otros dos casos (desde
             «Ir a» se llegaba a una caja sin encabezado). */}
-        <Sub className="md:col-span-2">Según el formato</Sub>
+        {/* 1.0.12 (24.ª ronda, visual): con el estilo de los otros dos casos (antes, 16/400). */}
+        <Sub className="titulo-tarjeta md:col-span-2">Según el formato</Sub>
         <div className="text-sm leading-snug text-slate-800">
           <span className="rotulo mb-1 block">Pod</span>
           <p>

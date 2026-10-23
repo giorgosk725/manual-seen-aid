@@ -173,7 +173,7 @@ function PiezaVistaBase({
     );
   switch (pieza.t) {
     case "frase": {
-      const f = frasesDe(pieza.apartado, pieza.bloque, pieza.k, pieza.trozo);
+      const f = frasesDe(pieza.apartado, pieza.bloque, pieza.k, pieza.trozo, pieza.quitar);
       const sg = pend(f.frases.join(" "));
       const frases =
         delRecorrido === undefined

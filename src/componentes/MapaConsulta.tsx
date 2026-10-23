@@ -102,7 +102,7 @@ const SLUG_INICIO = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 function Sistemas() {
   const b = MAPA_CONSULTA.find((x) => x.id === "sistemas")!;
   // 0.94.0 (rediseño, fase 2): accesos al pie de cada tarjeta, en una fila de tres tercios.
-  const enlace = `foco-dentro flex min-h-10 flex-1 items-center justify-center px-1.5 text-[13px] font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 hover:underline ${foco}`;
+  const enlace = `foco-dentro flex min-h-10 flex-1 items-center justify-center px-2 text-center text-[13px] font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 hover:underline ${foco}`;
   return (
     <TarjetaPortada
       id="mapa-sistemas"
@@ -154,7 +154,10 @@ function Sistemas() {
               {/* Desde la tablet, los accesos más usados de cada ficha (en el móvil, la ficha
                   los tiene en sus pestañas). 0.96.0 (16.ª ronda, adjunto): también Modos, en
                   cuartos; con las cuatro tarjetas en una fila (2xl) o en la tablet estrecha, 2 × 2. */}
-              <div className="separador hidden border-t sm:grid sm:grid-cols-2 md:grid-cols-4 2xl:grid-cols-2 [&>a]:border-[var(--linea-suave)] [&>a:not(:first-child)]:border-l max-md:[&>a:nth-child(3)]:border-l-0 max-md:[&>a:nth-child(n+3)]:border-t 2xl:[&>a:nth-child(3)]:border-l-0 2xl:[&>a:nth-child(n+3)]:border-t">
+              {/* 1.0.12 (24.ª ronda, visual y senior): en cuartos solo desde xl; en la tableta y el
+                  portátil pequeño, 2 × 2 (en cuartos, «Cálculo inicial» se partía y «Parámetros»
+                  quedaba pegado al filete del sistema). */}
+              <div className="separador hidden border-t sm:grid sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-2 [&>a]:border-[var(--linea-suave)] [&>a:not(:first-child)]:border-l max-xl:[&>a:nth-child(3)]:border-l-0 max-xl:[&>a:nth-child(n+3)]:border-t 2xl:[&>a:nth-child(3)]:border-l-0 2xl:[&>a:nth-child(n+3)]:border-t">
                 <a
                   href={href("sistemas", id, "parametros")}
                   aria-label={`Parámetros de ${CORTO_SISTEMA[c]}`}

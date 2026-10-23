@@ -1117,12 +1117,15 @@ export function Shell({
             (ruta.seccion === "capitulo" ||
               (ruta.seccion === "consultar" && ruta.sub === "tablas")) && (
               // 0.96.0 (16.ª ronda, senior): pegado arriba al bajar (el párrafo de destino quedaba a
-              // miles de px del botón): discreto, sin franja, solo el chip con una sombra.
-              <div className="volver-pegado no-imprimir pointer-events-none sticky top-16 z-20 mb-3 lg:top-3">
+              // miles de px del botón).
+              // 1.0.12 (24.ª ronda, adjunto): en una franja propia, del color del papel y con su
+              // línea, que va por encima de lo que pasa debajo (antes, el chip suelto tapaba el
+              // principio de las líneas del capítulo y de las celdas de la tabla).
+              <div className="volver-pegado no-imprimir sticky top-14 z-20 -mx-3 mb-3 border-b border-[var(--linea-suave)] bg-[var(--papel)] px-3 py-2 sm:-mx-5 sm:px-5 lg:top-0">
                 <button
                   type="button"
                   onClick={() => window.history.back()}
-                  className="chip pointer-events-auto shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+                  className="chip focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                 >
                   <ChevronLeft size={15} aria-hidden="true" /> Volver a la consulta
                   <span className="font-normal text-slate-600">· {volver}</span>

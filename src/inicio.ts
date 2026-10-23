@@ -26,7 +26,16 @@ const TEXTO_PLAN = materialListo("planes")
 
 export type Pieza =
   /* Frases `k` (en orden) de un párrafo. */
-  | { t: "frase"; apartado: string; bloque: string; k: number[]; trozo?: RegExp }
+  | {
+      t: "frase";
+      apartado: string;
+      bloque: string;
+      k: number[];
+      trozo?: RegExp;
+      /* 1.0.12 (decisión del autor del 23-10-2026): una palabra que, fuera de su párrafo, queda sin
+         referente («MiniMed 780G dispone asimismo…»), se quita del trozo. */
+      quitar?: RegExp;
+    }
   /* Una lista entera, con su introducción. */
   | { t: "lista"; apartado: string; bloque: string }
   /* Fila de una tabla que no va por sistema (Tabla 2), con sus columnas. */
@@ -177,7 +186,13 @@ function bloqueDe(apartado: string, bloque: string): { b: Bloque; ruta: string }
 }
 
 /* Las frases pedidas de un párrafo, con su página, su entradilla y dónde leerlo. */
-export function frasesDe(apartado: string, bloque: string, k: number[], trozo?: RegExp) {
+export function frasesDe(
+  apartado: string,
+  bloque: string,
+  k: number[],
+  trozo?: RegExp,
+  quitar?: RegExp,
+) {
   const { b, ruta } = bloqueDe(apartado, bloque);
   if (b.t !== "p") throw new Error(`inicio.ts: ${apartado}/${bloque} no es un párrafo`);
   const fs = frases(plano(b.texto));
@@ -193,6 +208,11 @@ export function frasesDe(apartado: string, bloque: string, k: number[], trozo?: 
       throw new Error(`inicio.ts: ${apartado}/${bloque} no contiene el trozo ${trozo}`);
     const fin = m.index + m[0].length;
     elegidas = [(m.index > 0 ? "… " : "") + m[0] + (fin < todo.length ? " …" : "")];
+  }
+  if (quitar) {
+    if (!elegidas.some((x) => quitar.test(x)))
+      throw new Error(`inicio.ts: ${apartado}/${bloque} no contiene ${quitar}`);
+    elegidas = elegidas.map((x) => x.replace(quitar, ""));
   }
   return {
     // La entradilla («Configuración inicial (v. Tabla 2).») solo con la primera frase.
@@ -410,7 +430,9 @@ export function textosDePieza(pieza: Pieza, sis?: number): string[] {
   switch (pieza.t) {
     case "frase":
       // Unidas, como se pintan (Piezas.tsx): así casan las siglas de cada texto (0.72.0).
-      return [frasesDe(pieza.apartado, pieza.bloque, pieza.k, pieza.trozo).frases.join(" ")];
+      return [
+        frasesDe(pieza.apartado, pieza.bloque, pieza.k, pieza.trozo, pieza.quitar).frases.join(" "),
+      ];
     case "lista": {
       const l = listaDe(pieza.apartado, pieza.bloque);
       return [l.intro ?? "", ...l.items];

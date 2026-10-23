@@ -36,10 +36,12 @@ test.describe("Ronda 19", () => {
   });
 
   test("Gestación con Control-IQ: el objetivo del algoritmo, no configurable", async ({ page }) => {
+    // 1.0.12 (24.ª ronda, adjunto): lo dice una vez, la frase del capítulo de la estrategia de
+    // intensificación (sin la fila del objetivo automático de la Tabla 2, que lo repetía).
     await page.goto("/#/consultar/situacion/gestacion:control-iq");
     await expect(
       page
-        .getByText("Control-IQ / Control-IQ+: Objetivo fijo no configurable")
+        .getByText(/No incorpora un objetivo gestacional específico configurable/)
         .filter({ visible: true }),
     ).toBeVisible();
   });
