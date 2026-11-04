@@ -380,7 +380,9 @@ function Fichas({
               {(f.unida ? [columnas[0]] : columnas).map((c) => (
                 <div
                   key={c}
-                  className="border-l-[3px] py-0.5 pl-2.5"
+                  // 1.0.18 (petición del responsable): cada sistema en su propia casilla tintada
+                  // (antes, solo la pleca de color sobre el blanco de la tarjeta).
+                  className="celda-ficha rounded-r-md border-l-[3px] bg-[var(--cebra)] px-2.5 py-1.5"
                   // 0.78.1: el filete del sistema lee `--sis` (en nocturno, su tinta clara).
                   // 0.96.0 (16.ª ronda, visual): la fila común de la Tabla 4 (`unida`), con pleca
                   // y rótulo neutros (llevaba los de MiniMed 780G, la primera columna).

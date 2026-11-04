@@ -15,7 +15,15 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-04",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — tablas con más contraste`,
+    titulo: `Complemento interactivo ${VERSION_APP} — tablas, otro paso`,
+    detalle: [
+      "Tablas (petición del responsable): líneas, fondo alterno y columna de rótulos un punto más oscuros; la cabecera con el mismo fondo que los rótulos; el borde de la caja de la tabla del gris de sus líneas; con ratón, la fila bajo el puntero se marca. En el móvil, cada sistema de una fila va en su propia casilla tintada con su pleca de color.",
+    ],
+  },
+  {
+    fecha: "2026-11-04",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.17 — tablas con más contraste",
     detalle: [
       "Tablas (petición del responsable): líneas entre filas y columnas y fondo alterno un punto más oscuros, y la columna de rótulos con un fondo propio, más oscuro que el alterno, para que se distinga de los datos. En el modo nocturno, con sus tonos.",
     ],

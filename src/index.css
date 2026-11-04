@@ -78,11 +78,11 @@
     --linea-fuerte: #d4d4d4;
     /* 1.0.16: fondo alterno de las filas de las tablas (petición del responsable: «no hay buena
        diferenciación entre columnas y filas»). */
-    --cebra: #efefef;
+    --cebra: #e9e9e9;
     /* 1.0.17: líneas de las tablas y fondo de la columna de rótulos (petición del responsable:
        «oscurece un poco más las líneas y el fondo alterno»). */
-    --linea-tabla: #bfbfbf;
-    --tabla-rotulo: #e7e7e7;
+    --linea-tabla: #a9a9a9;
+    --tabla-rotulo: #dedede;
     --tinta: #171717;
     --tinta-2: #404040;
     --tinta-3: #6b6b6b;
@@ -98,9 +98,11 @@
       --linea: #334155;
       --linea-suave: #2b3a50;
       --linea-fuerte: #475569;
-      --cebra: #1c2a3e;
-      --linea-tabla: #5b6b82;
-      --tabla-rotulo: #23324a;
+      /* En nocturno, los fondos de tabla van más oscuros que la superficie (no más claros): así
+         los textos claros del nocturno conservan su contraste (axe, 1.0.18). */
+      --cebra: #182335;
+      --linea-tabla: #66778f;
+      --tabla-rotulo: #121a2a;
       --tinta: #f1f5f9;
       --tinta-2: #cbd5e1;
       --tinta-3: #94a3b8;
@@ -1140,7 +1142,8 @@ html[data-letra="2"] .prosa {
   position: sticky;
   top: 0;
   z-index: 2;
-  background: var(--superficie);
+  /* 1.0.18: la cabecera con el fondo de los rótulos (antes, blanca como las celdas). */
+  background: var(--tabla-rotulo);
   color: var(--tinta-3);
   box-shadow: inset 0 -1px 0 var(--linea-fuerte);
 }
@@ -1182,6 +1185,21 @@ html[data-letra="2"] .prosa {
 }
 .tabla-capitulo tbody tr:nth-child(even) > td {
   background: var(--cebra);
+}
+/* 1.0.18: con ratón, la fila bajo el puntero se marca (para seguirla a lo ancho). */
+@media (hover: hover) {
+  .tabla-capitulo tbody tr:hover > td {
+    background: var(--tabla-rotulo);
+  }
+}
+/* 1.0.18: en las casillas tintadas de las fichas del móvil, el rótulo gris en la tinta media
+   (en --tinta-3 sobre --cebra quedaba en 4,4:1, por debajo del mínimo). */
+.celda-ficha .rotulo {
+  color: var(--tinta-2);
+}
+/* 1.0.18: el borde exterior de la caja de la tabla, del mismo gris que sus líneas. */
+.tabla-scroll {
+  border-color: var(--linea-tabla);
 }
 .tabla-capitulo thead th {
   box-shadow: inset 0 -2px 0 var(--linea-tabla);
@@ -1533,6 +1551,9 @@ html:has(.volver-pegado) .tabla-capitulo thead th {
   }
   .tabla-capitulo .cifra {
     white-space: normal;
+  }
+  .celda-ficha {
+    background: #fff !important;
   }
   /* 1.0.16: en papel, celdas blancas y líneas grises (el fondo alterno es solo de pantalla). */
   .tabla-capitulo tbody tr:nth-child(even) > td {
