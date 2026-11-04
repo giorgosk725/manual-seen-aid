@@ -13,9 +13,17 @@ export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-11-04",
+    ambito: "app",
+    titulo: `Complemento interactivo ${VERSION_APP} — tablas más legibles`,
+    detalle: [
+      "Tablas del capítulo y comparaciones (petición del responsable): filas y columnas que se distinguen. Líneas entre filas y columnas más visibles, fondo alterno muy suave en las filas, la columna de rótulos con su fondo y una línea doble a la derecha, la cabecera con una línea de 2 px debajo y algo más de aire en cada celda. En el modo nocturno, lo mismo con sus tonos; en papel, celdas blancas con líneas grises. También en la tabla de sets de infusión de cada ficha.",
+    ],
+  },
+  {
     fecha: "2026-10-23",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — vigesimosexta ronda`,
+    titulo: "Complemento interactivo 1.0.15 — vigesimosexta ronda",
     detalle: [
       "Buscar: «modo sueño» con un sistema abre la situación con su casilla de la Tabla 4 a la vista, como el alcohol; «· abrir la situación» en vez de «· situación». Situaciones: «Los cuatro» también en las de la Tabla 6 (RM, TC, cirugía…).",
       "Ficha: «También en el capítulo» solo con lo que añade al rótulo con el libro (antes repetía su destino); la variante (Control-IQ+, Liberty) con contorno, distinta de las insignias de efecto; al pie de las preguntas, enlaces a la hipoglucemia nocturna de Modos, a la descarga y a las situaciones del sistema. En papel, la lista de preguntas sin marco, como el resto.",

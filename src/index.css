@@ -76,6 +76,9 @@
     --linea: #e6e6e6;
     --linea-suave: #eeeeee;
     --linea-fuerte: #d4d4d4;
+    /* 1.0.16: fondo alterno de las filas de las tablas (petición del responsable: «no hay buena
+       diferenciación entre columnas y filas»). */
+    --cebra: #f6f6f6;
     --tinta: #171717;
     --tinta-2: #404040;
     --tinta-3: #6b6b6b;
@@ -91,6 +94,7 @@
       --linea: #334155;
       --linea-suave: #2b3a50;
       --linea-fuerte: #475569;
+      --cebra: #182334;
       --tinta: #f1f5f9;
       --tinta-2: #cbd5e1;
       --tinta-3: #94a3b8;
@@ -1150,6 +1154,35 @@ html[data-letra="2"] .prosa {
 .tabla-capitulo.tabla-iguales {
   table-layout: fixed;
 }
+/* 1.0.16 (petición del responsable): filas y columnas que se distingan. Las líneas entre filas y
+   entre columnas, en `--linea-fuerte` (las capilares de `--linea-suave` casi no se veían sobre el
+   blanco); fondo alterno muy suave en las filas; la columna de rótulos, con su fondo y una línea
+   doble a la derecha; la cabecera, con una línea de 2 px debajo; y algo más de aire en las celdas. */
+.tabla-capitulo tbody td,
+.tabla-capitulo tbody th {
+  border-color: var(--linea-fuerte) !important;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+}
+.tabla-capitulo tbody th {
+  box-shadow: inset -2px 0 0 var(--linea-fuerte);
+}
+/* También en las tablas sin `border-l` en sus celdas (sets de infusión de la ficha). */
+.tabla-capitulo tbody td + td,
+.tabla-capitulo tbody th + td {
+  border-left: 1px solid var(--linea-fuerte);
+}
+.tabla-capitulo tbody tr:nth-child(even) > td {
+  background: var(--cebra);
+}
+.tabla-capitulo thead th {
+  box-shadow: inset 0 -2px 0 var(--linea-fuerte);
+}
+.tabla-capitulo thead th.cabeza-sistema {
+  box-shadow:
+    inset 0 3px 0 var(--sis),
+    inset 0 -2px 0 var(--linea-fuerte);
+}
 
 /* 0.72.0 (accesibilidad, 2.4.11 y 1.4.11): lo enfocado no queda bajo la cabecera ni la barra
    de abajo al moverse con el teclado, y el anillo de foco contrasta también de noche. */
@@ -1492,6 +1525,14 @@ html:has(.volver-pegado) .tabla-capitulo thead th {
   }
   .tabla-capitulo .cifra {
     white-space: normal;
+  }
+  /* 1.0.16: en papel, celdas blancas y líneas grises (el fondo alterno es solo de pantalla). */
+  .tabla-capitulo tbody tr:nth-child(even) > td {
+    background: #fff !important;
+  }
+  .tabla-capitulo tbody td,
+  .tabla-capitulo tbody th {
+    border-color: #bbb !important;
   }
   /* Una tabla más alta que una cara empieza en la primera (antes dejaba la cara 1 con el título
      de la pantalla y nada más). */

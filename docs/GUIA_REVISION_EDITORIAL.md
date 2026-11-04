@@ -1,6 +1,6 @@
-# Guía de revisión editorial · Manual SEEN · AID 1.0.15
+# Guía de revisión editorial · Manual SEEN · AID 1.0.16
 
-Edición que se revisa: **1.0.15**, publicada el 23-10-2026 en https://manual-seen-aid.pages.dev (el número y la fecha están en «Sobre este complemento» → «Esta versión»). Durante la revisión no se cambia el contenido de esta edición; las correcciones se reúnen y van en una versión siguiente.
+Edición que se revisa: **1.0.16**, publicada el 4-11-2026 en https://manual-seen-aid.pages.dev (el número y la fecha están en «Sobre este complemento» → «Esta versión»). Durante la revisión no se cambia el contenido de esta edición; las correcciones se reúnen y van en una versión siguiente.
 
 ## Qué es
 
