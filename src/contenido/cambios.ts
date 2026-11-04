@@ -15,7 +15,15 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-04",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — tablas más legibles`,
+    titulo: `Complemento interactivo ${VERSION_APP} — tablas con más contraste`,
+    detalle: [
+      "Tablas (petición del responsable): líneas entre filas y columnas y fondo alterno un punto más oscuros, y la columna de rótulos con un fondo propio, más oscuro que el alterno, para que se distinga de los datos. En el modo nocturno, con sus tonos.",
+    ],
+  },
+  {
+    fecha: "2026-11-04",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.16 — tablas más legibles",
     detalle: [
       "Tablas del capítulo y comparaciones (petición del responsable): filas y columnas que se distinguen. Líneas entre filas y columnas más visibles, fondo alterno muy suave en las filas, la columna de rótulos con su fondo y una línea doble a la derecha, la cabecera con una línea de 2 px debajo y algo más de aire en cada celda. En el modo nocturno, lo mismo con sus tonos; en papel, celdas blancas con líneas grises. También en la tabla de sets de infusión de cada ficha.",
     ],

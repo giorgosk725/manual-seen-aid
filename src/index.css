@@ -78,7 +78,11 @@
     --linea-fuerte: #d4d4d4;
     /* 1.0.16: fondo alterno de las filas de las tablas (petición del responsable: «no hay buena
        diferenciación entre columnas y filas»). */
-    --cebra: #f6f6f6;
+    --cebra: #efefef;
+    /* 1.0.17: líneas de las tablas y fondo de la columna de rótulos (petición del responsable:
+       «oscurece un poco más las líneas y el fondo alterno»). */
+    --linea-tabla: #bfbfbf;
+    --tabla-rotulo: #e7e7e7;
     --tinta: #171717;
     --tinta-2: #404040;
     --tinta-3: #6b6b6b;
@@ -94,7 +98,9 @@
       --linea: #334155;
       --linea-suave: #2b3a50;
       --linea-fuerte: #475569;
-      --cebra: #182334;
+      --cebra: #1c2a3e;
+      --linea-tabla: #5b6b82;
+      --tabla-rotulo: #23324a;
       --tinta: #f1f5f9;
       --tinta-2: #cbd5e1;
       --tinta-3: #94a3b8;
@@ -1160,28 +1166,30 @@ html[data-letra="2"] .prosa {
    doble a la derecha; la cabecera, con una línea de 2 px debajo; y algo más de aire en las celdas. */
 .tabla-capitulo tbody td,
 .tabla-capitulo tbody th {
-  border-color: var(--linea-fuerte) !important;
+  border-color: var(--linea-tabla) !important;
   padding-top: 0.625rem;
   padding-bottom: 0.625rem;
 }
+/* 1.0.17: la columna de rótulos con su propio fondo, más oscuro que el alterno de las filas. */
 .tabla-capitulo tbody th {
-  box-shadow: inset -2px 0 0 var(--linea-fuerte);
+  background: var(--tabla-rotulo);
+  box-shadow: inset -2px 0 0 var(--linea-tabla);
 }
 /* También en las tablas sin `border-l` en sus celdas (sets de infusión de la ficha). */
 .tabla-capitulo tbody td + td,
 .tabla-capitulo tbody th + td {
-  border-left: 1px solid var(--linea-fuerte);
+  border-left: 1px solid var(--linea-tabla);
 }
 .tabla-capitulo tbody tr:nth-child(even) > td {
   background: var(--cebra);
 }
 .tabla-capitulo thead th {
-  box-shadow: inset 0 -2px 0 var(--linea-fuerte);
+  box-shadow: inset 0 -2px 0 var(--linea-tabla);
 }
 .tabla-capitulo thead th.cabeza-sistema {
   box-shadow:
     inset 0 3px 0 var(--sis),
-    inset 0 -2px 0 var(--linea-fuerte);
+    inset 0 -2px 0 var(--linea-tabla);
 }
 
 /* 0.72.0 (accesibilidad, 2.4.11 y 1.4.11): lo enfocado no queda bajo la cabecera ni la barra
