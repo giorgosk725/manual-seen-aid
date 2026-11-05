@@ -846,7 +846,9 @@ export function Shell({
       const intentar = () => {
         const main = mainRef.current;
         const activo = document.activeElement;
-        if (main && activo && activo !== document.body && main.contains(activo)) return;
+        // 1.0.20: el propio <main> (foco provisional mientras carga la pantalla) no cuenta.
+        if (main && activo && activo !== document.body && activo !== main && main.contains(activo))
+          return;
         // Varios enlaces pueden ir al mismo sitio (dos rótulos a la misma fila): el del mismo texto.
         const sel = `a[href="${CSS.escape(destino.href)}"]`;
         // Primero en el contenido; si no está, el del lateral o la barra (visibles).
@@ -1015,15 +1017,20 @@ export function Shell({
       const activo = document.activeElement;
       // Solo si el foco se ha quedado en la navegación (lateral, barra de abajo, menú) o perdido:
       // un campo o un control de la pantalla nueva no se le quita al lector.
-      if (main && activo && activo !== document.body && main.contains(activo)) return;
+      if (main && activo && activo !== document.body && activo !== main && main.contains(activo))
+        return;
       const destino = aDestino
         ? main?.querySelector<HTMLElement>(".fila-resaltada, .bloque-destino")
         : null;
       const h1 = main?.querySelector<HTMLElement>("h1");
       // El destino marcado puede tardar (la pantalla lo busca y lo marca): se espera un poco.
       if (destino) enfocar(destino);
-      else if (++intentos < 30) t = setTimeout(intentar, 50);
-      else if (h1) enfocar(h1);
+      else if (++intentos < 30) {
+        t = setTimeout(intentar, 50);
+        // 1.0.20 (27.ª ronda, R3): mientras la pantalla perezosa carga, el foco ya en el contenido
+        // (con Intro en «Sistemas AID» del lateral y Tab enseguida, se seguía por el lateral).
+        if (intentos === 1 && main && activo !== main) enfocar(main);
+      } else if (h1) enfocar(h1);
       if (!aDestino && h1 && !destino) {
         clearTimeout(t);
         enfocar(h1);

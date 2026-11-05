@@ -739,6 +739,7 @@ export function SituacionSistema({
     {
       bloque: "nearest",
       enfocar: false,
+      soloSiOculto: true,
     },
   );
   return (

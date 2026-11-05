@@ -134,7 +134,18 @@ const INGRESO: BloqueSistema[][] = [
   [
     MODO_MENOS_INTENSIVO,
     { rotulo: "Pod", piezas: [POD_NO_SE_DESCONECTA] },
-    { rotulo: "Pauta de respaldo", piezas: [s10("b36", [3])] },
+    // 1.0.20 (27.ª ronda, adjunto): solo el trozo que aplica (la frase entera se repetía en el
+    // párrafo «Criterios para no continuar…» de la misma pantalla).
+    {
+      rotulo: "Pauta de respaldo",
+      piezas: [
+        s10(
+          "b36",
+          [3],
+          /la pauta de respaldo puede estimarse a partir de la dosis total diaria; en el ámbito hospitalario, una distribución inicial aproximada del 50.%.basal y 50.%.prandial puede utilizarse como punto de partida/,
+        ),
+      ],
+    },
   ],
 ];
 

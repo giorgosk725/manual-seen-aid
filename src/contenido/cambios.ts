@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-05",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — tablas en burdeos suave`,
+    titulo: `Complemento interactivo ${VERSION_APP} — vigesimoséptima ronda`,
+    detalle: [
+      "Tablas: la cabecera, ahora sí en texto burdeos (en la 1.0.19 una regla anterior la dejaba en gris); la fila a la que se llega desde una ficha, con pleca burdeos y un fondo que se distingue de las filas alternas; con ratón, la fila bajo el puntero en un tinte propio; en el modo nocturno, las filas alternas con el matiz de la superficie. En papel, la columna de rótulos en gris claro y las líneas de cabecera y rótulos del mismo gris que las demás; el pie de las tablas impresas, en el margen de la página, como en la ficha (las Tablas 3 y 4 pasaban a una segunda hoja).",
+      "Situaciones: en el móvil, al elegir el sistema la página no se desplaza si la tarjeta ya está a la vista (el título quedaba bajo la cabecera). Ingreso hospitalario con Omnipod 5: la pauta de respaldo, solo con el trozo que aplica (la frase entera sigue en el párrafo de criterios). Hipoglucemia: el enlace al plan de seguridad lleva al material del paciente, sin heredar el último sistema consultado. Con teclado, al abrir una pantalla desde el lateral, el foco pasa enseguida al contenido.",
+      "Tablas con «Ir a una fila»: la opción «Todas las filas» dice qué fila está marcada.",
+    ],
+  },
+  {
+    fecha: "2026-11-05",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.19 — tablas en burdeos suave",
     detalle: [
       "Tablas (decisión del responsable): la cabecera y la columna de rótulos pasan del gris al burdeos claro de la app, con la cabecera en texto burdeos; las líneas, en un gris cálido con el mismo matiz; las filas alternas, casi blancas. En el modo nocturno, un burdeos oscuro.",
     ],
@@ -41,7 +51,7 @@ export const CAMBIOS: Cambio[] = [
     ambito: "app",
     titulo: "Complemento interactivo 1.0.16 — tablas más legibles",
     detalle: [
-      "Tablas del capítulo y comparaciones (petición del responsable): filas y columnas que se distinguen. Líneas entre filas y columnas más visibles, fondo alterno muy suave en las filas, la columna de rótulos con su fondo y una línea doble a la derecha, la cabecera con una línea de 2 px debajo y algo más de aire en cada celda. En el modo nocturno, lo mismo con sus tonos; en papel, celdas blancas con líneas grises. También en la tabla de sets de infusión de cada ficha.",
+      "Tablas del capítulo y comparaciones (petición del responsable): filas y columnas que se distinguen. Líneas entre filas y columnas más visibles, fondo alterno muy suave en las filas, la columna de rótulos con su fondo y una línea doble a la derecha, la cabecera con una línea de 2 px debajo y algo más de aire en cada celda. En el modo nocturno, lo mismo con sus tonos; en papel, celdas blancas con líneas grises.",
     ],
   },
   {

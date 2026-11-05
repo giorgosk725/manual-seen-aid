@@ -14,7 +14,8 @@ import {
 import { elegirRuta, href } from "../rutas";
 import { sistemaReciente } from "../sistemaReciente";
 import { CORTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
-import { BotonImprimir, CabeceraEditorial, ColofonImpreso, PaginaBadge, Revelar } from "../ui";
+import { BotonImprimir, CabeceraEditorial, PaginaBadge, Revelar } from "../ui";
+import { useMargenesImpresos } from "../margenesImpresos";
 import { pestanaALaVista } from "../disposicion";
 import { CATEGORIA_HEX } from "../tokens";
 import { TablaVista } from "../componentes/TablaVista";
@@ -97,6 +98,9 @@ function TablaPantalla({
   // 0.86.1 (décima ronda, senior y R3): Ctrl+P imprime la tabla igual que el botón (antes, la
   // primera cara salía casi en blanco).
   useImprimirConTeclado(ref);
+  // 1.0.20 (27.ª ronda, senior): cabecera y colofón en los márgenes de la página (antes, el colofón
+  // era un párrafo al pie y la Tabla 3 y la 4 pasaban a una segunda hoja por unos 20 px).
+  useMargenesImpresos(`Tabla ${tabla.numero} · ${TEMA_TABLA[tid]}`);
   return (
     <div>
       {/* 0.71.0: «Tabla N» una vez (pestaña y cabecera de la tabla); sin migas: las pestañas
@@ -127,8 +131,6 @@ function TablaPantalla({
             onSeleccion={(x) => elegirRuta("consultar", "tablas", x ? `${tid}:${x}` : tid)}
           />
         </NivelTitulo.Provider>
-        {/* 0.96.0 (16.ª ronda, visual): en papel, el mismo pie que las demás hojas de la app. */}
-        <ColofonImpreso />
         <div className="separador no-imprimir mt-4 flex flex-wrap items-center gap-2 border-t pt-3">
           <BotonImprimir objetivo={ref} compacto>
             Imprimir la tabla

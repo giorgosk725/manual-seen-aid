@@ -614,7 +614,13 @@ export function TablaVista({
             }}
             className="w-full max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
-            <option value="">Todas las filas</option>
+            {/* 1.0.20 (27.ª ronda, R3): con una fila marcada (se llega desde una ficha), la opción
+                lo dice; elegir la fila la enseña sola, como siempre. */}
+            <option value="">
+              {resaltarFila !== undefined && tabla.filas[resaltarFila]
+                ? `Todas las filas · marcada: ${tabla.filas[resaltarFila].etiqueta.split("\n")[0]}`
+                : "Todas las filas"}
+            </option>
             {tabla.filas.map((f, i) => (
               <option key={i} value={i}>
                 {f.etiqueta.split("\n")[0]}

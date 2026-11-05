@@ -40,7 +40,7 @@ import {
 } from "../ampliacion";
 import { elegirRuta, href, fueNavegacionNueva, navegar } from "../rutas";
 import { BotonImprimir, CabeceraEditorial, ColofonImpreso, Foldable } from "../ui";
-import { VERSION_APP } from "../version";
+import { useMargenesImpresos } from "../margenesImpresos";
 import { pestanaALaVista } from "../disposicion";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { Lineas, Texto } from "../texto";
@@ -629,19 +629,10 @@ export function FichaSistema({
   useImprimirConTeclado(ref);
   // 1.0.0 (18.ª ronda, senior): en papel, cada cara dice de qué sistema es (en el margen de
   // arriba, con @page; suelta del grapado, la cara 2 o 3 no lo decía).
+  // 1.0.9 (22.ª ronda, R3): el colofón, en el margen de abajo de cada cara (antes, un párrafo al
+  // final: a veces pasaba solo a una cara más). 1.0.20: la receta, compartida con las tablas (ui).
   const nombreImpreso = s?.name.replace(/"/g, "") ?? "";
-  useEffect(() => {
-    if (!nombreImpreso) return undefined;
-    const st = document.createElement("style");
-    st.dataset.cabeceraImpresa = "";
-    const nombre = nombreImpreso;
-    // 1.0.9 (22.ª ronda, R3): el colofón, en el margen de abajo de cada cara (antes, un párrafo
-    // al final: a veces pasaba solo a una cara más).
-    const colofon = `Manual de Endocrinología y Nutrición (SEEN) · Capítulo 89 · Complemento interactivo ${VERSION_APP} · impreso el ${new Date().toLocaleDateString("es-ES")}`;
-    st.textContent = `@page { @top-left { content: "${nombre} · Ficha del sistema"; font: 8pt "Open Sans Variable", "Open Sans", sans-serif; color: #6b6b6b; vertical-align: bottom; padding-bottom: 3mm; } @top-right { content: "Página " counter(page) " de " counter(pages); font: 8pt "Open Sans Variable", "Open Sans", sans-serif; color: #6b6b6b; vertical-align: bottom; padding-bottom: 3mm; } @bottom-left { content: "${colofon}"; font: 7.5pt "Open Sans Variable", "Open Sans", sans-serif; color: #6b6b6b; vertical-align: top; padding-top: 3mm; } }`;
-    document.head.append(st);
-    return () => st.remove();
-  }, [nombreImpreso]);
+  useMargenesImpresos(nombreImpreso ? `${nombreImpreso} · Ficha del sistema` : undefined);
   // 0.82.1 (sexta ronda, guardia): con una fila pedida, marcada y justo bajo la barra pegada.
   useEffect(() => {
     if (!fila) return;

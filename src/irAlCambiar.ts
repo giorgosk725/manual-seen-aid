@@ -6,7 +6,18 @@ import { useEffect, useRef } from "react";
 export function useIrAlCambiar(
   clave: string,
   id: string,
-  { bloque = "start", enfocar = true }: { bloque?: ScrollLogicalPosition; enfocar?: boolean } = {},
+  {
+    bloque = "start",
+    enfocar = true,
+    soloSiOculto = false,
+  }: {
+    bloque?: ScrollLogicalPosition;
+    enfocar?: boolean;
+    /* 1.0.20 (27.ª ronda, R1): si el principio del bloque ya se ve (bajo la cabecera y en los dos
+       tercios de arriba), no se mueve nada: en el móvil, elegir el sistema bajaba 100 px y el
+       título de la situación quedaba bajo la cabecera. */
+    soloSiOculto?: boolean;
+  } = {},
 ) {
   const pendiente = useRef(false);
   useEffect(() => {
@@ -14,9 +25,11 @@ export function useIrAlCambiar(
     pendiente.current = false;
     const el = document.getElementById(id);
     if (!el) return;
-    el.scrollIntoView({ block: bloque });
+    const arriba = el.getBoundingClientRect().top;
+    const visible = arriba >= 56 && arriba <= window.innerHeight * 0.66;
+    if (!soloSiOculto || !visible) el.scrollIntoView({ block: bloque });
     if (enfocar) el.focus({ preventScroll: true });
-  }, [clave, id, bloque, enfocar]);
+  }, [clave, id, bloque, enfocar, soloSiOculto]);
   return () => {
     pendiente.current = true;
   };

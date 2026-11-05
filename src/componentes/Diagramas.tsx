@@ -59,7 +59,6 @@ import {
   ubicacionDeDiagrama,
 } from "../contenido";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
-import { sistemaReciente } from "../sistemaReciente";
 import { elegirRuta, href } from "../rutas";
 import { BotonImprimir, Segmented } from "../ui";
 import { SISTEMA_HEX, TRAMO_HEX } from "../tokens";
@@ -115,24 +114,14 @@ function Sub({
 /* Por dónde seguir desde un diagrama que se consulta (0.72.0, auditoría de urgencias). */
 const SEGUIR_DIAGRAMA: Partial<Record<DiagramaId, { texto: string; ruta: string }[]>> = {
   hipoglucemia: [
-    { texto: "Plan de seguridad (hoja para el paciente)", ruta: href("pacientes") },
+    // 1.0.20 (27.ª ronda, R1): al material del paciente, donde se elige el sistema (antes, el plan
+    // del último sistema consultado: tras una situación con Control-IQ, ofrecía ese plan a quien
+    // atendía a alguien con 780G, sin decirlo).
+    { texto: "Plan de seguridad (hoja para el paciente; por sistema)", ruta: href("pacientes") },
     // 0.95.1 (16.ª ronda, guardia): a la situación (con lo de cada sistema), no al párrafo.
     { texto: "Hipoglucemia nocturna", ruta: href("consultar", "situacion", "sueno") },
     { texto: "Tiempo por debajo del rango elevado", ruta: href("capitulo", "09-descarga", "b10") },
   ],
-};
-
-/* 0.97.1 (17.ª ronda, R1): el plan de seguridad, el del último sistema consultado; sin ninguno, el
-   enlace dice adónde lleva (la lista de material). */
-const planDelSistema = (l: { texto: string; ruta: string }) => {
-  if (l.ruta !== href("pacientes")) return l;
-  const c = sistemaReciente();
-  return c === undefined
-    ? { texto: "Material para el paciente", ruta: l.ruta }
-    : {
-        texto: `Plan de seguridad · ${CORTO_SISTEMA[c]}`,
-        ruta: href("pacientes", "plan", ORDEN_SISTEMAS[c]),
-      };
 };
 
 export function MarcoDiagrama({
@@ -190,7 +179,7 @@ export function MarcoDiagrama({
             sinSangrar
             nivel={3}
             className="no-imprimir mt-4"
-            filas={SEGUIR_DIAGRAMA[id]!.map(planDelSistema).map((l) => ({
+            filas={SEGUIR_DIAGRAMA[id]!.map((l) => ({
               href: l.ruta,
               t: l.texto,
             }))}
