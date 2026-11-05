@@ -78,11 +78,13 @@
     --linea-fuerte: #d4d4d4;
     /* 1.0.16: fondo alterno de las filas de las tablas (petición del responsable: «no hay buena
        diferenciación entre columnas y filas»). */
-    --cebra: #e9e9e9;
+    --cebra: #faf5f7;
     /* 1.0.17: líneas de las tablas y fondo de la columna de rótulos (petición del responsable:
        «oscurece un poco más las líneas y el fondo alterno»). */
-    --linea-tabla: #a9a9a9;
-    --tabla-rotulo: #dedede;
+    /* 1.0.19 (decisión del responsable: «lo de gris no me convence» → burdeos suave): líneas en un
+       gris cálido con el matiz del burdeos; cabecera y rótulos con el fondo burdeos claro de la app. */
+    --linea-tabla: #cdb8c2;
+    --tabla-rotulo: #f3e6ec;
     --tinta: #171717;
     --tinta-2: #404040;
     --tinta-3: #6b6b6b;
@@ -100,9 +102,9 @@
       --linea-fuerte: #475569;
       /* En nocturno, los fondos de tabla van más oscuros que la superficie (no más claros): así
          los textos claros del nocturno conservan su contraste (axe, 1.0.18). */
-      --cebra: #182335;
-      --linea-tabla: #66778f;
-      --tabla-rotulo: #121a2a;
+      --cebra: #1c1a26;
+      --linea-tabla: #6e5564;
+      --tabla-rotulo: #2c1a24;
       --tinta: #f1f5f9;
       --tinta-2: #cbd5e1;
       --tinta-3: #94a3b8;
@@ -1142,8 +1144,10 @@ html[data-letra="2"] .prosa {
   position: sticky;
   top: 0;
   z-index: 2;
-  /* 1.0.18: la cabecera con el fondo de los rótulos (antes, blanca como las celdas). */
+  /* 1.0.18: la cabecera con el fondo de los rótulos (antes, blanca como las celdas).
+     1.0.19: y su texto en burdeos. */
   background: var(--tabla-rotulo);
+  color: var(--acento-texto);
   color: var(--tinta-3);
   box-shadow: inset 0 -1px 0 var(--linea-fuerte);
 }
@@ -1173,9 +1177,11 @@ html[data-letra="2"] .prosa {
   padding-top: 0.625rem;
   padding-bottom: 0.625rem;
 }
-/* 1.0.17: la columna de rótulos con su propio fondo, más oscuro que el alterno de las filas. */
+/* 1.0.17: la columna de rótulos con su propio fondo, más oscuro que el alterno de las filas.
+   1.0.19: fondo burdeos claro y texto en la tinta (el burdeos queda para la cabecera). */
 .tabla-capitulo tbody th {
   background: var(--tabla-rotulo);
+  color: var(--tinta);
   box-shadow: inset -2px 0 0 var(--linea-tabla);
 }
 /* También en las tablas sin `border-l` en sus celdas (sets de infusión de la ficha). */
