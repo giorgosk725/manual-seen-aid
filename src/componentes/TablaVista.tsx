@@ -50,7 +50,11 @@ const nombreColumna = (tabla: Tabla, c: number, literal: boolean) =>
 const anchoRotulos = (tabla: Tabla) =>
   tabla.id === "T4" || tabla.id === "T3"
     ? "var(--ancho-rotulos-34, 12rem)"
-    : "var(--ancho-celda-tabla, 10rem)";
+    : // 1.0.21 (27.ª ronda, visual): en la Tabla 5 el rótulo es el número del paso; a 10 rem
+      // dejaba las cuatro columnas de texto en ~110 px en la tableta.
+      tabla.id === "T5"
+      ? "3.5rem"
+      : "var(--ancho-celda-tabla, 10rem)";
 
 /* «Viendo: MiniMed 780G y Omnipod 5»: qué selección está activa, con palabras. */
 const listaNombres = (n: string[]) =>

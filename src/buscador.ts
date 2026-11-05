@@ -635,6 +635,17 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         ),
       );
   }
+  // 1.0.21 (27.ª ronda, adjunto): «objetivo temporal camaps» (o «función/modo temporal»): en
+  // CamAPS FX eso son Boost y Ease-off; su pregunta frecuente, ya contestada.
+  if (sis === 2 && /\b(objetivo|funcion|modo)s? temporal/.test(n) && !/ejercicio|deporte/.test(n))
+    out.push(
+      atajo(
+        "recurso/frecuente/f91",
+        "CamAPS FX: ¿para qué sirven Boost y Ease-off?",
+        href("preguntas", "f91"),
+        TABLAS.T3.paginas[0],
+      ),
+    );
   // 0.82.1 (sexta ronda, senior): el alcohol con un sistema, su fila de Modos.
   // 0.83.1 (séptima ronda, adjunto): «ease off alcohol» es CamAPS FX (Ease-off y Boost son suyos).
   const sisAlcohol = sis >= 0 ? sis : /ease-?off|ease off|boost/.test(n) ? 2 : -1;

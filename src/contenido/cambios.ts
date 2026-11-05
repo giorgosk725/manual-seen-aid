@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-05",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — vigesimoséptima ronda`,
+    titulo: `Complemento interactivo ${VERSION_APP} — remates de la vigesimoséptima ronda`,
+    detalle: [
+      "Iniciación, paso 2 (Parámetros): un enlace a lo que cada sistema pide programar el primer día según la Tabla 2 (paso 5, Activación), para que no se lea como contradicción con la configuración general de ese paso.",
+      "Tabla 5: la columna del número de paso, estrecha (dejaba las cuatro columnas de texto apretadas en la tableta). Buscar: con el acceso «Sueño/período nocturno» de un sistema no se repite debajo la misma casilla de la Tabla 4; «objetivo temporal» con CamAPS FX contesta la pregunta de Boost y Ease-off.",
+    ],
+  },
+  {
+    fecha: "2026-11-05",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.20 — vigesimoséptima ronda",
     detalle: [
       "Tablas: la cabecera, ahora sí en texto burdeos (en la 1.0.19 una regla anterior la dejaba en gris); la fila a la que se llega desde una ficha, con pleca burdeos y un fondo que se distingue de las filas alternas; con ratón, la fila bajo el puntero en un tinte propio; en el modo nocturno, las filas alternas con el matiz de la superficie. En papel, la columna de rótulos en gris claro y las líneas de cabecera y rótulos del mismo gris que las demás; el pie de las tablas impresas, en el margen de la página, como en la ficha (las Tablas 3 y 4 pasaban a una segunda hoja).",
       "Situaciones: en el móvil, al elegir el sistema la página no se desplaza si la tarjeta ya está a la vista (el título quedaba bajo la cabecera). Ingreso hospitalario con Omnipod 5: la pauta de respaldo, solo con el trozo que aplica (la frase entera sigue en el párrafo de criterios). Hipoglucemia: el enlace al plan de seguridad lleva al material del paciente, sin heredar el último sistema consultado. Con teclado, al abrir una pantalla desde el lateral, el foco pasa enseguida al contenido.",

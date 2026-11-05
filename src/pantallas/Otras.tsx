@@ -256,7 +256,11 @@ export function Buscar({ inicial }: { inicial?: string }) {
     // 0.87.1 (undécima ronda, guardia): con el atajo del agua, sin las ramas de la Figura 3 (casaban
     // por «Hidratación con agua»).
     const agua = atajos.some((a) => a.entrada.id.startsWith("recurso/agua/"));
+    // 1.0.21 (27.ª ronda, R1): con el acceso «Sueño/período nocturno · sistema» (que ya trae la
+    // casilla de la Tabla 4), sin la fila de la Tabla 4 que la repetía como primer pasaje.
+    const sueno = atajos.some((a) => a.entrada.id.startsWith("recurso/sueno/"));
     const rs = rs0
+      .filter((r) => !sueno || !r.id.startsWith("T4/2"))
       .filter((r) => !urgencia || !/sin sospecha/i.test(`${r.titulo} ${r.texto ?? ""}`))
       // 0.92.3 (15.ª ronda, guardia): con la Figura 3, sin coincidencias parciales.
       .filter((r) => !urgencia || !r.aproximada)

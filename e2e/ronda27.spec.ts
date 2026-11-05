@@ -52,6 +52,42 @@ test.describe("Ronda 27 · tablas", () => {
   });
 });
 
+test.describe("Ronda 27 · opcionales (1.0.21)", () => {
+  test("senior: el paso 2 de Fases enlaza a lo que programa cada sistema (Tabla 2)", async ({
+    page,
+  }) => {
+    await page.goto("/#/consultar/inicio/inicio:omnipod-5:parametros");
+    await expect(
+      page.locator('main a[href="#/consultar/inicio/inicio:omnipod-5:arranque"]').first(),
+    ).toBeAttached();
+  });
+
+  test("visual: la columna «Paso» de la Tabla 5, estrecha", async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await page.goto("/#/consultar/tablas/T5");
+    const th = page.locator(".tabla-capitulo tbody th").first();
+    await expect(th).toBeVisible();
+    expect((await th.boundingBox())!.width).toBeLessThan(80);
+  });
+
+  test("R1 y adjunto: Buscar sin la casilla repetida con «modo sueño»; Boost con «objetivo temporal camaps»", async ({
+    page,
+  }) => {
+    await page.goto("/#/buscar");
+    await page.locator("#buscar-q").fill("modo sueño control iq");
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("list", { name: "Abrir" }).first()).toContainText("112,5");
+    const main = page.locator("main");
+    await expect(main).toBeVisible();
+    // La casilla de la Tabla 4 solo en la tarjeta «Abrir» (la cifra 112,5 sale también, legítima,
+    // en el párrafo de la gestación).
+    expect(((await main.textContent()) ?? "").split("sin bolos de autocorrección").length).toBe(2);
+    await page.locator("#buscar-q").fill("objetivo temporal camaps");
+    await page.keyboard.press("Enter");
+    await expect(main).toContainText("¿para qué sirven Boost y Ease-off?");
+  });
+});
+
 test.describe("Ronda 27 · situaciones, foco y contenido", () => {
   test("R1: en el móvil, elegir el sistema no esconde el título de la situación", async ({
     page,

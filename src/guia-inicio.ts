@@ -151,6 +151,17 @@ export const PASOS_GUIA: PasoGuia[] = [
           sis !== undefined ? `calculadora:${SLUG_CALCULADORA[sis]}` : "calculadora",
         ),
       },
+      // 1.0.21 (27.ª ronda, senior): este paso es la configuración general; lo que cada sistema
+      // pide programar el primer día lo dice su línea de la Tabla 2 (en el paso de activación).
+      sis !== undefined
+        ? {
+            texto: "Qué programar el primer día en este sistema (Tabla 2): paso 5, Activación",
+            ruta: href("consultar", "inicio", `inicio:${SLUG_CALCULADORA[sis]}:arranque`),
+          }
+        : {
+            texto: "Qué programar el primer día en cada sistema (Tabla 2)",
+            ruta: href("consultar", "tablas", "T2::1"),
+          },
     ],
   },
   {

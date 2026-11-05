@@ -45,7 +45,9 @@ test.describe("Ronda 22 · selector, campos y buscador", () => {
 
   test("buscar: dos líneas de una casilla, separadas", async ({ page }) => {
     await page.goto("/#/buscar");
-    await page.locator("#buscar-q").fill("modo sueño control iq");
+    // 1.0.21: con el sistema nombrado, la casilla va en la tarjeta «Abrir» y la fila de la Tabla 4
+    // ya no se repite como pasaje; sin sistema, el pasaje sigue saliendo.
+    await page.locator("#buscar-q").fill("modo sueño");
     await page.keyboard.press("Enter");
     await expect(page.getByText(/configurable · Objetivo: 112,5/).first()).toBeVisible();
   });
