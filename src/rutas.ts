@@ -86,6 +86,16 @@ export function navegar(
 export const elegirRuta = (seccion: string, sub?: string, detalle?: string) =>
   navegar(seccion, sub, detalle, { reemplazar: true });
 
+/* 1.0.25 (regla única de historial): cambiar de VISTA dentro de una pantalla (pestaña de Sistemas o
+   de Tablas, Cálculo/Fases/Hoja, fase o paso de Iniciación, paso de la descarga) apila una entrada:
+   Atrás vuelve a la vista anterior. Elegir una OPCIÓN dentro de la misma vista (sistema, rama de la
+   Figura 3, fila de una tabla) la sustituye (`elegirRuta`). Sin marca de navegación nueva: la
+   pantalla no sube ni mueve el foco, como al sustituir. */
+export const apilarRuta = (seccion: string, sub?: string, detalle?: string) => {
+  navegar(seccion, sub, detalle);
+  anularNavegacionNueva();
+};
+
 export function useRuta(): Ruta {
   const [ruta, setRuta] = useState<Ruta>(() =>
     parseHash(typeof window !== "undefined" ? window.location.hash : ""),

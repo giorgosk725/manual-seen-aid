@@ -873,7 +873,16 @@ export function Shell({
         const main = mainRef.current;
         const activo = document.activeElement;
         // 1.0.20: el propio <main> (foco provisional mientras carga la pantalla) no cuenta.
-        if (main && activo && activo !== document.body && activo !== main && main.contains(activo))
+        // 1.0.25: una pestaña de la pantalla anterior que sigue en su sitio (Tablas, Sistemas) no
+        // cuenta como foco ya colocado.
+        if (
+          main &&
+          activo &&
+          activo !== document.body &&
+          activo !== main &&
+          main.contains(activo) &&
+          !activo.closest(".pestanas")
+        )
           return;
         // Varios enlaces pueden ir al mismo sitio (dos rótulos a la misma fila): el del mismo texto.
         const sel = destino.sel;
@@ -889,7 +898,8 @@ export function Shell({
         ];
         const a = todos.find((x) => (x.textContent ?? "").trim() === destino.texto) ?? todos[0];
         if (a) a.focus({ preventScroll: true });
-        else if (++n < 30) t = setTimeout(intentar, 50);
+        // 1.0.25: sin el enlace a la vista (en un panel plegado), al título antes (0,6 s).
+        else if (++n < 10) t = setTimeout(intentar, 50);
         else {
           // Sin el enlace (pantalla que ya no lo tiene), al título de la pantalla.
           const h1 = main?.querySelector<HTMLElement>("h1");

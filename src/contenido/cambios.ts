@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-06",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — trigésima ronda`,
+    titulo: `Complemento interactivo ${VERSION_APP} — navegación y lectura`,
+    detalle: [
+      "Una sola regla para Atrás: cambiar de vista (Cálculo, Fases u Hoja; una fase o un paso de Iniciación; un paso de la descarga; las pestañas de Sistemas y Tablas) se puede deshacer con Atrás; elegir una opción dentro de la vista (sistema, rama, fila) no. En el móvil, «Otra situación» vuelve a la lista donde se dejó. Tras Atrás, el foco ya no se queda en una pestaña de la pantalla anterior y, si el enlace de origen está plegado, va al título.",
+      "En pantallas de 1280 px o más, el texto de tarjetas, tablas y respuestas a 15 px y las líneas secundarias a 14 px. En la ficha, «Cálculo inicial», como en la portada.",
+    ],
+  },
+  {
+    fecha: "2026-11-06",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.24 — trigésima ronda",
     detalle: [
       "Ingreso hospitalario con sistema: la primera tarjeta lleva la frase entera del capítulo («Cuando no existen contraindicaciones, puede mantenerse…») y el enlace a los criterios para no continuar; las tarjetas van por filas, en el mismo sitio con los cuatro sistemas, y todas con el mismo rótulo. La tarjeta de objetivos hospitalarios nombra el posicionamiento internacional de 2026 bajo su título.",
       "Enfermedad intercurrente con sistema: el acceso a la Figura 3 «Con sospecha de cetosis», arriba; la fuente «Tabla 4» lleva a su fila con el sistema. Tabla 6 en exploraciones (Rx, PET, diatermia…): la nota general sin la vuelta desde insulina intravenosa, que va en cirugía; el nombre de la pauta es el propio enlace.",

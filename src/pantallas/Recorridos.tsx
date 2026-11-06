@@ -31,16 +31,27 @@ import { GUIA_POR_SISTEMA, TABLA4_POR_SISTEMA } from "../porSistema";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { kDe, siglasPorPiezas, textosDePieza, type Pieza } from "../inicio";
 
-import { anularNavegacionNueva, elegirRuta, fueNavegacionNueva, href, navegar } from "../rutas";
+import {
+  anularNavegacionNueva,
+  apilarRuta,
+  elegirRuta,
+  fueNavegacionNueva,
+  href,
+  navegar,
+} from "../rutas";
 
 /* Abre una situación desde la lista con su propia entrada en el historial, sin la marca de
    navegación nueva (la pantalla es la misma: la Shell no debe moverla). */
 let posicionLista = 0;
 const apilarSituacion = (seccion: string, sub?: string, detalle?: string) => {
   posicionLista = window.scrollY;
+  situacionDesdeLista = detalle?.split(":")[0] ?? null;
   navegar(seccion, sub, detalle);
   anularNavegacionNueva();
 };
+/* 1.0.25 (verificación de navegación): la situación abierta desde la lista; «Otra situación» vuelve
+   con Atrás (posición y foco de la lista), sin apilar otra entrada. */
+let situacionDesdeLista: string | null = null;
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
 import { BotonImprimir, CabeceraEditorial, ColofonImpreso } from "../ui";
@@ -453,7 +464,6 @@ function CabeceraSituacion({
   etiqueta: string;
   sistema?: string;
 }) {
-  void id;
   return (
     // 0.92.0 (revisión de tarjetas, ★2 y ★4): sin pleca (no es un sistema).
     // 0.94.0 (rediseño, fase 2): el asunto de la columna, como título de sección (17/700) sobre una
@@ -466,6 +476,13 @@ function CabeceraSituacion({
           «Cambiar», que se confundía con cambiar de sistema y abría la lista debajo del detalle). */}
       <a
         href={href("consultar", "situacion", sistema ? `:${sistema}` : undefined)}
+        onClick={(e) => {
+          if (situacionDesdeLista !== id) return;
+          e.preventDefault();
+          situacionDesdeLista = null;
+          window.history.back();
+          anularNavegacionNueva();
+        }}
         className="chip no-imprimir shrink-0 lg:hidden"
       >
         ‹ Otra situación
@@ -1380,7 +1397,8 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
   const n = Number.isInteger(pedido) && pedido >= 1 && pedido <= 8 ? pedido : 1;
   const fila = t.filas[n - 1];
   const patrones = parrafosConLead(PATRON_DEL_PASO[n] || []);
-  const ir = (k: number) => elegirRuta("consultar", "descarga", String(k));
+  // 1.0.25: cada paso, una entrada del historial (Atrás vuelve al paso anterior).
+  const ir = (k: number) => apilarRuta("consultar", "descarga", String(k));
   const alPaso = useIrAlCambiar(String(n), "paso-descarga");
   // 0.89.1 (13.ª ronda, R3): el paso, con su botón de imprimir (y Ctrl+P, igual).
   const raiz = useRef<HTMLDivElement>(null);

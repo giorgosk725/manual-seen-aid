@@ -19,7 +19,9 @@ const LIMITES = {
   // (expansiones.json, ~11 KB) que suben el acierto en los bancos ciegos. Se carga al buscar.
   buscador: 40 * 1024,
   // 2,0 MB desde la edición editorial (A10): el PDF de pacientes (83 KB) entra en el precache.
-  precache: 2.0 * 1024 * 1024,
+  // 2,1 MB desde la 1.0.25: con 2,0 quedaban 8 KB (las rondas 27–30 añadieron accesos y pruebas
+  // de navegación); el margen vuelve a unos 100 KB.
+  precache: 2.1 * 1024 * 1024,
 };
 
 const DIST = "dist";

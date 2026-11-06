@@ -35,7 +35,7 @@ import { SistemaDelRecorrido } from "../componentes/piezasContexto";
 import { TABLAS } from "../contenido";
 import { CORTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { SIS_IDS } from "../situaciones";
-import { elegirRuta, href } from "../rutas";
+import { apilarRuta, elegirRuta, href } from "../rutas";
 import { imprimirRegion } from "../imprimir";
 import { CabeceraEditorial } from "../ui";
 import { pestanaALaVista } from "../disposicion";
@@ -500,8 +500,9 @@ function PasosInicio({
   const { resp, hechos, calc } = useTrabajo();
   const setResp = (r: Record<string, string>) => cambiarRespuestas(limpiarRespuestas(r));
   const setHechos = (f: (prev: Set<string>) => Set<string>) => cambiarHechos(f(hechos));
+  // 1.0.25: cada paso, una entrada del historial (Atrás vuelve al paso anterior).
   const ir = (k: number) =>
-    elegirRuta("consultar", "inicio", detalleDe("inicio", sis, PASOS_GUIA[k - 1].id));
+    apilarRuta("consultar", "inicio", detalleDe("inicio", sis, PASOS_GUIA[k - 1].id));
   const alPaso = useIrAlCambiar(String(n), "paso-guia");
   const preguntas = preguntasActivas(p, resp);
   const piezas = sinObjetivoRepetido(piezasDePaso(p, resp), sis);
@@ -813,6 +814,10 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
         : null;
   const ir = (f: string, s = sis, t: string | null = null) =>
     elegirRuta("consultar", "inicio", detalleDe(f, s, t) || undefined);
+  // 1.0.25: otra vista (Cálculo, Fases, Hoja) u otra fase, una entrada del historial; el sistema o
+  // la tarea abierta, no (`ir`).
+  const irA = (f: string) =>
+    apilarRuta("consultar", "inicio", detalleDe(f, sis, null) || undefined);
   const alPaso = useIrAlCambiar(actual, "paso-inicio");
   // Abiertas: la pedida (o la primera); «Fase completa» las abre todas.
   const [abiertas, setAbiertas] = useState<Set<string>>(new Set());
@@ -861,7 +866,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
               type="button"
               aria-pressed={x.on}
               aria-label={x.id === HOJA ? "Hoja de comprobación para imprimir" : undefined}
-              onClick={() => (x.id === FASES[0].id && enFases ? undefined : ir(x.id))}
+              onClick={() => (x.id === FASES[0].id && enFases ? undefined : irA(x.id))}
               onFocus={pestanaALaVista}
               className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
             >
@@ -933,7 +938,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                   <button
                     type="button"
                     aria-current={on ? "step" : undefined}
-                    onClick={() => ir(f.id)}
+                    onClick={() => irA(f.id)}
                     className="chip w-full px-2.5 py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
                   >
                     <span className={`num ${on ? "num-on" : ""}`}>{i + 1}</span>
@@ -989,11 +994,11 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                 // 0.92.3 (15.ª ronda, R5): al cambiar de fase desde un paso, a su título.
                 onAntesDelPrimero={() => {
                   alPaso();
-                  ir(FASES[n - 1].id);
+                  irA(FASES[n - 1].id);
                 }}
                 onTrasElUltimo={() => {
                   alPaso();
-                  ir(FASES[n + 1].id);
+                  irA(FASES[n + 1].id);
                 }}
               />
             )}
@@ -1031,7 +1036,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
             disabled={n === 0}
             onClick={() => {
               alPaso();
-              ir(FASES[n - 1].id);
+              irA(FASES[n - 1].id);
             }}
             className="chip disabled:opacity-40"
           >
@@ -1041,7 +1046,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
             type="button"
             onClick={() => {
               alPaso();
-              ir(n === FASES.length - 1 ? HOJA : FASES[n + 1].id);
+              irA(n === FASES.length - 1 ? HOJA : FASES[n + 1].id);
             }}
             className="inline-flex min-h-11 items-center gap-1 rounded-md px-3 text-sm font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
             style={{ background: hex.strong }}

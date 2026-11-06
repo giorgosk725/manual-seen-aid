@@ -777,7 +777,9 @@ export function FichaSistema({
           {/* 0.88.1 (duodécima ronda, R5): el cálculo de parámetros iniciales del sistema, directo
               (Iniciación abre las fases). */}
           <a href={href("consultar", "inicio", `calculadora:${slug}`)} className={accesoFicha}>
-            Cálculo
+            {/* 1.0.25 (perfil senior): el mismo nombre que en la portada. */}
+            <span className="sm:hidden">Cálculo</span>
+            <span className="hidden sm:inline">Cálculo inicial</span>
           </a>
           <span aria-hidden="true" className="self-center text-slate-400">
             ·

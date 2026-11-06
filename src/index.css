@@ -2424,6 +2424,18 @@ html.night .fila-resaltada > [style] {
 /* 0.86.1 (décima ronda, senior y R5): en la tabla comparada, las celdas pintan su propio color de
    sistema y tapaban la fila: la marca va también en ellas (y el filete, en el rótulo). */
 
+/* 1.0.25 (perfil senior): en pantallas de 1280 px o más, el cuerpo a 15 px y las líneas secundarias
+   a 14 px (eran 14 y 13: se leían justas). Solo en pantalla; el papel tiene sus tamaños. */
+@media screen and (min-width: 1280px) {
+  main .text-sm {
+    font-size: 0.9375rem;
+    line-height: 1.375rem;
+  }
+  main .text-\[13px\] {
+    font-size: 0.875rem;
+  }
+}
+
 /* 0.80.1 (cuarta ronda, visual): la prosa de consulta a unos 75 caracteres por línea (pasajes del
    buscador, situaciones, notas de la calculadora y de la Figura 3); y en nocturno, un subrayado
    suave como en claro (antes, casi tan fuerte como el texto). */
