@@ -1121,9 +1121,15 @@ let deComparacion: { sec: string; t: number } | null = null;
 /* 1.0.13 (25.ª ronda, adjunto): solo en la pestaña que se abrió con él (antes, durante 3 s en
    cualquier comparación: «… de los cuatro» de la Elección salía filtrado). */
 let unoMarcado: { id: string; t: number; destino: string } | null = null;
+/* 1.0.22 (28.ª ronda, R3): «Ver la ficha» desde «Los cuatro» con uno marcado: al volver con Atrás a
+   esa misma dirección se recupera el marcado (la columna sola y, con ella, la posición); se gasta
+   al usarse (en Comparacion, tras montarse). */
+let volverMarcado: { id: string; origen: string } | null = null;
 function marcadoDeEntrada(): string[] {
   const m = unoMarcado;
-  return m && Date.now() - m.t < 3000 && window.location.hash === m.destino ? [m.id] : [];
+  if (m && Date.now() - m.t < 3000 && window.location.hash === m.destino) return [m.id];
+  const v = volverMarcado;
+  return v && window.location.hash === v.origen ? [v.id] : [];
 }
 function BarraSistemas({
   ids,
@@ -1414,7 +1420,11 @@ function BarraSistemas({
                       ? href("sistemas", marcados.join("+"), sec)
                       : rutaCon(marcados)
                   }
-                  onClick={() => window.scrollTo({ top: 0 })}
+                  onClick={() => {
+                    if (marcados.length === 1)
+                      volverMarcado = { id: marcados[0], origen: window.location.hash };
+                    window.scrollTo({ top: 0 });
+                  }}
                   // 1.0.5 (21.ª ronda, visual): botón secundario (borde capilar, sin relleno): con
                   // la casilla marcada y la pestaña, el relleno burdeos apilaba cinco marcas.
                   className="tap-44 inline-flex min-h-9 shrink-0 items-center gap-1 whitespace-nowrap rounded-md border bg-[var(--papel)] px-3 py-1 text-sm font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
@@ -1857,6 +1867,11 @@ function Comparacion({
   const ref = useRef<HTMLDivElement>(null);
   useImprimirConTeclado(ref);
   const marcadosEntrada = useState<string[]>(() => (ids.length ? [] : marcadoDeEntrada()));
+  // 1.0.22: lo recordado para Atrás se gasta aquí, no en el inicializador (el modo estricto lo
+  // llama dos veces).
+  useEffect(() => {
+    volverMarcado = null;
+  }, []);
   // 1.0.12 (24.ª ronda, R3 y senior): uno marcado en «Los cuatro» filtra también las secciones
   // (antes, solo el Resumen: en Parámetros seguían los cuatro).
   const vistos = ids.length ? ids : marcadosEntrada[0];
@@ -2080,7 +2095,13 @@ function Comparacion({
           {seccion === "ajuste" && (
             <div id="tabla-3-comparada">
               <NivelTitulo.Provider value={2}>
-                <TablaVista tabla={TABLAS.T3} columnasFijas={cols} herramienta />
+                <TablaVista
+                  tabla={TABLAS.T3}
+                  columnasFijas={cols}
+                  herramienta
+                  // 1.0.22 (28.ª ronda, R3): «ajuste:2» = la fila marcada (desde la descarga).
+                  resaltarFila={fila !== undefined && /^\d+$/.test(fila) ? Number(fila) : undefined}
+                />
               </NivelTitulo.Provider>
             </div>
           )}

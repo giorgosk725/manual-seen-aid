@@ -121,6 +121,7 @@ function Opciones<T extends string | number>({
   onChange,
   marca,
   rejilla = false,
+  ayuda,
 }: {
   /* 0.92.0 (revisión de tarjetas, ★9): las opciones apiladas, todas del mismo ancho (antes, cada
      una con el de su texto). */
@@ -132,6 +133,8 @@ function Opciones<T extends string | number>({
   onChange: (v: T) => void;
   /* «punto de partida» / «modificado», junto al rótulo. */
   marca?: ReactNode;
+  /* 1.0.22 (28.ª ronda, R5): una línea bajo las opciones que dice por qué este punto de partida. */
+  ayuda?: ReactNode;
 }) {
   return (
     <div>
@@ -159,6 +162,7 @@ function Opciones<T extends string | number>({
           );
         })}
       </div>
+      {ayuda && <p className="mt-1 text-[13px] leading-snug text-slate-600">{ayuda}</p>}
     </div>
   );
 }
@@ -359,6 +363,12 @@ export function CalculadoraInicio({
     if (sis !== undefined && d.sistemaPrevio === sis) set({ sistemaPrevio: null });
   }, [sis, d.sistemaPrevio, set]);
   const previa = PREVIA[d.origen];
+  // 1.0.22 (28.ª ronda, R5): «Riesgo de hipoglucemia» pasa el factor a la regla del 1800 sin decirlo;
+  // la nota de la Tabla 2, junto a las opciones mientras no se toque a mano.
+  const ayudaRegla =
+    d.control === "riesgo" && !d.tocado.regla && d.regla === 1800
+      ? "Con riesgo de hipoglucemia se parte de la regla del 1800 (Tabla 2: «puede valorarse la regla del 1800 en personas con riesgo elevado de hipoglucemia»); puede cambiarse."
+      : undefined;
 
   const elegirControl = (c: Control) => {
     const x = CONTROLES.find((k) => k.id === c)!;
@@ -780,6 +790,7 @@ export function CalculadoraInicio({
                     etiqueta="Factor de sensibilidad"
                     rejilla
                     marca={<Marca modificado={d.tocado.regla} />}
+                    ayuda={ayudaRegla}
                     opciones={[
                       { v: 1700 as const, t: "Regla del 1700" },
                       { v: 1800 as const, t: "Regla del 1800" },
@@ -926,6 +937,7 @@ export function CalculadoraInicio({
                       etiqueta="Factor de sensibilidad"
                       rejilla
                       marca={<Marca modificado={d.tocado.regla} />}
+                      ayuda={ayudaRegla}
                       opciones={[
                         { v: 1700 as const, t: "Regla del 1700" },
                         { v: 1800 as const, t: "Regla del 1800" },
@@ -1363,6 +1375,16 @@ export function CambioDeSistema({ actual, destino }: { actual: number; destino: 
                 </li>
               ))}
             </ul>
+            {/* 1.0.22 (28.ª ronda, R5): también lo que hace falta para iniciar el automático (peso,
+                DTD…) o lo que el sistema usa para estimar (la basal en Omnipod 5), como en el paso 5
+                y en la hoja: la caja solo enseñaba el objetivo de cada uno. */}
+            <p className="mt-2 text-xs leading-snug text-slate-600">
+              Con efecto directo o necesario para iniciar el modo automático:{" "}
+              {gruposDeProgramar(c)
+                .automatico.map((k) => enMinuscula(NOMBRE_CLAVE[k]))
+                .join(", ")}
+              .
+            </p>
           </div>
         ))}
       </div>

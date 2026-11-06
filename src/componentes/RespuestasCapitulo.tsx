@@ -736,8 +736,10 @@ export function RespuestasCapitulo({
         <summary className="con-chevron min-h-11 cursor-pointer text-sm font-semibold text-slate-700 sm:min-h-8">
           Más pasajes del capítulo ({lista.length})
         </summary>
-        {/* 0.92.1 (segunda revisión de tarjetas): al ancho de su texto (75ch), sin media tarjeta vacía. */}
-        <div className={`mt-2 max-w-3xl ${enCaja ? "space-y-3" : "space-y-2"}`}>
+        {/* 0.92.1 (segunda revisión de tarjetas): al ancho de su texto (75ch), sin media tarjeta vacía.
+            1.0.22 (28.ª ronda, visual): al ancho de las demás tarjetas (a 768 px frente a 984 la
+            columna quedaba dentada); el texto sigue a 75ch (main p). */}
+        <div className={`mt-2 ${enCaja ? "space-y-3" : "space-y-2"}`}>
           {lista.map((o, k) => (
             <Tarjeta
               key={`${o.id}|${o.sistema ?? ""}`}

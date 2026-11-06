@@ -120,6 +120,9 @@ const SEGUIR_DIAGRAMA: Partial<Record<DiagramaId, { texto: string; ruta: string 
     { texto: "Plan de seguridad (hoja para el paciente; por sistema)", ruta: href("pacientes") },
     // 0.95.1 (16.ª ronda, guardia): a la situación (con lo de cada sistema), no al párrafo.
     { texto: "Hipoglucemia nocturna", ruta: href("consultar", "situacion", "sueno") },
+    // 1.0.22 (28.ª ronda, R1): «qué pasa con el Ease-off» en una hipoglucemia con CamAPS FX: su
+    // pregunta, contestada (antes había que salir a Buscar).
+    { texto: "CamAPS FX: ¿para qué sirven Boost y Ease-off?", ruta: href("preguntas", "f91") },
     { texto: "Tiempo por debajo del rango elevado", ruta: href("capitulo", "09-descarga", "b10") },
   ],
 };

@@ -95,6 +95,9 @@
     --tinta-3: #6b6b6b;
     --acento: #8e254e;
     --acento-texto: #8e254e;
+    /* 1.0.22 (28.ª ronda, visual): la pleca de la fila de destino; en nocturno, el burdeos del acento
+       no se veía sobre la fila marcada (1,7:1). */
+    --acento-pleca: #8e254e;
     --acento-suave: #f7eff3;
   }
   @media screen {
@@ -118,6 +121,7 @@
       --tinta-2: #cbd5e1;
       --tinta-3: #94a3b8;
       --acento-texto: #f0a8c4;
+      --acento-pleca: #f0a8c4;
       --acento-suave: #34202a;
     }
   }
@@ -342,6 +346,24 @@
   }
   .fila:hover {
     background: var(--papel-2);
+  }
+  /* 1.0.22 (28.ª ronda, senior): las filas que son enlaces («Véase también», preguntas, hojas),
+     con un chevron fino a la derecha: en seminegrita y sin subrayado no se veía que lo fueran.
+     Dibujado, sin texto: no entra en el nombre accesible. En papel no sale. */
+  a.fila::after {
+    content: "";
+    flex: none;
+    width: 0.4rem;
+    height: 0.4rem;
+    margin-left: auto;
+    border-right: 1.5px solid var(--tinta-3);
+    border-bottom: 1.5px solid var(--tinta-3);
+    transform: rotate(-45deg);
+  }
+  @media print {
+    a.fila::after {
+      content: none;
+    }
   }
   .filas > li + li {
     border-top: 1px solid var(--linea-suave);
@@ -1605,6 +1627,11 @@ html:has(.volver-pegado) .tabla-capitulo thead th {
   .tabla-capitulo col {
     width: auto !important;
   }
+  /* 1.0.22 (28.ª ronda, senior): en la Tabla 5 el rótulo es el número del paso; con las columnas
+     iguales salía tan ancha como las de texto (144 px) y la tabla iba a tres hojas. */
+  .tabla-capitulo[data-tabla="T5"] thead th:first-child {
+    width: 2.4rem !important;
+  }
   .tabla-capitulo th,
   .tabla-capitulo td {
     min-width: 0 !important;
@@ -2160,7 +2187,9 @@ html.night *:focus-visible {
    1920 px llegaba a ≈ 177). Las cajas (tarjetas, bandas con fondo o borde) conservan su ancho en
    la rejilla; en las que van a todo lo ancho se limita su texto (max-w-[72ch] en el componente, y
    las líneas de <Lineas>, que son `span.block` sin más clases). */
-.prosa-72 :is(p, li):not(.tarjeta):not([class*="rounded"]):not([class*="border"]),
+/* 1.0.22 (28.ª ronda, visual): las filas de «Véase también» al pie de un diagrama (`.filas > li`)
+   no son prosa: a lo ancho de su lista (a 72ch sus líneas acababan a un tercio del borde). */
+.prosa-72 :is(p, li):not(.tarjeta):not([class*="rounded"]):not([class*="border"]):not(.filas > li),
 .prosa-72 :is(span[class="block"], span[class="mt-1 block"]) {
   max-width: 72ch;
 }
@@ -2310,14 +2339,14 @@ html.night .fila-resaltada > [style] {
 }
 .fila-resaltada,
 .fila-resaltada > th {
-  box-shadow: inset 3px 0 0 var(--acento);
+  box-shadow: inset 3px 0 0 var(--acento-pleca);
 }
 /* 1.0.20 (27.ª ronda, R3): en las tablas con filas alternas la fila destino no se distinguía: su
    fondo era casi el alterno y la línea doble del rótulo (1.0.17) tapaba la pleca. Fondo propio
    (`--fila-destino`) y la pleca junto a la línea doble. */
 .tabla-capitulo tbody tr.fila-resaltada > th {
   box-shadow:
-    inset 3px 0 0 var(--acento),
+    inset 3px 0 0 var(--acento-pleca),
     inset -2px 0 0 var(--linea-tabla);
 }
 /* 0.86.1 (décima ronda, senior y R5): en la tabla comparada, las celdas pintan su propio color de

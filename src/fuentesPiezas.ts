@@ -96,7 +96,7 @@ export function fuentesDePiezas(piezas: Pieza[]): { texto: string; ruta: string 
 }
 
 /* Identificador del sistema en la vista de tablas (orden de la Tabla 1). */
-const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
+export const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 /* 0.96.0: aquí (antes en componentes/FichaOperativa) para usarla también en Sistemas.
    Adónde lleva el rótulo de una fila: la tabla con la columna del sistema (casilla literal) o el
    párrafo del capítulo, resaltado (0.77.1, auditoría R3: del dato al literal en un toque). */

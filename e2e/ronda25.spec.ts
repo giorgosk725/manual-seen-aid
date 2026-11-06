@@ -132,7 +132,8 @@ test.describe("Ronda 25 · opcionales (1.0.14)", () => {
 
   test("R3 y R5: descarga a la Tabla 3; objetivos de Inicio a la gestación", async ({ page }) => {
     await page.goto("/#/consultar/descarga/2");
-    await expect(page.locator('main a[href="#/sistemas/todos/ajuste"]').first()).toBeAttached();
+    // 1.0.22: con la fila que toca marcada.
+    await expect(page.locator('main a[href="#/sistemas/todos/ajuste:0"]').first()).toBeAttached();
     await page.goto("/#/consultar/inicio/inicio:omnipod-5:objetivos");
     await expect(
       page.locator('main a[href="#/consultar/situacion/gestacion:omnipod-5"]').first(),

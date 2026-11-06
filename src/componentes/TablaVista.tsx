@@ -55,6 +55,10 @@ const anchoRotulos = (tabla: Tabla) =>
       tabla.id === "T5"
       ? "3.5rem"
       : "var(--ancho-celda-tabla, 10rem)";
+/* 1.0.22 (28.ª ronda, senior): en la Tabla 5 el rótulo es solo el número del paso; en el selector
+   de filas va con su elemento («3 · Control global y exposición glucémica»). */
+const etiquetaFila = (tabla: Tabla, f: { etiqueta: string; celdas: string[] }) =>
+  tabla.id === "T5" ? `${f.etiqueta} · ${f.celdas[0]}` : f.etiqueta.split("\n")[0];
 
 /* «Viendo: MiniMed 780G y Omnipod 5»: qué selección está activa, con palabras. */
 const listaNombres = (n: string[]) =>
@@ -183,6 +187,7 @@ function TablaHTML({
           iguales (`table-layout: fixed`, la de rótulos con su ancho), también con dos sistemas; el
           ancho mínimo hace que, si no cabe (1024 px), se desplace dentro de su caja como antes. */}
       <table
+        data-tabla={tabla.id}
         className={`tabla-capitulo w-full border-collapse text-sm ${tabla.porSistema ? "tabla-iguales" : ""}`}
         style={
           tabla.porSistema
@@ -622,12 +627,12 @@ export function TablaVista({
                 lo dice; elegir la fila la enseña sola, como siempre. */}
             <option value="">
               {resaltarFila !== undefined && tabla.filas[resaltarFila]
-                ? `Todas las filas · marcada: ${tabla.filas[resaltarFila].etiqueta.split("\n")[0]}`
+                ? `Todas las filas · marcada: ${etiquetaFila(tabla, tabla.filas[resaltarFila])}`
                 : "Todas las filas"}
             </option>
             {tabla.filas.map((f, i) => (
               <option key={i} value={i}>
-                {f.etiqueta.split("\n")[0]}
+                {etiquetaFila(tabla, f)}
               </option>
             ))}
           </select>

@@ -477,6 +477,15 @@ const LEXICO: Record<string, string[]> = {
   pierde: ["perdida", "perdidas"],
   pierdo: ["perdida", "perdidas"],
   perdida: ["perdidas"],
+  // 1.0.22 (28.ª ronda, adjunto): el sensor «caducado» o «agotado» (fin de la sesión) y los «husos
+  // horarios», con las palabras del capítulo (pérdidas de señal y salidas del automático; viajes).
+  caducado: ["perdidas", "salidas", "sensor"],
+  caducada: ["perdidas", "salidas", "sensor"],
+  caduca: ["perdidas", "salidas", "sensor"],
+  caducar: ["perdidas", "salidas", "sensor"],
+  agotado: ["perdidas", "salidas", "sensor"],
+  husos: ["viajes", "aeroportuarios"],
+  huso: ["viajes", "aeroportuarios"],
   falla: ["fallo"],
   fallo: ["falla"],
   fallan: ["fallo"],

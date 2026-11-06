@@ -54,7 +54,7 @@ import { FuentePie } from "../componentes/FuentePie";
 import { VeaseTambien } from "../componentes/VeaseTambien";
 import { paginasPorApartado } from "../paginasApartado";
 import { paginasDe } from "../paginas";
-import { fuentesDePieza, fuentesDePiezas } from "../fuentesPiezas";
+import { SLUG_TABLA, fuentesDePieza, fuentesDePiezas } from "../fuentesPiezas";
 import { CON_CASOS, CON_INTERPRETACIONES } from "../edicion";
 
 const hex = CATEGORIA_HEX.consultar;
@@ -261,6 +261,10 @@ const piezasDe = (m: Momento): Pieza[] =>
   }));
 /* La fuente de un momento: apartado y página de cada párrafo, con el enlace a ese párrafo. */
 const fuentesDeMomento = (m: Momento) => fuentesDePiezas(piezasDe(m));
+/* 1.0.22 (28.ª ronda, R3): la fila de la Tabla 3 que toca en cada paso de la descarga (2: objetivo
+   «más conservador»; 4: insulina activa; 5: objetivo y funciones temporales; 6: ratio; 7: objetivo
+   «poco intensivo»). Antes solo los pasos 2 y 5, y la tabla se abría sin fila. */
+const FILA_T3_DEL_PASO: Record<number, number> = { 2: 0, 4: 4, 5: 0, 6: 2, 7: 0 };
 /* Los momentos abiertos de cada situación, en memoria mientras la app está abierta: abrir la
    fuente de un momento y volver lo encuentra abierto. No se guarda nada. */
 const momentosMemoria = new Map<string, { abiertos: Set<number>; todos: boolean }>();
@@ -1143,7 +1147,17 @@ export function SituacionSistema({
                   fuentes={[
                     {
                       texto: `Tabla ${tabla.numero}, ${paginasDe(tabla.paginas[0], tabla.paginas[1])}`,
-                      ruta: rutaDeTabla(sit.tabla),
+                      // 1.0.22 (28.ª ronda, adjunto): la Tabla 4 no cabe en la columna de lectura
+                      // (0.84.1): su fuente lleva a la tabla en Tablas, con esta fila (y el sistema)
+                      // marcada, como el pie «Tabla 4» de las fichas.
+                      ruta:
+                        sit.tabla === "T4"
+                          ? href(
+                              "consultar",
+                              "tablas",
+                              `T4:${sisIdx >= 0 ? SLUG_TABLA[sisIdx] : ""}:${sit.fila}`,
+                            )
+                          : rutaDeTabla(sit.tabla),
                     },
                     ...(porSistema && anadido
                       ? fuentesDePiezas(
@@ -1520,11 +1534,11 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           )}
           {/* 1.0.0 (18.ª ronda, R3): en los pasos que piden ajustar «según el sistema» (2) o
               remiten a la Tabla 3 (5), el ajuste de cada sistema, a un toque. */}
-          {(n === 2 || n === 5) && (
+          {FILA_T3_DEL_PASO[n] !== undefined && (
             <a
               // 1.0.14 (25.ª ronda, R3): a la Tabla 3, en su pestaña «Ajuste práctico» (antes, a
-              // Parámetros, que no es la tabla).
-              href={href("sistemas", "todos", "ajuste")}
+              // Parámetros, que no es la tabla). 1.0.22: con la fila que toca marcada.
+              href={href("sistemas", "todos", `ajuste:${FILA_T3_DEL_PASO[n]}`)}
               className="no-imprimir mt-2 flex min-h-11 w-fit items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
             >
               Ajuste de los parámetros por sistema (Tabla 3)

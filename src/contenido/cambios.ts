@@ -13,9 +13,21 @@ export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-11-06",
+    ambito: "app",
+    titulo: `Complemento interactivo ${VERSION_APP} — vigesimoctava ronda`,
+    detalle: [
+      "Tablas: la pleca de la fila de destino se ve también en nocturno; la Tabla 5 en papel conserva la columna del paso estrecha (de tres hojas a dos) y su selector de filas dice el elemento de cada paso («3 · Control global…»). La Tabla 3 comparada admite una fila marcada en la dirección; desde Interpretación de la descarga, el enlace a la Tabla 3 abre la fila que toca (pasos 2, 4, 5, 6 y 7). En una situación, la fuente «Tabla 4» lleva a su fila en la tabla, con el sistema elegido.",
+      "Sistemas AID: tras «Ver la ficha» desde «Los cuatro» con un sistema marcado, Atrás vuelve con ese sistema marcado y en la misma posición (antes, a los cuatro y arriba del todo).",
+      "Las filas de lista que son enlaces («Véase también», preguntas, hojas) llevan un chevron fino a la derecha. Hipoglucemia en asa cerrada: «Véase también» a lo ancho y con la pregunta de Boost y Ease-off.",
+      "Buscar: «Más pasajes del capítulo» al ancho de las demás tarjetas; «ease off» sin guion abre la pregunta de Boost y Ease-off; «sensor caducado» lleva a las pérdidas de señal y salidas del modo automático y a su pregunta; «husos horarios» abre los controles del aeropuerto y dice que el capítulo no trata los husos.",
+      "Cálculo inicial: en el cambio de sistema, la caja de parámetros en automático añade lo necesario para iniciar o estimar en cada sistema; con «Riesgo de hipoglucemia», una línea explica que el factor parte de la regla del 1800 (Tabla 2). Ingreso hospitalario con un sistema: la conducta general (mantener el automático; en ayunas o con más riesgo, objetivo más alto o modo menos intensivo), la primera tarjeta.",
+    ],
+  },
+  {
     fecha: "2026-11-05",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — remates de la vigesimoséptima ronda`,
+    titulo: "Complemento interactivo 1.0.21 — remates de la vigesimoséptima ronda",
     detalle: [
       "Iniciación, paso 2 (Parámetros): un enlace a lo que cada sistema pide programar el primer día según la Tabla 2 (paso 5, Activación), para que no se lea como contradicción con la configuración general de ese paso.",
       "Tabla 5: la columna del número de paso, estrecha (dejaba las cuatro columnas de texto apretadas en la tableta). Buscar: con el acceso «Sueño/período nocturno» de un sistema no se repite debajo la misma casilla de la Tabla 4; «objetivo temporal» con CamAPS FX contesta la pregunta de Boost y Ease-off.",

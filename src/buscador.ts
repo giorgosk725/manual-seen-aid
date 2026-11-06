@@ -637,13 +637,54 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   }
   // 1.0.21 (27.ª ronda, adjunto): «objetivo temporal camaps» (o «función/modo temporal»): en
   // CamAPS FX eso son Boost y Ease-off; su pregunta frecuente, ya contestada.
-  if (sis === 2 && /\b(objetivo|funcion|modo)s? temporal/.test(n) && !/ejercicio|deporte/.test(n))
+  // 1.0.22 (28.ª ronda, R1): también cuando la consulta nombra Boost o Ease-off («ease off
+  // hipoglucemia»: sin guion no salía).
+  if (
+    (sis === 2 && /\b(objetivo|funcion|modo)s? temporal/.test(n) && !/ejercicio|deporte/.test(n)) ||
+    /\bease[\s-]?off\b|\bboost\b/.test(n)
+  )
     out.push(
       atajo(
         "recurso/frecuente/f91",
         "CamAPS FX: ¿para qué sirven Boost y Ease-off?",
         href("preguntas", "f91"),
         TABLAS.T3.paginas[0],
+      ),
+    );
+  // 1.0.22 (28.ª ronda, adjunto): «sensor caducado/agotado»: lo más cercano del capítulo son las
+  // pérdidas de señal y salidas del modo automático (apartado 9) y su pregunta (antes, Diálisis y
+  // la introducción); «husos horarios»: el capítulo solo trae los controles del aeropuerto, y se dice.
+  if (
+    /sensor/.test(n) &&
+    /\bcaduc|\bagot|\b(fin|final|termin\w*|acab\w*) (del |el )?sensor|vencid/.test(n)
+  )
+    out.push(
+      atajo(
+        "recurso/frecuente/f53",
+        "El sensor pierde la señal: ¿qué hacer?",
+        href("preguntas", "f53"),
+        16,
+      ),
+      atajo(
+        "recurso/perdidas-senal",
+        "Pérdidas de señal y salidas del modo automático (apartado 9)",
+        href("capitulo", "09-descarga", "b22"),
+        16,
+      ),
+    );
+  if (/\bhusos?\b|zona horaria|cambio de hora|jet ?lag|diferencia horaria/.test(n))
+    out.push(
+      atajo(
+        "recurso/viajes",
+        "Viajes: controles del aeropuerto (apartado 10). El capítulo no trata los husos horarios",
+        href("capitulo", "10-situaciones", "b43"),
+        21,
+      ),
+      atajo(
+        "recurso/frecuente/f58",
+        "¿Qué precauciones tomar con el sistema en el control del aeropuerto?",
+        href("preguntas", "f58"),
+        21,
       ),
     );
   // 0.82.1 (sexta ronda, senior): el alcohol con un sistema, su fila de Modos.

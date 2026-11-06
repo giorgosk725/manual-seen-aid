@@ -127,11 +127,25 @@ const MODO_MENOS_INTENSIVO: BloqueSistema = {
   rotulo: "Objetivo y modos temporales",
   piezas: [casilla("T3", 0)],
 };
+/* 1.0.22 (28.ª ronda, R1): la conducta general del ingreso (mantener el automático; en ayunas o con
+   más riesgo de hipoglucemia, objetivo más alto o modo menos intensivo), la primera tarjeta: quedaba
+   a 1300 px, en el texto del posicionamiento. El trozo que aplica, sin la condición inicial. */
+const MANTENER_EN_INGRESO: BloqueSistema = {
+  rotulo: "Modo automático durante el ingreso",
+  piezas: [
+    s10(
+      "b34",
+      [3],
+      /puede mantenerse el modo automático del AID; en personas en ayunas o con mayor riesgo de hipoglucemia puede valorarse temporalmente un objetivo glucémico más alto o un modo menos intensivo, según las posibilidades del sistema y el protocolo institucional/,
+    ),
+  ],
+};
 const INGRESO: BloqueSistema[][] = [
-  [MODO_MENOS_INTENSIVO, { rotulo: "Desconexión", piezas: [CATETER_PAUSAR] }],
-  [MODO_MENOS_INTENSIVO, { rotulo: "Desconexión", piezas: [CATETER_PAUSAR] }],
-  [MODO_MENOS_INTENSIVO, { rotulo: "Desconexión", piezas: [CATETER_PAUSAR] }],
+  [MANTENER_EN_INGRESO, MODO_MENOS_INTENSIVO, { rotulo: "Desconexión", piezas: [CATETER_PAUSAR] }],
+  [MANTENER_EN_INGRESO, MODO_MENOS_INTENSIVO, { rotulo: "Desconexión", piezas: [CATETER_PAUSAR] }],
+  [MANTENER_EN_INGRESO, MODO_MENOS_INTENSIVO, { rotulo: "Desconexión", piezas: [CATETER_PAUSAR] }],
   [
+    MANTENER_EN_INGRESO,
     MODO_MENOS_INTENSIVO,
     { rotulo: "Pod", piezas: [POD_NO_SE_DESCONECTA] },
     // 1.0.20 (27.ª ronda, adjunto): solo el trozo que aplica (la frase entera se repetía en el
