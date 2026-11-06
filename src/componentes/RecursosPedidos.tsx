@@ -24,7 +24,8 @@ export function RecursosPedidos({
           <a
             href={r.entrada.ruta}
             onClick={onIr}
-            className="tarjeta hover-lift block min-h-11 px-3 py-2 text-sm font-semibold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+            // 1.0.23 (verificación visual): chevron fino a la derecha, como las filas-enlace (a.fila).
+            className="tarjeta hover-lift abrir block min-h-11 px-3 py-2 text-sm font-semibold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
           >
             <span className="rotulo block" style={{ color: "var(--acento-texto)" }}>
               Abrir

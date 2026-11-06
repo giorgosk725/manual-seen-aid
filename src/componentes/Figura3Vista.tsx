@@ -337,9 +337,17 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
   const actuar = useRef<HTMLLIElement>(null);
   // A la rama («Rama de la figura»), con la nota de población antes de las dosis; y
   // se mantiene arriba mientras termina de cargar lo de encima (la página crece y la empujaría).
-  const irARama = () => {
+  // 1.0.23 (verificación de navegación): con la pantalla ya abierta, elegir otra rama solo
+  // desplaza si la rama no está a la vista (misma regla que Situaciones, 1.0.20): antes la fila
+  // de ramas quedaba fuera y había que subir para cambiar de rama.
+  const irARama = (soloSiOculto = false) => {
     const el = actuar.current;
     if (!el) return;
+    const arriba = el.getBoundingClientRect().top;
+    if (soloSiOculto && arriba >= 56 && arriba <= window.innerHeight * 0.66) {
+      mantenerEnVista(el);
+      return;
+    }
     el.scrollIntoView({ block: "start" });
     mantenerEnVista(el);
   };
@@ -347,7 +355,7 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
   // búsqueda): directo a su rama, ya pintada. Al volver con Atrás, la Shell restaura (V54-03).
   useEffect(() => {
     if (!valido || !fueNavegacionNueva()) return;
-    const id = requestAnimationFrame(irARama);
+    const id = requestAnimationFrame(() => irARama());
     return () => cancelAnimationFrame(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -358,13 +366,13 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
     if (ramaPrevia.current === valido) return;
     ramaPrevia.current = valido;
     if (!valido) return;
-    const id = requestAnimationFrame(irARama);
+    const id = requestAnimationFrame(() => irARama(true));
     return () => cancelAnimationFrame(id);
   }, [valido]);
   /* Atajo: con la cetonemia ya medida, ir directo a su rama. */
   const irATramo = (t: Tramo) => {
     elegir(t);
-    requestAnimationFrame(irARama);
+    requestAnimationFrame(() => irARama());
   };
   // 0.74.2 (petición del responsable: nada útil plegado): abierto también en el móvil.
   const paso1Abierto = true;

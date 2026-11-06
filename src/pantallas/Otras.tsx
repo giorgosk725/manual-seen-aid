@@ -1192,14 +1192,27 @@ export function Preguntas({ id }: { id?: string }) {
         </p>
       )}
       <div className="no-imprimir mb-3 flex flex-wrap items-center gap-2">
-        <input
-          type="search"
-          aria-label="Filtrar preguntas"
-          placeholder="Filtrar: cetonas, gestación, descarga…"
-          value={filtro}
-          onChange={(e) => setFiltro(e.target.value)}
-          className="min-h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8E254E] sm:min-h-10 sm:max-w-md"
-        />
+        {/* 1.0.23 (verificación visual): como en Buscar, sin la × nativa y con botón propio. */}
+        <div className="relative w-full sm:max-w-md">
+          <input
+            type="search"
+            aria-label="Filtrar preguntas"
+            placeholder="Filtrar: cetonas, gestación, descarga…"
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+            className="min-h-11 w-full rounded-md border border-slate-300 bg-white pl-3 pr-11 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8E254E] sm:min-h-10 [&::-webkit-search-cancel-button]:hidden"
+          />
+          {filtro && (
+            <button
+              type="button"
+              aria-label="Borrar el filtro"
+              onClick={() => setFiltro("")}
+              className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            >
+              <X size={18} aria-hidden="true" />
+            </button>
+          )}
+        </div>
         <button
           type="button"
           onClick={() => setTodas((v) => !v)}
@@ -1217,7 +1230,12 @@ export function Preguntas({ id }: { id?: string }) {
             <li className="px-3 py-2 text-sm text-slate-600">
               Ninguna pregunta contiene eso.{" "}
               {/* 1.0.23 (29.ª ronda, R3): una salida (antes, callejón sin ella). */}
-              <a href={href("buscar")} className="font-semibold underline underline-offset-2">
+              <a
+                href={href("buscar")}
+                // Con la consulta puesta (verificación de navegación: abría Buscar vacío).
+                onClick={() => ponerConsulta(filtro.trim())}
+                className="font-semibold underline underline-offset-2"
+              >
                 Buscar «{filtro.trim()}» en el capítulo
               </a>
             </li>

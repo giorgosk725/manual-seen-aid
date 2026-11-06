@@ -137,3 +137,79 @@ test.describe("Ronda 29 · ingreso, calculadora y buscador", () => {
     await expect(main).not.toContainText("Diálisis y enfermedad renal");
   });
 });
+
+test.describe("Ronda 29 · verificación visual de la 1.0.23", () => {
+  test("Tablas: la fila marcada queda bajo las cabeceras pegadas, no tapada (móvil y escritorio)", async ({
+    page,
+  }) => {
+    for (const [w, h] of [
+      [390, 844],
+      [1366, 768],
+    ]) {
+      await page.setViewportSize({ width: w, height: h });
+      // Otra dirección antes: el mismo hash dos veces no navega (y la posición sería la anterior).
+      await page.goto("/#/consultar/tablas");
+      await page.goto("/#/consultar/tablas/T5::2");
+      const fila = page
+        .locator(':is(.tabla-capitulo tr.fila-resaltada, .vista-fichas [data-fila="2"]):visible')
+        .first();
+      await expect(fila).toBeVisible();
+      await page.waitForTimeout(500);
+      const tapado = await fila.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        const cab = document.querySelector("header.cabecera");
+        const cabBottom =
+          cab && (cab as HTMLElement).offsetParent !== null
+            ? cab.getBoundingClientRect().bottom
+            : 0;
+        const thead = el.closest("table")?.querySelector("thead");
+        const theadBottom = thead ? thead.getBoundingClientRect().bottom : 0;
+        return r.top < Math.max(cabBottom, theadBottom) - 1;
+      });
+      expect(tapado).toBe(false);
+    }
+  });
+
+  test("una situación abierta no imprime la lista ni el filtro; «Abrir» lleva chevron", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await page.goto("/#/consultar/situacion/ingreso-hospitalario:minimed-780g");
+    await expect(page.getByRole("searchbox", { name: "Filtrar situaciones" })).toBeVisible();
+    await page.emulateMedia({ media: "print" });
+    await expect(page.getByRole("searchbox", { name: "Filtrar situaciones" })).toBeHidden();
+    await page.emulateMedia({ media: "screen" });
+    await page.goto("/#/buscar");
+    await page.locator("#buscar-q").fill("husos horarios");
+    await page.keyboard.press("Enter");
+    const abrir = page.locator("a.abrir").first();
+    await expect(abrir).toBeVisible();
+    expect(
+      parseFloat(await abrir.evaluate((el) => getComputedStyle(el, "::after").borderRightWidth)),
+    ).toBeGreaterThanOrEqual(1);
+  });
+});
+
+test.describe("Ronda 29 · verificación de navegación de la 1.0.23", () => {
+  test("Preguntas sin coincidencias → Buscar con la consulta puesta", async ({ page }) => {
+    await page.goto("/#/preguntas");
+    await page.getByRole("searchbox", { name: "Filtrar preguntas" }).fill("husos horarios");
+    await page.getByRole("link", { name: "Buscar «husos horarios» en el capítulo" }).click();
+    await expect(page).toHaveURL(/#\/buscar/);
+    await expect(page.locator("#buscar-q")).toHaveValue("husos horarios");
+    await expect(page.locator("main")).toContainText("no trata los husos horarios");
+  });
+
+  test("desde la descarga, la Tabla 3 comparada con fila ofrece «Volver a la consulta»", async ({
+    page,
+  }) => {
+    await page.goto("/#/consultar/descarga/6");
+    await page.getByRole("link", { name: /Ajuste de los parámetros por sistema/ }).click();
+    await expect(page).toHaveURL(/#\/sistemas\/todos\/ajuste:2$/);
+    const volver = page.locator(".volver-pegado");
+    await expect(volver).toBeVisible();
+    await expect(volver).toContainText("Interpretación de la descarga");
+    await volver.getByRole("button").first().click();
+    await expect(page).toHaveURL(/#\/consultar\/descarga\/6$/);
+  });
+});

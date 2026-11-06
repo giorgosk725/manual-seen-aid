@@ -22,6 +22,8 @@ export const CAMBIOS: Cambio[] = [
       "Ingreso hospitalario con sistema: la conducta general va en tarjeta sin el color del sistema y la del objetivo lleva un solo título. Preguntas frecuentes: el filtro sin coincidencias ofrece buscar en el capítulo; el filtro y «Plegar» no se imprimen.",
       "Buscar: «sin sensor», «se queda sin sensor», «sin señal» y «cambio de sensor» llevan a lo que rige sin sensor (perfil basal, apartado 8), a la pregunta del sensor y a las pérdidas de señal; «viaje largo», «vuelo» y «viaje en avión», a los controles del aeropuerto; «ease-off» añade su casilla de la Tabla 4; el párrafo de diálisis solo sale si la consulta va de riñón.",
       "Cálculo inicial: al trasladar la programación a Omnipod 5, la tasa basal avisa «Revisar antes de trasladar» (sirve para iniciar el automático); la caja del cambio de sistema enseña «Para iniciar el automático» solo con lo que no está ya en la lista; la ayuda de la regla del 1800, más corta.",
+
+      "Verificación de la ronda: en Tablas, la fila marcada queda bajo la cabecera de la app y la de la tabla, no tapada; una situación abierta no imprime la lista ni el filtro; «Buscar «X» en el capítulo» desde Preguntas abre Buscar con la consulta puesta; la Tabla 3 comparada con fila ofrece «Volver a la consulta» al llegar desde la descarga; la tarjeta «Abrir» de Buscar lleva chevron; el filtro de Preguntas, como el de Buscar; «Revisar antes de trasladar» en seminegrita; en la Figura 3, elegir otra rama solo desplaza si no está a la vista.",
     ],
   },
   {

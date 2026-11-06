@@ -752,8 +752,12 @@ export function SituacionSistema({
     <div>
       <CabeceraEditorial titulo="Situaciones" hex={hex} level={1} />
       {/* Sin situación elegida, la lista a todo el ancho; con una, lista a la izquierda (0.71.0). */}
-      <div className={`grid gap-4 ${sit || guia ? "lg:grid-cols-[18rem_1fr]" : ""}`}>
-        <div className={sit || guia ? "hidden lg:block" : undefined}>
+      {/* 1.0.23 (verificación visual): con una situación abierta, en papel solo ella (la lista y el
+          filtro se imprimían en escritorio). */}
+      <div
+        className={`grid gap-4 ${sit || guia ? "print:grid-cols-1 lg:grid-cols-[18rem_1fr]" : ""}`}
+      >
+        <div className={sit || guia ? "hidden lg:block print:hidden" : undefined}>
           {/* 0.96.0 (16.ª ronda, R3): desde la ficha de un sistema (#/consultar/situacion/:camaps),
               qué sistema va ya elegido en las situaciones que se abran, y cómo cambiarlo. */}
           {!sit && !guia && sisIdx >= 0 && (

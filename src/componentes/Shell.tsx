@@ -936,7 +936,13 @@ export function Shell({
     // ficha lleva a «#/consultar/tablas/T3:control-iq:3»).
     const enLiteral =
       ruta.seccion === "capitulo" ||
-      (ruta.seccion === "consultar" && ruta.sub === "tablas" && !!ruta.detalle);
+      (ruta.seccion === "consultar" && ruta.sub === "tablas" && !!ruta.detalle) ||
+      // 1.0.23 (verificación de navegación): la Tabla 3 comparada con fila («ajuste:2»), desde
+      // la descarga: sin «Volver» se dependía del Atrás del navegador (la app instalada no lo tiene).
+      (ruta.seccion === "sistemas" &&
+        (ruta.sub === "todos" || !!ruta.sub?.includes("+")) &&
+        !!ruta.detalle?.includes(":") &&
+        previa.current.seccion !== "sistemas");
     const desdeHerramienta =
       nueva &&
       enLiteral &&
@@ -1122,13 +1128,18 @@ export function Shell({
         >
           {volver &&
             (ruta.seccion === "capitulo" ||
-              (ruta.seccion === "consultar" && ruta.sub === "tablas")) && (
+              (ruta.seccion === "consultar" && ruta.sub === "tablas") ||
+              // 1.0.23 (verificación de navegación): también en la Tabla 3 comparada con fila
+              // (desde la descarga); sin pegar, porque Sistemas lleva su propia barra pegada.
+              ruta.seccion === "sistemas") && (
               // 0.96.0 (16.ª ronda, senior): pegado arriba al bajar (el párrafo de destino quedaba a
               // miles de px del botón).
               // 1.0.12 (24.ª ronda, adjunto): en una franja propia, del color del papel y con su
               // línea, que va por encima de lo que pasa debajo (antes, el chip suelto tapaba el
               // principio de las líneas del capítulo y de las celdas de la tabla).
-              <div className="volver-pegado no-imprimir sticky top-14 z-20 -mx-3 mb-3 border-b border-[var(--linea-suave)] bg-[var(--papel)] px-3 py-2 sm:-mx-5 sm:px-5 lg:top-0">
+              <div
+                className={`volver-pegado no-imprimir ${ruta.seccion === "sistemas" ? "" : "sticky top-14 z-20"} -mx-3 mb-3 border-b border-[var(--linea-suave)] bg-[var(--papel)] px-3 py-2 sm:-mx-5 sm:px-5 lg:top-0`}
+              >
                 <button
                   type="button"
                   onClick={() => window.history.back()}

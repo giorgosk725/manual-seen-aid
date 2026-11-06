@@ -526,11 +526,24 @@ export function TablaVista({
     if (!el) return;
     // 1.0.9 (22.ª ronda, adjunto y R3): también por debajo de «Volver a la consulta», que va
     // pegado arriba (tapaba la fila de destino y su rótulo).
-    const bajoDe = (sel: string) =>
-      document.querySelector(sel)?.getBoundingClientRect().bottom ?? 0;
-    const barra = Math.max(bajoDe(".barra-pegada"), bajoDe(".volver-pegado"));
+    const bajoDe = (sel: string) => {
+      const x = document.querySelector<HTMLElement>(sel);
+      return x && x.offsetParent !== null ? x.getBoundingClientRect().bottom : 0;
+    };
+    // 1.0.23 (verificación visual): también la cabecera de la app (móvil) y la cabecera pegada de
+    // la propia tabla (thead), que tapaban la fila en Tablas.
+    const barra = Math.max(
+      bajoDe(".barra-pegada"),
+      bajoDe(".volver-pegado"),
+      bajoDe("header.cabecera"),
+    );
+    const cabeceraTabla =
+      el.closest("table")?.querySelector("thead")?.getBoundingClientRect().height ?? 0;
     window.scrollTo({
-      top: Math.max(0, window.scrollY + el.getBoundingClientRect().top - barra - 12),
+      top: Math.max(
+        0,
+        window.scrollY + el.getBoundingClientRect().top - barra - cabeceraTabla - 12,
+      ),
     });
   }, [resaltarFila, columnasFijas]);
   const desdeRuta = (s?: string): number[] => {

@@ -474,7 +474,8 @@ export function CalculadoraInicio({
         {k === "basal" ? "la" : "el"} {previa}
         {revisarAntes(k) && (
           <span className="block not-italic text-slate-700">
-            Revisar antes de trasladar: en {CORTOS[d.sistemaPrevio!]} no actúa en automático
+            <span className="font-semibold">Revisar antes de trasladar:</span> en{" "}
+            {CORTOS[d.sistemaPrevio!]} no actúa en automático
             {paraIniciar(k) ? " y aquí se usa para iniciar el modo automático" : ""}
           </span>
         )}
