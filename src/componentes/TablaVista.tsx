@@ -13,7 +13,7 @@ import { Lineas, Texto } from "../texto";
 import { Enlace, PaginaBadge } from "../ui";
 import { BRAND_ACCENT, SISTEMA_HEX } from "../tokens";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
-import { href } from "../rutas";
+import { fueNavegacionNueva, href } from "../rutas";
 import { CasillasSistema } from "./CasillasSistema";
 import { NombreSistema } from "./NombreSistema";
 import { TituloBloque } from "../nivel";
@@ -516,6 +516,7 @@ export function TablaVista({
   const todas = tabla.columnas.map((_, i) => i);
   // 0.85.1 (novena ronda, R5): en la comparación, la fila pedida a la vista, bajo la barra.
   const raiz = useRef<HTMLElement>(null);
+  const filaYaColocada = useRef(false);
   // 1.0.23 (29.ª ronda, R3): también en Tablas (antes solo en la comparación): «T5::2» dejaba la
   // fila marcada cortada por abajo sin desplazar.
   useEffect(() => {
@@ -524,6 +525,11 @@ export function TablaVista({
       ...(raiz.current?.querySelectorAll<HTMLElement>(`[data-fila="${resaltarFila}"]`) ?? []),
     ].find((x) => x.offsetParent !== null);
     if (!el) return;
+    // 1.0.24 (verificación de navegación): al llegar por un enlace, desde arriba (la pantalla
+    // heredaba el desplazamiento de la descarga y «Volver a la consulta» quedaba oculto). Con
+    // Atrás, no: la Shell restaura.
+    if (!filaYaColocada.current && fueNavegacionNueva()) window.scrollTo({ top: 0 });
+    filaYaColocada.current = true;
     // 1.0.9 (22.ª ronda, adjunto y R3): también por debajo de «Volver a la consulta», que va
     // pegado arriba (tapaba la fila de destino y su rótulo).
     const bajoDe = (sel: string) => {

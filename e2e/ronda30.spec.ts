@@ -15,10 +15,10 @@ test.describe("Ronda 30 · situaciones", () => {
     await expect(
       tarjetas.first().getByRole("link", { name: /Criterios para no continuar/ }),
     ).toHaveAttribute("href", "#/capitulo/10-situaciones/b36");
-    // Por filas: la segunda (el objetivo) a la derecha de la primera, en la misma fila.
-    const [a, b] = [await tarjetas.nth(0).boundingBox(), await tarjetas.nth(1).boundingBox()];
-    expect(Math.abs(a!.y - b!.y)).toBeLessThan(2);
-    expect(b!.x).toBeGreaterThan(a!.x + 100);
+    // Por filas: la general a lo ancho; debajo, objetivo y pod en la misma fila.
+    const [b, c] = [await tarjetas.nth(1).boundingBox(), await tarjetas.nth(2).boundingBox()];
+    expect(Math.abs(b!.y - c!.y)).toBeLessThan(2);
+    expect(c!.x).toBeGreaterThan(b!.x + 100);
     // Un solo estilo de rótulo: el de la tarjeta del objetivo, visible.
     await expect(tarjetas.nth(1).locator("dt")).toBeVisible();
   });
@@ -148,5 +148,62 @@ test.describe("Ronda 30 · buscador, tablas, preguntas y calculadora", () => {
     const hoja = page.locator(".hoja-inicio");
     await expect(hoja).toContainText("La del sistema actual (*)");
     await expect(hoja).toContainText("(*) Revisar antes de trasladar: en MiniMed 780G");
+  });
+});
+
+test.describe("Ronda 30 · verificación de la 1.0.24", () => {
+  test("navegación: de la descarga bajada a la Tabla 3, «Volver» y la fila a la vista", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await page.goto("/#/consultar/descarga/6");
+    const enlace = page.getByRole("link", { name: /Ajuste de los parámetros por sistema/ });
+    await enlace.scrollIntoViewIfNeeded();
+    await page.evaluate(() => window.scrollBy(0, 120));
+    await enlace.click();
+    await expect(page).toHaveURL(/ajuste:2$/);
+    const volver = page.locator(".volver-pegado");
+    await expect(volver).toBeVisible();
+    const fila = page.locator(".tabla-capitulo tr.fila-resaltada").first();
+    await expect
+      .poll(async () => {
+        const v = await volver.boundingBox();
+        const f = await fila.boundingBox();
+        return !!v && !!f && v.y >= 0 && f.y + f.height <= 768;
+      })
+      .toBe(true);
+  });
+
+  test("navegación: Atrás a Buscar no deja el foco en el campo", async ({ page }) => {
+    await page.goto("/#/buscar");
+    await page.locator("#buscar-q").fill("husos horarios");
+    await page.keyboard.press("Enter");
+    await page.locator("a.abrir").first().click();
+    await expect(page).not.toHaveURL(/#\/buscar/);
+    await page.goBack();
+    await expect(page.locator("#buscar-q")).toHaveValue("husos horarios");
+    await expect.poll(() => page.evaluate(() => document.activeElement?.id)).not.toBe("buscar-q");
+  });
+
+  test("diseño: Tabla 6 con enlace en línea, rótulos en minúscula y selector fuera del papel; ingreso con la general a lo ancho", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1366, height: 900 });
+    await page.goto("/#/consultar/situacion/rx:omnipod-5");
+    const enlace = page.locator("p", { hasText: "aproximadamente 1 h" }).first().getByRole("link");
+    expect(await enlace.evaluate((el) => getComputedStyle(el).display)).toBe("inline");
+    await expect(enlace).toContainText("«Interrupción del sistema y pauta alternativa»");
+    const dt = page.locator("#conducta-situacion .tarjeta > dt").first();
+    expect(await dt.evaluate((el) => getComputedStyle(el).textTransform)).toBe("none");
+    await page.emulateMedia({ media: "print" });
+    await expect(page.getByRole("button", { name: "Los cuatro" })).toBeHidden();
+    await page.emulateMedia({ media: "screen" });
+    await page.goto("/#/consultar/situacion/ingreso-hospitalario:omnipod-5");
+    const dl = page.getByRole("region", { name: "Sistema a sistema" }).locator("dl").first();
+    const anchos = await dl.evaluate((el) => [
+      el.getBoundingClientRect().width,
+      (el.firstElementChild as HTMLElement).getBoundingClientRect().width,
+    ]);
+    expect(Math.abs(anchos[0] - anchos[1])).toBeLessThan(2);
   });
 });

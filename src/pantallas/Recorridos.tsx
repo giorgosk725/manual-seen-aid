@@ -982,7 +982,8 @@ export function SituacionSistema({
                 aria-label="Conducta recomendada"
               >
                 {(porSistema || sit.tabla === "T6") && (
-                  <div>
+                  // 1.0.24 (verificación visual): el selector no se imprime.
+                  <div className="no-imprimir">
                     {/* 0.91.3 (14.ª ronda, adjunto): «Los cuatro», junto al selector (antes,
                         suelto entre la tarjeta y la fuente). */}
                     <div className="mb-1 flex items-baseline justify-between gap-3">
@@ -1106,10 +1107,12 @@ export function SituacionSistema({
                         const f = segunFormato(sit.tabla, c, sisIdx, nombre, fila.celdas[c]);
                         return (
                           <div key={c} className="tarjeta p-3">
-                            <dt className="rotulo mb-1" style={{ color: hex.ink }}>
+                            {/* 1.0.24 (verificación visual): el rótulo de tarjeta de las demás
+                                situaciones (13 px, gris), no en mayúsculas y en burdeos. */}
+                            <dt className="mb-1 text-[13px] font-semibold leading-snug text-slate-600">
                               {f.nombre}
                             </dt>
-                            <dd className="text-base text-slate-800">
+                            <dd className="text-[15px] leading-snug text-slate-800">
                               <Lineas>
                                 {f.texto.replace(
                                   /configurable Objetivo:/,
@@ -1141,12 +1144,16 @@ export function SituacionSistema({
                       .join(" ");
                     // El nombre de la pauta, como enlace en su sitio (antes, repetido detrás).
                     const NOMBRE = "«Interrupción del sistema y pauta alternativa»";
-                    const enlace = (
+                    const enlace = (dentro = false) => (
                       <a
                         href={href("consultar", "interrupcion")}
-                        className="tap-44 inline-block min-h-6 py-0.5 font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4"
+                        // 1.0.24 (verificación visual): en línea, con las comillas dentro (con
+                        // inline-block, «» quedaban sueltas al cortar la línea).
+                        className="font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4"
                       >
-                        Interrupción del sistema y pauta alternativa
+                        {dentro
+                          ? "«Interrupción del sistema y pauta alternativa»"
+                          : "Interrupción del sistema y pauta alternativa"}
                       </a>
                     );
                     return (
@@ -1155,14 +1162,15 @@ export function SituacionSistema({
                           <p className="max-w-[75ch] border-l-2 border-[var(--linea-fuerte)] pl-3 text-[15px] font-semibold leading-snug text-slate-900">
                             {umbral.includes(NOMBRE) ? (
                               <>
-                                <Texto>{umbral.slice(0, umbral.indexOf(NOMBRE))}</Texto>«{enlace}»
+                                <Texto>{umbral.slice(0, umbral.indexOf(NOMBRE))}</Texto>
+                                {enlace(true)}
                                 <Texto>
                                   {umbral.slice(umbral.indexOf(NOMBRE) + NOMBRE.length)}
                                 </Texto>
                               </>
                             ) : (
                               <>
-                                <Texto>{umbral}</Texto> {enlace}
+                                <Texto>{umbral}</Texto> {enlace()}
                               </>
                             )}
                           </p>
@@ -1176,7 +1184,7 @@ export function SituacionSistema({
                             <Texto>
                               {resto.replace(/^Nota:\s*/, "").replace(/^./, (x) => x.toUpperCase())}
                             </Texto>
-                            {!umbral && <> {enlace}</>}
+                            {!umbral && <> {enlace()}</>}
                           </p>
                         </div>
                       </>

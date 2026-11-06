@@ -29,6 +29,7 @@ import {
   marcaDeConsulta,
   ponerConsulta,
 } from "../consultaBuscar";
+import { useMargenesImpresos } from "../margenesImpresos";
 import { Badge, CabeceraEditorial, Revelar, Segmented, ToneCard } from "../ui";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import {
@@ -407,6 +408,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
   return (
     <div>
       <CabeceraEditorial titulo="Buscar en el capítulo" hex={CATEGORIA_HEX.consultar} level={1} />
+      <FocoInicialBuscar />
       <label className="sr-only" htmlFor="buscar-q">
         Texto a buscar
       </label>
@@ -415,7 +417,6 @@ export function Buscar({ inicial }: { inicial?: string }) {
       <div className="relative">
         <input
           id="buscar-q"
-          autoFocus
           // 1.0.4 (20.ª ronda, R1): al volver con una consulta anterior, el primer foco (y el primer
           // toque, que en el móvil recoloca el cursor) la selecciona entera: lo que se escribe la
           // sustituye (antes se pegaba detrás: «alcohol omnipodmodo sueño…»).
@@ -1040,6 +1041,21 @@ const alAbrirDesdeLista = (id: string) => {
 
 /* Un tema de preguntas, plegado (decisión pendiente del autor sobre los 14 grupos). Los de sistema,
    con la pleca y el nombre en el color del sistema. */
+/* 1.0.24 (verificación de navegación): el foco al campo solo al llegar (antes, `autoFocus` también
+   con Atrás: el campo quedaba fuera de la vista y la Shell no devolvía el foco al resultado). */
+function FocoInicialBuscar() {
+  useEffect(() => {
+    if (fueNavegacionNueva()) document.getElementById("buscar-q")?.focus({ preventScroll: true });
+  }, []);
+  return null;
+}
+
+/* 1.0.24 (verificación visual): en papel, cabecera y página en los márgenes, como Tablas. */
+function MargenesPreguntas() {
+  useMargenesImpresos("Preguntas frecuentes");
+  return null;
+}
+
 function TemaPreguntas({ tema, abierto }: { tema: string; abierto: boolean }) {
   const k = TEMAS_SISTEMA.indexOf(tema);
   const h = k >= 0 ? SISTEMA_HEX[k] : null;
@@ -1190,6 +1206,7 @@ export function Preguntas({ id }: { id?: string }) {
   return (
     <div>
       <CabeceraEditorial titulo="Preguntas frecuentes" hex={hex} level={1} />
+      <MargenesPreguntas />
       {id && (
         <p role="status" className="mb-3 rounded-md bg-slate-100 px-3 py-2 text-sm text-slate-700">
           Esa pregunta no existe o no está en esta edición. Abajo, las preguntas revisadas.

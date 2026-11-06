@@ -373,9 +373,13 @@
       columns: 2;
       column-gap: 1.2rem;
     }
+    /* 1.0.24 (verificación visual): cada tema entero (el título quedaba solo al pie). */
     .temas-preguntas > * {
-      break-inside: auto !important;
+      break-inside: avoid !important;
       margin-bottom: 0.5rem;
+    }
+    #preguntas-por-sistema {
+      break-after: avoid;
     }
     .temas-preguntas .fila {
       min-height: 0;

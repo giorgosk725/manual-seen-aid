@@ -376,7 +376,7 @@ function PiezaVistaBase({
       return (
         <a
           href={pieza.ruta}
-          className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline"
+          className="no-imprimir inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-800 hover:underline"
         >
           {pieza.texto} <ArrowRight size={14} aria-hidden="true" />
         </a>

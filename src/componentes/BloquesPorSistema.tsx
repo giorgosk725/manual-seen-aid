@@ -3,6 +3,7 @@
    (src/porSistema.ts). Con selector en las situaciones-guía (gestación, enfermedad, ingreso);
    sin él, debajo de la casilla de la Tabla 4 del sistema ya elegido. Sin texto propio salvo los
    rótulos; la fuente, al pie. */
+import { cloneElement, isValidElement } from "react";
 import { FuentePie } from "./FuentePie";
 import type { BloqueSistema } from "../porSistema";
 import { fuentesDePiezas } from "../fuentesPiezas";
@@ -29,16 +30,27 @@ function Bloques({
   const h = SISTEMA_HEX[c];
   const tarjetas = tarjetasDeBloques(c, bloques, comun ? "comun" : "sistema");
   // 1.0.24 (30.ª ronda, adjunto): por filas (la impar final, a lo ancho).
-  if (porFilas)
+  if (porFilas) {
+    // 1.0.24 (verificación visual): lo general, a lo ancho (en media columna dejaba un hueco de
+    // 190 px junto a la del objetivo); lo del sistema, por pares, y la impar final a lo ancho.
+    const propios = bloques.filter((b) => !b.general).length;
+    let k = 0;
     return (
       <dl
-        className="grid gap-3 print:grid-cols-1 lg:grid-cols-2 lg:items-start lg:[&>*:last-child:nth-child(odd)]:col-span-2"
+        className="grid gap-3 print:grid-cols-1 lg:grid-cols-2 lg:items-start"
         aria-live="polite"
         style={{ ["--sis" as string]: h.strong }}
       >
-        {tarjetas.map((t) => t.nodo)}
+        {tarjetas.map((t, i) => {
+          const general = !!bloques[i].general;
+          const ancha = general || (++k === propios && propios % 2 === 1);
+          return ancha && isValidElement<{ className?: string }>(t.nodo)
+            ? cloneElement(t.nodo, { className: `${t.nodo.props.className ?? ""} lg:col-span-2` })
+            : t.nodo;
+        })}
       </dl>
     );
+  }
   return (
     <div
       className={`grid gap-3 print:grid-cols-1 ${bloques.length > 1 ? "lg:grid-cols-2 lg:items-start" : ""}`}
