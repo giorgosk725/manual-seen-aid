@@ -1191,7 +1191,7 @@ export function Preguntas({ id }: { id?: string }) {
           Esa pregunta no existe o no está en esta edición. Abajo, las preguntas revisadas.
         </p>
       )}
-      <div className="mb-3 flex flex-wrap items-center gap-2">
+      <div className="no-imprimir mb-3 flex flex-wrap items-center gap-2">
         <input
           type="search"
           aria-label="Filtrar preguntas"
@@ -1214,7 +1214,13 @@ export function Preguntas({ id }: { id?: string }) {
       {filtradas && (
         <ul className="tarjeta filas" aria-label="Preguntas que coinciden">
           {filtradas.length === 0 && (
-            <li className="px-3 py-2 text-sm text-slate-600">Ninguna pregunta contiene eso.</li>
+            <li className="px-3 py-2 text-sm text-slate-600">
+              Ninguna pregunta contiene eso.{" "}
+              {/* 1.0.23 (29.ª ronda, R3): una salida (antes, callejón sin ella). */}
+              <a href={href("buscar")} className="font-semibold underline underline-offset-2">
+                Buscar «{filtro.trim()}» en el capítulo
+              </a>
+            </li>
           )}
           {filtradas.map((x) => (
             <li key={x.id}>

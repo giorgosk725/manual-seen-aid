@@ -1688,8 +1688,15 @@ function soloHipoglucemia(pregunta: string): boolean {
 }
 
 export function responder(pregunta: string, opciones: { max?: number } = {}): Respuesta[] {
-  const base = fundirBM25(pregunta, responderBase(pregunta, { max: 10 }), opciones.max ?? 3);
   const q = normalizar(pregunta);
+  // 1.0.23 (29.ª ronda, adjunto): el párrafo de diálisis solo si la consulta va de riñón (salía
+  // como «lo más cercano» en «sensor caducado», «fiebre camaps»…).
+  const base = fundirBM25(pregunta, responderBase(pregunta, { max: 10 }), opciones.max ?? 3).filter(
+    (r, _, arr) =>
+      arr.length <= 1 ||
+      /diali|renal|rinon|hemodi/.test(q) ||
+      !(r.id ?? "").startsWith("t/10-situaciones/b31"),
+  );
   // La sospecha de fallo, primero; sin la hiperglucemia puntual «sin sospecha de fallo».
   // Con el dispositivo en duda, sin la hiperglucemia puntual «sin sospecha de fallo» delante
   // (la sospecha de fallo y la Figura 3 van en los «Abrir» del buscador). Forzar la fila de la

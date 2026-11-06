@@ -1629,8 +1629,22 @@ html:has(.volver-pegado) .tabla-capitulo thead th {
   }
   /* 1.0.22 (28.ª ronda, senior): en la Tabla 5 el rótulo es el número del paso; con las columnas
      iguales salía tan ancha como las de texto (144 px) y la tabla iba a tres hojas. */
+  /* 1.0.23 (29.ª ronda, los seis): a 2,4 rem el rótulo «PASO» salía partido («PAS / O»). */
   .tabla-capitulo[data-tabla="T5"] thead th:first-child {
-    width: 2.4rem !important;
+    width: 2.9rem !important;
+    padding-inline: 2pt;
+    white-space: nowrap;
+    overflow-wrap: normal;
+  }
+  /* 1.0.23 (29.ª ronda, visual): la marca de la fila de destino es de navegación; en papel, fuera
+     (la hoja es de referencia). */
+  .tabla-capitulo tr.fila-resaltada > td {
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+  .tabla-capitulo tbody tr.fila-resaltada > th {
+    background: #f2f2f2 !important;
+    box-shadow: inset -2px 0 0 #bbb !important;
   }
   .tabla-capitulo th,
   .tabla-capitulo td {

@@ -9,6 +9,9 @@ import { TANDEM_GESTACION, type Complemento } from "./notas-complementarias";
 export interface BloqueSistema {
   rotulo: string;
   piezas: Pieza[];
+  /* 1.0.23 (29.ª ronda, visual): lo general del capítulo que va primero en una situación con
+     sistema (conducta del ingreso): tarjeta sin la pleca ni el color del sistema. */
+  general?: boolean;
 }
 
 const fr = (
@@ -123,8 +126,10 @@ const NECESIDAD: BloqueSistema[][] = [
 ];
 
 /* ---------- Ingreso hospitalario ---------- */
+/* 1.0.23 (29.ª ronda, senior y visual): el rótulo coincide con el de la fila de la Tabla 3, que
+   queda como único título (salían dos seguidos). */
 const MODO_MENOS_INTENSIVO: BloqueSistema = {
-  rotulo: "Objetivo y modos temporales",
+  rotulo: "Objetivo glucémico y funciones temporales",
   piezas: [casilla("T3", 0)],
 };
 /* 1.0.22 (28.ª ronda, R1): la conducta general del ingreso (mantener el automático; en ayunas o con
@@ -132,6 +137,7 @@ const MODO_MENOS_INTENSIVO: BloqueSistema = {
    a 1300 px, en el texto del posicionamiento. El trozo que aplica, sin la condición inicial. */
 const MANTENER_EN_INGRESO: BloqueSistema = {
   rotulo: "Modo automático durante el ingreso",
+  general: true,
   piezas: [
     s10(
       "b34",

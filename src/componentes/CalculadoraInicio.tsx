@@ -367,7 +367,8 @@ export function CalculadoraInicio({
   // la nota de la Tabla 2, junto a las opciones mientras no se toque a mano.
   const ayudaRegla =
     d.control === "riesgo" && !d.tocado.regla && d.regla === 1800
-      ? "Con riesgo de hipoglucemia se parte de la regla del 1800 (Tabla 2: «puede valorarse la regla del 1800 en personas con riesgo elevado de hipoglucemia»); puede cambiarse."
+      ? // 1.0.23 (29.ª ronda, visual): sin el literal (seis líneas en la columna de 195 px).
+        "Con riesgo de hipoglucemia se parte de la regla del 1800 (Tabla 2); puede cambiarse."
       : undefined;
 
   const elegirControl = (c: Control) => {
@@ -457,7 +458,15 @@ export function CalculadoraInicio({
     if (!r || d.origen !== "aid" || d.sistemaPrevio === null || sis === undefined) return false;
     const enDestino = PARAMETROS[sis].find((x) => x.r === r)?.auto;
     const enActual = PARAMETROS[d.sistemaPrevio].find((x) => x.r === r)?.auto;
-    return enDestino === "si" && !["si", "fijo"].includes(enActual ?? "");
+    // 1.0.23 (29.ª ronda, R5): también cuando en el destino sirve para iniciar el automático (la
+    // basal de Omnipod 5 estima la DTD del primer pod): antes se trasladaba sin aviso.
+    return (
+      (enDestino === "si" || enDestino === "inicio") && !["si", "fijo"].includes(enActual ?? "")
+    );
+  };
+  const paraIniciar = (k: Clave) => {
+    const r = PARAMETRO_DE[k];
+    return !!r && sis !== undefined && PARAMETROS[sis].find((x) => x.r === r)?.auto === "inicio";
   };
   const valorDe = (k: Clave, c: number): ReactNode => {
     const traslado = (
@@ -466,6 +475,7 @@ export function CalculadoraInicio({
         {revisarAntes(k) && (
           <span className="block not-italic text-slate-700">
             Revisar antes de trasladar: en {CORTOS[d.sistemaPrevio!]} no actúa en automático
+            {paraIniciar(k) ? " y aquí se usa para iniciar el modo automático" : ""}
           </span>
         )}
       </span>
@@ -1349,11 +1359,25 @@ export function PasanAAutomatico({ actual, destino }: { actual: number; destino:
   );
 }
 
+/* 1.0.23 (29.ª ronda, visual y R5): el dato de la ficha operativa que corresponde a cada clave de la
+   calculadora, para no repetir en «Para iniciar el automático» lo que ya está en la lista. */
+const DATO_DE_CLAVE: Partial<Record<Clave, string>> = {
+  objetivoAlg: "Objetivo glucémico",
+  basal: "Tasa basal programada",
+  factor: "Factor de sensibilidad",
+  ratio: "Ratio I/HC",
+  ia: "Duración de la insulina activa",
+};
 export function CambioDeSistema({ actual, destino }: { actual: number; destino: number }) {
   const columnas = [
     { c: actual, rotulo: "Sistema actual" },
     { c: destino, rotulo: "Sistema de destino" },
   ].map((x) => ({ ...x, datos: PARAMETROS[x.c].filter((d) => d.auto === "si") }));
+  // Lo que hace falta además para iniciar el automático (peso y DTD; la basal en Omnipod 5).
+  const ademas = (c: number, datos: { r: string }[]) =>
+    gruposDeProgramar(c)
+      .automatico.filter((k) => !datos.some((d) => d.r === DATO_DE_CLAVE[k]))
+      .map((k) => enMinuscula(NOMBRE_CLAVE[k]));
   return (
     <section aria-labelledby="calc-cambio" className="tarjeta overflow-hidden">
       <h3 id="calc-cambio" className="rotulo px-3 pt-2">
@@ -1377,14 +1401,16 @@ export function CambioDeSistema({ actual, destino }: { actual: number; destino: 
             </ul>
             {/* 1.0.22 (28.ª ronda, R5): también lo que hace falta para iniciar el automático (peso,
                 DTD…) o lo que el sistema usa para estimar (la basal en Omnipod 5), como en el paso 5
-                y en la hoja: la caja solo enseñaba el objetivo de cada uno. */}
-            <p className="mt-2 text-xs leading-snug text-slate-600">
-              Con efecto directo o necesario para iniciar el modo automático:{" "}
-              {gruposDeProgramar(c)
-                .automatico.map((k) => enMinuscula(NOMBRE_CLAVE[k]))
-                .join(", ")}
-              .
-            </p>
+                y en la hoja: la caja solo enseñaba el objetivo de cada uno. 1.0.23 (visual): con la
+                anatomía de los demás datos y solo lo que no está ya en la lista. */}
+            {ademas(c, datos).length > 0 && (
+              <div className="mt-1.5 text-sm">
+                <span className="block font-semibold text-slate-900">
+                  Para iniciar el automático
+                </span>
+                <span className="block text-xs text-slate-600">{ademas(c, datos).join(", ")}</span>
+              </div>
+            )}
           </div>
         ))}
       </div>

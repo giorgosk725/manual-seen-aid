@@ -264,7 +264,9 @@ const fuentesDeMomento = (m: Momento) => fuentesDePiezas(piezasDe(m));
 /* 1.0.22 (28.ª ronda, R3): la fila de la Tabla 3 que toca en cada paso de la descarga (2: objetivo
    «más conservador»; 4: insulina activa; 5: objetivo y funciones temporales; 6: ratio; 7: objetivo
    «poco intensivo»). Antes solo los pasos 2 y 5, y la tabla se abría sin fila. */
-const FILA_T3_DEL_PASO: Record<number, number> = { 2: 0, 4: 4, 5: 0, 6: 2, 7: 0 };
+/* 1.0.23 (29.ª ronda, adjunto): el paso 7 (actualizar la pauta de respaldo en pluma) no tiene fila
+   en la Tabla 3: la tabla entera y, además, la interrupción del sistema. */
+const FILA_T3_DEL_PASO: Record<number, number> = { 2: 0, 4: 4, 5: 0, 6: 2 };
 /* Los momentos abiertos de cada situación, en memoria mientras la app está abierta: abrir la
    fuente de un momento y volver lo encuentra abierto. No se guarda nada. */
 const momentosMemoria = new Map<string, { abiertos: Set<number>; todos: boolean }>();
@@ -1534,14 +1536,27 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           )}
           {/* 1.0.0 (18.ª ronda, R3): en los pasos que piden ajustar «según el sistema» (2) o
               remiten a la Tabla 3 (5), el ajuste de cada sistema, a un toque. */}
-          {FILA_T3_DEL_PASO[n] !== undefined && (
+          {(FILA_T3_DEL_PASO[n] !== undefined || n === 7) && (
             <a
               // 1.0.14 (25.ª ronda, R3): a la Tabla 3, en su pestaña «Ajuste práctico» (antes, a
               // Parámetros, que no es la tabla). 1.0.22: con la fila que toca marcada.
-              href={href("sistemas", "todos", `ajuste:${FILA_T3_DEL_PASO[n]}`)}
+              href={href(
+                "sistemas",
+                "todos",
+                FILA_T3_DEL_PASO[n] !== undefined ? `ajuste:${FILA_T3_DEL_PASO[n]}` : "ajuste",
+              )}
               className="no-imprimir mt-2 flex min-h-11 w-fit items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
             >
               Ajuste de los parámetros por sistema (Tabla 3)
+              <ArrowRight size={14} aria-hidden="true" />
+            </a>
+          )}
+          {n === 7 && (
+            <a
+              href={href("consultar", "interrupcion")}
+              className="no-imprimir mt-2 flex min-h-11 w-fit items-center gap-1 text-sm font-semibold text-slate-700 hover:underline sm:min-h-8"
+            >
+              Interrupción del sistema y pauta alternativa
               <ArrowRight size={14} aria-hidden="true" />
             </a>
           )}

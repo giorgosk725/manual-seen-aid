@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-06",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — vigesimoctava ronda`,
+    titulo: `Complemento interactivo ${VERSION_APP} — vigesimonovena ronda`,
+    detalle: [
+      "Tablas: en papel, el rótulo «Paso» de la Tabla 5 ya no se parte y la fila de destino no imprime su marca; el selector de la Tabla 5 dice «marcada: paso 3» (con el elemento se recortaba en el móvil); en Tablas, la fila marcada se desplaza a la vista también cuando quedaba cortada por abajo.",
+      "Sistemas AID: tras «Ver la ficha» con un sistema marcado, Atrás recupera también la posición en Modos. Interpretación de la descarga: el paso 7 abre la Tabla 3 entera (su actuación es la pauta de respaldo en pluma, sin fila) y enlaza la interrupción del sistema.",
+      "Ingreso hospitalario con sistema: la conducta general va en tarjeta sin el color del sistema y la del objetivo lleva un solo título. Preguntas frecuentes: el filtro sin coincidencias ofrece buscar en el capítulo; el filtro y «Plegar» no se imprimen.",
+      "Buscar: «sin sensor», «se queda sin sensor», «sin señal» y «cambio de sensor» llevan a lo que rige sin sensor (perfil basal, apartado 8), a la pregunta del sensor y a las pérdidas de señal; «viaje largo», «vuelo» y «viaje en avión», a los controles del aeropuerto; «ease-off» añade su casilla de la Tabla 4; el párrafo de diálisis solo sale si la consulta va de riñón.",
+      "Cálculo inicial: al trasladar la programación a Omnipod 5, la tasa basal avisa «Revisar antes de trasladar» (sirve para iniciar el automático); la caja del cambio de sistema enseña «Para iniciar el automático» solo con lo que no está ya en la lista; la ayuda de la regla del 1800, más corta.",
+    ],
+  },
+  {
+    fecha: "2026-11-06",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.22 — vigesimoctava ronda",
     detalle: [
       "Tablas: la pleca de la fila de destino se ve también en nocturno; la Tabla 5 en papel conserva la columna del paso estrecha (de tres hojas a dos) y su selector de filas dice el elemento de cada paso («3 · Control global…»). La Tabla 3 comparada admite una fila marcada en la dirección; desde Interpretación de la descarga, el enlace a la Tabla 3 abre la fila que toca (pasos 2, 4, 5, 6 y 7). En una situación, la fuente «Tabla 4» lleva a su fila en la tabla, con el sistema elegido.",
       "Sistemas AID: tras «Ver la ficha» desde «Los cuatro» con un sistema marcado, Atrás vuelve con ese sistema marcado y en la misma posición (antes, a los cuatro y arriba del todo).",

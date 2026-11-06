@@ -654,11 +654,26 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   // 1.0.22 (28.ª ronda, adjunto): «sensor caducado/agotado»: lo más cercano del capítulo son las
   // pérdidas de señal y salidas del modo automático (apartado 9) y su pregunta (antes, Diálisis y
   // la introducción); «husos horarios»: el capítulo solo trae los controles del aeropuerto, y se dice.
-  if (
-    /sensor/.test(n) &&
-    /\bcaduc|\bagot|\b(fin|final|termin\w*|acab\w*) (del |el )?sensor|vencid/.test(n)
-  )
+  // 1.0.23 (29.ª ronda, R1, senior y adjunto): también «sin sensor», «se queda sin sensor», «sin
+  // señal», «cambio de sensor»; y, sin sensor, lo que rige: el perfil basal en modo manual (apartado
+  // 8), con la honestidad de que el capítulo no trata la reposición del sensor.
+  const sinSensor =
+    /\bcaduc|\bagot|vencid|\bsin (sensor|mcg|lector)\b|queda\w* sin|\b(fin|final|termin\w*|acab\w*) (del |el )?sensor/.test(
+      n,
+    );
+  const sinSenal = /sin senal|perdid\w* (de )?senal|pierde\w* (la )?senal|cambio de sensor/.test(n);
+  if (/sensor|mcg|senal/.test(n) && (sinSensor || sinSenal))
     out.push(
+      ...(sinSensor
+        ? [
+            atajo(
+              "recurso/sin-sensor",
+              "Sin sensor, el sistema sale del automático: rige el perfil basal programado (apartado 8). El capítulo no trata la reposición del sensor",
+              href("capitulo", "08-iniciacion", "b8"),
+              12,
+            ),
+          ]
+        : []),
       atajo(
         "recurso/frecuente/f53",
         "El sensor pierde la señal: ¿qué hacer?",
@@ -672,11 +687,16 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         16,
       ),
     );
-  if (/\bhusos?\b|zona horaria|cambio de hora|jet ?lag|diferencia horaria/.test(n))
+  // 1.0.23 (29.ª ronda, R1): también «viaje largo», «vuelo», «viaje en avión / al extranjero».
+  if (
+    /\bhusos?\b|zona horaria|cambio de hora|jet ?lag|diferencia horaria|viaje\w* (largo|en avion|al extranjero|internacional)|\bvuelos?\b/.test(
+      n,
+    )
+  )
     out.push(
       atajo(
         "recurso/viajes",
-        "Viajes: controles del aeropuerto (apartado 10). El capítulo no trata los husos horarios",
+        "Viajes: controles del aeropuerto (apartado 10). El capítulo no trata los husos horarios ni los viajes largos",
         href("capitulo", "10-situaciones", "b43"),
         21,
       ),
@@ -685,6 +705,18 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         "¿Qué precauciones tomar con el sistema en el control del aeropuerto?",
         href("preguntas", "f58"),
         21,
+      ),
+    );
+  // 1.0.23 (29.ª ronda, adjunto): con «ease-off», la descripción operativa del capítulo (Tabla 4,
+  // ejercicio aeróbico o situación previsible de hipoglucemia, casilla de CamAPS FX). Solo con la
+  // hipoglucemia nombrada: con «ease-off» a secas sigue «Modos y funciones» (0.82.1; caben dos).
+  if (/\bease[\s-]?off\b/.test(n) && /hipogluc|\bhipos?\b|\bbaj(a|ada|adas|o)\b/.test(n))
+    out.push(
+      atajo(
+        "recurso/ease-off/camaps",
+        "Ease-off en CamAPS FX: situación previsible de mayor riesgo de hipoglucemia (Tabla 4)",
+        href("consultar", "situacion", "ejercicio-aerobico:camaps"),
+        TABLAS.T4.paginas[0],
       ),
     );
   // 0.82.1 (sexta ronda, senior): el alcohol con un sistema, su fila de Modos.

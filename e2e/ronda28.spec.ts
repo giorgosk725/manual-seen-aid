@@ -26,7 +26,8 @@ test.describe("Ronda 28 · tablas", () => {
     await page.goto("/#/consultar/tablas/T5::2");
     const sel = page.locator("#filtro-T5");
     await expect(sel.locator("option").first()).toHaveText(
-      "Todas las filas · marcada: 3 · Control global y exposición glucémica",
+      // 1.0.23: «paso 3» (con el elemento se recortaba en el móvil).
+      "Todas las filas · marcada: paso 3",
     );
     await expect(sel.locator("option").nth(1)).toHaveText(
       "1 · Uso, representatividad de los datos y funcionamiento del sistema",
@@ -117,7 +118,8 @@ test.describe("Ronda 28 · filas, buscador, calculadora, ingreso", () => {
       .getByRole("radio", { name: /Omnipod/ })
       .click();
     const caja = page.getByRole("region", { name: "Parámetros que actúan en el modo automático" });
-    await expect(caja).toContainText("necesario para iniciar el modo automático: peso, DTD");
+    // 1.0.23: con la anatomía de los demás datos y solo lo que falta.
+    await expect(caja).toContainText("Para iniciar el automáticopeso, DTD");
     await expect(caja).toContainText("tasa basal");
     await page.goto("/#/consultar/inicio/calculadora:minimed-780g");
     await page.getByRole("button", { name: /^MDI/ }).click();

@@ -1420,10 +1420,12 @@ function BarraSistemas({
                       ? href("sistemas", marcados.join("+"), sec)
                       : rutaCon(marcados)
                   }
+                  // 1.0.23 (29.ª ronda, adjunto): sin desplazar arriba antes de irse (la posición
+                  // guardada para Atrás pasaba a 0 y Modos volvía arriba del todo); la pantalla
+                  // nueva ya empieza arriba (Shell).
                   onClick={() => {
                     if (marcados.length === 1)
                       volverMarcado = { id: marcados[0], origen: window.location.hash };
-                    window.scrollTo({ top: 0 });
                   }}
                   // 1.0.5 (21.ª ronda, visual): botón secundario (borde capilar, sin relleno): con
                   // la casilla marcada y la pestaña, el relleno burdeos apilaba cinco marcas.

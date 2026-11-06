@@ -516,8 +516,10 @@ export function TablaVista({
   const todas = tabla.columnas.map((_, i) => i);
   // 0.85.1 (novena ronda, R5): en la comparación, la fila pedida a la vista, bajo la barra.
   const raiz = useRef<HTMLElement>(null);
+  // 1.0.23 (29.ª ronda, R3): también en Tablas (antes solo en la comparación): «T5::2» dejaba la
+  // fila marcada cortada por abajo sin desplazar.
   useEffect(() => {
-    if (resaltarFila === undefined || !columnasFijas) return;
+    if (resaltarFila === undefined) return;
     const el = [
       ...(raiz.current?.querySelectorAll<HTMLElement>(`[data-fila="${resaltarFila}"]`) ?? []),
     ].find((x) => x.offsetParent !== null);
@@ -627,7 +629,9 @@ export function TablaVista({
                 lo dice; elegir la fila la enseña sola, como siempre. */}
             <option value="">
               {resaltarFila !== undefined && tabla.filas[resaltarFila]
-                ? `Todas las filas · marcada: ${etiquetaFila(tabla, tabla.filas[resaltarFila])}`
+                ? // 1.0.23 (29.ª ronda, visual): en la Tabla 5, «paso 3» (con el elemento se
+                  // recortaba la opción a 360 y 768 px; la fila ya se ve marcada).
+                  `Todas las filas · marcada: ${tabla.id === "T5" ? `paso ${tabla.filas[resaltarFila].etiqueta}` : etiquetaFila(tabla, tabla.filas[resaltarFila])}`
                 : "Todas las filas"}
             </option>
             {tabla.filas.map((f, i) => (

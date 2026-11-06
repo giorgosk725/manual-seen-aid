@@ -34,36 +34,42 @@ export function tarjetasDeBloques(
   const sg = siglasPorPiezas(todas, c);
   // Índice de la primera pieza de cada bloque en `todas` (las siglas van por pieza).
   const desde = bloques.map((_, i) => bloques.slice(0, i).reduce((n, x) => n + x.piezas.length, 0));
-  return bloques.map((b, i) => ({
-    clave: `bloque-${b.rotulo}`,
-    peso: 1.5 + b.piezas.reduce((n, p) => n + lineasDe(textosDePieza(p, c).join(" "), 62), 0),
-    nodo: (
-      <div
-        key={`bloque-${b.rotulo}`}
-        className={`min-w-0 p-3 ${forma === "casilla" ? "casilla" : forma === "comun" ? "tarjeta" : "tarjeta tarjeta-sistema"}`}
-        style={forma === "sistema" ? { ["--sis" as string]: h.strong } : undefined}
-      >
-        <PiezasSinTitulos.Provider value={true}>
-          {/* 0.96.0 (16.ª ronda, visual y R3): el rótulo del bloque en minúscula y negrita, como los
+  return bloques.map((b, i) => {
+    // 1.0.23 (29.ª ronda, visual): un bloque general (conducta del capítulo) va sin pleca ni color.
+    const propia = forma === "sistema" && !b.general;
+    return {
+      clave: `bloque-${b.rotulo}`,
+      peso: 1.5 + b.piezas.reduce((n, p) => n + lineasDe(textosDePieza(p, c).join(" "), 62), 0),
+      nodo: (
+        <div
+          key={`bloque-${b.rotulo}`}
+          className={`min-w-0 p-3 ${forma === "casilla" ? "casilla" : propia ? "tarjeta tarjeta-sistema" : "tarjeta"}`}
+          style={propia ? { ["--sis" as string]: h.strong } : undefined}
+        >
+          <PiezasSinTitulos.Provider value={true}>
+            {/* 0.96.0 (16.ª ronda, visual y R3): el rótulo del bloque en minúscula y negrita, como los
               de las fichas (en MAYÚSCULAS, «· MINIMED 780G Y OMNIPOD 5» perdía la grafía). */}
-          <dt
-            className={
-              repiteRotulo(b) ? "sr-only" : "text-[13px] font-semibold leading-snug text-slate-600"
-            }
-            style={forma === "sistema" ? { color: h.ink } : undefined}
-          >
-            {b.rotulo}
-          </dt>
-          {/* 0.96.0 (16.ª ronda, adjunto): una pieza por fila, separadas por una línea fina. */}
-          <dd className="mt-1 space-y-2 text-[15px] leading-snug text-slate-900 [&>*+*]:border-t [&>*+*]:border-[var(--linea-suave)] [&>*+*]:pt-2">
-            {b.piezas.map((p, j) => (
-              <div key={j}>
-                <PiezaVista pieza={p} sis={c} compacta siglas={sg[desde[i] + j]} />
-              </div>
-            ))}
-          </dd>
-        </PiezasSinTitulos.Provider>
-      </div>
-    ),
-  }));
+            <dt
+              className={
+                repiteRotulo(b)
+                  ? "sr-only"
+                  : "text-[13px] font-semibold leading-snug text-slate-600"
+              }
+              style={propia ? { color: h.ink } : undefined}
+            >
+              {b.rotulo}
+            </dt>
+            {/* 0.96.0 (16.ª ronda, adjunto): una pieza por fila, separadas por una línea fina. */}
+            <dd className="mt-1 space-y-2 text-[15px] leading-snug text-slate-900 [&>*+*]:border-t [&>*+*]:border-[var(--linea-suave)] [&>*+*]:pt-2">
+              {b.piezas.map((p, j) => (
+                <div key={j}>
+                  <PiezaVista pieza={p} sis={c} compacta siglas={sg[desde[i] + j]} />
+                </div>
+              ))}
+            </dd>
+          </PiezasSinTitulos.Provider>
+        </div>
+      ),
+    };
+  });
 }

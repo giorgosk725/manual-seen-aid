@@ -158,8 +158,10 @@ function Hoja({ sis }: { sis?: number }) {
     if (calc.origen !== "aid" || calc.sistemaPrevio === null || sis === undefined) return "";
     const enDestino = PARAMETROS[sis].find((x) => x.r === r)?.auto;
     const enActual = PARAMETROS[calc.sistemaPrevio].find((x) => x.r === r)?.auto;
-    return enDestino === "si" && !["si", "fijo"].includes(enActual ?? "")
-      ? `. Revisar antes de trasladar: en ${CORTOS[calc.sistemaPrevio]} no actúa en automático`
+    // 1.0.23 (29.ª ronda, R5): también si en el destino sirve para iniciar (la basal en Omnipod 5).
+    return (enDestino === "si" || enDestino === "inicio") &&
+      !["si", "fijo"].includes(enActual ?? "")
+      ? `. Revisar antes de trasladar: en ${CORTOS[calc.sistemaPrevio]} no actúa en automático${enDestino === "inicio" ? " y aquí se usa para iniciar el modo automático" : ""}`
       : "";
   };
   const trasladado = (articulo: "La" | "El", r: string) =>
