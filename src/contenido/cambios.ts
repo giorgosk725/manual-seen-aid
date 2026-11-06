@@ -15,7 +15,20 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-06",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — vigesimonovena ronda`,
+    titulo: `Complemento interactivo ${VERSION_APP} — trigésima ronda`,
+    detalle: [
+      "Ingreso hospitalario con sistema: la primera tarjeta lleva la frase entera del capítulo («Cuando no existen contraindicaciones, puede mantenerse…») y el enlace a los criterios para no continuar; las tarjetas van por filas, en el mismo sitio con los cuatro sistemas, y todas con el mismo rótulo. La tarjeta de objetivos hospitalarios nombra el posicionamiento internacional de 2026 bajo su título.",
+      "Enfermedad intercurrente con sistema: el acceso a la Figura 3 «Con sospecha de cetosis», arriba; la fuente «Tabla 4» lleva a su fila con el sistema. Tabla 6 en exploraciones (Rx, PET, diatermia…): la nota general sin la vuelta desde insulina intravenosa, que va en cirugía; el nombre de la pauta es el propio enlace.",
+      "Situación abierta en papel: solo la situación, con cabecera «Situación · …» y página en los márgenes, sin selector ni «Véase también», y los tramos de los objetivos legibles. Preguntas frecuentes en papel: índice a dos columnas; en el móvil, el tema debajo de la pregunta; sin «Plegar» al filtrar.",
+      "Figura 3: con una rama ya elegida, cambiar de rama solo desplaza si no está a la vista. Al volver con Atrás a la lista de Situaciones, el foco vuelve a la situación que se abrió. Tablas: entre las tablas por sistema, los sistemas marcados se conservan; con zoom, las pestañas no se cortan. Desde la descarga, la Tabla 3 con fila deja «Volver a la consulta» a la vista.",
+      "Buscar: «se ha caído el sensor», «sensor caído» y «despegado» llevan a lo que rige sin sensor; «fiebre», «gripe» o «gastroenteritis» abren la enfermedad intercurrente (con el sistema, si se nombra); «tbr 54», «objetivo tbr» o «tir objetivo» abren la pregunta de los objetivos de TIR, TBR y TAR; «qué cambia», «cambio a» o «pasar a» Control-IQ+ abren la pregunta de las diferencias; sin el aviso «no trata» repetido cuando el «Abrir» ya lo dice; dos frases de un párrafo con una entre medias salen enteras.",
+      "Cálculo inicial: «modificado» solo si el valor difiere del punto de partida; con la reducción puesta a mano, se dice cuál sería el punto de partida. Hoja de comprobación del cambio de sistema: el aviso «Revisar antes de trasladar» en una línea bajo la rejilla (la hoja vuelve a una cara).",
+    ],
+  },
+  {
+    fecha: "2026-11-06",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.23 — vigesimonovena ronda",
     detalle: [
       "Tablas: en papel, el rótulo «Paso» de la Tabla 5 ya no se parte y la fila de destino no imprime su marca; el selector de la Tabla 5 dice «marcada: paso 3» (con el elemento se recortaba en el móvil); en Tablas, la fila marcada se desplaza a la vista también cuando quedaba cortada por abajo.",
       "Sistemas AID: tras «Ver la ficha» con un sistema marcado, Atrás recupera también la posición en Modos. Interpretación de la descarga: el paso 7 abre la Tabla 3 entera (su actuación es la pauta de respaldo en pluma, sin fila) y enlaza la interrupción del sistema.",

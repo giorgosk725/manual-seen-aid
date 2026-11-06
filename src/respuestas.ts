@@ -2062,9 +2062,20 @@ function responderBase(pregunta: string, { max = 3 } = {}): Respuesta[] {
     if (m && otra) {
       const [k1, k2] = [Number(m[2]), Number(otra.a.r.id.split("/").pop())];
       const [x, y] = k1 < k2 ? [c.a.r, otra.a.r] : [otra.a.r, c.a.r];
+      // 1.0.24 (30.ª ronda, R3): con una sola frase entre las dos, entera (antes, «…»: en «tir
+      // objetivo» se saltaba justo la del TBR).
+      const entre =
+        Math.abs(k1 - k2) === 2
+          ? ats.find((a) => a.r.id === `t/${m[1]}/${Math.min(k1, k2) + 1}`)?.r.texto
+          : undefined;
       r = {
         ...r,
-        texto: Math.abs(k1 - k2) === 1 ? `${x.texto} ${y.texto}` : `${x.texto} … ${y.texto}`,
+        texto:
+          Math.abs(k1 - k2) === 1
+            ? `${x.texto} ${y.texto}`
+            : entre
+              ? `${x.texto} ${entre} ${y.texto}`
+              : `${x.texto} … ${y.texto}`,
         contexto: x.contexto,
       };
     }

@@ -73,6 +73,7 @@ test.describe("Ronda 25 · situaciones e iniciación", () => {
     await page.goto("/#/consultar/inicio/hoja:control-iq");
     const hoja = page.locator(".hoja-inicio");
     await expect(hoja).toContainText("La del sistema actual");
+    // 1.0.24: el aviso, en una línea bajo la rejilla.
     await expect(hoja).toContainText("Revisar antes de trasladar: en MiniMed 780G");
   });
 

@@ -617,11 +617,12 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
     );
   // 0.81.1 (quinta ronda, guardia): «control-iq+» solo o con «diferencias»: la pregunta frecuente.
   {
-    const resto = consulta
-      .toLowerCase()
+    // 1.0.24: sin tildes («qué»: \b no casa tras una vocal acentuada).
+    const resto = normalizar(consulta)
       .replace(/control[\s-]*iq\s*\+/g, " ")
       .replace(
-        /control[\s-]*iq|tandem|\b(diferencias?|vs|frente|entre|que|y|a|cambia|con)\b|[¿?]/g,
+        // 1.0.24 (30.ª ronda, senior): «qué cambia», «cambio a», «pasar de … a», «novedades».
+        /control[\s-]*iq|tandem|\b(diferencias?|vs|frente|entre|que|qué|y|a|al|de|del|el|la|cambia|cambian|cambio|cambios|pasar|paso|novedad|novedades|nuevo|mejoras?|con)\b|[¿?]/g,
         " ",
       )
       .trim();
@@ -658,7 +659,8 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
   // señal», «cambio de sensor»; y, sin sensor, lo que rige: el perfil basal en modo manual (apartado
   // 8), con la honestidad de que el capítulo no trata la reposición del sensor.
   const sinSensor =
-    /\bcaduc|\bagot|vencid|\bsin (sensor|mcg|lector)\b|queda\w* sin|\b(fin|final|termin\w*|acab\w*) (del |el )?sensor/.test(
+    // 1.0.24 (30.ª ronda, R1): también «se ha caído / se cae / despegado».
+    /\bcaduc|\bagot|vencid|\bsin (sensor|mcg|lector)\b|queda\w* sin|\b(fin|final|termin\w*|acab\w*) (del |el )?sensor|\bcaid[oa]s?\b|\bcae\b|\bcaer\w*|despeg\w*/.test(
       n,
     );
   const sinSenal = /sin senal|perdid\w* (de )?senal|pierde\w* (la )?senal|cambio de sensor/.test(n);
@@ -685,6 +687,39 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         "Pérdidas de señal y salidas del modo automático (apartado 9)",
         href("capitulo", "09-descarga", "b22"),
         16,
+      ),
+    );
+  // 1.0.24 (30.ª ronda, adjunto): fiebre o gripe: la situación de enfermedad intercurrente (con el
+  // sistema, si se nombra); el capítulo no habla de la fiebre, sí de la enfermedad leve.
+  if (
+    /\b(fiebre|febril|gripe|catarro|gastroenteritis|vomitos?|diarreas?|infeccion\w*)\b/.test(n) &&
+    !/ceton|bohb/.test(n)
+  )
+    out.push(
+      atajo(
+        `recurso/enfermedad/${sis >= 0 ? SIS_IDS[sis] : "todos"}`,
+        `Enfermedad intercurrente y riesgo de cetosis${sis >= 0 ? ` · ${CATALOGO_SISTEMAS[sis].name}` : ""}`,
+        href(
+          "consultar",
+          "situacion",
+          `enfermedad-intercurrente${sis >= 0 ? `:${SIS_IDS[sis]}` : ""}`,
+        ),
+        20,
+      ),
+    );
+  // 1.0.24 (30.ª ronda, R3): los objetivos de TIR, TBR o TAR (sin gestación ni hospital): su
+  // pregunta (antes, «tbr 54» respondía con la gestación).
+  if (
+    /\b(tbr|tir|tar|tiempo en rango|tiempo por (debajo|encima))\b/.test(n) &&
+    /objetiv|meta|\b(54|63|70|180|250)\b|cuanto|acept|limite/.test(n) &&
+    !/gestac|embaraz|hospital|ingres|pediatr|nino|nina/.test(n)
+  )
+    out.push(
+      atajo(
+        "recurso/frecuente/f23",
+        "¿Qué objetivos de TIR, TBR y TAR hay que buscar?",
+        href("preguntas", "f23"),
+        4,
       ),
     );
   // 1.0.23 (29.ª ronda, R1): también «viaje largo», «vuelo», «viaje en avión / al extranjero».

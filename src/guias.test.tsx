@@ -139,7 +139,9 @@ describe("Lo de cada sistema por situación (0.73.0)", () => {
       bloques.forEach((bs, c) => {
         for (const b of bs)
           for (const p of b.piezas)
-            expect(textosDePieza(p, c).join(" ").length, b.rotulo).toBeGreaterThan(15);
+            // 1.0.24: un enlace (a los criterios del ingreso) no es texto del capítulo.
+            if (p.t !== "enlace")
+              expect(textosDePieza(p, c).join(" ").length, b.rotulo).toBeGreaterThan(15);
       });
     }
     // Gestación con CamAPS FX: el objetivo por trimestres y que tras el parto se eleva.

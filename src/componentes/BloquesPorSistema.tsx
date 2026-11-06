@@ -18,14 +18,27 @@ function Bloques({
   c,
   bloques,
   comun = false,
+  porFilas = false,
 }: {
   c: number;
   bloques: BloqueSistema[];
   /* Lo común a los cuatro: sin la pleca del sistema (0.92.0). */
   comun?: boolean;
+  porFilas?: boolean;
 }) {
   const h = SISTEMA_HEX[c];
   const tarjetas = tarjetasDeBloques(c, bloques, comun ? "comun" : "sistema");
+  // 1.0.24 (30.ª ronda, adjunto): por filas (la impar final, a lo ancho).
+  if (porFilas)
+    return (
+      <dl
+        className="grid gap-3 print:grid-cols-1 lg:grid-cols-2 lg:items-start lg:[&>*:last-child:nth-child(odd)]:col-span-2"
+        aria-live="polite"
+        style={{ ["--sis" as string]: h.strong }}
+      >
+        {tarjetas.map((t) => t.nodo)}
+      </dl>
+    );
   return (
     <div
       className={`grid gap-3 print:grid-cols-1 ${bloques.length > 1 ? "lg:grid-cols-2 lg:items-start" : ""}`}
@@ -76,7 +89,9 @@ export function BloquesPorSistema({
   complementos = {},
   onLosCuatro,
   comunDe,
+  porFilas = false,
 }: {
+  porFilas?: boolean;
   comunDe?: (c: number) => BloqueSistema[];
   /* 1.0.12 (24.ª ronda, senior): vuelta a la vista de los cuatro (antes, solo con Atrás). */
   onLosCuatro?: () => void;
@@ -96,7 +111,7 @@ export function BloquesPorSistema({
   return (
     <div>
       {/* 0.76: el mismo selector de sistema de toda la app (uno marcado). */}
-      <div className="mb-3">
+      <div className="no-imprimir mb-3">
         {/* 1.0.4 (20.ª ronda, senior): sin sistema elegido, encima y legible lo que se ve al elegir
             (antes, «Elegir el sistema» debajo, a 13 px en gris). */}
         {c < 0 && (
@@ -125,7 +140,7 @@ export function BloquesPorSistema({
           unico
         />
       </div>
-      {c >= 0 && <Bloques c={c} bloques={propios} />}
+      {c >= 0 && <Bloques c={c} bloques={propios} porFilas={porFilas} />}
       {/* Lo común a los cuatro (objetivos de inicio), a todo lo ancho tras lo del sistema: es la
           tarjeta más alta y, en las columnas, dejaba un pie desigual. */}
       {comun.length > 0 && (
@@ -133,7 +148,7 @@ export function BloquesPorSistema({
           <Bloques c={Math.max(c, 0)} bloques={comun} comun />
         </div>
       )}
-      {!sinFuente && <FuentePie className="mt-3" fuentes={fuentesDePiezas(todas)} />}
+      {!sinFuente && <FuentePie className="mt-3" fuentes={fuentesDePiezas(todas, c)} />}
       {/* Lo complementario del sistema (no es del capítulo), al final y con su propia fuente. */}
       {c >= 0 && complementos[c] && <ComplementoVista complemento={complementos[c]} />}
     </div>

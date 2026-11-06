@@ -4,6 +4,10 @@ import { createContext } from "react";
 
 export const PiezasSinTitulos = createContext(false);
 
+/* 1.0.24 (30.ª ronda, visual): cuando el rótulo del bloque ya dice la fila de la tabla, la pieza
+   no repite su rótulo (antes se ocultaba el del bloque y la tarjeta salía con otro estilo). */
+export const OcultarRotuloFila = createContext(false);
+
 /* 0.96.0 (16.ª ronda, R5): el sistema elegido en un recorrido (Iniciación): las frases que hablan
    solo de otro sistema no se enseñan (inicio.ts, soloDeOtroSistema). */
 export const SistemaDelRecorrido = createContext<number | undefined>(undefined);

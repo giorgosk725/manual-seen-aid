@@ -365,6 +365,23 @@
       content: none;
     }
   }
+  /* 1.0.24 (30.ª ronda, visual): Preguntas en papel, un índice compacto a dos columnas (cada
+     tema empezaba hoja y salían siete caras). */
+  @media print {
+    .temas-preguntas {
+      display: block !important;
+      columns: 2;
+      column-gap: 1.2rem;
+    }
+    .temas-preguntas > * {
+      break-inside: auto !important;
+      margin-bottom: 0.5rem;
+    }
+    .temas-preguntas .fila {
+      min-height: 0;
+      padding-block: 0.15rem;
+    }
+  }
   /* 1.0.23 (verificación visual): la tarjeta «Abrir» del buscador, con el mismo chevron. */
   a.abrir {
     position: relative;
@@ -1111,6 +1128,10 @@
   /* Los fondos de color de las cabeceras son informacion (numeran los bloques,
      identifican el sistema): hay que imprimirlos. */
   html.imprimiendo .imprimible * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .franja-tramo {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }

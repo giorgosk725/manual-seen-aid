@@ -71,10 +71,20 @@ const contextoDe = (ruta: string) => {
 /* Las fuentes de unas piezas, sin repetir. 0.82.1 (sexta ronda, senior): sin repetir el sitio
    (antes, el texto: dos párrafos de la misma página daban una sola fuente, que llevaba al otro);
    si dos sitios se escriben igual, cada uno con la entradilla de su párrafo. */
-export function fuentesDePiezas(piezas: Pieza[]): { texto: string; ruta: string }[] {
+export function fuentesDePiezas(piezas: Pieza[], sis?: number): { texto: string; ruta: string }[] {
+  // 1.0.24 (30.ª ronda, R1): la Tabla 4, con el sistema y, si todas sus casillas son de una fila,
+  // esa fila marcada (antes, la tabla entera: «enfermedad intercurrente» con Control-IQ).
+  const filasT4 = [
+    ...new Set(piezas.flatMap((p) => (p.t === "casilla" && p.tabla === "T4" ? [p.fila] : []))),
+  ];
+  const rutaT4 =
+    filasT4.length && sis !== undefined && sis >= 0
+      ? `#/consultar/tablas/T4:${SLUG_TABLA[sis]}${filasT4.length === 1 ? `:${filasT4[0]}` : ""}`
+      : undefined;
   const vistas = new Set<string>();
   const unicas = piezas
     .flatMap(fuentesDePieza)
+    .map((f) => (rutaT4 && f.ruta === "#/consultar/tablas/T4" ? { ...f, ruta: rutaT4 } : f))
     .filter((f) => !vistas.has(f.ruta) && !!vistas.add(f.ruta));
   const veces = new Map<string, number>();
   for (const f of unicas) veces.set(f.texto, (veces.get(f.texto) ?? 0) + 1);

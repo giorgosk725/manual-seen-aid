@@ -135,15 +135,19 @@ const MODO_MENOS_INTENSIVO: BloqueSistema = {
 /* 1.0.22 (28.ª ronda, R1): la conducta general del ingreso (mantener el automático; en ayunas o con
    más riesgo de hipoglucemia, objetivo más alto o modo menos intensivo), la primera tarjeta: quedaba
    a 1300 px, en el texto del posicionamiento. El trozo que aplica, sin la condición inicial. */
+/* 1.0.24 (30.ª ronda, R1): la frase entera, con su condición («Cuando no existen
+   contraindicaciones»: sin ella, ante una cetoacidosis se leía «mantener»), y el paso a los
+   criterios para no continuar. */
 const MANTENER_EN_INGRESO: BloqueSistema = {
   rotulo: "Modo automático durante el ingreso",
   general: true,
   piezas: [
-    s10(
-      "b34",
-      [3],
-      /puede mantenerse el modo automático del AID; en personas en ayunas o con mayor riesgo de hipoglucemia puede valorarse temporalmente un objetivo glucémico más alto o un modo menos intensivo, según las posibilidades del sistema y el protocolo institucional/,
-    ),
+    s10("b34", [3]),
+    {
+      t: "enlace",
+      texto: "Criterios para no continuar y paso a pauta subcutánea",
+      ruta: "#/capitulo/10-situaciones/b36",
+    },
   ],
 };
 const INGRESO: BloqueSistema[][] = [
@@ -179,6 +183,9 @@ export const GUIA_POR_SISTEMA: Record<
     comunDe?: (c: number) => BloqueSistema[];
     /* Lo complementario de un sistema (no es del capítulo), tras lo suyo: índice → texto. */
     complementos?: Record<number, Complemento>;
+    /* 1.0.24 (30.ª ronda, adjunto): en dos columnas por filas (la misma tarjeta en el mismo
+       sitio con los cuatro sistemas), no en dos tramos equilibrados. */
+    porFilas?: boolean;
   }
 > = {
   gestacion: {
@@ -189,7 +196,7 @@ export const GUIA_POR_SISTEMA: Record<
   },
   "enfermedad-intercurrente": { bloques: NECESIDAD },
   glucocorticoides: { bloques: NECESIDAD },
-  "ingreso-hospitalario": { bloques: INGRESO },
+  "ingreso-hospitalario": { bloques: INGRESO, porFilas: true },
 };
 
 /* Situaciones de la Tabla 4 con un sistema elegido: lo que los apartados 9 y 10 añaden a la

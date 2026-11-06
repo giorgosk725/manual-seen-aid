@@ -5,7 +5,12 @@ import { COLUMNA_DE_NOTA, NOTAS_POR_PASAJE } from "../notas-complementarias";
    de cada sistema. Aquí no hay texto propio: todo sale del capítulo con su página. */
 import { ArrowRight } from "lucide-react";
 import { useContext } from "react";
-import { PiezasSinTitulos, SistemaDelRecorrido, sinPuntos } from "./piezasContexto";
+import {
+  OcultarRotuloFila,
+  PiezasSinTitulos,
+  SistemaDelRecorrido,
+  sinPuntos,
+} from "./piezasContexto";
 import { TABLAS } from "../contenido";
 import { PaginaBadge } from "../ui";
 import { Lineas, Texto } from "../texto";
@@ -154,13 +159,14 @@ function PiezaVistaBase({
     <Texto siglas={pend(children)}>{children}</Texto>
   );
   const sinTitulos = useContext(PiezasSinTitulos);
+  const sinRotuloFila = useContext(OcultarRotuloFila);
   const delRecorrido = useContext(SistemaDelRecorrido);
   const deEste = (t: string) =>
     delRecorrido === undefined ? t : incisosDelSistema(t, delRecorrido);
   const caja = compacta ? "" : "tarjeta p-3";
   const borde = undefined;
   const Rotulo = ({ tabla, etiqueta }: { tabla: keyof typeof TABLAS; etiqueta: string }) =>
-    compacta && sinTitulos ? (
+    compacta && sinRotuloFila ? null : compacta && sinTitulos ? (
       <p className="titulo-tarjeta mb-1">
         <Lineas siglas={pend(etiqueta)}>{etiqueta}</Lineas>
       </p>

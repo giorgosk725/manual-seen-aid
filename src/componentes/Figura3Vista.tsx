@@ -371,8 +371,11 @@ export function Figura3Recorrido({ tramoInicial }: { tramoInicial?: string }) {
   }, [valido]);
   /* Atajo: con la cetonemia ya medida, ir directo a su rama. */
   const irATramo = (t: Tramo) => {
+    // 1.0.24 (30.ª ronda, R1): con una rama ya elegida, la nueva solo desplaza si no está a la
+    // vista (la cuadrícula de ramas quedaba bajo la cabecera).
+    const habia = !!valido;
     elegir(t);
-    requestAnimationFrame(() => irARama());
+    requestAnimationFrame(() => irARama(habia));
   };
   // 0.74.2 (petición del responsable: nada útil plegado): abierto también en el móvil.
   const paso1Abierto = true;

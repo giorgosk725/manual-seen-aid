@@ -164,8 +164,17 @@ function Hoja({ sis }: { sis?: number }) {
       ? `. Revisar antes de trasladar: en ${CORTOS[calc.sistemaPrevio]} no actúa en automático${enDestino === "inicio" ? " y aquí se usa para iniciar el modo automático" : ""}`
       : "";
   };
-  const trasladado = (articulo: "La" | "El", r: string) =>
-    ev.lista ? `${articulo} ${deActual}${revisar(r)}` : null;
+  // 1.0.24 (30.ª ronda, R5): en la casilla, «La del sistema actual (*)»; el aviso, en una línea a
+  // lo ancho debajo (en la casilla estrecha ocupaba ocho líneas y la hoja pasaba a dos caras).
+  const avisos = new Map<string, string[]>();
+  const trasladado = (articulo: "La" | "El", r: string) => {
+    if (!ev.lista) return null;
+    const aviso = revisar(r)
+      .replace(/^\.\s*/, "")
+      .replace(/^Revisar antes de trasladar:\s*/, "");
+    if (aviso) avisos.set(aviso, [...(avisos.get(aviso) ?? []), r.toLowerCase()]);
+    return `${articulo} ${deActual}${aviso ? " (*)" : ""}`;
+  };
   const partida: [string, string | null][] = [
     ["DTD de inicio", cifra(ev.dtdInicio, 1, "UI/día")],
     [
@@ -333,6 +342,16 @@ function Hoja({ sis }: { sis?: number }) {
             </div>
           ))}
         </dl>
+        {avisos.size > 0 && (
+          <p className="mt-1.5 text-xs leading-snug text-slate-800">
+            {[...avisos].map(([motivo, rs]) => (
+              <span key={motivo} className="block">
+                <span className="font-semibold">(*) Revisar antes de trasladar:</span> {motivo} (
+                {rs.join(", ")}).
+              </span>
+            ))}
+          </p>
+        )}
         <h3 className="rotulo mt-4" style={{ color: hex.ink }}>
           Seguimiento de los primeros 3 meses
         </h3>

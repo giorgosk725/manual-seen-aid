@@ -133,7 +133,8 @@ test.describe("Ronda 28 · filas, buscador, calculadora, ingreso", () => {
     await page.goto("/#/consultar/situacion/ingreso-hospitalario:omnipod-5");
     const bloque = page.getByRole("region", { name: "Sistema a sistema" });
     await expect(bloque.locator(".tarjeta").first()).toContainText(
-      "Puede mantenerse el modo automático del AID; en personas en ayunas",
+      // 1.0.24: la frase entera, con su condición.
+      "Cuando no existen contraindicaciones, puede mantenerse el modo automático del AID; en personas en ayunas",
     );
   });
 });

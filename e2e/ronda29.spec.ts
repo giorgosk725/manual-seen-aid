@@ -88,11 +88,14 @@ test.describe("Ronda 29 · ingreso, calculadora y buscador", () => {
     await page.goto("/#/consultar/situacion/ingreso-hospitalario:omnipod-5");
     const bloque = page.getByRole("region", { name: "Sistema a sistema" });
     const primera = bloque.locator(".tarjeta").first();
-    await expect(primera).toContainText("Puede mantenerse el modo automático");
+    // 1.0.24: con su condición entera.
+    await expect(primera).toContainText("Cuando no existen contraindicaciones, puede mantenerse");
     await expect(primera).not.toHaveClass(/tarjeta-sistema/);
     const segunda = bloque.locator(".tarjeta").nth(1);
     await expect(segunda).toHaveClass(/tarjeta-sistema/);
-    await expect(segunda.locator("dt")).toHaveClass(/sr-only/);
+    // 1.0.24: un solo rótulo, el del bloque (visible); la fila no repite el suyo.
+    await expect(segunda.locator("dt")).toBeVisible();
+    await expect(segunda.locator(".titulo-tarjeta")).toHaveCount(0);
   });
 
   test("R5 y visual: basal a Omnipod 5 con aviso; «Para iniciar el automático» sin repetir", async ({

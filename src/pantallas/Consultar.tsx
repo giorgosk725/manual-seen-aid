@@ -111,13 +111,19 @@ function TablaPantalla({
         {LISTA_TABLAS.map((t) => (
           <a
             key={t.id}
-            href={href("consultar", "tablas", t.id)}
+            // 1.0.24 (30.ª ronda, R3): entre tablas por sistema, los sistemas marcados siguen.
+            href={href(
+              "consultar",
+              "tablas",
+              t.porSistema && tabla.porSistema && seleccion ? `${t.id}:${seleccion}` : t.id,
+            )}
             aria-current={t.id === tid ? "page" : undefined}
             onFocus={pestanaALaVista}
             className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             Tabla {t.numero}
-            <span className="hidden font-normal lg:inline">&nbsp;· {TEMA_TABLA[t.id]}</span>
+            {/* 1.0.24 (30.ª ronda, senior): el tema desde xl (con zoom del 125 % se cortaba). */}
+            <span className="hidden font-normal xl:inline">&nbsp;· {TEMA_TABLA[t.id]}</span>
           </a>
         ))}
       </nav>

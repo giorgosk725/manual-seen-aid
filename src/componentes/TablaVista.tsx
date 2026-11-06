@@ -539,12 +539,20 @@ export function TablaVista({
     );
     const cabeceraTabla =
       el.closest("table")?.querySelector("thead")?.getBoundingClientRect().height ?? 0;
-    window.scrollTo({
-      top: Math.max(
-        0,
-        window.scrollY + el.getBoundingClientRect().top - barra - cabeceraTabla - 12,
-      ),
-    });
+    const caja = el.getBoundingClientRect();
+    // 1.0.24 (30.ª ronda, R3 y visual): ya a la vista (bajo las barras), no se mueve; y si hay
+    // «Volver a la consulta» sin pegar (Sistemas), se sube como mucho hasta él mientras la fila
+    // siga cabiendo en la pantalla (desde la descarga quedaba cortado o fuera).
+    if (caja.top >= barra + cabeceraTabla && caja.bottom <= window.innerHeight) return;
+    let top = window.scrollY + caja.top - barra - cabeceraTabla - 12;
+    const volver = document.querySelector<HTMLElement>(".volver-pegado");
+    if (volver && getComputedStyle(volver).position !== "sticky") {
+      const cab = bajoDe("header.cabecera");
+      const hastaVolver = window.scrollY + volver.getBoundingClientRect().top - cab - 8;
+      if (window.scrollY + caja.bottom - hastaVolver <= window.innerHeight)
+        top = Math.min(top, hastaVolver);
+    }
+    window.scrollTo({ top: Math.max(0, top) });
   }, [resaltarFila, columnasFijas]);
   const desdeRuta = (s?: string): number[] => {
     if (!tabla.porSistema || !s) return [];

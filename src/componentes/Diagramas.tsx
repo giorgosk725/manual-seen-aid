@@ -231,21 +231,32 @@ function Escalera({ i, yaEnTexto }: { i: number; yaEnTexto?: (t: string) => bool
     <div>
       <div className="mb-2 flex items-baseline justify-between gap-2">
         {/* 0.92.0 (revisión de tarjetas, ★4): título de tarjeta, no 14/700. */}
-        <Sub className="titulo-tarjeta">{p.nombre}</Sub>
+        <Sub className="titulo-tarjeta">
+          {p.nombre}
+          {/* 1.0.24 (30.ª ronda, adjunto): el texto dice «este posicionamiento propone»: se
+              nombra (en el selector de poblaciones, el nombre corto). */}
+          {p.id === "hospital" && (
+            <span className="block text-[13px] font-normal text-slate-600">
+              Posicionamiento internacional de 2026
+            </span>
+          )}
+        </Sub>
       </div>
       {encabezan.map((t) => (
         <p key={t} className="mb-1.5 text-[13px] leading-snug text-slate-700">
           <SinCortes texto={t} />
         </p>
       ))}
-      <ol className="space-y-1">
+      <ol className="space-y-1 [break-inside:avoid]">
         {/* Solo los objetivos del capítulo: el TAR > 180 de adultos va sin cifra (A07). */}
         {p.franjas.map((f, j) => {
           const t = TONO[f.tono];
           return (
             <li key={j} className="linea flex items-stretch overflow-hidden rounded-lg border">
               <span
-                className="flex w-28 shrink-0 items-center px-2 py-2 text-xs font-bold"
+                // 1.0.24 (30.ª ronda, visual): el color del tramo también en papel (sin «gráficos de
+                // fondo», el rótulo claro quedaba a 2:1 sobre blanco).
+                className="franja-tramo flex w-28 shrink-0 items-center px-2 py-2 text-xs font-bold"
                 style={{ background: t.bg, color: t.fg }}
               >
                 <SinCortes texto={f.franja} />

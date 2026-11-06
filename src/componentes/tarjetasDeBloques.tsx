@@ -2,7 +2,7 @@
    como elementos de DosColumnas, para repartirlas en la misma rejilla que las filas de la tabla. */
 import type { ReactNode } from "react";
 import { PiezaVista } from "./Piezas";
-import { PiezasSinTitulos } from "./piezasContexto";
+import { OcultarRotuloFila, PiezasSinTitulos } from "./piezasContexto";
 import { siglasPorPiezas, textosDePieza } from "../inicio";
 import type { BloqueSistema } from "../porSistema";
 import { SISTEMA_HEX } from "../tokens";
@@ -50,22 +50,22 @@ export function tarjetasDeBloques(
             {/* 0.96.0 (16.ª ronda, visual y R3): el rótulo del bloque en minúscula y negrita, como los
               de las fichas (en MAYÚSCULAS, «· MINIMED 780G Y OMNIPOD 5» perdía la grafía). */}
             <dt
-              className={
-                repiteRotulo(b)
-                  ? "sr-only"
-                  : "text-[13px] font-semibold leading-snug text-slate-600"
-              }
+              className="text-[13px] font-semibold leading-snug text-slate-600"
               style={propia ? { color: h.ink } : undefined}
             >
               {b.rotulo}
             </dt>
             {/* 0.96.0 (16.ª ronda, adjunto): una pieza por fila, separadas por una línea fina. */}
             <dd className="mt-1 space-y-2 text-[15px] leading-snug text-slate-900 [&>*+*]:border-t [&>*+*]:border-[var(--linea-suave)] [&>*+*]:pt-2">
-              {b.piezas.map((p, j) => (
-                <div key={j}>
-                  <PiezaVista pieza={p} sis={c} compacta siglas={sg[desde[i] + j]} />
-                </div>
-              ))}
+              {/* 1.0.24 (30.ª ronda, visual): el rótulo del bloque, visible y con el estilo de todas;
+                  la fila de la tabla que dice lo mismo, sin su propio rótulo. */}
+              <OcultarRotuloFila.Provider value={repiteRotulo(b)}>
+                {b.piezas.map((p, j) => (
+                  <div key={j}>
+                    <PiezaVista pieza={p} sis={c} compacta siglas={sg[desde[i] + j]} />
+                  </div>
+                ))}
+              </OcultarRotuloFila.Provider>
             </dd>
           </PiezasSinTitulos.Provider>
         </div>

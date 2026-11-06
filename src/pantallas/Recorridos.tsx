@@ -44,6 +44,7 @@ const apilarSituacion = (seccion: string, sub?: string, detalle?: string) => {
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
 import { BotonImprimir, CabeceraEditorial, ColofonImpreso } from "../ui";
+import { useMargenesImpresos } from "../margenesImpresos";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
 import { olvidarSistema, recordarSistema } from "../sistemaReciente";
 import { CasillasSistema } from "../componentes/CasillasSistema";
@@ -465,7 +466,7 @@ function CabeceraSituacion({
           «Cambiar», que se confundía con cambiar de sistema y abría la lista debajo del detalle). */}
       <a
         href={href("consultar", "situacion", sistema ? `:${sistema}` : undefined)}
-        className="chip shrink-0 lg:hidden"
+        className="chip no-imprimir shrink-0 lg:hidden"
       >
         ‹ Otra situación
       </a>
@@ -489,7 +490,7 @@ function yaArriba(guia: SituacionGuia, ruta: string, sis: number | undefined): b
 /* «Para seguir»: la hoja para el paciente, los apartados y la tabla entera. 0.92.0 (revisión de
    tarjetas, ★1): con VeaseTambien, la misma forma que en el resto de la app. */
 const ParaSeguir = ({ filas }: { filas: { href: string; t: string }[] }) => (
-  <VeaseTambien filas={filas} />
+  <VeaseTambien filas={filas} className="no-imprimir" />
 );
 
 function ListaSituaciones({
@@ -607,6 +608,8 @@ function ListaSituaciones({
                 <button
                   type="button"
                   aria-pressed={on}
+                  // 1.0.24 (30.ª ronda, R3): origen del foco al volver con Atrás (Shell).
+                  data-origen={`situacion-${s.id}`}
                   onClick={() =>
                     // 0.97.1 (17.ª ronda, R1): de la lista a una situación, una entrada nueva del
                     // historial (Atrás vuelve a la lista; antes, a la pantalla anterior a ella);
@@ -680,6 +683,15 @@ export function SituacionSistema({
     if (antes && !situacion && !fueNavegacionNueva()) window.scrollTo({ top: posicionLista });
   }, [situacion]);
   const sisIdx = sistema ? SIS_IDS.indexOf(sistema) : -1;
+  // 1.0.24 (30.ª ronda, visual): en papel, solo la situación, con cabecera y página en los márgenes.
+  const detalle = useRef<HTMLDivElement>(null);
+  useImprimirConTeclado(detalle);
+  const nombreSituacion = sit?.etiqueta ?? guia?.etiqueta;
+  useMargenesImpresos(
+    nombreSituacion
+      ? `Situación · ${nombreSituacion.split(" (")[0]}${sisIdx >= 0 ? ` · ${CORTO_SISTEMA[sisIdx]}` : ""}`
+      : undefined,
+  );
   // 0.87.1 (undécima ronda, guardia): el sistema de la situación, el último consultado (la
   // Figura 3 ofrece su plan de seguridad).
   useEffect(() => {
@@ -815,7 +827,8 @@ export function SituacionSistema({
         </div>
         <div
           id="detalle-situacion"
-          className={`scroll-mt-4 ${sit || guia ? "order-first lg:order-none" : ""}`}
+          ref={detalle}
+          className={`scroll-mt-4 ${sit || guia ? "imprimible order-first lg:order-none" : ""}`}
         >
           {guia && (
             <div key={guia.id} className="pantalla-in space-y-4">
@@ -862,8 +875,20 @@ export function SituacionSistema({
                       />
                     </div>
                   )}
+                  {/* 1.0.24 (30.ª ronda, R1): con sospecha de cetosis, la Figura 3 a la vista (estaba
+                      al pie, a unos 1700 px); punto 4 del capítulo. */}
+                  {guia.id === "enfermedad-intercurrente" && (
+                    <a
+                      href={href("consultar", "figura-3")}
+                      className="no-imprimir mb-3 flex min-h-11 w-fit items-center gap-1 text-sm font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700"
+                    >
+                      Con sospecha de cetosis: Hiperglucemia y cetonemia (Figura 3)
+                      <ArrowRight size={14} aria-hidden="true" />
+                    </a>
+                  )}
                   <BloquesPorSistema
                     key={guia.id}
+                    porFilas={GUIA_POR_SISTEMA[guia.id].porFilas}
                     bloques={GUIA_POR_SISTEMA[guia.id].bloques}
                     comun={GUIA_POR_SISTEMA[guia.id].comun}
                     comunDe={GUIA_POR_SISTEMA[guia.id].comunDe}
@@ -1108,7 +1133,14 @@ export function SituacionSistema({
                   (() => {
                     const frases = tabla.notas[0].split(/(?<=\.)\s+(?=[A-ZÁÉÍÓÚ])/);
                     const umbral = frases.find((f) => /aproximadamente 1\s?h\b/.test(f));
-                    const resto = frases.filter((f) => f !== umbral).join(" ");
+                    // 1.0.24 (30.ª ronda, adjunto): la vuelta desde insulina intravenosa, solo en
+                    // cirugía (en Rx, PET o diatermia no viene al caso); entera, en la tabla.
+                    const conIV = /^cirugia/.test(sit.id);
+                    const resto = frases
+                      .filter((f) => f !== umbral && (conIV || !/intravenosa/.test(f)))
+                      .join(" ");
+                    // El nombre de la pauta, como enlace en su sitio (antes, repetido detrás).
+                    const NOMBRE = "«Interrupción del sistema y pauta alternativa»";
                     const enlace = (
                       <a
                         href={href("consultar", "interrupcion")}
@@ -1121,7 +1153,18 @@ export function SituacionSistema({
                       <>
                         {umbral && (
                           <p className="max-w-[75ch] border-l-2 border-[var(--linea-fuerte)] pl-3 text-[15px] font-semibold leading-snug text-slate-900">
-                            <Texto>{umbral}</Texto> {enlace}
+                            {umbral.includes(NOMBRE) ? (
+                              <>
+                                <Texto>{umbral.slice(0, umbral.indexOf(NOMBRE))}</Texto>«{enlace}»
+                                <Texto>
+                                  {umbral.slice(umbral.indexOf(NOMBRE) + NOMBRE.length)}
+                                </Texto>
+                              </>
+                            ) : (
+                              <>
+                                <Texto>{umbral}</Texto> {enlace}
+                              </>
+                            )}
                           </p>
                         )}
                         {/* 1.0.7 (revisión R105-06): el resto de la nota, rotulado como lo que es

@@ -363,6 +363,10 @@ export function CalculadoraInicio({
     if (sis !== undefined && d.sistemaPrevio === sis) set({ sistemaPrevio: null });
   }, [sis, d.sistemaPrevio, set]);
   const previa = PREVIA[d.origen];
+  // 1.0.24 (30.ª ronda, R5): «modificado» solo si difiere del punto de partida del control previo
+  // vigente (pulsar la opción ya marcada o volver a ella a mano no lo marca).
+  const reglaDePartida = CONTROLES.find((k) => k.id === d.control)?.regla ?? 1700;
+  const objetivoDePartida = d.control === "riesgo" ? 120 : 100;
   // 1.0.22 (28.ª ronda, R5): «Riesgo de hipoglucemia» pasa el factor a la regla del 1800 sin decirlo;
   // la nota de la Tabla 2, junto a las opciones mientras no se toque a mano.
   const ayudaRegla =
@@ -807,7 +811,9 @@ export function CalculadoraInicio({
                       { v: 1800 as const, t: "Regla del 1800" },
                     ]}
                     valor={d.regla}
-                    onChange={(v) => set({ regla: v, tocado: { ...d.tocado, regla: true } })}
+                    onChange={(v) =>
+                      set({ regla: v, tocado: { ...d.tocado, regla: v !== reglaDePartida } })
+                    }
                   />
                 )}
                 {pideObjetivo && (
@@ -825,7 +831,12 @@ export function CalculadoraInicio({
                       ),
                     }))}
                     valor={d.objetivo}
-                    onChange={(v) => set({ objetivo: v, tocado: { ...d.tocado, objetivo: true } })}
+                    onChange={(v) =>
+                      set({
+                        objetivo: v,
+                        tocado: { ...d.tocado, objetivo: v !== objetivoDePartida },
+                      })
+                    }
                   />
                 )}
               </div>
@@ -926,7 +937,10 @@ export function CalculadoraInicio({
                 </div>
                 <p className="mt-1 text-sm text-slate-700">{REGLAS.reduccion.texto}.</p>
                 <p className="mt-1 text-sm font-semibold text-slate-700">
-                  Punto de partida dentro del intervalo del capítulo; puede ajustarse.
+                  {/* 1.0.24 (30.ª ronda, R5): con el valor puesto a mano, no «punto de partida». */}
+                  {d.tocado.reduccion
+                    ? `Valor puesto a mano; el punto de partida con este control previo es del ${reduccionDePartida(d.control, d.ultralarga)} %.`
+                    : "Punto de partida dentro del intervalo del capítulo; puede ajustarse."}
                   {d.control === "bueno" &&
                     d.ultralarga &&
                     !d.tocado.reduccion &&
@@ -954,7 +968,9 @@ export function CalculadoraInicio({
                         { v: 1800 as const, t: "Regla del 1800" },
                       ]}
                       valor={d.regla}
-                      onChange={(v) => set({ regla: v, tocado: { ...d.tocado, regla: true } })}
+                      onChange={(v) =>
+                        set({ regla: v, tocado: { ...d.tocado, regla: v !== reglaDePartida } })
+                      }
                     />
                   )}
                   {pideObjetivo && (
@@ -973,7 +989,10 @@ export function CalculadoraInicio({
                       }))}
                       valor={d.objetivo}
                       onChange={(v) =>
-                        set({ objetivo: v, tocado: { ...d.tocado, objetivo: true } })
+                        set({
+                          objetivo: v,
+                          tocado: { ...d.tocado, objetivo: v !== objetivoDePartida },
+                        })
                       }
                     />
                   )}

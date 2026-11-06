@@ -824,8 +824,18 @@ export function Shell({
   useEffect(() => {
     // 0.97.1 (17.ª ronda, R3): de qué enlace se salió de cada pantalla, para devolverle el foco al
     // volver con Atrás (antes, el foco caía en el principio de la página).
-    const origenes = new Map<string, { href: string; texto: string }>();
+    const origenes = new Map<string, { sel: string; texto: string }>();
     const onClick = (e: MouseEvent) => {
+      // 1.0.24 (30.ª ronda, R3): también los botones que navegan y lo dicen (`data-origen`: la
+      // lista de Situaciones); antes, con Atrás el foco caía en el documento.
+      const boton = (e.target as Element | null)?.closest?.("[data-origen]");
+      if (boton) {
+        origenes.set(window.location.hash, {
+          sel: `[data-origen="${CSS.escape(boton.getAttribute("data-origen")!)}"]`,
+          texto: (boton.textContent ?? "").trim(),
+        });
+        return;
+      }
       const a = (e.target as Element | null)?.closest?.('a[href^="#/"]');
       if (!a) return;
       marcarNavegacionNueva();
@@ -833,7 +843,7 @@ export function Shell({
       // contenido: al volver desde «Sistemas AID» del lateral, el foco quedaba en el documento).
       if (!a.closest('[role="dialog"]'))
         origenes.set(window.location.hash, {
-          href: a.getAttribute("href")!,
+          sel: `a[href="${CSS.escape(a.getAttribute("href")!)}"]`,
           texto: (a.textContent ?? "").trim(),
         });
     };
@@ -850,10 +860,13 @@ export function Shell({
         if (main && activo && activo !== document.body && activo !== main && main.contains(activo))
           return;
         // Varios enlaces pueden ir al mismo sitio (dos rótulos a la misma fila): el del mismo texto.
-        const sel = `a[href="${CSS.escape(destino.href)}"]`;
+        const sel = destino.sel;
         // Primero en el contenido; si no está, el del lateral o la barra (visibles).
         const todos = [
-          ...(main?.querySelectorAll<HTMLElement>(sel) ?? []),
+          // 1.0.24: solo los visibles (la lista de Situaciones está dos veces: móvil y escritorio).
+          ...[...(main?.querySelectorAll<HTMLElement>(sel) ?? [])].filter(
+            (x) => x.offsetParent !== null,
+          ),
           ...[...document.querySelectorAll<HTMLElement>(sel)].filter(
             (x) => !main?.contains(x) && x.offsetParent !== null,
           ),

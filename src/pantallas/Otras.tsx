@@ -514,12 +514,16 @@ export function Buscar({ inicial }: { inicial?: string }) {
             </p>
           </div>
         )}
-        {ajenas.length > 0 && !noCubierto && (
-          <p role="status" className="tarjeta mt-3 px-3 py-2 text-sm text-slate-800">
-            El capítulo no trata {ajenas.map((a) => `«${a}»`).join(", ")}. Lo que sigue responde al
-            resto de la consulta.
-          </p>
-        )}
+        {/* 1.0.24 (30.ª ronda, R1 y adjunto): sin repetirlo si un «Abrir» ya dice lo que el
+            capítulo no trata («vuelo largo»). */}
+        {ajenas.length > 0 &&
+          !noCubierto &&
+          !atajos.some((a) => /no trata/.test(a.entrada.titulo)) && (
+            <p role="status" className="tarjeta mt-3 px-3 py-2 text-sm text-slate-800">
+              El capítulo no trata {ajenas.map((a) => `«${a}»`).join(", ")}. Lo que sigue responde
+              al resto de la consulta.
+            </p>
+          )}
         {dato && (
           <p role="status" className="casilla mt-3 px-3 py-2 text-sm text-slate-900">
             <span className="font-semibold">
@@ -1055,12 +1059,12 @@ function TemaPreguntas({ tema, abierto }: { tema: string; abierto: boolean }) {
         <span className="flex-1" style={h ? { color: h.ink } : undefined}>
           {tema}
         </span>
-        <span className="insignia tabular-nums">
+        <span className="insignia no-imprimir tabular-nums">
           {FRECUENTES.filter((x) => x.tema === tema).length}
         </span>
         <ChevronDown
           size={15}
-          className="text-slate-400 transition group-open:rotate-180"
+          className="no-imprimir text-slate-400 transition group-open:rotate-180"
           aria-hidden="true"
         />
       </summary>
@@ -1213,16 +1217,19 @@ export function Preguntas({ id }: { id?: string }) {
             </button>
           )}
         </div>
-        <button
-          type="button"
-          onClick={() => setTodas((v) => !v)}
-          aria-expanded={todas}
-          // 0.97.1 (17.ª ronda, visual): una acción de texto (en burdeos relleno parecía la acción
-          // principal de la pantalla).
-          className="tap-44 inline-flex min-h-11 items-center px-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700 sm:min-h-8"
-        >
-          {todas ? "Plegar los temas" : "Ver todas las preguntas"}
-        </button>
+        {/* 1.0.24 (30.ª ronda, senior): sin temas a la vista (filtro), sin «Plegar». */}
+        {!filtradas && (
+          <button
+            type="button"
+            onClick={() => setTodas((v) => !v)}
+            aria-expanded={todas}
+            // 0.97.1 (17.ª ronda, visual): una acción de texto (en burdeos relleno parecía la acción
+            // principal de la pantalla).
+            className="tap-44 inline-flex min-h-11 items-center px-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700 sm:min-h-8"
+          >
+            {todas ? "Plegar los temas" : "Ver todas las preguntas"}
+          </button>
+        )}
       </div>
       {filtradas && (
         <ul className="tarjeta filas" aria-label="Preguntas que coinciden">
@@ -1247,8 +1254,12 @@ export function Preguntas({ id }: { id?: string }) {
                 onClick={() => alAbrirDesdeLista(x.id)}
                 className="fila font-normal focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
-                <span className="flex-1">{x.pregunta}</span>
-                <span className="shrink-0 text-xs text-slate-500">{x.tema}</span>
+                {/* 1.0.24 (30.ª ronda, visual): en el móvil, el tema debajo (la pregunta quedaba
+                    en 165 px). */}
+                <span className="flex min-w-0 flex-1 flex-col sm:flex-row sm:items-center sm:gap-3">
+                  <span className="sm:flex-1">{x.pregunta}</span>
+                  <span className="text-xs font-normal text-slate-500 sm:shrink-0">{x.tema}</span>
+                </span>
               </a>
             </li>
           ))}
@@ -1274,7 +1285,7 @@ export function Preguntas({ id }: { id?: string }) {
                     Preguntas por sistema
                   </h2>
                 )}
-                <div className="grid gap-2 lg:block lg:columns-2 lg:gap-3 lg:[&>*]:mb-2 [&>*]:break-inside-avoid">
+                <div className="temas-preguntas grid gap-2 lg:block lg:columns-2 lg:gap-3 lg:[&>*]:mb-2 [&>*]:break-inside-avoid">
                   {grupo.map((tema) => (
                     <TemaPreguntas key={tema} tema={tema} abierto={todas} />
                   ))}
