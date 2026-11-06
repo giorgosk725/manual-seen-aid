@@ -25,16 +25,36 @@ export function Autocompletar({
   items,
   onElegir,
   onIr,
+  id,
+  campo,
 }: {
   items: Sugerencia[];
   onElegir: (texto: string) => void;
   onIr?: () => void;
+  /* 1.0.26 (traído del asistente): la lista que controla el campo (cuadro combinado). */
+  id?: string;
+  /* Con el id del campo, ↓ ↑ recorren las sugerencias y ↑ desde la primera (o Esc) vuelve a él. */
+  campo?: string;
 }) {
   if (!items.length) return null;
   const fila =
     "flex min-h-11 w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-slate-800 transition hover:bg-slate-50 focus:outline-none focus-visible:bg-slate-100";
   return (
-    <ul className="mt-2 divide-y tarjeta" aria-label="Sugerencias">
+    <ul
+      id={id}
+      className="mt-2 divide-y tarjeta"
+      aria-label="Sugerencias"
+      onKeyDown={(e) => {
+        if (!campo || !["ArrowDown", "ArrowUp", "Escape"].includes(e.key)) return;
+        const els = [...e.currentTarget.querySelectorAll<HTMLElement>("a[href], button")];
+        const i = els.indexOf(document.activeElement as HTMLElement);
+        if (i < 0) return;
+        e.preventDefault();
+        if (e.key === "Escape" || (e.key === "ArrowUp" && i === 0))
+          document.getElementById(campo)?.focus();
+        else els[e.key === "ArrowDown" ? Math.min(els.length - 1, i + 1) : i - 1]?.focus();
+      }}
+    >
       {items.map((s) => {
         const I = ICONO[s.tipo];
         const dentro = (

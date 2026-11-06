@@ -1,3 +1,4 @@
+import { useEffect, type RefObject } from "react";
 /* Ayudas de disposición del sistema visual (docs/DISENO_VISUAL.md §11): reparto en dos columnas
    equilibradas y pestañas a la vista. Sin componentes (así la recarga en caliente no se rompe). */
 
@@ -60,3 +61,28 @@ export const lineasDe = (texto: string, porLinea = 45) =>
    quedaba bajo el desvanecido). */
 export const pestanaALaVista = (e: { currentTarget: Element }) =>
   e.currentTarget.scrollIntoView?.({ inline: "nearest", block: "nearest" });
+
+/* 1.0.26 (traído del asistente): una tira de pestañas que no cabe dice que hay más con un
+   desvanecido a la derecha (`data-mas`, como las de Sistemas) y deja la activa a la vista, solo a
+   lo ancho de la tira. */
+export function useDesvanecidoPestanas(ref: RefObject<HTMLElement | null>, clave: unknown) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const medir = () =>
+      el.setAttribute("data-mas", el.scrollLeft + el.clientWidth < el.scrollWidth - 2 ? "1" : "0");
+    const activa = el.querySelector<HTMLElement>("[aria-current]");
+    if (activa) {
+      const izq = activa.offsetLeft - el.offsetLeft;
+      if (izq < el.scrollLeft || izq + activa.offsetWidth > el.scrollLeft + el.clientWidth)
+        el.scrollLeft = izq - (el.clientWidth - activa.offsetWidth) / 2;
+    }
+    medir();
+    el.addEventListener("scroll", medir, { passive: true });
+    window.addEventListener("resize", medir);
+    return () => {
+      el.removeEventListener("scroll", medir);
+      window.removeEventListener("resize", medir);
+    };
+  }, [ref, clave]);
+}

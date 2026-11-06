@@ -204,7 +204,7 @@ test.describe("Preguntas al capítulo (0.8.0)", () => {
     ).toHaveAttribute("href", "#/consultar/figura-3");
     const respuesta = page.getByRole("region", { name: "Pasajes relacionados" });
     await expect(respuesta).not.toContainText("Cetosis significativa / probable fallo de infusión");
-    await page.getByRole("textbox", { name: "Texto a buscar" }).fill("precio del omnipod");
+    await page.getByRole("combobox", { name: "Texto a buscar" }).fill("precio del omnipod");
     await expect(page.getByRole("region", { name: "Pasajes relacionados" })).toHaveCount(0);
   });
 

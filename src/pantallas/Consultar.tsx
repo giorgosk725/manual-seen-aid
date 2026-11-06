@@ -16,7 +16,7 @@ import { sistemaReciente } from "../sistemaReciente";
 import { CORTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { BotonImprimir, CabeceraEditorial, PaginaBadge, Revelar } from "../ui";
 import { useMargenesImpresos } from "../margenesImpresos";
-import { pestanaALaVista } from "../disposicion";
+import { pestanaALaVista, useDesvanecidoPestanas } from "../disposicion";
 import { CATEGORIA_HEX } from "../tokens";
 import { TablaVista } from "../componentes/TablaVista";
 import { Figura3Recorrido } from "../componentes/Figura3Vista";
@@ -101,13 +101,16 @@ function TablaPantalla({
   // 1.0.20 (27.ª ronda, senior): cabecera y colofón en los márgenes de la página (antes, el colofón
   // era un párrafo al pie y la Tabla 3 y la 4 pasaban a una segunda hoja por unos 20 px).
   useMargenesImpresos(`Tabla ${tabla.numero} · ${TEMA_TABLA[tid]}`);
+  // 1.0.26: a 360 px, «Tabla 6» quedaba cortada sin pista.
+  const tira = useRef<HTMLElement>(null);
+  useDesvanecidoPestanas(tira, tid);
   return (
     <div>
       {/* 0.71.0: «Tabla N» una vez (pestaña y cabecera de la tabla); sin migas: las pestañas
           llevan a las demás. */}
       <CabeceraEditorial titulo="Tablas del capítulo" hex={hex} level={1} />
       {/* 0.76: pestañas (como en Sistemas), con el tema de cada tabla en el ordenador. */}
-      <nav aria-label="Otra tabla" className="pestanas no-imprimir mb-4 sm:gap-1">
+      <nav ref={tira} aria-label="Otra tabla" className="pestanas no-imprimir mb-4 sm:gap-1">
         {LISTA_TABLAS.map((t) => (
           <a
             key={t.id}

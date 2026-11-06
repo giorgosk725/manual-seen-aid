@@ -918,6 +918,36 @@ export function Shell({
     };
   }, []);
 
+  // 1.0.26 (traído del asistente): en una tira de pestañas (Sistemas, Tablas, Cálculo/Fases/Hoja),
+  // ← → Inicio y Fin mueven el foco entre ellas; Intro abre la elegida.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      const t = e.target as HTMLElement | null;
+      const tira = t?.closest?.(".pestanas");
+      if (!tira || !t?.matches("a[href], button")) return;
+      const items = [
+        ...tira.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"),
+      ].filter((x) => x.offsetParent !== null);
+      const i = items.indexOf(t);
+      if (i < 0) return;
+      e.preventDefault();
+      const n = items.length;
+      const j =
+        e.key === "Home"
+          ? 0
+          : e.key === "End"
+            ? n - 1
+            : e.key === "ArrowRight"
+              ? (i + 1) % n
+              : (i - 1 + n) % n;
+      items[j].focus();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
+
   // Posición de scroll por pantalla, para restaurarla al volver con Atrás. La restaura la app,
   // no el navegador: su restauración propia llega a destiempo (antes o después de pintar la
   // pantalla) y pisaba la posición guardada.
@@ -963,6 +993,22 @@ export function Shell({
   // Iniciar, Buscar, un caso…), un botón para volver justo donde se estaba (historial).
   const previa = useRef<{ seccion: string; titulo: string }>({ seccion: "", titulo: "" });
   const [volver, setVolver] = useState<string | null>(null);
+  // 1.0.26: el «Volver a la consulta» flotante, apartado mientras se baja.
+  const [flotanteOculto, setFlotanteOculto] = useState(false);
+  const conFlotante = !!volver && ruta.seccion === "sistemas";
+  useEffect(() => {
+    setFlotanteOculto(false);
+    if (!conFlotante) return;
+    let ultima = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y < 80 || y < ultima - 8) setFlotanteOculto(false);
+      else if (y > ultima + 8) setFlotanteOculto(true);
+      if (Math.abs(y - ultima) > 8) ultima = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [conFlotante]);
   // 0.96.1 (revisión de Codex, V95-06): tras una navegación nueva a otra pantalla, el foco va a su
   // título (antes se quedaba en el enlace de la barra y Tab seguía por la navegación).
   const enfocarTitulo = useRef(false);
@@ -1191,7 +1237,10 @@ export function Shell({
             sin pegar, quedaba fuera de la vista al ir a la fila. Fuera de la pantalla animada (su
             transformación desplazaba el «fixed»). */}
         {volver && ruta.seccion === "sistemas" && (
-          <div className="volver-pegado no-imprimir fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] left-3 z-30 rounded-md shadow-lg lg:bottom-6 lg:left-auto lg:right-6">
+          <div
+            // 1.0.26 (traído del asistente): en el móvil se aparta al bajar y vuelve al subir.
+            className={`volver-pegado no-imprimir fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] left-3 z-30 rounded-md shadow-lg transition-transform duration-200 lg:bottom-6 lg:left-auto lg:right-6 lg:translate-y-0 ${flotanteOculto ? "translate-y-[calc(100%+6rem)]" : ""}`}
+          >
             <BotonVolverConsulta volver={volver} flotante />
           </div>
         )}

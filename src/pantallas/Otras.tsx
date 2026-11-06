@@ -353,6 +353,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
             (x) => !/ejercicio/i.test(x.texto) || /ejerc|deport|activ|entren|correr|nadar/i.test(q),
           )
       : [];
+  const hayListaSugerencias = !frecuente && sugerencias.length > 0;
   const sistemaQ = motor ? motor.sistemaNombrado(qEf) : -1;
   // 0.87.1 (undécima ronda, guardia): el sistema que nombra la búsqueda pasa a ser el último
   // consultado (la Figura 3 ofrece entonces «Plan de seguridad · <sistema>»).
@@ -434,8 +435,22 @@ export function Buscar({ inicial }: { inicial?: string }) {
           // 0.84.1 (octava ronda, guardia): en el móvil, Intro cierra el teclado (la respuesta
           // quedaba debajo) y la tecla dice «Buscar».
           enterKeyHint="search"
+          // 1.0.26 (traído del asistente): cuadro combinado con su lista de sugerencias; ↓ entra en
+          // ellas (Autocompletar las recorre y devuelve el foco aquí).
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded={hayListaSugerencias}
+          aria-controls={hayListaSugerencias ? "sugerencias-buscar" : undefined}
+          aria-describedby="buscar-ayuda"
           onKeyDown={(e) => {
             if (e.key === "Enter") e.currentTarget.blur();
+            if (e.key === "ArrowDown" && hayListaSugerencias) {
+              e.preventDefault();
+              document
+                .getElementById("sugerencias-buscar")
+                ?.querySelector<HTMLElement>("a[href], button")
+                ?.focus();
+            }
           }}
           value={q}
           onChange={(e) => setQ(e.target.value)}
@@ -473,7 +488,17 @@ export function Buscar({ inicial }: { inicial?: string }) {
         }
       />
       {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
-      {!frecuente && <Autocompletar items={sugerencias} onElegir={elegirSugerencia} />}
+      <p id="buscar-ayuda" className="sr-only">
+        Con sugerencias, flecha abajo las recorre; Esc vuelve al campo.
+      </p>
+      {!frecuente && (
+        <Autocompletar
+          items={sugerencias}
+          onElegir={elegirSugerencia}
+          id="sugerencias-buscar"
+          campo="buscar-q"
+        />
+      )}
       {/* 0.82.1 (sexta ronda, guardia): «ciq+» leído como «control-iq+» no es un seguimiento. */}
       {qEf !== q && qEf !== motor?.reescribir(q) && (
         <p className="mt-2 text-xs text-slate-600" role="status">
@@ -1046,7 +1071,13 @@ const alAbrirDesdeLista = (id: string) => {
    con Atrás: el campo quedaba fuera de la vista y la Shell no devolvía el foco al resultado). */
 function FocoInicialBuscar() {
   useEffect(() => {
-    if (fueNavegacionNueva()) document.getElementById("buscar-q")?.focus({ preventScroll: true });
+    if (!fueNavegacionNueva()) return;
+    const el = document.getElementById("buscar-q") as HTMLInputElement | null;
+    if (!el) return;
+    // 1.0.26: en pantalla táctil, con una consulta ya puesta (desde Preguntas o la paleta), sin
+    // abrir el teclado (taparía los resultados); vacío, sí: quien abre Buscar va a escribir.
+    if (el.value.trim() && window.matchMedia?.("(pointer: coarse)").matches) return;
+    el.focus({ preventScroll: true });
   }, []);
   return null;
 }

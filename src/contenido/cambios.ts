@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-06",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — navegación y lectura`,
+    titulo: `Complemento interactivo ${VERSION_APP} — teclado, buscador y pestañas`,
+    detalle: [
+      "Pestañas de Sistemas, Tablas y Cálculo/Fases/Hoja: con el teclado, las flechas, Inicio y Fin pasan de una a otra. Las pestañas de Tablas que no caben avisan con un desvanecido.",
+      "Buscar: el campo se anuncia como cuadro combinado con su lista de sugerencias; flecha abajo entra en ellas y Esc vuelve al campo. En pantalla táctil, si se llega con una consulta ya puesta, no se abre el teclado.",
+      "En el móvil, el «Volver a la consulta» flotante de Sistemas se aparta al bajar y vuelve al subir.",
+    ],
+  },
+  {
+    fecha: "2026-11-06",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.25 — navegación y lectura",
     detalle: [
       "Una sola regla para Atrás: cambiar de vista (Cálculo, Fases u Hoja; una fase o un paso de Iniciación; un paso de la descarga; las pestañas de Sistemas y Tablas) se puede deshacer con Atrás; elegir una opción dentro de la vista (sistema, rama, fila) no. En el móvil, «Otra situación» vuelve a la lista donde se dejó. Tras Atrás, el foco ya no se queda en una pestaña de la pantalla anterior y, si el enlace de origen está plegado, va al título.",
       "En pantallas de 1280 px o más, el texto de tarjetas, tablas y respuestas a 15 px y las líneas secundarias a 14 px. En la ficha, «Cálculo inicial», como en la portada.",

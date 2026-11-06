@@ -35,7 +35,7 @@ test.describe("Buscador: primero el recurso pedido", () => {
 test.describe("Buscar con más mano (0.28.0)", () => {
   test("sugerencias mientras se escribe y seguimiento «y en Omnipod 5»", async ({ page }) => {
     await page.goto("/#/buscar");
-    const caja = page.getByRole("textbox", { name: "Texto a buscar" });
+    const caja = page.getByRole("combobox", { name: "Texto a buscar" });
     await caja.fill("hipogl");
     const sugerencias = page.getByRole("list", { name: "Sugerencias" });
     await expect(sugerencias.getByRole("button").first()).toBeVisible();
