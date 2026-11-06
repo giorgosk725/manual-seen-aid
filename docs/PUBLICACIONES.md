@@ -93,3 +93,4 @@ Nota (22-10-2026): la 0.96.0 se desplegó bien, pero la comprobación final de `
 | 2026-11-05 06:30 | main | 1.0.19 | 9a9f194493a3 | index-DDeg5huG.js | 1.0.18 (09f76634dd95) |
 | 2026-11-05 18:25 | main | 1.0.20 | d1d3bbfa23aa | index-Hy8S9yMZ.js | 1.0.19 (9a9f194493a3) |
 | 2026-11-05 21:45 | main | 1.0.21 | 078da7933f56 | index-DlQO-Uzg.js | 1.0.20 (d1d3bbfa23aa) |
+| 2026-11-06 07:02 | main | 1.0.22 | ab589567efb2 | index-BJgLaknv.js | 1.0.21 (078da7933f56) |
