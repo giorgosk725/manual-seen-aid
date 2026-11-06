@@ -16,9 +16,12 @@ test.describe("Ronda 30 · situaciones", () => {
       tarjetas.first().getByRole("link", { name: /Criterios para no continuar/ }),
     ).toHaveAttribute("href", "#/capitulo/10-situaciones/b36");
     // Por filas: la general a lo ancho; debajo, objetivo y pod en la misma fila.
-    const [b, c] = [await tarjetas.nth(1).boundingBox(), await tarjetas.nth(2).boundingBox()];
-    expect(Math.abs(b!.y - c!.y)).toBeLessThan(2);
-    expect(c!.x).toBeGreaterThan(b!.x + 100);
+    await expect
+      .poll(async () => {
+        const [b, c] = [await tarjetas.nth(1).boundingBox(), await tarjetas.nth(2).boundingBox()];
+        return !!b && !!c && Math.abs(b.y - c.y) < 2 && c.x > b.x + 100;
+      })
+      .toBe(true);
     // Un solo estilo de rótulo: el de la tarjeta del objetivo, visible.
     await expect(tarjetas.nth(1).locator("dt")).toBeVisible();
   });
@@ -205,5 +208,41 @@ test.describe("Ronda 30 · verificación de la 1.0.24", () => {
       (el.firstElementChild as HTMLElement).getBoundingClientRect().width,
     ]);
     expect(Math.abs(anchos[0] - anchos[1])).toBeLessThan(2);
+  });
+});
+
+test.describe("Ronda 30 · segunda verificación de la 1.0.24", () => {
+  test("móvil: de la descarga a la Tabla 3, «Volver» a la vista y la fila entera", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    for (const paso of [2, 4, 6]) {
+      await page.goto(`/#/consultar/descarga/${paso}`);
+      const enlace = page.getByRole("link", { name: /Ajuste de los parámetros por sistema/ });
+      await enlace.scrollIntoViewIfNeeded();
+      await enlace.click();
+      await expect(page).toHaveURL(/ajuste:\d$/);
+      const volver = page.locator(".volver-pegado");
+      await expect(volver).toBeInViewport();
+      const fila = page.locator(".fila-resaltada:visible").first();
+      await expect(fila).toBeVisible();
+      await expect
+        .poll(async () => {
+          const f = await fila.boundingBox();
+          return !!f && f.y >= 57 && f.y + f.height <= 844 - 60;
+        })
+        .toBe(true);
+    }
+  });
+
+  test("Preguntas en papel con los temas plegados: salen las preguntas", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/#/preguntas");
+    const tema = page.locator(".temas-preguntas details").first();
+    await expect(tema).not.toHaveAttribute("open", "");
+    await page.evaluate(() => window.dispatchEvent(new Event("beforeprint")));
+    await expect(tema).toHaveAttribute("open", "");
+    await page.evaluate(() => window.dispatchEvent(new Event("afterprint")));
+    await expect(tema).not.toHaveAttribute("open", "");
   });
 });

@@ -373,10 +373,17 @@
       columns: 2;
       column-gap: 1.2rem;
     }
-    /* 1.0.24 (verificación visual): cada tema entero (el título quedaba solo al pie). */
+    /* 1.0.24 (verificaciones): un tema puede partirse, pero su título va con sus preguntas y
+       cada pregunta entera (entero, dejaba cuartos de hoja en blanco). */
     .temas-preguntas > * {
-      break-inside: avoid !important;
+      break-inside: auto !important;
       margin-bottom: 0.5rem;
+    }
+    .temas-preguntas summary {
+      break-after: avoid;
+    }
+    .temas-preguntas li {
+      break-inside: avoid;
     }
     #preguntas-por-sistema {
       break-after: avoid;
@@ -1138,6 +1145,10 @@
   .franja-tramo {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+  /* 1.0.24 (segunda verificación): una pieza que no se imprime (un enlace), sin su raya. */
+  dd > div:has(> .no-imprimir:only-child) {
+    display: none;
   }
   /* Las tablas largas repiten su cabecera en cada pagina. */
   html.imprimiendo .imprimible thead {

@@ -30,6 +30,7 @@ import {
   ponerConsulta,
 } from "../consultaBuscar";
 import { useMargenesImpresos } from "../margenesImpresos";
+import { abrirPlegables } from "../imprimir";
 import { Badge, CabeceraEditorial, Revelar, Segmented, ToneCard } from "../ui";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import {
@@ -1053,6 +1054,24 @@ function FocoInicialBuscar() {
 /* 1.0.24 (verificación visual): en papel, cabecera y página en los márgenes, como Tablas. */
 function MargenesPreguntas() {
   useMargenesImpresos("Preguntas frecuentes");
+  // 1.0.24 (segunda verificación): en papel, los temas plegados también (salía solo el índice).
+  useEffect(() => {
+    let restaurar = () => {};
+    const antes = () => {
+      restaurar = abrirPlegables(document.querySelector("main"));
+    };
+    const despues = () => {
+      restaurar();
+      restaurar = () => {};
+    };
+    window.addEventListener("beforeprint", antes);
+    window.addEventListener("afterprint", despues);
+    return () => {
+      window.removeEventListener("beforeprint", antes);
+      window.removeEventListener("afterprint", despues);
+      despues();
+    };
+  }, []);
   return null;
 }
 

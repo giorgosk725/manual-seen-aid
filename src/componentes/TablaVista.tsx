@@ -532,9 +532,14 @@ export function TablaVista({
     filaYaColocada.current = true;
     // 1.0.9 (22.ª ronda, adjunto y R3): también por debajo de «Volver a la consulta», que va
     // pegado arriba (tapaba la fila de destino y su rótulo).
+    // 1.0.24 (segunda verificación): lo que ocupará arriba cada barra YA PEGADA (su `top` más su
+    // alto); una que no se pega (o flota abajo, como «Volver» en Sistemas) no cuenta. Antes se
+    // medía donde estaba al llegar y en el móvil la fila quedaba 160 px más abajo, cortada.
     const bajoDe = (sel: string) => {
       const x = document.querySelector<HTMLElement>(sel);
-      return x && x.offsetParent !== null ? x.getBoundingClientRect().bottom : 0;
+      if (!x || x.offsetParent === null) return 0;
+      const st = getComputedStyle(x);
+      return st.position === "sticky" ? (parseFloat(st.top) || 0) + x.offsetHeight : 0;
     };
     // 1.0.23 (verificación visual): también la cabecera de la app (móvil) y la cabecera pegada de
     // la propia tabla (thead), que tapaban la fila en Tablas.
@@ -550,14 +555,7 @@ export function TablaVista({
     // «Volver a la consulta» sin pegar (Sistemas), se sube como mucho hasta él mientras la fila
     // siga cabiendo en la pantalla (desde la descarga quedaba cortado o fuera).
     if (caja.top >= barra + cabeceraTabla && caja.bottom <= window.innerHeight) return;
-    let top = window.scrollY + caja.top - barra - cabeceraTabla - 12;
-    const volver = document.querySelector<HTMLElement>(".volver-pegado");
-    if (volver && getComputedStyle(volver).position !== "sticky") {
-      const cab = bajoDe("header.cabecera");
-      const hastaVolver = window.scrollY + volver.getBoundingClientRect().top - cab - 8;
-      if (window.scrollY + caja.bottom - hastaVolver <= window.innerHeight)
-        top = Math.min(top, hastaVolver);
-    }
+    const top = window.scrollY + caja.top - barra - cabeceraTabla - 12;
     window.scrollTo({ top: Math.max(0, top) });
   }, [resaltarFila, columnasFijas]);
   const desdeRuta = (s?: string): number[] => {
