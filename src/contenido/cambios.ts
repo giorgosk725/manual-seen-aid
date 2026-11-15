@@ -13,9 +13,23 @@ export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-11-15",
+    ambito: "app",
+    titulo: `Complemento interactivo ${VERSION_APP} — diseño y navegación`,
+    detalle: [
+      "Sistemas › Los cuatro › Resumen: desde 1280 px, cada dato a la misma altura en las tarjetas vecinas, y el pie de cada tarjeta empieza por «Ficha:», porque lleva a la ficha de ese sistema y no a las pestañas de arriba.",
+      "Selector de sistemas: el mismo modelo en Sistemas y Tablas; con los cuatro a la vista, las cuatro casillas marcadas; «Ver los cuatro», «Ver la ficha» y «Comparar» como enlaces aparte. Al marcar un segundo sistema, el foco se queda en la casilla.",
+      "Rótulo y dato con la misma jerarquía en la ficha, el Resumen y la elección del sistema; en Modos, la función del sistema en su color, distinta del título de la situación.",
+      "Papel: los tramos de cetonas, juntos en una cara; el plan de seguridad, en tres caras en vez de cuatro.",
+      "Pantallas táctiles: casillas, chips, accesos de las tarjetas, «Cambiar» e «Ir a» con 44 px.",
+      "Atrás entre pestañas o pasos de una misma pantalla vuelve a donde se estaba leyendo; tras abrir algo desde «Más» o el buscador ya no hay una pulsación de Atrás que no hace nada; el foco ya no se pierde al entrar en una tabla, al volver entre pasos, al buscar ni con Adelante.",
+      "Buscar: «tabla 3», «figura 2» o «apartado 9» llevan directamente a su sitio, y «pacientes» con un sistema ofrece su plan de seguridad.",
+    ],
+  },
+  {
     fecha: "2026-11-06",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — teclado, buscador y pestañas`,
+    titulo: "Complemento interactivo 1.0.26 — teclado, buscador y pestañas",
     detalle: [
       "Pestañas de Sistemas, Tablas y Cálculo/Fases/Hoja: con el teclado, las flechas, Inicio y Fin pasan de una a otra. Las pestañas de Tablas que no caben avisan con un desvanecido.",
       "Buscar: el campo se anuncia como cuadro combinado con su lista de sugerencias; flecha abajo entra en ellas y Esc vuelve al campo. En pantalla táctil, si se llega con una consulta ya puesta, no se abre el teclado.",
