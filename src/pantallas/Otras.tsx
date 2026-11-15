@@ -51,6 +51,7 @@ import { datoDeModos } from "../fichaOperativa";
 import { Autocompletar } from "../componentes/Autocompletar";
 import { SugerenciasBusqueda } from "../componentes/SugerenciasBusqueda";
 import { SinResultados } from "../componentes/SinResultados";
+import { sinNombreDelSistema } from "../preguntaSinSistema";
 
 const TIPO: Record<string, string> = {
   diagrama: "Diagrama",
@@ -1161,7 +1162,10 @@ function TemaPreguntas({ tema, abierto }: { tema: string; abierto: boolean }) {
               onClick={() => alAbrirDesdeLista(x.id)}
               className="fila font-normal focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
             >
-              <span className="flex-1">{x.pregunta}</span>
+              {/* 1.0.27 (revisión visual, P6): bajo el tema de un sistema, sin repetir su nombre. */}
+              <span className="flex-1">
+                {k >= 0 ? sinNombreDelSistema(x.pregunta) : x.pregunta}
+              </span>
             </a>
           </li>
         ))}

@@ -23,7 +23,7 @@ export const CAMBIOS: Cambio[] = [
       "Papel: los tramos de cetonas, juntos en una cara; el plan de seguridad, en tres caras en vez de cuatro.",
       "Pantallas táctiles: casillas, chips, accesos de las tarjetas, «Cambiar» e «Ir a» con 44 px.",
       "Atrás entre pestañas o pasos de una misma pantalla vuelve a donde se estaba leyendo; tras abrir algo desde «Más» o el buscador ya no hay una pulsación de Atrás que no hace nada; el foco ya no se pierde al entrar en una tabla, al volver entre pasos, al buscar ni con Adelante.",
-      "Buscar: «tabla 3», «figura 2» o «apartado 9» llevan directamente a su sitio, y «pacientes» con un sistema ofrece su plan de seguridad.",
+      "Buscar: «tabla 3», «figura 2» o «apartado 9» llevan directamente a su sitio, y «pacientes» con un sistema ofrece su plan de seguridad. En Preguntas frecuentes, bajo el tema de un sistema, las preguntas ya no repiten su nombre.",
     ],
   },
   {
