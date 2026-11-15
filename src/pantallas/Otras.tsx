@@ -854,7 +854,7 @@ export function Sobre() {
                 href={CAPITULO.autorX.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500"
+                className="inline-flex min-h-11 items-center underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 sm:min-h-0"
               >
                 {CAPITULO.autorX.usuario}
               </a>
