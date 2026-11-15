@@ -848,6 +848,17 @@ export function Sobre() {
             <dd>
               {CAPITULO.autor} · {CAPITULO.filiacion}
             </dd>
+            <dt className="font-semibold text-slate-700">En X</dt>
+            <dd>
+              <a
+                href={CAPITULO.autorX.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500"
+              >
+                {CAPITULO.autorX.usuario}
+              </a>
+            </dd>
           </dl>
         </details>
         <p className="mt-3 text-xs text-slate-500">

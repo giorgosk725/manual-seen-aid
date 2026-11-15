@@ -20,6 +20,8 @@ export const CAPITULO = {
     "Tratamiento insulínico del paciente con diabetes mellitus tipo 1: automatización de la insulinoterapia",
   tituloCorto: "Automatización de la insulinoterapia",
   autor: "Georgios Kyriakos",
+  /* Cuenta en X (fila «En X» de «Sobre», como en el asistente). */
+  autorX: { usuario: "@giorg_kyriakos", url: "https://x.com/giorg_kyriakos" },
   filiacion:
     "Servicio de Endocrinología y Nutrición. Hospital General Universitario Santa Lucía. Cartagena. Murcia.",
   obra: "Manual de Endocrinología y Nutrición de la SEEN",

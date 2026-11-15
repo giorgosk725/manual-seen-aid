@@ -15,7 +15,15 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-15",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — diseño y navegación`,
+    titulo: `Complemento interactivo ${VERSION_APP} — cuenta de X en «Sobre»`,
+    detalle: [
+      "«Sobre» › Fuentes y revisión: fila «En X» con la cuenta @giorg_kyriakos, como en el asistente.",
+    ],
+  },
+  {
+    fecha: "2026-11-15",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.27 — diseño y navegación",
     detalle: [
       "Sistemas › Los cuatro › Resumen: desde 1280 px, cada dato a la misma altura en las tarjetas vecinas, y el pie de cada tarjeta empieza por «Ficha:», porque lleva a la ficha de ese sistema y no a las pestañas de arriba.",
       "Selector de sistemas: el mismo modelo en Sistemas y Tablas; con los cuatro a la vista, las cuatro casillas marcadas; «Ver los cuatro», «Ver la ficha» y «Comparar» como enlaces aparte. Al marcar un segundo sistema, el foco se queda en la casilla.",
