@@ -162,7 +162,12 @@ export function CasillasSistema({
                     }
                   : { "aria-pressed": on })}
                 data-columna={c}
-                onClick={() => onToggle(c)}
+                onClick={() => {
+                  // 1.0.27 (revisión de navegación, P3a): al marcar un 2.º sistema cambia la ruta
+                  // y la tira se vuelve a montar; el foco volvía a <body>. Se queda en la casilla.
+                  focoPendiente = { etiqueta, c };
+                  onToggle(c);
+                }}
                 disabled={fuera}
                 title={fuera ? "Es el sistema de destino" : undefined}
                 // Con el nombre breve en el móvil, el nombre accesible es el de siempre (sin el guion
