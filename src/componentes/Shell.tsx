@@ -33,6 +33,7 @@ import {
   abridorDelDialogo,
   consumirNavegacionNueva,
   consumirVistaApilada,
+  fueNavegacionNueva,
   href,
   irARuta,
   marcarNavegacionNueva,
@@ -945,6 +946,10 @@ export function Shell({
       if (!destino || destino.tira) {
         let espera = 0;
         const colocar = () => {
+          // Solo con Atrás/Adelante: Chrome también lanza popstate al seguir un enlace con hash, y
+          // en una navegación nueva el foco lo coloca su propio efecto (título o fila de destino);
+          // si este llegaba antes al título, la fila marcada de una tabla no recibía el foco.
+          if (fueNavegacionNueva()) return;
           const main = mainRef.current;
           const activo = document.activeElement;
           const perdido =
