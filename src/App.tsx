@@ -161,7 +161,8 @@ export default function App() {
     case "capitulo": {
       if (!ruta.sub) {
         pantalla = <IndiceCapitulo />;
-        titulo = "Leer y comprender";
+        // 1.0.27 (auditoría de navegación, P7): el título de la pestaña, el mismo que el h1.
+        titulo = "Índice del capítulo";
       } else if (ruta.sub === "resumen") {
         pantalla = <ResumenPacientes />;
         titulo = "Resumen del capítulo";
@@ -247,13 +248,13 @@ export default function App() {
       titulo =
         ruta.sub === "figuras"
           ? "Figuras del capítulo"
-          : (DIAGRAMAS.find((d) => d.id === ruta.sub)?.titulo ?? "Diagramas");
+          : (DIAGRAMAS.find((d) => d.id === ruta.sub)?.titulo ?? "Figuras y diagramas");
       break;
     case "sistemas":
       pantalla = <Sistemas sel={ruta.sub} seccion={ruta.detalle} />;
       titulo =
         ruta.sub === "elegir"
-          ? "Explorar criterios de elección"
+          ? "Elección del sistema"
           : (nombreDeSistema(ruta.sub) ?? "Sistemas AID");
       break;
     case "buscar":

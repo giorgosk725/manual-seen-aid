@@ -16,6 +16,7 @@ import {
   LISTA_TABLAS,
   TABLAS,
   idDeBloque,
+  rutaDeFigura,
 } from "./contenido";
 import { href } from "./rutas";
 import { plano } from "./marcado";
@@ -458,7 +459,50 @@ const SECCION_PEDIDA: [RegExp, string, string][] = [
   [/situaci/, "situaciones", "Situaciones"],
   [/ficha t[eé]cnica|ampliaci/, "ampliacion", "Ampliación técnica"],
 ].filter(([, id]) => !retirado(id as string)) as [RegExp, string, string][];
+/* 1.0.27 (auditoría de navegación de la 1.0.26, P4): «tabla 3», «figura 2», «apartado 9» (solos)
+   son una referencia al capítulo: llevan directamente a su sitio (antes, «tabla 3» daba primero la
+   descarga y la Tabla 1). La Tabla N, a Tablas; la Figura 3, a su herramienta; el resto, al bloque
+   del capítulo. */
+export function referenciaDirecta(consulta: string): Resultado | null {
+  const m = normalizar(consulta)
+    .trim()
+    .match(/^(?:la |el )?(tabla|figura|fig\.?|apartado|seccion)\s*(\d{1,2})$/);
+  if (!m) return null;
+  const n = Number(m[2]);
+  const recurso = (id: string, titulo: string, ruta: string, pagina: number): Resultado => ({
+    entrada: { id: `recurso/referencia/${id}`, tipo: "atajo", titulo, texto: "", pagina, ruta },
+    fragmento: "",
+    puntos: 0,
+  });
+  if (m[1] === "tabla") {
+    const t = Object.values(TABLAS).find((x) => x.numero === n);
+    return t
+      ? recurso(t.id, `Tabla ${n} · ${t.titulo}`, href("consultar", "tablas", t.id), t.paginas[0])
+      : null;
+  }
+  if (m[1].startsWith("fig")) {
+    if (n === 3)
+      return recurso(
+        "F3",
+        "Figura 3 · Hiperglucemia y cetonemia",
+        href("consultar", "figura-3"),
+        9,
+      );
+    const f = Object.values(FIGURAS).find((x) => x?.numero === n);
+    const ruta = f && rutaDeFigura(f.id);
+    return f && ruta
+      ? recurso(f.id, `Figura ${n} · ${f.titulo.replace(/^Figura \d+\.\s*/, "")}`, ruta, f.pagina)
+      : null;
+  }
+  const a = APARTADOS.find((x) => x.n === n);
+  return a
+    ? recurso(`ap${n}`, `Apartado ${n} · ${a.titulo}`, href("capitulo", a.slug), a.paginas[0])
+    : null;
+}
+
 export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[] {
+  const referencia = referenciaDirecta(consulta);
+  if (referencia) return [referencia];
   // El sistema nombrado no es una palabra del recurso: va en la ruta («…:minimed-780g»).
   const terminos = terminosDe(consulta)
     .map((v) => v[0])
@@ -613,6 +657,23 @@ export function recursosPedidos(consulta: string, res: Resultado[]): Resultado[]
         "Para el paciente: hojas y plan de seguridad",
         href("pacientes"),
         0,
+      ),
+    );
+  // 1.0.27 (auditoría de navegación, P4): «pacientes camaps», «información para pacientes de
+  // Omnipod 5»: lo de ese sistema para el paciente es su plan de seguridad. Solo si la consulta no
+  // pide otra cosa («poner en marcha una 780G en un paciente con MDI» es la iniciación).
+  if (
+    sis >= 0 &&
+    /\bpacientes?\b/.test(n) &&
+    terminos.every((w) => /^(pacient|informac|material|hoja|folleto|plan|segur)/.test(w)) &&
+    !out.some((r) => r.entrada.ruta === href("pacientes", "plan", CATALOGO_SISTEMAS[sis].id))
+  )
+    out.push(
+      atajo(
+        `recurso/plan-paciente/${CATALOGO_SISTEMAS[sis].id}`,
+        `Plan de seguridad · ${CATALOGO_SISTEMAS[sis].name}`,
+        href("pacientes", "plan", CATALOGO_SISTEMAS[sis].id),
+        TABLAS.T1.paginas[0],
       ),
     );
   // 0.81.1 (quinta ronda, guardia): «control-iq+» solo o con «diferencias»: la pregunta frecuente.

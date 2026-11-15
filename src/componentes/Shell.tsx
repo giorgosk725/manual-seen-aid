@@ -30,8 +30,11 @@ import { APARTADOS, CAPITULO } from "../contenido";
 import { contextoDeRuta } from "../contexto";
 import { DESTINOS, MENU, areaDe, contextoSituaciones, destinoActivo } from "../nav";
 import {
+  abridorDelDialogo,
   consumirNavegacionNueva,
+  consumirVistaApilada,
   href,
+  irARuta,
   marcarNavegacionNueva,
   parseHash,
   type Ruta,
@@ -80,7 +83,11 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
   const res = busqueda?.resultados ?? [];
   const respuestas = motor && qEf.trim().length >= 2 ? motor.fusionar(qEf, parecidos) : [];
   const frecuente = motor && qEf.trim().length >= 2 ? motor.preguntaFrecuente(qEf) : null;
-  const sugerencias = motor && q.trim().length >= 3 && !frecuente ? motor.sugerir(q) : [];
+  // 1.0.27 (P4): con una referencia («tabla 3»), su «Abrir» el primero, sin sugerencias delante.
+  const sugerencias =
+    motor && q.trim().length >= 3 && !frecuente && !motor.referenciaDirecta(q)
+      ? motor.sugerir(q)
+      : [];
   if (motor && (respuestas.length || frecuente)) motor.recordarTema(qEf);
   else if (motor && qEf === q && q.trim().length >= 3) motor.olvidarTema();
   // Abrir un resultado deja la búsqueda en «recientes».
@@ -103,8 +110,12 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
       enlaces()[0]?.focus();
     } else if (e.key === "Enter" && q.trim().length >= 2) {
       e.preventDefault();
+      // 1.0.27 (P4): «tabla 3», «figura 2», «apartado 9» (solos) no son una búsqueda sino una
+      // referencia: Intro lleva directamente a su sitio. El resto, a Buscar con todo.
+      const referencia = motor?.referenciaDirecta(q);
       cerrarYGuardar();
-      irABuscar(q);
+      if (referencia) irARuta(referencia.entrada.ruta);
+      else irABuscar(q);
     }
   };
   const alMoverse = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -671,21 +682,33 @@ const BOTONES: { id: Boton; etiqueta: string; href?: string; icono: typeof Home 
 ];
 /* El botón que corresponde a la pantalla: las conductas (situaciones, cetonas, hipoglucemia,
    interrupción) van con «Situaciones»; lo que no está en la barra, con «Más». */
-function botonDe(ruta: Ruta): Boton {
+function botonDe(ruta: Ruta, preguntaDeFicha = false): Boton {
   if (ruta.seccion === "") return "inicio";
   if (ruta.seccion === "sistemas") return "sistemas";
+  // 1.0.27 (auditoría de navegación, P5): la pregunta frecuente abierta desde una ficha sigue en
+  // «Sistemas» (como contexto); abierta desde Preguntas frecuentes, en «Más».
+  if (preguntaDeFicha) return "sistemas";
   if (ruta.seccion === "buscar") return "buscar";
   if (contextoSituaciones(ruta)) return "situaciones";
   return "mas";
 }
 
-function Inferior({ ruta, onMas }: { ruta: Ruta; onMas: () => void }) {
-  const actual = botonDe(ruta);
+function Inferior({
+  ruta,
+  onMas,
+  preguntaDeFicha,
+}: {
+  ruta: Ruta;
+  onMas: () => void;
+  preguntaDeFicha: boolean;
+}) {
+  const actual = botonDe(ruta, preguntaDeFicha);
   // La conducta abierta (Figura 3, Interrupción, Hipoglucemia) es contexto de «Situaciones».
   const actualComo = (id: Boton) =>
     id !== actual
       ? undefined
-      : id === "situaciones" && contextoSituaciones(ruta) === "location"
+      : (id === "situaciones" && contextoSituaciones(ruta) === "location") ||
+          (id === "sistemas" && ruta.seccion !== "sistemas")
         ? ("location" as const)
         : ("page" as const);
   const clase = (on: boolean) =>
@@ -774,11 +797,37 @@ function Cajon({ open, onClose, ruta }: { open: boolean; onClose: () => void; ru
    En Buscar, el texto escrito viaja en la URL: no es otra pantalla. 0.96.0 (16.ª ronda, R5): una
    comparación de Sistemas con otros sistemas marcados («mm780+op5» → «mm780+camaps») es la misma
    pantalla: se sigue donde se leía (antes, marcar y desmarcar en el móvil volvía arriba). */
-function claveDePantalla(r: { seccion: string; sub?: string }): string {
+function baseDePantalla(r: Ruta): string {
   const sub = r.seccion === "buscar" ? "" : (r.sub ?? "");
   if (r.seccion === "sistemas" && (sub === "todos" || sub.includes("+")))
     return "sistemas/comparacion";
   return `${r.seccion}/${sub}`;
+}
+/* 1.0.27 (auditoría de navegación de la 1.0.26, P1): la VISTA dentro de una pantalla con pestañas o
+   pasos (sección de la ficha o de la comparación, tabla, Cálculo/Fases/Hoja, paso de la descarga),
+   sin la opción elegida (lo que va detrás de «:»: sistema, fila). Antes no contaba: todas las vistas
+   compartían la posición guardada y la nueva escribía la suya encima de la anterior, así que Atrás
+   devolvía la vista anterior arriba del todo. Sin vista (índice de Tablas), «». */
+function vistaDePantalla(r: Ruta): string {
+  const vista = (r.detalle ?? "").split(":")[0];
+  if (r.seccion === "sistemas") return r.sub && r.sub !== "elegir" ? vista || "_" : "";
+  if (r.seccion !== "consultar") return "";
+  if (r.sub === "tablas") return vista;
+  return r.sub === "inicio" || r.sub === "descarga" ? vista || "_" : "";
+}
+const claveDePantalla = (r: Ruta) => `${baseDePantalla(r)}|${vistaDePantalla(r)}`;
+/* Lo activo de una tira de pestañas o de pasos: a donde va el foco al volver a esa vista. */
+const ACTIVO_DE_TIRA =
+  '[aria-current]:not([aria-current="false"]), [aria-selected="true"], [aria-pressed="true"]';
+function activoDeTira(main: HTMLElement | null): HTMLElement | null {
+  for (const tira of main?.querySelectorAll<HTMLElement>(".pestanas, [data-tira]") ?? []) {
+    if (tira.offsetParent === null) continue;
+    const x = [...tira.querySelectorAll<HTMLElement>(ACTIVO_DE_TIRA)].find(
+      (e) => e.offsetParent !== null && e.matches("a[href], button"),
+    );
+    if (x) return x;
+  }
+  return null;
 }
 
 function BotonVolverConsulta({ volver, flotante = false }: { volver: string; flotante?: boolean }) {
@@ -840,8 +889,19 @@ export function Shell({
   useEffect(() => {
     // 0.97.1 (17.ª ronda, R3): de qué enlace se salió de cada pantalla, para devolverle el foco al
     // volver con Atrás (antes, el foco caía en el principio de la página).
-    const origenes = new Map<string, { sel: string; texto: string }>();
+    const origenes = new Map<string, { sel: string; texto: string; tira?: boolean }>();
+    let nAbridor = 0;
     const onClick = (e: MouseEvent) => {
+      // 1.0.27 (P3): una pestaña o un paso (botón o enlace de una tira): al volver, el foco va a lo
+      // activo de la tira, no al control que se pulsó (que ya no es la vista de esa entrada).
+      const enTira = (e.target as Element | null)?.closest?.(
+        ".pestanas a[href], .pestanas button, [data-tira] a[href], [data-tira] button",
+      );
+      if (enTira && mainRef.current?.contains(enTira)) {
+        origenes.set(window.location.hash, { sel: "", texto: "", tira: true });
+        if (enTira.matches('a[href^="#/"]')) marcarNavegacionNueva();
+        return;
+      }
       // 1.0.24 (30.ª ronda, R3): también los botones que navegan y lo dicen (`data-origen`: la
       // lista de Situaciones); antes, con Atrás el foco caía en el documento.
       const boton = (e.target as Element | null)?.closest?.("[data-origen]");
@@ -862,12 +922,57 @@ export function Shell({
           sel: `a[href="${CSS.escape(a.getAttribute("href")!)}"]`,
           texto: (a.textContent ?? "").trim(),
         });
+      else {
+        // 1.0.27 (P2): desde «Más» o la paleta, al volver, el foco al botón que abrió el diálogo
+        // (antes caía en el documento). La entrada del diálogo la sustituye el destino (Modal).
+        const ab = abridorDelDialogo();
+        if (!ab) return;
+        const id = ab.dataset.volverFoco ?? `d${++nAbridor}`;
+        ab.dataset.volverFoco = id;
+        origenes.set(window.location.hash, {
+          sel: `[data-volver-foco="${id}"]`,
+          texto: (ab.textContent ?? "").trim(),
+        });
+      }
     };
     let t: ReturnType<typeof setTimeout> | undefined;
     const onPop = () => {
       const destino = origenes.get(window.location.hash);
       clearTimeout(t);
-      if (!destino) return;
+      // 1.0.27 (P3): sin enlace de origen (Adelante del navegador, un paso o una vista sin él), el
+      // foco que se ha quedado en el documento va a lo activo de la tira (entre vistas de una
+      // pantalla) o al título. Lo que la pantalla ya haya enfocado no se toca.
+      if (!destino || destino.tira) {
+        let espera = 0;
+        const colocar = () => {
+          const main = mainRef.current;
+          const activo = document.activeElement;
+          const perdido =
+            !activo || activo === document.body || activo === main || !activo.isConnected;
+          // En una pestaña o un paso que ya no es el activo (el pulsado, o el de la vista anterior).
+          const enTiraVieja =
+            !!activo?.closest?.(".pestanas, [data-tira]") && !activo.matches(ACTIVO_DE_TIRA);
+          if (!perdido && !(enTiraVieja && (destino?.tira || cambioEntreVistas.current))) return;
+          const enTira = cambioEntreVistas.current || destino?.tira ? activoDeTira(main) : null;
+          if (enTira) {
+            // La tira centra en horizontal la pestaña enfocada; la página no se mueve.
+            const y = window.scrollY;
+            enTira.focus({ preventScroll: true });
+            if (Math.abs(window.scrollY - y) > 4) window.scrollTo({ top: y });
+            return;
+          }
+          // La pantalla perezosa aún cargando: se espera a su título.
+          if (main?.querySelector("[data-cargando]") && ++espera < 20) {
+            t = setTimeout(colocar, 50);
+            return;
+          }
+          const h1 = main?.querySelector<HTMLElement>("h1");
+          if (h1 && !h1.hasAttribute("tabindex")) h1.setAttribute("tabindex", "-1");
+          h1?.focus({ preventScroll: true });
+        };
+        t = setTimeout(colocar, 150);
+        return;
+      }
       let n = 0;
       const intentar = () => {
         const main = mainRef.current;
@@ -968,8 +1073,10 @@ export function Shell({
     const onHash = () => clearTimeout(pendiente);
     // 1.0.0 (18.ª ronda, R3): la posición, también al pulsar un enlace (sin desplazarse antes no
     // había ninguna guardada y al volver la pantalla quedaba donde la dejaba la de destino).
+    // 1.0.27 (P1): también al pulsar un botón (pestañas y pasos que son botones: Cálculo/Fases/Hoja,
+    // pasos de la descarga), para que Atrás devuelva esa vista a su sitio.
     const onClic = (e: MouseEvent) => {
-      if (!(e.target as Element | null)?.closest?.('a[href^="#/"]')) return;
+      if (!(e.target as Element | null)?.closest?.('a[href^="#/"], button')) return;
       clearTimeout(pendiente);
       posiciones.current.set(claveDePantalla(parseHash(window.location.hash)), window.scrollY);
     };
@@ -985,6 +1092,8 @@ export function Shell({
   }, []);
 
   const clavePantalla = claveDePantalla(ruta);
+  const basePantalla = baseDePantalla(ruta);
+  const vistaPantalla = vistaDePantalla(ruta);
 
   // Al cambiar de pantalla (no al elegir una opción dentro de ella): arriba del todo, salvo
   // enlace profundo (un bloque del capítulo, una referencia) o vuelta atrás (se restaura).
@@ -993,6 +1102,7 @@ export function Shell({
   // Iniciar, Buscar, un caso…), un botón para volver justo donde se estaba (historial).
   const previa = useRef<{ seccion: string; titulo: string }>({ seccion: "", titulo: "" });
   const [volver, setVolver] = useState<string | null>(null);
+  const [preguntaDeFicha, setPreguntaDeFicha] = useState(false);
   // 1.0.26: el «Volver a la consulta» flotante, apartado mientras se baja.
   const [flotanteOculto, setFlotanteOculto] = useState(false);
   const conFlotante = !!volver && ruta.seccion === "sistemas";
@@ -1015,8 +1125,40 @@ export function Shell({
   const enfocarDestino = useRef(false);
   // La pantalla anterior (no un «primera vez»: en desarrollo, React repite el efecto al montar).
   const pantallaAnterior = useRef<string | null>(null);
+  const baseAnterior = useRef<{ base: string; vista: string } | null>(null);
+  // 1.0.27 (P1): el último cambio fue de vista dentro de la misma pantalla; y la posición que hay que
+  // volver a poner después de los efectos de la pantalla (la ficha baja a su sección al cambiar).
+  const cambioEntreVistas = useRef(false);
+  const restaurarVista = useRef<number | null>(null);
   useLayoutEffect(() => {
     const nueva = consumirNavegacionNueva();
+    const apilada = consumirVistaApilada();
+    const antes = baseAnterior.current;
+    baseAnterior.current = { base: basePantalla, vista: vistaPantalla };
+    // 1.0.27 (P1): de una vista a otra de la misma pantalla (las dos con vista). Hacia delante
+    // (pestaña o paso pulsado) todo sigue como estaba: la pantalla decide (no sube ni mueve el
+    // foco). Con Atrás o Adelante, la posición guardada de esa vista.
+    const entreVistas = !!antes && antes.base === basePantalla && !!antes.vista && !!vistaPantalla;
+    cambioEntreVistas.current = entreVistas && antes!.vista !== vistaPantalla;
+    restaurarVista.current = null;
+    if (entreVistas) {
+      pantallaAnterior.current = clavePantalla;
+      enfocarTitulo.current = false;
+      enfocarDestino.current = false;
+      const guardada = posiciones.current.get(clavePantalla);
+      if (nueva || apilada || guardada == null) return;
+      restaurarVista.current = guardada;
+      window.scrollTo({ top: guardada });
+      const reintentar = () => {
+        if (Math.abs(window.scrollY - guardada) > 4) window.scrollTo({ top: guardada });
+      };
+      const t1 = setTimeout(reintentar, 250);
+      const t2 = setTimeout(reintentar, 900);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
     // 0.97.1 (17.ª ronda, adjunto y R3): también al abrir una tabla en su fila (el rótulo de una
     // ficha lleva a «#/consultar/tablas/T3:control-iq:3»).
     const enLiteral =
@@ -1031,10 +1173,20 @@ export function Shell({
     const desdeHerramienta =
       nueva &&
       enLiteral &&
+      // 1.0.27: dentro de la misma pantalla (índice de Tablas → una tabla), sin «Volver a la consulta».
+      antes?.base !== basePantalla &&
       ["consultar", "sistemas", "buscar", "casos", "preguntas", "visual"].includes(
         previa.current.seccion,
       );
     setVolver(desdeHerramienta ? previa.current.titulo : null);
+    // 1.0.27 (P5): pregunta frecuente abierta desde una ficha (o desde otra pregunta que lo era).
+    const seccionPrevia = previa.current.seccion;
+    setPreguntaDeFicha(
+      (antesFicha) =>
+        ruta.seccion === "preguntas" &&
+        !!ruta.sub &&
+        (seccionPrevia === "sistemas" || (seccionPrevia === "preguntas" && antesFicha)),
+    );
     previa.current = { seccion: ruta.seccion, titulo: titulo ?? "" };
     const destinoProfundo =
       (ruta.seccion === "capitulo" && !!ruta.detalle) ||
@@ -1050,11 +1202,17 @@ export function Shell({
     pantallaAnterior.current = clavePantalla;
     // 0.97.1 (17.ª ronda, R3): en un destino profundo (fila de una ficha o de una tabla, párrafo
     // del capítulo), el foco al destino marcado; si no lo hay, al título sin mover la página.
-    const aFila = ruta.seccion === "consultar" && ruta.sub === "tablas" && !!ruta.detalle;
+    // 1.0.27 (P3): solo con fila («T5::2»); sin ella, el foco va enseguida al título (antes se
+    // esperaba 1,5 s a una fila marcada que no iba a llegar y, mientras, caía en el documento).
+    const aFila =
+      ruta.seccion === "consultar" && ruta.sub === "tablas" && !!ruta.detalle?.split(":")[2];
     enfocarTitulo.current = nueva && cambio;
     enfocarDestino.current = nueva && cambio && (destinoProfundo || aFila);
     // Enlace profundo: la pantalla hace su propio scroll; al volver atrás, se restaura.
     if (destinoProfundo && (nueva || guardada == null)) return;
+    // 1.0.27: del índice de Tablas a una fila («T5::2») sin enlace: la coloca la tabla, como antes
+    // de que la vista contara en la clave.
+    if (aFila && !nueva && antes?.base === basePantalla) return;
     // Al volver atrás, la guardada aquí (la restauración del navegador está desactivada). 0.72.2:
     // antes valía la mayor de esta y de `window.scrollY`, pero ese scrollY es aún el de la
     // pantalla anterior (el capítulo, bajado hasta la tabla) y, con una ficha más larga, se
@@ -1075,6 +1233,20 @@ export function Shell({
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clavePantalla]);
+
+  // 1.0.27 (P1): con Atrás entre vistas, después de los efectos de la pantalla (la ficha baja a su
+  // sección al cambiar de pestaña), otra vez la posición guardada, antes de pintar.
+  useEffect(() => {
+    const y = restaurarVista.current;
+    restaurarVista.current = null;
+    if (y == null) return undefined;
+    const poner = () => {
+      if (Math.abs(window.scrollY - y) > 4) window.scrollTo({ top: y });
+    };
+    poner();
+    const marco = requestAnimationFrame(poner);
+    return () => cancelAnimationFrame(marco);
   }, [clavePantalla]);
 
   // 0.97.1 (17.ª ronda, R1): un enlace a la misma pantalla sin detalle (la barra de abajo o el
@@ -1206,7 +1378,8 @@ export function Shell({
         }}
       >
         <div
-          key={clavePantalla}
+          // 1.0.27: la pantalla, sin la vista: cambiar de pestaña o de paso no la vuelve a montar.
+          key={basePantalla}
           // 0.72.0: en monitores anchos, las pantallas de consulta usan más ancho; la lectura del
           // capítulo conserva su medida.
           className={`pantalla-in mx-auto max-w-5xl px-3 pb-24 pt-4 sm:px-5 lg:pb-10 lg:pt-6 ${ruta.seccion === "capitulo" ? "" : "2xl:max-w-7xl"}`}
@@ -1245,7 +1418,7 @@ export function Shell({
           </div>
         )}
       </main>
-      <Inferior ruta={ruta} onMas={() => setCajon(true)} />
+      <Inferior ruta={ruta} onMas={() => setCajon(true)} preguntaDeFicha={preguntaDeFicha} />
       <Cajon open={cajon} onClose={cerrarCajon} ruta={ruta} />
       <Paleta open={paleta} onClose={cerrarPaleta} />
       <VolverArriba />
