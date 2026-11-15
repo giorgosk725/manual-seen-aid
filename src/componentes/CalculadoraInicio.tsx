@@ -105,7 +105,7 @@ function irAPaso(n: number, editar = false) {
 /* 1.0.14 (25.ª ronda, senior): con aspecto de enlace (subrayado fino, texto oscuro y, desde sm,
    14 px), como los accesos de la ficha (antes, gris a 13 px sin subrayado). */
 const botonIr =
-  "tap-44 inline-flex min-h-11 items-center px-1 text-[13px] font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-8 sm:text-[14px]";
+  "tap-44 tactil-44 inline-flex min-h-11 items-center px-1 text-[13px] font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-8 sm:text-[14px]";
 const EditarDatos = () => (
   <button type="button" onClick={() => irAPaso(3, true)} className={`${botonIr} gap-1`}>
     {/* 1.0.14 (25.ª ronda, R5): un lápiz (la flecha hacia arriba se leía como «plegar»). */}

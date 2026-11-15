@@ -96,8 +96,13 @@ describe("App", () => {
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
     expect(screen.getByText(enTexto(/sin peso mínimo; DTD\s≥\s5\sUI\/día/))).toBeInTheDocument();
     expect(screen.queryByText(/Guardian 4/)).not.toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: /Los cuatro/ }));
+    // 1.0.27 (revisión visual de la 1.0.26, P1): «Los cuatro» es ahora el enlace de texto «Ver los
+    // cuatro» (el mismo modelo en Sistemas y Tablas), y con los cuatro a la vista las cuatro
+    // casillas salen marcadas.
+    await userEvent.click(screen.getByRole("button", { name: "Ver los cuatro" }));
     expect(screen.getByRole("table")).toBeInTheDocument();
+    for (const b of within(grupo).getAllByRole("button"))
+      expect(b).toHaveAttribute("aria-pressed", "true");
   });
 
   it("la paleta de búsqueda (Ctrl K) encuentra texto literal con su página", async () => {

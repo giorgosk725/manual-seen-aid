@@ -69,16 +69,20 @@ test.describe("Ronda 19", () => {
     ).toBeVisible();
   });
 
-  test("ficha en el ordenador: «Comparar» en la fila de los sistemas", async ({ page }) => {
+  // 1.0.27 (revisión visual de la 1.0.26, P1): «Comparar con los demás» es un enlace fuera de la
+  // fila del selector, a la derecha de las pestañas (antes, un chip en la fila de los sistemas).
+  test("ficha en el ordenador: «Comparar con los demás» en la fila de las pestañas", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1366, height: 768 });
     await page.goto("/#/sistemas/ciq");
-    const grupo = page.getByRole("radiogroup", { name: "Sistemas" });
+    const pestana = page.getByRole("navigation", { name: "Sección" }).getByRole("link").first();
     const [a, b] = await Promise.all([
-      grupo.getByRole("radio", { name: /Omnipod 5/ }).boundingBox(),
-      grupo.getByRole("button", { name: "Comparar" }).boundingBox(),
+      pestana.boundingBox(),
+      page.getByRole("link", { name: "Comparar con los demás" }).boundingBox(),
     ]);
-    // 1.0.11: en la misma fila (la casilla de Control-IQ / Control-IQ+ puede ir en dos líneas).
     expect(b!.y).toBeLessThan(a!.y + a!.height);
     expect(b!.y + b!.height).toBeGreaterThan(a!.y);
+    expect(b!.x).toBeGreaterThan(a!.x);
   });
 });

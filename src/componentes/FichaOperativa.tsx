@@ -135,7 +135,7 @@ const MODO = {
     // 1.0.13 (25.ª ronda, visual): la columna de rótulos, la de Parámetros y Modos (16/19 rem):
     // al cambiar de pestaña, los valores saltaban 64 px.
     fila: "grid min-w-0 gap-x-6 gap-y-1 py-3 first:pt-1 last:pb-0 sm:grid-cols-[minmax(11rem,16rem)_1fr] lg:grid-cols-[minmax(11rem,19rem)_1fr] print:gap-y-0 print:py-0.5",
-    dt: "",
+    dt: "text-slate-600",
     dd: "",
   },
   // 0.96.0 (16.ª ronda, visual): en el Resumen, el rótulo de la ficha (minúscula y negrita, 14 px)
@@ -143,11 +143,14 @@ const MODO = {
   // la misma subrejilla entre tarjetas vecinas.
   // 1.0.9 (petición del autor del 22-10-2026, «mejorar las tarjetas visualmente»): desde xl, el
   // rótulo también encima del dato (a la izquierda en 9,25 rem, «Localización del algoritmo» y
-  // «Bolos automáticos de corrección» iban en dos líneas) y sin la subrejilla entre tarjetas
-  // vecinas, que abría huecos dentro de la más corta; los accesos siguen alineados al pie.
+  // «Bolos automáticos de corrección» iban en dos líneas); los accesos siguen alineados al pie.
+  // 1.0.27 (decisión del autor del 15-11-2026, que revoca la de la 1.0.9 de quitar la subrejilla):
+  // desde xl, la lista es subrejilla de la tarjeta (tres filas, una por dato) y la tarjeta, de la
+  // rejilla del Resumen: cada dato queda a la altura del mismo dato de la tarjeta vecina, aunque
+  // la más corta lleve un hueco (Sistemas.tsx, EntradaSistemas).
   resumen: {
-    dl: "grid gap-y-2.5 sm:grid-cols-3 sm:gap-x-5 xl:grid-cols-1 xl:gap-y-2",
-    fila: "min-w-0 border-t border-[var(--linea-suave)] pt-2.5 first:border-t-0 first:pt-0 sm:border-t-0 sm:pt-0 xl:border-t xl:pt-2 xl:first:border-t-0 xl:first:pt-0",
+    dl: "grid gap-y-2.5 sm:grid-cols-3 sm:gap-x-5 xl:row-[span_3/span_3] xl:grid-cols-1 xl:grid-rows-subgrid xl:gap-y-2",
+    fila: "min-w-0 border-t border-[var(--linea-suave)] pt-2.5 first:border-t-0 first:pt-0 sm:border-t-0 sm:pt-0 xl:col-span-1 xl:border-t xl:pt-2 xl:first:border-t-0 xl:first:pt-0",
     dt: "text-slate-600",
     dd: "mt-0.5",
   },
@@ -174,13 +177,11 @@ export function CasillasDatos({
             key={d.r}
             className={`${m.fila} ${modo === "resumen" && d.partes ? "sm:col-span-2" : ""}`}
           >
-            <dt
-              className={
-                modo === "rejilla"
-                  ? "text-[15px] font-semibold leading-snug text-slate-900"
-                  : `text-sm font-semibold leading-snug ${m.dt || "text-slate-900"}`
-              }
-            >
+            {/* 1.0.27 (revisión visual de la 1.0.26, P2): una sola jerarquía para los datos de la
+                Tabla 1 en la ficha, el Resumen y la Elección, la del Resumen: el rótulo, menor y
+                en gris; el dato, en seminegrita oscura (en la ficha, el rótulo pesaba más que el
+                dato). */}
+            <dt className={`text-sm font-semibold leading-snug ${m.dt}`}>
               {ruta ? (
                 <a
                   href={ruta}
@@ -194,9 +195,7 @@ export function CasillasDatos({
               )}
             </dt>
             <dd className={`min-w-0 ${m.dd}`}>
-              <span
-                className={`block text-[15px] leading-snug ${modo === "rejilla" ? "text-slate-800" : "font-semibold text-slate-900"}`}
-              >
+              <span className="block text-[15px] font-semibold leading-snug text-slate-900">
                 {d.partes ? (
                   d.v.split(" · ").map((x) => (
                     <span key={x} className="block">
@@ -360,8 +359,11 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                       <SinCortes texto={d.antes} />
                     </span>
                   )}
+                  {/* 1.0.27 (revisión visual de la 1.0.26, P3): la función del sistema, en su tinta
+                      (como los rótulos de sistema): en negro y seminegrita era idéntica al título
+                      de la situación y, en una columna, parecía otra fila. */}
                   {d.antes ? (
-                    <span className="block font-semibold text-slate-900">
+                    <span className="block font-semibold" style={{ color: h.ink }}>
                       <SinCortes texto={d.v} />
                     </span>
                   ) : (
@@ -485,7 +487,10 @@ export function AspectoEntreSistemas({
                     <SinCortes texto={d.antes} />
                   </span>
                 )}
-                <span className={d.antes ? "block font-semibold text-slate-900" : "block"}>
+                <span
+                  className={d.antes ? "block font-semibold" : "block"}
+                  style={d.antes ? { color: h.ink } : undefined}
+                >
                   <SinCortes texto={d.v} />
                 </span>
                 {d.n && (

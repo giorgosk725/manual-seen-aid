@@ -70,11 +70,8 @@ test.describe("Tablas y sistemas", () => {
     await expect(page).toHaveURL(/#\/sistemas\/camaps\/funciona$/);
     await page.goBack();
     await expect(page).toHaveURL(/#\/sistemas\/op5$/);
-    // «Comparar»: los cuatro, desde donde se compara.
-    await page
-      .getByRole("radiogroup", { name: "Sistemas" })
-      .getByRole("button", { name: "Comparar" })
-      .click();
+    // «Comparar»: los cuatro, desde donde se compara. 1.0.27 (P1): enlace fuera del selector.
+    await page.getByRole("link", { name: "Comparar con los demás" }).click();
     await expect(page).toHaveURL(/#\/sistemas\/todos\/esencial$/);
   });
 
@@ -103,7 +100,8 @@ test.describe("Tablas y sistemas", () => {
     const otra = await page.context().newPage();
     await otra.goto("/#/consultar/tablas/T1:minimed-780g+omnipod-5");
     await expect(otra.getByText("Viendo MiniMed 780G y Omnipod 5")).toBeVisible();
-    await grupo.getByRole("button", { name: "Los cuatro" }).click();
+    // 1.0.27 (P1): «Ver los cuatro», enlace de texto (antes, el chip «Los cuatro»).
+    await grupo.getByRole("button", { name: "Ver los cuatro" }).click();
     await expect(page).toHaveURL(/#\/consultar\/tablas\/T1$/);
     await expect(page.getByText(/^Viendo /)).toHaveCount(0);
   });

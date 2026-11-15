@@ -38,7 +38,9 @@ test.describe("Ronda 20", () => {
   }) => {
     await page.goto("/#/sistemas/todos/parametros");
     const grupo = page.locator(".barra-pegada").first();
-    await grupo.getByRole("button", { name: /780G/, pressed: false }).first().click();
+    // 1.0.27 (P1): con los cuatro a la vista, las cuatro casillas salen marcadas; pulsar una deja
+    // solo esa.
+    await grupo.getByRole("button", { name: /780G/, pressed: true }).first().click();
     await expect(page).toHaveURL(/#\/sistemas\/todos\/parametros$/);
     await grupo
       .getByRole("button", { name: /Omnipod 5/, pressed: false })

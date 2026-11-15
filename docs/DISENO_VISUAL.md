@@ -464,3 +464,28 @@ discretos (12–13 px, `slate-500/600`).
 
 **Ámbito antes del pasaje (V95-12).** En Buscar, el ámbito de un pasaje del texto («Gestación»)
 va encima, en 13 px seminegrita; la fuente entera, al pie.
+
+## 19. Revisión visual de la 1.0.26 (15-11-2026)
+
+Solo diseño: ningún texto del capítulo cambia.
+
+- **Resumen de Sistemas, filas alineadas desde xl** (decisión del autor del 15-11-2026, que revoca
+  la de la 1.0.9): cada tarjeta ocupa seis filas de la rejilla (cabecera, tres datos, variante y
+  accesos) con `grid-template-rows: subgrid` en `li`, `article`, el cuerpo (cuatro filas) y la
+  `dl` (tres); la más corta lleva un hueco. La separación entre las dos filas de tarjetas es margen
+  de la segunda (la rejilla no tiene separación vertical propia). Por debajo de xl, igual.
+- **Selector de sistemas, un modelo** (Sistemas y Tablas, `CasillasSistema` con
+  `losCuatroSinMarcar` y `onLosCuatro`): con los cuatro a la vista, las cuatro casillas marcadas
+  con borde gris y la pista «Pulse uno para verlo solo»; elegido = marca, borde doble burdeos y
+  tinte; no elegido = sin marca. «Ver los cuatro», enlace de texto al lado; «Ver la ficha»,
+  «Comparar (n)» y, en la ficha, «Comparar con los demás», enlaces fuera de la fila del selector
+  (desde sm, a la derecha de las pestañas). Marcar el cuarto es volver a los cuatro. Quedan con
+  botones de opción (elección única) la ficha, Situaciones y el diagrama de gestación.
+- **Rótulo y dato** (Tabla 1 en la ficha, el Resumen y la Elección): rótulo menor, en gris y
+  seminegrita; dato en seminegrita oscura. En la Elección, el que no reúne lo marcado, apagado.
+- **Modos**: la función del sistema («Ease-off: …») en la tinta del sistema.
+- **Táctil**: con `pointer: coarse`, `.chip` y `.tactil-44` miden 44 px también desde sm.
+- **Papel**: los tramos de β-OHB de la hoja de cetonas en un bloque que no se parte
+  (`.hoja-tramos`); en el plan, la hoja de cetonas sigue en la cara 2 y los tramos pasan juntos a
+  la 3 (planes: 4 → 3 caras).
+- «Tabla N» en burdeos también en la tabla abierta y en papel.

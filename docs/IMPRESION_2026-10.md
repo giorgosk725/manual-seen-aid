@@ -21,5 +21,11 @@ con la dosis lejos de su nota. Se prefiere una cara más.
 **Impresión durante la carga.** Si una figura o diagrama sigue cargándose a los 4 s, no se
 imprime: aparece un aviso con «Reintentar» y «Cancelar» (`src/imprimir.js`).
 
+**1.0.27 (15-11-2026).** Planes: 3 caras. La hoja de cetonas ya no fuerza cara nueva: sigue a
+«qué función usar» en la cara 2 (que quedaba vacía en un 75 %) y sus tres tramos de β-OHB van
+juntos en la 3 (`.hoja-tramos`, `break-inside: avoid`). Hoja de cetonas suelta: 2 caras, con los
+tramos juntos en la segunda (antes, el de 1,0–2,9 mmol/l empezaba solo en ella). Sin cambio de
+texto.
+
 Cambios de composición pendientes de revisión: `borradores/hoja-cetonas-orden_2026-10-13.md`,
 `borradores/planes-primera-cara_2026-10-13.md`.

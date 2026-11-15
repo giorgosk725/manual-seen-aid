@@ -3,7 +3,15 @@
    el nombre corto en el móvil y el completo en pantallas grandes, salvo que se den nombres.
    En el móvil, las cuatro en una fila (marca y punto arriba, nombre debajo) y lo demás («Los
    cuatro», la pista) en la fila siguiente; desde sm, todo seguido como antes (sm:contents). */
-import { useEffect, useRef, type KeyboardEvent, type ReactNode } from "react";
+/* 1.0.27 (revisión visual de la 1.0.26, P1): un solo modelo donde se eligen varios (Sistemas y
+   Tablas): con los cuatro a la vista, las cuatro casillas marcadas (`losCuatroSinMarcar`: sin
+   ninguna elegida se ven los cuatro), con borde neutro y la pista «Pulse uno para verlo solo»;
+   con unos elegidos, esos con borde y fondo burdeos y, al lado, «Ver los cuatro» como enlace de
+   texto (`onLosCuatro`), no como chip. Tres estados que se distinguen sin depender de la negrita:
+   los cuatro (marca en las cuatro, borde gris), elegido (marca, borde doble burdeos y tinte) y no
+   elegido (sin marca). Las acciones que llevan a otra pantalla («Ver la ficha», «Comparar (n)»)
+   van fuera de la fila del selector (Sistemas.tsx, BarraSistemas). */
+import { useEffect, useId, useRef, type KeyboardEvent, type ReactNode } from "react";
 import { Check } from "lucide-react";
 import { TABLAS } from "../contenido";
 import { SEEN, SISTEMA_HEX } from "../tokens";
@@ -30,7 +38,14 @@ export function CasillasSistema({
   desactivado,
   enFila = false,
   cortoEnMovil = false,
+  losCuatroSinMarcar = false,
+  onLosCuatro,
 }: {
+  /* Sin ninguna elegida se ven los cuatro: las cuatro casillas, marcadas (y pulsar una deja solo
+     esa, como hasta ahora). */
+  losCuatroSinMarcar?: boolean;
+  /* Con alguna elegida, «Ver los cuatro» al lado (enlace de texto) vuelve a los cuatro. */
+  onLosCuatro?: () => void;
   /* 0.96.0 (16.ª ronda, visual): con `enFila`, en el móvil el nombre breve de la casilla
      («Control-IQ»); desde sm, `nombres` (Iniciación: el texto del paso empieza antes). */
   cortoEnMovil?: boolean;
@@ -59,6 +74,9 @@ export function CasillasSistema({
   // entra y sale del grupo (solo la elegida, o la primera disponible, está en el orden de Tab) y
   // las flechas cambian la elección y el foco, saltando la desactivada.
   const grupo = useRef<HTMLDivElement>(null);
+  const idPista = useId();
+  const losCuatro = losCuatroSinMarcar && !unico && seleccion.length === 0;
+  const textoPista = losCuatro ? "Pulse uno para verlo solo" : pista;
   const columnas = TABLAS.T1.columnas.map((_, c) => c).filter((c) => c !== desactivado);
   const conFoco = seleccion.find((c) => columnas.includes(c)) ?? columnas[0];
   const alPulsar = (e: KeyboardEvent<HTMLButtonElement>, c: number) => {
@@ -108,6 +126,7 @@ export function CasillasSistema({
         ref={grupo}
         role={unico ? "radiogroup" : "group"}
         aria-label={etiqueta}
+        aria-describedby={textoPista ? idPista : undefined}
         // 0.82.1 (sexta ronda, adjunto y visual): en la elección única, cuatro columnas iguales desde
         // sm (antes, Omnipod 5 bajaba solo a otra fila a 1366 y 1440); un nombre largo va en dos
         // líneas dentro de su casilla.
@@ -125,7 +144,9 @@ export function CasillasSistema({
       >
         <div className={`grid sm:contents ${enFila ? "grid-cols-4 gap-1" : "grid-cols-2 gap-1.5"}`}>
           {TABLAS.T1.columnas.map((nombre, c) => {
-            const on = seleccion.includes(c);
+            // Con los cuatro a la vista, las cuatro marcadas (y así lo anuncian: aria-pressed).
+            const elegida = seleccion.includes(c);
+            const on = losCuatro || elegida;
             const h = SISTEMA_HEX[c];
             const fuera = desactivado === c;
             return (
@@ -147,10 +168,14 @@ export function CasillasSistema({
                 // Con el nombre breve en el móvil, el nombre accesible es el de siempre (sin el guion
                 // duro de la presentación).
                 aria-label={cortoEnMovil && enFila && nombres ? nombres[c] : undefined}
-                className={`${enFila ? "max-sm:flex-col max-sm:items-start" : ""} tap-44 flex disabled:cursor-not-allowed disabled:opacity-50 min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[13px] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-9 sm:px-2.5 sm:text-sm sm:leading-normal`}
+                className={`${enFila ? "max-sm:flex-col max-sm:items-start" : ""} tap-44 tactil-44 flex disabled:cursor-not-allowed disabled:opacity-50 min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[13px] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-9 sm:px-2.5 sm:text-sm sm:leading-normal`}
                 style={
-                  on
-                    ? { borderColor: SEEN.burdeos, background: "#f7eff3" }
+                  elegida
+                    ? {
+                        borderColor: SEEN.burdeos,
+                        background: "#f7eff3",
+                        boxShadow: "inset 0 0 0 1px var(--acento)",
+                      }
                     : { borderColor: "#d4d4d4", background: "#fff" }
                 }
               >
@@ -226,12 +251,25 @@ export function CasillasSistema({
             );
           })}
         </div>
-        {(extra || pista) && (
+        {(extra || textoPista || (onLosCuatro && seleccion.length > 0)) && (
           <div
             className={`mt-1.5 flex items-center gap-2 empty:hidden ${unico ? (extra ? "sm:mt-0" : "sm:col-span-4") : "sm:contents"}`}
           >
             {extra}
-            {pista && <span className="text-xs text-slate-500">{pista}</span>}
+            {onLosCuatro && seleccion.length > 0 && (
+              <button
+                type="button"
+                onClick={onLosCuatro}
+                className="tap-44 tactil-44 inline-flex min-h-11 shrink-0 items-center whitespace-nowrap px-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9"
+              >
+                Ver los cuatro
+              </button>
+            )}
+            {textoPista && (
+              <span id={idPista} className="text-xs text-slate-600">
+                {textoPista}
+              </span>
+            )}
           </div>
         )}
       </div>

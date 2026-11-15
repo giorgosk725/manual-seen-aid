@@ -234,9 +234,7 @@ function PorCaracteristicas() {
                           {r === true ? " (coincide)" : r === false ? " (no coincide)" : ""}
                         </span>
                       </dt>
-                      <dd
-                        className={`${DATO_PEGADO} ${r === true ? "font-semibold text-slate-900" : "text-slate-700"}`}
-                      >
+                      <dd className={`${DATO_PEGADO} ${r === false ? VALOR_APAGADO : VALOR_DATO}`}>
                         {r === true && (
                           <Check
                             size={14}
@@ -261,7 +259,7 @@ function PorCaracteristicas() {
                 {[7, 8].map((fila) => (
                   <div key={fila} className="sm:contents">
                     <dt className={ROTULO_DATO}>{T1.filas[fila].etiqueta}</dt>
-                    <dd className={`${DATO_PEGADO} whitespace-pre-line text-slate-700`}>
+                    <dd className={`${DATO_PEGADO} whitespace-pre-line ${VALOR_DATO}`}>
                       <SinCortes texto={T1.filas[fila].celdas[c]} />
                     </dd>
                   </div>
@@ -271,42 +269,51 @@ function PorCaracteristicas() {
           );
         })}
       </ul>
-      {/* 0.96.0 (16.ª ronda, adjunto): lo que la Tabla 1 no compara y también decide (nadar, el
+      {/* 1.0.27 (revisión visual de la 1.0.26, P7): los tres enlaces en una fila flexible (con
+          margen a la izquierda en cada uno, el que bajaba a la segunda línea quedaba sangrado). */}
+      <div className="mt-3 flex flex-wrap gap-x-4">
+        {/* 0.96.0 (16.ª ronda, adjunto): lo que la Tabla 1 no compara y también decide (nadar, el
           alcohol, desconectar), a un toque: el bloque de Los cuatro · Modos. */}
-      <a
-        href={href("sistemas", "todos", "modos:otras")}
-        className="mt-3 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700"
-      >
-        Agua, alcohol y desconexión de los cuatro
-        <ArrowRight size={14} aria-hidden="true" />
-      </a>
-      {/* 1.0.0 (18.ª ronda, senior y adjunto): la gestación, a un toque (la fila de la Tabla 1 va
+        <a
+          href={href("sistemas", "todos", "modos:otras")}
+          className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700"
+        >
+          Agua, alcohol y desconexión de los cuatro
+          <ArrowRight size={14} aria-hidden="true" />
+        </a>
+        {/* 1.0.0 (18.ª ronda, senior y adjunto): la gestación, a un toque (la fila de la Tabla 1 va
           al final de cada tarjeta; la situación la da para los cuatro arriba). Sin filtro por
           datos de la persona (A02, decisión del autor del 15-10-2026). */}
-      <a
-        href={href("consultar", "situacion", "gestacion")}
-        className="mt-3 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 underline sm:ml-4 decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700"
-      >
-        {/* 1.0.13 (25.ª ronda, adjunto): «de los cuatro», como los otros dos (y abre los cuatro). */}
-        Gestación, parto y posparto de los cuatro
-        <ArrowRight size={14} aria-hidden="true" />
-      </a>
-      {/* 1.0.1 (19.ª ronda, adjunto): el deportista, a los modos temporales de los cuatro. */}
-      <a
-        href={href("sistemas", "todos", "modos")}
-        className="mt-3 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:ml-4"
-      >
-        Ejercicio y modos temporales de los cuatro
-        <ArrowRight size={14} aria-hidden="true" />
-      </a>
+        <a
+          href={href("consultar", "situacion", "gestacion")}
+          className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700"
+        >
+          {/* 1.0.13 (25.ª ronda, adjunto): «de los cuatro», como los otros dos (y abre los cuatro). */}
+          Gestación, parto y posparto de los cuatro
+          <ArrowRight size={14} aria-hidden="true" />
+        </a>
+        {/* 1.0.1 (19.ª ronda, adjunto): el deportista, a los modos temporales de los cuatro. */}
+        <a
+          href={href("sistemas", "todos", "modos")}
+          className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700"
+        >
+          Ejercicio y modos temporales de los cuatro
+          <ArrowRight size={14} aria-hidden="true" />
+        </a>
+      </div>
     </section>
   );
 }
 
 /* 0.96.0 (16.ª ronda, visual): el rótulo de un dato, como en las fichas (minúscula y negrita, sobre
    una línea fina), no en MAYÚSCULAS grises. */
+/* 1.0.27 (revisión visual de la 1.0.26, P2): la jerarquía del Resumen y de las fichas: el rótulo,
+   menor y en gris; el dato, en seminegrita oscura (antes, al revés: rótulo oscuro y dato gris). */
 const ROTULO_DATO =
-  "separador mt-1.5 border-t pt-1.5 text-sm font-semibold leading-snug text-slate-900 sm:mt-0";
+  "separador mt-1.5 border-t pt-1.5 text-sm font-semibold leading-snug text-slate-600 sm:mt-0";
+/* El dato; el que no reúne lo marcado, apagado (la marca ✓/✗ y el texto para el lector siguen). */
+const VALOR_DATO = "text-[15px] font-semibold leading-snug text-slate-900";
+const VALOR_APAGADO = "text-[15px] leading-snug text-slate-600";
 /* En la subrejilla (desde sm) el dato va en la fila siguiente: sin el hueco de la rejilla. */
 const DATO_PEGADO = "sm:-mt-2";
 

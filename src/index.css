@@ -1816,6 +1816,22 @@ html.night .leyendo {
     break-before: page;
     border-top: 0;
   }
+  /* 1.0.27 (revisión visual de la 1.0.26, P4): los tramos de β-OHB, juntos en una cara (el de
+     1,0–2,9 mmol/l, con la dosis con pluma, empezaba solo en la cara siguiente). En el plan, la hoja
+     de cetonas sigue a «qué función usar» en la misma cara (esa cara quedaba vacía en un 75 %) y
+     los tramos pasan juntos a la siguiente. */
+  html.imprimiendo .hoja-a4 .hoja-tramos {
+    break-inside: avoid;
+  }
+  html.imprimiendo .hoja-a4.grande .cara-2 {
+    break-before: auto;
+    margin-top: 6mm !important;
+    padding-top: 4mm !important;
+    border-top: 1px solid #999;
+  }
+  html.imprimiendo .hoja-a4 .cara-2 h2 {
+    break-after: avoid;
+  }
   /* En papel, los pasos de cada tramo y las filas de la Tabla 4 van seguidos. */
   html.imprimiendo .hoja-a4 .plan-t4 dt,
   html.imprimiendo .hoja-a4 .plan-t4 dd {
@@ -2493,5 +2509,17 @@ html.night .decoration-slate-300 {
   }
   .casillas-unico.casillas-unico > div:last-child:not(:first-child) {
     grid-column: 1 / -1;
+  }
+}
+
+/* 1.0.27 (revisión visual de la 1.0.26, P5): en las pantallas táctiles (también la tableta, desde
+   sm), los controles miden 44 px de alto: chips, casillas del selector de sistema, accesos de las
+   tarjetas y de la ficha, «Cambiar» e «Ir a» de Iniciación. Desde sm bajaban a 32–36 px sin mirar
+   el puntero; con ratón siguen como estaban. Clase doble: las variantes `sm:min-h-*` de Tailwind
+   se escriben al final de la hoja y, con la misma especificidad, ganaban. */
+@media (pointer: coarse) {
+  .chip.chip,
+  .tactil-44.tactil-44 {
+    min-height: 2.75rem;
   }
 }

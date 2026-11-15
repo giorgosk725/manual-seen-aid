@@ -11,7 +11,7 @@ import { ExternalLink } from "lucide-react";
 import type { Tabla, TablaId } from "../contenido";
 import { Lineas, Texto } from "../texto";
 import { Enlace, PaginaBadge } from "../ui";
-import { BRAND_ACCENT, SISTEMA_HEX } from "../tokens";
+import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { fueNavegacionNueva, href } from "../rutas";
 import { CasillasSistema } from "./CasillasSistema";
@@ -101,7 +101,9 @@ export function CabeceraTabla({
   return (
     <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
       <div>
-        <div className="rotulo" style={{ color: BRAND_ACCENT.ink }}>
+        {/* 1.0.27 (revisión visual de la 1.0.26, P8): «Tabla N» en burdeos, como en el índice de
+            Tablas (antes, azul en la tabla abierta y en papel). */}
+        <div className="rotulo" style={{ color: CATEGORIA_HEX.consultar.ink }}>
           Tabla {tabla.numero}
         </div>
         <TituloBloque className="titulo-tarjeta text-slate-800">{tabla.titulo}</TituloBloque>
@@ -594,8 +596,13 @@ export function TablaVista({
     return null;
   });
   const columnas = useMemo(() => (sel.length ? sel : todas), [sel, todas]);
+  // 1.0.27: marcar los cuatro uno a uno es lo mismo que no filtrar (las cuatro marcadas, sin «Ver
+  // los cuatro» ni la columna en la dirección).
   const toggle = (c: number) =>
-    setSel((s) => (s.includes(c) ? s.filter((x) => x !== c) : [...s, c].sort()));
+    setSel((s) => {
+      const n = s.includes(c) ? s.filter((x) => x !== c) : [...s, c].sort();
+      return n.length === todas.length ? [] : n;
+    });
 
   const interactiva = modo === "interactiva";
   const literal = !interactiva && !columnasFijas && !herramienta;
@@ -613,17 +620,11 @@ export function TablaVista({
             etiqueta="Filtrar por sistema"
             seleccion={sel}
             onToggle={toggle}
-            extra={
-              sel.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setSel(() => [])}
-                  className="chip tap-44 shrink-0 whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                >
-                  Los cuatro
-                </button>
-              )
-            }
+            // 1.0.27 (revisión visual de la 1.0.26, P1): el mismo modelo que Sistemas: sin ninguno
+            // elegido, las cuatro casillas marcadas (se ven los cuatro); «Ver los cuatro», enlace de
+            // texto (antes, un chip igual que las opciones).
+            losCuatroSinMarcar
+            onLosCuatro={() => setSel(() => [])}
           />
           <p className="mt-1.5 text-xs text-slate-600" aria-live="polite">
             {sel.length

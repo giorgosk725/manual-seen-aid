@@ -50,6 +50,7 @@ import { frases } from "../frases";
 import type { SistemaId } from "../ampliacion/tipos";
 import { TablaVista } from "../componentes/TablaVista";
 import { CasillasSistema } from "../componentes/CasillasSistema";
+import { sinNombreDelSistema } from "../preguntaSinSistema";
 import { NivelTitulo } from "../nivel-contexto";
 import { CON_AMPLIACION, retirado } from "../edicion";
 import { CATALOGO_SISTEMAS, CORTO_SISTEMA, sistemaDelCatalogo } from "../ampliacion/ids";
@@ -356,13 +357,8 @@ function Ampliacion({ s }: { s: Sistema }) {
 const SLUG_TABLA = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 const SLUG_CORTO = ["MiniMed 780G", "Control-IQ / Control-IQ+", "CamAPS FX", "Omnipod 5"];
 
-/* En la ficha, la pregunta sin el nombre del sistema delante («MiniMed 780G: ¿cómo…?» →
-   «¿Cómo…?»); si el nombre lleva algo más («… en la gestación: ¿…?»), se deja entera. */
-const sinNombreDelSistema = (q: string) =>
-  q.replace(
-    /^(MiniMed 780G|Control-IQ\+?|CamAPS FX|Omnipod 5): ¿(.)/,
-    (_m, _n, l: string) => `¿${l.toUpperCase()}`,
-  );
+/* En la ficha, la pregunta sin el nombre del sistema delante: `sinNombreDelSistema`
+   (src/preguntaSinSistema.ts, compartida con Preguntas frecuentes desde la 1.0.27). */
 
 /* Enlace de acceso en la cabecera de la ficha: texto con subrayado fino. */
 // 0.92.0 (revisión de tarjetas, sistemas): 13 px y gris medio, para que no se lean como otra fila
@@ -372,10 +368,10 @@ const sinNombreDelSistema = (q: string) =>
 /* 1.0.12 (24.ª ronda, senior): con aspecto de enlace (subrayado fino, texto oscuro y, desde sm,
    14 px); antes, gris a 13 px sin subrayado, se leían como un dato y no como un acceso. */
 const accesoFicha =
-  "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-medium text-slate-800 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9 sm:text-[14px]";
+  "tap-44 tactil-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-medium text-slate-800 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9 sm:text-[14px]";
 /* «Ficha entera», junto a Imprimir: enlace suelto, con su subrayado fino. */
 const accesoSuelto =
-  "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-600 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9";
+  "tap-44 tactil-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-600 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9";
 
 /* 0.92.0 (revisión de tarjetas, sistemas): las menciones del capítulo, agrupadas por apartado
    (y subapartado), en el orden en que aparecen. */
@@ -406,7 +402,7 @@ const enOrdenDeTabla3 = <T extends { r: string }>(xs: T[]) =>
 // 0.92.0 (revisión de tarjetas, sistemas): enlaces de texto también en el móvil (la rejilla de
 // botones ocupaba 119 px por tarjeta).
 const accesoTarjeta =
-  "tap-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline sm:min-h-9 sm:text-sm";
+  "tap-44 tactil-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline sm:min-h-9 sm:text-sm";
 
 /* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
 const TODAS_LAS_SECCIONES = [
@@ -1226,9 +1222,12 @@ function BarraSistemas({
       navegar("sistemas", id, completa ? "completa" : (sec ?? "funciona"));
       return;
     }
-    const nuevos = ids.includes(id)
+    const marcadosAhora = ids.includes(id)
       ? ids.filter((x) => x !== id)
       : IDS_SISTEMA.filter((x) => ids.includes(x) || x === id);
+    // 1.0.27 (revisión visual de la 1.0.26, P1): marcar el cuarto es volver a los cuatro (las
+    // cuatro casillas marcadas), no una comparación de cuatro con «Ver los cuatro» al lado.
+    const nuevos = marcadosAhora.length === IDS_SISTEMA.length ? [] : marcadosAhora;
     if (abierta && nuevos.length > 1) seguirAbierta = Date.now();
     const vuelta =
       ids.length === 1 &&
@@ -1344,6 +1343,39 @@ function BarraSistemas({
     };
   }, [ids, sec]);
   const compacta = plegada && !abierta;
+  // 1.0.27 (revisión visual de la 1.0.26, P1): la acción que lleva a otra pantalla, como enlace
+  // de texto con su flecha (antes, un chip o un botón con borde en el hueco de «Los cuatro»).
+  const claseAccion =
+    "tap-44 tactil-44 inline-flex min-h-11 shrink-0 items-center gap-1 whitespace-nowrap text-sm font-bold text-slate-900 underline decoration-slate-400 underline-offset-4 hover:decoration-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-9";
+  const accion =
+    entrada && marcados.length > 0 ? (
+      <a
+        // 0.84.1 (octava ronda, adjunto): desde el Resumen, al Resumen de los marcados (antes, a
+        // Características).
+        href={marcados.length > 1 ? href("sistemas", marcados.join("+"), sec) : rutaCon(marcados)}
+        // 1.0.23 (29.ª ronda, adjunto): sin desplazar arriba antes de irse (la posición guardada
+        // para Atrás pasaba a 0 y Modos volvía arriba del todo); la pantalla nueva ya empieza
+        // arriba (Shell).
+        onClick={() => {
+          if (marcados.length === 1)
+            volverMarcado = { id: marcados[0], origen: window.location.hash };
+        }}
+        className={claseAccion}
+      >
+        {marcados.length === 1 ? "Ver la ficha" : `Comparar (${marcados.length})`}
+        <ArrowRight size={14} aria-hidden="true" />
+      </a>
+    ) : ids.length === 1 && sec !== "preguntas" ? (
+      // 0.99.0: en la ficha, la acción aparte de comparar (los cuatro, en la misma sección).
+      // 0.79.1 (tercera ronda, adjunto): no en Preguntas (no hay vista de los cuatro).
+      <a
+        href={href("sistemas", "todos", !sec || sec === "funciona" ? "esencial" : sec)}
+        className={claseAccion}
+      >
+        Comparar con los demás
+        <ArrowRight size={14} aria-hidden="true" />
+      </a>
+    ) : null;
   const vistos = ids.length ? ids : marcados;
   const resumen = vistos.length
     ? vistos.map((id) => SLUG_CORTO[columnaDeSistema(id as SistemaId)]).join(" · ")
@@ -1356,131 +1388,94 @@ function BarraSistemas({
       // 0.94.0 (rediseño): sin caja desde sm (borde y esquinas la hacían parecer un formulario):
       // las casillas y, debajo, la tira de pestañas apoyada en una línea a todo lo ancho, como en el
       // móvil.
-      className={`barra-pegada separador no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 sm:mx-0 sm:px-0 sm:pt-2.5 ${ids.length === 1 ? "" : "md:static"} ${compacta && ids.length === 1 ? "" : "pt-2"}`}
+      // 1.0.27: desde sm, una rejilla de dos columnas: el selector a lo ancho y, debajo, las
+      // pestañas con la acción («Ver la ficha», «Comparar…») a su derecha.
+      className={`barra-pegada separador no-imprimir sticky top-14 z-10 -mx-3 mb-4 border-b px-3 sm:mx-0 sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:px-0 sm:pt-2.5 ${ids.length === 1 ? "" : "md:static"} ${compacta && ids.length === 1 ? "" : "pt-2"}`}
     >
-      {compacta && ids.length === 1 ? null : compacta ? (
-        <button
-          type="button"
-          onClick={() => {
-            // 0.92.3 (15.ª ronda, R5): con la página bajada, abrir la barra movía la página y el
-            // desplazamiento la volvía a cerrar: se queda abierta hasta que se desplace de verdad.
-            abiertaEn.current = window.scrollY;
-            seguirAbierta = Date.now();
-            setAbierta(true);
-            // El foco, a la primera casilla (2.4.3: el botón desaparece al abrirse), sin desplazar.
-            requestAnimationFrame(() =>
-              barra.current
-                ?.querySelector<HTMLElement>('[role="group"] button, [role="radiogroup"] button')
-                ?.focus({ preventScroll: true }),
-            );
-          }}
-          className="flex min-h-11 w-full items-center gap-2 text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-          aria-expanded={false}
-        >
-          {/* En la ficha, el nombre ya está en la cabecera y en cada sección (0.72.0). */}
-          <span className="min-w-0 flex-1 truncate font-semibold text-slate-900">
-            {ids.length === 1 ? "" : resumen}
-          </span>
-          <span className="shrink-0 text-sm font-semibold" style={{ color: SEEN.burdeos }}>
-            {/* 1.0.9 (22.ª ronda, R3): un solo rótulo para los cuatro en cualquier sección (antes,
+      <div className="sm:col-span-2">
+        {compacta && ids.length === 1 ? null : compacta ? (
+          <button
+            type="button"
+            onClick={() => {
+              // 0.92.3 (15.ª ronda, R5): con la página bajada, abrir la barra movía la página y el
+              // desplazamiento la volvía a cerrar: se queda abierta hasta que se desplace de verdad.
+              abiertaEn.current = window.scrollY;
+              seguirAbierta = Date.now();
+              setAbierta(true);
+              // El foco, a la primera casilla (2.4.3: el botón desaparece al abrirse), sin desplazar.
+              requestAnimationFrame(() =>
+                barra.current
+                  ?.querySelector<HTMLElement>('[role="group"] button, [role="radiogroup"] button')
+                  ?.focus({ preventScroll: true }),
+              );
+            }}
+            className="flex min-h-11 w-full items-center gap-2 text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            aria-expanded={false}
+          >
+            {/* En la ficha, el nombre ya está en la cabecera y en cada sección (0.72.0). */}
+            <span className="min-w-0 flex-1 truncate font-semibold text-slate-900">
+              {ids.length === 1 ? "" : resumen}
+            </span>
+            <span className="shrink-0 text-sm font-semibold" style={{ color: SEEN.burdeos }}>
+              {/* 1.0.9 (22.ª ronda, R3): un solo rótulo para los cuatro en cualquier sección (antes,
                 «Comparar» en el Resumen y «Cambiar» en las demás). */}
-            {ids.length === 1
-              ? "Otro sistema o comparación"
-              : vistos.length === 0
-                ? "Elegir sistemas"
-                : "Cambiar"}
-          </span>
-        </button>
-      ) : (
-        <CasillasSistema
-          etiqueta="Sistemas"
-          // En la ficha, uno solo (botón de opción): tocar otro cambia de ficha.
-          unico={ids.length === 1}
-          // 1.0.11 (23.ª ronda, adjunto y visual): en la ficha, «Control-IQ / Control-IQ+», como
-          // en el resto de la ficha y las herramientas (antes, «Control-IQ» solo).
-          nombres={ids.length === 1 ? CORTO_SISTEMA : undefined}
-          seleccion={(entrada ? marcados : ids).map((id) => columnaDeSistema(id as SistemaId))}
-          onToggle={(c) => alternar(IDS_SISTEMA[c])}
-          extra={
-            entrada ? (
-              marcados.length === 0 ? (
-                // 0.83.1 (séptima ronda, adjunto): en el Resumen de los cuatro, «Los cuatro» también,
-                // marcado (es lo que se ve), como en las demás pestañas.
-                <button
-                  type="button"
-                  aria-pressed
-                  className="chip tap-44 shrink-0 whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                >
-                  Los cuatro
-                </button>
-              ) : (
-                <a
-                  // 0.84.1 (octava ronda, adjunto): desde el Resumen, al Resumen de los marcados
-                  // (antes, a Características).
-                  href={
-                    marcados.length > 1
-                      ? href("sistemas", marcados.join("+"), sec)
-                      : rutaCon(marcados)
-                  }
-                  // 1.0.23 (29.ª ronda, adjunto): sin desplazar arriba antes de irse (la posición
-                  // guardada para Atrás pasaba a 0 y Modos volvía arriba del todo); la pantalla
-                  // nueva ya empieza arriba (Shell).
-                  onClick={() => {
-                    if (marcados.length === 1)
-                      volverMarcado = { id: marcados[0], origen: window.location.hash };
-                  }}
-                  // 1.0.5 (21.ª ronda, visual): botón secundario (borde capilar, sin relleno): con
-                  // la casilla marcada y la pestaña, el relleno burdeos apilaba cinco marcas.
-                  className="tap-44 inline-flex min-h-9 shrink-0 items-center gap-1 whitespace-nowrap rounded-md border bg-[var(--papel)] px-3 py-1 text-sm font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-                  style={{ borderColor: "var(--acento)", color: "var(--tinta)" }}
-                >
-                  {marcados.length === 1 ? "Ver la ficha" : `Comparar (${marcados.length})`}
-                  <ArrowRight size={13} aria-hidden="true" />
-                </a>
-              )
-            ) : sec === "preguntas" ? (
-              // 0.84.1 (octava ronda, visual y R3): el hueco de «Los cuatro», para que las
-              // pestañas no salten al llegar a Preguntas.
-              <span aria-hidden="true" className="chip invisible shrink-0">
-                Los cuatro
-              </span>
-            ) : (
-              // 0.79.1 (tercera ronda, adjunto): sin «Los cuatro» en Preguntas (no hay vista de
-              // los cuatro: llevaba al Resumen).
-              <button
-                type="button"
-                aria-pressed={ids.length === 0}
-                onClick={() =>
-                  ids.length === 1
-                    ? navegar("sistemas", "todos", !sec || sec === "funciona" ? "esencial" : sec)
-                    : window.location.replace(rutaCon([]))
-                }
-                className="chip tap-44 shrink-0 whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-              >
-                {/* 0.99.0: en la ficha, la acción aparte de comparar (los cuatro, en la misma
-                    sección); en la comparación, «Los cuatro». */}
-                {ids.length === 1 ? "Comparar" : "Los cuatro"}
-              </button>
-            )
-          }
-        />
-      )}
-      {/* 0.77.1 (auditoría visual): en el móvil, con la barra plegada en la ficha, el nombre del
+              {ids.length === 1
+                ? "Otro sistema o comparación"
+                : vistos.length === 0
+                  ? "Elegir sistemas"
+                  : "Cambiar"}
+            </span>
+          </button>
+        ) : (
+          <CasillasSistema
+            etiqueta="Sistemas"
+            // En la ficha, uno solo (botón de opción): tocar otro cambia de ficha.
+            unico={ids.length === 1}
+            // 1.0.11 (23.ª ronda, adjunto y visual): en la ficha, «Control-IQ / Control-IQ+», como
+            // en el resto de la ficha y las herramientas (antes, «Control-IQ» solo).
+            nombres={ids.length === 1 ? CORTO_SISTEMA : undefined}
+            seleccion={(entrada ? marcados : ids).map((id) => columnaDeSistema(id as SistemaId))}
+            onToggle={(c) => alternar(IDS_SISTEMA[c])}
+            // 1.0.27 (revisión visual de la 1.0.26, P1): el modelo de Tablas. Con los cuatro a la
+            // vista, las cuatro casillas marcadas (sin el chip «Los cuatro» como estado); con uno o
+            // varios elegidos, «Ver los cuatro» como enlace de texto al lado. En la ficha (uno solo,
+            // botones de opción), nada al lado: «Comparar con los demás» va con las pestañas.
+            losCuatroSinMarcar={ids.length !== 1}
+            onLosCuatro={
+              ids.length === 1
+                ? undefined
+                : entrada
+                  ? () => setMarcados([])
+                  : () => window.location.replace(rutaCon([]))
+            }
+          />
+        )}
+        {/* 0.77.1 (auditoría visual): en el móvil, con la barra plegada en la ficha, el nombre del
           sistema encima de las pestañas (la cabecera con el título queda fuera de la vista). */}
-      {compacta && bajada && ids.length === 1 && (
-        <p
-          className="pt-1.5 text-[13px] font-bold leading-tight sm:hidden"
-          style={{ color: SISTEMA_HEX[columnaDeSistema(ids[0] as SistemaId)].ink }}
-        >
-          {SLUG_CORTO[columnaDeSistema(ids[0] as SistemaId)]}
-        </p>
+        {compacta && bajada && ids.length === 1 && (
+          <p
+            className="pt-1.5 text-[13px] font-bold leading-tight sm:hidden"
+            style={{ color: SISTEMA_HEX[columnaDeSistema(ids[0] as SistemaId)].ink }}
+          >
+            {SLUG_CORTO[columnaDeSistema(ids[0] as SistemaId)]}
+          </p>
+        )}
+      </div>
+      {/* 1.0.27 (revisión visual de la 1.0.26, P1): lo que lleva a otra pantalla («Ver la ficha»,
+          «Comparar (n)», y en la ficha «Comparar con los demás»), fuera de la fila del selector y
+          con aspecto de enlace, no de chip: en el móvil, bajo las casillas; desde sm, a la derecha
+          de las pestañas. */}
+      {!compacta && accion && (
+        <div className="flex min-h-11 items-center justify-end sm:col-start-2 sm:row-start-2 sm:min-h-0 sm:self-end sm:pb-1 sm:pl-3">
+          {accion}
+        </div>
       )}
       <nav
         ref={pestanas}
         aria-label="Sección"
         // 0.86.1 (décima ronda, visual y R1): a 360 px caben las cinco pestañas (sin hueco y con
         // 3 px de relleno: «Preguntas» quedaba cortada bajo el desvanecido).
-        className="pestanas -mx-3 gap-0 px-3 sm:mx-0 sm:mt-1 sm:gap-1 sm:px-0 justify-between sm:justify-start"
+        className="pestanas -mx-3 gap-0 px-3 sm:col-start-1 sm:row-start-2 sm:mx-0 sm:mt-1 sm:min-w-0 sm:gap-1 sm:px-0 justify-between sm:justify-start"
       >
         {/* 0.72.1: las tarjetas son una vista más, al lado de las dos tablas: así se vuelve a
             ellas desde la comparación (antes solo con «Sistemas» abajo o Atrás). */}
@@ -1547,7 +1542,13 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
           objetivos sin desplazarse. */}
       {/* 0.88.1 (duodécima ronda, adjunto): desde xl, las filas de las tarjetas vecinas a la misma
           altura (subgrid: cabecera, tres datos, variante y accesos). */}
-      <ul className="grid gap-3 xl:grid-cols-2">
+      {/* 1.0.27 (decisión del autor del 15-11-2026, revisión visual de la 1.0.26): vuelve la
+          subrejilla desde xl. Cada tarjeta ocupa seis filas de la rejilla (cabecera, tres datos,
+          variante y accesos) y las comparte con su vecina: cada rótulo, la variante y el pie quedan
+          a la misma altura en las dos, aunque la más corta lleve un hueco (se acepta). La rejilla
+          sin separación vertical propia (sería también la de dentro de cada tarjeta): la de entre
+          filas de tarjetas, como margen de la segunda fila. Por debajo de xl, nada cambia. */}
+      <ul className="grid gap-3 xl:grid-cols-2 xl:gap-y-0">
         {visibles.map(({ s, c }) => {
           const h = SISTEMA_HEX[c];
           const variante = VARIANTE_RESUMEN[c];
@@ -1561,10 +1562,13 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
             ["Plan de seguridad", "Plan", href("pacientes", "plan", s.id)],
           ];
           return (
-            <li key={s.id} className="min-w-0">
+            <li
+              key={s.id}
+              className="min-w-0 xl:row-[span_6/span_6] xl:grid xl:grid-rows-subgrid xl:[&:nth-child(n+3)]:mt-3"
+            >
               <article
                 aria-label={s.name}
-                className="tarjeta tarjeta-sistema flex h-full flex-col overflow-hidden"
+                className="tarjeta tarjeta-sistema flex h-full flex-col overflow-hidden xl:row-[span_6/span_6] xl:grid xl:grid-rows-subgrid xl:gap-y-0"
                 style={{ ["--sis" as string]: h.strong }}
               >
                 <a
@@ -1593,7 +1597,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                     </span>
                   </span>
                 </a>
-                <div className="flex-1 px-4 py-2.5 xl:py-3">
+                <div className="flex-1 px-4 py-2.5 xl:row-[span_4/span_4] xl:grid xl:grid-rows-subgrid xl:gap-y-0 xl:py-3">
                   <CasillasDatos c={c} datos={datosDe(c)} modo="resumen" />
                   {variante && (
                     <p className="mt-3 grid grid-cols-[auto_1fr] items-baseline gap-x-2 text-sm leading-snug text-slate-800">
@@ -1610,7 +1614,9 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                   aria-label={`Ficha de ${s.name}`}
                   // 0.89.1 (13.ª ronda, adjunto): desde xl (dos columnas), con los rótulos cortos en
                   // una línea: a 1366 × 768 los cuatro objetivos entran sin desplazarse.
-                  className="separador flex flex-wrap justify-between gap-x-2 gap-y-0 border-t px-4 py-1 sm:justify-start sm:gap-x-2.5 xl:py-0.5"
+                  // 1.0.27: desde xl, con «Ficha:» delante, los cinco accesos en una línea a 1280–1440
+                  // (con 10 px entre piezas, «Plan» bajaba solo a una segunda).
+                  className="separador flex flex-wrap justify-between gap-x-2 gap-y-0 border-t px-4 py-1 sm:justify-start sm:gap-x-2.5 xl:gap-x-1.5 xl:py-0.5"
                 >
                   {/* 1.0.27 (revisión externa del 15-11-2026): los accesos llevan a la ficha de
                       ESTE sistema, no a las pestañas de arriba (que comparan los cuatro); sin el

@@ -15,7 +15,7 @@ import { AUTOR_PACIENTES, RESUMEN_CAPITULO, TITULO_CAPITULO_PACIENTES } from "..
 import { elegirRuta, href } from "../rutas";
 import { CabeceraEditorial, ToneCard } from "../ui";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
-import { hojaExtraPorId, type HojaExtra } from "../hojas";
+import { hojaExtraPorId, type HojaExtra, type SeccionHoja } from "../hojas";
 import { Texto } from "../texto";
 import { SinCortes } from "../componentes/SinCortes";
 import { sinCortes } from "../sinCortes";
@@ -254,6 +254,19 @@ export function HojaPacientes({ id }: { id?: string }) {
   );
 }
 
+/* Un tramo de β-OHB de la hoja de cetonas (no el urgente): su título acaba en la cifra. */
+const esTramo = (sec: SeccionHoja) => !sec.urgente && /\d mmol\/l$/.test(sec.titulo);
+/* Las secciones de una hoja, con los tramos seguidos en un solo grupo. */
+function gruposDeSecciones(secciones: SeccionHoja[]): SeccionHoja[][] {
+  const grupos: SeccionHoja[][] = [];
+  for (const sec of secciones) {
+    const ultimo = grupos[grupos.length - 1];
+    if (ultimo && esTramo(sec) && esTramo(ultimo[ultimo.length - 1])) ultimo.push(sec);
+    else grupos.push([sec]);
+  }
+  return grupos;
+}
+
 /* El cuerpo de una hoja escrita por la app (hojas.ts): secciones con puntos y huecos. */
 function CuerpoHoja({
   hoja,
@@ -266,6 +279,37 @@ function CuerpoHoja({
   c?: number;
 }) {
   const f = (t: string) => delFormato(t, c);
+  const seccion = (sec: SeccionHoja) => (
+    <section
+      key={sec.titulo}
+      aria-label={sec.urgente ? `Urgente: ${sec.titulo}` : undefined}
+      // 0.92.0 (revisión de tarjetas, ★12): la misma receta de urgencia que la de la Figura 3
+      // (UrgenciaF3: borde rojo claro de 1 px, fondo rojo pálido, esquinas de 6 px); en papel,
+      // las dos con el marco de .hoja-urgente.
+      className={`hoja-seccion mb-3 ${sec.urgente ? "hoja-urgente rounded-md border border-red-200 bg-red-50 px-3 py-2.5" : ""}`}
+    >
+      <h3
+        className={`text-base font-extrabold ${sec.urgente ? "text-red-900" : ""}`}
+        style={sec.urgente ? undefined : { color: hex.ink }}
+      >
+        {sec.titulo}
+      </h3>
+      {sec.parrafos?.map((par, i) => (
+        <p key={i} className="mt-1 text-[15px] leading-relaxed text-slate-800">
+          <SinCortes texto={f(par)} />
+        </p>
+      ))}
+      {sec.items && (
+        <ul className="mt-1 list-disc space-y-1 pl-5 text-[15px] leading-relaxed text-slate-800">
+          {sec.items.map((it, i) => (
+            <li key={i}>
+              <SinCortes texto={f(it)} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
   return (
     <>
       {titulo && (
@@ -276,37 +320,19 @@ function CuerpoHoja({
           <SinCortes texto={f(hoja.intro)} />
         </p>
       )}
-      {hoja.secciones.map((sec) => (
-        <section
-          key={sec.titulo}
-          aria-label={sec.urgente ? `Urgente: ${sec.titulo}` : undefined}
-          // 0.92.0 (revisión de tarjetas, ★12): la misma receta de urgencia que la de la Figura 3
-          // (UrgenciaF3: borde rojo claro de 1 px, fondo rojo pálido, esquinas de 6 px); en papel,
-          // las dos con el marco de .hoja-urgente.
-          className={`hoja-seccion mb-3 ${sec.urgente ? "hoja-urgente rounded-md border border-red-200 bg-red-50 px-3 py-2.5" : ""}`}
-        >
-          <h3
-            className={`text-base font-extrabold ${sec.urgente ? "text-red-900" : ""}`}
-            style={sec.urgente ? undefined : { color: hex.ink }}
-          >
-            {sec.titulo}
-          </h3>
-          {sec.parrafos?.map((par, i) => (
-            <p key={i} className="mt-1 text-[15px] leading-relaxed text-slate-800">
-              <SinCortes texto={f(par)} />
-            </p>
-          ))}
-          {sec.items && (
-            <ul className="mt-1 list-disc space-y-1 pl-5 text-[15px] leading-relaxed text-slate-800">
-              {sec.items.map((it, i) => (
-                <li key={i}>
-                  <SinCortes texto={f(it)} />
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-      ))}
+      {/* 1.0.27 (revisión visual de la 1.0.26, P4): los tramos de β-OHB seguidos («Menos de 0,6»,
+          «Entre 0,6 y 0,9», «Entre 1,0 y 2,9 mmol/l») van juntos en un bloque que en papel no se
+          parte (.hoja-tramos): el de 1,0–2,9, con la dosis con pluma, empezaba solo en la cara
+          siguiente. Mismo texto y mismo orden. */}
+      {gruposDeSecciones(hoja.secciones).map((grupo) =>
+        grupo.length > 1 || esTramo(grupo[0]) ? (
+          <div key={grupo[0].titulo} className="hoja-tramos">
+            {grupo.map(seccion)}
+          </div>
+        ) : (
+          seccion(grupo[0])
+        ),
+      )}
       {hoja.huecos?.map((etiqueta) => (
         <div
           key={etiqueta}
