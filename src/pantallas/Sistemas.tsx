@@ -1612,6 +1612,16 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                   // una línea: a 1366 × 768 los cuatro objetivos entran sin desplazarse.
                   className="separador flex flex-wrap justify-between gap-x-2 gap-y-0 border-t px-4 py-1 sm:justify-start sm:gap-x-2.5 xl:py-0.5"
                 >
+                  {/* 1.0.27 (revisión externa del 15-11-2026): los accesos llevan a la ficha de
+                      ESTE sistema, no a las pestañas de arriba (que comparan los cuatro); sin el
+                      rótulo se confundían con una segunda navegación. La nav ya se anuncia como
+                      «Ficha de …». */}
+                  <span
+                    aria-hidden="true"
+                    className="inline-flex min-h-11 items-center text-[13px] font-semibold text-slate-800 sm:min-h-9 sm:text-sm"
+                  >
+                    Ficha:
+                  </span>
                   {accesos.map(([t, corto, ruta], k) => (
                     <Fragment key={t}>
                       {k > 0 && (
