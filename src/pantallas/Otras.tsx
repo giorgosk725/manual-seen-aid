@@ -199,6 +199,15 @@ export function Buscar({ inicial }: { inicial?: string }) {
   // historial con la misma dirección (la consulta no va en la URL): Atrás vuelve a lo escrito
   // («ducha») en vez de salir de Buscar. 1.0.7 (revisión R105-01): en el historial, solo una
   // marca opaca; el texto, en memoria (consultaBuscar.ts).
+  // 1.0.27 (P3): tras Intro o tras elegir una sugerencia (que desaparece al elegirla), el foco no
+  // cae en el documento: en la caja con teclado; en táctil, en los resultados (sin teclado encima).
+  const focoTrasBuscar = () => {
+    const caja = document.getElementById("buscar-q") as HTMLInputElement | null;
+    if (window.matchMedia?.("(pointer: coarse)").matches) {
+      caja?.blur();
+      document.getElementById("resultados-buscar")?.focus({ preventScroll: true });
+    } else caja?.focus({ preventScroll: true });
+  };
   const elegirSugerencia = (t: string) => {
     if (q.trim() && t !== q) {
       window.history.replaceState(
@@ -208,6 +217,7 @@ export function Buscar({ inicial }: { inicial?: string }) {
       window.history.pushState({ mseenBusqueda: marcaDeConsulta(t) }, "");
     }
     setQ(t);
+    focoTrasBuscar();
   };
   useEffect(() => {
     const onPop = (e: PopStateEvent) => {
@@ -346,7 +356,11 @@ export function Buscar({ inicial }: { inicial?: string }) {
   // 0.85.1 (novena ronda, guardia): sin sugerencias si ya hay un atajo (empujaban el «Abrir» hacia
   // abajo) y sin la del ejercicio si la consulta no habla de él.
   const sugerencias =
-    motor && q.trim().length >= 3 && !atajos.some((a) => a.entrada.id === "recurso/sospecha-fallo")
+    motor &&
+    q.trim().length >= 3 &&
+    // 1.0.27 (P4): con una referencia («tabla 3»), su «Abrir» el primero, sin sugerencias delante.
+    !motor.referenciaDirecta(q) &&
+    !atajos.some((a) => a.entrada.id === "recurso/sospecha-fallo")
       ? motor
           .sugerir(q)
           .filter(
@@ -443,7 +457,9 @@ export function Buscar({ inicial }: { inicial?: string }) {
           aria-controls={hayListaSugerencias ? "sugerencias-buscar" : undefined}
           aria-describedby="buscar-ayuda"
           onKeyDown={(e) => {
-            if (e.key === "Enter") e.currentTarget.blur();
+            // 1.0.27 (P3): en pantalla táctil, Intro cierra el teclado y el foco pasa a los
+            // resultados; con teclado, se queda en la caja (antes caía en el documento).
+            if (e.key === "Enter") focoTrasBuscar();
             if (e.key === "ArrowDown" && hayListaSugerencias) {
               e.preventDefault();
               document
@@ -516,6 +532,9 @@ export function Buscar({ inicial }: { inicial?: string }) {
         </p>
       )}
       <div
+        id="resultados-buscar"
+        tabIndex={-1}
+        className="focus:outline-none"
         onClickCapture={(e) => {
           if ((e.target as HTMLElement).closest("a")) guardarReciente(q);
         }}

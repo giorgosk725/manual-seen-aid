@@ -1420,7 +1420,13 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
       <CabeceraEditorial titulo="Interpretación de la descarga" hex={hex} level={1} />
       {/* 0.72.0: los ocho pasos a la vista. Hasta el ordenador ancho, ocho botones numerados
           con el avance; en él, la lista con sus títulos a la izquierda. */}
-      <nav ref={filaPasos} aria-label="Pasos de la descarga" className="no-imprimir mb-3 lg:hidden">
+      {/* 1.0.27 (P3): `data-tira`: al volver con Atrás a un paso, el foco va al paso activo. */}
+      <nav
+        ref={filaPasos}
+        aria-label="Pasos de la descarga"
+        data-tira=""
+        className="no-imprimir mb-3 lg:hidden"
+      >
         {/* 1.0.13 (25.ª ronda, R3): con el título de cada paso, para ir al que se busca sin tocarlos
             uno a uno (antes, solo números). */}
         <label className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold text-slate-900">
@@ -1465,6 +1471,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
       <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-4">
         <nav
           aria-label="Pasos de la descarga"
+          data-tira=""
           className="no-imprimir hidden lg:sticky lg:top-6 lg:block"
         >
           <ol className="space-y-1">

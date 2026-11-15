@@ -9,6 +9,7 @@ import { AlertTriangle, ChevronDown, Printer, RotateCcw, X, type LucideIcon } fr
 import { imprimirRegion } from "./imprimir";
 import { VERSION_APP } from "./version";
 import { CATEGORIA_HEX } from "./tokens";
+import { irARuta, registrarAbridor } from "./rutas";
 
 /* Enlace de ruta hash: un <a> normal (accesible, abre en pestaña nueva con Ctrl). */
 export function Enlace({
@@ -70,6 +71,8 @@ export function Modal({
   useEffect(() => {
     if (!open) return undefined;
     prevFocus.current = document.activeElement;
+    const previo = document.activeElement;
+    registrarAbridor(previo instanceof HTMLElement && previo !== document.body ? previo : null);
     const panel = panelRef.current;
     const focusables = () =>
       Array.from(
@@ -112,6 +115,19 @@ export function Modal({
     };
   }, [open, onClose]);
   if (!open) return null;
+  // 1.0.27 (P2): un enlace de la app dentro del diálogo navega SUSTITUYENDO la entrada que el
+  // diálogo añadió al historial (antes el destino se apilaba encima y la primera pulsación de
+  // Atrás no hacía nada). Con Ctrl, Mayús o la rueda, el enlace se comporta como siempre.
+  const alPulsarEnlace = (e: React.MouseEvent) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
+      return;
+    const a = (e.target as Element | null)?.closest?.('a[href^="#/"]');
+    if (!a || a.getAttribute("target")) return;
+    e.preventDefault();
+    const destino = a.getAttribute("href")!;
+    // A la misma pantalla: no se navega; al cerrarse, el diálogo retira su entrada.
+    if (destino !== window.location.hash) irARuta(destino);
+  };
   // El fondo oscuro, aparte y debajo del diálogo (0.70.0): dentro de él, con z negativo, los
   // comprobadores de contraste lo tomaban como si estuviera encima del panel.
   return createPortal(
@@ -132,6 +148,7 @@ export function Modal({
         <div
           ref={panelRef}
           tabIndex={-1}
+          onClick={alPulsarEnlace}
           // El panel no pasa del alto de la pantalla: se desplaza por dentro (0.70.0; el menú
           // entero no cabía a 320 × 640).
           className={`pointer-events-auto max-h-[calc(100dvh-5rem)] w-full overflow-y-auto ${maxW} rounded-2xl border border-slate-200 bg-white shadow-xl focus:outline-none`}

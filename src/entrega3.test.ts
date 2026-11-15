@@ -7,6 +7,7 @@ import {
   olvidarTema,
   recordarTema,
   recursosPedidos,
+  referenciaDirecta,
   sugerir,
 } from "./buscador";
 import { consultaRegistrable } from "./consultas";
@@ -526,5 +527,32 @@ describe("Décima ronda de auditorías (0.86.1): atajos del buscador", () => {
   it("«10 semanas» en la gestación no es tema", () => {
     olvidarTema();
     expect(consultaEfectiva("embarazada 10 semanas camaps") ?? "").not.toMatch(/10/);
+  });
+});
+
+/* 1.0.27 (auditoría de navegación de la 1.0.26, P4): una referencia al capítulo lleva a su sitio y
+   «pacientes + sistema» ofrece el plan de seguridad de ese sistema. */
+describe("Referencias directas y plan del paciente (1.0.27)", () => {
+  const rec = (q: string) => recursosPedidos(q, buscarConTotales(q, 12).resultados);
+  it("«tabla N», «figura N» y «apartado N» abren su sitio, el primero", () => {
+    expect(rec("tabla 3")[0].entrada.ruta).toBe("#/consultar/tablas/T3");
+    expect(rec("Tabla 6")[0].entrada.ruta).toBe("#/consultar/tablas/T6");
+    expect(rec("la tabla 1")[0].entrada.ruta).toBe("#/consultar/tablas/T1");
+    expect(rec("figura 3")[0].entrada.ruta).toBe("#/consultar/figura-3");
+    expect(rec("figura 2")[0].entrada.ruta).toMatch(/^#\/capitulo\/[^/]+\/b\d+$/);
+    expect(rec("apartado 9")[0].entrada.ruta).toBe("#/capitulo/09-descarga");
+    expect(referenciaDirecta("tabla 9")).toBeNull();
+    expect(referenciaDirecta("tabla 4 omnipod")).toBeNull();
+  });
+  it("«pacientes camaps» y «información para pacientes de Omnipod 5»: su plan de seguridad", () => {
+    expect(rec("pacientes camaps").map((r) => r.entrada.ruta)).toContain("#/pacientes/plan/camaps");
+    expect(rec("información para pacientes de omnipod 5").map((r) => r.entrada.ruta)).toContain(
+      "#/pacientes/plan/op5",
+    );
+    // Sin repetirlo cuando ya sale por «plan».
+    const plan = rec("plan de seguridad pacientes camaps").filter(
+      (r) => r.entrada.ruta === "#/pacientes/plan/camaps",
+    );
+    expect(plan).toHaveLength(1);
   });
 });

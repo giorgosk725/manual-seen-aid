@@ -76,16 +76,36 @@ export function navegar(
   if (reemplazar) {
     // Elegir una opción dentro de la misma pantalla (tramo, paso, sistema): no apila historial.
     window.location.replace(destino);
-  } else {
-    marcarNavegacionNueva();
-    window.location.hash = destino;
-  }
+  } else irARuta(destino);
+}
+
+/* 1.0.27 (auditoría de navegación de la 1.0.26, P2): abrir una dirección de la app como
+   navegación nueva. Con un diálogo abierto («Más», la paleta), su entrada del historial (la misma
+   dirección que la pantalla de debajo) se SUSTITUYE por el destino: antes se apilaba encima y
+   quedaba una pulsación de Atrás que no hacía nada. */
+export const hayDialogoEnHistorial = () =>
+  typeof window !== "undefined" &&
+  !!window.history.state &&
+  typeof window.history.state === "object" &&
+  "mseenDialogo" in window.history.state;
+/* El control que abrió el último diálogo («Más», el botón de la paleta): la Shell le devuelve el
+   foco al volver con Atrás de una pantalla abierta desde el diálogo (antes caía en el documento). */
+let abridor: HTMLElement | null = null;
+export const registrarAbridor = (el: HTMLElement | null) => {
+  abridor = el;
+};
+export const abridorDelDialogo = () => (abridor && abridor.isConnected ? abridor : null);
+export function irARuta(destino: string) {
+  marcarNavegacionNueva();
+  if (hayDialogoEnHistorial()) window.location.replace(destino);
+  else window.location.hash = destino;
 }
 
 /* Selección dentro de una pantalla: actualiza la URL (enlazable) sin crear una entrada nueva. */
 export const elegirRuta = (seccion: string, sub?: string, detalle?: string) =>
   navegar(seccion, sub, detalle, { reemplazar: true });
 
+let vistaApilada = "";
 /* 1.0.25 (regla única de historial): cambiar de VISTA dentro de una pantalla (pestaña de Sistemas o
    de Tablas, Cálculo/Fases/Hoja, fase o paso de Iniciación, paso de la descarga) apila una entrada:
    Atrás vuelve a la vista anterior. Elegir una OPCIÓN dentro de la misma vista (sistema, rama de la
@@ -94,6 +114,18 @@ export const elegirRuta = (seccion: string, sub?: string, detalle?: string) =>
 export const apilarRuta = (seccion: string, sub?: string, detalle?: string) => {
   navegar(seccion, sub, detalle);
   anularNavegacionNueva();
+  vistaApilada = href(seccion, sub, detalle);
+};
+/* 1.0.27 (P1): la Shell distingue así el cambio de vista hacia delante (la página se queda donde
+   está) de la vuelta con Atrás o Adelante (se restaura la posición de esa vista). */
+export const consumirVistaApilada = () => {
+  // Solo si es la dirección a la que se apiló (una marca que se quedó sin consumir no convierte
+  // un Atrás posterior en un cambio hacia delante).
+  const v =
+    !!vistaApilada &&
+    JSON.stringify(parseHash(vistaApilada)) === JSON.stringify(parseHash(window.location.hash));
+  vistaApilada = "";
+  return v;
 };
 
 export function useRuta(): Ruta {
