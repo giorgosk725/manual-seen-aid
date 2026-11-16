@@ -2,6 +2,7 @@
    moverse; teclado (+, −, 0, Esc). Pensado para leer la infografía y la Figura 3 en un móvil. */
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { useDialogo } from "../dialogo";
 import { Download, Maximize2, Minus, Plus, RotateCcw, X } from "lucide-react";
 
 const MIN = 1;
@@ -20,7 +21,7 @@ export function Visor({ imagen, onClose }: { imagen: ImagenVisor | null; onClose
   const punteros = useRef(new Map<number, { x: number; y: number }>());
   const pellizco = useRef<{ d: number; escala: number } | null>(null);
   const cerrarRef = useRef<HTMLButtonElement>(null);
-  const previo = useRef<Element | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   const limitar = (e: number) => Math.min(MAX, Math.max(MIN, e));
   const zoom = useCallback((f: number) => {
@@ -36,14 +37,14 @@ export function Visor({ imagen, onClose }: { imagen: ImagenVisor | null; onClose
   }, []);
 
   const src = imagen?.src;
+  // Historial, foco atrapado, Esc y vuelta al abridor: el mismo contrato que Modal (dialogo.ts;
+  // auditoría de la 1.0.28, V01: Mayús+Tab salía a la página cubierta y Atrás la abandonaba).
+  useDialogo(!!src, onClose, panelRef, cerrarRef);
   useEffect(() => {
     if (!src) return undefined;
-    previo.current = document.activeElement;
     reset();
-    const t = setTimeout(() => cerrarRef.current?.focus(), 0);
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      else if (e.key === "+" || e.key === "=") zoom(1.4);
+      if (e.key === "+" || e.key === "=") zoom(1.4);
       else if (e.key === "-") zoom(1 / 1.4);
       else if (e.key === "0") reset();
     };
@@ -51,12 +52,10 @@ export function Visor({ imagen, onClose }: { imagen: ImagenVisor | null; onClose
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
-      clearTimeout(t);
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = overflow;
-      (previo.current as HTMLElement | null)?.focus?.();
     };
-  }, [src, onClose, zoom, reset]);
+  }, [src, zoom, reset]);
 
   if (!imagen) return null;
 
@@ -90,10 +89,12 @@ export function Visor({ imagen, onClose }: { imagen: ImagenVisor | null; onClose
 
   return createPortal(
     <div
+      ref={panelRef}
       role="dialog"
       aria-modal="true"
       aria-label={imagen.titulo}
-      className="fixed inset-0 z-[60] flex flex-col"
+      tabIndex={-1}
+      className="fixed inset-0 z-[60] flex flex-col focus:outline-none"
       style={{ background: "rgba(2, 6, 23, 0.94)" }}
     >
       <div className="flex items-center gap-2 px-3 py-2 text-white">

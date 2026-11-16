@@ -576,6 +576,12 @@ export function CalculadoraInicio({
           </button>,
           document.body,
         )}
+      {/* 1.0.29 (auditoría de la 1.0.28, I09): el alcance, antes del primer dato (estaba solo al
+          pie, tras la programación y los recambios). Mismo sentido que la nota del pie, que sigue. */}
+      <p className="text-sm leading-snug text-slate-600">
+        Ayuda de cálculo orientativa: aplica las reglas del capítulo y los puntos de partida
+        señalados; la pauta la decide el profesional. Nada de lo escrito se guarda ni se envía.
+      </p>
       <nav
         aria-label="Pasos de la calculadora"
         className="no-imprimir -my-2 flex flex-wrap items-center gap-x-2 gap-y-0"

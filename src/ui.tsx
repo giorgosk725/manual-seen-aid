@@ -9,7 +9,8 @@ import { AlertTriangle, ChevronDown, Printer, RotateCcw, X, type LucideIcon } fr
 import { imprimirRegion } from "./imprimir";
 import { VERSION_APP } from "./version";
 import { CATEGORIA_HEX } from "./tokens";
-import { irARuta, registrarAbridor } from "./rutas";
+import { irARuta } from "./rutas";
+import { useDialogo } from "./dialogo";
 
 /* Enlace de ruta hash: un <a> normal (accesible, abre en pestaña nueva con Ctrl). */
 export function Enlace({
@@ -44,76 +45,9 @@ export function Modal({
   maxW?: string;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
-  const prevFocus = useRef<Element | null>(null);
-  // Atrás (gesto de Android, botón del navegador) cierra el diálogo en vez de cambiar la
-  // página de debajo: al abrir se añade una entrada al historial con la misma dirección.
-  const cerrar = useRef(onClose);
-  cerrar.current = onClose;
-  useEffect(() => {
-    if (!open) return undefined;
-    const marca = Date.now();
-    window.history.pushState({ mseenDialogo: marca }, "");
-    const onPop = (e: PopStateEvent) => {
-      // Solo si se ha vuelto por debajo de un diálogo (no a la entrada de otro).
-      if (!(e.state && "mseenDialogo" in e.state)) cerrar.current();
-    };
-    window.addEventListener("popstate", onPop);
-    return () => {
-      window.removeEventListener("popstate", onPop);
-      // Cerrado con Esc, el botón o un clic fuera: se retira la entrada añadida. Se mira un
-      // instante después: si se cerró por pulsar un enlace del diálogo, para entonces ya se
-      // ha navegado (la entrada de arriba es otra) y no se toca el historial.
-      window.setTimeout(() => {
-        if (window.history.state?.mseenDialogo === marca) window.history.back();
-      }, 0);
-    };
-  }, [open]);
-  useEffect(() => {
-    if (!open) return undefined;
-    prevFocus.current = document.activeElement;
-    const previo = document.activeElement;
-    registrarAbridor(previo instanceof HTMLElement && previo !== document.body ? previo : null);
-    const panel = panelRef.current;
-    const focusables = () =>
-      Array.from(
-        panel?.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-        ) || [],
-      );
-    const t = setTimeout(() => {
-      const f = focusables();
-      (f[0] || panel)?.focus();
-    }, 0);
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-        return;
-      }
-      if (e.key === "Tab") {
-        const f = focusables();
-        if (!f.length) {
-          e.preventDefault();
-          panel?.focus();
-          return;
-        }
-        const first = f[0];
-        const last = f[f.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-    };
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      clearTimeout(t);
-      (prevFocus.current as HTMLElement | null)?.focus?.();
-    };
-  }, [open, onClose]);
+  // Historial (Atrás cierra el diálogo) y foco (atrapado, Esc, vuelta al abridor): contrato común
+  // con el visor de figuras (dialogo.ts; auditoría de la 1.0.28, V01).
+  useDialogo(open, onClose, panelRef);
   if (!open) return null;
   // 1.0.27 (P2): un enlace de la app dentro del diálogo navega SUSTITUYENDO la entrada que el
   // diálogo añadió al historial (antes el destino se apilaba encima y la primera pulsación de

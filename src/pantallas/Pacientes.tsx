@@ -23,7 +23,7 @@ import { imprimirRegion } from "../imprimir";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
 import { VERSION_APP } from "../version";
 import { delFormato, recambiosDe } from "../calculadora";
-import { fechaCorta, material, materialListo } from "../materiales";
+import { fechaCorta, material, materialListo, ROTULO_TIPO } from "../materiales";
 
 const hex = CATEGORIA_HEX.pacientes;
 
@@ -94,6 +94,14 @@ function Hoja({
         </p>
       )}
       <header className="separador hoja-cabecera mb-3 border-b pb-3">
+        {/* 1.0.29 (auditoría de la 1.0.28, M10): qué es el material, al abrirlo y junto al título,
+            según su tipo registrado (materiales.ts); la fecha de revisión sigue en el pie. En papel
+            lo dice el pie (la hoja cabe en una cara). */}
+        {m && (
+          <p className="no-imprimir mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            {ROTULO_TIPO[m.tipo]}
+          </p>
+        )}
         <h1 className="text-balance text-xl font-black leading-tight text-slate-900">{titulo}</h1>
         {subtitulo && <div className="mt-1 text-sm text-slate-600">{subtitulo}</div>}
       </header>

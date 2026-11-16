@@ -99,6 +99,22 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
   const prev = APARTADOS[i - 1];
   const next = APARTADOS[i + 1];
   const subs = subapartados(apartado);
+  // 1.0.29 (auditoría de la 1.0.28, L08): un apartado largo sin subapartados (el 8) se orienta por
+  // las entradillas de sus párrafos («Configuración inicial», «Seguimiento mantenido»…), con las
+  // anclas reales de esos bloques. El rótulo es la entradilla del capítulo sin la remisión «(v. …)»
+  // ni el punto final; el texto no cambia.
+  const marcas = subs.length
+    ? subs.map((s) => ({ ancla: s.id, texto: s.texto }))
+    : apartado.bloques.flatMap((b, i) =>
+        b.t === "p" && b.lead
+          ? [
+              {
+                ancla: idDeBloque(b, i),
+                texto: b.lead.replace(/\s*\(v\.[^)]*\)/, "").replace(/\.\s*$/, ""),
+              },
+            ]
+          : [],
+      );
   // Lo mismo para «En este apartado» (subapartados y recursos).
   const [localAbierto, setLocalAbierto] = useState(
     () => !window.matchMedia?.("(max-width: 767px)").matches,
@@ -189,7 +205,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
           <span className="w-16" style={{ background: colorApartado(apartado.n) }} />
           <span className="flex-1" />
         </div>
-        {(subs.length > 0 || recursos.length > 0) && (
+        {(marcas.length > 0 || recursos.length > 0) && (
           <details
             className="group no-imprimir mt-3"
             open={localAbierto}
@@ -208,7 +224,9 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                   {" "}
                   ·{" "}
                   {[
-                    subs.length && `${subs.length} subapartados`,
+                    subs.length
+                      ? `${subs.length} subapartados`
+                      : marcas.length && `${marcas.length} partes del texto`,
                     recursos.length &&
                       (recursos.length === 1
                         ? `1 ${recursos[0].tipo.toLowerCase()}`
@@ -220,12 +238,15 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
               </span>
             </summary>
             <div className="mt-2 space-y-2">
-              {subs.length > 0 && (
-                <nav aria-label="Subapartados" className="flex flex-wrap items-center gap-1.5">
-                  {subs.map((s) => (
+              {marcas.length > 0 && (
+                <nav
+                  aria-label={subs.length ? "Subapartados" : "Partes del texto"}
+                  className="flex flex-wrap items-center gap-1.5"
+                >
+                  {marcas.map((s) => (
                     <a
-                      key={s.id}
-                      href={href("capitulo", apartado.slug, s.id)}
+                      key={s.ancla}
+                      href={href("capitulo", apartado.slug, s.ancla)}
                       className="chip tap-44 min-h-9 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:min-h-8"
                     >
                       {s.texto}
@@ -245,7 +266,11 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                             className="linea chip tap-44 min-h-9 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:min-h-8"
                           >
                             <I size={14} aria-hidden="true" style={{ color: SEEN.azulOsc }} />
-                            <span className="text-slate-500">{r.tipo}</span> {r.texto}
+                            {/* Sin «Tabla Tabla 2»: el tipo solo si el nombre no lo dice ya. */}
+                            {!r.texto.startsWith(r.tipo) && (
+                              <span className="text-slate-500">{r.tipo}</span>
+                            )}{" "}
+                            {r.texto}
                           </a>
                         </li>
                       );
@@ -279,17 +304,17 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         <div className="lg:pr-16">
           <Bloques apartado={apartado} destacado={destacado} />
         </div>
-        {subs.length > 0 && (
+        {marcas.length > 0 && (
           <aside aria-label="Índice lateral del apartado" className="no-imprimir hidden xl:block">
             <nav aria-label="Índice del apartado" className="sticky top-6">
               <div className="mb-2 rotulo text-slate-500">En este apartado</div>
               <ol className="linea space-y-1 border-l-2 pl-3">
-                {subs.map((s) => (
-                  <li key={s.id}>
+                {marcas.map((s) => (
+                  <li key={s.ancla}>
                     <a
-                      href={href("capitulo", apartado.slug, s.id)}
-                      aria-current={destacado === s.id ? "location" : undefined}
-                      className={`block min-h-6 rounded px-1 py-0.5 text-sm leading-snug hover:text-slate-900 ${destacado === s.id ? "font-semibold text-slate-900" : "text-slate-600"}`}
+                      href={href("capitulo", apartado.slug, s.ancla)}
+                      aria-current={destacado === s.ancla ? "location" : undefined}
+                      className={`block min-h-6 rounded px-1 py-0.5 text-sm leading-snug hover:text-slate-900 ${destacado === s.ancla ? "font-semibold text-slate-900" : "text-slate-600"}`}
                     >
                       {s.texto}
                     </a>

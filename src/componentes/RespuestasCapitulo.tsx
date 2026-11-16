@@ -9,6 +9,7 @@ import { useId, useState, type ReactNode } from "react";
 import { ArrowRight, MessageCircleQuestion, Quote } from "lucide-react";
 import { marcar, type Respuesta } from "../busqueda";
 import type { RespuestaFrecuente } from "../respuestas";
+import { coberturaDe, TITULO_COBERTURA, type Cobertura } from "../cobertura";
 import type { Frecuente } from "../frecuentes";
 import { FIGURA3, LISTA_TABLAS, type TablaId } from "../contenido";
 import { ComoInterpretar } from "./ComoInterpretar";
@@ -782,14 +783,10 @@ export function RespuestasCapitulo({
     );
   if (!resto.length) return null;
   const [r, ...otras] = resto;
-  const cercana = !!r.aproximada;
-  // Recuperación libre (A09): pasajes relacionados con lo buscado, no una respuesta validada.
-  const varias = cercana && r.duda === "varias";
-  const titulo = !cercana
-    ? "Pasajes relacionados"
-    : varias
-      ? "Pasajes del capítulo"
-      : "Coincidencia parcial en el capítulo";
+  // Recuperación libre (A09): pasajes relacionados con lo buscado, no una respuesta validada. El
+  // grado de cobertura es el mismo que anuncia Buscar al lector (cobertura.ts; B04).
+  const cobertura = coberturaDe(false, r) as Exclude<Cobertura, "especifica" | "ninguna">;
+  const titulo = TITULO_COBERTURA[cobertura];
   return (
     <>
       {/* 0.92.0 (revisión de tarjetas, ★3): la misma tarjeta que la pregunta frecuente y «Abrir»
@@ -802,6 +799,13 @@ export function RespuestasCapitulo({
         >
           <Quote size={14} aria-hidden="true" /> {titulo}
         </H>
+        {/* Una coincidencia parcial dice su límite antes del pasaje (B04), sin inventar respuesta. */}
+        {cobertura === "parcial" && (
+          <p className="mb-2 text-sm text-slate-600">
+            El capítulo puede no responder a esta consulta: estos pasajes comparten solo una parte
+            de lo buscado.
+          </p>
+        )}
         <Tarjeta
           // 0.83.1 (séptima ronda, R3): otra respuesta u otro sistema, otra tarjeta (el sistema
           // marcado se decide al montarla; al escribir, la tarjeta se reutilizaba sin marcarlo).

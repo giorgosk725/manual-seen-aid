@@ -35,6 +35,9 @@ const TEMA_TABLA: Record<string, string> = {
   T6: "Pruebas y cirugía",
 };
 
+/* En la tira de pestañas del móvil, el tema en una o dos palabras. */
+const TEMA_CORTO: Record<string, string> = { ...TEMA_TABLA, T6: "Pruebas" };
+
 /* Las seis tablas como filas: número, título y la pregunta que responde cada una. */
 function IndiceTablas() {
   return (
@@ -124,9 +127,18 @@ function TablaPantalla({
             onFocus={pestanaALaVista}
             className="pestana tap-44 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
-            Tabla {t.numero}
-            {/* 1.0.24 (30.ª ronda, senior): el tema desde xl (con zoom del 125 % se cortaba). */}
-            <span className="hidden font-normal xl:inline">&nbsp;· {TEMA_TABLA[t.id]}</span>
+            {/* 1.0.29 (auditoría de la 1.0.28, T06): también por debajo de xl, número y tema corto
+                («4 · Situaciones»), para no tener que recordar números; la tira se desplaza con su
+                desvanecido. Desde xl, «Tabla N · tema» (1.0.24: con zoom del 125 % se cortaba). */}
+            <span className="xl:hidden">
+              <span className="sr-only">Tabla </span>
+              {t.numero}
+              <span className="font-normal">&nbsp;· {TEMA_CORTO[t.id]}</span>
+            </span>
+            <span className="hidden xl:inline">
+              Tabla {t.numero}
+              <span className="font-normal">&nbsp;· {TEMA_TABLA[t.id]}</span>
+            </span>
           </a>
         ))}
       </nav>

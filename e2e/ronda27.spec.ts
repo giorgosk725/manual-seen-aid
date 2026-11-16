@@ -33,7 +33,7 @@ test.describe("Ronda 27 · tablas", () => {
     expect(await fila.locator("th").evaluate((e) => getComputedStyle(e).boxShadow)).toContain(
       "rgb(142, 37, 78) 3px 0px 0px 0px inset",
     );
-    await expect(page.getByRole("combobox", { name: /Ir a una fila/ })).toContainText("marcada:");
+    await expect(page.getByRole("combobox", { name: /Mostrar un/ })).toContainText("marcado:");
   });
 
   test("visual y senior: en papel, rótulos en gris neutro y el colofón en el margen", async ({

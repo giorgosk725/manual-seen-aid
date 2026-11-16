@@ -1,5 +1,7 @@
-import { FUENTES_COMPLEMENTARIAS } from "../notas-complementarias";
 /* Buscar, Bibliografía, Sobre esta app, Autoevaluación y Preguntas frecuentes. */
+import { responderPregunta, useIntentoTest, volverAEmpezar } from "../intento-test";
+import { anuncioCobertura, coberturaDe } from "../cobertura";
+import { FUENTES_COMPLEMENTARIAS } from "../notas-complementarias";
 import { VeaseTambien } from "../componentes/VeaseTambien";
 import { recordarSistema } from "../sistemaReciente";
 import { Anuncio } from "../componentes/Anuncio";
@@ -495,13 +497,8 @@ export function Buscar({ inicial }: { inicial?: string }) {
           qEf.trim().length < 2 || estado !== "listo"
             ? ""
             : // 0.82.1 (sexta ronda, adjunto): la misma cifra que «Todos los resultados (N)».
-              hayRespuesta
-              ? total
-                ? `Hay respuesta del capítulo y ${total} ${total === 1 ? "resultado más" : "resultados más"}.`
-                : "Hay respuesta del capítulo."
-              : total
-                ? `${total} ${total === 1 ? "resultado" : "resultados"}.`
-                : "Sin resultados."
+              // 1.0.29 (B04): el mismo grado de cobertura que el rótulo del primer bloque.
+              anuncioCobertura(coberturaDe(!!frecuente, respuestas[0]), total, extras.length > 0)
         }
       />
       {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
@@ -874,13 +871,12 @@ export function Sobre() {
 function Pregunta({
   p,
   n,
-  onResponder,
+  elegida,
 }: {
   p: (typeof PREGUNTAS)[number];
   n: number;
-  onResponder: (acierto: boolean) => void;
+  elegida: number | null;
 }) {
-  const [elegida, setElegida] = useState<number | null>(null);
   const ap = apartadoPorSlug(p.apartado);
   // Al responder, la explicación a la vista (0.72.0: en el móvil quedaba debajo, fuera).
   const explicacion = useRef<HTMLDivElement>(null);
@@ -905,8 +901,7 @@ function Pregunta({
                 type="button"
                 onClick={() => {
                   if (resuelta) return;
-                  setElegida(i);
-                  onResponder(esCorrecta);
+                  responderPregunta(p.id, i);
                   requestAnimationFrame(() =>
                     explicacion.current?.scrollIntoView?.({ block: "nearest" }),
                   );
@@ -973,14 +968,14 @@ function Pregunta({
 
 export function Test() {
   const pendientes = PREGUNTAS.filter((p) => !p.validada).length;
-  // Cada intento es un juego nuevo de preguntas (clave), con su recuento de aciertos.
-  const [intento, setIntento] = useState(0);
-  const [hechas, setHechas] = useState<Record<string, boolean>>({});
-  const n = Object.keys(hechas).length;
-  const aciertos = Object.values(hechas).filter(Boolean).length;
+  // El intento vive en memoria de la aplicación (intento-test.ts; auditoría de la 1.0.28, A02):
+  // abrir el apartado citado y volver ya no lo borra. Cada intento monta preguntas nuevas (clave).
+  const { n: intento, elegidas } = useIntentoTest();
+  const respondidas = PREGUNTAS.filter((p) => p.id in elegidas);
+  const n = respondidas.length;
+  const aciertos = respondidas.filter((p) => elegidas[p.id] === p.correcta).length;
   const empezarDeNuevo = () => {
-    setHechas({});
-    setIntento((x) => x + 1);
+    volverAEmpezar();
     window.scrollTo({ top: 0 });
   };
   return (
@@ -1000,10 +995,22 @@ export function Test() {
       )}
       {/* 0.72.0: el avance, pegado bajo la cabecera mientras se baja por las preguntas. */}
       <div className="separador barra-pegada sticky top-14 z-10 -mx-3 mb-3 border-b px-3 py-2 sm:mx-0 sm:rounded-lg sm:border lg:top-0">
-        <p className="text-xs font-semibold text-slate-700" aria-live="polite">
-          Respondidas {n} de {PREGUNTAS.length}
-          {n > 0 ? ` · ${aciertos} ${aciertos === 1 ? "acierto" : "aciertos"}` : ""}
-        </p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs font-semibold text-slate-700" aria-live="polite">
+            Respondidas {n} de {PREGUNTAS.length}
+            {n > 0 ? ` · ${aciertos} ${aciertos === 1 ? "acierto" : "aciertos"}` : ""}
+          </p>
+          {/* El intento se conserva al consultar el capítulo: reiniciarlo es una acción explícita. */}
+          {n > 0 && n < PREGUNTAS.length && (
+            <button
+              type="button"
+              onClick={empezarDeNuevo}
+              className="tap-44 shrink-0 rounded text-xs font-semibold text-slate-700 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            >
+              Volver a empezar
+            </button>
+          )}
+        </div>
         <div aria-hidden="true" className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-200">
           <div
             className="h-full rounded-full transition-all"
@@ -1016,12 +1023,7 @@ export function Test() {
       </div>
       <ol className="space-y-3" key={intento}>
         {PREGUNTAS.map((p, i) => (
-          <Pregunta
-            key={p.id}
-            p={p}
-            n={i + 1}
-            onResponder={(acierto) => setHechas((h) => ({ ...h, [p.id]: acierto }))}
-          />
+          <Pregunta key={p.id} p={p} n={i + 1} elegida={elegidas[p.id] ?? null} />
         ))}
       </ol>
       {n === PREGUNTAS.length && (

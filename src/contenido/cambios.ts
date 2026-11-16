@@ -13,9 +13,22 @@ export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-11-17",
+    ambito: "app",
+    titulo: `Complemento interactivo ${VERSION_APP} — continuidad, búsqueda y tablas`,
+    detalle: [
+      "Visor de figuras: se comporta como los demás diálogos. El foco no sale de sus controles con Tab ni con Mayús+Tab, Atrás lo cierra sin dejar la pantalla y al cerrarlo el foco vuelve al botón que lo abrió.",
+      "Autoevaluación: abrir el apartado citado y volver conserva las respuestas, el recuento y las explicaciones; «Volver a empezar» reinicia el intento. Nada se guarda: al recargar, el intento empieza de cero.",
+      "Buscar: una sigla sola («TIR») ya no abre la respuesta de una población concreta (la gestación); esa respuesta sale cuando la búsqueda la nombra. Una coincidencia parcial se anuncia como parcial y dice que el capítulo puede no responder a la consulta.",
+      "Tablas: en las Tablas 1, 3 y 4, «Ir a…» lleva a una característica, un aspecto o una situación sin ocultar las demás filas. En las Tablas 2, 5 y 6 el filtro se llama por lo que hace («Mostrar un procedimiento»). En el móvil, cada pestaña dice su número y su tema («4 · Situaciones»).",
+      "Apartado 8: «En este apartado» lleva también a sus partes del texto (configuración inicial, seguimiento estrecho, seguimiento mantenido y reevaluación).",
+      "Iniciar un sistema: el alcance de la ayuda de cálculo, antes del primer dato (antes solo al pie). Las hojas para el paciente dicen qué son junto al título (plantilla con texto literal del capítulo, hoja adaptada por este complemento).",
+    ],
+  },
+  {
     fecha: "2026-11-15",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — cuenta de X en «Sobre»`,
+    titulo: "Complemento interactivo 1.0.28 — cuenta de X en «Sobre»",
     detalle: [
       "«Sobre» › Fuentes y revisión: fila «En X» con la cuenta @giorg_kyriakos, como en el asistente.",
     ],

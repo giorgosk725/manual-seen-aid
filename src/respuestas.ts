@@ -2194,9 +2194,12 @@ const INTENCIONES: [string, RegExp][] = [
   ["retirar", /\b(retir\w*|suspend\w*|reconsider\w*|abandon\w*)\b/],
   ["seguimiento", /\b(seguimiento|revisiones|cada cuanto)\b/],
 ];
-/* Contextos de una frecuente que la búsqueda tiene que nombrar para que sea su respuesta. */
+/* Contextos de una frecuente que la búsqueda tiene que nombrar para que sea su respuesta. Una
+   población concreta (gestación) tampoco se adopta por defecto: «TIR» sola no es «TIR en la
+   gestación» (auditoría de la 1.0.28, B03); la frecuente sigue como relacionada. */
 const CONTEXTOS: [string, RegExp][] = [
   ["hospital", /\b(ingres\w*|hospital\w*|planta|quirofano)\b/],
+  ["gestacion", /\b(gestacion\w*|gestante\w*|embaraz\w*|preconcepcion\w*)\b/],
 ];
 const UMBRAL_BUSQUEDA = 0.7;
 const UMBRAL_PREGUNTA = 0.6;

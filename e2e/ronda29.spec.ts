@@ -24,7 +24,7 @@ test.describe("Ronda 29 · tablas y navegación", () => {
     await page.setViewportSize({ width: 1366, height: 768 });
     await page.goto("/#/consultar/tablas/T5::2");
     await expect(page.locator("#filtro-T5 option").first()).toHaveText(
-      "Todas las filas · marcada: paso 3",
+      "Todos los pasos · marcado: paso 3",
     );
     const fila = page.locator(".tabla-capitulo tr.fila-resaltada").first();
     await expect(fila).toBeVisible();

@@ -452,6 +452,7 @@ function FichaSistema({ tabla, c, resaltar }: { tabla: Tabla; c: number; resalta
           <div
             key={i}
             id={`fila-${tabla.id}-${i}`}
+            data-fila={i}
             className={`grid gap-1 py-3 sm:grid-cols-[13rem_1fr] sm:gap-4 ${resaltar === i ? "fila-resaltada -mx-4 px-4" : ""}`}
             aria-current={resaltar === i ? "location" : undefined}
           >
@@ -487,6 +488,54 @@ function FichaSistema({ tabla, c, resaltar }: { tabla: Tabla; c: number; resalta
     </div>
   );
 }
+
+/* Deja una fila de la tabla a la vista, bajo las barras pegadas y la cabecera de la tabla; si ya
+   se ve entera, no se mueve. */
+function colocarFila(el: HTMLElement) {
+  // 1.0.9 (22.ª ronda, adjunto y R3): también por debajo de «Volver a la consulta», que va
+  // pegado arriba (tapaba la fila de destino y su rótulo).
+  // 1.0.24 (segunda verificación): lo que ocupará arriba cada barra YA PEGADA (su `top` más su
+  // alto); una que no se pega (o flota abajo, como «Volver» en Sistemas) no cuenta. Antes se
+  // medía donde estaba al llegar y en el móvil la fila quedaba 160 px más abajo, cortada.
+  const bajoDe = (sel: string) => {
+    const x = document.querySelector<HTMLElement>(sel);
+    if (!x || x.offsetParent === null) return 0;
+    const st = getComputedStyle(x);
+    return st.position === "sticky" ? (parseFloat(st.top) || 0) + x.offsetHeight : 0;
+  };
+  // 1.0.23 (verificación visual): también la cabecera de la app (móvil) y la cabecera pegada de
+  // la propia tabla (thead), que tapaban la fila en Tablas.
+  const barra = Math.max(
+    bajoDe(".barra-pegada"),
+    bajoDe(".volver-pegado"),
+    bajoDe("header.cabecera"),
+  );
+  const cabeceraTabla =
+    el.closest("table")?.querySelector("thead")?.getBoundingClientRect().height ?? 0;
+  const caja = el.getBoundingClientRect();
+  // 1.0.24 (30.ª ronda, R3 y visual): ya a la vista (bajo las barras), no se mueve; y si hay
+  // «Volver a la consulta» sin pegar (Sistemas), se sube como mucho hasta él mientras la fila
+  // siga cabiendo en la pantalla (desde la descarga quedaba cortado o fuera).
+  if (caja.top >= barra + cabeceraTabla && caja.bottom <= window.innerHeight) return;
+  const top = window.scrollY + caja.top - barra - cabeceraTabla - 12;
+  window.scrollTo({ top: Math.max(0, top) });
+}
+
+/* Salto a una fila en las tablas por sistema (Tablas 1, 3 y 4; auditoría de la 1.0.28, T05): se
+   llega al aspecto sin recorrer la tabla y sin ocultar las demás filas (se conserva el contexto de
+   lectura; el filtro por fila es el de las Tablas 2, 5 y 6). */
+const SALTO_A_FILA: Record<string, string> = {
+  T1: "Ir a una característica",
+  T3: "Ir a un aspecto",
+  T4: "Ir a una situación",
+};
+
+/* Qué es cada fila en las tablas que se filtran por fila (Tablas 2, 5 y 6; T07). */
+const ELEMENTO_DE_FILA: Record<string, { uno: string; todos: string }> = {
+  T2: { uno: "aspecto", todos: "Todos los aspectos" },
+  T5: { uno: "paso", todos: "Todos los pasos" },
+  T6: { uno: "procedimiento", todos: "Todos los procedimientos" },
+};
 
 export function TablaVista({
   tabla,
@@ -532,33 +581,7 @@ export function TablaVista({
     // Atrás, no: la Shell restaura.
     if (!filaYaColocada.current && fueNavegacionNueva()) window.scrollTo({ top: 0 });
     filaYaColocada.current = true;
-    // 1.0.9 (22.ª ronda, adjunto y R3): también por debajo de «Volver a la consulta», que va
-    // pegado arriba (tapaba la fila de destino y su rótulo).
-    // 1.0.24 (segunda verificación): lo que ocupará arriba cada barra YA PEGADA (su `top` más su
-    // alto); una que no se pega (o flota abajo, como «Volver» en Sistemas) no cuenta. Antes se
-    // medía donde estaba al llegar y en el móvil la fila quedaba 160 px más abajo, cortada.
-    const bajoDe = (sel: string) => {
-      const x = document.querySelector<HTMLElement>(sel);
-      if (!x || x.offsetParent === null) return 0;
-      const st = getComputedStyle(x);
-      return st.position === "sticky" ? (parseFloat(st.top) || 0) + x.offsetHeight : 0;
-    };
-    // 1.0.23 (verificación visual): también la cabecera de la app (móvil) y la cabecera pegada de
-    // la propia tabla (thead), que tapaban la fila en Tablas.
-    const barra = Math.max(
-      bajoDe(".barra-pegada"),
-      bajoDe(".volver-pegado"),
-      bajoDe("header.cabecera"),
-    );
-    const cabeceraTabla =
-      el.closest("table")?.querySelector("thead")?.getBoundingClientRect().height ?? 0;
-    const caja = el.getBoundingClientRect();
-    // 1.0.24 (30.ª ronda, R3 y visual): ya a la vista (bajo las barras), no se mueve; y si hay
-    // «Volver a la consulta» sin pegar (Sistemas), se sube como mucho hasta él mientras la fila
-    // siga cabiendo en la pantalla (desde la descarga quedaba cortado o fuera).
-    if (caja.top >= barra + cabeceraTabla && caja.bottom <= window.innerHeight) return;
-    const top = window.scrollY + caja.top - barra - cabeceraTabla - 12;
-    window.scrollTo({ top: Math.max(0, top) });
+    colocarFila(el);
   }, [resaltarFila, columnasFijas]);
   const desdeRuta = (s?: string): number[] => {
     if (!tabla.porSistema || !s) return [];
@@ -606,6 +629,10 @@ export function TablaVista({
 
   const interactiva = modo === "interactiva";
   const literal = !interactiva && !columnasFijas && !herramienta;
+  const elemento = ELEMENTO_DE_FILA[tabla.id] ?? {
+    uno: tabla.cabeceraEtiqueta.toLowerCase(),
+    todos: "Todas las filas",
+  };
   return (
     <section ref={raiz} aria-label={`Tabla ${tabla.numero}`} className="bloque-papel">
       <CabeceraTabla
@@ -631,6 +658,40 @@ export function TablaVista({
               ? `Viendo ${listaNombres(sel.map((c) => nombreColumna(tabla, c, false)))}`
               : ""}
           </p>
+          {SALTO_A_FILA[tabla.id] && (
+            <div className="mt-2">
+              <label
+                className="mb-1 block text-xs font-semibold text-slate-500"
+                htmlFor={`salto-${tabla.id}`}
+              >
+                {SALTO_A_FILA[tabla.id]}
+              </label>
+              <select
+                id={`salto-${tabla.id}`}
+                value=""
+                onChange={(e) => {
+                  if (e.target.value === "") return;
+                  const i = e.target.value;
+                  const el = [
+                    ...(raiz.current?.querySelectorAll<HTMLElement>(`[data-fila="${i}"]`) ?? []),
+                  ].find((x) => x.offsetParent !== null);
+                  if (!el) return;
+                  colocarFila(el);
+                  // El foco a la fila, para seguir leyendo con teclado o lector desde ella.
+                  if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
+                  el.focus({ preventScroll: true });
+                }}
+                className="min-h-11 w-full max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+              >
+                <option value="">Elegir…</option>
+                {tabla.filas.map((f, i) => (
+                  <option key={i} value={i}>
+                    {etiquetaFila(tabla, f)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
       )}
       {interactiva && !tabla.porSistema && (
@@ -639,7 +700,9 @@ export function TablaVista({
             className="mb-1 block text-xs font-semibold text-slate-500"
             htmlFor={`filtro-${tabla.id}`}
           >
-            Ir a una fila ({tabla.cabeceraEtiqueta.toLowerCase()})
+            {/* 1.0.29 (auditoría de la 1.0.28, T07): es un filtro (deja solo esa fila), no un salto:
+                se nombra así, con el elemento de cada tabla. */}
+            Mostrar un {elemento.uno}
           </label>
           <select
             id={`filtro-${tabla.id}`}
@@ -657,8 +720,8 @@ export function TablaVista({
               {resaltarFila !== undefined && tabla.filas[resaltarFila]
                 ? // 1.0.23 (29.ª ronda, visual): en la Tabla 5, «paso 3» (con el elemento se
                   // recortaba la opción a 360 y 768 px; la fila ya se ve marcada).
-                  `Todas las filas · marcada: ${tabla.id === "T5" ? `paso ${tabla.filas[resaltarFila].etiqueta}` : etiquetaFila(tabla, tabla.filas[resaltarFila])}`
-                : "Todas las filas"}
+                  `${elemento.todos} · marcado: ${tabla.id === "T5" ? `paso ${tabla.filas[resaltarFila].etiqueta}` : etiquetaFila(tabla, tabla.filas[resaltarFila])}`
+                : elemento.todos}
             </option>
             {tabla.filas.map((f, i) => (
               <option key={i} value={i}>

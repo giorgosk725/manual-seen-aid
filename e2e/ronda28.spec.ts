@@ -27,7 +27,7 @@ test.describe("Ronda 28 · tablas", () => {
     const sel = page.locator("#filtro-T5");
     await expect(sel.locator("option").first()).toHaveText(
       // 1.0.23: «paso 3» (con el elemento se recortaba en el móvil).
-      "Todas las filas · marcada: paso 3",
+      "Todos los pasos · marcado: paso 3",
     );
     await expect(sel.locator("option").nth(1)).toHaveText(
       "1 · Uso, representatividad de los datos y funcionamiento del sistema",
