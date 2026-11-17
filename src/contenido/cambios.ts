@@ -15,7 +15,16 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-17",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — fila de destino a la vista y remates`,
+    titulo: `Complemento interactivo ${VERSION_APP} — foco de la lupa y punto de lectura`,
+    detalle: [
+      "La lupa: al elegir una sugerencia que rellena la caja, el foco se queda en la caja.",
+      "Atrás tras una remisión del apartado a su propia tabla o figura devuelve al punto donde se leía (antes, al principio del apartado).",
+    ],
+  },
+  {
+    fecha: "2026-11-17",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.32 — fila de destino a la vista y remates",
     detalle: [
       "En el móvil, la fila de la Tabla 1 a la que lleva una ficha queda entera bajo «Volver a la consulta» (antes la tapaba la franja).",
       "La lupa recorre con las flechas también las sugerencias «Pregunta».",

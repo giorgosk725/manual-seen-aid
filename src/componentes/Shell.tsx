@@ -125,6 +125,12 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
       else irABuscar(q);
     }
   };
+  // 1.0.33 (Fable, 1.0.32): una sugerencia que rellena la caja deja el foco en ella (el botón
+  // pulsado desaparece y el foco caía en el documento: ni ↓ ni lo tecleado llegaban a la caja).
+  const elegir = (texto: string) => {
+    setQ(texto);
+    entrada.current?.focus();
+  };
   const alMoverse = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
     const lista = enlaces();
@@ -177,8 +183,8 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
           }
         />
         <div ref={zona} onKeyDown={alMoverse}>
-          {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
-          <Autocompletar items={sugerencias} onElegir={setQ} onIr={cerrarYGuardar} />
+          {q.trim().length < 2 && <SugerenciasBusqueda onElegir={elegir} />}
+          <Autocompletar items={sugerencias} onElegir={elegir} onIr={cerrarYGuardar} />
           {qEf !== q && qEf !== motor?.reescribir(q) && (
             <p className="mt-1 text-xs text-slate-600" role="status">
               Buscado junto con la consulta anterior: «{qEf}».
@@ -1086,6 +1092,9 @@ export function Shell({
   // no el navegador: su restauración propia llega a destiempo (antes o después de pintar la
   // pantalla) y pisaba la posición guardada.
   const posiciones = useRef(new Map<string, number>());
+  // 1.0.33 (Fable, 1.0.32): también por dirección completa, para Atrás dentro de una misma
+  // pantalla (una remisión del apartado a su propia tabla: la posición del apartado se pisaba).
+  const posicionesPorHash = useRef(new Map<string, number>());
   useEffect(() => {
     if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual";
   }, []);
@@ -1097,7 +1106,11 @@ export function Shell({
       clearTimeout(pendiente);
       // Se apunta un instante después: el desplazamiento que hace el navegador justo antes de
       // cambiar de hash (al pulsar un enlace o al volver atrás) no es del lector y se descarta.
-      pendiente = setTimeout(() => posiciones.current.set(k, y), 80);
+      const h = window.location.hash;
+      pendiente = setTimeout(() => {
+        posiciones.current.set(k, y);
+        posicionesPorHash.current.set(h, y);
+      }, 80);
     };
     const onHash = () => clearTimeout(pendiente);
     // 1.0.0 (18.ª ronda, R3): la posición, también al pulsar un enlace (sin desplazarse antes no
@@ -1108,6 +1121,7 @@ export function Shell({
       if (!(e.target as Element | null)?.closest?.('a[href^="#/"], button')) return;
       clearTimeout(pendiente);
       posiciones.current.set(claveDePantalla(parseHash(window.location.hash)), window.scrollY);
+      posicionesPorHash.current.set(window.location.hash, window.scrollY);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("hashchange", onHash);
@@ -1286,13 +1300,32 @@ export function Shell({
   useLayoutEffect(() => {
     const antes = detalleAnterior.current;
     detalleAnterior.current = { clave: clavePantalla, detalle: ruta.detalle };
-    if (antes.clave !== clavePantalla || !antes.detalle || ruta.detalle) return;
-    if (!consumirNavegacionNueva()) return;
+    if (antes.clave !== clavePantalla || antes.detalle === ruta.detalle) return;
+    // 1.0.33 (Fable, 1.0.32): la marca del clic se gasta en cada cambio dentro de la pantalla
+    // (antes, de un apartado a su propio bloque no se gastaba y el Atrás siguiente la leía como
+    // un enlace nuevo: el apartado volvía arriba en vez de al punto de lectura).
+    const nueva = consumirNavegacionNueva();
+    if (!antes.detalle || ruta.detalle) return;
+    if (!nueva) {
+      // Atrás o Adelante a la pantalla sin detalle: donde se estaba leyendo en esa dirección.
+      const y = posicionesPorHash.current.get(window.location.hash);
+      if (ruta.seccion !== "capitulo" || y == null) return;
+      window.scrollTo({ top: y });
+      const reintentar = () => {
+        if (Math.abs(window.scrollY - y) > 4) window.scrollTo({ top: y });
+      };
+      const t1 = setTimeout(reintentar, 250);
+      const t2 = setTimeout(reintentar, 900);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
     window.scrollTo({ top: 0 });
     const h1 = mainRef.current?.querySelector<HTMLElement>("h1");
     if (h1 && !h1.hasAttribute("tabindex")) h1.setAttribute("tabindex", "-1");
     h1?.focus({ preventScroll: true });
-  }, [clavePantalla, ruta.detalle]);
+  }, [clavePantalla, ruta.detalle, ruta.seccion]);
 
   useEffect(() => {
     if (!enfocarTitulo.current) return undefined;
