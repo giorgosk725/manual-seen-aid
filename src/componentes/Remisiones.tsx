@@ -32,7 +32,7 @@ export function TextoConRemisiones({
         const destino = destinoDeRemision(p);
         if (!destino) return <Fragment key={i}>{p}</Fragment>;
         return (
-          <a key={i} href={destino} className="remision">
+          <a key={i} href={destino} className="remision tap-44">
             {p}
           </a>
         );

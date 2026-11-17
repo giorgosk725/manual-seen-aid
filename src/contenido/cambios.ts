@@ -15,7 +15,20 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-17",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — foco, zonas táctiles y anuncios`,
+    titulo: `Complemento interactivo ${VERSION_APP} — fila de destino a la vista y remates`,
+    detalle: [
+      "En el móvil, la fila de la Tabla 1 a la que lleva una ficha queda entera bajo «Volver a la consulta» (antes la tapaba la franja).",
+      "La lupa recorre con las flechas también las sugerencias «Pregunta».",
+      "Las remisiones del texto («tabla 2», «figura 3») tienen zona de toque de 44 px; «Fase completa»/«Plegar» dice si la fase está desplegada.",
+      "La calculadora avisa al lector de pantalla cuando faltan datos tras un resultado.",
+      "Desde la autoevaluación, el capítulo ofrece «Volver a la consulta».",
+      "El destello del párrafo de destino, en el mismo burdeos suave que las filas; el botón «↑» no aparece al final de la página.",
+    ],
+  },
+  {
+    fecha: "2026-11-17",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.31 — foco, zonas táctiles y anuncios",
     detalle: [
       "Autoevaluación: al reiniciar, el foco va a «Deshacer»; al deshacer, al avance.",
       "Zonas de toque de 44 px en las siglas del texto, en los enlaces de página de la autoevaluación, en los pasos de la descarga y en «Plegar».",

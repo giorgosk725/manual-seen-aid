@@ -547,6 +547,11 @@ export function CalculadoraInicio({
       ? `sensibilidad ${Math.round(ev.factor)} mg/dl/UI`
       : null,
   ].filter((x): x is string => !!x);
+  // 1.0.32 (Fable): al vaciar o dejar incompletos los datos tras un resultado, el lector de
+  // pantalla oye que ya no hay propuesta (antes la región se quedaba en silencio y quien la
+  // consultaba seguía teniendo el último resultado).
+  const huboResultado = useRef(false);
+  if (resumen.length) huboResultado.current = true;
 
   return (
     <div
@@ -1028,7 +1033,9 @@ export function CalculadoraInicio({
                     ? ev.errores.join(". ")
                     : resumen.length
                       ? `Parámetros iniciales: ${resumen.join(", ")}.`
-                      : ""
+                      : huboResultado.current
+                        ? "Faltan datos: sin parámetros iniciales."
+                        : ""
               }
             />
             <Estado

@@ -106,7 +106,11 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
   // elegido, Intro lo abre; ↑ desde el primero vuelve a la caja.
   const zona = useRef<HTMLDivElement>(null);
   const entrada = useRef<HTMLInputElement>(null);
-  const enlaces = () => [...(zona.current?.querySelectorAll<HTMLAnchorElement>("a[href]") ?? [])];
+  // 1.0.32 (Fable, 1.0.31): también los botones (las sugerencias «Pregunta» rellenan la caja y
+  // no son enlaces; ↓ se las saltaba).
+  const enlaces = () => [
+    ...(zona.current?.querySelectorAll<HTMLElement>("a[href], button:not([disabled])") ?? []),
+  ];
   const alTeclear = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -124,7 +128,7 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
   const alMoverse = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
     const lista = enlaces();
-    const i = lista.indexOf(document.activeElement as HTMLAnchorElement);
+    const i = lista.indexOf(document.activeElement as HTMLElement);
     if (i < 0) return;
     e.preventDefault();
     if (e.key === "ArrowDown") lista[Math.min(lista.length - 1, i + 1)]?.focus();
@@ -1200,7 +1204,8 @@ export function Shell({
       enLiteral &&
       // 1.0.27: dentro de la misma pantalla (índice de Tablas → una tabla), sin «Volver a la consulta».
       antes?.base !== basePantalla &&
-      ["consultar", "sistemas", "buscar", "casos", "preguntas", "visual"].includes(
+      // 1.0.32 (Fable): también desde la autoevaluación (las páginas citadas llevan al capítulo).
+      ["consultar", "sistemas", "buscar", "casos", "preguntas", "visual", "test"].includes(
         previa.current.seccion,
       );
     setVolver(desdeHerramienta ? previa.current.titulo : null);

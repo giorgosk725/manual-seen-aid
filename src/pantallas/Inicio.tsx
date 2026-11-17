@@ -976,7 +976,8 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
               {fase.id !== "inicio" && (
                 <button
                   type="button"
-                  aria-pressed={completa}
+                  // 1.0.32 (Fable): dice si la fase está desplegada (el rótulo cambia con ello).
+                  aria-expanded={completa}
                   onClick={() => {
                     setCompleta(!completa);
                     if (completa) ir(actual, sis, null);

@@ -582,6 +582,11 @@ export function TablaVista({
     if (!filaYaColocada.current && fueNavegacionNueva()) window.scrollTo({ top: 0 });
     filaYaColocada.current = true;
     colocarFila(el);
+    // 1.0.32 (Fable, 1.0.31): «Volver a la consulta» se monta un instante después que la tabla;
+    // medida sin ella, en el móvil la fila quedaba 56 px por debajo de la franja. Se vuelve a
+    // comprobar cuando ya está (si la fila ya se ve, no se mueve).
+    const t = [120, 400].map((ms) => window.setTimeout(() => colocarFila(el), ms));
+    return () => t.forEach((x) => window.clearTimeout(x));
   }, [resaltarFila, columnasFijas]);
   const desdeRuta = (s?: string): number[] => {
     if (!tabla.porSistema || !s) return [];

@@ -32,7 +32,9 @@ export function VolverArriba() {
     const on = () => {
       const y = window.scrollY;
       const lejos = y > window.innerHeight * 1.5;
-      if (!lejos) setVer(false);
+      // 1.0.32 (Fable): al final de la página, no (en el móvil tapaba la tarjeta «Siguiente»).
+      const alFinal = y + window.innerHeight > document.documentElement.scrollHeight - 200;
+      if (!lejos || alFinal) setVer(false);
       else if (y < antes - 4) setVer(true);
       else if (y > antes + 4) setVer(false);
       antes = y;

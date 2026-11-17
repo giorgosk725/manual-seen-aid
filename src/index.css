@@ -1564,8 +1564,9 @@ html.night ::highlight(frase-citada) {
 /* Resaltado del bloque enlazado (#/capitulo/slug/b12): un destello corto. */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes ms-destello {
+    /* 1.0.32 (Fable): en el burdeos suave de las filas de destino (antes, azul celeste). */
     0% {
-      background-color: rgba(125, 211, 252, 0.35);
+      background-color: var(--fila-destino);
     }
     100% {
       background-color: transparent;
