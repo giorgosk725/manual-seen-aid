@@ -33,6 +33,11 @@ test("objetivos táctiles de al menos 24 px en las pantallas principales", async
     await page.goto(`/${ruta}`);
     await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
     await page.waitForSelector("[data-cargando]", { state: "detached" }).catch(() => {});
+    // 1.0.32: medir con la entrada de la pantalla terminada (su escala encogía un instante los
+    // enlaces de 24 px justos: «Tipo» 45×23,8 en un arranque lento).
+    await page.evaluate(() =>
+      Promise.all(document.getAnimations().map((a) => a.finished.catch(() => {}))),
+    );
     const malos = await page.evaluate(() => {
       const out: string[] = [];
       const sel =
