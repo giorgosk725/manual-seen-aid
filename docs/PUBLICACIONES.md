@@ -100,3 +100,4 @@ Nota (22-10-2026): la 0.96.0 se desplegó bien, pero la comprobación final de `
 | 2026-11-06 20:51 | main | 1.0.26 | 5b84083c30b9 | index-DYeYSKgz.js | 1.0.25 (7c2cf68c2c0b) |
 | 2026-11-15 15:48 | main | 1.0.27 | 546a8a4d9581 | index-C9UIiPA7.js | 1.0.26 (5b84083c30b9) |
 | 2026-11-15 19:08 | main | 1.0.28 | 182401864084 | index-DIEFzUS0.js | 1.0.27 (546a8a4d9581) |
+| 2026-11-17 00:06 | main | 1.0.29 | 41f54288f1b7 | index-B53Z6Zuv.js | 1.0.28 (182401864084) |
