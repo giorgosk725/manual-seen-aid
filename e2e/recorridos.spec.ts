@@ -9,7 +9,11 @@ test.describe("Recorridos completos (0.36.0)", () => {
     page,
   }) => {
     await page.goto("/#/capitulo/08-iniciacion");
-    const tabla = page.getByText("Tabla 3", { exact: true }).first();
+    // La tabla en el texto (no el acceso «Tabla 3» del índice del apartado, arriba).
+    const tabla = page
+      .locator('section[aria-label="Tabla 3"]')
+      .getByText("Tabla 3", { exact: true })
+      .first();
     await tabla.scrollIntoViewIfNeeded();
     await page.waitForTimeout(500);
     const antes = await page.evaluate(() => window.scrollY);
