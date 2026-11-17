@@ -51,4 +51,20 @@ test.describe("1.0.29 · tablas en el móvil", () => {
     });
     expect(solapes).toBe(0);
   });
+
+  test("1.0.31: el título del visor se lee entero en el móvil", async ({ page }) => {
+    await page.goto("/#/visual/figuras");
+    await page
+      .getByRole("button", { name: /^Ampliar/ })
+      .first()
+      .click();
+    const titulo = page.getByRole("dialog").locator("p").first();
+    await expect(titulo).toBeVisible();
+    expect(
+      await titulo.evaluate(
+        (e) => e.scrollWidth <= e.clientWidth && e.scrollHeight <= e.clientHeight,
+      ),
+    ).toBe(true);
+    await page.keyboard.press("Escape");
+  });
 });

@@ -57,6 +57,8 @@ import { SinResultados } from "./SinResultados";
 import { CATEGORIA_HEX, SEEN } from "../tokens";
 import { irABuscar, ponerConsulta } from "../consultaBuscar";
 import { VERSION_APP } from "../version";
+import { Anuncio } from "./Anuncio";
+import { anuncioCobertura, coberturaDe } from "../cobertura";
 
 const CON_CIFRAS = new Set(["consultar", "sistemas", "visual", "buscar", "preguntas"]);
 
@@ -157,6 +159,19 @@ function Paleta({ open, onClose }: { open: boolean; onClose: () => void }) {
         <p id="paleta-ayuda" className="sr-only">
           Intro abre todos los resultados; flechas arriba y abajo eligen uno; Esc cierra.
         </p>
+        {/* 1.0.31 (revisión de la 1.0.30): lo encontrado, dicho al lector al dejar de teclear, con
+            el mismo grado de cobertura que Buscar (cobertura.ts). */}
+        <Anuncio
+          texto={
+            qEf.trim().length < 2 || estado !== "listo"
+              ? ""
+              : anuncioCobertura(
+                  coberturaDe(!!frecuente, respuestas[0]),
+                  busqueda ? busqueda.totalCapitulo + busqueda.totalFuera : 0,
+                  false,
+                )
+          }
+        />
         <div ref={zona} onKeyDown={alMoverse}>
           {q.trim().length < 2 && <SugerenciasBusqueda onElegir={setQ} />}
           <Autocompletar items={sugerencias} onElegir={setQ} onIr={cerrarYGuardar} />
@@ -293,7 +308,7 @@ function AvisoVersion() {
         <p className="flex-1 text-sm text-slate-800">
           {desde === VERSION_APP
             ? `Versión ${VERSION_APP}. Comprobando si hay una más reciente…`
-            : `Actualizado: ahora usas la versión ${VERSION_APP} (antes, la ${desde}).`}
+            : `Actualizado: ahora se usa la versión ${VERSION_APP} (antes, la ${desde}).`}
         </p>
         <button
           type="button"
@@ -314,8 +329,8 @@ function AvisoVersion() {
       className="aviso-version fixed inset-x-3 bottom-32 z-40 mx-auto max-w-md rounded-xl border border-slate-300 bg-white p-3 shadow-xl lg:bottom-4"
     >
       <p className="text-sm text-slate-800">
-        Hay una versión nueva del complemento (ahora usas la {VERSION_APP}). Se carga al pulsar
-        «Actualizar»; con «Más tarde» sigues con esta.
+        Hay una versión nueva del complemento (ahora se usa la {VERSION_APP}). Se carga al pulsar
+        «Actualizar»; con «Más tarde» se sigue con esta.
       </p>
       <div className="mt-2 flex gap-2">
         <button type="button" onClick={update} className="boton-primario">
@@ -698,10 +713,12 @@ function Inferior({
   ruta,
   onMas,
   preguntaDeFicha,
+  masAbierto = false,
 }: {
   ruta: Ruta;
   onMas: () => void;
   preguntaDeFicha: boolean;
+  masAbierto?: boolean;
 }) {
   const actual = botonDe(ruta, preguntaDeFicha);
   // La conducta abierta (Figura 3, Interrupción, Hipoglucemia) es contexto de «Situaciones».
@@ -754,6 +771,7 @@ function Inferior({
                   type="button"
                   onClick={onMas}
                   aria-haspopup="dialog"
+                  aria-expanded={masAbierto}
                   aria-current={actualComo(it.id)}
                   className={clase(on)}
                   style={on ? { color: SEEN.burdeos } : undefined}
@@ -1425,7 +1443,12 @@ export function Shell({
           </div>
         )}
       </main>
-      <Inferior ruta={ruta} onMas={() => setCajon(true)} preguntaDeFicha={preguntaDeFicha} />
+      <Inferior
+        ruta={ruta}
+        onMas={() => setCajon(true)}
+        masAbierto={cajon}
+        preguntaDeFicha={preguntaDeFicha}
+      />
       <Cajon open={cajon} onClose={cerrarCajon} ruta={ruta} />
       <Paleta open={paleta} onClose={cerrarPaleta} />
       <VolverArriba />

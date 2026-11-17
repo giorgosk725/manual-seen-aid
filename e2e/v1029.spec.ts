@@ -66,8 +66,11 @@ test.describe("1.0.29 · auditoría de la 1.0.28", () => {
     // Reinicio explícito, que se puede deshacer (1.0.30).
     await page.getByRole("button", { name: "Volver a empezar" }).first().click();
     await expect(page.getByText(/^Respondidas 0 de 10/)).toBeVisible();
-    await page.getByRole("button", { name: "Deshacer" }).click();
+    // 1.0.31: el foco va a «Deshacer» y, tras deshacer, al avance.
+    await expect(page.getByRole("button", { name: "Deshacer" })).toBeFocused();
+    await page.keyboard.press("Enter");
     await expect(page.getByText(texto!)).toBeVisible();
+    await expect(page.getByText(texto!)).toBeFocused();
     await page.getByRole("button", { name: "Volver a empezar" }).first().click();
     await expect(page.getByText(/^Respondidas 0 de 10/)).toBeVisible();
   });

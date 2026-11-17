@@ -15,7 +15,19 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-17",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — pantallas estrechas, destino visible y deshacer`,
+    titulo: `Complemento interactivo ${VERSION_APP} — foco, zonas táctiles y anuncios`,
+    detalle: [
+      "Autoevaluación: al reiniciar, el foco va a «Deshacer»; al deshacer, al avance.",
+      "Zonas de toque de 44 px en las siglas del texto, en los enlaces de página de la autoevaluación, en los pasos de la descarga y en «Plegar».",
+      "Visor de figuras: fondo opaco y, en el móvil, el título entero en su propia línea.",
+      "Buscar desde la lupa también dice cuánto ha encontrado; una sigla lleva al párrafo donde aparece por primera vez; los filtros de las Tablas 2, 5 y 6 anuncian también cuando vuelven a todos.",
+      "El aviso de versión nueva, en el mismo trato que el resto; «Más» dice si el menú está abierto.",
+    ],
+  },
+  {
+    fecha: "2026-11-17",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.30 — pantallas estrechas, destino visible y deshacer",
     detalle: [
       "A 320 px: «Objetivos de MCG» ya no se sale (el rótulo largo parte línea y la nota de cada tramo va bajo la cifra) y las etiquetas de la barra inferior no se pegan.",
       "Tablas: «Ir a…» marca un momento la fila de destino; los filtros de las Tablas 2, 5 y 6 dicen al lector de pantalla qué muestran, y sus selectores tienen 44 px.",

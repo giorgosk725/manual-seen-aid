@@ -17,7 +17,8 @@ const LIMITES = {
   trozoPerezoso: 26 * 1024,
   // 40 KB desde la 0.65.0, solo el buscador: lleva las raíces de las consultas del índice
   // (expansiones.json, ~11 KB) que suben el acierto en los bancos ciegos. Se carga al buscar.
-  buscador: 40 * 1024,
+  // 41 KB desde la 1.0.31: una sigla lleva al párrafo de su primera aparición (siglas.ts).
+  buscador: 41 * 1024,
   // 2,0 MB desde la edición editorial (A10): el PDF de pacientes (83 KB) entra en el precache.
   // 2,1 MB desde la 1.0.25: con 2,0 quedaban 8 KB (las rondas 27–30 añadieron accesos y pruebas
   // de navegación); el margen vuelve a unos 100 KB.

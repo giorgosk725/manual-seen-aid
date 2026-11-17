@@ -618,6 +618,8 @@ export function TablaVista({
     }
     return null;
   });
+  // El anuncio de «Todos los…» solo tras tocar el filtro (no al abrir la tabla).
+  const [filtroTocado, setFiltroTocado] = useState(false);
   const columnas = useMemo(() => (sel.length ? sel : todas), [sel, todas]);
   // 1.0.27: marcar los cuatro uno a uno es lo mismo que no filtrar (las cuatro marcadas, sin «Ver
   // los cuatro» ni la columna en la dirección).
@@ -715,6 +717,7 @@ export function TablaVista({
             value={fila ?? ""}
             onChange={(e) => {
               const n = e.target.value === "" ? null : Number(e.target.value);
+              setFiltroTocado(true);
               setFila(n);
               onSeleccion?.(n == null ? undefined : String(n));
             }}
@@ -739,7 +742,9 @@ export function TablaVista({
           <p className="sr-only" aria-live="polite">
             {fila != null && tabla.filas[fila]
               ? `Mostrando solo: ${etiquetaFila(tabla, tabla.filas[fila])}.`
-              : ""}
+              : filtroTocado
+                ? `Mostrando ${elemento.todos.toLowerCase()}.`
+                : ""}
           </p>
         </div>
       )}

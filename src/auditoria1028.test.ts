@@ -67,3 +67,11 @@ describe("A02 · el intento de la autoevaluación vive en memoria", () => {
     expect(intentoActual()).toEqual({ n: n0 + 1, elegidas: {} });
   });
 });
+
+describe("1.0.31 · una sigla lleva a su primera aparición", () => {
+  it("«TIR» en Buscar abre el bloque donde aparece, no el principio del apartado", async () => {
+    const { buscar } = await import("./buscador");
+    const r = buscar("TIR").find((x: { entrada: { tipo: string } }) => x.entrada.tipo === "sigla");
+    expect(r?.entrada.ruta).toMatch(/^#\/capitulo\/[\w-]+\/b\d+$/);
+  });
+});

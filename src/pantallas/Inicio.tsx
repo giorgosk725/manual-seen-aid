@@ -981,7 +981,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
                     setCompleta(!completa);
                     if (completa) ir(actual, sis, null);
                   }}
-                  className="no-imprimir inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
+                  className="no-imprimir inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center text-sm font-semibold text-slate-700 underline underline-offset-2 sm:min-h-8"
                 >
                   {completa ? "Plegar" : "Fase completa"}
                 </button>

@@ -1458,7 +1458,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                   aria-label={`Paso ${i + 1}: ${f.celdas[0]}`}
                   title={f.celdas[0]}
                   onClick={() => ir(i + 1)}
-                  className={`chip h-11 w-full justify-center px-0 tabular-nums focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "" : i + 1 < n ? "text-slate-900" : "text-slate-500"}`}
+                  className={`chip tap-44 h-11 w-full justify-center px-0 tabular-nums focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "" : i + 1 < n ? "text-slate-900" : "text-slate-500"}`}
                   style={!on && i + 1 < n ? { borderColor: "#8E254E" } : undefined}
                 >
                   {i + 1}

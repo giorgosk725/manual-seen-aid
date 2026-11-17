@@ -75,7 +75,7 @@ export function SiglaPulsable({ sigla }: { sigla: string }) {
       <button
         type="button"
         ref={boton}
-        className="sigla"
+        className="sigla tap-44"
         aria-expanded={open}
         aria-controls={open ? id : undefined}
         title={open ? undefined : `${g.desarrollo} (p. ${g.pagina})`}

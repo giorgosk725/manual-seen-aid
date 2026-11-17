@@ -18,6 +18,7 @@ import {
   idDeBloque,
   rutaDeFigura,
 } from "./contenido";
+import { primerasSiglas } from "./siglas";
 import { href } from "./rutas";
 import { plano } from "./marcado";
 import { CRITERIOS, FICHA_FILAS, SETS_INFUSION, SISTEMAS_AMPLIACION } from "./ampliacion";
@@ -200,7 +201,7 @@ export function indice(): Entrada[] {
       titulo: "Sigla del capítulo",
       texto: `${g.sigla}: ${g.desarrollo}`,
       pagina: g.pagina,
-      ruta: href("capitulo", apartadoDePagina(g.pagina)?.slug ?? APARTADOS[0].slug),
+      ruta: rutaDeSigla(g),
     });
   }
   // Fuera del capítulo (grupo aparte, rotulado). No en la edición editorial (A06).
@@ -1481,7 +1482,7 @@ export function sugerir(consulta: string, max = 5): Sugerencia[] {
       add({
         texto: `${g.sigla}: ${g.desarrollo}`,
         tipo: "sigla",
-        ruta: href("capitulo", apartadoDePagina(g.pagina)?.slug ?? APARTADOS[0].slug),
+        ruta: rutaDeSigla(g),
       });
   return out.sort((a, b) => PRIORIDAD[a.tipo] - PRIORIDAD[b.tipo]).slice(0, max);
 }
@@ -1552,4 +1553,20 @@ export function continuacionDe(
     texto: `Iniciación del sistema · ${titulo}${nombre}`,
     ruta: href("consultar", "inicio", `inicio:${sis}:${tarea}`),
   };
+}
+
+/* 1.0.31 (revisión de la 1.0.30): una sigla lleva al bloque donde aparece por primera vez en su
+   apartado (la sigla pulsable con su desarrollo), no al principio del apartado. */
+const PRIMERAS = new Map<string, Map<string, string[]>>();
+function rutaDeSigla(g: { sigla: string; pagina: number }): string {
+  const ap = apartadoDePagina(g.pagina) ?? APARTADOS[0];
+  let primeras = PRIMERAS.get(ap.slug);
+  if (!primeras) PRIMERAS.set(ap.slug, (primeras = primerasSiglas(ap)));
+  for (const [clave, siglas] of primeras)
+    if (siglas.includes(g.sigla)) {
+      const i = Number(clave.split(":")[0]);
+      const b = ap.bloques[i];
+      if (b) return href("capitulo", ap.slug, idDeBloque(b, i));
+    }
+  return href("capitulo", ap.slug);
 }

@@ -949,7 +949,7 @@ function Pregunta({
                     «{c.texto}»{" "}
                     <a
                       href={href("capitulo", c.apartado, c.ancla)}
-                      className="pagina-badge whitespace-nowrap hover:underline"
+                      className="pagina-badge tap-44 whitespace-nowrap hover:underline"
                     >
                       p. {c.p}
                     </a>
@@ -990,8 +990,20 @@ export function Test() {
   useEffect(() => {
     if (n > 0) setDeshacible(false);
   }, [n]);
+  // 1.0.31 (revisión de la 1.0.30): el foco, a «Deshacer» al reiniciar y al avance al deshacer
+  // (caía en el documento y con teclado se iban los segundos tabulando desde arriba).
+  const botonDeshacer = useRef<HTMLButtonElement>(null);
+  const avance = useRef<HTMLParagraphElement>(null);
+  const enfocarDeshacer = useRef(false);
+  useEffect(() => {
+    if (deshacible && enfocarDeshacer.current) {
+      enfocarDeshacer.current = false;
+      botonDeshacer.current?.focus({ preventScroll: true });
+    }
+  }, [deshacible]);
   const empezarDeNuevo = () => {
     volverAEmpezar();
+    enfocarDeshacer.current = true;
     setDeshacible(true);
     window.scrollTo({ top: 0 });
   };
@@ -1013,7 +1025,12 @@ export function Test() {
       {/* 0.72.0: el avance, pegado bajo la cabecera mientras se baja por las preguntas. */}
       <div className="separador barra-pegada sticky top-14 z-10 -mx-3 mb-3 border-b px-3 py-2 sm:mx-0 sm:rounded-lg sm:border lg:top-0">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-xs font-semibold text-slate-700" aria-live="polite">
+          <p
+            ref={avance}
+            tabIndex={-1}
+            className="text-xs font-semibold text-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            aria-live="polite"
+          >
             Respondidas {n} de {PREGUNTAS.length}
             {n > 0 ? ` · ${aciertos} ${aciertos === 1 ? "acierto" : "aciertos"}` : ""}
           </p>
@@ -1021,10 +1038,12 @@ export function Test() {
             <span role="status" className="flex items-center gap-2 text-xs text-slate-700">
               Intento borrado.
               <button
+                ref={botonDeshacer}
                 type="button"
                 onClick={() => {
                   deshacerReinicio();
                   setDeshacible(false);
+                  requestAnimationFrame(() => avance.current?.focus({ preventScroll: true }));
                 }}
                 className="tap-44 rounded font-semibold underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >

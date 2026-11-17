@@ -95,12 +95,15 @@ export function Visor({ imagen, onClose }: { imagen: ImagenVisor | null; onClose
       aria-label={imagen.titulo}
       tabIndex={-1}
       className="fixed inset-0 z-[60] flex flex-col focus:outline-none"
-      style={{ background: "rgba(2, 6, 23, 0.94)" }}
+      // 1.0.31 (revisión de la 1.0.30): fondo opaco (al 94 % la página se traslucía tras los
+      // controles) y, en el móvil, el título entero en su propia fila bajo los botones.
+      style={{ background: "rgb(2, 6, 23)" }}
     >
-      <div className="flex items-center gap-2 px-3 py-2 text-white">
-        <p className="line-clamp-2 min-w-0 flex-1 text-sm font-semibold leading-snug">
+      <div className="flex flex-wrap items-center gap-2 px-3 py-2 text-white">
+        <p className="order-last min-w-0 basis-full text-sm font-semibold leading-snug sm:order-none sm:flex-1 sm:basis-0">
           {imagen.titulo}
         </p>
+        <span className="flex-1 sm:hidden" aria-hidden="true" />
         <button type="button" className={boton} onClick={() => zoom(1 / 1.4)} aria-label="Alejar">
           <Minus size={18} />
         </button>
