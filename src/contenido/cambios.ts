@@ -15,7 +15,20 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-17",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — continuidad, búsqueda y tablas`,
+    titulo: `Complemento interactivo ${VERSION_APP} — pantallas estrechas, destino visible y deshacer`,
+    detalle: [
+      "A 320 px: «Objetivos de MCG» ya no se sale (el rótulo largo parte línea y la nota de cada tramo va bajo la cifra) y las etiquetas de la barra inferior no se pegan.",
+      "Tablas: «Ir a…» marca un momento la fila de destino; los filtros de las Tablas 2, 5 y 6 dicen al lector de pantalla qué muestran, y sus selectores tienen 44 px.",
+      "Apartados: al saltar desde «En este apartado», el foco pasa al bloque de destino.",
+      "Autoevaluación: «Volver a empezar» se puede deshacer durante unos segundos.",
+      "Material para el paciente: el tipo de cada material también en el índice.",
+      "Un solo trato (usted) y un solo nombre para el visor («Ampliar»), con el título en dos líneas y el pie sobre fondo opaco en el móvil; el botón de modo nocturno dice su estado de una sola manera.",
+    ],
+  },
+  {
+    fecha: "2026-11-17",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.29 — continuidad, búsqueda y tablas",
     detalle: [
       "Visor de figuras: se comporta como los demás diálogos. El foco no sale de sus controles con Tab ni con Mayús+Tab, Atrás lo cierra sin dejar la pantalla y al cerrarlo el foco vuelve al botón que lo abrió.",
       "Autoevaluación: abrir el apartado citado y volver conserva las respuestas, el recuento y las explicaciones; «Volver a empezar» reinicia el intento. Nada se guarda: al recargar, el intento empieza de cero.",

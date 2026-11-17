@@ -230,7 +230,9 @@ export function Segmented<T extends string>({
             type="button"
             onClick={() => onChange(o.id)}
             aria-pressed={on}
-            className={`chip justify-center whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 ${wrap ? "" : "flex-1"}`}
+            // 1.0.30 (revisión de la 1.0.29): con `wrap`, el rótulo largo parte línea («Fragilidad o
+            // expectativa de vida limitada» desbordaba 7 px a 320).
+            className={`chip justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 ${wrap ? "max-w-full whitespace-normal text-center" : "flex-1 whitespace-nowrap"}`}
             style={on && o.gradient ? { background: o.gradient } : undefined}
           >
             {I && <I size={15} aria-hidden="true" />}

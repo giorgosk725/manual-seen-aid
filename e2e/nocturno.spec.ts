@@ -13,7 +13,7 @@ test.describe("Modo nocturno", () => {
     await encender(page);
     await page.reload();
     await expect(page.locator("html")).toHaveClass(/night/);
-    await page.getByRole("button", { name: "Modo diurno" }).first().click();
+    await page.getByRole("button", { name: "Modo nocturno", pressed: true }).first().click();
     await expect(page.locator("html")).not.toHaveClass(/night/);
   });
 

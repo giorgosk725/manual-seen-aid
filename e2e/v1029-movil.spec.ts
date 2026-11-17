@@ -26,4 +26,29 @@ test.describe("1.0.29 · tablas en el móvil", () => {
       await expect(destino).toBeInViewport();
     }
   });
+
+  test("1.0.30: a 320 px, nada se sale ni se pega en la barra inferior", async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 740 });
+    for (const ruta of ["/#/visual/objetivos-mcg", "/#/consultar/tablas/T1", "/#/"]) {
+      await page.goto(ruta);
+      await page.waitForTimeout(400);
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth),
+      ).toBeLessThanOrEqual(0);
+    }
+    const solapes = await page.evaluate(() => {
+      const ets = [...document.querySelectorAll('nav[aria-label="Barra inferior"] li')].map(
+        (li) => {
+          const r = document.createRange();
+          const el = li.querySelector("a, button")!;
+          r.selectNodeContents(el.lastChild as Node);
+          const b = r.getBoundingClientRect();
+          const c = li.getBoundingClientRect();
+          return { izq: b.left, der: b.right, celdaIzq: c.left, celdaDer: c.right };
+        },
+      );
+      return ets.filter((e) => e.izq < e.celdaIzq - 0.5 || e.der > e.celdaDer + 0.5).length;
+    });
+    expect(solapes).toBe(0);
+  });
 });

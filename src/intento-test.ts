@@ -31,9 +31,21 @@ export function responderPregunta(id: string, opcion: number) {
   avisar();
 }
 
+let anterior: IntentoTest | null = null;
+
 export function volverAEmpezar() {
+  anterior = Object.keys(actual.elegidas).length ? actual : null;
   actual = { n: actual.n + 1, elegidas: {} };
   avisar();
+}
+
+/** Deshace el último «Volver a empezar» si aún no se ha respondido nada en el intento nuevo. */
+export function deshacerReinicio(): boolean {
+  if (!anterior || Object.keys(actual.elegidas).length) return false;
+  actual = { n: actual.n + 1, elegidas: anterior.elegidas };
+  anterior = null;
+  avisar();
+  return true;
 }
 
 export const useIntentoTest = () =>

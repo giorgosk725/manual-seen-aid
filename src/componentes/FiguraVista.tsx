@@ -41,10 +41,10 @@ export function ImagenFigura({ figura, abierta = false }: { figura: Figura; abie
             titulo: figura.titulo,
             nota: `p. ${figura.pagina}`,
           }}
-          etiqueta={`Pantalla completa: ${figura.titulo}`}
+          etiqueta={`Ampliar ${figura.titulo}`}
           className="chip tap-44 min-h-11 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:min-h-8"
         >
-          <Maximize2 size={14} aria-hidden="true" /> Pantalla completa
+          <Maximize2 size={14} aria-hidden="true" /> Ampliar
         </AbrirEnVisor>
       </div>
       {ver && (
@@ -82,7 +82,7 @@ export function FiguraVista({ figura }: { figura: Figura }) {
             titulo: figura.titulo,
             nota: `p. ${figura.pagina}`,
           }}
-          etiqueta={`Pantalla completa: ${figura.titulo}`}
+          etiqueta={`Ampliar ${figura.titulo}`}
           className="block w-full overflow-hidden rounded-xl border bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
         >
           <img src={figura.imagen.src} alt={figura.imagen.alt} className="block w-full" />

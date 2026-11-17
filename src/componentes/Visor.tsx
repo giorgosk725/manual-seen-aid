@@ -98,7 +98,9 @@ export function Visor({ imagen, onClose }: { imagen: ImagenVisor | null; onClose
       style={{ background: "rgba(2, 6, 23, 0.94)" }}
     >
       <div className="flex items-center gap-2 px-3 py-2 text-white">
-        <p className="min-w-0 flex-1 truncate text-sm font-semibold">{imagen.titulo}</p>
+        <p className="line-clamp-2 min-w-0 flex-1 text-sm font-semibold leading-snug">
+          {imagen.titulo}
+        </p>
         <button type="button" className={boton} onClick={() => zoom(1 / 1.4)} aria-label="Alejar">
           <Minus size={18} />
         </button>
@@ -151,9 +153,10 @@ export function Visor({ imagen, onClose }: { imagen: ImagenVisor | null; onClose
           }}
         />
       </div>
-      <p className="px-3 py-2 text-center text-xs text-white/70">
-        {imagen.nota ? `${imagen.nota} · ` : ""}Pellizca o usa + y − para ampliar; arrastra para
-        moverte; doble toque para alternar.
+      {/* 1.0.30: fondo opaco (sobre el translúcido se leía mal en el móvil) y trato de usted. */}
+      <p className="bg-slate-950 px-3 py-2 text-center text-xs text-white/80">
+        {imagen.nota ? `${imagen.nota} · ` : ""}Pellizque o use + y − para ampliar; arrastre para
+        moverse; doble toque para alternar.
       </p>
     </div>,
     document.body,

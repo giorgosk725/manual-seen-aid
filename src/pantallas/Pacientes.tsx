@@ -176,12 +176,14 @@ export function HubPacientes() {
           href={PDF_PACIENTES}
           externo
           titulo="Información para pacientes"
-          detalle={`PDF del Manual SEEN · 3 páginas · ${CAPITULO.fechaPdfPacientes}`}
+          detalle={`${ROTULO_TIPO.publicado} · PDF de 3 páginas · ${CAPITULO.fechaPdfPacientes}`}
         />
         <section aria-labelledby="planes" className="separador border-t px-4 py-3">
           <h2 id="planes" className="titulo-tarjeta">
             Plan de seguridad
           </h2>
+          {/* 1.0.30 (revisión de la 1.0.29, M10): el tipo de material también en el índice. */}
+          <p className="text-xs text-slate-600">{ROTULO_TIPO[material("planes")!.tipo]}</p>
           {!materialListo("planes") && (
             <p className="mt-2 rounded-md bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
               En revisión: todavía no están listos para entregar.
@@ -215,7 +217,7 @@ export function HubPacientes() {
             <Fila
               href={href("pacientes", "hoja", cetonas.id)}
               titulo={cetonas.titulo}
-              detalle="Incluida en el plan de seguridad; también en hoja aparte"
+              detalle={`${ROTULO_TIPO[material("hoja-cetonas")!.tipo]} · incluida en el plan de seguridad; también en hoja aparte`}
             />
           </div>
         )}
@@ -224,7 +226,7 @@ export function HubPacientes() {
             <Fila
               href={href("pacientes", "hoja", pruebas.id)}
               titulo={pruebas.titulo}
-              detalle="Resonancia, TC, radiografía, ecografía y cirugía"
+              detalle={`${ROTULO_TIPO[material("hoja-pruebas-cirugia")!.tipo]} · resonancia, TC, radiografía, ecografía y cirugía`}
             />
           </div>
         )}

@@ -713,7 +713,9 @@ function Inferior({
         ? ("location" as const)
         : ("page" as const);
   const clase = (on: boolean) =>
-    `relative flex min-h-14 w-full flex-col items-center justify-center gap-0.5 py-1.5 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`;
+    // 1.0.30 (revisión de la 1.0.29): a ≤340 px, 10 px y un poco más juntas: «Situaciones» (72 px)
+    // no cabía en su celda de 64 y se leía «SistemasSituaciones».
+    `relative flex min-h-14 w-full min-w-0 flex-col items-center justify-center gap-0.5 py-1.5 text-xs font-semibold transition max-[340px]:text-[10px] max-[340px]:tracking-[-0.02em] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`;
   // 0.94.0 (rediseño, fase 2): el destino activo, además de en burdeos, con un filete de 2 px arriba
   // (el color solo no basta para distinguirlo; 1.4.1).
   const filete = (on: boolean) =>
@@ -1481,9 +1483,11 @@ function Mandos({
       <button
         type="button"
         onClick={toggleNight}
+        // 1.0.30: un solo mensaje para el lector, el estado (antes cambiaba el nombre y además
+        // marcaba aria-pressed); el título sigue diciendo qué hará al pulsarlo.
         aria-pressed={night}
-        aria-label={night ? "Modo diurno" : "Modo nocturno"}
-        title={night ? "Modo diurno" : "Modo nocturno"}
+        aria-label="Modo nocturno"
+        title={night ? "Pasar a modo diurno" : "Pasar a modo nocturno"}
         // 0.88.1 (duodécima ronda, guardia): 44 × 44 px, como los demás controles.
         className="tap-44 inline-flex h-11 w-11 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >

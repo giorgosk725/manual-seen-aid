@@ -63,7 +63,11 @@ test.describe("1.0.29 · auditoría de la 1.0.28", () => {
     await page.goto("/#/capitulo");
     await page.goto("/#/test");
     await expect(page.getByText(texto!)).toBeVisible();
-    // Reinicio explícito.
+    // Reinicio explícito, que se puede deshacer (1.0.30).
+    await page.getByRole("button", { name: "Volver a empezar" }).first().click();
+    await expect(page.getByText(/^Respondidas 0 de 10/)).toBeVisible();
+    await page.getByRole("button", { name: "Deshacer" }).click();
+    await expect(page.getByText(texto!)).toBeVisible();
     await page.getByRole("button", { name: "Volver a empezar" }).first().click();
     await expect(page.getByText(/^Respondidas 0 de 10/)).toBeVisible();
   });
@@ -76,6 +80,7 @@ test.describe("1.0.29 · auditoría de la 1.0.28", () => {
     await page.getByLabel("Ir a una característica").selectOption({ index: 6 });
     const destino = page.locator('[data-fila="5"]:visible');
     await expect(destino).toBeFocused();
+    await expect(destino).toHaveClass(/fila-destino/);
     await expect(destino).toBeInViewport();
     expect(await page.locator("[data-fila]:visible").count()).toBe(filasAntes);
   });
@@ -94,6 +99,10 @@ test.describe("1.0.29 · auditoría de la 1.0.28", () => {
     await expect(partes.getByRole("link", { name: "Seguimiento mantenido" })).toBeVisible();
     await partes.getByRole("link", { name: "Seguimiento mantenido" }).click();
     await expect(page).toHaveURL(/08-iniciacion\/b\d+$/);
+    // 1.0.30: el foco pasa al bloque de destino (se quedaba en el título).
+    await expect
+      .poll(() => page.evaluate(() => document.activeElement?.classList.contains("bloque-destino")))
+      .toBe(true);
   });
 
   test("I09 y M10: el alcance del cálculo antes de los datos y el tipo de hoja al abrirla", async ({

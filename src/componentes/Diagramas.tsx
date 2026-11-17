@@ -256,17 +256,19 @@ function Escalera({ i, yaEnTexto }: { i: number; yaEnTexto?: (t: string) => bool
               <span
                 // 1.0.24 (30.ª ronda, visual): el color del tramo también en papel (sin «gráficos de
                 // fondo», el rótulo claro quedaba a 2:1 sobre blanco).
-                className="franja-tramo flex w-28 shrink-0 items-center px-2 py-2 text-xs font-bold"
+                className="franja-tramo flex w-[6.75rem] shrink-0 items-center px-2 py-2 text-xs font-bold min-[400px]:w-28"
                 style={{ background: t.bg, color: t.fg }}
               >
                 <SinCortes texto={f.franja} />
               </span>
-              <span className="flex min-w-0 flex-1 items-center gap-2 bg-white px-2 py-1.5">
+              {/* 1.0.30 (revisión de la 1.0.29): por debajo de 400 px, la nota bajo la cifra y a lo
+                  ancho (a 320 px se cortaba por la derecha: «TAR de niv…»). */}
+              <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-0.5 bg-white px-2 py-1.5">
                 <span className="w-16 shrink-0 whitespace-nowrap text-base font-extrabold tabular-nums text-slate-900">
                   <SinCortes texto={f.objetivo} />
                 </span>
                 {f.nota && (
-                  <span className="text-xs leading-snug text-slate-600">
+                  <span className="min-w-0 basis-full text-xs leading-snug text-slate-600 min-[400px]:flex-1 min-[400px]:basis-0">
                     <SinCortes texto={f.nota} />
                   </span>
                 )}

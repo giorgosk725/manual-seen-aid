@@ -680,6 +680,12 @@ export function TablaVista({
                   // El foco a la fila, para seguir leyendo con teclado o lector desde ella.
                   if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
                   el.focus({ preventScroll: true });
+                  // 1.0.30 (revisión de la 1.0.29): la fila de destino, marcada un momento (las
+                  // últimas no llegan arriba y no se distinguía cuál era).
+                  el.classList.remove("fila-destino");
+                  void el.offsetWidth;
+                  el.classList.add("fila-destino");
+                  window.setTimeout(() => el.classList.remove("fila-destino"), 2200);
                 }}
                 className="min-h-11 w-full max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
@@ -712,7 +718,7 @@ export function TablaVista({
               setFila(n);
               onSeleccion?.(n == null ? undefined : String(n));
             }}
-            className="w-full max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            className="min-h-11 w-full max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             {/* 1.0.20 (27.ª ronda, R3): con una fila marcada (se llega desde una ficha), la opción
                 lo dice; elegir la fila la enseña sola, como siempre. */}
@@ -729,6 +735,12 @@ export function TablaVista({
               </option>
             ))}
           </select>
+          {/* 1.0.30: el resultado del filtro, dicho al lector (antes no se anunciaba nada). */}
+          <p className="sr-only" aria-live="polite">
+            {fila != null && tabla.filas[fila]
+              ? `Mostrando solo: ${etiquetaFila(tabla, tabla.filas[fila])}.`
+              : ""}
+          </p>
         </div>
       )}
 

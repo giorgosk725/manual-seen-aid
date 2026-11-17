@@ -1,5 +1,10 @@
 /* Buscar, Bibliografía, Sobre esta app, Autoevaluación y Preguntas frecuentes. */
-import { responderPregunta, useIntentoTest, volverAEmpezar } from "../intento-test";
+import {
+  deshacerReinicio,
+  responderPregunta,
+  useIntentoTest,
+  volverAEmpezar,
+} from "../intento-test";
 import { anuncioCobertura, coberturaDe } from "../cobertura";
 import { FUENTES_COMPLEMENTARIAS } from "../notas-complementarias";
 import { VeaseTambien } from "../componentes/VeaseTambien";
@@ -974,8 +979,20 @@ export function Test() {
   const respondidas = PREGUNTAS.filter((p) => p.id in elegidas);
   const n = respondidas.length;
   const aciertos = respondidas.filter((p) => elegidas[p.id] === p.correcta).length;
+  // 1.0.30 (revisión de la 1.0.29): reiniciar se puede deshacer unos segundos (borraba el intento
+  // sin confirmación ni vuelta atrás).
+  const [deshacible, setDeshacible] = useState(false);
+  useEffect(() => {
+    if (!deshacible) return undefined;
+    const t = window.setTimeout(() => setDeshacible(false), 10000);
+    return () => window.clearTimeout(t);
+  }, [deshacible]);
+  useEffect(() => {
+    if (n > 0) setDeshacible(false);
+  }, [n]);
   const empezarDeNuevo = () => {
     volverAEmpezar();
+    setDeshacible(true);
     window.scrollTo({ top: 0 });
   };
   return (
@@ -1000,6 +1017,21 @@ export function Test() {
             Respondidas {n} de {PREGUNTAS.length}
             {n > 0 ? ` · ${aciertos} ${aciertos === 1 ? "acierto" : "aciertos"}` : ""}
           </p>
+          {deshacible && n === 0 && (
+            <span role="status" className="flex items-center gap-2 text-xs text-slate-700">
+              Intento borrado.
+              <button
+                type="button"
+                onClick={() => {
+                  deshacerReinicio();
+                  setDeshacible(false);
+                }}
+                className="tap-44 rounded font-semibold underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+              >
+                Deshacer
+              </button>
+            </span>
+          )}
           {/* El intento se conserva al consultar el capítulo: reiniciarlo es una acción explícita. */}
           {n > 0 && n < PREGUNTAS.length && (
             <button

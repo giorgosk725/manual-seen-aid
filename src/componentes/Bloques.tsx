@@ -219,6 +219,21 @@ export const Bloques = memo(function Bloques({
     // destino, hasta el siguiente clic o el cambio de pantalla (el destello se iba en 1,5 s y,
     // al volver la vista, ya no se sabía qué párrafo era).
     el.classList.add("bloque-destino");
+    // 1.0.30 (revisión de la 1.0.29): el foco, al bloque de destino, también al saltar dentro del
+    // mismo apartado («En este apartado»): se quedaba en el título, miles de píxeles más arriba.
+    // Solo si el foco no está ya en algo que el lector haya elegido dentro del contenido.
+    const enfocar = setTimeout(() => {
+      const a = document.activeElement as HTMLElement | null;
+      const libre =
+        !a ||
+        a === document.body ||
+        a.tagName === "H1" ||
+        a.tagName === "MAIN" ||
+        !!a.closest("header, nav, aside");
+      if (!libre || el.contains(a)) return;
+      if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
+      el.focus({ preventScroll: true });
+    }, 120);
     const quitarDestino = () => el.classList.remove("bloque-destino");
     const alPulsar = () => {
       quitarDestino();
@@ -227,6 +242,7 @@ export const Bloques = memo(function Bloques({
     // Después de este clic (el que trajo aquí ya pasó; uno con el teclado no cuenta).
     const espera = setTimeout(() => document.addEventListener("pointerdown", alPulsar, true), 0);
     const soltar = () => {
+      clearTimeout(enfocar);
       cancelAnimationFrame(otraVez);
       soltarVista();
       clearTimeout(espera);

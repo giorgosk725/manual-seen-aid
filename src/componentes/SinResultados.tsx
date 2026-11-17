@@ -34,7 +34,7 @@ export function SinResultados({
           : "No se han encontrado resultados en el capítulo."}{" "}
         {cercanas.length
           ? "Quizá buscabas:"
-          : "Prueba con otras palabras («sueño», «cetonemia», «TBR») o entra por una consulta:"}
+          : "Pruebe con otras palabras («sueño», «cetonemia», «TBR») o entre por una consulta:"}
       </p>
       {cercanas.length > 0 && (
         <ul className="mt-1 space-y-0.5">

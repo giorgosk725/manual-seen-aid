@@ -299,7 +299,7 @@ export function leerCifra(s: string, max: number): Lectura {
     return { estado: "invalido", motivo: "Solo cifras, con coma o punto decimal." };
   const v = Number(t.replace(",", "."));
   if (!Number.isFinite(v)) return { estado: "invalido", motivo: "Cifra no válida." };
-  if (v > max) return { estado: "invalido", motivo: `Revisa la cifra (máximo ${max}).` };
+  if (v > max) return { estado: "invalido", motivo: `Revise la cifra (máximo ${max}).` };
   return { estado: "valido", v };
 }
 
