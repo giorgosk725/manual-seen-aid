@@ -128,7 +128,11 @@ test.describe("1.0.27 · buscar referencias", () => {
   test("paleta: «tabla 3» e Intro abren la Tabla 3", async ({ page }) => {
     await page.goto("/#/sistemas/ciq");
     await expect(page.locator("h1")).toBeVisible();
-    await page.keyboard.press("/");
+    // 1.0.32: la tecla «/» puede llegar antes de que la página la atienda (1 de cada 5).
+    await expect(async () => {
+      if (!(await page.getByRole("dialog").isVisible())) await page.keyboard.press("/");
+      await expect(page.getByRole("dialog")).toBeVisible({ timeout: 1000 });
+    }).toPass();
     await page.keyboard.type("tabla 3");
     await expect(
       page.locator('[role="dialog"] a[href="#/consultar/tablas/T3"]').first(),
