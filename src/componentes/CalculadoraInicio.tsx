@@ -1030,7 +1030,8 @@ export function CalculadoraInicio({
                 ev.indicacion.fuera.length > 0 && sis !== undefined
                   ? "Fuera de la indicación: no hay propuesta."
                   : ev.errores.length
-                    ? ev.errores.join(". ")
+                    ? // 1.0.34 (Fable): sin doble punto (los avisos ya acaban en punto).
+                      ev.errores.map((e) => e.replace(/\.\s*$/, "")).join(". ") + "."
                     : resumen.length
                       ? `Parámetros iniciales: ${resumen.join(", ")}.`
                       : huboResultado.current
@@ -1246,7 +1247,7 @@ export function CalculadoraInicio({
               {NUCLEO_COMUN.texto}.{" "}
               <a
                 href={href("sistemas", ORDEN_SISTEMAS[sis], "parametros")}
-                className="font-semibold underline"
+                className="tap-44 font-semibold underline"
               >
                 Qué hace cada parámetro en {CORTOS[sis]}
               </a>
@@ -1282,7 +1283,7 @@ export function CalculadoraInicio({
         <span>
           <strong>Requisitos previos al inicio:</strong>{" "}
           {REGLAS.respaldo.texto.charAt(0).toLowerCase() + REGLAS.respaldo.texto.slice(1)}.{" "}
-          <a href={ruta("inicio", "respaldo")} className="font-semibold underline">
+          <a href={ruta("inicio", "respaldo")} className="tap-44 font-semibold underline">
             Plan de respaldo
           </a>
         </span>

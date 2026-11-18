@@ -13,9 +13,21 @@ export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
-    fecha: "2026-11-17",
+    fecha: "2026-11-18",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — foco de la lupa y punto de lectura`,
+    titulo: `Complemento interactivo ${VERSION_APP} — remates de la revisión de la 1.0.32`,
+    detalle: [
+      "«Volver a la consulta» en una sola línea en el móvil (un origen largo se recorta).",
+      "El paréntesis o las comillas que abren van en la misma línea que la sigla que les sigue.",
+      "Zona de toque de 44 px en «Plan de respaldo» y «Qué hace cada parámetro» de la calculadora; los avisos de la calculadora, sin doble punto.",
+      "En la ficha de un sistema: a 1024 px se ven todas las pestañas («Comparar» abreviado hasta 1280 px) y a 320 px «Cambiar» va en la línea de los accesos.",
+      "Una dirección que no existe tiene su título; un sistema o una tabla que no existen lo dicen en vez de mostrar otra cosa sin aviso.",
+    ],
+  },
+  {
+    fecha: "2026-11-18",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.33 — foco de la lupa y punto de lectura",
     detalle: [
       "La lupa: al elegir una sugerencia que rellena la caja, el foco se queda en la caja.",
       "Atrás tras una remisión del apartado a su propia tabla o figura devuelve al punto donde se leía (antes, al principio del apartado).",

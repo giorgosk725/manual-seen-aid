@@ -135,7 +135,8 @@ function NoEncontrada() {
       className="rounded-2xl border border-dashed bg-white p-6 text-center"
       style={{ borderColor: "#d4d4d4" }}
     >
-      <p className="text-sm font-semibold text-slate-800">Esa pantalla no existe.</p>
+      {/* 1.0.34 (Fable, 1.0.32): con su título principal, como cualquier otra pantalla. */}
+      <h1 className="text-base font-semibold text-slate-800">Esa pantalla no existe</h1>
       <a href="#/" className="mt-2 inline-block text-sm font-semibold text-slate-700 underline">
         Volver a la portada
       </a>

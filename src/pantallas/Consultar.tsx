@@ -82,7 +82,18 @@ export function Tablas({
   fila?: string;
 }) {
   const tid = (id && id in TABLAS ? id : null) as TablaId | null;
-  if (!tid) return <IndiceTablas />;
+  // 1.0.34 (Fable, 1.0.32): una tabla que no existe lo dice (antes, el índice sin aviso).
+  if (!tid)
+    return id ? (
+      <>
+        <p role="status" className="casilla mb-3 px-3 py-2.5 text-sm text-slate-800">
+          No hay ninguna «{id.split(":")[0]}» en el capítulo: estas son sus tablas.
+        </p>
+        <IndiceTablas />
+      </>
+    ) : (
+      <IndiceTablas />
+    );
   return <TablaPantalla tid={tid} seleccion={seleccion} fila={fila} />;
 }
 

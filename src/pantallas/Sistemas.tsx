@@ -758,6 +758,8 @@ export function FichaSistema({
         </div>
         {/* Sistema visual: los tres accesos como enlaces de texto en una fila (en el móvil eran tres
             botones apilados antes del contenido). */}
+        {/* 1.0.34 (Fable, 1.0.32): por debajo de 360 px, sin los puntos (los enlaces ya van
+            subrayados): así «Cambiar» cabe en la misma línea (antes, solo en una fila propia). */}
         <div className="no-imprimir col-span-2 mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0 max-sm:[&>a]:px-0 sm:col-span-1 sm:col-start-2 sm:mt-0 sm:gap-x-2">
           <a
             // I61-04: al principio del recorrido (preparación), con el sistema; no al paso 5.
@@ -767,7 +769,7 @@ export function FichaSistema({
             <span className="sm:hidden">Iniciación</span>
             <span className="hidden sm:inline">Iniciación del sistema</span>
           </a>
-          <span aria-hidden="true" className="self-center text-slate-400">
+          <span aria-hidden="true" className="self-center text-slate-400 max-[359px]:hidden">
             ·
           </span>
           {/* 0.88.1 (duodécima ronda, R5): el cálculo de parámetros iniciales del sistema, directo
@@ -777,7 +779,7 @@ export function FichaSistema({
             <span className="sm:hidden">Cálculo</span>
             <span className="hidden sm:inline">Cálculo inicial</span>
           </a>
-          <span aria-hidden="true" className="self-center text-slate-400">
+          <span aria-hidden="true" className="self-center text-slate-400 max-[359px]:hidden">
             ·
           </span>
           <a href={href("pacientes", "plan", s.id)} className={accesoFicha}>
@@ -787,7 +789,7 @@ export function FichaSistema({
             </span>
             <span className="sr-only sm:not-sr-only">Plan de seguridad</span>
           </a>
-          <span aria-hidden="true" className="self-center text-slate-400">
+          <span aria-hidden="true" className="self-center text-slate-400 max-[359px]:hidden">
             ·
           </span>
           <a href={href("consultar", "situacion", `:${slug}`)} className={accesoFicha}>
@@ -1067,7 +1069,17 @@ export function Sistemas({ sel, seccion: pedida }: { sel?: string; seccion?: str
   if (seccion === "situaciones") return <AsituacionesConSistema ids={ids} />;
   // Dirección antigua de la ampliación técnica: aviso de alcance y la ficha del capítulo.
   if (seccion === "ampliacion" && retirado("ampliacion")) return <AmpliacionRetirada ids={ids} />;
-  if (sel !== undefined && sel !== "todos" && !ids.length) return <Comparacion ids={[]} />;
+  // 1.0.34 (Fable, 1.0.32): una dirección con un sistema que no existe lo dice (antes, los cuatro
+  // sin aviso).
+  if (sel !== undefined && sel !== "todos" && !ids.length)
+    return (
+      <>
+        <p role="status" className="casilla mb-3 px-3 py-2.5 text-sm text-slate-800">
+          No hay ningún sistema «{sel}» en el capítulo: se muestran los cuatro.
+        </p>
+        <Comparacion ids={[]} />
+      </>
+    );
   // 1.0.9: «ajuste» (la Tabla 3) es solo de la comparación; en la ficha de un sistema, a Parámetros.
   const sec = SECCIONES_FICHA.some((x) => x.id === seccion)
     ? seccion
@@ -1372,7 +1384,12 @@ function BarraSistemas({
         href={href("sistemas", "todos", !sec || sec === "funciona" ? "esencial" : sec)}
         className={claseAccion}
       >
-        Comparar con los demás
+        {/* 1.0.34 (Fable, 1.0.32): por debajo de 1280 px, «Comparar» (con la barra lateral, el
+            rótulo largo dejaba «Preguntas» fuera de la tira de pestañas). */}
+        <span className="xl:hidden" aria-hidden="true">
+          Comparar
+        </span>
+        <span className="sr-only xl:not-sr-only">Comparar con los demás</span>
         <ArrowRight size={14} aria-hidden="true" />
       </a>
     ) : null;

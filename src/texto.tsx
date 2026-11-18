@@ -93,19 +93,28 @@ export function Trozos({ trozos: originales }: { trozos: TrozoSigla[] }) {
   // sigla es un botón y la coma podía empezar la línea siguiente.
   const trozos = originales.map((x) => ({ ...x }));
   const pegado: (string | undefined)[] = [];
+  // 1.0.34 (Fable, 1.0.32): y el signo de apertura que la precede («(MCG)»): el «(» se quedaba
+  // solo al final de la línea.
+  const delante: (string | undefined)[] = [];
   trozos.forEach((tr, i) => {
     const sig = trozos[i + 1];
     if (tr.sigla && sig && !sig.sigla && /^[,.;:)»]/.test(sig.t)) {
       pegado[i] = sig.t[0];
       sig.t = sig.t.slice(1);
     }
+    const ant = trozos[i - 1];
+    if (tr.sigla && ant && !ant.sigla && ant.b === tr.b && ant.i === tr.i && /[(«]$/.test(ant.t)) {
+      delante[i] = ant.t.slice(-1);
+      ant.t = ant.t.slice(0, -1);
+    }
   });
   return (
     <>
       {trozos.map((tr, i) => {
         const nodo = tr.sigla ? (
-          pegado[i] ? (
+          pegado[i] || delante[i] ? (
             <span className="whitespace-nowrap">
+              {delante[i]}
               <SiglaPulsable sigla={tr.sigla} />
               {pegado[i]}
             </span>

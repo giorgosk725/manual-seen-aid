@@ -866,11 +866,17 @@ function BotonVolverConsulta({ volver, flotante = false }: { volver: string; flo
     <button
       type="button"
       onClick={() => window.history.back()}
-      className="chip focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+      // 1.0.34 (Fable, 1.0.32): en una sola línea; un origen largo («Autoevaluación
+      // complementaria») se recorta con puntos suspensivos (antes partía la franja en dos).
+      className="chip max-w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+      title={`Volver a la consulta · ${volver}`}
     >
-      <ChevronLeft size={15} aria-hidden="true" /> Volver a la consulta
+      <ChevronLeft size={15} aria-hidden="true" className="shrink-0" />
+      <span className="shrink-0 whitespace-nowrap">Volver a la consulta</span>
       {/* Flotando en el móvil, sin el origen (se partía en dos líneas y tapaba el texto). */}
-      <span className={`font-normal text-slate-600 ${flotante ? "hidden sm:inline" : ""}`}>
+      <span
+        className={`min-w-0 truncate font-normal text-slate-600 ${flotante ? "hidden sm:inline" : ""}`}
+      >
         · {volver}
       </span>
     </button>

@@ -63,3 +63,20 @@ describe("Siglas pulsables", () => {
     expect(await axe(container, AXE)).toHaveNoViolations();
   });
 });
+
+describe("1.0.34 · el signo de apertura va con la sigla", () => {
+  it("«(MCG)» no deja el paréntesis solo al final de la línea", async () => {
+    const { Trozos } = await import("./texto");
+    const { container } = render(
+      <p>
+        <Trozos
+          trozos={[{ t: "monitorización de glucosa (" }, { t: "MCG", sigla: "MCG" }, { t: ")." }]}
+        />
+      </p>,
+    );
+    const boton = screen.getByRole("button", { name: "MCG" });
+    const grupo = boton.closest(".whitespace-nowrap");
+    expect(grupo?.textContent).toBe("(MCG)");
+    expect(container.textContent).toBe("monitorización de glucosa (MCG).");
+  });
+});
