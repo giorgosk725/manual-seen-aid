@@ -104,3 +104,4 @@ Nota (22-10-2026): la 0.96.0 se desplegó bien, pero la comprobación final de `
 | 2026-11-17 00:33 | main | 1.0.30 | eb327659f22c | index-D2o4eaiy.js | 1.0.29 (41f54288f1b7) |
 | 2026-11-17 00:54 | main | 1.0.31 | a96d455e865f | index-BK40g_fP.js | 1.0.30 (eb327659f22c) |
 | 2026-11-17 07:00 | main | 1.0.32 | 224cea510615 | index-Dz1svz6u.js | 1.0.31 (a96d455e865f) |
+| 2026-11-18 22:19 | main | 1.0.33 | 8b9cdd6fad0b | index-DSTglV6y.js | 1.0.32 (224cea510615) |
