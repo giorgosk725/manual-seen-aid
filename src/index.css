@@ -1330,6 +1330,17 @@ html:has(.barra-pegada) {
 /* La ficha de un sistema lleva solo scroll-mt-2 en sus secciones: el resto lo pone este
    scroll-padding (se suman). Con poca altura (zoom al 200 %, móvil apaisado), la cabecera y las barras no se pegan: si no,
    se comían más de la mitad de la pantalla. */
+/* 1.0.36 (Fable, 1.0.35): los controles de la cabecera y de la barra pegada están SIEMPRE a la
+   vista, pero quedan dentro del margen de arriba (hasta 10 rem): al recibir el foco (un clic
+   basta) el navegador subía la página para «sacarlos» de ese margen (106 px en la ficha). Esa
+   posición movida era la que se guardaba, y Atrás entre pestañas de la ficha no devolvía al punto
+   de lectura. Con el margen propio en negativo, el foco no mueve la página. Solo mientras están
+   pegadas (con poca altura no lo están y sí hay que llevarlas a la vista). */
+@media screen and (min-height: 521px) {
+  :is(.cabecera, .barra-pegada) :is(a, button, input, select, [tabindex]) {
+    scroll-margin-top: -10rem;
+  }
+}
 @media screen and (max-height: 520px) {
   .cabecera,
   .barra-pegada {

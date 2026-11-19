@@ -194,7 +194,9 @@ export function HubPacientes() {
               <li key={id}>
                 <a
                   href={href("pacientes", "plan", id)}
-                  className="tarjeta tarjeta-sistema hover-lift ease-brand flex h-full items-center gap-2 p-2 pl-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  // 1.0.36 (Fable, 1.0.35): a menos de 360 px, la foto encima del nombre («Control‑IQ /
+                  // Control‑IQ+» se salía 12 px de la tarjeta).
+                  className="tarjeta tarjeta-sistema hover-lift ease-brand flex h-full items-center gap-2 p-2 pl-3 transition max-[359px]:flex-col max-[359px]:items-start max-[359px]:gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
                   style={{ ["--sis" as string]: SISTEMA_HEX[c].strong }}
                 >
                   <img

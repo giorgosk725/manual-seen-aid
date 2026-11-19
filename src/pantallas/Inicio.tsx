@@ -548,7 +548,7 @@ function PasosInicio({
         {PASOS_GUIA.map((x, i) => {
           const on = i === n - 1;
           return (
-            <li key={x.id} className="min-w-11 flex-1">
+            <li key={x.id} className="min-w-11 flex-auto">
               <button
                 type="button"
                 aria-current={on ? "step" : undefined}
@@ -557,12 +557,17 @@ function PasosInicio({
                   alPaso();
                   ir(i + 1);
                 }}
+                // 1.0.36 (Fable, 1.0.35): cada paso con el ancho de su rótulo más su parte del sobrante
+                // (a partes iguales, «Parámetros» se salía y tocaba a «Objetivos» a 320–360 px).
                 // 1.0.13 (25.ª ronda, R5): con un rótulo corto bajo el número (antes, solo «1 2 3 4 5»:
                 // había que tocar para saber qué era cada paso).
                 className="pestana -mb-px min-h-11 w-full flex-col justify-center gap-0 py-1 tabular-nums focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
                 <span className="text-[15px] leading-tight">{i + 1}</span>
-                <span aria-hidden="true" className="text-[11px] font-normal leading-tight">
+                <span
+                  aria-hidden="true"
+                  className="text-[11px] font-normal leading-tight max-[359px]:text-[10px]"
+                >
                   {CORTO_PASO[x.id] ?? ""}
                 </span>
               </button>

@@ -280,8 +280,13 @@ function Cifra({
   return (
     <div className="tarjeta p-3">
       <div className="rotulo">{titulo}</div>
-      <div className="mt-0.5 flex items-baseline gap-1.5">
-        <span className="text-3xl font-extrabold tabular-nums" style={{ color }}>
+      {/* 1.0.36 (Fable, 1.0.35): la cifra no se parte («≈» quedaba en una línea y el número en la
+          siguiente a 320 px); si no cabe con la unidad, baja la unidad. */}
+      <div className="mt-0.5 flex flex-wrap items-baseline gap-x-1.5">
+        <span
+          className="whitespace-nowrap text-3xl font-extrabold tabular-nums max-[359px]:text-2xl"
+          style={{ color }}
+        >
           {valor}
         </span>
         <span className="text-sm font-semibold text-slate-600">{unidad}</span>
@@ -652,10 +657,14 @@ export function CalculadoraInicio({
                     type="button"
                     aria-pressed={on}
                     onClick={() => set({ origen: o.v })}
-                    className="chip flex-col items-start justify-center gap-0 px-2 py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:px-3"
+                    // 1.0.36 (Fable, 1.0.35): a menos de 360 px, menos relleno y la segunda línea un punto
+                    // menor («automatización» no cabía y se salía 8 px del borde).
+                    className="chip flex-col items-start justify-center gap-0 px-2 py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 max-[359px]:px-1.5 sm:px-3"
                   >
                     <span>{o.t}</span>
-                    <span className="text-xs font-normal opacity-80">{o.dd}</span>
+                    <span className="text-xs font-normal opacity-80 max-[359px]:text-[11px]">
+                      {o.dd}
+                    </span>
                   </button>
                 );
               })}

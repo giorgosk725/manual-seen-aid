@@ -15,7 +15,17 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — unidad dentro de las casillas del cálculo`,
+    titulo: `Complemento interactivo ${VERSION_APP} — Atrás entre pestañas de la ficha y pantallas de 320 px`,
+    detalle: [
+      "Ficha de un sistema: Atrás y Adelante entre sus pestañas devuelven cada una al punto donde se leía (al pulsar una pestaña de la barra pegada, la página se movía antes de guardar la posición).",
+      "Pulsar un control de la cabecera o de la barra pegada ya no desplaza la página.",
+      "A menos de 360 px de ancho: los nombres del selector de sistema caben en su casilla; los pasos de «Inicio» no se tocan entre sí; en «Material para el paciente» la foto va encima del nombre del sistema; en el cálculo inicial, «ISCI sin automatización» cabe en su opción y la cifra de «Tasa basal» no se parte; en cetonemia, la cifra no toca el borde.",
+    ],
+  },
+  {
+    fecha: "2026-11-20",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.35 — unidad dentro de las casillas del cálculo",
     detalle: [
       "Cálculo inicial: la unidad (UI/día, kg, UI/h) va dentro de la casilla, a la derecha; las casillas de una rejilla miden lo mismo (antes, la de «kg» era más ancha que las de «UI/día»).",
     ],
