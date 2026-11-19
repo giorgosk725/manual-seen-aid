@@ -931,7 +931,7 @@ export function FichaSistema({
                       href={href("sistemas", s.id, `modos:${slugDato(nocturna.r)}`)}
                       className="tap-44 inline py-1 font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700"
                     >
-                      Hipoglucemia nocturna (Modos y funciones)
+                      <span>Hipoglucemia nocturna (Modos y funciones)</span>
                     </a>
                     <span aria-hidden="true">&nbsp;· </span>
                   </>
@@ -940,14 +940,14 @@ export function FichaSistema({
                   href={href("consultar", "descarga")}
                   className="tap-44 inline py-1 font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700"
                 >
-                  Interpretación de la descarga
+                  <span>Interpretación de la descarga</span>
                 </a>
                 <span aria-hidden="true">&nbsp;· </span>
                 <a
                   href={href("consultar", "situacion", `:${slug}`)}
                   className="tap-44 inline py-1 font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-700"
                 >
-                  Situaciones con {CORTO_SISTEMA[c]}
+                  <span>Situaciones con {CORTO_SISTEMA[c]}</span>
                 </a>
               </p>
             );
@@ -1633,7 +1633,10 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                   // una línea: a 1366 × 768 los cuatro objetivos entran sin desplazarse.
                   // 1.0.27: desde xl, con «Ficha:» delante, los cinco accesos en una línea a 1280–1440
                   // (con 10 px entre piezas, «Plan» bajaba solo a una segunda).
-                  className="separador flex flex-wrap justify-between gap-x-2 gap-y-0 border-t px-4 py-1 sm:justify-start sm:gap-x-2.5 xl:gap-x-1.5 xl:py-0.5"
+                  // 1.0.37 (Fable, 1.0.35): en el móvil, alineados a la izquierda con un hueco fijo
+                  // (repartidos a lo ancho, la segunda línea dejaba «Iniciación» y «Plan» en extremos
+                  // opuestos).
+                  className="separador flex flex-wrap justify-start gap-x-4 gap-y-0 border-t px-4 py-1 sm:gap-x-2.5 xl:gap-x-1.5 xl:py-0.5"
                 >
                   {/* 1.0.27 (revisión externa del 15-11-2026): los accesos llevan a la ficha de
                       ESTE sistema, no a las pestañas de arriba (que comparan los cuatro); sin el

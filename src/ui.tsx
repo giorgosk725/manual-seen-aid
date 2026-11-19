@@ -324,7 +324,7 @@ export class ErrorBoundary extends React.Component<
           <AlertTriangle size={24} className="mb-2 text-amber-600" />
           <p className="text-sm font-semibold text-slate-800">Algo ha fallado en esta pantalla.</p>
           <p className="mt-1 max-w-md text-sm text-slate-600">
-            Puedes reintentar o recargar la página. Si el fallo se repite, restablece las
+            Puede reintentar o recargar la página. Si el fallo se repite, restablezca las
             preferencias de lectura de este navegador (modo nocturno, letra, favoritos y apartados
             leídos).
           </p>
@@ -452,6 +452,20 @@ export function PaginaBadge({ p, p2 }: { p: number; p2?: number }) {
 
 /* Cabecera de sección al modo del Manual SEEN: cuadro de color con el número, título en
    mayúsculas condensadas y una regla fina con un tramo del color de la sección. */
+/* 1.0.37 (Fable, 1.0.35): aviso de una dirección que no lleva a nada dentro de una pantalla (una
+   situación, un paso, una figura, una hoja o un párrafo que no existen). El mismo aspecto que el de
+   Tablas y Sistemas (1.0.34); lo escrito en la dirección, recortado y sin desbordar. */
+export function AvisoDireccion({ pedido, children }: { pedido: string; children: ReactNode }) {
+  return (
+    <p
+      role="status"
+      className="casilla no-imprimir mb-3 px-3 py-2.5 text-sm text-slate-800 [overflow-wrap:anywhere]"
+    >
+      «{pedido.length > 40 ? `${pedido.slice(0, 40)}…` : pedido}»: {children}
+    </p>
+  );
+}
+
 export function CabeceraEditorial({
   numero,
   titulo,

@@ -54,7 +54,7 @@ const apilarSituacion = (seccion: string, sub?: string, detalle?: string) => {
 let situacionDesdeLista: string | null = null;
 import { ComoInterpretar } from "../componentes/ComoInterpretar";
 import { casoPorId } from "../casos";
-import { BotonImprimir, CabeceraEditorial, ColofonImpreso } from "../ui";
+import { AvisoDireccion, BotonImprimir, CabeceraEditorial, ColofonImpreso } from "../ui";
 import { useMargenesImpresos } from "../margenesImpresos";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
 import { olvidarSistema, recordarSistema } from "../sistemaReciente";
@@ -779,6 +779,11 @@ export function SituacionSistema({
   );
   return (
     <div>
+      {situacion && !sit && !guia && (
+        <AvisoDireccion pedido={situacion}>
+          no hay ninguna situación con ese nombre. Estas son las situaciones.
+        </AvisoDireccion>
+      )}
       <CabeceraEditorial titulo="Situaciones" hex={hex} level={1} />
       {/* Sin situación elegida, la lista a todo el ancho; con una, lista a la izquierda (0.71.0). */}
       {/* 1.0.23 (verificación visual): con una situación abierta, en papel solo ella (la lista y el
@@ -1394,7 +1399,8 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
   // 0.96.1 (revisión de Codex, V95-04): un entero del 1 al 8; cualquier otra cosa («4.5», «x»,
   // «-2», «12»), el paso 1 (antes, «4.5» rompía la pantalla).
   const pedido = Number(paso);
-  const n = Number.isInteger(pedido) && pedido >= 1 && pedido <= 8 ? pedido : 1;
+  const pasoValido = Number.isInteger(pedido) && pedido >= 1 && pedido <= 8;
+  const n = pasoValido ? pedido : 1;
   const fila = t.filas[n - 1];
   const patrones = parrafosConLead(PATRON_DEL_PASO[n] || []);
   // 1.0.25: cada paso, una entrada del historial (Atrás vuelve al paso anterior).
@@ -1417,6 +1423,11 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
     // 0.90.1 (14.ª ronda, R3 y visual): la región que se imprime (sin la clase, la hoja salía en
     // blanco: con `imprimiendo`, todo lo que no es `.imprimible` se oculta).
     <div ref={raiz} className="imprimible">
+      {paso !== undefined && paso !== "" && !pasoValido && (
+        <AvisoDireccion pedido={paso}>
+          la interpretación de la descarga tiene ocho pasos. Se muestra el primero.
+        </AvisoDireccion>
+      )}
       <CabeceraEditorial titulo="Interpretación de la descarga" hex={hex} level={1} />
       {/* 0.72.0: los ocho pasos a la vista. Hasta el ordenador ancho, ocho botones numerados
           con el avance; en él, la lista con sus títulos a la izquierda. */}

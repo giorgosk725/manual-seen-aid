@@ -434,7 +434,11 @@
   /* 0.89.1 (13.ª ronda, senior): el texto de cada referencia, por encima del área ampliada (relleno
      y ::after de 44 px) de las de la línea de al lado: tocar o pulsar «Tabla 4» abre la Tabla 4
      aunque la línea de abajo lleve otra referencia. */
-  .fuente-pie a > span {
+  /* 1.0.37 (Fable, 1.0.35): lo mismo en cualquier enlace en línea con área ampliada («Menciones
+     en el capítulo», «También en esta ficha…»): al tocar el texto de uno se abría el de la línea
+     de abajo. */
+  .fuente-pie a > span,
+  a.tap-44.inline > span {
     position: relative;
     z-index: 1;
   }
@@ -1616,6 +1620,30 @@ html:has(.volver-pegado) .tabla-capitulo thead th {
     top: 3.25rem;
   }
 }
+/* 1.0.37 (Fable, 1.0.35): lo mismo cuando la tabla cabe entera («cabe» fija su propio `top`, más
+   específico: la cabecera de la tabla quedaba pegada DETRÁS de la franja y no se veía). */
+html:has(.volver-pegado.sticky) .tabla-scroll.cabe .tabla-capitulo thead th {
+  top: 6.75rem;
+}
+@media (min-width: 1024px) {
+  html:has(.volver-pegado.sticky) .tabla-scroll.cabe .tabla-capitulo thead th {
+    top: 3.25rem;
+  }
+}
+/* 1.0.37 (Fable, 1.0.35): con poca altura (móvil apaisado) la cabecera de la app no se pega: ni la
+   franja de «Volver a la consulta» ni la cabecera de la tabla le dejan su hueco de 3,5 rem (a
+   851 × 393 se veían filas por encima de la cabecera de la tabla). */
+@media screen and (max-height: 520px) {
+  .volver-pegado.sticky {
+    top: 0;
+  }
+  .tabla-scroll.cabe .tabla-capitulo thead th {
+    top: 0;
+  }
+  html:has(.volver-pegado.sticky) .tabla-scroll.cabe .tabla-capitulo thead th {
+    top: 3.25rem;
+  }
+}
 
 /* Impresión de la lectura: columna completa, sin cromo, insignias de página visibles. */
 @media print {
@@ -2510,12 +2538,33 @@ html.night .decoration-slate-300 {
   }
 }
 
+/* 1.0.37 (Fable, 1.0.35): tarjetas de cifras del cálculo inicial. Cada tarjeta ocupa cuatro
+   renglones de la rejilla (rótulo, cifra, cuenta y regla) y los comparte con las de su fila: las
+   cifras quedan a la misma altura aunque un rótulo ocupe dos líneas. El hueco entre filas lo pone
+   el margen de la tarjeta (con hueco de rejilla, se repetiría dentro de cada tarjeta). */
+.rejilla-cifras {
+  row-gap: 0;
+  margin-bottom: -0.5rem;
+}
+.rejilla-cifras > .tarjeta {
+  margin-bottom: 0.5rem;
+}
+@supports (grid-template-rows: subgrid) {
+  .rejilla-cifras > .tarjeta {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 4;
+  }
+}
+
 /* 1.0.13 (25.ª ronda, senior): el selector de un sistema, según su propio ancho. Por debajo de
    unos 560 px de columna (Situaciones a 1024–1180 px o con zoom), 2 × 2. */
 .casillas-medida {
   container-type: inline-size;
 }
-@container (max-width: 35rem) {
+/* 1.0.37 (Fable, 1.0.35): hasta 39 rem (antes 35): en el cálculo inicial a 1280–1440 px la
+   columna mide 610 px y «MiniMed 780G» quedaba a 3 px del borde de su casilla. */
+@container (max-width: 39rem) {
   .casillas-unico.casillas-unico {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

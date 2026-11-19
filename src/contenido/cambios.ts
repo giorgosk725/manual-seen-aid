@@ -15,7 +15,23 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — Atrás entre pestañas de la ficha y pantallas de 320 px`,
+    titulo: `Complemento interactivo ${VERSION_APP} — remates de la revisión de la 1.0.35`,
+    detalle: [
+      "A menos de 360 px de ancho, el tamaño de letra de la lectura se cambia desde «Más» (en la cabecera no caben los botones).",
+      "Con poca altura (móvil apaisado), la cabecera de las tablas se pega arriba del todo; con «Volver a la consulta» a la vista, justo debajo de él (quedaba tapada).",
+      "«Volver a la consulta» sigue ahí al volver a esa pantalla con Atrás o Adelante.",
+      "Cálculo inicial: las cifras de una fila quedan a la misma altura; el selector de sistema va en dos filas cuando «MiniMed 780G» no cabía con holgura; el recuadro «Faltan…», al ancho de las casillas.",
+      "Al tocar el texto de un enlace de «Menciones en el capítulo» se abre ese enlace (se abría el de la línea de abajo); los botones del visor de figuras miden 44 px.",
+      "Tarjetas de Sistemas en el móvil: los accesos de «Ficha:» van alineados a la izquierda.",
+      "Una situación, un paso de la descarga, una figura, una hoja o un párrafo que no existen lo dicen en vez de mostrar otra cosa sin aviso.",
+      "El título de una hoja para el paciente se lee entero en el móvil; el aviso de fallo de una pantalla, de usted.",
+    ],
+  },
+  {
+    fecha: "2026-11-20",
+    ambito: "app",
+    titulo:
+      "Complemento interactivo 1.0.36 — Atrás entre pestañas de la ficha y pantallas de 320 px",
     detalle: [
       "Ficha de un sistema: Atrás y Adelante entre sus pestañas devuelven cada una al punto donde se leía (al pulsar una pestaña de la barra pegada, la página se movía antes de guardar la posición).",
       "Pulsar un control de la cabecera o de la barra pegada ya no desplaza la página.",

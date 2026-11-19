@@ -13,7 +13,7 @@ import { CORTO_SISTEMA, FOTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import type { SistemaId } from "../ampliacion/tipos";
 import { AUTOR_PACIENTES, RESUMEN_CAPITULO, TITULO_CAPITULO_PACIENTES } from "../pacientes/textos";
 import { elegirRuta, href } from "../rutas";
-import { CabeceraEditorial, ToneCard } from "../ui";
+import { AvisoDireccion, CabeceraEditorial, ToneCard } from "../ui";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { hojaExtraPorId, type HojaExtra, type SeccionHoja } from "../hojas";
 import { Texto } from "../texto";
@@ -242,7 +242,18 @@ export function HubPacientes() {
 export function HojaPacientes({ id }: { id?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const extra = hojaExtraPorId(id);
-  if (!extra) return <HubPacientes />;
+  // 1.0.37 (Fable, 1.0.35): una hoja que no existe lo dice (antes, la lista sin aviso).
+  if (!extra)
+    return id ? (
+      <>
+        <AvisoDireccion pedido={id}>
+          no hay ninguna hoja con ese nombre. Este es el material para el paciente.
+        </AvisoDireccion>
+        <HubPacientes />
+      </>
+    ) : (
+      <HubPacientes />
+    );
   return (
     <div>
       <Volver actual={extra.titulo} />
@@ -408,7 +419,9 @@ function Volver({ actual }: { actual: string }) {
         Material para el paciente
       </a>
       <span aria-hidden="true">›</span>
-      <span aria-current="page" className="min-w-0 truncate">
+      {/* 1.0.37 (Fable, 1.0.35): el título de la hoja, entero en dos líneas si hace falta (se
+          cortaba con puntos suspensivos en todos los móviles). */}
+      <span aria-current="page" className="min-w-0 py-1 leading-snug">
         {actual}
       </span>
     </nav>

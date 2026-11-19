@@ -24,7 +24,8 @@ import {
 } from "../contenido";
 import { ICONO_APARTADO, ICONO_DIAGRAMA } from "../nav";
 import { href } from "../rutas";
-import { BotonImprimir } from "../ui";
+import { AvisoDireccion, BotonImprimir } from "../ui";
+import { partirDestacado } from "../fraseCitada";
 import { CATEGORIA_HEX, SEEN, colorApartado } from "../tokens";
 import { Bloques } from "../componentes/Bloques";
 
@@ -95,6 +96,19 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
       slug: apartado.slug,
     });
   }, [apartado.slug, apartado.n, apartado.corto]);
+  // 1.0.37 (Fable, 1.0.35): un enlace a un párrafo que no existe («…/b999») lo dice (antes, el
+  // apartado desde arriba sin aviso). Se comprueba un momento después: lo que llega en su propio
+  // trozo (figuras, diagramas) pone su ancla al cargar.
+  const [sinDestino, setSinDestino] = useState<string | null>(null);
+  useEffect(() => {
+    setSinDestino(null);
+    if (!destacado) return undefined;
+    const { bloque } = partirDestacado(destacado);
+    const t = setTimeout(() => {
+      if (!document.getElementById(bloque)) setSinDestino(bloque);
+    }, 1200);
+    return () => clearTimeout(t);
+  }, [destacado, apartado.slug]);
   const i = APARTADOS.findIndex((a) => a.slug === apartado.slug);
   const prev = APARTADOS[i - 1];
   const next = APARTADOS[i + 1];
@@ -302,6 +316,11 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
       )}
       <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_13rem] xl:gap-10">
         <div className="lg:pr-16">
+          {sinDestino && (
+            <AvisoDireccion pedido={sinDestino}>
+              este apartado no tiene ningún párrafo con esa marca. Se muestra desde el principio.
+            </AvisoDireccion>
+          )}
           <Bloques apartado={apartado} destacado={destacado} />
         </div>
         {marcas.length > 0 && (

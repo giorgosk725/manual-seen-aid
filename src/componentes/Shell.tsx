@@ -800,7 +800,22 @@ function Inferior({
 }
 
 /* ---------- Menú del móvil (el mismo de la barra lateral) ---------- */
-function Cajon({ open, onClose, ruta }: { open: boolean; onClose: () => void; ruta: Ruta }) {
+function Cajon({
+  open,
+  onClose,
+  ruta,
+  letra,
+  setLetra,
+}: {
+  open: boolean;
+  onClose: () => void;
+  ruta: Ruta;
+  letra: (typeof TAMANOS)[number];
+  setLetra: (v: (typeof TAMANOS)[number]) => void;
+}) {
+  const enLectura = ruta.seccion === "capitulo" && !!ruta.sub;
+  const menor = TAMANOS[Math.max(0, TAMANOS.indexOf(letra) - 1)];
+  const mayor = TAMANOS[Math.min(TAMANOS.length - 1, TAMANOS.indexOf(letra) + 1)];
   return (
     <Modal open={open} onClose={onClose} ariaLabel="Menú" maxW="max-w-md">
       <div className="p-3">
@@ -815,6 +830,38 @@ function Cajon({ open, onClose, ruta }: { open: boolean; onClose: () => void; ru
             <X size={18} />
           </button>
         </div>
+        {/* 1.0.37 (Fable, 1.0.35): a menos de 360 px los dos botones de letra no caben en la
+            cabecera; en la lectura del capítulo se ofrecen aquí (antes no había forma de
+            cambiarla en esas pantallas). */}
+        {enLectura && (
+          <div
+            role="group"
+            aria-label="Tamaño de letra"
+            className="separador mx-3 mb-2 flex items-center justify-between gap-2 border-b pb-2 min-[360px]:hidden"
+          >
+            <span className="text-sm font-semibold text-slate-700">Tamaño de letra</span>
+            <span className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setLetra(menor)}
+                disabled={letra === menor}
+                aria-label="Letra más pequeña"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 disabled:opacity-40"
+              >
+                <AArrowDown size={18} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setLetra(mayor)}
+                disabled={letra === mayor}
+                aria-label="Letra más grande"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 disabled:opacity-40"
+              >
+                <AArrowUp size={18} />
+              </button>
+            </span>
+          </div>
+        )}
         <MenuNavegacion ruta={ruta} etiqueta="Menú de navegación" onIr={onClose} sinBarra />
       </div>
     </Modal>
@@ -1151,6 +1198,7 @@ export function Shell({
   // Iniciar, Buscar, un caso…), un botón para volver justo donde se estaba (historial).
   const previa = useRef<{ seccion: string; titulo: string }>({ seccion: "", titulo: "" });
   const [volver, setVolver] = useState<string | null>(null);
+  const volverPorHash = useRef(new Map<string, string>());
   const [preguntaDeFicha, setPreguntaDeFicha] = useState(false);
   // 1.0.26: el «Volver a la consulta» flotante, apartado mientras se baja.
   const [flotanteOculto, setFlotanteOculto] = useState(false);
@@ -1228,7 +1276,18 @@ export function Shell({
       ["consultar", "sistemas", "buscar", "casos", "preguntas", "visual", "test"].includes(
         previa.current.seccion,
       );
-    setVolver(desdeHerramienta ? previa.current.titulo : null);
+    // 1.0.37 (Fable, 1.0.35): la dirección a la que se llegó desde una herramienta lo recuerda:
+    // con Atrás y luego Adelante (o Atrás desde una pantalla posterior) «Volver a la consulta»
+    // sigue ahí (antes solo se ofrecía en la llegada con un clic). Un enlace nuevo a esa misma
+    // dirección desde otro sitio lo olvida.
+    const dondeVolver = window.location.hash;
+    let tituloVolver: string | null = null;
+    if (desdeHerramienta) {
+      tituloVolver = previa.current.titulo;
+      volverPorHash.current.set(dondeVolver, tituloVolver);
+    } else if (nueva) volverPorHash.current.delete(dondeVolver);
+    else if (enLiteral) tituloVolver = volverPorHash.current.get(dondeVolver) ?? null;
+    setVolver(tituloVolver);
     // 1.0.27 (P5): pregunta frecuente abierta desde una ficha (o desde otra pregunta que lo era).
     const seccionPrevia = previa.current.seccion;
     setPreguntaDeFicha(
@@ -1493,7 +1552,7 @@ export function Shell({
         masAbierto={cajon}
         preguntaDeFicha={preguntaDeFicha}
       />
-      <Cajon open={cajon} onClose={cerrarCajon} ruta={ruta} />
+      <Cajon open={cajon} onClose={cerrarCajon} ruta={ruta} letra={letra} setLetra={setLetra} />
       <Paleta open={paleta} onClose={cerrarPaleta} />
       <VolverArriba />
       <AvisoVersion />

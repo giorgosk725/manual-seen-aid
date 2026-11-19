@@ -85,7 +85,7 @@ export function Visor({ imagen, onClose }: { imagen: ImagenVisor | null; onClose
   };
 
   const boton =
-    "tap-44 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white";
+    "tap-44 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white";
 
   return createPortal(
     <div
@@ -99,7 +99,8 @@ export function Visor({ imagen, onClose }: { imagen: ImagenVisor | null; onClose
       // controles) y, en el móvil, el título entero en su propia fila bajo los botones.
       style={{ background: "rgb(2, 6, 23)" }}
     >
-      <div className="flex flex-wrap items-center gap-2 px-3 py-2 text-white">
+      {/* 1.0.37: botones de 44 px; a menos de 360 px, con menos hueco para que sigan en una fila. */}
+      <div className="flex flex-wrap items-center gap-2 px-3 py-2 text-white max-[359px]:gap-1">
         <p className="order-last min-w-0 basis-full text-sm font-semibold leading-snug sm:order-none sm:flex-1 sm:basis-0">
           {imagen.titulo}
         </p>

@@ -344,7 +344,9 @@ function Estado({
       )}
       {faltan.length > 0 && (
         <p
-          className="rounded-md border border-dashed px-3 py-3 text-center text-sm text-slate-700"
+          // 1.0.37 (Fable, 1.0.35): a todo el ancho de la columna, como las casillas (la medida de
+          // lectura de los párrafos lo dejaba en 600 px: a 1024 px su borde no cuadraba).
+          className="max-w-none rounded-md border border-dashed px-3 py-3 text-center text-sm text-slate-700"
           style={{ borderColor: "#cbd5e1" }}
         >
           <Calculator size={18} className="mx-auto mb-1 text-slate-400" aria-hidden="true" />
@@ -1074,7 +1076,12 @@ export function CalculadoraInicio({
               ]}
             />
             {ev.lista && (ev.calcula.basal || ev.calcula.ratioFactor) && (
-              <div className="grid grid-cols-2 gap-2 lg:grid-cols-4 xl:grid-cols-2">
+              <div
+                // 1.0.37 (Fable, 1.0.35): las tarjetas de una fila comparten sus cuatro renglones
+                // (rejilla-cifras, index.css): con un rótulo de dos líneas («Factor de
+                // sensibilidad»), su cifra quedaba 15 px más baja que la de al lado.
+                className="rejilla-cifras grid grid-cols-2 gap-x-2 lg:grid-cols-4 xl:grid-cols-2"
+              >
                 <Cifra
                   titulo="DTD de inicio"
                   valor={coma(redondea(ev.dtdInicio!, 1))}

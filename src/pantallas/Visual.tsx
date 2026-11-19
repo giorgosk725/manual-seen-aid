@@ -10,7 +10,7 @@ import { INFO_F3 } from "../componentes/figura3-imagen";
 import { DiagramaVista } from "../componentes/Diagramas";
 import { AbrirEnVisor } from "../componentes/Visor";
 import { href } from "../rutas";
-import { CabeceraEditorial } from "../ui";
+import { AvisoDireccion, CabeceraEditorial } from "../ui";
 import { CATEGORIA_HEX } from "../tokens";
 
 const hex = CATEGORIA_HEX.consultar;
@@ -147,7 +147,16 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
 
 export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }) {
   const d = DIAGRAMAS.find((x) => x.id === id);
-  if (!d || !diagramaEnEdicion(d.id)) return <Visual />;
+  // 1.0.37 (Fable, 1.0.35): una figura que no existe lo dice (antes, el índice sin aviso).
+  if (!d || !diagramaEnEdicion(d.id))
+    return (
+      <>
+        <AvisoDireccion pedido={id}>
+          no hay ninguna figura ni diagrama con ese nombre en esta edición. Estas son las que hay.
+        </AvisoDireccion>
+        <Visual />
+      </>
+    );
   return (
     <div>
       {/* 1.0.0 (18.ª ronda, R1): la hipoglucemia es una conducta de Situaciones, como la Figura 3
