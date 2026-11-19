@@ -13,9 +13,17 @@ export { VERSION_APP };
 
 export const CAMBIOS: Cambio[] = [
   {
+    fecha: "2026-11-20",
+    ambito: "app",
+    titulo: `Complemento interactivo ${VERSION_APP} — unidad dentro de las casillas del cálculo`,
+    detalle: [
+      "Cálculo inicial: la unidad (UI/día, kg, UI/h) va dentro de la casilla, a la derecha; las casillas de una rejilla miden lo mismo (antes, la de «kg» era más ancha que las de «UI/día»).",
+    ],
+  },
+  {
     fecha: "2026-11-18",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — remates de la revisión de la 1.0.32`,
+    titulo: "Complemento interactivo 1.0.34 — remates de la revisión de la 1.0.32",
     detalle: [
       "«Volver a la consulta» en una sola línea en el móvil (un origen largo se recorta).",
       "El paréntesis o las comillas que abren van en la misma línea que la sigla que les sigue.",

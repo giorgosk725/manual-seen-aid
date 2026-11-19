@@ -205,6 +205,8 @@ function Campo({
 }) {
   const l = leerCifra(valor, max);
   const error = l.estado === "invalido" ? l.motivo : null;
+  // Las unidades largas («g por 1 UI», «mg/dl por 1 UI») siguen al lado: dentro no dejarían sitio.
+  const unidadDentro = unidad.length <= 7;
   return (
     // 0.72.0: la etiqueta ocupa lo que sobre y las cajas quedan alineadas en su fila aunque
     // unas lleven ayuda y otras no.
@@ -219,7 +221,10 @@ function Campo({
           {ayuda}
         </span>
       )}
-      <div className="flex items-center gap-2">
+      {/* 1.0.35: la unidad corta, DENTRO de la casilla, a la derecha: las casillas de una rejilla
+          miden lo mismo (fuera, «UI/día» estrechaba unas frente a la de «kg»). Conserva su id: el
+          campo la sigue anunciando (aria-describedby). */}
+      <div className="relative flex items-center gap-2">
         <input
           id={id}
           inputMode="decimal"
@@ -232,9 +237,19 @@ function Campo({
             .join(" ")}
           placeholder="—"
           className="h-12 w-full min-w-0 rounded-md border bg-white px-3 text-lg tabular-nums text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-          style={{ borderColor: error ? "#b91c1c" : "#cbd5e1" }}
+          style={{
+            borderColor: error ? "#b91c1c" : "#cbd5e1",
+            paddingRight: unidadDentro ? `calc(${unidad.length * 0.5}em + 1.25rem)` : undefined,
+          }}
         />
-        <span id={`${id}-unidad`} className="shrink-0 text-sm text-slate-600">
+        <span
+          id={`${id}-unidad`}
+          className={
+            unidadDentro
+              ? "pointer-events-none absolute right-3 text-sm text-slate-600"
+              : "shrink-0 text-sm text-slate-600"
+          }
+        >
           {unidad}
         </span>
       </div>
