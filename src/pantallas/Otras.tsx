@@ -1207,15 +1207,20 @@ function TemaPreguntas({ tema, abierto }: { tema: string; abierto: boolean }) {
   return (
     <details
       open={abierto || memoriaPreguntas.temas.has(tema) || undefined}
-      onToggle={(e) => {
-        if (abierto) return;
-        if (e.currentTarget.open) memoriaPreguntas.temas.add(tema);
-        else memoriaPreguntas.temas.delete(tema);
-      }}
       className={`tarjeta group ${h ? "tarjeta-sistema" : ""}`}
       style={h ? { ["--sis" as string]: h.strong } : undefined}
     >
-      <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 text-sm font-bold text-slate-900 [&::-webkit-details-marker]:hidden">
+      {/* 1.0.38: lo que abre o pliega el lector, en el clic (antes, en «toggle», que también salta
+          cuando la impresión abre y vuelve a plegar los temas: un tema quedaba abierto). */}
+      <summary
+        onClick={(e) => {
+          if (abierto) return;
+          const d = e.currentTarget.parentElement as HTMLDetailsElement;
+          if (!d.open) memoriaPreguntas.temas.add(tema);
+          else memoriaPreguntas.temas.delete(tema);
+        }}
+        className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 text-sm font-bold text-slate-900 [&::-webkit-details-marker]:hidden"
+      >
         <IconoTema tema={tema} />
         <span className="flex-1" style={h ? { color: h.ink } : undefined}>
           {tema}
