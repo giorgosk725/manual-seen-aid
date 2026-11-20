@@ -380,7 +380,9 @@ export function BotonImprimir({
       className={
         compacto
           ? // 0.94.0 (rediseño): en una línea («Imprimir este / paso» se partía a 1440 px).
-            "chip tap-44 shrink-0 whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+            // 1.0.38 (Fable, 1.0.37): sin «whitespace-nowrap», que con la letra ampliada lo sacaba
+            // de la pantalla; «shrink-0» basta para que no se parta mientras quepa.
+            "chip tap-44 max-w-full shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
           : "boton-primario shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
       }
     >

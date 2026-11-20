@@ -180,7 +180,8 @@ export function MarcoDiagrama({
           <VeaseTambien
             enCaja
             sinSangrar
-            nivel={3}
+            // 1.0.38 (Fable, 1.0.37): en su pantalla, bajo el h1 (antes, h3 tras h1).
+            nivel={tituloFuera ? 2 : 3}
             className="no-imprimir mt-4"
             filas={SEGUIR_DIAGRAMA[id]!.map((l) => ({
               href: l.ruta,
@@ -256,7 +257,7 @@ function Escalera({ i, yaEnTexto }: { i: number; yaEnTexto?: (t: string) => bool
               <span
                 // 1.0.24 (30.ª ronda, visual): el color del tramo también en papel (sin «gráficos de
                 // fondo», el rótulo claro quedaba a 2:1 sobre blanco).
-                className="franja-tramo flex w-[6.75rem] shrink-0 items-center px-2 py-2 text-xs font-bold min-[400px]:w-28"
+                className="franja-tramo flex w-[6.75rem] shrink-0 items-center px-2 py-2 text-xs font-bold min-[25em]:w-28"
                 style={{ background: t.bg, color: t.fg }}
               >
                 <SinCortes texto={f.franja} />
@@ -268,7 +269,7 @@ function Escalera({ i, yaEnTexto }: { i: number; yaEnTexto?: (t: string) => bool
                   <SinCortes texto={f.objetivo} />
                 </span>
                 {f.nota && (
-                  <span className="min-w-0 basis-full text-xs leading-snug text-slate-600 min-[400px]:flex-1 min-[400px]:basis-0">
+                  <span className="min-w-0 basis-full text-xs leading-snug text-slate-600 min-[25em]:flex-1 min-[25em]:basis-0">
                     <SinCortes texto={f.nota} />
                   </span>
                 )}

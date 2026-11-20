@@ -37,7 +37,7 @@ import { CORTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { SIS_IDS } from "../situaciones";
 import { apilarRuta, elegirRuta, href } from "../rutas";
 import { imprimirRegion } from "../imprimir";
-import { CabeceraEditorial } from "../ui";
+import { AvisoDireccion, CabeceraEditorial } from "../ui";
 import { pestanaALaVista } from "../disposicion";
 import { useIrAlCambiar } from "../irAlCambiar";
 import { CAPITULO } from "../contenido";
@@ -467,7 +467,12 @@ function TareaVista({
           <LineaFuente fuentes={fuentes} />
           {/* 0.92.0 (revisión de tarjetas, ★1): la misma lista de «Véase también» que en el resto. */}
           {siguiente && (
-            <VeaseTambien enCaja nivel={4} filas={[{ href: siguiente.ruta, t: siguiente.texto }]} />
+            <VeaseTambien
+              enCaja
+              nivel={4}
+              etiqueta={`Véase también: ${tarea.titulo}`}
+              filas={[{ href: siguiente.ruta, t: siguiente.texto }]}
+            />
           )}
         </div>
       )}
@@ -548,7 +553,7 @@ function PasosInicio({
         {PASOS_GUIA.map((x, i) => {
           const on = i === n - 1;
           return (
-            <li key={x.id} className="min-w-11 flex-auto">
+            <li key={x.id} className="min-w-[44px] flex-auto">
               <button
                 type="button"
                 aria-current={on ? "step" : undefined}
@@ -566,7 +571,7 @@ function PasosInicio({
                 <span className="text-[15px] leading-tight">{i + 1}</span>
                 <span
                   aria-hidden="true"
-                  className="text-[11px] font-normal leading-tight max-[359px]:text-[10px]"
+                  className="text-[11px] font-normal leading-tight max-[22.4375em]:text-[10px]"
                 >
                   {CORTO_PASO[x.id] ?? ""}
                 </span>
@@ -739,7 +744,7 @@ function PasosInicio({
       {enlaces.length > 0 && (
         <VeaseTambien enCaja nivel={4} filas={enlaces.map((x) => ({ href: x.ruta, t: x.texto }))} />
       )}
-      <div className="no-imprimir mt-4 flex items-center justify-between gap-2">
+      <div className="no-imprimir mt-4 flex flex-wrap items-center justify-between gap-2">
         <button
           type="button"
           onClick={() => {
@@ -851,8 +856,22 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
     });
     ir(actual, sis, abrir ? id : null);
   };
+  // 1.0.38 (Fable, 1.0.37): una vista o un sistema que no existen lo dicen (antes, el cálculo
+  // inicial sin aviso).
+  const vistaRara =
+    !!faseId && !FASES.some((f) => f.id === faseId) && ![GUIA, HOJA, CALC].includes(faseId);
   return (
     <div>
+      {vistaRara && (
+        <AvisoDireccion pedido={faseId}>
+          no hay ninguna fase con ese nombre. Este es el cálculo inicial.
+        </AvisoDireccion>
+      )}
+      {!!sisId && sisIdx < 0 && (
+        <AvisoDireccion pedido={sisId}>
+          no hay ningún sistema con ese nombre. Elija el suyo.
+        </AvisoDireccion>
+      )}
       <CabeceraEditorial titulo="Iniciación del sistema" hex={hex} level={1} />
 
       {/* 0.72.0: las tres vistas en un solo control (la calculadora, las fases y la hoja para
@@ -1036,7 +1055,7 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
       </div>
 
       {fase && fase.id !== "inicio" && (
-        <div className="no-imprimir mt-4 flex items-center justify-between">
+        <div className="no-imprimir mt-4 flex flex-wrap items-center justify-between gap-2">
           <button
             type="button"
             disabled={n === 0}

@@ -78,7 +78,7 @@ function Paso({
       className="order-1 min-w-0 scroll-mt-20 space-y-2 lg:scroll-mt-6 xl:order-none"
     >
       {/* 0.72.0: cabecera de paso ligera (círculo burdeos); el foco visual, en los resultados. */}
-      <div className="separador flex items-center gap-2 border-b pb-1.5">
+      <div className="separador flex flex-wrap items-center gap-x-2 border-b pb-1.5">
         <h2 id={`calc-paso-${n}`} tabIndex={-1} className="titulo-seccion flex items-center gap-2">
           {/* 0.97.1 (17.ª ronda, visual): los números de paso, neutros (todos a la vista: ninguno
             es «el activo»; en burdeos se sumaban al resto del énfasis). */}
@@ -284,7 +284,7 @@ function Cifra({
           siguiente a 320 px); si no cabe con la unidad, baja la unidad. */}
       <div className="mt-0.5 flex flex-wrap items-baseline gap-x-1.5">
         <span
-          className="whitespace-nowrap text-3xl font-extrabold tabular-nums max-[359px]:text-2xl"
+          className="whitespace-nowrap text-3xl font-extrabold tabular-nums max-[22.4375em]:text-2xl"
           style={{ color }}
         >
           {valor}
@@ -661,10 +661,10 @@ export function CalculadoraInicio({
                     onClick={() => set({ origen: o.v })}
                     // 1.0.36 (Fable, 1.0.35): a menos de 360 px, menos relleno y la segunda línea un punto
                     // menor («automatización» no cabía y se salía 8 px del borde).
-                    className="chip flex-col items-start justify-center gap-0 px-2 py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 max-[359px]:px-1.5 sm:px-3"
+                    className="chip flex-col items-start justify-center gap-0 px-2 py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 max-[22.4375em]:px-1.5 sm:px-3"
                   >
                     <span>{o.t}</span>
-                    <span className="text-xs font-normal opacity-80 max-[359px]:text-[11px]">
+                    <span className="text-xs font-normal opacity-80 max-[22.4375em]:text-[11px]">
                       {o.dd}
                     </span>
                   </button>
@@ -1535,7 +1535,7 @@ function IrAResultado({
   const ref = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     const el = ref.current;
-    if (!el || !window.matchMedia?.("(max-width: 1279px)").matches) return;
+    if (!el || !window.matchMedia?.("(max-width: 79.9375em)").matches) return;
     // Con el teclado abierto, el alto visible (visualViewport), no el de la ventana.
     const alto = window.visualViewport?.height ?? window.innerHeight;
     const libre = alto - 96;

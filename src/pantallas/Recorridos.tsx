@@ -7,7 +7,15 @@
 import { OtraSituacion } from "../componentes/OtraSituacion";
 import { ponerConsulta } from "../consultaBuscar";
 import { useEffect, useRef, useState } from "react";
-import { AlertTriangle, ArrowRight, Check, ChevronLeft, ChevronRight, Siren } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowRight,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Siren,
+  X,
+} from "lucide-react";
 import { APARTADOS, TABLAS, idDeBloque, type Bloque, rutaDeTabla } from "../contenido";
 import { INTERRUPCION_LINEA } from "../contenido/diagramas";
 import { InterrupcionPantalla, ObjetivosDePoblacion } from "../componentes/Diagramas";
@@ -577,8 +585,8 @@ function ListaSituaciones({
         </p>
       )}
       {f && total === 0 && (
-        <div className="rounded-md border border-dashed border-slate-300 px-3 py-3 text-sm text-slate-700 lg:col-span-2">
-          Ninguna situación coincide con «{f}».{" "}
+        <div className="flex flex-wrap items-center gap-x-4 rounded-md border border-dashed border-slate-300 px-3 py-3 text-sm text-slate-700 lg:col-span-2">
+          <span className="w-full">Ninguna situación coincide con «{f}».</span>
           {/* La consulta pasa en memoria (A03: no va en la URL). */}
           <a
             href={href("buscar")}
@@ -586,7 +594,7 @@ function ListaSituaciones({
             className="inline-flex min-h-11 items-center font-semibold underline underline-offset-2 sm:min-h-6"
           >
             Buscarlo en el capítulo
-          </a>{" "}
+          </a>
           {onLimpiar && (
             <button
               type="button"
@@ -784,12 +792,18 @@ export function SituacionSistema({
           no hay ninguna situación con ese nombre. Estas son las situaciones.
         </AvisoDireccion>
       )}
+      {/* 1.0.38 (Fable, 1.0.37): un sistema que no existe, también. */}
+      {sistema && sisIdx < 0 && (
+        <AvisoDireccion pedido={sistema}>
+          no hay ningún sistema con ese nombre. Se muestra la conducta de los cuatro.
+        </AvisoDireccion>
+      )}
       <CabeceraEditorial titulo="Situaciones" hex={hex} level={1} />
       {/* Sin situación elegida, la lista a todo el ancho; con una, lista a la izquierda (0.71.0). */}
       {/* 1.0.23 (verificación visual): con una situación abierta, en papel solo ella (la lista y el
           filtro se imprimían en escritorio). */}
       <div
-        className={`grid gap-4 ${sit || guia ? "print:grid-cols-1 lg:grid-cols-[18rem_1fr]" : ""}`}
+        className={`grid grid-cols-[minmax(0,1fr)] gap-4 ${sit || guia ? "print:grid-cols-1 lg:grid-cols-[18rem_minmax(0,1fr)]" : ""}`}
       >
         <div className={sit || guia ? "hidden lg:block print:hidden" : undefined}>
           {/* 0.96.0 (16.ª ronda, R3): desde la ficha de un sistema (#/consultar/situacion/:camaps),
@@ -830,14 +844,29 @@ export function SituacionSistema({
               )}
             </div>
           )}
-          <input
-            type="search"
-            aria-label="Filtrar situaciones"
-            placeholder="Filtrar: resonancia, ejercicio, sueño…"
-            value={filtro}
-            onChange={(e) => setFiltro(e.target.value)}
-            className="mb-3 min-h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8E254E] sm:min-h-10"
-          />
+          {/* 1.0.38 (Fable, 1.0.37): como en Buscar y Preguntas, sin la × nativa (azul) y con
+              el botón propio. */}
+          <div className="relative mb-3">
+            <input
+              type="search"
+              aria-label="Filtrar situaciones"
+              placeholder="Filtrar: resonancia, ejercicio, sueño…"
+              value={filtro}
+              onChange={(e) => setFiltro(e.target.value)}
+              className="min-h-11 w-full rounded-md border border-slate-300 bg-white pl-3 pr-11 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8E254E] sm:min-h-10 [&::-webkit-search-cancel-button]:hidden"
+            />
+            {filtro && (
+              <button
+                type="button"
+                // Distinto de «Borrar el filtro» del aviso sin resultados (dos botones a la vez).
+                aria-label="Vaciar el filtro"
+                onClick={() => setFiltro("")}
+                className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+              >
+                <X size={18} aria-hidden="true" />
+              </button>
+            )}
+          </div>
           <ListaSituaciones
             sit={sit}
             activa={guia?.id}
@@ -1462,7 +1491,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           {t.filas.map((f, i) => {
             const on = i + 1 === n;
             return (
-              <li key={i} className="min-w-10 flex-1 min-[380px]:min-w-11">
+              <li key={i} className="min-w-10 flex-1 min-[23.75em]:min-w-11">
                 <button
                   type="button"
                   aria-current={on ? "step" : undefined}
@@ -1520,7 +1549,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           className="pantalla-in tarjeta scroll-mt-4 p-4 focus:outline-none"
           aria-live="polite"
         >
-          <div className="flex items-start justify-between gap-2">
+          <div className="flex flex-wrap items-start justify-between gap-2">
             <h2 className="titulo-seccion">{fila.celdas[0]}</h2>
             <span className="no-imprimir">
               <BotonImprimir objetivo={raiz} compacto titulo="Imprimir este paso">
@@ -1707,10 +1736,18 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
    Los cinco casos de una vez (no programada: muy breve, hacia 1 h, prolongada; programada: pocas
    horas, glargina programada), pod y bomba, y la basal de respaldo: el esquema del apartado 7, en
    texto literal y a tamaño de lectura. Sustituye a las pestañas por duración. */
-export function Interrupcion(_props: { tramo?: string }) {
+/* Los tramos de las pestañas de antes (hasta la 0.69): sus direcciones abren esta pantalla. */
+const TRAMOS_ANTIGUOS = ["breve", "una-hora", "pocas-horas", "prolongada", "programada"];
+
+export function Interrupcion({ tramo }: { tramo?: string }) {
   const a = APARTADOS.find((x) => x.slug === "07-educacion")!;
   return (
     <div>
+      {tramo && !TRAMOS_ANTIGUOS.includes(tramo) && (
+        <AvisoDireccion pedido={tramo}>
+          no hay ningún caso con ese nombre. Estos son todos los de la interrupción del sistema.
+        </AvisoDireccion>
+      )}
       <CabeceraEditorial titulo="Interrupción del sistema" hex={hex} level={1} />
       <OtraSituacion />
       {/* 0.94.0 (rediseño, fase 2): «pantalla-interrupcion» pone el cuerpo a la letra de consulta. */}

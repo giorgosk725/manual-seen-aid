@@ -100,7 +100,7 @@ export function Visor({ imagen, onClose }: { imagen: ImagenVisor | null; onClose
       style={{ background: "rgb(2, 6, 23)" }}
     >
       {/* 1.0.37: botones de 44 px; a menos de 360 px, con menos hueco para que sigan en una fila. */}
-      <div className="flex flex-wrap items-center gap-2 px-3 py-2 text-white max-[359px]:gap-1">
+      <div className="flex flex-wrap items-center gap-2 px-3 py-2 text-white max-[22.4375em]:gap-1">
         <p className="order-last min-w-0 basis-full text-sm font-semibold leading-snug sm:order-none sm:flex-1 sm:basis-0">
           {imagen.titulo}
         </p>

@@ -15,7 +15,23 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — remates de la revisión de la 1.0.35`,
+    titulo: `Complemento interactivo ${VERSION_APP} — letra del navegador, pestañas y direcciones`,
+    detalle: [
+      "Con la letra del navegador ampliada (150–200 %), la maqueta pasa a la de un ancho menor en vez de salirse por los lados: la cabecera, la barra de abajo, las acciones de las tablas, «Imprimir», los pasos de Iniciación y las situaciones caben; las palabras largas de los títulos y los DOI se parten.",
+      "Sistemas: el Resumen es una pestaña más; ir y volver a él ya no sube la página ni lleva el foco al título.",
+      "Al recargar, la página vuelve a la altura a la que se estaba (en esa pestaña del navegador; nada más se guarda).",
+      "Un sistema, una sección de la ficha, una fila de tabla, una referencia, una fase, un tramo de la Figura 3, un caso de interrupción o un plan que no existen lo dicen en vez de mostrar otra cosa sin aviso. La pestaña del navegador lleva el enunciado de cada pregunta frecuente y el título de cada hoja.",
+      "Situaciones: en el móvil, todas las filas de la lista con su flecha; el filtro, sin la × nativa y con su botón «Borrar el filtro»; sin resultados, los dos enlaces separados.",
+      "Figura 3 en el móvil: los cuatro planes de seguridad, plegados en una línea, para que el algoritmo empiece antes.",
+      "Hojas para el paciente en papel: el título y «Página n de m» en el margen de cada cara; en pantalla, los títulos de sus secciones en el nivel que les toca.",
+      "Tarjetas de Sistemas: los accesos de «Ficha:» sin puntos entre ellos (a 768 px, uno quedaba colgando al final de la línea).",
+      "Accesibilidad: más contraste en la página y el texto atenuado del párrafo resaltado; los «Véase también» de Iniciación con nombres distintos; el aviso de la calculadora para lectores de pantalla ya no repite un error corregido.",
+    ],
+  },
+  {
+    fecha: "2026-11-20",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.37 — remates de la revisión de la 1.0.35",
     detalle: [
       "A menos de 360 px de ancho, el tamaño de letra de la lectura se cambia desde «Más» (en la cabecera no caben los botones).",
       "Con poca altura (móvil apaisado), la cabecera de las tablas se pega arriba del todo; con «Volver a la consulta» a la vista, justo debajo de él (quedaba tapada).",

@@ -320,6 +320,16 @@ No other calculators.
       nothing is marked approved without a record. Details and pending items:
       `docs/EDICION_EDITORIAL.md`.
 
+30. **Breakpoints in em, not px (1.0.38, Fable review of 1.0.37).** Tailwind `screens` are
+    `sm 40em · md 48em · lg 64em · xl 80em · 2xl 96em`; arbitrary variants (`max-[22.4375em]:`),
+    `index.css` media queries and `matchMedia` calls use em too. At the default 16 px they are the
+    old pixel values; when the reader raises the BROWSER font size, the layout switches to a
+    narrower one instead of overflowing. Never add a px breakpoint. Long words break
+    (`overflow-wrap: break-word` on body, `hyphens: auto` on `.titulo-manual`). Measure with
+    CDP `Page.setFontSizes` (`e2e/v1038.spec.ts`). Reload restores the scroll position from
+    `sessionStorage` (`mseen:posicion-recarga`: route and height only). Screens that know a
+    better tab title set it with `useFijarTitulo` (`src/tituloFino.ts`).
+
 ## 2. Quality gates (all must pass before a push)
 
 ```bash

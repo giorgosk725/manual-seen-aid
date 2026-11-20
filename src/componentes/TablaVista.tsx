@@ -100,7 +100,7 @@ export function CabeceraTabla({
     );
   return (
     <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
-      <div>
+      <div className="min-w-0">
         {/* 1.0.27 (revisión visual de la 1.0.26, P8): «Tabla N» en burdeos, como en el índice de
             Tablas (antes, azul en la tabla abierta y en papel). */}
         <div className="rotulo" style={{ color: CATEGORIA_HEX.consultar.ink }}>
@@ -108,7 +108,9 @@ export function CabeceraTabla({
         </div>
         <TituloBloque className="titulo-tarjeta text-slate-800">{tabla.titulo}</TituloBloque>
       </div>
-      <div className="flex items-center gap-2">
+      {/* 1.0.38 (Fable, 1.0.37): las acciones se parten en líneas (con la letra ampliada, «pp. 21–22
+          · Abrir la tabla · Situaciones» no cabía en una). */}
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
         <PaginaBadge p={tabla.paginas[0]} p2={tabla.paginas[1]} />
         {enlaceConsultar && (
           <Enlace

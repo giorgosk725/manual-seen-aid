@@ -295,7 +295,8 @@ export default function App() {
       // 0.70.0: sin información en pantalla ni resumen aquí (rutas antiguas, a la pantalla).
       if (ruta.sub === "plan") {
         pantalla = <PlanSeguridad sistema={ruta.detalle} />;
-        titulo = "Plan de seguridad";
+        const c = ORDEN_SISTEMAS.indexOf(ruta.detalle as SistemaId);
+        titulo = c >= 0 ? `Plan de seguridad · ${CORTO_SISTEMA[c]}` : "Material para el paciente";
       } else if (ruta.sub === "hoja") {
         pantalla = <HojaPacientes id={ruta.detalle} />;
         titulo = "Hoja para el paciente";

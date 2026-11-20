@@ -16,8 +16,12 @@ export function VeaseTambien({
   onIr,
   className = "",
   titulo = "Véase también",
+  etiqueta,
   sinSangrar = false,
 }: {
+  /* 1.0.38 (Fable, 1.0.37): el nombre de la región, si hay varias en la pantalla (axe
+     landmark-unique); el título que se ve no cambia. */
+  etiqueta?: string;
   /* 0.92.1: la misma lista para «Preguntas relacionadas» del buscador. */
   titulo?: string;
   filas: Destino[];
@@ -33,7 +37,7 @@ export function VeaseTambien({
   const H = `h${nivel}` as "h2" | "h3" | "h4";
   return (
     <section
-      aria-label={titulo}
+      aria-label={etiqueta ?? titulo}
       className={`${enCaja ? "separador mt-3 border-t" : "tarjeta overflow-hidden"} ${className}`}
     >
       {/* 0.92.1 (segunda revisión de tarjetas): dentro de una caja, el título como rótulo (a

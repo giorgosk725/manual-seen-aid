@@ -1,6 +1,7 @@
 /* Shell: barra superior (con la búsqueda en escritorio), menú en tres grupos (barra lateral de
    escritorio y menú del móvil), barra inferior móvil (Inicio · Leer · Paciente · Buscar),
    paleta de búsqueda (Ctrl K) y aviso de versión nueva. El destino activo sale de nav.ts. */
+import { useTituloFino } from "../tituloFino";
 import { ConCifras } from "../texto";
 import {
   Suspense,
@@ -368,7 +369,7 @@ export function Rotulo({
   /* Sin «Complemento interactivo» (la cabecera de la lectura lleva el tamaño de letra). */
   breve?: boolean;
 }) {
-  const fuera = `max-[359px]:hidden ${breve ? "hidden" : ""}`;
+  const fuera = breve ? "hidden" : "";
   // En la barra lateral (escritorio), en dos líneas y con letra legible: «Manual de
   // Endocrinología y Nutrición» y, debajo, «Complemento interactivo». Sin desbordar su ancho
   // ni esconder texto (V54-08).
@@ -395,7 +396,13 @@ export function Rotulo({
   // En la cabecera del móvil, en una sola línea y con letra de 12 px como mínimo (sistema
   // visual): «Manual SEEN · Complemento interactivo».
   return (
-    <span className="flex items-baseline gap-1.5 leading-none" aria-hidden="true">
+    // 1.0.38 (Fable, 1.0.37): «· Complemento interactivo» solo si cabe, por el espacio que hay y
+    // no por el ancho de la pantalla: si no cabe, pasa a una segunda línea que queda oculta (con la
+    // letra del navegador al 150 %, la cabecera medía 461 px en un móvil de 393).
+    <span
+      className="flex max-h-[1.45rem] min-w-0 flex-wrap items-baseline gap-x-1.5 overflow-hidden leading-none"
+      aria-hidden="true"
+    >
       <span
         className="font-display text-[1.25rem] font-semibold uppercase tracking-tight"
         style={{ color: SEEN.azulOsc }}
@@ -742,7 +749,10 @@ function Inferior({
   const clase = (on: boolean) =>
     // 1.0.30 (revisión de la 1.0.29): a ≤340 px, 10 px y un poco más juntas: «Situaciones» (72 px)
     // no cabía en su celda de 64 y se leía «SistemasSituaciones».
-    `relative flex min-h-14 w-full min-w-0 flex-col items-center justify-center gap-0.5 py-1.5 text-xs font-semibold transition max-[340px]:text-[10px] max-[340px]:tracking-[-0.02em] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`;
+    // 1.0.38 (Fable, 1.0.37): el rótulo, como mucho 12 px y nunca más ancho que su celda (un quinto
+    // del ancho; «Situaciones» ocupa unos 5,6 em): con la letra del navegador al 150 %, la barra
+    // desbordaba.
+    `relative flex min-h-14 w-full min-w-0 flex-col items-center justify-center gap-0.5 py-1.5 text-[length:min(0.75rem,calc((100vw/5_-_0.5rem)/5.6))] font-semibold transition max-[21.25em]:tracking-[-0.02em] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`;
   // 0.94.0 (rediseño, fase 2): el destino activo, además de en burdeos, con un filete de 2 px arriba
   // (el color solo no basta para distinguirlo; 1.4.1).
   const filete = (on: boolean) =>
@@ -837,7 +847,7 @@ function Cajon({
           <div
             role="group"
             aria-label="Tamaño de letra"
-            className="separador mx-3 mb-2 flex items-center justify-between gap-2 border-b pb-2 min-[360px]:hidden"
+            className="separador mx-3 mb-2 flex items-center justify-between gap-2 border-b pb-2 min-[22.5em]:hidden"
           >
             <span className="text-sm font-semibold text-slate-700">Tamaño de letra</span>
             <span className="flex items-center gap-1">
@@ -877,7 +887,10 @@ function Cajon({
    pantalla: se sigue donde se leía (antes, marcar y desmarcar en el móvil volvía arriba). */
 function baseDePantalla(r: Ruta): string {
   const sub = r.seccion === "buscar" ? "" : (r.sub ?? "");
-  if (r.seccion === "sistemas" && (sub === "todos" || sub.includes("+")))
+  // 1.0.38 (Fable, 1.0.37, P2): el Resumen de Sistemas («#/sistemas») es otra pestaña de la misma
+  // pantalla que «Características», «Parámetros»… (antes, ir y volver al Resumen subía arriba y
+  // llevaba el foco al título, y entre las demás pestañas no).
+  if (r.seccion === "sistemas" && (sub === "" || sub === "todos" || sub.includes("+")))
     return "sistemas/comparacion";
   return `${r.seccion}/${sub}`;
 }
@@ -888,7 +901,7 @@ function baseDePantalla(r: Ruta): string {
    devolvía la vista anterior arriba del todo. Sin vista (índice de Tablas), «». */
 function vistaDePantalla(r: Ruta): string {
   const vista = (r.detalle ?? "").split(":")[0];
-  if (r.seccion === "sistemas") return r.sub && r.sub !== "elegir" ? vista || "_" : "";
+  if (r.seccion === "sistemas") return r.sub !== "elegir" ? vista || "_" : "";
   if (r.seccion !== "consultar") return "";
   if (r.sub === "tablas") return vista;
   return r.sub === "inicio" || r.sub === "descarga" ? vista || "_" : "";
@@ -1150,6 +1163,75 @@ export function Shell({
   const posicionesPorHash = useRef(new Map<string, number>());
   useEffect(() => {
     if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual";
+  }, []);
+  // 1.0.38 (Fable, 1.0.37, P2): al recargar, la altura a la que se estaba (antes, arriba del todo:
+  // con la restauración del navegador desactivada, recargar un apartado largo perdía el sitio).
+  // Solo la dirección y la altura, en sessionStorage (esta pestaña), y solo si se recarga esa misma
+  // dirección. En un enlace profundo manda su destino.
+  useEffect(() => {
+    const CLAVE = "mseen:posicion-recarga";
+    const guardar = () => {
+      try {
+        sessionStorage.setItem(
+          CLAVE,
+          JSON.stringify({ hash: window.location.hash, y: Math.round(window.scrollY) }),
+        );
+      } catch {
+        /* almacenamiento bloqueado: se vuelve arriba, como antes */
+      }
+    };
+    const alOcultar = () => {
+      if (document.visibilityState === "hidden") guardar();
+    };
+    window.addEventListener("pagehide", guardar);
+    document.addEventListener("visibilitychange", alOcultar);
+    const quitar = () => {
+      window.removeEventListener("pagehide", guardar);
+      document.removeEventListener("visibilitychange", alOcultar);
+    };
+    let leida: { hash?: unknown; y?: unknown } | null;
+    try {
+      // No se borra al leer: la siguiente salida la sobrescribe (y en desarrollo el efecto corre
+      // dos veces).
+      leida = JSON.parse(sessionStorage.getItem(CLAVE) ?? "null");
+    } catch {
+      leida = null;
+    }
+    const nav = performance.getEntriesByType?.("navigation")?.[0] as
+      PerformanceNavigationTiming | undefined;
+    const r = parseHash(window.location.hash);
+    const profundo =
+      (r.seccion === "capitulo" && !!r.detalle) ||
+      (r.seccion === "sistemas" && !!r.detalle?.includes(":")) ||
+      (r.seccion === "bibliografia" && !!r.sub) ||
+      (r.seccion === "consultar" && r.sub === "tablas" && !!r.detalle?.split(":")[2]);
+    if (
+      nav?.type !== "reload" ||
+      profundo ||
+      !leida ||
+      leida.hash !== window.location.hash ||
+      typeof leida.y !== "number" ||
+      leida.y <= 0
+    )
+      return quitar;
+    const y = leida.y;
+    // Lo que crece después (figuras, tablas perezosas) se espera un poco; si el lector toca algo,
+    // se deja de insistir.
+    let tocado = false;
+    const soltar = () => {
+      tocado = true;
+    };
+    const eventos = ["wheel", "touchstart", "keydown", "mousedown"] as const;
+    for (const e of eventos) window.addEventListener(e, soltar, { passive: true });
+    const poner = () => {
+      if (!tocado && Math.abs(window.scrollY - y) > 4) window.scrollTo({ top: y });
+    };
+    const tiempos = [0, 150, 400, 900, 1600].map((ms) => setTimeout(poner, ms));
+    return () => {
+      tiempos.forEach(clearTimeout);
+      for (const e of eventos) window.removeEventListener(e, soltar);
+      quitar();
+    };
   }, []);
   useEffect(() => {
     let pendiente: ReturnType<typeof setTimeout> | undefined;
@@ -1432,9 +1514,12 @@ export function Shell({
     return () => clearTimeout(t);
   }, [clavePantalla]);
 
+  // 1.0.38: el título fino de la pantalla (tituloFino.ts), si lo hay.
+  const tituloFino = useTituloFino();
   useEffect(() => {
-    document.title = titulo
-      ? `${titulo} · Automatización de la insulinoterapia`
+    const t = tituloFino ?? titulo;
+    document.title = t
+      ? `${t} · Automatización de la insulinoterapia`
       : "Automatización de la insulinoterapia · Complemento del capítulo 89";
     // «Lo último que consultaste» (portada): pantallas con título, salvo portada y búsqueda.
     if (titulo && !["", "buscar", "mas", "cambios", "sobre"].includes(ruta.seccion))
@@ -1444,7 +1529,7 @@ export function Shell({
         detalle: contextoDeRuta(ruta),
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [titulo, ruta.seccion, ruta.sub, ruta.detalle]);
+  }, [titulo, tituloFino, ruta.seccion, ruta.sub, ruta.detalle]);
 
   const enLectura = ruta.seccion === "capitulo" && !!ruta.sub;
   const cat =
@@ -1486,7 +1571,7 @@ export function Shell({
           <a
             href="#/"
             aria-label="Manual de Endocrinología y Nutrición, complemento interactivo: inicio"
-            className="inline-flex min-h-11 min-w-0 shrink-0 items-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 lg:hidden"
+            className="inline-flex min-h-11 min-w-0 items-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 lg:hidden"
           >
             <Rotulo compacto breve={enLectura} />
           </a>
@@ -1581,7 +1666,7 @@ function Mandos({
     <>
       {enLectura && (
         <div
-          className="flex items-center max-[359px]:hidden"
+          className="flex shrink-0 items-center max-[22.4375em]:hidden"
           role="group"
           aria-label="Tamaño de letra"
         >
@@ -1615,7 +1700,7 @@ function Mandos({
         aria-label="Modo nocturno"
         title={night ? "Pasar a modo diurno" : "Pasar a modo nocturno"}
         // 0.88.1 (duodécima ronda, guardia): 44 × 44 px, como los demás controles.
-        className="tap-44 inline-flex h-11 w-11 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        className="tap-44 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
         {night ? <Sun size={18} /> : <Moon size={18} />}
       </button>

@@ -10,7 +10,7 @@ import { desarrolloDe } from "../siglas";
 
 const ANCHO_PANEL = 320;
 /* Pantalla grande (desde 640 px): el panel va junto a la sigla. Sin matchMedia (jsdom), móvil. */
-const pantallaGrande = () => window.matchMedia?.("(min-width: 640px)").matches ?? false;
+const pantallaGrande = () => window.matchMedia?.("(min-width: 40em)").matches ?? false;
 
 export function SiglaPulsable({ sigla }: { sigla: string }) {
   const g = desarrolloDe(sigla);

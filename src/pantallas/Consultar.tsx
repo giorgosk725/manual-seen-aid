@@ -2,8 +2,9 @@
 import { OtraSituacion } from "../componentes/OtraSituacion";
 import { useRef } from "react";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
-import { ArrowRight, Printer } from "lucide-react";
+import { ArrowRight, ChevronDown, Printer } from "lucide-react";
 import {
+  FIGURA3,
   INFO,
   LISTA_TABLAS,
   TABLAS,
@@ -14,7 +15,8 @@ import {
 import { elegirRuta, href } from "../rutas";
 import { sistemaReciente } from "../sistemaReciente";
 import { CORTO_SISTEMA, ORDEN_SISTEMAS } from "../ampliacion/ids";
-import { BotonImprimir, CabeceraEditorial, PaginaBadge, Revelar } from "../ui";
+import { AvisoDireccion, BotonImprimir, CabeceraEditorial, PaginaBadge, Revelar } from "../ui";
+import { SLUG_TABLA } from "../fuentesPiezas";
 import { useMargenesImpresos } from "../margenesImpresos";
 import { pestanaALaVista, useDesvanecidoPestanas } from "../disposicion";
 import { CATEGORIA_HEX } from "../tokens";
@@ -94,7 +96,29 @@ export function Tablas({
     ) : (
       <IndiceTablas />
     );
-  return <TablaPantalla tid={tid} seleccion={seleccion} fila={fila} />;
+  // 1.0.38 (Fable, 1.0.37): sistemas o fila que no existen lo dicen (antes, la tabla entera sin aviso).
+  const t = TABLAS[tid];
+  const rara =
+    !!seleccion &&
+    (t.porSistema
+      ? seleccion.split("+").some((x) => !SLUG_TABLA.includes(x))
+      : !(
+          Number.isInteger(Number(seleccion)) &&
+          Number(seleccion) >= 0 &&
+          Number(seleccion) < t.filas.length
+        ));
+  return (
+    <>
+      {rara && (
+        <AvisoDireccion pedido={seleccion!}>
+          {t.porSistema
+            ? "no hay ningún sistema con ese nombre en la tabla. Se muestran los que hay."
+            : "la tabla no tiene esa fila. Se muestra entera."}
+        </AvisoDireccion>
+      )}
+      <TablaPantalla tid={tid} seleccion={seleccion} fila={fila} />
+    </>
+  );
 }
 
 function TablaPantalla({
@@ -186,6 +210,11 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
     "tap-44 inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900";
   return (
     <div>
+      {tramo && !FIGURA3.tramos.some((t) => t.clave === tramo) && (
+        <AvisoDireccion pedido={tramo}>
+          la Figura 3 no tiene ningún tramo con ese nombre. Elija el suyo en el algoritmo.
+        </AvisoDireccion>
+      )}
       <CabeceraEditorial titulo="Hiperglucemia y cetonemia" hex={hex} level={1} />
       <OtraSituacion />
       {/* 0.72.2: lo que más se busca aquí es la hoja para entregar: arriba, a un toque. 0.96.0
@@ -209,24 +238,49 @@ export function Figura3Pantalla({ tramo }: { tramo?: string }) {
             {`Plan de seguridad · ${CORTO_SISTEMA[sistemaReciente()!]}`}
           </a>
         ) : (
-          // 1.0.0 (18.ª ronda, R1): el rótulo en su línea y los cuatro debajo (antes, el primero
-          // se quedaba junto al rótulo y los otros tres en la línea siguiente).
-          <span className="flex w-full flex-wrap items-center gap-x-4 gap-y-0 text-sm text-slate-700 sm:w-auto">
-            <span className="w-full sm:w-auto">Plan de seguridad:</span>
-            {/* 1.0.1 (19.ª ronda, R1): en el móvil, los cuatro en dos columnas (el último se
+          <>
+            {/* 1.0.38 (Fable, 1.0.37): en el móvil, los cuatro planes plegados en una línea (antes,
+              tres líneas de enlaces antes del algoritmo, que empezaba a media pantalla). */}
+            <details className="group w-full lg:hidden">
+              <summary className="tap-44 inline-flex min-h-11 cursor-pointer list-none items-center gap-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 [&::-webkit-details-marker]:hidden">
+                Plan de seguridad de cada sistema
+                <ChevronDown
+                  size={15}
+                  aria-hidden="true"
+                  className="transition-transform group-open:rotate-180"
+                />
+              </summary>
+              <span className="grid w-full grid-cols-2 gap-x-4">
+                {CORTO_SISTEMA.map((n, c) => (
+                  <a
+                    key={c}
+                    href={href("pacientes", "plan", ORDEN_SISTEMAS[c])}
+                    className={enlacePlan}
+                  >
+                    {n}
+                  </a>
+                ))}
+              </span>
+            </details>
+            {/* 1.0.0 (18.ª ronda, R1): el rótulo en su línea y los cuatro debajo (antes, el primero
+              se quedaba junto al rótulo y los otros tres en la línea siguiente). */}
+            <span className="hidden w-full flex-wrap items-center gap-x-4 gap-y-0 text-sm text-slate-700 sm:w-auto lg:flex">
+              <span className="w-full sm:w-auto">Plan de seguridad:</span>
+              {/* 1.0.1 (19.ª ronda, R1): en el móvil, los cuatro en dos columnas (el último se
                 quedaba solo en otra línea). */}
-            <span className="grid w-full grid-cols-2 gap-x-4 sm:flex sm:w-auto sm:gap-x-4">
-              {CORTO_SISTEMA.map((n, c) => (
-                <a
-                  key={c}
-                  href={href("pacientes", "plan", ORDEN_SISTEMAS[c])}
-                  className={enlacePlan}
-                >
-                  {n}
-                </a>
-              ))}
+              <span className="grid w-full grid-cols-2 gap-x-4 sm:flex sm:w-auto sm:gap-x-4">
+                {CORTO_SISTEMA.map((n, c) => (
+                  <a
+                    key={c}
+                    href={href("pacientes", "plan", ORDEN_SISTEMAS[c])}
+                    className={enlacePlan}
+                  >
+                    {n}
+                  </a>
+                ))}
+              </span>
             </span>
-          </span>
+          </>
         )}
       </div>
       <div className="tarjeta p-4">

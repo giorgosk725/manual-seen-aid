@@ -4,6 +4,10 @@ import colors from "tailwindcss/colors";
 export default {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
+    // 1.0.38 (Fable, 1.0.37): los puntos de corte en em, no en px. A la letra por defecto
+    // (16 px) son los mismos; si el lector sube la letra del navegador, la maqueta pasa a la
+    // de un ancho menor en vez de desbordar (con 24 px, 1280 px es la maqueta de tableta).
+    screens: { sm: "40em", md: "48em", lg: "64em", xl: "80em", "2xl": "96em" },
     extend: {
       // Notas, fuentes y rótulos pequeños a 13 px (auditoría de diseño del 10-10-2026).
       fontSize: { xs: ["0.8125rem", { lineHeight: "1.2rem" }] },

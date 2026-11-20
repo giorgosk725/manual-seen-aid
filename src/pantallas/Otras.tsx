@@ -1,4 +1,5 @@
 /* Buscar, Bibliografía, Sobre esta app, Autoevaluación y Preguntas frecuentes. */
+import { useFijarTitulo } from "../tituloFino";
 import {
   deshacerReinicio,
   responderPregunta,
@@ -38,7 +39,7 @@ import {
 } from "../consultaBuscar";
 import { useMargenesImpresos } from "../margenesImpresos";
 import { abrirPlegables } from "../imprimir";
-import { Badge, CabeceraEditorial, Revelar, Segmented, ToneCard } from "../ui";
+import { AvisoDireccion, Badge, CabeceraEditorial, Revelar, Segmented, ToneCard } from "../ui";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import {
   fueraDelCapitulo,
@@ -694,12 +695,22 @@ export function Buscar({ inicial }: { inicial?: string }) {
 
 /* ---------- Bibliografía ---------- */
 export function Bibliografia({ destacada }: { destacada?: string }) {
+  // 1.0.38 (Fable, 1.0.37): una referencia que no existe lo dice (antes, la lista sin aviso).
+  const [falta, setFalta] = useState(false);
   useEffect(() => {
+    setFalta(false);
     if (!destacada) return;
-    document.getElementById(destacada)?.scrollIntoView({ block: "center" });
+    const el = document.getElementById(destacada);
+    if (el) el.scrollIntoView({ block: "center" });
+    else setFalta(true);
   }, [destacada]);
   return (
     <div>
+      {falta && destacada && (
+        <AvisoDireccion pedido={destacada}>
+          no hay ninguna referencia con ese número. Esta es la bibliografía.
+        </AvisoDireccion>
+      )}
       <CabeceraEditorial titulo="Bibliografía" hex={CATEGORIA_HEX.confiar} level={1} />
       {/* 0.99.0 (17.ª ronda, adjunto): las del capítulo y, aparte, las complementarias que cita la
           app (antes no constaban aquí). */}
@@ -726,7 +737,7 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
                     href={`https://doi.org/${r.doi}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-1 inline-flex min-h-11 sm:min-h-7 items-center gap-1 text-xs font-semibold text-sky-800 hover:underline"
+                    className="mt-1 inline-flex min-h-11 max-w-full items-center gap-1 text-xs font-semibold text-sky-800 [overflow-wrap:anywhere] hover:underline sm:min-h-7"
                   >
                     doi.org/{r.doi} <ExternalLink size={12} aria-hidden="true" />
                   </a>
@@ -1244,7 +1255,7 @@ export function Preguntas({ id }: { id?: string }) {
   // se leen de un vistazo); en el móvil, plegados con su número, como índice (abiertos serían
   // unas diez pantallas de enlaces). «Ver todas las preguntas» / «Plegar los temas», igual.
   const [todas, setTodasEstado] = useState(
-    () => memoriaPreguntas.todas ?? window.matchMedia?.("(min-width: 1024px)").matches ?? false,
+    () => memoriaPreguntas.todas ?? window.matchMedia?.("(min-width: 64em)").matches ?? false,
   );
   const setTodas = (f: (v: boolean) => boolean) =>
     setTodasEstado((v) => (memoriaPreguntas.todas = f(v)));
@@ -1272,6 +1283,8 @@ export function Preguntas({ id }: { id?: string }) {
         )
       : null;
   const f = FRECUENTES.find((x) => x.id === id);
+  // 1.0.38 (Fable, 1.0.37): cada pregunta, con su enunciado en la pestaña del navegador.
+  useFijarTitulo(f ? f.pregunta : null);
   const hex = CATEGORIA_HEX.consultar;
   if (f) memoriaPreguntas.abierta = f.id;
   if (f) {

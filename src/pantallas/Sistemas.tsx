@@ -7,7 +7,6 @@
    «Comparar sistemas» y «Parámetros por sistema». */
 import { sinCortes } from "../sinCortes";
 import {
-  Fragment,
   useEffect,
   useMemo,
   useRef,
@@ -39,7 +38,7 @@ import {
   type Sistema,
 } from "../ampliacion";
 import { elegirRuta, href, fueNavegacionNueva, navegar } from "../rutas";
-import { BotonImprimir, CabeceraEditorial, ColofonImpreso, Foldable } from "../ui";
+import { AvisoDireccion, BotonImprimir, CabeceraEditorial, ColofonImpreso, Foldable } from "../ui";
 import { useMargenesImpresos } from "../margenesImpresos";
 import { pestanaALaVista } from "../disposicion";
 import { AbrirEnVisor } from "../componentes/Visor";
@@ -769,7 +768,7 @@ export function FichaSistema({
             <span className="sm:hidden">Iniciación</span>
             <span className="hidden sm:inline">Iniciación del sistema</span>
           </a>
-          <span aria-hidden="true" className="self-center text-slate-400 max-[359px]:hidden">
+          <span aria-hidden="true" className="self-center text-slate-400 max-[22.4375em]:hidden">
             ·
           </span>
           {/* 0.88.1 (duodécima ronda, R5): el cálculo de parámetros iniciales del sistema, directo
@@ -779,7 +778,7 @@ export function FichaSistema({
             <span className="sm:hidden">Cálculo</span>
             <span className="hidden sm:inline">Cálculo inicial</span>
           </a>
-          <span aria-hidden="true" className="self-center text-slate-400 max-[359px]:hidden">
+          <span aria-hidden="true" className="self-center text-slate-400 max-[22.4375em]:hidden">
             ·
           </span>
           <a href={href("pacientes", "plan", s.id)} className={accesoFicha}>
@@ -789,7 +788,7 @@ export function FichaSistema({
             </span>
             <span className="sr-only sm:not-sr-only">Plan de seguridad</span>
           </a>
-          <span aria-hidden="true" className="self-center text-slate-400 max-[359px]:hidden">
+          <span aria-hidden="true" className="self-center text-slate-400 max-[22.4375em]:hidden">
             ·
           </span>
           <a href={href("consultar", "situacion", `:${slug}`)} className={accesoFicha}>
@@ -815,12 +814,12 @@ export function FichaSistema({
             aria-label="Cambiar de sistema o comparar"
             // 1.0.9 (22.ª ronda, visual): un control, no un acceso más: a la derecha y con borde
             // (los accesos llevan a otras pantallas; este cambia de sistema).
-            className="chip tap-44 ml-auto min-h-9 gap-0.5 px-2 text-[13px] max-[379px]:px-1.5 sm:hidden"
+            className="chip tap-44 ml-auto min-h-9 gap-0.5 px-2 text-[13px] max-[23.6875em]:px-1.5 sm:hidden"
           >
             {/* 0.91.3 (14.ª ronda, guardia): con su flecha, que despliega el selector (a 360 px,
                 sin ella, para que quepa en la misma línea). */}
             Cambiar
-            <ChevronDown size={14} aria-hidden="true" className="shrink-0 max-[379px]:hidden" />
+            <ChevronDown size={14} aria-hidden="true" className="shrink-0 max-[23.6875em]:hidden" />
           </button>
         </div>
       </header>
@@ -1090,14 +1089,42 @@ export function Sistemas({ sel, seccion: pedida }: { sel?: string; seccion?: str
       : seccion === "completa"
         ? "completa"
         : undefined;
+  // 1.0.38 (Fable, 1.0.37): un sistema de más o una sección que no existen lo dicen (antes, la
+  // pantalla por defecto en silencio).
+  const sobrantes =
+    sel && sel !== "todos" ? sel.split("+").filter((x) => !leerSeleccion(x).length) : [];
+  const avisos = (
+    <>
+      {sobrantes.length > 0 && (
+        <AvisoDireccion pedido={sobrantes.join("+")}>
+          no hay ningún sistema con ese nombre en el capítulo.
+          {ids.length === 1 ? " Esta es la ficha del otro." : " Se muestran los demás."}
+        </AvisoDireccion>
+      )}
+      {!!seccion && !sec && (
+        <AvisoDireccion pedido={seccion}>
+          no hay ninguna sección con ese nombre.
+          {ids.length === 1 ? " Esta es la ficha del sistema." : " Este es el resumen."}
+        </AvisoDireccion>
+      )}
+    </>
+  );
   if (ids.length === 1)
-    return <FichaSistema id={ids[0]} seccion={sec} fila={filaPedida || undefined} />;
+    return (
+      <>
+        {avisos}
+        <FichaSistema id={ids[0]} seccion={sec} fila={filaPedida || undefined} />
+      </>
+    );
   return (
-    <Comparacion
-      ids={ids}
-      seccion={sec === "completa" ? "esencial" : sec}
-      fila={filaPedida || undefined}
-    />
+    <>
+      {avisos}
+      <Comparacion
+        ids={ids}
+        seccion={sec === "completa" ? "esencial" : sec}
+        fila={filaPedida || undefined}
+      />
+    </>
   );
 }
 
@@ -1269,10 +1296,10 @@ function BarraSistemas({
   // 0.96.1 (revisión de Codex, V95-03): el ancho, suscrito (antes se leía al montar: de 393 a
   // 768 px sin recargar, la barra se quedaba plegada sin botones de sistema).
   const [movil, setMovil] = useState(
-    () => window.matchMedia?.("(max-width: 639px)").matches ?? false,
+    () => window.matchMedia?.("(max-width: 39.9375em)").matches ?? false,
   );
   useEffect(() => {
-    const mq = window.matchMedia?.("(max-width: 639px)");
+    const mq = window.matchMedia?.("(max-width: 39.9375em)");
     if (!mq) return;
     const alCambiar = () => setMovil(mq.matches);
     mq.addEventListener?.("change", alCambiar);
@@ -1636,7 +1663,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                   // 1.0.37 (Fable, 1.0.35): en el móvil, alineados a la izquierda con un hueco fijo
                   // (repartidos a lo ancho, la segunda línea dejaba «Iniciación» y «Plan» en extremos
                   // opuestos).
-                  className="separador flex flex-wrap justify-start gap-x-4 gap-y-0 border-t px-4 py-1 sm:gap-x-2.5 xl:gap-x-1.5 xl:py-0.5"
+                  className="separador flex flex-wrap justify-start gap-x-4 gap-y-0 border-t px-4 py-1 xl:gap-x-3 xl:py-0.5"
                 >
                   {/* 1.0.27 (revisión externa del 15-11-2026): los accesos llevan a la ficha de
                       ESTE sistema, no a las pestañas de arriba (que comparan los cuatro); sin el
@@ -1648,23 +1675,15 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                   >
                     Ficha:
                   </span>
-                  {accesos.map(([t, corto, ruta], k) => (
-                    <Fragment key={t}>
-                      {k > 0 && (
-                        <span
-                          aria-hidden="true"
-                          className="hidden self-center text-slate-300 sm:inline"
-                        >
-                          ·
-                        </span>
-                      )}
-                      <a href={ruta} className={accesoTarjeta}>
-                        <span className="sm:hidden xl:inline" aria-hidden="true">
-                          {corto}
-                        </span>
-                        <span className="sr-only sm:not-sr-only xl:sr-only">{t}</span>
-                      </a>
-                    </Fragment>
+                  {/* 1.0.38 (Fable, 1.0.37): sin «·» entre accesos, solo el hueco (al partirse la fila
+                      a 768 px, un punto quedaba colgando al final de la primera línea). */}
+                  {accesos.map(([t, corto, ruta]) => (
+                    <a key={t} href={ruta} className={accesoTarjeta}>
+                      <span className="sm:hidden xl:inline" aria-hidden="true">
+                        {corto}
+                      </span>
+                      <span className="sr-only sm:not-sr-only xl:sr-only">{t}</span>
+                    </a>
                   ))}
                 </nav>
               </article>

@@ -16,6 +16,7 @@ import { elegirRuta, href } from "../rutas";
 import { AvisoDireccion, CabeceraEditorial, ToneCard } from "../ui";
 import { CATEGORIA_HEX, SISTEMA_HEX } from "../tokens";
 import { hojaExtraPorId, type HojaExtra, type SeccionHoja } from "../hojas";
+import { useFijarTitulo } from "../tituloFino";
 import { Texto } from "../texto";
 import { SinCortes } from "../componentes/SinCortes";
 import { sinCortes } from "../sinCortes";
@@ -196,7 +197,7 @@ export function HubPacientes() {
                   href={href("pacientes", "plan", id)}
                   // 1.0.36 (Fable, 1.0.35): a menos de 360 px, la foto encima del nombre («Control‑IQ /
                   // Control‑IQ+» se salía 12 px de la tarjeta).
-                  className="tarjeta tarjeta-sistema hover-lift ease-brand flex h-full items-center gap-2 p-2 pl-3 transition max-[359px]:flex-col max-[359px]:items-start max-[359px]:gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+                  className="tarjeta tarjeta-sistema hover-lift ease-brand flex h-full items-center gap-2 p-2 pl-3 transition max-[22.4375em]:flex-col max-[22.4375em]:items-start max-[22.4375em]:gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
                   style={{ ["--sis" as string]: SISTEMA_HEX[c].strong }}
                 >
                   <img
@@ -242,6 +243,19 @@ export function HubPacientes() {
 export function HojaPacientes({ id }: { id?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const extra = hojaExtraPorId(id);
+  useFijarTitulo(extra ? extra.titulo : id ? "Material para el paciente" : null);
+  // 1.0.38 (Fable, 1.0.37): en papel, el título y «Página n de m» en el margen de cada cara, como
+  // el plan de seguridad (la hoja de cetonas ocupa dos caras y no lo decía).
+  const tituloImpreso = extra?.titulo ?? null;
+  useEffect(() => {
+    if (!tituloImpreso) return undefined;
+    const st = document.createElement("style");
+    st.dataset.cabeceraImpresa = "";
+    const letra = `font: 8pt "Open Sans Variable", "Open Sans", sans-serif; color: #6b6b6b; vertical-align: bottom; padding-bottom: 3mm;`;
+    st.textContent = `@page { @top-left { content: "${tituloImpreso.replace(/"/g, "")}"; ${letra} } @top-right { content: "Página " counter(page) " de " counter(pages); ${letra} } }`;
+    document.head.append(st);
+    return () => st.remove();
+  }, [tituloImpreso]);
   // 1.0.37 (Fable, 1.0.35): una hoja que no existe lo dice (antes, la lista sin aviso).
   if (!extra)
     return id ? (
@@ -302,6 +316,7 @@ function CuerpoHoja({
   c?: number;
 }) {
   const f = (t: string) => delFormato(t, c);
+  const Titulo = titulo ? "h3" : "h2";
   const seccion = (sec: SeccionHoja) => (
     <section
       key={sec.titulo}
@@ -311,12 +326,14 @@ function CuerpoHoja({
       // las dos con el marco de .hoja-urgente.
       className={`hoja-seccion mb-3 ${sec.urgente ? "hoja-urgente rounded-md border border-red-200 bg-red-50 px-3 py-2.5" : ""}`}
     >
-      <h3
+      {/* 1.0.38 (Fable, 1.0.37): sola, la hoja va de h1 a h2 (antes saltaba a h3); dentro del plan,
+          bajo su h2, h3. */}
+      <Titulo
         className={`text-base font-extrabold ${sec.urgente ? "text-red-900" : ""}`}
         style={sec.urgente ? undefined : { color: hex.ink }}
       >
         {sec.titulo}
-      </h3>
+      </Titulo>
       {sec.parrafos?.map((par, i) => (
         <p key={i} className="mt-1 text-[15px] leading-relaxed text-slate-800">
           <SinCortes texto={f(par)} />
@@ -499,7 +516,18 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
     document.head.append(st);
     return () => st.remove();
   }, [nombreImpreso]);
-  if (c < 0) return <HubPacientes />;
+  // 1.0.38 (Fable, 1.0.37): un sistema que no existe lo dice (antes, la lista sin aviso).
+  if (c < 0)
+    return sistema ? (
+      <>
+        <AvisoDireccion pedido={sistema}>
+          no hay ningún plan de seguridad para ese sistema. Este es el material para el paciente.
+        </AvisoDireccion>
+        <HubPacientes />
+      </>
+    ) : (
+      <HubPacientes />
+    );
   const nombre = TABLAS.T1.columnas[c];
   const plan = bloque("07-educacion", "b4");
   // Lo que hay que tener (sin el último punto, la Figura 3: va en la segunda cara).

@@ -4,7 +4,6 @@
    anterior/siguiente e impresión. */
 import { diagramaEnEdicion } from "../diagramasRetirados";
 import { useEffect, useRef, useState } from "react";
-import { guardarUltimo } from "../prefs";
 import {
   ArrowLeft,
   ArrowRight,
@@ -88,14 +87,6 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
   const ref = useRef<HTMLDivElement>(null);
   const barra = useRef<HTMLDivElement>(null);
   useProgreso(ref, barra);
-  // «Seguir leyendo» (portada): solo la ruta del apartado, sin ancla ni nada de la consulta.
-  useEffect(() => {
-    guardarUltimo({
-      ruta: href("capitulo", apartado.slug),
-      titulo: `${apartado.n}. ${apartado.corto}`,
-      slug: apartado.slug,
-    });
-  }, [apartado.slug, apartado.n, apartado.corto]);
   // 1.0.37 (Fable, 1.0.35): un enlace a un párrafo que no existe («…/b999») lo dice (antes, el
   // apartado desde arriba sin aviso). Se comprueba un momento después: lo que llega en su propio
   // trozo (figuras, diagramas) pone su ancla al cargar.
@@ -131,7 +122,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
       );
   // Lo mismo para «En este apartado» (subapartados y recursos).
   const [localAbierto, setLocalAbierto] = useState(
-    () => !window.matchMedia?.("(max-width: 767px)").matches,
+    () => !window.matchMedia?.("(max-width: 47.9375em)").matches,
   );
   // Recursos visuales del apartado (tablas, figuras, diagramas), en orden de lectura.
   const recursos = apartado.bloques.flatMap((b, i) => {

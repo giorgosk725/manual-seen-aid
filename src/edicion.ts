@@ -38,6 +38,8 @@ export const EDICION = {
 /* Claves locales de la app que contenían búsquedas o criterios (versiones ≤ 0.48): se borran una
    vez al arrancar. Solo claves «mseen:» de esta app; las demás preferencias no se tocan. */
 const CON_CONSULTAS = ["mseen:recientes", "mseen:visitas"];
+/* 1.0.38: sin «Seguir leyendo» ni «Leído» (decisión del autor), lo que guardaban ya no se usa. */
+const SIN_USO = ["mseen:ultimo", "mseen:leidos"];
 const RUTA_CON_VALORES = /^#\/(buscar|sistemas\/elegir)\/./;
 
 /* El almacenamiento del navegador, si se puede tocar: en algunos contextos el simple acceso a
@@ -65,7 +67,7 @@ export function migrarPrivacidad(
   sesion: Storage | undefined = almacenSeguro("sessionStorage"),
 ) {
   if (almacen) {
-    for (const k of CON_CONSULTAS) intentar(() => almacen.removeItem(k));
+    for (const k of [...CON_CONSULTAS, ...SIN_USO]) intentar(() => almacen.removeItem(k));
     intentar(() => {
       const fav = almacen.getItem("mseen:favoritos");
       if (!fav) return;
