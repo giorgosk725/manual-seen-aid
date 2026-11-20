@@ -102,7 +102,7 @@ const SLUG_INICIO = ["minimed-780g", "control-iq", "camaps", "omnipod-5"];
 function Sistemas() {
   const b = MAPA_CONSULTA.find((x) => x.id === "sistemas")!;
   // 0.94.0 (rediseño, fase 2): accesos al pie de cada tarjeta, en una fila de tres tercios.
-  const enlace = `foco-dentro flex min-h-10 flex-1 items-center justify-center px-2 text-center text-[13px] font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 hover:underline ${foco}`;
+  const enlace = `foco-dentro flex min-h-10 flex-1 items-center justify-center px-2 text-center text-[0.8125rem] font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 hover:underline ${foco}`;
   return (
     <TarjetaPortada
       id="mapa-sistemas"
@@ -143,7 +143,7 @@ function Sistemas() {
                     por fila), el corto. */}
                 <span className="min-w-0">
                   <span
-                    className="block text-[13px] font-bold leading-tight group-hover:underline sm:text-base sm:font-extrabold"
+                    className="block text-[0.8125rem] font-bold leading-tight group-hover:underline sm:text-base sm:font-extrabold"
                     style={{ color: h.ink }}
                   >
                     <span className="sm:hidden">{CORTO_CASILLA[c]}</span>

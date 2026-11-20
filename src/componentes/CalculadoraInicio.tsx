@@ -105,7 +105,7 @@ function irAPaso(n: number, editar = false) {
 /* 1.0.14 (25.ª ronda, senior): con aspecto de enlace (subrayado fino, texto oscuro y, desde sm,
    14 px), como los accesos de la ficha (antes, gris a 13 px sin subrayado). */
 const botonIr =
-  "tap-44 tactil-44 inline-flex min-h-11 items-center px-1 text-[13px] font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-8 sm:text-[14px]";
+  "tap-44 tactil-44 inline-flex min-h-11 items-center px-1 text-[0.8125rem] font-semibold text-slate-800 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-8 sm:text-[0.875rem]";
 const EditarDatos = () => (
   <button type="button" onClick={() => irAPaso(3, true)} className={`${botonIr} gap-1`}>
     {/* 1.0.14 (25.ª ronda, R5): un lápiz (la flecha hacia arriba se leía como «plegar»). */}
@@ -162,7 +162,7 @@ function Opciones<T extends string | number>({
           );
         })}
       </div>
-      {ayuda && <p className="mt-1 text-[13px] leading-snug text-slate-600">{ayuda}</p>}
+      {ayuda && <p className="mt-1 text-[0.8125rem] leading-snug text-slate-600">{ayuda}</p>}
     </div>
   );
 }
@@ -182,7 +182,7 @@ function Marca({ modificado, onRestablecer }: { modificado: boolean; onRestablec
       )}
     </span>
   ) : (
-    <span className="text-[13px] font-normal text-slate-600">punto de partida</span>
+    <span className="text-[0.8125rem] font-normal text-slate-600">punto de partida</span>
   );
 }
 
@@ -217,7 +217,7 @@ function Campo({
         {etiqueta}
       </label>
       {ayuda && (
-        <span id={`${id}-ayuda`} className="-mt-1 mb-1 block text-[13px] text-slate-600">
+        <span id={`${id}-ayuda`} className="-mt-1 mb-1 block text-[0.8125rem] text-slate-600">
           {ayuda}
         </span>
       )}
@@ -292,7 +292,7 @@ function Cifra({
         <span className="text-sm font-semibold text-slate-600">{unidad}</span>
       </div>
       <div className="mt-0.5 text-xs tabular-nums text-slate-600">{sinCortes(cuenta)}</div>
-      <div className="mt-1 text-[13px] text-slate-600">{regla}</div>
+      <div className="mt-1 text-[0.8125rem] text-slate-600">{regla}</div>
     </div>
   );
 }
@@ -614,7 +614,7 @@ export function CalculadoraInicio({
         className="no-imprimir -my-2 flex flex-wrap items-center gap-x-2 gap-y-0"
       >
         {/* 1.0.1 (19.ª ronda, visual): sin «Ir a:» en el móvil, la fila cabe en una línea. */}
-        <span className="hidden text-[13px] text-slate-600 sm:inline">Ir a:</span>
+        <span className="hidden text-[0.8125rem] text-slate-600 sm:inline">Ir a:</span>
         {(
           [
             [3, "Datos"],
@@ -664,7 +664,7 @@ export function CalculadoraInicio({
                     className="chip flex-col items-start justify-center gap-0 px-2 py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 max-[22.4375em]:px-1.5 sm:px-3"
                   >
                     <span>{o.t}</span>
-                    <span className="text-xs font-normal opacity-80 max-[22.4375em]:text-[11px]">
+                    <span className="text-xs font-normal opacity-80 max-[22.4375em]:text-[0.6875rem]">
                       {o.dd}
                     </span>
                   </button>
@@ -1172,7 +1172,7 @@ export function CalculadoraInicio({
                 Las reglas se aplican a la DTD de inicio, la misma con la que se calcula la basal.
               </p>
             )}
-            <p className="text-[13px] text-slate-600">
+            <p className="text-[0.8125rem] text-slate-600">
               Solo se comparan la DTD y el peso con la indicación del sistema; la edad, la
               gestación, la variante del sistema y la experiencia previa, no.
             </p>
@@ -1373,7 +1373,7 @@ function Lista({
                 {NOMBRE_CLAVE[k]}
               </div>
               <div className="min-w-0">
-                <div className="text-[15px] font-bold leading-snug tabular-nums text-slate-900">
+                <div className="text-[0.9375rem] font-bold leading-snug tabular-nums text-slate-900">
                   {valorDe(k, sis)}
                 </div>
                 {papel && <div className="mt-0.5 max-w-[72ch] text-sm text-slate-700">{papel}</div>}

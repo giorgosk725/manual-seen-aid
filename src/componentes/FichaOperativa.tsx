@@ -195,7 +195,7 @@ export function CasillasDatos({
               )}
             </dt>
             <dd className={`min-w-0 ${m.dd}`}>
-              <span className="block text-[15px] font-semibold leading-snug text-slate-900">
+              <span className="block text-[0.9375rem] font-semibold leading-snug text-slate-900">
                 {d.partes ? (
                   d.v.split(" · ").map((x) => (
                     <span key={x} className="block">
@@ -208,14 +208,14 @@ export function CasillasDatos({
                 )}
               </span>
               {d.n && (
-                <span className="mt-0.5 block text-[14px] leading-snug text-slate-700">
+                <span className="mt-0.5 block text-[0.875rem] leading-snug text-slate-700">
                   <SinCortes texto={d.n} />
                 </span>
               )}
               {/* 0.92.3 (15.ª ronda, guardia): en las fichas, la variante con el cuerpo del dato
                   (Control-IQ+ parecía secundario en letra menor); en el Resumen, discreta. */}
               <span
-                className={`block leading-snug ${modo === "rejilla" ? "text-[15px] text-slate-800" : "text-[13px] text-slate-800"}`}
+                className={`block leading-snug ${modo === "rejilla" ? "text-[0.9375rem] text-slate-800" : "text-[0.8125rem] text-slate-800"}`}
               >
                 <Variante c={c} d={d} />
               </span>
@@ -325,13 +325,13 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                       // 0.78.1 (segunda ronda): zona táctil de 24 px como mínimo (tap-44 la amplía).
                       // 0.93.1: subrayado de puntos, como las remisiones del capítulo (los
                       // subrayados continuos de todas las filas hacían ruido).
-                      className="tap-44 inline-block min-h-6 py-0.5 text-[15px] font-semibold leading-snug text-slate-900 underline-offset-4 hover:underline hover:decoration-slate-700"
+                      className="tap-44 inline-block min-h-6 py-0.5 text-[0.9375rem] font-semibold leading-snug text-slate-900 underline-offset-4 hover:underline hover:decoration-slate-700"
                       title="Texto del capítulo"
                     >
                       <RotuloConSenal t={d.r} />
                     </a>
                   ) : (
-                    <span className="text-[15px] font-semibold leading-snug text-slate-900">
+                    <span className="text-[0.9375rem] font-semibold leading-snug text-slate-900">
                       {d.r}
                     </span>
                   )}
@@ -344,9 +344,9 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                     </span>
                   )}
                 </dt>
-                <dd className="min-w-0 max-w-[72ch] text-[15px] leading-snug text-slate-800">
+                <dd className="min-w-0 max-w-[72ch] text-[0.9375rem] leading-snug text-slate-800">
                   {d.cond && (
-                    <span className="mb-0.5 block text-[14px] italic leading-snug text-slate-700">
+                    <span className="mb-0.5 block text-[0.875rem] italic leading-snug text-slate-700">
                       <SinCortes texto={d.cond} />
                     </span>
                   )}
@@ -370,18 +370,18 @@ export function FilasDatos({ c, datos, titulo }: { c: number; datos: Dato[]; tit
                     <SinCortes texto={d.v} />
                   )}
                   {d.n && (
-                    <span className="mt-0.5 block text-[14px] text-slate-700">
+                    <span className="mt-0.5 block text-[0.875rem] text-slate-700">
                       <SinCortes texto={d.n} />
                     </span>
                   )}
-                  <span className="block text-[14px]">
+                  <span className="block text-[0.875rem]">
                     <Variante c={c} d={d} />
                   </span>
                   <EnElCapitulo c={c} d={d} comun={comun} />
                   {d.enlace && (
                     <a
                       href={d.enlace.ruta}
-                      className="tap-44 mt-1.5 inline-flex min-h-6 items-center gap-1 py-0.5 text-[13px] font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline print:hidden"
+                      className="tap-44 mt-1.5 inline-flex min-h-6 items-center gap-1 py-0.5 text-[0.8125rem] font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline print:hidden"
                     >
                       {d.enlace.texto}
                       <ArrowRight size={13} aria-hidden="true" className="shrink-0" />
@@ -476,9 +476,9 @@ export function AspectoEntreSistemas({
                   </span>
                 )}
               </dt>
-              <dd className="mt-1 min-w-0 text-[15px] leading-snug text-slate-800">
+              <dd className="mt-1 min-w-0 text-[0.9375rem] leading-snug text-slate-800">
                 {d.cond && (
-                  <span className="mb-0.5 block text-[14px] italic leading-snug text-slate-700">
+                  <span className="mb-0.5 block text-[0.875rem] italic leading-snug text-slate-700">
                     <SinCortes texto={d.cond} />
                   </span>
                 )}
@@ -494,11 +494,11 @@ export function AspectoEntreSistemas({
                   <SinCortes texto={d.v} />
                 </span>
                 {d.n && (
-                  <span className="mt-0.5 block text-[14px] text-slate-700">
+                  <span className="mt-0.5 block text-[0.875rem] text-slate-700">
                     <SinCortes texto={d.n} />
                   </span>
                 )}
-                <span className="block text-[14px]">
+                <span className="block text-[0.875rem]">
                   <Variante c={c} d={d} />
                 </span>
               </dd>

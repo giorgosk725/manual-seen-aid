@@ -83,10 +83,28 @@ export function useTamanoLetra(): [Tamano, (t: Tamano) => void] {
     return (TAMANOS as readonly number[]).includes(v) ? (v as Tamano) : 0;
   });
   useEffect(() => {
-    document.documentElement.dataset.letra = String(t);
+    const html = document.documentElement;
+    const antes = html.dataset.letra;
+    // 1.0.38 (Fable, 1.0.38): al cambiar la letra a media lectura, el párrafo que estaba arriba
+    // sigue arriba (antes, el texto crecía hacia abajo y la pantalla mostraba otro subapartado).
+    const ancla = antes !== undefined && antes !== String(t) ? anclaDeLectura() : null;
+    html.dataset.letra = String(t);
     guardar("mseen:letra", String(t));
+    if (ancla) window.scrollBy({ top: ancla.el.getBoundingClientRect().top - ancla.top });
   }, [t]);
   return [t, setT];
+}
+
+/* El primer párrafo, punto, título o fila de la pantalla que asoma bajo la cabecera. */
+function anclaDeLectura(): { el: Element; top: number } | null {
+  if (typeof document === "undefined" || window.scrollY < 40) return null;
+  const cabecera = document.querySelector("header.cabecera")?.getBoundingClientRect().bottom ?? 0;
+  const borde = Math.max(0, cabecera) + 4;
+  for (const el of document.querySelectorAll("main :is(p, li, h2, h3, h4, tr, figure)")) {
+    const r = el.getBoundingClientRect();
+    if (r.height > 0 && r.bottom > borde) return { el, top: r.top };
+  }
+  return null;
 }
 
 /* ---------- Lectura: seguir donde lo dejaste, apartados leídos y favoritos ----------

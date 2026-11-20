@@ -1,4 +1,5 @@
 /* Consultar: tablas (filtrables), Figura 3 (recorrido) e infografía (mapa). El hub es la portada; «Comparar» y «Parámetros» viven en Sistemas. */
+import { useFijarTitulo } from "../tituloFino";
 import { OtraSituacion } from "../componentes/OtraSituacion";
 import { useRef } from "react";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
@@ -107,8 +108,17 @@ export function Tablas({
           Number(seleccion) >= 0 &&
           Number(seleccion) < t.filas.length
         ));
+  const filaRara =
+    fila !== undefined &&
+    fila !== "" &&
+    !(Number.isInteger(Number(fila)) && Number(fila) >= 0 && Number(fila) < t.filas.length);
   return (
     <>
+      {filaRara && (
+        <AvisoDireccion pedido={fila!}>
+          la tabla no tiene esa fila. Se muestra entera.
+        </AvisoDireccion>
+      )}
       {rara && (
         <AvisoDireccion pedido={seleccion!}>
           {t.porSistema
@@ -206,6 +216,9 @@ function TablaPantalla({
 }
 
 export function Figura3Pantalla({ tramo }: { tramo?: string }) {
+  // 1.0.38 (Fable, 1.0.38): el tramo en la pestaña del navegador.
+  const t3 = FIGURA3.tramos.find((x) => x.clave === tramo);
+  useFijarTitulo(t3 ? `Hiperglucemia y cetonemia · ${t3.rango}` : null);
   const enlacePlan =
     "tap-44 inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900";
   return (

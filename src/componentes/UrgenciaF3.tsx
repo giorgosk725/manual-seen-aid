@@ -27,7 +27,7 @@ export function UrgenciaF3({
   return (
     <section
       aria-label={`Urgencia y signos de gravedad (Figura 3)${donde ? `, ${donde}` : ""}`}
-      className={`rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-red-900 ${grande ? "text-[15px]" : "text-sm"} ${className}`}
+      className={`rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-red-900 ${grande ? "text-[0.9375rem]" : "text-sm"} ${className}`}
     >
       <p className="flex items-start gap-2 font-bold">
         <Siren size={16} className="mt-0.5 shrink-0" aria-hidden="true" />

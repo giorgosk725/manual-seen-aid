@@ -117,7 +117,7 @@ export function SiglaPulsable({ sigla }: { sigla: string }) {
                 <X size={16} aria-hidden="true" />
               </button>
             </div>
-            <p className="mt-1.5 text-[15px] leading-snug sm:text-sm">
+            <p className="mt-1.5 text-[0.9375rem] leading-snug sm:text-sm">
               {g.desarrollo} <span className="pagina-badge ml-1">p. {g.pagina}</span>
             </p>
           </div>,

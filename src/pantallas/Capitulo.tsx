@@ -34,12 +34,12 @@ export function IndiceCapitulo() {
                       className="h-2 w-2 shrink-0 rounded-full"
                       style={{ background: colorApartado(a.n) }}
                     />
-                    <span className="text-[15px] font-semibold tabular-nums text-slate-500">
+                    <span className="text-[0.9375rem] font-semibold tabular-nums text-slate-500">
                       {a.n}
                     </span>
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] font-semibold uppercase leading-snug tracking-wide text-slate-900">
+                    <span className="block text-[0.9375rem] font-semibold uppercase leading-snug tracking-wide text-slate-900">
                       {a.titulo}
                     </span>
                     {subs.length > 0 && (

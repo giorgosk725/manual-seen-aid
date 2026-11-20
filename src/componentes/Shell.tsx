@@ -463,7 +463,7 @@ function MenuNavegacion({
         if (!e.defaultPrevented) onIr?.();
       }}
       aria-current={on === "location" ? "location" : on ? "page" : undefined}
-      className={`relative flex min-h-11 items-center gap-2.5 rounded-md px-3 py-1 text-[13.5px] lg:min-h-10 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"}`}
+      className={`relative flex min-h-11 items-center gap-2.5 rounded-md px-3 py-1 text-[0.84375rem] lg:min-h-10 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"}`}
     >
       {on && (
         <span
@@ -516,7 +516,7 @@ function MenuNavegacion({
                     href={href("capitulo", a.slug)}
                     onClick={onIr}
                     aria-current={onA ? "page" : undefined}
-                    className={`flex gap-2 rounded-md px-2 py-1 text-[12.5px] uppercase leading-snug tracking-wide transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${onA ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
+                    className={`flex gap-2 rounded-md px-2 py-1 text-[0.78125rem] uppercase leading-snug tracking-wide transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${onA ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
                   >
                     <span
                       className={`w-5 shrink-0 tabular-nums ${onA ? "text-slate-700" : "text-slate-500"}`}
@@ -750,9 +750,9 @@ function Inferior({
     // 1.0.30 (revisión de la 1.0.29): a ≤340 px, 10 px y un poco más juntas: «Situaciones» (72 px)
     // no cabía en su celda de 64 y se leía «SistemasSituaciones».
     // 1.0.38 (Fable, 1.0.37): el rótulo, como mucho 12 px y nunca más ancho que su celda (un quinto
-    // del ancho; «Situaciones» ocupa unos 5,6 em): con la letra del navegador al 150 %, la barra
+    // del ancho; «Situaciones» ocupa unos 6 em): con la letra del navegador al 150 %, la barra
     // desbordaba.
-    `relative flex min-h-14 w-full min-w-0 flex-col items-center justify-center gap-0.5 py-1.5 text-[length:min(0.75rem,calc((100vw/5_-_0.5rem)/5.6))] font-semibold transition max-[21.25em]:tracking-[-0.02em] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`;
+    `relative flex min-h-14 w-full min-w-0 flex-col items-center justify-center gap-0.5 py-1.5 text-[length:min(0.75rem,calc(100vw/30))] font-semibold transition max-[21.25em]:tracking-[-0.02em] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "text-slate-900" : "text-slate-500"}`;
   // 0.94.0 (rediseño, fase 2): el destino activo, además de en burdeos, con un filete de 2 px arriba
   // (el color solo no basta para distinguirlo; 1.4.1).
   const filete = (on: boolean) =>
@@ -876,6 +876,26 @@ function Cajon({
       </div>
     </Modal>
   );
+}
+
+/* Posiciones de lectura por pantalla, en sessionStorage (1.0.38): solo claves de la app y alturas,
+   las 60 últimas. */
+function leerPosiciones(clave: string): Map<string, number> {
+  try {
+    const v: unknown = JSON.parse(sessionStorage.getItem(clave) ?? "[]");
+    if (!Array.isArray(v)) return new Map();
+    return new Map(
+      v.filter(
+        (x): x is [string, number] =>
+          Array.isArray(x) && typeof x[0] === "string" && typeof x[1] === "number",
+      ),
+    );
+  } catch {
+    return new Map();
+  }
+}
+function guardarPosiciones(clave: string, m: Map<string, number>) {
+  sessionStorage.setItem(clave, JSON.stringify([...m].slice(-60)));
 }
 
 /* La ruta llega de App (una sola fuente): si la Shell tuviera su propia copia, durante un
@@ -1157,10 +1177,12 @@ export function Shell({
   // Posición de scroll por pantalla, para restaurarla al volver con Atrás. La restaura la app,
   // no el navegador: su restauración propia llega a destiempo (antes o después de pintar la
   // pantalla) y pisaba la posición guardada.
-  const posiciones = useRef(new Map<string, number>());
+  // 1.0.38 (Fable, 1.0.38): las posiciones sobreviven a una recarga (en esta pestaña del
+  // navegador): Atrás tras recargar volvía arriba. Solo rutas de la app y alturas.
+  const posiciones = useRef(leerPosiciones("mseen:posiciones"));
   // 1.0.33 (Fable, 1.0.32): también por dirección completa, para Atrás dentro de una misma
   // pantalla (una remisión del apartado a su propia tabla: la posición del apartado se pisaba).
-  const posicionesPorHash = useRef(new Map<string, number>());
+  const posicionesPorHash = useRef(leerPosiciones("mseen:posiciones-hash"));
   useEffect(() => {
     if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual";
   }, []);
@@ -1176,6 +1198,8 @@ export function Shell({
           CLAVE,
           JSON.stringify({ hash: window.location.hash, y: Math.round(window.scrollY) }),
         );
+        guardarPosiciones("mseen:posiciones", posiciones.current);
+        guardarPosiciones("mseen:posiciones-hash", posicionesPorHash.current);
       } catch {
         /* almacenamiento bloqueado: se vuelve arriba, como antes */
       }
@@ -1482,12 +1506,19 @@ export function Shell({
     let intentos = 0;
     let t: ReturnType<typeof setTimeout>;
     const enfocar = (el: HTMLElement) => {
-      if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
-      el.focus({ preventScroll: true });
+      // 1.0.38 (Fable, 1.0.38): un título fuera de la vista (la pantalla vuelve a su altura) no se
+      // enfoca: el foco va al contenido, donde se está.
+      const r = el.getBoundingClientRect();
+      const destinoVisible = r.bottom > 0 && r.top < window.innerHeight;
+      const objetivo = el.tagName === "H1" && !destinoVisible ? (mainRef.current ?? el) : el;
+      if (!objetivo.hasAttribute("tabindex")) objetivo.setAttribute("tabindex", "-1");
+      objetivo.focus({ preventScroll: true });
     };
     const intentar = () => {
       const main = mainRef.current;
       const activo = document.activeElement;
+      // 1.0.38 (Fable, 1.0.38): con un diálogo abierto (la paleta de nuevo), su campo no se toca.
+      if (activo?.closest('[role="dialog"]')) return;
       // Solo si el foco se ha quedado en la navegación (lateral, barra de abajo, menú) o perdido:
       // un campo o un control de la pantalla nueva no se le quita al lector.
       if (main && activo && activo !== document.body && activo !== main && main.contains(activo))
@@ -1675,7 +1706,7 @@ function Mandos({
             onClick={() => setLetra(menor)}
             disabled={letra === menor}
             aria-label="Letra más pequeña"
-            className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            className="tap-44 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             <AArrowDown size={18} />
           </button>
@@ -1684,7 +1715,7 @@ function Mandos({
             onClick={() => setLetra(mayor)}
             disabled={letra === mayor}
             aria-label="Letra más grande"
-            className="tap-44 rounded-lg p-2 text-slate-700 hover:bg-slate-100 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            className="tap-44 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             <AArrowUp size={18} />
           </button>

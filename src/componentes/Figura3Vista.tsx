@@ -156,12 +156,14 @@ function RangoTramo({ rango, on }: { rango: string; on: boolean }) {
           className={`no-imprimir shrink-0 transition ${on ? "rotate-90" : ""}`}
         />
       </span>{" "}
-      <span className="mt-1 inline-block whitespace-nowrap">
+      {/* 1.0.38 (Fable, 1.0.38): la cifra y la unidad no se parten por dentro, pero con la letra
+          ampliada la unidad puede bajar de línea (antes, todo en una pieza: desbordaba). */}
+      <span className="mt-1 inline-block max-w-full">
         {/* 0.88.1 (duodécima ronda, visual): a 360 px la unidad tocaba el borde de la tarjeta. */}
-        <span className="text-xl font-extrabold tabular-nums max-[22.4375em]:text-lg sm:text-2xl">
+        <span className="whitespace-nowrap text-xl font-extrabold tabular-nums max-[22.4375em]:text-lg sm:text-2xl">
           {m[2]}
         </span>{" "}
-        <span className="text-xs font-bold">{m[3]}</span>
+        <span className="whitespace-nowrap text-xs font-bold">{m[3]}</span>
       </span>
       {m[4] && " "}
       {m[4] && <span className="mt-0.5 block text-xs font-bold leading-tight">{m[4].trim()}</span>}

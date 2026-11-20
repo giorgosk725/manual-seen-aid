@@ -1,6 +1,7 @@
 /* Enrutador: una pantalla por ruta hash. Portada, índice y apartados se cargan al entrar
    (son la puerta y la lectura); el resto de pantallas, cada grupo en su trozo, con React.lazy
    la primera vez que se visitan (el service worker ya las tiene para usar sin conexión). */
+import { AvisoDireccion } from "./ui";
 import { lazy, useEffect } from "react";
 import { apartadoPorSlug, DIAGRAMAS, TABLAS } from "./contenido";
 import { href, useRuta } from "./rutas";
@@ -284,7 +285,16 @@ export default function App() {
       }
       break;
     case "test":
-      pantalla = <Test />;
+      pantalla = (
+        <>
+          {ruta.sub && (
+            <AvisoDireccion pedido={ruta.sub}>
+              la autoevaluación no tiene nada con ese nombre. Esta es la autoevaluación.
+            </AvisoDireccion>
+          )}
+          <Test />
+        </>
+      );
       titulo = "Autoevaluación complementaria";
       break;
     case "repaso":
@@ -301,7 +311,18 @@ export default function App() {
         pantalla = <HojaPacientes id={ruta.detalle} />;
         titulo = "Hoja para el paciente";
       } else {
-        pantalla = <HubPacientes />;
+        // 1.0.38 (Fable, 1.0.38): una sección que no existe lo dice («informacion» y «resumen» son
+        // direcciones antiguas que abren esta pantalla sin aviso).
+        pantalla = (
+          <>
+            {ruta.sub && !["informacion", "resumen"].includes(ruta.sub) && (
+              <AvisoDireccion pedido={ruta.sub}>
+                no hay nada con ese nombre en el material para el paciente.
+              </AvisoDireccion>
+            )}
+            <HubPacientes />
+          </>
+        );
         titulo = "Material para el paciente";
       }
       break;

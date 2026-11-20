@@ -5,6 +5,7 @@
    aparte la Ampliación técnica, fuera del capítulo y con sus fuentes. Varios o todos
    (#/sistemas/<a+b|todos>/<seccion>) = la misma sección, un sistema junto a otro: eso son
    «Comparar sistemas» y «Parámetros por sistema». */
+import { useFijarTitulo } from "../tituloFino";
 import { sinCortes } from "../sinCortes";
 import {
   useEffect,
@@ -220,7 +221,7 @@ function Ampliacion({ s }: { s: Sistema }) {
                     <span className="text-sm font-bold text-slate-900">{p.name}</span>
                     {/* Si el capítulo no le da efecto directo (sin asterisco en la Tabla 1), sin etiqueta de nivel. */}
                     {!DIFIERE_PARAM[s.id]?.[p.name] && (
-                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700">
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[0.6875rem] font-semibold text-slate-700">
                         {n.etiqueta}
                       </span>
                     )}
@@ -310,7 +311,7 @@ function Ampliacion({ s }: { s: Sistema }) {
               return (
                 <li key={ins.id} className="flex items-start gap-2 text-sm text-slate-800">
                   <span
-                    className={`mt-0.5 rounded-full px-2 py-0.5 text-[11px] font-bold ${tono === "emerald" ? "bg-emerald-100 text-emerald-800" : tono === "red" ? "bg-red-100 text-red-800" : "bg-amber-100 text-amber-800"}`}
+                    className={`mt-0.5 rounded-full px-2 py-0.5 text-[0.6875rem] font-bold ${tono === "emerald" ? "bg-emerald-100 text-emerald-800" : tono === "red" ? "bg-red-100 text-red-800" : "bg-amber-100 text-amber-800"}`}
                   >
                     {c.status === "ok" ? "Sí" : c.status === "evitar" ? "Evitar" : "Verificar"}
                   </span>
@@ -367,10 +368,10 @@ const SLUG_CORTO = ["MiniMed 780G", "Control-IQ / Control-IQ+", "CamAPS FX", "Om
 /* 1.0.12 (24.ª ronda, senior): con aspecto de enlace (subrayado fino, texto oscuro y, desde sm,
    14 px); antes, gris a 13 px sin subrayado, se leían como un dato y no como un acceso. */
 const accesoFicha =
-  "tap-44 tactil-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-medium text-slate-800 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9 sm:text-[14px]";
+  "tap-44 tactil-44 inline-flex min-h-11 items-center px-0.5 text-[0.8125rem] font-medium text-slate-800 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9 sm:text-[0.875rem]";
 /* «Ficha entera», junto a Imprimir: enlace suelto, con su subrayado fino. */
 const accesoSuelto =
-  "tap-44 tactil-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-600 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9";
+  "tap-44 tactil-44 inline-flex min-h-11 items-center px-0.5 text-[0.8125rem] font-semibold text-slate-600 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700 sm:min-h-9";
 
 /* 0.92.0 (revisión de tarjetas, sistemas): las menciones del capítulo, agrupadas por apartado
    (y subapartado), en el orden en que aparecen. */
@@ -401,7 +402,7 @@ const enOrdenDeTabla3 = <T extends { r: string }>(xs: T[]) =>
 // 0.92.0 (revisión de tarjetas, sistemas): enlaces de texto también en el móvil (la rejilla de
 // botones ocupaba 119 px por tarjeta).
 const accesoTarjeta =
-  "tap-44 tactil-44 inline-flex min-h-11 items-center px-0.5 text-[13px] font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline sm:min-h-9 sm:text-sm";
+  "tap-44 tactil-44 inline-flex min-h-11 items-center px-0.5 text-[0.8125rem] font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline sm:min-h-9 sm:text-sm";
 
 /* Secciones de la ficha, cada una con su ruta (#/sistemas/<id>/<seccion>). */
 const TODAS_LAS_SECCIONES = [
@@ -557,7 +558,7 @@ function RespuestaImpresa({ trozos }: { trozos: TrozoImpreso[] }) {
     else grupos.push([t]);
   }
   return (
-    <div className="hidden space-y-1 px-4 pb-3 text-[14px] leading-snug text-slate-800 print:block">
+    <div className="hidden space-y-1 px-4 pb-3 text-[0.875rem] leading-snug text-slate-800 print:block">
       {grupos.map((g, n) =>
         g[0].tipo === "li" ? (
           <ul key={n} className="list-disc pl-5">
@@ -629,7 +630,14 @@ export function FichaSistema({
   const nombreImpreso = s?.name.replace(/"/g, "") ?? "";
   useMargenesImpresos(nombreImpreso ? `${nombreImpreso} · Ficha del sistema` : undefined);
   // 0.82.1 (sexta ronda, guardia): con una fila pedida, marcada y justo bajo la barra pegada.
+  // 1.0.38 (Fable, 1.0.38): la pestaña de la ficha en la pestaña del navegador.
+  const tituloSeccion =
+    seccion === "completa" ? "Ficha completa" : SECCIONES_FICHA.find((x) => x.id === seccion)?.t;
+  useFijarTitulo(s && tituloSeccion ? `${s.name} · ${tituloSeccion}` : null);
+  // 1.0.38 (Fable, 1.0.38): si no aparece, se dice (antes, la sección sin aviso).
+  const [filaFalta, setFilaFalta] = useState(false);
   useEffect(() => {
+    setFilaFalta(false);
     if (!fila) return;
     let n = 0;
     let marco = 0;
@@ -637,6 +645,7 @@ export function FichaSistema({
       const el = ref.current?.querySelector<HTMLElement>(`[data-dato^="${fila}"]`);
       if (!el) {
         if (n++ < 40) marco = requestAnimationFrame(buscar);
+        else setFilaFalta(true);
         return;
       }
       ref.current
@@ -656,6 +665,8 @@ export function FichaSistema({
   // 0.76: en el móvil, el selector de sistemas se abre desde la cabecera (la barra pegada solo
   // lleva las pestañas).
   const [abrirSelector, setAbrirSelector] = useState(0);
+  const [selectorAbierto, setSelectorAbierto] = useState(false);
+  const cambiar = useRef<HTMLButtonElement>(null);
   // Enlace a una sección concreta (#/sistemas/<id>/parametros): se abre en ella; la barra con
   // el sistema y la sección queda pegada arriba (scroll-mt de la sección deja sitio).
   const montada = useRef(false);
@@ -701,6 +712,11 @@ export function FichaSistema({
   const mt = completa ? "mt-7" : "";
   return (
     <div ref={ref} className="imprimible ficha-sistema">
+      {filaFalta && fila && (
+        <AvisoDireccion pedido={fila}>
+          esta sección de la ficha no tiene ninguna fila con ese nombre.
+        </AvisoDireccion>
+      )}
       <div className="no-imprimir mb-2 hidden items-center gap-2 text-xs text-slate-500 sm:flex">
         <a
           href={href("sistemas")}
@@ -804,7 +820,9 @@ export function FichaSistema({
             Descarga
           </a>
           <button
+            ref={cambiar}
             type="button"
+            aria-expanded={selectorAbierto}
             onClick={() => {
               setAbrirSelector((n) => n + 1);
               window.scrollTo({ top: 0 });
@@ -814,7 +832,7 @@ export function FichaSistema({
             aria-label="Cambiar de sistema o comparar"
             // 1.0.9 (22.ª ronda, visual): un control, no un acceso más: a la derecha y con borde
             // (los accesos llevan a otras pantallas; este cambia de sistema).
-            className="chip tap-44 ml-auto min-h-9 gap-0.5 px-2 text-[13px] max-[23.6875em]:px-1.5 sm:hidden"
+            className="chip tap-44 ml-auto min-h-9 gap-0.5 px-2 text-[0.8125rem] max-[23.6875em]:px-1.5 sm:hidden"
           >
             {/* 0.91.3 (14.ª ronda, guardia): con su flecha, que despliega el selector (a 360 px,
                 sin ella, para que quepa en la misma línea). */}
@@ -834,7 +852,14 @@ export function FichaSistema({
         <span className="flex-1" />
       </div>
 
-      <BarraSistemas ids={[s.id]} seccion={sec} abrir={abrirSelector} completa={completa} />
+      <BarraSistemas
+        ids={[s.id]}
+        seccion={sec}
+        abrir={abrirSelector}
+        completa={completa}
+        onAbierta={setSelectorAbierto}
+        devolverFoco={() => cambiar.current?.focus()}
+      />
       {/* 0.70.0: la ficha es una sola página; las pestañas llevan a cada sección. */}
       <section aria-labelledby="funciona" className={`scroll-mt-2 ${papel("funciona")}`}>
         <TituloSeccion id="funciona" sistema={s.name} color={h.ink} visible={completa}>
@@ -1175,6 +1200,8 @@ function BarraSistemas({
   completa = false,
   marcadosEntrada,
   fila,
+  onAbierta,
+  devolverFoco,
 }: {
   ids: string[];
   seccion?: string;
@@ -1188,6 +1215,10 @@ function BarraSistemas({
   completa?: boolean;
   /* Cada cambio abre el selector (desde «Otro sistema o comparación» de la cabecera). */
   abrir?: number;
+  /* 1.0.38 (Fable, 1.0.38): el estado del selector para quien lo abre («Cambiar»: aria-expanded) y
+     a quién vuelve el foco al plegarlo con Esc. */
+  onAbierta?: (abierta: boolean) => void;
+  devolverFoco?: () => void;
 }) {
   const sec = seccion;
   const secciones = ids.length === 1 ? SECCIONES_FICHA : SECCIONES_COMPARACION;
@@ -1358,6 +1389,18 @@ function BarraSistemas({
   useEffect(() => {
     if (abrir > 0) setAbierta(true);
   }, [abrir]);
+  useEffect(() => {
+    onAbierta?.(abierta);
+    if (!abierta) return undefined;
+    // 1.0.38 (Fable, 1.0.38): Esc pliega el selector y el foco vuelve a quien lo abrió.
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || document.querySelector('[role="dialog"]')) return;
+      setAbierta(false);
+      devolverFoco?.();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [abierta]); // eslint-disable-line react-hooks/exhaustive-deps
   // Pestañas en una fila: con más a la derecha, un desvanecido lo dice; la activa, a la vista.
   const pestanas = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -1498,7 +1541,7 @@ function BarraSistemas({
           sistema encima de las pestañas (la cabecera con el título queda fuera de la vista). */}
         {compacta && bajada && ids.length === 1 && (
           <p
-            className="pt-1.5 text-[13px] font-bold leading-tight sm:hidden"
+            className="pt-1.5 text-[0.8125rem] font-bold leading-tight sm:hidden"
             style={{ color: SISTEMA_HEX[columnaDeSistema(ids[0] as SistemaId)].ink }}
           >
             {SLUG_CORTO[columnaDeSistema(ids[0] as SistemaId)]}
@@ -1671,7 +1714,7 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                       «Ficha de …». */}
                   <span
                     aria-hidden="true"
-                    className="inline-flex min-h-11 items-center text-[13px] font-semibold text-slate-800 sm:min-h-9 sm:text-sm"
+                    className="inline-flex min-h-11 items-center text-[0.8125rem] font-semibold text-slate-800 sm:min-h-9 sm:text-sm"
                   >
                     Ficha:
                   </span>
@@ -1796,19 +1839,19 @@ function OtrasSituaciones({ cols, aLaVista }: { cols: number[]; aLaVista?: boole
                 return ruta ? (
                   <a
                     href={ruta}
-                    className="tap-44 inline-block min-h-6 py-0.5 text-[15px] font-semibold leading-snug text-slate-900 underline decoration-[var(--linea-fuerte)] decoration-dotted decoration-1 underline-offset-4 hover:decoration-solid hover:decoration-slate-700"
+                    className="tap-44 inline-block min-h-6 py-0.5 text-[0.9375rem] font-semibold leading-snug text-slate-900 underline decoration-[var(--linea-fuerte)] decoration-dotted decoration-1 underline-offset-4 hover:decoration-solid hover:decoration-slate-700"
                     title="Texto del capítulo"
                   >
                     {f.rotulo}
                   </a>
                 ) : (
-                  <span className="text-[15px] font-semibold leading-snug text-slate-900">
+                  <span className="text-[0.9375rem] font-semibold leading-snug text-slate-900">
                     {f.rotulo}
                   </span>
                 );
               })()}
             </dt>
-            <dd className="min-w-0 max-w-[72ch] space-y-2 text-[15px] leading-snug text-slate-800">
+            <dd className="min-w-0 max-w-[72ch] space-y-2 text-[0.9375rem] leading-snug text-slate-800">
               {f.comun && (
                 <p>
                   <SinCortes texto={f.comun} />
@@ -1817,7 +1860,7 @@ function OtrasSituaciones({ cols, aLaVista }: { cols: number[]; aLaVista?: boole
               {f.grupos.map(({ cs, d }) => (
                 <div key={cs.join("-")} hidden={!!f.comun && !f.resto(d.v) && !(d.n && !f.nota)}>
                   {f.grupos.length > 1 || cs.length < cols.length ? (
-                    <span className="mb-0.5 flex flex-wrap gap-x-3 text-[13px] font-semibold">
+                    <span className="mb-0.5 flex flex-wrap gap-x-3 text-[0.8125rem] font-semibold">
                       {cs.map((c) => (
                         <span
                           key={c}
@@ -1958,7 +2001,7 @@ function Comparacion({
   );
   // Un conmutador ligero (texto subrayado): la elección fuerte es la del parámetro.
   const conmutador = (on: boolean) =>
-    `tap-44 inline-flex min-h-11 items-center px-1 text-[14px] underline-offset-[6px] ${on ? "font-semibold text-slate-900 underline decoration-2" : "text-slate-600 hover:text-slate-900"}`;
+    `tap-44 inline-flex min-h-11 items-center px-1 text-[0.875rem] underline-offset-[6px] ${on ? "font-semibold text-slate-900 underline decoration-2" : "text-slate-600 hover:text-slate-900"}`;
   // 0.80.1 (cuarta ronda, visual): como en la ficha, al cambiar de pestaña desde abajo la sección
   // empieza justo bajo la barra pegada.
   useEffect(() => {
@@ -2105,7 +2148,7 @@ function Comparacion({
                             </dt>
                             <dd className="mt-1.5">
                               <ul
-                                className={`space-y-0.5 text-[15px] leading-snug ${g.fuerte ? "font-semibold text-slate-900" : "text-slate-800"}`}
+                                className={`space-y-0.5 text-[0.9375rem] leading-snug ${g.fuerte ? "font-semibold text-slate-900" : "text-slate-800"}`}
                               >
                                 {/* 1.0.9 (22.ª ronda, senior): cada parámetro, a su fila de la
                                     ficha, con el valor (antes, solo el nombre). */}

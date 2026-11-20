@@ -39,4 +39,15 @@ test.describe("1.0.38 · móvil", () => {
     );
     expect(desbordan).toBe(0);
   });
+
+  test("ficha: «Cambiar» dice si el selector está abierto y Esc lo pliega", async ({ page }) => {
+    await page.goto("/#/sistemas/mm780");
+    const cambiar = page.getByRole("button", { name: "Cambiar de sistema o comparar" });
+    await expect(cambiar).toHaveAttribute("aria-expanded", "false");
+    await cambiar.tap();
+    await expect(cambiar).toHaveAttribute("aria-expanded", "true");
+    await page.keyboard.press("Escape");
+    await expect(cambiar).toHaveAttribute("aria-expanded", "false");
+    await expect(cambiar).toBeFocused();
+  });
 });

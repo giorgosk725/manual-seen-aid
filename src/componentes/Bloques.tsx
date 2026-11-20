@@ -80,11 +80,14 @@ function Marco({
   return (
     <div id={id} className={`group relative scroll-mt-4 ${ancho ? "" : "prosa"}`}>
       <Ancla id={ancla} slug={slug} />
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">{children}</div>
-        <div className="shrink-0 pt-1 lg:absolute lg:-right-16 lg:top-0 lg:pt-1.5">
+      {/* 1.0.38 (Fable, 1.0.38): por debajo de lg, la página flota a la derecha de la primera
+          línea y el texto la rodea (antes, una columna de unos 50 px a lo largo de todo el
+          párrafo: a 320 px quedaban unas 28 letras por línea). Desde lg, en el margen, como antes. */}
+      <div className="flow-root">
+        <div className="float-right ml-3 pt-1 lg:absolute lg:-right-16 lg:top-0 lg:float-none lg:ml-0 lg:pt-1.5">
           <PaginaBadge p={p} p2={p2} />
         </div>
+        <div className="min-w-0">{children}</div>
       </div>
     </div>
   );

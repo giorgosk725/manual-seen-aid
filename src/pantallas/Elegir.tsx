@@ -312,8 +312,8 @@ function PorCaracteristicas() {
 const ROTULO_DATO =
   "separador mt-1.5 border-t pt-1.5 text-sm font-semibold leading-snug text-slate-600 sm:mt-0";
 /* El dato; el que no reúne lo marcado, apagado (la marca ✓/✗ y el texto para el lector siguen). */
-const VALOR_DATO = "text-[15px] font-semibold leading-snug text-slate-900";
-const VALOR_APAGADO = "text-[15px] leading-snug text-slate-600";
+const VALOR_DATO = "text-[0.9375rem] font-semibold leading-snug text-slate-900";
+const VALOR_APAGADO = "text-[0.9375rem] leading-snug text-slate-600";
 /* En la subrejilla (desde sm) el dato va en la fila siguiente: sin el hueco de la rejilla. */
 const DATO_PEGADO = "sm:-mt-2";
 

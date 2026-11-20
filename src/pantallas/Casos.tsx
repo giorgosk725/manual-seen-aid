@@ -135,7 +135,7 @@ function Escenario({ caso }: { caso: Caso }) {
       <h2 id="escenario" className="rotulo" style={{ color: hex.ink }}>
         Escenario
       </h2>
-      <p className="mt-1 text-[15px] leading-relaxed text-slate-800">{caso.escenario}</p>
+      <p className="mt-1 text-[0.9375rem] leading-relaxed text-slate-800">{caso.escenario}</p>
     </section>
   );
 }
@@ -449,7 +449,7 @@ export function Casos({ id, paso }: { id?: string; paso?: string }) {
                 href={aMedias ? href("casos", c.id, String(pr.paso + 1)) : href("casos", c.id)}
                 className="linea hover-lift ease-brand flex h-full flex-col rounded-[4px] border bg-white p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
               >
-                <span className="text-[15px] font-bold leading-snug text-slate-900">
+                <span className="text-[0.9375rem] font-bold leading-snug text-slate-900">
                   {c.titulo}
                 </span>
                 {/* En el móvil, «Empezar» va en la línea de los datos (una fila menos). */}

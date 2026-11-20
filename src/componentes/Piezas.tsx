@@ -82,7 +82,7 @@ function Casilla({
           sistema (antes, «TANDEM CONTROL-IQ» en versalitas). */}
       {nombre && (
         <span
-          className="rotulo-sistema mb-1 block text-[13px]"
+          className="rotulo-sistema mb-1 block text-[0.8125rem]"
           style={{ color: SISTEMA_HEX[c].ink }}
         >
           {CORTO_SISTEMA[c] ?? nombre}
@@ -189,7 +189,7 @@ function PiezaVistaBase({
               .map((x) => frasePorSistema(x, delRecorrido));
       if (!frases.length) return null;
       return (
-        <p className={compacta ? "text-[15px] leading-relaxed text-slate-800" : "prosa"}>
+        <p className={compacta ? "text-[0.9375rem] leading-relaxed text-slate-800" : "prosa"}>
           {f.lead && !sinTitulos && <strong>{f.lead} </strong>}
           {sinTitulos ? (
             <Texto siglas={sg}>{sinPuntos(frases.join(" "))}</Texto>
@@ -234,7 +234,7 @@ function PiezaVistaBase({
             {!numerada && (
               <div className="casilla p-3">
                 <div className="rotulo mb-0.5">{t.columnas[0]}</div>
-                <div className="text-[15px] font-medium text-slate-900">
+                <div className="text-[0.9375rem] font-medium text-slate-900">
                   <Lineas siglas={pend(f.celdas[0])}>{f.celdas[0]}</Lineas>
                 </div>
                 {/* 1.0.1 (19.ª ronda, adjunto): con un sistema cuyo objetivo no se configura
@@ -291,7 +291,7 @@ function PiezaVistaBase({
             // 0.96.0 (16.ª ronda, adjunto): dentro de la tarjeta de un bloque (la herramienta del
             // sistema en una situación, los bloques de la ficha), la casilla como dato de una fila,
             // sin caja gris dentro de la tarjeta; las filas las separa una línea fina.
-            <p className="text-[15px] leading-snug text-slate-800">
+            <p className="text-[0.9375rem] leading-snug text-slate-800">
               <Lineas siglas={pend(f.celdas[sis])}>{f.celdas[sis]}</Lineas>
             </p>
           ) : sis !== undefined ? (

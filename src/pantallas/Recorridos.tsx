@@ -4,6 +4,7 @@
    - Interpretación de la descarga: la Tabla 5 paso a paso (8 pasos), con el patrón relacionado.
    - Interrupción del sistema: el subapartado «Interrupción del sistema y pauta alternativa»
      como línea de tiempo (muy breve · hasta 2-3 h · prolongada), con los párrafos literales. */
+import { useFijarTitulo } from "../tituloFino";
 import { OtraSituacion } from "../componentes/OtraSituacion";
 import { ponerConsulta } from "../consultaBuscar";
 import { useEffect, useRef, useState } from "react";
@@ -717,6 +718,13 @@ export function SituacionSistema({
       ? `Situación · ${nombreSituacion.split(" (")[0]}${sisIdx >= 0 ? ` · ${CORTO_SISTEMA[sisIdx]}` : ""}`
       : undefined,
   );
+  // 1.0.38 (Fable, 1.0.38): la situación en la pestaña del navegador (las 30 compartían
+  // «Situaciones»).
+  useFijarTitulo(
+    nombreSituacion
+      ? `${nombreSituacion.split(" (")[0]}${sisIdx >= 0 ? ` · ${CORTO_SISTEMA[sisIdx]}` : ""}`
+      : null,
+  );
   // 0.87.1 (undécima ronda, guardia): el sistema de la situación, el último consultado (la
   // Figura 3 ofrece su plan de seguridad).
   useEffect(() => {
@@ -909,7 +917,7 @@ export function SituacionSistema({
                             style={{ ["--sis" as string]: SISTEMA_HEX[c].strong }}
                           >
                             <dt
-                              className="rotulo-sistema text-[13px]"
+                              className="rotulo-sistema text-[0.8125rem]"
                               style={{ color: SISTEMA_HEX[c].ink }}
                             >
                               {n}
@@ -1089,7 +1097,7 @@ export function SituacionSistema({
                               <NombreSistema n={CORTO_SISTEMA[c] ?? nombre} />
                             </span>
                           </div>
-                          <p className="px-4 py-2.5 text-[15px] text-slate-800">
+                          <p className="px-4 py-2.5 text-[0.9375rem] text-slate-800">
                             <Lineas>
                               {fila.celdas[c].replace(
                                 /configurable Objetivo:/,
@@ -1124,7 +1132,7 @@ export function SituacionSistema({
                     <div className="titulo-tarjeta" style={{ color: SISTEMA_HEX[sisIdx].ink }}>
                       <NombreSistema n={CORTO_SISTEMA[sisIdx]} />
                     </div>
-                    <dl className="mt-1.5 grid gap-y-1 text-[15px] sm:grid-cols-[8rem_1fr]">
+                    <dl className="mt-1.5 grid gap-y-1 text-[0.9375rem] sm:grid-cols-[8rem_1fr]">
                       <dt className="rotulo pt-0.5">Formato</dt>
                       <dd>{TABLAS.T1.filas[0].celdas[sisIdx].split(/;| \(/)[0]}</dd>
                       <dt className="rotulo pt-0.5">Sensores</dt>
@@ -1143,7 +1151,7 @@ export function SituacionSistema({
                       {(comun.length > 0 || fila.unida) && (
                         <div className="casilla px-3 py-2.5">
                           <span className="rotulo mb-0.5 block">Todos los sistemas</span>
-                          <span className="block text-[15px] font-semibold leading-snug text-slate-900">
+                          <span className="block text-[0.9375rem] font-semibold leading-snug text-slate-900">
                             <Lineas>{fila.unida ? fila.celdas[0] : comun.join("\n")}</Lineas>
                           </span>
                         </div>
@@ -1160,10 +1168,10 @@ export function SituacionSistema({
                           <div key={c} className="tarjeta p-3">
                             {/* 1.0.24 (verificación visual): el rótulo de tarjeta de las demás
                                 situaciones (13 px, gris), no en mayúsculas y en burdeos. */}
-                            <dt className="mb-1 text-[13px] font-semibold leading-snug text-slate-600">
+                            <dt className="mb-1 text-[0.8125rem] font-semibold leading-snug text-slate-600">
                               {f.nombre}
                             </dt>
-                            <dd className="text-[15px] leading-snug text-slate-800">
+                            <dd className="text-[0.9375rem] leading-snug text-slate-800">
                               <Lineas>
                                 {f.texto.replace(
                                   /configurable Objetivo:/,
@@ -1210,7 +1218,7 @@ export function SituacionSistema({
                     return (
                       <>
                         {umbral && (
-                          <p className="max-w-[75ch] border-l-2 border-[var(--linea-fuerte)] pl-3 text-[15px] font-semibold leading-snug text-slate-900">
+                          <p className="max-w-[75ch] border-l-2 border-[var(--linea-fuerte)] pl-3 text-[0.9375rem] font-semibold leading-snug text-slate-900">
                             {umbral.includes(NOMBRE) ? (
                               <>
                                 <Texto>{umbral.slice(0, umbral.indexOf(NOMBRE))}</Texto>
@@ -1431,6 +1439,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
   const pasoValido = Number.isInteger(pedido) && pedido >= 1 && pedido <= 8;
   const n = pasoValido ? pedido : 1;
   const fila = t.filas[n - 1];
+  useFijarTitulo(`Interpretación de la descarga · Paso ${n}`);
   const patrones = parrafosConLead(PATRON_DEL_PASO[n] || []);
   // 1.0.25: cada paso, una entrada del historial (Atrás vuelve al paso anterior).
   const ir = (k: number) => apilarRuta("consultar", "descarga", String(k));
@@ -1523,7 +1532,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                     type="button"
                     aria-current={on ? "step" : undefined}
                     onClick={() => ir(i + 1)}
-                    className={`flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-[13px] leading-snug transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "tarjeta font-semibold text-slate-900" : "text-slate-700 hover:bg-white"}`}
+                    className={`flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-[0.8125rem] leading-snug transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "tarjeta font-semibold text-slate-900" : "text-slate-700 hover:bg-white"}`}
                   >
                     <span className={`num ${on ? "num-on" : ""}`}>{i + 1}</span>
                     <span className="min-w-0 pt-0.5">{f.celdas[0]}</span>
@@ -1571,7 +1580,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                   className="border-t border-[var(--linea-suave)] py-2.5 first:border-t-0 md:pb-0 md:pt-2.5 md:first:border-t print:first:border-t"
                 >
                   <dt className="rotulo mb-1">{col}</dt>
-                  <dd className="text-[15px] text-slate-800">
+                  <dd className="text-[0.9375rem] text-slate-800">
                     <Lineas>{fila.celdas[j + 1]}</Lineas>
                   </dd>
                 </div>
@@ -1609,7 +1618,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
                 {patrones.map((p) => (
                   <li
                     key={p.ancla}
-                    className="literal py-1 text-sm text-slate-800 print:text-[12.5px] print:leading-snug"
+                    className="literal py-1 text-sm text-slate-800 print:text-[0.78125rem] print:leading-snug"
                   >
                     <strong>{p.b.lead} </strong>
                     <Texto>{p.b.texto}</Texto>

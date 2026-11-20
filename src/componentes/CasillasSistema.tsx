@@ -142,7 +142,11 @@ export function CasillasSistema({
             : "sm:flex sm:flex-wrap sm:items-center sm:gap-1.5"
         }
       >
-        <div className={`grid sm:contents ${enFila ? "grid-cols-4 gap-1" : "grid-cols-2 gap-1.5"}`}>
+        {/* 1.0.38 (Fable, 1.0.38): con la letra del navegador muy ampliada (menos de 18 em de
+            ancho), dos por fila: en cuatro columnas los nombres se leían letra a letra. */}
+        <div
+          className={`grid sm:contents ${enFila ? "grid-cols-4 gap-1 max-[18em]:grid-cols-2" : "grid-cols-2 gap-1.5 max-[18em]:grid-cols-1"}`}
+        >
           {TABLAS.T1.columnas.map((nombre, c) => {
             // Con los cuatro a la vista, las cuatro marcadas (y así lo anuncian: aria-pressed).
             const elegida = seleccion.includes(c);
@@ -175,7 +179,7 @@ export function CasillasSistema({
                 aria-label={cortoEnMovil && enFila && nombres ? nombres[c] : undefined}
                 // 1.0.36 (Fable, 1.0.35): a menos de 360 px, menos relleno y el nombre un punto menor
                 // («CamAPS FX» y «Omnipod 5», que no parten línea, se salían 7–8 px de la casilla).
-                className={`${enFila ? "max-sm:flex-col max-sm:items-start max-[22.4375em]:px-1" : ""} tap-44 tactil-44 flex disabled:cursor-not-allowed disabled:opacity-50 min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[13px] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-9 sm:px-2.5 sm:text-sm sm:leading-normal`}
+                className={`${enFila ? "max-sm:flex-col max-sm:items-start max-[22.4375em]:px-1" : ""} tap-44 tactil-44 flex disabled:cursor-not-allowed disabled:opacity-50 min-h-11 items-center gap-1.5 rounded-md border px-2 py-1 text-left text-[0.8125rem] font-semibold leading-tight text-slate-800 transition ease-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 sm:inline-flex sm:min-h-9 sm:px-2.5 sm:text-sm sm:leading-normal`}
                 style={
                   elegida
                     ? {
@@ -222,7 +226,7 @@ export function CasillasSistema({
                 </span>
                 {nombres && enFila && cortoEnMovil ? (
                   <>
-                    <span className="text-xs max-[22.4375em]:text-[11px] sm:hidden">
+                    <span className="text-xs max-[22.4375em]:text-[0.6875rem] sm:hidden">
                       {CORTO_SISTEMA[c]
                         .replace(/-/g, "\u2011")
                         .replace(/(Omnipod|CamAPS) /, "$1\u00a0")}
@@ -234,7 +238,7 @@ export function CasillasSistema({
                 ) : nombres && enFila ? (
                   // En la fila de cuatro del móvil, el nombre puede partirse («MiniMed ⏎ 780G»), pero
                   // no por el guion («Control-⏎IQ»): guion duro.
-                  <span className="max-sm:text-xs max-[22.4375em]:text-[11px]">
+                  <span className="max-sm:text-xs max-[22.4375em]:text-[0.6875rem]">
                     {nombres[c].replace(/-/g, "\u2011").replace(/(Omnipod|CamAPS) /, "$1\u00a0")}
                   </span>
                 ) : nombres ? (

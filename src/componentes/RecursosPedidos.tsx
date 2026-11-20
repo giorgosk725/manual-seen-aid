@@ -43,7 +43,9 @@ export function RecursosPedidos({
                     {d.antes ? `${d.antes}. ` : ""}
                     {d.v}
                   </span>
-                  {d.n && <span className="mt-0.5 block text-[13px] text-slate-600">{d.n}</span>}
+                  {d.n && (
+                    <span className="mt-0.5 block text-[0.8125rem] text-slate-600">{d.n}</span>
+                  )}
                 </span>
               );
             })()}

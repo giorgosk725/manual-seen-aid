@@ -335,12 +335,12 @@ function CuerpoHoja({
         {sec.titulo}
       </Titulo>
       {sec.parrafos?.map((par, i) => (
-        <p key={i} className="mt-1 text-[15px] leading-relaxed text-slate-800">
+        <p key={i} className="mt-1 text-[0.9375rem] leading-relaxed text-slate-800">
           <SinCortes texto={f(par)} />
         </p>
       ))}
       {sec.items && (
-        <ul className="mt-1 list-disc space-y-1 pl-5 text-[15px] leading-relaxed text-slate-800">
+        <ul className="mt-1 list-disc space-y-1 pl-5 text-[0.9375rem] leading-relaxed text-slate-800">
           {sec.items.map((it, i) => (
             <li key={i}>
               <SinCortes texto={f(it)} />
@@ -356,7 +356,7 @@ function CuerpoHoja({
         <h2 className="mb-2 text-lg font-black leading-tight text-slate-900">{hoja.titulo}</h2>
       )}
       {hoja.intro && (
-        <p className="mb-3 text-[15px] leading-relaxed text-slate-800">
+        <p className="mb-3 text-[0.9375rem] leading-relaxed text-slate-800">
           <SinCortes texto={f(hoja.intro)} />
         </p>
       )}
@@ -413,7 +413,10 @@ export function ResumenPacientes() {
         holgada
       >
         {RESUMEN_CAPITULO.parrafos.map((p, i) => (
-          <p key={i} className="hoja-seccion mb-2.5 text-[15px] leading-relaxed text-slate-800">
+          <p
+            key={i}
+            className="hoja-seccion mb-2.5 text-[0.9375rem] leading-relaxed text-slate-800"
+          >
             {p}
           </p>
         ))}
@@ -427,7 +430,7 @@ function Volver({ actual }: { actual: string }) {
   return (
     <nav
       aria-label="Hojas para el paciente"
-      className="no-imprimir mb-2 flex min-w-0 items-center gap-2 text-xs text-slate-500"
+      className="no-imprimir mb-2 flex min-w-0 flex-wrap items-center gap-x-2 text-xs text-slate-500"
     >
       <a
         href={href("pacientes")}
@@ -587,15 +590,15 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
           donde="al principio del plan"
         />
         <div className="hoja-seccion mb-3 flex flex-wrap gap-x-4 gap-y-2">
-          <Hueco etiqueta="Nombre:" ancho="min-w-[12rem] flex-[2]" />
-          <Hueco etiqueta="Fecha:" ancho="min-w-[8rem] flex-1" />
+          <Hueco etiqueta="Nombre:" ancho="min-w-[min(12rem,100%)] flex-[2]" />
+          <Hueco etiqueta="Fecha:" ancho="min-w-[min(8rem,100%)] flex-1" />
         </div>
         <section className="hoja-seccion mb-3">
           <h2 className="text-base font-extrabold" style={{ color: hex.ink }}>
             Mi plan
           </h2>
           {/* 0.92.0 (revisión de tarjetas, ★12): 15 px en toda la hoja, como la cara de cetonas. */}
-          <ol className="mt-1.5 space-y-2 text-[15px] text-slate-800">
+          <ol className="mt-1.5 space-y-2 text-[0.9375rem] text-slate-800">
             {items.map((it, i) => (
               <li key={i}>
                 <span className="flex gap-2">
@@ -609,8 +612,14 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
                     <Hueco etiqueta="Insulina basal en pluma:" />
                     <Hueco etiqueta="Insulina rápida en pluma:" />
                     <span className="flex flex-wrap gap-x-4 gap-y-2">
-                      <Hueco etiqueta="Ratio insulina/hidratos:" ancho="min-w-[10rem] flex-1" />
-                      <Hueco etiqueta="Factor de sensibilidad:" ancho="min-w-[10rem] flex-1" />
+                      <Hueco
+                        etiqueta="Ratio insulina/hidratos:"
+                        ancho="min-w-[min(10rem,100%)] flex-1"
+                      />
+                      <Hueco
+                        etiqueta="Factor de sensibilidad:"
+                        ancho="min-w-[min(10rem,100%)] flex-1"
+                      />
                     </span>
                   </span>
                 )}
@@ -628,7 +637,7 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
           <h2 className="text-base font-extrabold" style={{ color: hex.ink }}>
             Hipoglucemia
           </h2>
-          <ul className="mt-1 space-y-1 text-[15px] text-slate-800">
+          <ul className="mt-1 space-y-1 text-[0.9375rem] text-slate-800">
             {hipo.map((r) => (
               <li key={r}>
                 <SinCortes texto={r} />
@@ -636,14 +645,14 @@ export function PlanSeguridad({ sistema }: { sistema?: string }) {
             ))}
           </ul>
         </section>
-        <p className="hoja-seccion mb-3 text-[15px] font-semibold text-slate-900">
+        <p className="hoja-seccion mb-3 text-[0.9375rem] font-semibold text-slate-900">
           <Texto>{sinCortes(delFormato(FIGURA3.reglaDeOro, c))}</Texto>
         </p>
         <section className="hoja-seccion mb-1">
           <h2 className="text-base font-extrabold" style={{ color: SISTEMA_HEX[c].ink }}>
             {nombre}: qué función usar
           </h2>
-          <dl className="plan-t4 mt-1 space-y-1.5 text-[15px]">
+          <dl className="plan-t4 mt-1 space-y-1.5 text-[0.9375rem]">
             {t4.map((f) => (
               <div key={f.etiqueta}>
                 {/* Sin el punto final: en papel va seguido de «: » (0.72.0: salía «.:»). */}

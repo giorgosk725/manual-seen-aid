@@ -303,7 +303,7 @@ function Tarjeta({
           leerlo («Gestación»: el uso continuado del modo sueño es de la gestación). La fuente
           entera sigue al pie. */}
       {!titulo && ambitoDe(r.fuente) && (
-        <p className="mt-0.5 text-[13px] font-semibold leading-snug text-slate-600">
+        <p className="mt-0.5 text-[0.8125rem] font-semibold leading-snug text-slate-600">
           {ambitoDe(r.fuente)}
         </p>
       )}
@@ -353,13 +353,13 @@ function Tarjeta({
         </p>
       )}
       {casilla ? (
-        <p className="literal mt-1 whitespace-pre-line text-[15px] leading-relaxed text-slate-900">
+        <p className="literal mt-1 whitespace-pre-line text-[0.9375rem] leading-relaxed text-slate-900">
           <Marcado texto={sinCortes(casilla.texto)} q={q} />
         </p>
       ) : (
         r.texto && (
           <p
-            className={`literal mt-1 whitespace-pre-line text-slate-900 ${principal ? "text-[15px] leading-relaxed" : "text-sm"}`}
+            className={`literal mt-1 whitespace-pre-line text-slate-900 ${principal ? "text-[0.9375rem] leading-relaxed" : "text-sm"}`}
           >
             {sistemaConsulta !== undefined && sistemaConsulta >= 0 ? (
               <LineasSistema texto={r.texto} q={q} sistema={sistemaConsulta} />
@@ -376,7 +376,7 @@ function Tarjeta({
       )}
       {items && items.length > 0 && clave >= 0 ? (
         <>
-          <p className="mt-1 text-[15px] leading-relaxed text-slate-900">
+          <p className="mt-1 text-[0.9375rem] leading-relaxed text-slate-900">
             <Marcado texto={sinCortes(items[clave])} q={q} />
           </p>
           <details className="mt-1">
@@ -438,7 +438,7 @@ function Tarjeta({
                 {/* 0.96.0 (16.ª ronda): el nombre con su grafía, en la tinta del sistema (antes, en
                     MAYÚSCULAS). */}
                 <dt
-                  className={c >= 0 ? "rotulo-sistema text-[13px]" : "rotulo"}
+                  className={c >= 0 ? "rotulo-sistema text-[0.8125rem]" : "rotulo"}
                   style={c >= 0 ? { color: SISTEMA_HEX[c].ink } : undefined}
                 >
                   {nombreDeCasilla(s.nombre)}
@@ -483,7 +483,7 @@ function Tarjeta({
                     ? "Ver la tabla"
                     : "Ver en el apartado"
           }: ${r.fuente.replace(/^(Tabla \d+)\..*$/s, "$1")}, ${paginas(r)}`}
-          className="inline-flex min-h-11 items-center gap-1 text-[13px] font-semibold text-slate-600 hover:underline sm:min-h-8"
+          className="inline-flex min-h-11 items-center gap-1 text-[0.8125rem] font-semibold text-slate-600 hover:underline sm:min-h-8"
         >
           {/* 0.97.1 (17.ª ronda, visual): con el ámbito ya encima del pasaje, al pie solo el
               apartado y la página («Apartado 10, p. 18»). */}

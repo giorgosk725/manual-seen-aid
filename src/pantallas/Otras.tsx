@@ -767,7 +767,7 @@ export function Bibliografia({ destacada }: { destacada?: string }) {
         {FUENTES_COMPLEMENTARIAS.map((f) => (
           <li key={f.cita} className="tarjeta p-3">
             <p className="text-sm text-slate-800">{f.cita}</p>
-            <p className="mt-1 text-[13px] text-slate-600">{f.uso}</p>
+            <p className="mt-1 text-[0.8125rem] text-slate-600">{f.uso}</p>
           </li>
         ))}
       </ul>
@@ -785,7 +785,7 @@ export function Sobre() {
         {/* 13-10-2026 (0.64.0): más operativo, a petición del responsable: qué se puede hacer,
             con un enlace a cada tarea, y cómo está hecho en cuatro frases. El responsable, con su
             afiliación, en «Fuentes y revisión» (en la portada ya van su nombre y su afiliación). */}
-        <div className="space-y-3 text-[15px] leading-relaxed">
+        <div className="space-y-3 text-[0.9375rem] leading-relaxed">
           <p>
             Complemento interactivo del capítulo {CAPITULO.numero} del Manual SEEN sobre
             automatización de la insulinoterapia, para su uso en consulta.

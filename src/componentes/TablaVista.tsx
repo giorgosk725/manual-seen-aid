@@ -290,7 +290,7 @@ function TablaHTML({
                           className={
                             k === 0
                               ? "block"
-                              : "mt-1 block text-[13px] font-normal leading-snug text-slate-700"
+                              : "mt-1 block text-[0.8125rem] font-normal leading-snug text-slate-700"
                           }
                         >
                           <Texto>{sinCortes(l)}</Texto>
@@ -381,7 +381,7 @@ function Fichas({
                     className={
                       k === 0
                         ? "block"
-                        : "mt-1 block text-[13px] font-normal leading-snug text-slate-600"
+                        : "mt-1 block text-[0.8125rem] font-normal leading-snug text-slate-600"
                     }
                   >
                     {sinCortes(l)}
@@ -416,7 +416,7 @@ function Fichas({
                   ) : (
                     <dt className="rotulo">{tabla.columnas[c]}</dt>
                   )}
-                  <dd className="mt-0.5 text-[15px] text-slate-800">
+                  <dd className="mt-0.5 text-[0.9375rem] text-slate-800">
                     <Lineas>
                       {sinCortes(
                         (f.unida ? celdaUnida(tabla, f.celdas[0], columnas) : f.celdas[c]).replace(
@@ -467,14 +467,14 @@ function FichaSistema({ tabla, c, resaltar }: { tabla: Tabla; c: number; resalta
                   className={
                     k === 0
                       ? "block font-bold text-slate-900"
-                      : "mt-1 block text-[13px] font-normal text-slate-600"
+                      : "mt-1 block text-[0.8125rem] font-normal text-slate-600"
                   }
                 >
                   <Texto>{sinCortes(l)}</Texto>
                 </span>
               ))}
             </dt>
-            <dd className="text-[15px] text-slate-800">
+            <dd className="text-[0.9375rem] text-slate-800">
               <Lineas>
                 {sinCortes(
                   (f.unida ? celdaUnida(tabla, f.celdas[0], [c]) : f.celdas[c]).replace(

@@ -2,6 +2,7 @@
    en sus cuatro fases, cada una como una lista corta de tareas desplegables (inicio.ts, TAREAS),
    con el sistema elegido o los cuatro, y la hoja de comprobación como herramienta del recorrido.
    El contenido sale de inicio.ts (referencias al texto literal); aquí solo se pinta. */
+import { useFijarTitulo } from "../tituloFino";
 import { useEffect, useRef, useState } from "react";
 import { useImprimirConTeclado } from "../imprimirConTeclado";
 import {
@@ -568,10 +569,10 @@ function PasosInicio({
                 // había que tocar para saber qué era cada paso).
                 className="pestana -mb-px min-h-11 w-full flex-col justify-center gap-0 py-1 tabular-nums focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
-                <span className="text-[15px] leading-tight">{i + 1}</span>
+                <span className="text-[0.9375rem] leading-tight">{i + 1}</span>
                 <span
                   aria-hidden="true"
-                  className="text-[11px] font-normal leading-tight max-[22.4375em]:text-[10px]"
+                  className="text-[0.6875rem] font-normal leading-tight max-[22.4375em]:text-[0.625rem]"
                 >
                   {CORTO_PASO[x.id] ?? ""}
                 </span>
@@ -601,7 +602,7 @@ function PasosInicio({
                   alPaso();
                   ir(i + 1);
                 }}
-                className={`chip paso-tab h-full w-full items-start px-2.5 py-1.5 text-[13px] leading-snug focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "" : "max-sm:hidden"}`}
+                className={`chip paso-tab h-full w-full items-start px-2.5 py-1.5 text-[0.8125rem] leading-snug focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${on ? "" : "max-sm:hidden"}`}
               >
                 <span className="num max-sm:hidden">{i + 1}</span>
                 <span className="min-w-0">{x.titulo}</span>
@@ -639,7 +640,7 @@ function PasosInicio({
           {/* 1.0.15 (26.ª ronda, R5): sin elegir, se ve lo de todas las opciones (nada plegado);
               dicho, para que no se lea como lo de la primera. */}
           {!resp[q.id] && (
-            <p className="mt-1 text-[13px] text-slate-600">
+            <p className="mt-1 text-[0.8125rem] text-slate-600">
               Sin elegir: abajo, lo de todas las opciones.
             </p>
           )}
@@ -860,8 +861,27 @@ export function IniciarSistema({ detalle }: { detalle?: string }) {
   // inicial sin aviso).
   const vistaRara =
     !!faseId && !FASES.some((f) => f.id === faseId) && ![GUIA, HOJA, CALC].includes(faseId);
+  // 1.0.38 (Fable, 1.0.38): la vista o la fase en la pestaña del navegador.
+  useFijarTitulo(
+    `Iniciación del sistema · ${
+      actual === CALC ? "Cálculo inicial" : actual === HOJA ? "Hoja" : (fase?.corto ?? "Fases")
+    }${sis !== undefined ? ` · ${NOMBRES[sis]}` : ""}`,
+  );
+  // 1.0.38 (Fable, 1.0.38): una tarea o un paso que no existen, también.
+  const tareaRara =
+    !vistaRara &&
+    !!tareaId &&
+    actual !== CALC &&
+    !/^(a\d+|\d+|pauta|desde-.+)$/.test(tareaId) &&
+    !tareas.some((x) => x.id === tareaId) &&
+    !PASOS_GUIA.some((x) => x.id === tareaId);
   return (
     <div>
+      {tareaRara && (
+        <AvisoDireccion pedido={tareaId}>
+          esta fase no tiene ninguna tarea ni paso con ese nombre. Esta es la fase completa.
+        </AvisoDireccion>
+      )}
       {vistaRara && (
         <AvisoDireccion pedido={faseId}>
           no hay ninguna fase con ese nombre. Este es el cálculo inicial.

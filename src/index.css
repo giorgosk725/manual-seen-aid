@@ -143,6 +143,13 @@
    En @layer components para que las utilidades de Tailwind (p. ej. un color de texto) puedan
    matizar una pieza concreta. */
 @layer components {
+  /* 1.0.38 (Fable, 1.0.38): una rejilla sin columnas propias tiene UNA columna que puede
+     estrecharse (sin esto, la columna implícita mide lo que su contenido más largo y, con la letra
+     del navegador ampliada, la lista de Situaciones o la calculadora desbordaban). Las utilidades
+     grid-cols-* (capa posterior) la sustituyen. */
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
   /* Superficie: papel blanco con borde capilar; la pleca de sistema lee `--sis`. */
   .tarjeta {
     background: var(--superficie);

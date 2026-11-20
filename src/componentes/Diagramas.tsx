@@ -237,14 +237,14 @@ function Escalera({ i, yaEnTexto }: { i: number; yaEnTexto?: (t: string) => bool
           {/* 1.0.24 (30.ª ronda, adjunto): el texto dice «este posicionamiento propone»: se
               nombra (en el selector de poblaciones, el nombre corto). */}
           {p.id === "hospital" && (
-            <span className="block text-[13px] font-normal text-slate-600">
+            <span className="block text-[0.8125rem] font-normal text-slate-600">
               Posicionamiento internacional de 2026
             </span>
           )}
         </Sub>
       </div>
       {encabezan.map((t) => (
-        <p key={t} className="mb-1.5 text-[13px] leading-snug text-slate-700">
+        <p key={t} className="mb-1.5 text-[0.8125rem] leading-snug text-slate-700">
           <SinCortes texto={t} />
         </p>
       ))}
@@ -781,7 +781,7 @@ function Algoritmos() {
                     <span className="font-semibold">{nombre}</span>
                     {tipo && (
                       <span
-                        className="rounded-full px-2 py-0.5 text-[11px] font-bold text-white"
+                        className="rounded-full px-2 py-0.5 text-[0.6875rem] font-bold text-white"
                         style={{ background: h.ink }}
                       >
                         {tipo}
@@ -890,7 +890,7 @@ function Hipoglucemia() {
   return (
     <div>
       {resto ? (
-        <p className="mb-2 max-w-[72ch] text-[15px] leading-snug text-slate-800">
+        <p className="mb-2 max-w-[72ch] text-[0.9375rem] leading-snug text-slate-800">
           <Texto>{`${condicion}:`}</Texto>
         </p>
       ) : null}
@@ -1211,7 +1211,7 @@ function Exploraciones() {
                       {T6.columnas[j]}
                     </span>
                     {/* El estado, también escrito (no solo color). */}
-                    <span className={`block text-[11px] font-bold ${e.tinta}`}>{e.corta}</span>
+                    <span className={`block text-[0.6875rem] font-bold ${e.tinta}`}>{e.corta}</span>
                     <Lineas>{celda}</Lineas>
                   </span>
                 </span>
@@ -1342,7 +1342,7 @@ function Eleccion() {
    CamAPS FX es una bomba con catéter. */
 function DesconexionEnFicha({ cols }: { cols: number[] }) {
   return (
-    <p className="no-imprimir mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-0 text-[13px] text-slate-600">
+    <p className="no-imprimir mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-0 text-[0.8125rem] text-slate-600">
       <span>Desconexión en la ficha:</span>
       {cols.map((c) => (
         <a
@@ -1419,7 +1419,7 @@ function InterrupcionLinea() {
     // tarjeta se dibuja en sus dos partes (cabecera arriba, cuerpo abajo), sin aire vacío dentro.
     <li className="min-w-0 md:row-span-2 md:grid md:grid-rows-subgrid">
       <span
-        className="cabecera-tramo tarjeta flex items-start rounded-b-none border-b-0 px-3 py-2.5 text-[15px] font-bold leading-snug"
+        className="cabecera-tramo tarjeta flex items-start rounded-b-none border-b-0 px-3 py-2.5 text-[0.9375rem] font-bold leading-snug"
         style={{
           background: tono.soft,
           color: tono.ink,
@@ -1436,7 +1436,7 @@ function InterrupcionLinea() {
     </li>
   );
   const Anexo = ({ titulo, texto }: { titulo: string; texto: string }) => (
-    <span className="casilla anexo mt-1 block px-3 py-2 text-[13px] leading-snug">
+    <span className="casilla anexo mt-1 block px-3 py-2 text-[0.8125rem] leading-snug">
       <span className="rotulo block">{titulo}</span>
       <TS>{texto}</TS>
     </span>
@@ -1469,7 +1469,7 @@ function InterrupcionLinea() {
           guardia, quedaba a unas 2,4 pantallas). */}
       <nav
         aria-label="Casos de la interrupción"
-        className="no-imprimir -my-1 flex flex-wrap items-center gap-x-3 gap-y-0 text-[13px]"
+        className="no-imprimir -my-1 flex flex-wrap items-center gap-x-3 gap-y-0 text-[0.8125rem]"
       >
         <span className="text-slate-600">Ir a:</span>
         {(

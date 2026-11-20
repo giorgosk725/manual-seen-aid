@@ -127,7 +127,7 @@ export function BloquesPorSistema({
         {/* 1.0.4 (20.ª ronda, senior): sin sistema elegido, encima y legible lo que se ve al elegir
             (antes, «Elegir el sistema» debajo, a 13 px en gris). */}
         {c < 0 && (
-          <p className="mb-1.5 text-[15px] font-semibold text-slate-800">
+          <p className="mb-1.5 text-[0.9375rem] font-semibold text-slate-800">
             Elegir el sistema para ver lo propio de cada uno:
           </p>
         )}

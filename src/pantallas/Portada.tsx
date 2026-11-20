@@ -65,7 +65,7 @@ export function Portada() {
               {CAPITULO.titulo}
             </h1>
             {/* Firma como en el Manual: nombre y afiliación, en letra discreta. */}
-            <p className="mt-1.5 text-[13px] font-semibold leading-snug text-slate-700 sm:mt-2 sm:text-sm">
+            <p className="mt-1.5 text-[0.8125rem] font-semibold leading-snug text-slate-700 sm:mt-2 sm:text-sm">
               {CAPITULO.autor}
             </p>
             <p className="mt-0.5 text-xs leading-snug text-slate-500">{CAPITULO.filiacion}</p>
