@@ -631,8 +631,12 @@ export function FichaSistema({
   useMargenesImpresos(nombreImpreso ? `${nombreImpreso} · Ficha del sistema` : undefined);
   // 0.82.1 (sexta ronda, guardia): con una fila pedida, marcada y justo bajo la barra pegada.
   // 1.0.38 (Fable, 1.0.38): la pestaña de la ficha en la pestaña del navegador.
+  // 1.0.39 (Fable, 1.0.38): sin pestaña en la dirección, la que se ve («Cómo funciona»), con el
+  // nombre completo como en las demás pestañas (antes, el nombre corto de las herramientas).
   const tituloSeccion =
-    seccion === "completa" ? "Ficha completa" : SECCIONES_FICHA.find((x) => x.id === seccion)?.t;
+    seccion === "completa"
+      ? "Ficha completa"
+      : (SECCIONES_FICHA.find((x) => x.id === (seccion ?? "funciona")) ?? SECCIONES_FICHA[0]).t;
   useFijarTitulo(s && tituloSeccion ? `${s.name} · ${tituloSeccion}` : null);
   // 1.0.38 (Fable, 1.0.38): si no aparece, se dice (antes, la sección sin aviso).
   const [filaFalta, setFilaFalta] = useState(false);
@@ -742,9 +746,12 @@ export function FichaSistema({
         </AbrirEnVisor>
         <div className="min-w-0">
           {/* Imprimir, junto al título (A09): la única acción secundaria de la cabecera. */}
-          <div className="flex items-start justify-between gap-2">
+          {/* 1.0.39 (Fable, 1.0.38): con la letra del navegador al 200 %, el título quedaba debajo
+              de «Imprimir»; ahora «Imprimir» baja de línea si al título le quedarían menos de 7 rem
+              (con la letra normal, junto al título, como antes). */}
+          <div className="flex flex-wrap items-start justify-between gap-2">
             <h1
-              className="min-w-0 font-display text-xl font-medium uppercase leading-tight tracking-[0.04em]"
+              className="min-w-0 flex-1 basis-[7rem] font-display text-xl font-medium uppercase leading-tight tracking-[0.04em]"
               style={{ color: h.ink }}
             >
               {/* 0.84.1 (octava ronda, visual): sin partir «Control-IQ+» por el guion en el móvil.
@@ -1706,7 +1713,9 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                   // 1.0.37 (Fable, 1.0.35): en el móvil, alineados a la izquierda con un hueco fijo
                   // (repartidos a lo ancho, la segunda línea dejaba «Iniciación» y «Plan» en extremos
                   // opuestos).
-                  className="separador flex flex-wrap justify-start gap-x-4 gap-y-0 border-t px-4 py-1 xl:gap-x-3 xl:py-0.5"
+                  // 1.0.39 (Fable, 1.0.38): no en papel (son enlaces; con ellos, la cuarta tarjeta
+                  // pasaba a una segunda cara).
+                  className="no-imprimir separador flex flex-wrap justify-start gap-x-4 gap-y-0 border-t px-4 py-1 xl:gap-x-3 xl:py-0.5"
                 >
                   {/* 1.0.27 (revisión externa del 15-11-2026): los accesos llevan a la ficha de
                       ESTE sistema, no a las pestañas de arriba (que comparan los cuatro); sin el
@@ -1737,8 +1746,8 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
       <a
         href={href("sistemas", "elegir")}
         // 0.92.0 (revisión de tarjetas, sistemas): un enlace con su flecha (como caja-fila suelta
-        // parecía un panel plegado).
-        className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700"
+        // parecía un panel plegado). 1.0.39: no en papel.
+        className="no-imprimir inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-700"
       >
         Elección del sistema por características
         <ArrowRight size={14} aria-hidden="true" />
@@ -1983,6 +1992,11 @@ function Comparacion({
   // Preguntas) vuelve al Resumen (0.77.1: antes, la pantalla quedaba vacía).
   const enComparacion = (x?: string) => SECCIONES_COMPARACION.some((y) => y.id === x);
   const seccion = pedida === "funciona" ? "esencial" : enComparacion(pedida) ? pedida : undefined;
+  // 1.0.39 (Fable, 1.0.38): la pestaña de la comparación en la pestaña del navegador (todas
+  // decían «Sistemas AID»); en el Resumen, el de la sección.
+  useFijarTitulo(
+    seccion ? `Sistemas AID · ${SECCIONES_COMPARACION.find((x) => x.id === seccion)?.t}` : null,
+  );
   // 0.96.1 (revisión de Codex, V95-07): por debajo de xl, Parámetros empieza por un parámetro en
   // los sistemas elegidos («parametros:basal», enlazable); «Por sistema», las tarjetas de siempre.
   // 1.0.9 (22.ª ronda, R3): la vista, en la ruta («parametros:por-sistema»), como el parámetro:

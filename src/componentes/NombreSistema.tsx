@@ -13,7 +13,7 @@ export function NombreSistema({ n, porPalabra = false }: { n: string; porPalabra
       {partes.map((p, i) => (
         <Fragment key={i}>
           {i > 0 && sep}
-          <span className="whitespace-nowrap">{p}</span>
+          <span className="pieza whitespace-nowrap">{p}</span>
         </Fragment>
       ))}
     </span>

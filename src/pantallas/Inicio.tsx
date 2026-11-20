@@ -266,7 +266,7 @@ function Hoja({ sis }: { sis?: number }) {
                     onChange={() => marcar(it.texto)}
                     className="h-7 w-7 shrink-0 accent-[#8E254E]"
                   />
-                  <span>{it.texto}</span>
+                  <span className="min-w-0">{it.texto}</span>
                 </label>
               </li>
             ))}
@@ -367,7 +367,7 @@ function Hoja({ sis }: { sis?: number }) {
                   onChange={() => marcar(c)}
                   className="h-7 w-7 shrink-0 accent-[#8E254E]"
                 />
-                <span>{c}</span>
+                <span className="min-w-0">{c}</span>
               </label>
             </li>
           ))}
@@ -709,7 +709,7 @@ function PasosInicio({
                   onChange={() => marcar(x)}
                   className="h-6 w-6 shrink-0 accent-[#8E254E]"
                 />
-                <span>{x}</span>
+                <span className="min-w-0">{x}</span>
               </label>
             </li>
           ))}

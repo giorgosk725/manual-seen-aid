@@ -402,11 +402,11 @@ function GuionVista({
                 >
                   {/* Sin el chevrón: cada momento va abierto de entrada (0.74.2); el título sigue
                       plegándolo. */}
-                  <span className="flex items-center gap-2">
+                  <span className="flex min-w-0 items-center gap-2">
                     <span aria-hidden="true" className="num sm:hidden">
                       {i - desde + 1}
                     </span>
-                    <span>
+                    <span className="min-w-0">
                       <span className="sr-only">{i - desde + 1}. </span>
                       {m.rotulo}
                     </span>

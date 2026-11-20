@@ -2,7 +2,7 @@
    (son la puerta y la lectura); el resto de pantallas, cada grupo en su trozo, con React.lazy
    la primera vez que se visitan (el service worker ya las tiene para usar sin conexión). */
 import { AvisoDireccion } from "./ui";
-import { lazy, useEffect } from "react";
+import { isValidElement, lazy, useEffect } from "react";
 import { apartadoPorSlug, DIAGRAMAS, TABLAS } from "./contenido";
 import { href, useRuta } from "./rutas";
 import { Shell } from "./componentes/Shell";
@@ -130,6 +130,21 @@ const idsDeSlugs = (s?: string) =>
     .filter(Boolean)
     .join("+") || "todos";
 
+/* 1.0.39 (Fable, 1.0.38): «Sobre» con una sección que no existe lo dice (antes, la pantalla sin
+   aviso). «consultas» solo existe en la edición de administración. */
+function SobreConAviso({ pedido }: { pedido?: string }) {
+  return (
+    <>
+      {pedido && (
+        <AvisoDireccion pedido={pedido}>
+          no hay ninguna sección con ese nombre. Esta es la pantalla «Sobre este complemento».
+        </AvisoDireccion>
+      )}
+      <Sobre />
+    </>
+  );
+}
+
 function NoEncontrada() {
   return (
     <div
@@ -138,7 +153,11 @@ function NoEncontrada() {
     >
       {/* 1.0.34 (Fable, 1.0.32): con su título principal, como cualquier otra pantalla. */}
       <h1 className="text-base font-semibold text-slate-800">Esa pantalla no existe</h1>
-      <a href="#/" className="mt-2 inline-block text-sm font-semibold text-slate-700 underline">
+      {/* 1.0.39 (Fable, 1.0.38): 44 px de alto para el dedo (medía 20). */}
+      <a
+        href="#/"
+        className="mt-1 inline-flex min-h-11 items-center text-sm font-semibold text-slate-700 underline"
+      >
         Volver a la portada
       </a>
     </div>
@@ -272,7 +291,7 @@ export default function App() {
       titulo = "Bibliografía";
       break;
     case "cambios":
-      pantalla = <Sobre />;
+      pantalla = <SobreConAviso pedido={ruta.sub} />;
       titulo = "Sobre este complemento";
       break;
     case "sobre":
@@ -280,7 +299,7 @@ export default function App() {
         pantalla = <ConsultasSinRespuesta />;
         titulo = "Consultas sin respuesta";
       } else {
-        pantalla = <Sobre />;
+        pantalla = <SobreConAviso pedido={ruta.sub} />;
         titulo = "Sobre este complemento";
       }
       break;
@@ -309,7 +328,9 @@ export default function App() {
         titulo = c >= 0 ? `Plan de seguridad · ${CORTO_SISTEMA[c]}` : "Material para el paciente";
       } else if (ruta.sub === "hoja") {
         pantalla = <HojaPacientes id={ruta.detalle} />;
-        titulo = "Hoja para el paciente";
+        // 1.0.39 (Fable, 1.0.38): sin hoja en la dirección se ve la lista del material, y así se
+        // llama la pestaña (antes, «Hoja para el paciente»). Con hoja, su título (HojaPacientes).
+        titulo = ruta.detalle ? "Hoja para el paciente" : "Material para el paciente";
       } else {
         // 1.0.38 (Fable, 1.0.38): una sección que no existe lo dice («informacion» y «resumen» son
         // direcciones antiguas que abren esta pantalla sin aviso).
@@ -327,7 +348,7 @@ export default function App() {
       }
       break;
     case "mas":
-      pantalla = <Sobre />;
+      pantalla = <SobreConAviso pedido={ruta.sub} />;
       titulo = "Sobre este complemento";
       break;
     case "casos":
@@ -341,6 +362,21 @@ export default function App() {
     default:
       pantalla = <NoEncontrada />;
   }
+  // 1.0.39 (Fable, 1.0.38): «Esa pantalla no existe», también en la pestaña del navegador (antes,
+  // el nombre de la sección o solo el de la app).
+  const noEncontrada = isValidElement(pantalla) && pantalla.type === NoEncontrada;
+  if (noEncontrada) titulo = "Pantalla no encontrada";
+  // Lo que sigue al tercer nivel de la dirección no lleva a nada: se dice (antes, en silencio).
+  // En Buscar no: la consulta puede llevar una barra («UI/kg»).
+  else if (ruta.resto && ruta.seccion !== "buscar")
+    pantalla = (
+      <>
+        <AvisoDireccion pedido={ruta.resto}>
+          esa parte final de la dirección no lleva a nada. Esta es la pantalla de antes de ella.
+        </AvisoDireccion>
+        {pantalla}
+      </>
+    );
 
   return (
     <Shell titulo={titulo} ruta={ruta}>

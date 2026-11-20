@@ -434,7 +434,9 @@ function Volver({ actual }: { actual: string }) {
     >
       <a
         href={href("pacientes")}
-        className="inline-flex min-h-11 shrink-0 items-center font-semibold hover:underline"
+        // 1.0.39: sin «shrink-0» (en su línea, solo se estrecha si no cabe entera: con la letra
+        // al 200 % en un móvil de 320 px, se salía).
+        className="inline-flex min-h-11 max-w-full items-center font-semibold hover:underline"
       >
         Material para el paciente
       </a>

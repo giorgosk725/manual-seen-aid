@@ -36,9 +36,11 @@ export function VeaseTambien({
   if (!filas.length) return null;
   const H = `h${nivel}` as "h2" | "h3" | "h4";
   return (
+    // 1.0.39 (Fable, 1.0.38): nunca en papel (son enlaces; «Del mismo tema» llenaba media cara
+    // de una pregunta impresa y pasaba dos filas a una segunda).
     <section
       aria-label={etiqueta ?? titulo}
-      className={`${enCaja ? "separador mt-3 border-t" : "tarjeta overflow-hidden"} ${className}`}
+      className={`no-imprimir ${enCaja ? "separador mt-3 border-t" : "tarjeta overflow-hidden"} ${className}`}
     >
       {/* 0.92.1 (segunda revisión de tarjetas): dentro de una caja, el título como rótulo (a
           15/700, sobre filas a 14/600, se leían dos títulos seguidos). */}

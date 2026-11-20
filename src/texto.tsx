@@ -46,7 +46,7 @@ export function SinPartir({ t }: { t: string }) {
     <>
       {t.split(RE_PIEZA).map((x, i) =>
         i % 2 ? (
-          <span key={i} className="whitespace-nowrap">
+          <span key={i} className="pieza whitespace-nowrap">
             {x}
           </span>
         ) : (

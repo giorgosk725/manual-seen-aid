@@ -620,7 +620,9 @@ function Lateral({ ruta, pie }: { ruta: Ruta; pie: ReactNode }) {
       </div>
       {/* Sistema visual: sin cabecera fija en el ordenador; al pie del menú, siempre a la vista:
           los mandos y, en letra pequeña, los recursos (bibliografía, sobre). */}
-      <div className="separador flex shrink-0 items-center gap-1 border-t px-3 py-1">
+      {/* 1.0.39 (Fable, 1.0.38): con los botones de letra de 44 px (lectura), los recursos pasan a
+          una segunda línea si no caben (se salían 12 px de la barra). */}
+      <div className="separador flex shrink-0 flex-wrap items-center gap-x-1 border-t px-3 py-1">
         {pie}
         <nav aria-label="Recursos" className="ml-auto flex items-center gap-x-3 text-xs">
           {RECURSOS?.ids.map((id) => {

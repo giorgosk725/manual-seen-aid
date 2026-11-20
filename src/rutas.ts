@@ -7,6 +7,9 @@ export interface Ruta {
   seccion: string;
   sub?: string;
   detalle?: string;
+  /* 1.0.39 (Fable, 1.0.38): lo que sigue al tercer nivel («#/sistemas/mm780/parametros/extra»),
+     que ninguna pantalla usa: se guarda para decirlo (antes se descartaba sin aviso). */
+  resto?: string;
 }
 
 /* Un «%» mal formado (p. ej. un enlace reescrito por una app de mensajería) no debe romper la
@@ -22,8 +25,14 @@ function decodificar(s: string) {
 export function parseHash(hash: string): Ruta {
   const limpio = (hash || "").replace(/^#\/?/, "").replace(/\/+$/, "");
   if (!limpio) return { seccion: "" };
-  const [seccion, sub, detalle] = limpio.split("/").map(decodificar);
-  return { seccion: seccion || "", sub: sub || undefined, detalle: detalle || undefined };
+  const [seccion, sub, detalle, ...resto] = limpio.split("/").map(decodificar);
+  const ruta: Ruta = {
+    seccion: seccion || "",
+    sub: sub || undefined,
+    detalle: detalle || undefined,
+  };
+  if (resto.some(Boolean)) ruta.resto = resto.join("/");
+  return ruta;
 }
 
 export const href = (seccion: string, sub?: string, detalle?: string) =>

@@ -173,7 +173,9 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
         <div className="flex items-start gap-3 sm:gap-4">
           <span
             aria-hidden="true"
-            className="cabecera-ficha flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-[3px] text-white sm:h-20 sm:w-20"
+            // 1.0.39 (Fable, 1.0.38): fuera con la letra muy ampliada en un móvil (menos de 15 em de
+            // ancho; en rem, el cuadro crecía con la letra y dejaba 136 px para el título).
+            className="cabecera-ficha flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-[3px] text-white max-[15em]:hidden sm:h-20 sm:w-20"
             style={{ background: colorApartado(apartado.n) }}
           >
             <Icono size={22} strokeWidth={1.5} className="sm:hidden" />
@@ -252,7 +254,7 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                     <a
                       key={s.ancla}
                       href={href("capitulo", apartado.slug, s.ancla)}
-                      className="chip tap-44 min-h-9 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:min-h-8"
+                      className="chip tap-44 min-h-9 max-w-full flex-wrap text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:min-h-8"
                     >
                       {s.texto}
                     </a>
@@ -265,10 +267,13 @@ export function Apartado({ apartado, destacado }: { apartado: TApartado; destaca
                     {recursos.map((r) => {
                       const I = r.icono;
                       return (
-                        <li key={r.ancla}>
+                        <li key={r.ancla} className="max-w-full">
+                          {/* 1.0.39 (Fable, 1.0.38): con la letra al 200 %, «Diagrama ·
+                              Hipoglucemia en asa cerrada» no cabía en una línea y se salía 13 px;
+                              ahora sus piezas pasan a otra línea. */}
                           <a
                             href={href("capitulo", apartado.slug, r.ancla)}
-                            className="linea chip tap-44 min-h-9 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:min-h-8"
+                            className="linea chip tap-44 min-h-9 max-w-full flex-wrap text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 sm:min-h-8"
                           >
                             <I size={14} aria-hidden="true" style={{ color: SEEN.azulOsc }} />
                             {/* Sin «Tabla Tabla 2»: el tipo solo si el nombre no lo dice ya. */}

@@ -14,7 +14,7 @@ export function SinCortes({ texto }: { texto: string }) {
     <>
       {partes.map((p, i) =>
         i % 2 ? (
-          <span key={i} className="whitespace-nowrap">
+          <span key={i} className="pieza whitespace-nowrap">
             {p}
           </span>
         ) : (

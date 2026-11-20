@@ -22,7 +22,7 @@ function Referencia({ t }: { t: string }) {
       {partes.map((x, k) => (
         <span key={k}>
           {k > 0 && "\u00a0· "}
-          <span className="whitespace-nowrap">{x}</span>
+          <span className="pieza whitespace-nowrap">{x}</span>
         </span>
       ))}
       {i < 0 ? null : <span>{t.slice(i)}</span>}
@@ -96,7 +96,7 @@ export function FuentePie({
               </a>
             ) : (
               <>
-                <span className="whitespace-nowrap">{g.base}</span> (
+                <span className="pieza whitespace-nowrap">{g.base}</span> (
                 {g.partes.map((x, i) => (
                   <span key={x.ruta}>
                     {i > 0 && "; "}

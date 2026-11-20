@@ -491,7 +491,10 @@ export function CabeceraEditorial({
   const H = `h${level}` as "h1" | "h2" | "h3";
   return (
     <div className="mb-3">
-      <div className="flex items-center gap-2.5">
+      {/* 1.0.39 (Fable, 1.0.38): la acción baja de línea solo si al título le quedarían menos de
+          7 rem a su lado (con la letra del navegador al 200 %, «Imprimir» se salía 2 px); con la
+          letra normal, como antes, junto al título. */}
+      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
         {/* El cuadro de color, solo con número (apartados): sin él era decoración (0.70.0). */}
         {numero != null && numero !== "" && (
           <span
@@ -503,11 +506,11 @@ export function CabeceraEditorial({
           </span>
         )}
         <H
-          className={
+          className={`min-w-0 flex-1 basis-[7rem] ${
             frase
               ? "text-balance text-xl font-bold leading-snug sm:text-[1.375rem]"
               : "font-display text-xl font-medium uppercase leading-tight tracking-[0.04em]"
-          }
+          }`}
           // 0.97.1 (17.ª ronda, visual; DISENO_VISUAL §3): el título, en burdeos en todas las
           // pantallas (los colores de área son acentos pequeños: el cuadro del número y la regla).
           style={{ color: CATEGORIA_HEX.consultar.ink }}

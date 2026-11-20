@@ -4,7 +4,8 @@
 import { OtraSituacion } from "../componentes/OtraSituacion";
 import { Maximize2 } from "lucide-react";
 import { diagramaEnEdicion, rutaDeDiagrama } from "../diagramasRetirados";
-import { DIAGRAMAS, type DiagramaId } from "../contenido/diagramas";
+import { DIAGRAMAS, OBJETIVOS_MCG, type DiagramaId } from "../contenido/diagramas";
+import { ORDEN_SISTEMAS } from "../ampliacion/ids";
 import { F1, F2, INFO, apartadoDeFigura, rutaDeFigura } from "../contenido";
 import { INFO_F3 } from "../componentes/figura3-imagen";
 import { DiagramaVista } from "../componentes/Diagramas";
@@ -145,6 +146,15 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
   );
 }
 
+/* 1.0.39 (Fable, 1.0.38): las opciones que entiende cada diagrama en su dirección
+   («#/visual/objetivos-mcg/<población>», «#/visual/gestacion-sistemas/<sistema>»); en los demás,
+   ninguna. Para decir que una no existe (antes, la de partida sin aviso). */
+function opcionValida(id: string, opcion: string) {
+  if (id === "objetivos-mcg") return OBJETIVOS_MCG.some((p) => p.id === opcion);
+  if (id === "gestacion-sistemas") return ORDEN_SISTEMAS.some((x) => x === opcion);
+  return false;
+}
+
 export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }) {
   const d = DIAGRAMAS.find((x) => x.id === id);
   // 1.0.37 (Fable, 1.0.35): una figura que no existe lo dice (antes, el índice sin aviso).
@@ -174,6 +184,11 @@ export function DiagramaPantalla({ id, opcion }: { id: string; opcion?: string }
       )}
       {/* 0.78.1: el título, con la cabecera editorial de todas las pantallas (antes, un h1 oculto
           y el título a 16 px dentro de la tarjeta). */}
+      {opcion && !opcionValida(d.id, opcion) && (
+        <AvisoDireccion pedido={opcion}>
+          no hay nada con ese nombre en este diagrama. Este es el diagrama.
+        </AvisoDireccion>
+      )}
       <CabeceraEditorial titulo={d.titulo} hex={hex} level={1} />
       {id === "hipoglucemia" && <OtraSituacion />}
       {/* 0.92.3 (15.ª ronda, visual): en su pantalla, el cuerpo de lectura a 14 px (13 en la

@@ -2248,6 +2248,27 @@ html.night *:focus-visible {
   }
 }
 
+/* 1.0.39 (Fable, 1.0.38): Interrupción en papel. Cada camino, entero en una cara (el título de
+   «Si está programada» quedaba solo al pie de la primera); y los tres casos no programados, dos
+   arriba y el tercero a todo el ancho (en tres columnas, «Basal de respaldo» salía a unas pocas
+   palabras por línea). */
+@media print {
+  .pantalla-interrupcion section {
+    break-inside: avoid;
+  }
+  #interrupcion-no-programada > ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #interrupcion-no-programada > ol > li:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+  /* Resumen de Sistemas: cada tarjeta, entera en una cara (partida, Chrome perdía el cuerpo de la
+     cuarta: la cabecera al pie de la primera y la segunda, solo con la fuente). */
+  .imprimible article.tarjeta-sistema {
+    break-inside: avoid;
+  }
+}
+
 /* 0.96.0 (16.ª ronda, R3): el paso de la descarga, algo más compacto en papel: el 4 llegaba a
    14 pt del margen y, con otros márgenes de impresión, pasaba dos líneas y la fuente a otra cara. */
 @media print {
@@ -2285,7 +2306,10 @@ html.night *:focus-visible {
   /* 0.85.1 (novena ronda, visual y senior): la sección de preguntas impresas no se parte (con
      .imprimible en position:absolute, break-inside no bastaba); sale entera con su título.
      (Pagada con las reglas de foco de .sigla y .remision, que *:focus-visible ya pisaba.) */
-  .imprimible section:has(> ul.filas > li:not(.print\:hidden)) {
+  /* 1.0.39 (Fable, 1.0.38): salvo si no se imprime: con más especificidad que .no-imprimir, el
+     «Véase también» de una situación salía como una caja vacía de 2 px, con su margen, que
+     empujaba una segunda cara en blanco. */
+  .imprimible section:has(> ul.filas > li:not(.print\:hidden)):not(.no-imprimir) {
     display: inline-block !important;
     width: 100%;
   }
@@ -2437,6 +2461,15 @@ html.night *:focus-visible {
   .lienzo,
   main {
     background: #fff !important;
+  }
+  /* 1.0.39 (Fable, 1.0.38): sin el alto mínimo de una pantalla (en papel, 100vh es la cara entera)
+     ni el relleno de abajo del envoltorio (sitio para la barra del móvil): con ellos, una situación
+     que cabía en una cara dejaba una segunda en blanco, solo con el pie. */
+  .lienzo {
+    min-height: 0 !important;
+  }
+  main > .pantalla-in {
+    padding-bottom: 0 !important;
   }
 }
 
@@ -2631,5 +2664,16 @@ html.night .decoration-slate-300 {
     transition:
       background-color 0.6s ease,
       outline-color 0.6s ease;
+  }
+}
+
+/* 1.0.39 (Fable, 1.0.38): las piezas que no se parten (una cifra con su unidad, un intervalo, el
+   nombre de un sistema) se parten si no queda otra: con la letra del navegador al 200 % en un
+   móvil (menos de 15 em de ancho), «5–200 UI/día» o «MiniMed 780G» eran más anchas que su caja y
+   se salían de la pantalla. Con la letra normal, en cualquier pantalla, no cambia nada. */
+@media (max-width: 15em) {
+  .pieza.whitespace-nowrap,
+  .cifra {
+    white-space: normal;
   }
 }

@@ -15,7 +15,20 @@ export const CAMBIOS: Cambio[] = [
   {
     fecha: "2026-11-20",
     ambito: "app",
-    titulo: `Complemento interactivo ${VERSION_APP} — letra del navegador, pestañas y direcciones`,
+    titulo: `Complemento interactivo ${VERSION_APP} — papel, letra muy ampliada y direcciones`,
+    detalle: [
+      "Imprimir una situación que cabe en una cara ya no deja una segunda en blanco (el «Véase también», oculto en papel, dejaba una caja vacía con su margen; y el alto mínimo de una pantalla y el relleno de la barra del móvil también contaban).",
+      "Interrupción en papel: cada camino entero en una cara (el título de «Si está programada» quedaba solo al pie de la primera) y los casos no programados en dos columnas, con el tercero a todo el ancho («Basal de respaldo» salía a pocas palabras por línea).",
+      "Una pregunta frecuente y el Resumen de Sistemas, en papel sin sus enlaces («Del mismo tema», los accesos de cada ficha y la Elección del sistema); cada tarjeta del Resumen, entera en una cara.",
+      "Escritorio: el pie de la barra lateral ya no se sale en las pantallas de lectura (con los botones de letra, Bibliografía y Sobre pasan a una segunda línea).",
+      "Con la letra del navegador al 200 % en un móvil de unos 390 px de ancho, nada se sale de la pantalla: las cifras con su unidad y los nombres de los sistemas se parten si no caben, y el cuadro del apartado se quita en las pantallas más estrechas. Con la letra normal no cambia nada.",
+      "Una dirección con una parte de más, una sección de «Sobre» o una opción de un diagrama que no existen lo dicen. La pestaña del navegador nombra cada pestaña de la comparación de sistemas, la de la ficha que se abre sin pestaña («Cómo funciona», con el nombre completo) y «Pantalla no encontrada»; la vuelta a la portada desde esa pantalla mide 44 px.",
+    ],
+  },
+  {
+    fecha: "2026-11-20",
+    ambito: "app",
+    titulo: "Complemento interactivo 1.0.38 — letra del navegador, pestañas y direcciones",
     detalle: [
       "Con la letra del navegador ampliada (150–200 %), todo el texto crece por igual (antes, los datos se quedaban pequeños junto a rótulos grandes) y la maqueta pasa a la de un ancho menor en vez de salirse por los lados; las palabras largas de los títulos y los DOI se parten.",
       "Sistemas: el Resumen es una pestaña más; ir y volver a él ya no sube la página ni lleva el foco al título.",
