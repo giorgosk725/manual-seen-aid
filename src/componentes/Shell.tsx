@@ -620,8 +620,10 @@ function Lateral({ ruta, pie }: { ruta: Ruta; pie: ReactNode }) {
       </div>
       {/* Sistema visual: sin cabecera fija en el ordenador; al pie del menú, siempre a la vista:
           los mandos y, en letra pequeña, los recursos (bibliografía, sobre). */}
-      {/* 1.0.39 (Fable, 1.0.38): con los botones de letra de 44 px (lectura), los recursos pasan a
-          una segunda línea si no caben (se salían 12 px de la barra). */}
+      {/* 1.0.39 (Fable, 1.0.38): con los botones de letra de 44 px (lectura, con el dedo), los
+          recursos pasan a una segunda línea si no caben (se salían 12 px de la barra); con ratón,
+          los mandos miden 32 px de ancho y todo cabe en una (Fable, 1.0.39: el pie saltaba de 53
+          a 93 px al entrar en un apartado). */}
       <div className="separador flex shrink-0 flex-wrap items-center gap-x-1 border-t px-3 py-1">
         {pie}
         <nav aria-label="Recursos" className="ml-auto flex items-center gap-x-3 text-xs">
@@ -1729,7 +1731,7 @@ function Mandos({
             onClick={() => setLetra(menor)}
             disabled={letra === menor}
             aria-label="Letra más pequeña"
-            className="tap-44 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            className="tap-44 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 [@media(pointer:fine)]:w-8 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             <AArrowDown size={18} />
           </button>
@@ -1738,7 +1740,7 @@ function Mandos({
             onClick={() => setLetra(mayor)}
             disabled={letra === mayor}
             aria-label="Letra más grande"
-            className="tap-44 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            className="tap-44 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 [@media(pointer:fine)]:w-8 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
           >
             <AArrowUp size={18} />
           </button>
@@ -1754,7 +1756,7 @@ function Mandos({
         aria-label="Modo nocturno"
         title={night ? "Pasar a modo diurno" : "Pasar a modo nocturno"}
         // 0.88.1 (duodécima ronda, guardia): 44 × 44 px, como los demás controles.
-        className="tap-44 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        className="tap-44 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 [@media(pointer:fine)]:w-8 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
       >
         {night ? <Sun size={18} /> : <Moon size={18} />}
       </button>

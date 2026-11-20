@@ -383,7 +383,9 @@ export function BotonImprimir({
             // 1.0.38 (Fable, 1.0.37): sin «whitespace-nowrap», que con la letra ampliada lo sacaba
             // de la pantalla; «shrink-0» basta para que no se parta mientras quepa.
             "chip tap-44 max-w-full shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
-          : "boton-primario shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
+          : // 1.0.39 (Fable, 1.0.39): nunca más ancho que su caja (con la letra al 200 % a 320 px,
+            // «Imprimir el capítulo» se salía 47 px).
+            "boton-primario max-w-full shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600"
       }
     >
       <Printer size={compacto ? 14 : 15} aria-hidden="true" />

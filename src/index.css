@@ -2300,6 +2300,16 @@ html.night *:focus-visible {
   .diagrama-grande .bloque-papel :is(.grid, .tarjeta, .casilla, .rounded-xl, section) {
     break-inside: avoid;
   }
+  /* «Glucemia y ejercicio»: Antes, Durante y Después, una debajo de otra y a lo ancho (en tres
+     columnas, la rejilla entera saltaba a la segunda cara y dejaba media primera en blanco; el
+     papel pasaba a tres caras). Cada una, entera. */
+  .diagrama-grande .bloque-papel .fases-ejercicio {
+    grid-template-columns: minmax(0, 1fr);
+    break-inside: auto;
+  }
+  .diagrama-grande .bloque-papel .fases-ejercicio > * {
+    break-inside: avoid;
+  }
 }
 
 /* 0.96.0 (16.ª ronda, R3): el paso de la descarga, algo más compacto en papel: el 4 llegaba a

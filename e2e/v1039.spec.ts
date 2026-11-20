@@ -329,3 +329,55 @@ test.describe("1.0.39 · segunda revisión", () => {
       }
     });
 });
+
+/* Tercera tanda (segunda verificación de Fable de la vista previa = 9,55). */
+test.describe("1.0.39 · tercera tanda", () => {
+  test("«Glucemia y ejercicio» en papel: dos caras, Antes, Durante y Después a lo ancho", async ({
+    page,
+  }) => {
+    await page.goto("/#/visual/ejercicio");
+    await expect(page.locator("h1")).toBeVisible();
+    await page.waitForTimeout(500);
+    expect(await caras(page)).toBe(2);
+    await page.emulateMedia({ media: "print" });
+    const columnas = await page
+      .locator(".fases-ejercicio")
+      .evaluate((x) => getComputedStyle(x).gridTemplateColumns.split(" ").length);
+    expect(columnas).toBe(1);
+  });
+
+  test("el pie de la barra lateral mide lo mismo en la lectura que en el resto", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    const alto = async (ruta: string) => {
+      await page.goto(ruta);
+      await expect(page.locator("h1").first()).toBeVisible();
+      return page.evaluate(
+        () =>
+          document.querySelector(".barra-lateral")!.lastElementChild!.getBoundingClientRect()
+            .height,
+      );
+    };
+    expect(await alto("/#/capitulo/07-educacion/b5")).toBe(await alto("/#/sistemas/mm780"));
+  });
+
+  test("el segundo nivel de la dirección, sin distinguir mayúsculas", async ({ page }) => {
+    await page.goto("/#/consultar/Tablas");
+    await expect(page).toHaveTitle(/^Tablas ·/);
+    await page.goto("/#/sistemas/MM780");
+    await expect(page).toHaveTitle(/^MiniMed 780G · Cómo funciona ·/);
+    await page.goto("/#/tablas/T1");
+    await expect(page).toHaveTitle(/^Tabla 1 ·/);
+  });
+
+  test("320 px con 32 px de letra: «Imprimir el capítulo» no se sale", async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 640 });
+    await page.goto("/#/");
+    await letraDelNavegador(page, 32);
+    await page.goto("/#/capitulo/todo");
+    await expect(page.locator("h1").first()).toBeVisible();
+    await page.waitForTimeout(500);
+    expect(await desborde(page)).toBeLessThanOrEqual(0);
+  });
+});

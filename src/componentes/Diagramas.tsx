@@ -593,7 +593,8 @@ function Ejercicio() {
           <SinCortes texto={EJERCICIO.cetonemia} />
         </span>
       </p>
-      <div className="mt-4 grid gap-3 md:grid-cols-3">
+      {/* 1.0.39: «fases-ejercicio»: en papel, una debajo de otra (index.css). */}
+      <div className="fases-ejercicio mt-4 grid gap-3 md:grid-cols-3">
         {EJERCICIO.fases.map((f) => (
           <div key={f.titulo} className="rounded-xl p-3" style={{ background: "#f1f5f9" }}>
             <Sub className="mb-1.5 text-sm font-extrabold text-slate-900">{f.titulo}</Sub>

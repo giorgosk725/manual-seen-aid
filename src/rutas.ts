@@ -22,15 +22,27 @@ function decodificar(s: string) {
   }
 }
 
+const SUB_EN_MINUSCULAS = new Set([
+  "capitulo",
+  "consultar",
+  "sistemas",
+  "visual",
+  "pacientes",
+  "preguntas",
+]);
+
 export function parseHash(hash: string): Ruta {
   const limpio = (hash || "").replace(/^#\/?/, "").replace(/\/+$/, "");
   if (!limpio) return { seccion: "" };
   const [seccion, sub, detalle, ...resto] = limpio.split("/").map(decodificar);
   // 1.0.39 (Fable, 1.0.39): la sección, en minúsculas («#/CAPITULO» daba «Esa pantalla no
   // existe»); el resto, tal cual (una búsqueda o el número de una tabla, «T1», los distinguen).
+  const sec = (seccion || "").toLowerCase();
   const ruta: Ruta = {
-    seccion: (seccion || "").toLowerCase(),
-    sub: sub || undefined,
+    seccion: sec,
+    // 1.0.39 (Fable, 1.0.39): también el segundo nivel donde es un nombre de la app («#/consultar/
+    // Tablas», «#/sistemas/MM780»); no en Buscar (la consulta) ni en los atajos («#/tablas/T1»).
+    sub: (SUB_EN_MINUSCULAS.has(sec) ? sub?.toLowerCase() : sub) || undefined,
     detalle: detalle || undefined,
   };
   if (resto.some(Boolean)) ruta.resto = resto.join("/");
