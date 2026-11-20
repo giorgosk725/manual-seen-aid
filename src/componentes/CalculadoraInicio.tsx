@@ -861,7 +861,7 @@ export function CalculadoraInicio({
                     opciones={OBJETIVOS_CALCULADOR.map((o) => ({
                       v: o.mgdl,
                       t: (
-                        <span>
+                        <span className="min-w-0">
                           {o.mgdl} mg/dl
                           <span className="block text-xs font-normal opacity-80">{o.texto}</span>
                         </span>
@@ -1018,7 +1018,7 @@ export function CalculadoraInicio({
                       opciones={OBJETIVOS_CALCULADOR.map((o) => ({
                         v: o.mgdl,
                         t: (
-                          <span>
+                          <span className="min-w-0">
                             {o.mgdl} mg/dl
                             <span className="block text-xs font-normal opacity-80">{o.texto}</span>
                           </span>

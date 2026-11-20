@@ -1559,7 +1559,7 @@ export function RevisarDescarga({ paso }: { paso?: string }) {
           aria-live="polite"
         >
           <div className="flex flex-wrap items-start justify-between gap-2">
-            <h2 className="titulo-seccion">{fila.celdas[0]}</h2>
+            <h2 className="titulo-seccion min-w-0">{fila.celdas[0]}</h2>
             <span className="no-imprimir">
               <BotonImprimir objetivo={raiz} compacto titulo="Imprimir este paso">
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">

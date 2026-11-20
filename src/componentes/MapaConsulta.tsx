@@ -116,7 +116,9 @@ function Sistemas() {
           tarjeta del Resumen). */}
       <ul
         aria-label="Los cuatro sistemas"
-        className="grid grid-cols-2 gap-2 p-2 sm:gap-3 sm:p-3 2xl:grid-cols-4"
+        // 1.0.39: en una columna por debajo de 15 em (la letra al 200 % en un móvil): en dos, el
+        // nombre quedaba recortado por el borde de la tarjeta.
+        className="grid grid-cols-2 gap-2 p-2 max-[15em]:grid-cols-1 sm:gap-3 sm:p-3 2xl:grid-cols-4"
       >
         {ORDEN_SISTEMAS.map((id, c) => {
           const h = SISTEMA_HEX[c];

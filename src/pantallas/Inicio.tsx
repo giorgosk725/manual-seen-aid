@@ -259,7 +259,7 @@ function Hoja({ sis }: { sis?: number }) {
             )
             .map((it) => (
               <li key={it.texto}>
-                <label className="flex gap-2 text-sm text-slate-800">
+                <label className="tactil-44 flex gap-2 text-sm text-slate-800 [@media(pointer:coarse)]:items-center">
                   <input
                     type="checkbox"
                     checked={hechos.has(it.texto)}
@@ -360,7 +360,7 @@ function Hoja({ sis }: { sis?: number }) {
         <ul className="mt-1 grid gap-1 sm:grid-cols-2">
           {h.citas.map((c) => (
             <li key={c}>
-              <label className="flex gap-2 text-sm text-slate-800">
+              <label className="tactil-44 flex gap-2 text-sm text-slate-800 [@media(pointer:coarse)]:items-center">
                 <input
                   type="checkbox"
                   checked={hechos.has(c)}
@@ -548,7 +548,7 @@ function PasosInicio({
           recortado con «…». 0.96.0 (16.ª ronda, visual): la fila de números, primero y como las
           pestañas (subrayado sobre una línea capilar), no cinco cajas con la activa rellena. */}
       <ol
-        className="separador no-imprimir mb-2 flex gap-1 border-b sm:hidden"
+        className="separador no-imprimir mb-2 flex gap-1 border-b max-[15em]:flex-wrap sm:hidden"
         aria-label="Ir al paso"
       >
         {PASOS_GUIA.map((x, i) => {
@@ -702,7 +702,7 @@ function PasosInicio({
         <ul className="casilla mt-3 space-y-1.5 p-3" aria-label="Para marcar en la consulta">
           {lista.map((x) => (
             <li key={x}>
-              <label className="flex gap-2 text-sm text-slate-800">
+              <label className="tactil-44 flex gap-2 text-sm text-slate-800 [@media(pointer:coarse)]:items-center">
                 <input
                   type="checkbox"
                   checked={hechos.has(x)}

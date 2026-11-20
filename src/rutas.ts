@@ -26,8 +26,10 @@ export function parseHash(hash: string): Ruta {
   const limpio = (hash || "").replace(/^#\/?/, "").replace(/\/+$/, "");
   if (!limpio) return { seccion: "" };
   const [seccion, sub, detalle, ...resto] = limpio.split("/").map(decodificar);
+  // 1.0.39 (Fable, 1.0.39): la sección, en minúsculas («#/CAPITULO» daba «Esa pantalla no
+  // existe»); el resto, tal cual (una búsqueda o el número de una tabla, «T1», los distinguen).
   const ruta: Ruta = {
-    seccion: seccion || "",
+    seccion: (seccion || "").toLowerCase(),
     sub: sub || undefined,
     detalle: detalle || undefined,
   };

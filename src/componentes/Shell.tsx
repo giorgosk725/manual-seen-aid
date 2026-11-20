@@ -717,7 +717,28 @@ const BOTONES: { id: Boton; etiqueta: string; href?: string; icono: typeof Home 
 ];
 /* El botón que corresponde a la pantalla: las conductas (situaciones, cetonas, hipoglucemia,
    interrupción) van con «Situaciones»; lo que no está en la barra, con «Más». */
-function botonDe(ruta: Ruta, preguntaDeFicha = false): Boton {
+/* 1.0.39 (Fable, 1.0.39): las secciones que existen; en otra («Esa pantalla no existe»), ningún
+   botón marcado (antes, «Más»). */
+const SECCIONES_DE_LA_APP = new Set([
+  "",
+  "capitulo",
+  "consultar",
+  "visual",
+  "sistemas",
+  "buscar",
+  "tablas",
+  "bibliografia",
+  "cambios",
+  "sobre",
+  "test",
+  "repaso",
+  "pacientes",
+  "mas",
+  "casos",
+  "preguntas",
+]);
+function botonDe(ruta: Ruta, preguntaDeFicha = false): Boton | null {
+  if (!SECCIONES_DE_LA_APP.has(ruta.seccion)) return null;
   if (ruta.seccion === "") return "inicio";
   if (ruta.seccion === "sistemas") return "sistemas";
   // 1.0.27 (auditoría de navegación, P5): la pregunta frecuente abierta desde una ficha sigue en

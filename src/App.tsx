@@ -130,6 +130,9 @@ const idsDeSlugs = (s?: string) =>
     .filter(Boolean)
     .join("+") || "todos";
 
+/* Secciones cuya dirección acaba en el segundo nivel (#/preguntas/f32): lo que siga sobra. */
+const SOLO_DOS_NIVELES = new Set(["preguntas", "bibliografia", "test", "sobre", "mas", "cambios"]);
+
 /* 1.0.39 (Fable, 1.0.38): «Sobre» con una sección que no existe lo dice (antes, la pantalla sin
    aviso). «consultas» solo existe en la edición de administración. */
 function SobreConAviso({ pedido }: { pedido?: string }) {
@@ -365,13 +368,21 @@ export default function App() {
   // 1.0.39 (Fable, 1.0.38): «Esa pantalla no existe», también en la pestaña del navegador (antes,
   // el nombre de la sección o solo el de la app).
   const noEncontrada = isValidElement(pantalla) && pantalla.type === NoEncontrada;
+  // 1.0.39 (Fable, 1.0.39): en las secciones que solo usan dos niveles, también el tercero
+  // («#/preguntas/f32/xyz» mostraba la pregunta sin aviso).
+  const sobra =
+    ruta.seccion === "buscar"
+      ? undefined
+      : SOLO_DOS_NIVELES.has(ruta.seccion) && ruta.detalle
+        ? [ruta.detalle, ruta.resto].filter(Boolean).join("/")
+        : ruta.resto;
   if (noEncontrada) titulo = "Pantalla no encontrada";
   // Lo que sigue al tercer nivel de la dirección no lleva a nada: se dice (antes, en silencio).
   // En Buscar no: la consulta puede llevar una barra («UI/kg»).
-  else if (ruta.resto && ruta.seccion !== "buscar")
+  else if (sobra)
     pantalla = (
       <>
-        <AvisoDireccion pedido={ruta.resto}>
+        <AvisoDireccion pedido={sobra}>
           esa parte final de la dirección no lleva a nada. Esta es la pantalla de antes de ella.
         </AvisoDireccion>
         {pantalla}

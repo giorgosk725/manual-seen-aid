@@ -1683,7 +1683,9 @@ function EntradaSistemas({ ids = [] }: { ids?: string[] }) {
                       className="block text-lg font-extrabold leading-tight group-hover:underline"
                       style={{ color: h.ink }}
                     >
-                      <NombreSistema n={s.name} />
+                      {/* 1.0.39: entre palabras, nunca dentro de «Control-IQ» (con la letra al
+                          150 % en el móvil, «Tandem Control-IQ» quedaba recortado). */}
+                      <NombreSistema n={s.name} porPalabra />
                     </span>
                     <span className="mt-0.5 block text-sm font-semibold text-slate-700">
                       {/* 0.96.0 (16.ª ronda): sin repetir el nombre de encima («Control-IQ · …»). */}

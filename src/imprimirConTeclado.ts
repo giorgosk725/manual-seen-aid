@@ -11,6 +11,11 @@ export function useImprimirConTeclado(ref: RefObject<HTMLElement | null>) {
     let restaurar = () => {};
     const antes = () => {
       if (html.classList.contains("imprimiendo")) return;
+      // 1.0.39 (Fable, 1.0.39): solo si hay región que imprimir (la lista de Situaciones, sin una
+      // abierta, no la tiene: con «imprimiendo» todo se ocultaba y salían caras en blanco). Sin
+      // región, se imprime la pantalla como está.
+      const r = ref.current;
+      if (!r || !(r.classList.contains("imprimible") || r.querySelector(".imprimible"))) return;
       marcado = true;
       html.classList.add("imprimiendo");
       restaurar = abrirPlegables(ref.current);

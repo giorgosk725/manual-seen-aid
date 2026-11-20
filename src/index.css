@@ -233,6 +233,9 @@
     background: var(--papel-2);
     color: var(--tinta-2);
     white-space: nowrap;
+    /* 1.0.39: nunca más ancha que su caja (con la letra al 200 %, «Sobre todo en bolos o manual»
+       quedaba recortada); por debajo de 15 em de ancho, además, se parte (abajo). */
+    max-width: 100%;
   }
   /* Chip de opción: borde capilar, 44 px en el móvil; marcado = burdeos. */
   .chip {
@@ -585,7 +588,9 @@
   /* 0.88.1 (duodécima ronda, senior): solo en pantallas táctiles (con ratón, el área de un enlace
      de la línea de fuente invadía la línea de arriba y se quedaba sus clics: «Tabla 4» abría otro
      párrafo). */
-  @media (pointer: coarse) {
+  /* 1.0.39 (Fable, 1.0.39): y solo en pantalla: en papel, el área del último enlace de una
+     situación que acababa a ras de cara añadía una cara en blanco al imprimir desde el móvil. */
+  @media screen and (pointer: coarse) {
     .tap-44::after {
       content: "";
       position: absolute;
@@ -2267,6 +2272,34 @@ html.night *:focus-visible {
   .imprimible article.tarjeta-sistema {
     break-inside: avoid;
   }
+  /* Y algo más compactas, para que las cuatro quepan en una cara (Omnipod 5 pasaba sola a la
+     segunda): menos relleno en la cabecera y el cuerpo, y la foto a 36 px. */
+  .imprimible article.tarjeta-sistema > a {
+    padding-block: 0.375rem;
+  }
+  .imprimible article.tarjeta-sistema > a img {
+    height: 2.25rem;
+    width: 2.25rem;
+  }
+  .imprimible article.tarjeta-sistema > div {
+    padding-block: 0.375rem;
+  }
+  .imprimible ul:has(> li > article.tarjeta-sistema) {
+    gap: 0.375rem;
+  }
+}
+
+/* 1.0.39 (Fable, 1.0.39): un diagrama en su pantalla se parte por sus piezas, no entero (más
+   alto que una cara, Chrome lo pasaba a la segunda y lo partía igual: «Glucemia y ejercicio»
+   dejaba la primera cara con el título solo). Cada pieza (rejilla, tarjeta, casilla, recuadro,
+   sección), entera. */
+@media print {
+  .diagrama-grande .bloque-papel {
+    break-inside: auto;
+  }
+  .diagrama-grande .bloque-papel :is(.grid, .tarjeta, .casilla, .rounded-xl, section) {
+    break-inside: avoid;
+  }
 }
 
 /* 0.96.0 (16.ª ronda, R3): el paso de la descarga, algo más compacto en papel: el 4 llegaba a
@@ -2505,6 +2538,8 @@ html.night *:focus-visible {
   }
   .hoja-a4 .hoja-cuerpo .hoja-urgente {
     width: fit-content;
+    /* 1.0.39: nunca más ancha que la hoja (con la letra al 200 % a 360 px, se salía 3 px). */
+    max-width: 100%;
   }
   /* Los huecos para rellenar («Nombre», «Fecha»), al mismo ancho que el texto (75ch a 15 px). */
   .hoja-a4 .hoja-cuerpo > div.hoja-seccion.flex {
@@ -2673,7 +2708,17 @@ html.night .decoration-slate-300 {
    se salían de la pantalla. Con la letra normal, en cualquier pantalla, no cambia nada. */
 @media (max-width: 15em) {
   .pieza.whitespace-nowrap,
-  .cifra {
+  .cifra,
+  .insignia {
     white-space: normal;
+  }
+}
+/* Y, en el caso más extremo (menos de 12,5 em de ancho: la letra al 200 % en un móvil de 320–393
+   px), las palabras largas se parten donde haga falta («PROGRAMACIÓN», «preconcepcional/
+   gestación») en vez de salirse; con la letra normal no ocurre en ningún teléfono (12,5 em son
+   200 px), ni con la letra al 150 %. */
+@media (max-width: 12.5em) {
+  main {
+    overflow-wrap: anywhere;
   }
 }

@@ -253,11 +253,16 @@ function Escalera({ i, yaEnTexto }: { i: number; yaEnTexto?: (t: string) => bool
         {p.franjas.map((f, j) => {
           const t = TONO[f.tono];
           return (
-            <li key={j} className="linea flex items-stretch overflow-hidden rounded-lg border">
+            // 1.0.39: con la letra al 200 % en un móvil (menos de 15 em), el tramo encima de la cifra
+            // (al lado, la cifra quedaba recortada por el borde de la fila).
+            <li
+              key={j}
+              className="linea flex items-stretch overflow-hidden rounded-lg border max-[15em]:flex-col"
+            >
               <span
                 // 1.0.24 (30.ª ronda, visual): el color del tramo también en papel (sin «gráficos de
                 // fondo», el rótulo claro quedaba a 2:1 sobre blanco).
-                className="franja-tramo flex w-[6.75rem] shrink-0 items-center px-2 py-2 text-xs font-bold min-[25em]:w-28"
+                className="franja-tramo flex w-[6.75rem] shrink-0 items-center px-2 py-2 text-xs font-bold max-[15em]:w-auto min-[25em]:w-28"
                 style={{ background: t.bg, color: t.fg }}
               >
                 <SinCortes texto={f.franja} />

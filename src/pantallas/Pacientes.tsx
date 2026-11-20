@@ -190,7 +190,9 @@ export function HubPacientes() {
               En revisión: todavía no están listos para entregar.
             </p>
           )}
-          <ul className="mt-2 grid grid-cols-2 gap-2 lg:grid-cols-4">
+          {/* 1.0.39: en una columna por debajo de 15 em (la letra ampliada en un móvil de 320 px:
+              en dos, «Control‑IQ / Control‑IQ+» quedaba recortado). */}
+          <ul className="mt-2 grid grid-cols-2 gap-2 max-[15em]:grid-cols-1 lg:grid-cols-4">
             {ORDEN_SISTEMAS.map((id, c) => (
               <li key={id}>
                 <a

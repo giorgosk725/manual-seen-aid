@@ -930,7 +930,7 @@ function Pregunta({
                 <span className="w-5 shrink-0 font-bold text-slate-500">
                   {String.fromCharCode(97 + i)})
                 </span>
-                <span className="flex-1">{o}</span>
+                <span className="min-w-0 flex-1">{o}</span>
                 {resuelta && esCorrecta && (
                   <CheckCircle2 size={16} className="text-emerald-700" aria-label="Correcta" />
                 )}

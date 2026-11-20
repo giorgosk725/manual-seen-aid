@@ -223,3 +223,109 @@ test.describe("1.0.39 · escritorio y letra ampliada", () => {
     expect(partidas).toBe(0);
   });
 });
+
+/* Segunda tanda (revisión de Fable sobre la vista previa de la 1.0.39 = 9,40). */
+test.describe("1.0.39 · segunda revisión", () => {
+  test("Ctrl+P en la lista de Situaciones imprime la lista (no caras en blanco)", async ({
+    page,
+  }) => {
+    await page.goto("/#/consultar/situacion");
+    await expect(page.locator("#lista-situaciones")).toBeVisible();
+    await page.evaluate(() => window.dispatchEvent(new Event("beforeprint")));
+    const marcado = await page.evaluate(() =>
+      document.documentElement.classList.contains("imprimiendo"),
+    );
+    await page.evaluate(() => window.dispatchEvent(new Event("afterprint")));
+    expect(marcado).toBe(false);
+  });
+
+  test("Resumen de Sistemas: las cuatro tarjetas en una cara", async ({ page }) => {
+    await page.goto("/#/sistemas");
+    await expect(page.locator("h1")).toBeVisible();
+    await page.waitForTimeout(500);
+    expect(await caras(page)).toBe(1);
+  });
+
+  test("un diagrama en su pantalla se parte por sus piezas, no entero", async ({ page }) => {
+    await page.goto("/#/visual/ejercicio");
+    await expect(page.locator("h1")).toBeVisible();
+    await page.emulateMedia({ media: "print" });
+    const m = await page.evaluate(() => {
+      const b = document.querySelector(".diagrama-grande .bloque-papel")!;
+      return {
+        bloque: getComputedStyle(b).breakInside,
+        rejilla: getComputedStyle(b.querySelector(".grid")!).breakInside,
+      };
+    });
+    expect(m).toEqual({ bloque: "auto", rejilla: "avoid" });
+  });
+
+  test("en papel, sin el área táctil invisible de los enlaces", async ({ page }) => {
+    await page.goto("/#/consultar/situacion/rm");
+    await expect(page.locator("h1").first()).toBeVisible();
+    await page.emulateMedia({ media: "print" });
+    const contenido = await page
+      .locator(".tap-44")
+      .first()
+      .evaluate((x) => getComputedStyle(x, "::after").content);
+    expect(contenido).toBe("none");
+  });
+
+  test("direcciones: un tercer nivel que sobra y la sección en mayúsculas", async ({ page }) => {
+    await page.goto("/#/preguntas/f32/xyz");
+    await expect(
+      page
+        .getByRole("status")
+        .filter({ hasText: "esa parte final de la dirección no lleva a nada" }),
+    ).toBeVisible();
+    await page.goto("/#/CAPITULO");
+    await expect(page).toHaveTitle(/^Índice del capítulo ·/);
+    await page.goto("/#/preguntas/f32");
+    await expect(page.locator("h1")).toBeVisible();
+    await expect(page.getByRole("status").filter({ hasText: "no lleva a nada" })).toHaveCount(0);
+  });
+
+  for (const [ancho, alto, px] of [
+    [393, 851, 32],
+    [393, 851, 24],
+    [320, 640, 32],
+  ] as const)
+    test(`${ancho} px con ${px} px de letra: ningún texto recortado por su tarjeta`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: ancho, height: alto });
+      await page.goto("/#/");
+      await letraDelNavegador(page, px);
+      for (const ruta of [
+        "/#/",
+        "/#/sistemas",
+        "/#/sistemas/mm780/parametros",
+        "/#/visual/objetivos-mcg",
+        "/#/visual",
+        "/#/pacientes",
+      ]) {
+        await page.goto(ruta);
+        await expect(page.locator("h1").first()).toBeVisible();
+        await page.waitForTimeout(400);
+        const recortados = await page.evaluate(() => {
+          const out: string[] = [];
+          for (const e of document.querySelectorAll("main *")) {
+            if (e.closest(".sr-only, [aria-hidden=true]")) continue;
+            if (![...e.childNodes].some((n) => n.nodeType === 3 && n.textContent!.trim())) continue;
+            const r = e.getBoundingClientRect();
+            if (!r.width) continue;
+            for (let a = e.parentElement; a && a.tagName !== "MAIN"; a = a.parentElement) {
+              const s = getComputedStyle(a);
+              if (!/(hidden|clip)/.test(s.overflowX) || a.classList.contains("sr-only")) continue;
+              if (/max-h|line-clamp|truncate/.test(String(a.className))) break;
+              const ra = a.getBoundingClientRect();
+              if (Math.max(r.right - ra.right, ra.left - r.left) > 2) out.push(e.textContent!);
+              break;
+            }
+          }
+          return out;
+        });
+        expect(recortados, ruta).toEqual([]);
+      }
+    });
+});

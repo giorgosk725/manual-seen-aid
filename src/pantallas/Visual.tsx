@@ -87,7 +87,13 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
             const ap = apartadoDeFigura(fig.id);
             const img = fig.imagen!;
             return (
-              <li key={fig.id} className="tarjeta flex overflow-hidden max-sm:flex-row sm:flex-col">
+              // 1.0.39: con la letra ampliada en un móvil (menos de 18 em; con la letra normal, en
+              // ningún teléfono), apilada como en la tableta (al lado de la miniatura, el texto
+              // quedaba recortado o a una letra por línea).
+              <li
+                key={fig.id}
+                className="tarjeta flex overflow-hidden max-sm:flex-row max-[18em]:flex-col sm:flex-col"
+              >
                 <AbrirEnVisor
                   imagen={{
                     src: img.src,
@@ -95,7 +101,7 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                     titulo: fig.titulo,
                     nota: `p. ${fig.pagina}`,
                   }}
-                  className="group flex flex-col bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 max-sm:w-[7.5rem] max-sm:shrink-0 max-sm:justify-center sm:w-full"
+                  className="group flex flex-col bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 max-sm:w-[7.5rem] max-sm:shrink-0 max-sm:justify-center max-[18em]:w-full sm:w-full"
                   etiqueta={`Ampliar ${fig.titulo}`}
                 >
                   <span className="chip m-1.5 min-h-8 self-end text-xs max-sm:order-2 max-sm:self-center sm:m-2">
@@ -113,7 +119,7 @@ export function Visual(_props: { vista?: "diagramas" | "figuras" }) {
                   </span>
                 </AbrirEnVisor>
                 {/* 0.79.1: la línea de fuente, al pie de la tarjeta (a la misma altura en las cuatro). */}
-                <div className="separador p-3 max-sm:min-w-0 max-sm:flex-1 max-sm:border-l sm:flex sm:flex-1 sm:flex-col sm:border-t">
+                <div className="separador p-3 max-sm:min-w-0 max-sm:flex-1 max-sm:border-l max-[18em]:border-l-0 max-[18em]:border-t sm:flex sm:flex-1 sm:flex-col sm:border-t">
                   {/* 0.92.0 (revisión de tarjetas, ★4): título de tarjeta (15/700). */}
                   <div className="titulo-tarjeta">{fig.titulo.replace(/\.$/, "")}</div>
                   {extra && (
