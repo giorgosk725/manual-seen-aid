@@ -109,3 +109,4 @@ Nota (22-10-2026): la 0.96.0 se desplegó bien, pero la comprobación final de `
 | 2026-11-19 07:18 | main | 1.0.35 | b0fe16b515d9 | index-ZOvQB6UX.js | 1.0.34 (73b203a964b9) |
 | 2026-11-19 22:21 | main | 1.0.36 | 7afda9da8c5c | index-DhpRMr68.js | 1.0.35 (b0fe16b515d9) |
 | 2026-11-19 23:25 | main | 1.0.37 | c4ef0b870aad | index-D-qjizdj.js | 1.0.36 (7afda9da8c5c) |
+| 2026-11-20 19:38 | main | 1.0.38 | cebc5613cf74 | index-B8zMVfhe.js | 1.0.37 (c4ef0b870aad) |
